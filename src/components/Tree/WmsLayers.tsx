@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { WmsLayerNode } from './WmsLayer.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, wmsLayersFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, wmsLayersFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -52,12 +53,12 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
     () => ({
       label: `WMS Layers (${
         isFiltered
-          ? `${rowsLoading ? '...' : rows.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
           : rowsLoading
           ? '...'
-          : rows.length
+          : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],

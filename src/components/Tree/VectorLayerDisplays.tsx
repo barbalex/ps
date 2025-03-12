@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { VectorLayerDisplayNode } from './VectorLayerDisplay.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -38,7 +39,9 @@ export const VectorLayerDisplaysNode = memo(
     const loading = res === undefined
 
     const node = useMemo(
-      () => ({ label: `Displays (${loading ? '...' : rows.length})` }),
+      () => ({
+        label: `Displays (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 

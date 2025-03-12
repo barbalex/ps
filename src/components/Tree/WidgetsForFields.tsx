@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { WidgetForFieldNode } from './WidgetForField.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, widgetsForFieldsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, widgetsForFieldsFilterAtom } from '../../store.ts'
 
 export const WidgetsForFieldsNode = memo(() => {
   const [filter] = useAtom(widgetsForFieldsFilterAtom)
@@ -35,34 +36,28 @@ export const WidgetsForFieldsNode = memo(() => {
     undefined,
     'widget_for_field_id',
   )
-  const widgetsForFields = resultFiltered?.rows ?? []
-  const widgetsForFieldsLoading = resultFiltered === undefined
+  const rows = resultFiltered?.rows ?? []
+  const rowsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widgets_for_fields`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countUnfilteredLoading = resultCountUnfiltered === undefined
+  const countLoading = resultCountUnfiltered === undefined
 
   const widgetsForFieldsNode = useMemo(
     () => ({
       label: `Widgets For Fields (${
         isFiltered
-          ? `${widgetsForFieldsLoading ? `...` : widgetsForFields.length}/${
-              countUnfilteredLoading ? `...` : countUnfiltered
+          ? `${rowsLoading ? `...` : formatNumber(rows.length)}/${
+              countLoading ? `...` : formatNumber(countUnfiltered)
             }`
-          : widgetsForFieldsLoading
+          : rowsLoading
           ? `...`
-          : widgetsForFields.length
+          : formatNumber(rows.length)
       })`,
     }),
-    [
-      isFiltered,
-      widgetsForFieldsLoading,
-      widgetsForFields.length,
-      countUnfilteredLoading,
-      countUnfiltered,
-    ],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -114,12 +109,12 @@ export const WidgetsForFieldsNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={widgetsForFields.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        widgetsForFields.map((widgetForField) => (
+        rows.map((widgetForField) => (
           <WidgetForFieldNode
             key={widgetForField.widget_for_field_id}
             widgetForField={widgetForField}
