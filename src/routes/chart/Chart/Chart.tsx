@@ -11,6 +11,8 @@ import {
 } from 'recharts'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
+import { formatNumber } from '../../modules/formatNumber.ts'
+
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
 // const getPercent = (value, total) => {
@@ -18,9 +20,6 @@ const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
 //   return toPercent(ratio, 2)
 // }
-
-const formatNumber = (tickItem) =>
-  tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
   const res = useLiveIncrementalQuery(

@@ -4,6 +4,7 @@ import { MdDone } from 'react-icons/md'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { setGeometries } from './setGeometries.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 const notificationStyle = {
   color: 'red',
@@ -46,7 +47,7 @@ export const Set = memo(({ occurrenceImport }) => {
     return (
       <div style={allSetStyle}>
         <MdDone style={doneIconStyle} />
-        {`All ${new Intl.NumberFormat().format(
+        {`All ${formatNumber(
           occurrences.length,
         )} occurrences's geometries are set`}
       </div>

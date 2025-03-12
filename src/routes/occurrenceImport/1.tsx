@@ -5,6 +5,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { UploadButton } from '../../components/shared/UploadButton.tsx'
 import { processData } from './processData.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 const occurrencesImportedStyle = {
   color: 'rgba(38, 82, 37, 0.9)',
@@ -39,7 +40,7 @@ export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
       {occurrenceImport?.occurrences?.length ? (
         <div style={occurrencesImportedStyle}>
           <MdDone style={doneIconStyle} />
-          {`${new Intl.NumberFormat().format(
+          {`${formatNumber(
             occurrenceImport.occurrences.length,
           )} occurrences imported`}
         </div>

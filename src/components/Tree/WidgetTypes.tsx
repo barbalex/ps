@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { WidgetTypeNode } from './WidgetType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { treeOpenNodesAtom, widgetTypesFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, widgetTypesFilterAtom } from '../../store.ts'
 
 export const WidgetTypesNode = memo(() => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -48,12 +49,12 @@ export const WidgetTypesNode = memo(() => {
     () => ({
       label: `Widget Types (${
         isFiltered
-          ? `${rowsLoading ? '...' : rows.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
           : rowsLoading
           ? '...'
-          : rows.length
+          : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],

@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Menu } from './Menu.tsx'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 interface Props {
   namePlural: string
@@ -35,10 +36,8 @@ export const ListViewHeader = memo(
       isLoading
         ? '...'
         : isFiltered
-        ? `${countFiltered?.toLocaleString?.(
-            'en-US',
-          )}/${countUnfiltered?.toLocaleString?.('en-US')}`
-        : countFiltered?.toLocaleString?.('en-US')
+        ? `${formatNumber(countFiltered)}/${formatNumber(countUnfiltered)}`
+        : formatNumber(countFiltered)
     })`
 
     return (
