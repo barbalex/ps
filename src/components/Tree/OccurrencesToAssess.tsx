@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { OccurrenceToAssessNode } from './OccurrenceToAssess.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -47,7 +48,9 @@ export const OccurrencesToAssessNode = memo(
 
     const node = useMemo(
       () => ({
-        label: `Occurrences to assess (${loading ? '...' : rows.length})`,
+        label: `Occurrences to assess (${
+          loading ? '...' : formatNumber(rows.length)
+        })`,
       }),
       [loading, rows.length],
     )

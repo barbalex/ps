@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { ChartSubjectNode } from './ChartSubject.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -47,8 +48,10 @@ export const ChartSubjectsNode = memo(
     const rows = res?.rows ?? []
     const loading = res === undefined
 
-    const chartSubjectsNode = useMemo(
-      () => ({ label: `Subjects (${loading ? '...' : rows.length})` }),
+    const node = useMemo(
+      () => ({
+        label: `Subjects (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 
@@ -101,7 +104,7 @@ export const ChartSubjectsNode = memo(
     return (
       <>
         <Node
-          node={chartSubjectsNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
