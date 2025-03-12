@@ -3,6 +3,7 @@ import { useMap } from 'react-leaflet'
 import { pipe } from 'remeda'
 
 import { on } from '../../../../../../css.ts'
+import { formatNumber } from '../../../../../../modules/formatNumber.ts'
 
 const itemStyle = {
   cursor: 'pointer',
@@ -35,7 +36,7 @@ export const Item = memo(({ scale, close, pixelsInMeterWidth }) => {
       style={pipe(itemStyle, on('&:hover', { backgroundColor: 'lightgray' }))}
       onClick={onClick}
     >
-      {`1 : ${scale.toLocaleString('de-ch')}`}
+      {`1 : ${formatNumber(scale)}`}
     </div>
   )
 })

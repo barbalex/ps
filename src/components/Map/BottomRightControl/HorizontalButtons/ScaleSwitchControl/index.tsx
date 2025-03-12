@@ -3,6 +3,7 @@ import { useMap, useMapEvents } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { Dropdown } from './Dropdown/index.tsx'
+import { formatNumber } from '../../../../../modules/formatNumber.ts'
 
 // Returns width of map in meters on specified latitude
 const getMapWidthForLanInMeters = (currentLan) =>
@@ -86,8 +87,12 @@ export const ScaleSwitchControl = memo(() => {
         close={close}
         pixelsInMeterWidth={pixelsInMeterWidth}
       />
-      <div style={textStyle} onClick={onClick} ref={ref}>
-        {`1 : ${scale?.toLocaleString('de-ch')}`}
+      <div
+        style={textStyle}
+        onClick={onClick}
+        ref={ref}
+      >
+        {`1 : ${formatNumber(scale)}`}
       </div>
     </div>
   )
