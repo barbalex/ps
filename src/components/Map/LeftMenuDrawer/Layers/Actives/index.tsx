@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useState, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'

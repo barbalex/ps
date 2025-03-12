@@ -1,6 +1,6 @@
 import { useState, memo, useCallback, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'

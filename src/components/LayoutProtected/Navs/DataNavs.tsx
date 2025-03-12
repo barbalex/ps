@@ -1,5 +1,5 @@
 import { memo, useState, useEffect, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'

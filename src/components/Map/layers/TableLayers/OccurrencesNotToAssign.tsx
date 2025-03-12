@@ -1,5 +1,5 @@
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useAtom } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'

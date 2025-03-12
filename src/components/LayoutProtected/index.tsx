@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useAtom } from 'jotai'
-// import { useSearchParams } from 'react-router-dom'
+// import { useSearchParams } from 'react-router'
 
 import { Main } from './Main.tsx'
 import { Breadcrumbs } from './Breadcrumbs/index.tsx'

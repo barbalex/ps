@@ -1,6 +1,6 @@
 import React, { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'

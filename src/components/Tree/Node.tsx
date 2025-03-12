@@ -5,7 +5,7 @@ import {
 } from 'react-icons/md'
 import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 import { pipe } from 'remeda'
 
 import { on } from '../../css.ts'

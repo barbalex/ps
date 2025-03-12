@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
-import { useParams, useSearchParams, useLocation } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 

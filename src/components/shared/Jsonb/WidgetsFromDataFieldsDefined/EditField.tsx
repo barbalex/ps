@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdEdit } from 'react-icons/md'
-import { useSearchParams, useLocation } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router'
 import { useAtom } from 'jotai'
 
 import { designingAtom } from '../../../../store.ts'

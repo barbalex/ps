@@ -1,5 +1,5 @@
 import { memo, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'

@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 
 import { controls } from '../../../styles.ts'
 import * as stores from '../../../store.ts'

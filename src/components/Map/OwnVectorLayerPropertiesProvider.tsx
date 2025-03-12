@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import isEqual from 'lodash/isEqual'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 

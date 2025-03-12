@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { useAtom } from 'jotai'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'

@@ -1,5 +1,5 @@
 import React, { createRef } from 'react'
-import { RouterProvider } from 'react-router-dom'
+import { RouterProvider } from 'react-router/dom'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
 import { PGlite } from '@electric-sql/pglite'
@@ -22,7 +22,7 @@ import { store } from './store.ts'
 const db = await PGlite.create('idb://ps', {
   extensions: { live },
   relaxedDurability: true,
-  debug: true,
+  // debug: true,
 })
 
 const routerContainerStyle = {

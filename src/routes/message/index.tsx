@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 

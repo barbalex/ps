@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useOutletContext, useLocation } from 'react-router-dom'
+import { useOutletContext, useLocation } from 'react-router'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'

@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'

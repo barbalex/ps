@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
@@ -102,10 +102,17 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM places WHERE parent_id = $1 AND subproject_id = $2 ORDER BY label ASC`,
-      [place_id2 ? place_id : null, subproject_id],
+      `
+      SELECT place_id 
+      FROM places 
+      WHERE 
+        parent_id ${place_id2 ? `= '${place_id}'` : `IS NULL`} 
+        AND subproject_id = $1 
+      ORDER BY label
+      `,
+      [subproject_id],
     )
-    const places = res?.rows
+    const places = res?.rows ?? []
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
@@ -117,10 +124,17 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM places WHERE parent_id = $1 AND subproject_id = $2 ORDER BY label ASC`,
-      [place_id2 ? place_id : null, subproject_id],
+      `
+      SELECT place_id 
+      FROM places 
+      WHERE 
+        parent_id ${place_id2 ? `= '${place_id}'` : `IS NULL`} 
+        AND subproject_id = $1 
+      ORDER BY label
+      `,
+      [subproject_id],
     )
-    const places = res?.rows
+    const places = res?.rows ?? []
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]

@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'

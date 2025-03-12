@@ -10,7 +10,7 @@ import {
   MenuPopover,
   MenuGroupHeader,
 } from '@fluentui/react-components'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FieldFormFetchingOwnData } from '../../routes/field/FormFetchingOwnData.tsx'

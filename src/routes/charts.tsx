@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router'
 import { useAtom } from 'jotai'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'

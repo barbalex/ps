@@ -1,5 +1,5 @@
 import { useRef, useCallback, memo } from 'react'
-import { useSearchParams, useParams } from 'react-router-dom'
+import { useSearchParams, useParams } from 'react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'

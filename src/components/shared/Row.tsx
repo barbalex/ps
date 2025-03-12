@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 
 const imgStyle = {
   flexBasis: 50,

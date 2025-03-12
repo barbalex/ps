@@ -4,7 +4,7 @@ import {
   useNavigate,
   useLocation,
   useSearchParams,
-} from 'react-router-dom'
+} from 'react-router'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'

@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'

@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
 import { useSetAtom, useAtom } from 'jotai'

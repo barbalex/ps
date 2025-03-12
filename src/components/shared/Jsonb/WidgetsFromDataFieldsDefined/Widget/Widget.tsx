@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../../TextField.tsx'

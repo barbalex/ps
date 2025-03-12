@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 

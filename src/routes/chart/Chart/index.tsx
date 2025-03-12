@@ -1,5 +1,5 @@
 import { memo, useEffect, useState, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { buildData } from './buildData/index.ts'

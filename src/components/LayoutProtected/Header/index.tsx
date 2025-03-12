@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { pipe } from 'remeda'
 
 import { on } from '../../../css.ts'
@@ -31,7 +31,7 @@ export const Header = () => {
     >
       <h1 style={titleStyle}>
         <Link
-          to={'/'}
+          to="/"
           className="header__title__link"
           style={pipe(
             linkStyle,

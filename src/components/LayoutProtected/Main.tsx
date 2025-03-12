@@ -1,6 +1,6 @@
 import { memo } from 'react'
-import { Outlet } from 'react-router-dom'
-// import { useSearchParams } from 'react-router-dom'
+import { Outlet } from 'react-router'
+// import { useSearchParams } from 'react-router'
 import { Allotment } from 'allotment'
 import { useAtom } from 'jotai'
 

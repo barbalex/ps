@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
 import {

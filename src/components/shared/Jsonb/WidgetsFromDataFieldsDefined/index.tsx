@@ -4,7 +4,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'

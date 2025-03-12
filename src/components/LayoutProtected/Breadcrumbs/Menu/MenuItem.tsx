@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { MenuItem as MenuItemComponent } from '@fluentui/react-components'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 
 export const MenuItem = ({ path, text }) => {
   const navigate = useNavigate()

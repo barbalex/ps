@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { CorbadoAuth } from '@corbado/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 export const Component = memo(() => {
   const navigate = useNavigate()

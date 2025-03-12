@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'

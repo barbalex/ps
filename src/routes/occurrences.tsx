@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'

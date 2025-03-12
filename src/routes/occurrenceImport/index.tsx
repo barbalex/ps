@@ -1,5 +1,5 @@
 import { useCallback, useRef, useMemo, useState, memo } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
 import {
   usePGlite,

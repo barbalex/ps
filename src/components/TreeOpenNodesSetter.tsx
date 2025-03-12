@@ -1,5 +1,5 @@
 import { useEffect, memo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { addOpenNodes } from '../modules/tree/addOpenNodes.ts'
 

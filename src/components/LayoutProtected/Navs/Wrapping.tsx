@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
-import { useMatches, useLocation, useParams } from 'react-router-dom'
+import { useMatches, useLocation, useParams } from 'react-router'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 

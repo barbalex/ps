@@ -1,6 +1,6 @@
 import { useRef, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { Header } from './Header.tsx'

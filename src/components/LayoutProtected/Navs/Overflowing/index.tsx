@@ -5,7 +5,7 @@ import {
   useNavigate,
   useSearchParams,
   useParams,
-} from 'react-router-dom'
+} from 'react-router'
 import { BsCaretDown } from 'react-icons/bs'
 import {
   Menu,

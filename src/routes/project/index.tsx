@@ -1,5 +1,5 @@
 import { useRef, useCallback, memo } from 'react'
-import { useSearchParams, useParams } from 'react-router-dom'
+import { useSearchParams, useParams } from 'react-router'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'

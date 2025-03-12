@@ -4,7 +4,7 @@ import {
   useLiveIncrementalQuery,
 } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'

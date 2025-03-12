@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router'
 
 import { DateField } from '../../components/shared/DateField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'

@@ -7,7 +7,7 @@ import {
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'

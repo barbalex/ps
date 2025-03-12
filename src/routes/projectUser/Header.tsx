@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProjectUser } from '../../modules/createRows.ts'

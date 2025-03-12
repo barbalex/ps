@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'

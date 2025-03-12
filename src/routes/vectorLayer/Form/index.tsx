@@ -1,5 +1,5 @@
-import { useOutletContext } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
+import { useOutletContext } from 'react-router'
+import { useLocation } from 'react-router'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'

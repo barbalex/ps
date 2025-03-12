@@ -5,7 +5,7 @@ import {
   SelectTabEvent,
   SelectTabData,
 } from '@fluentui/react-components'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'

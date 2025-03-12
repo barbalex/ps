@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { Label, Divider } from '@fluentui/react-components'
 
 import { TextField } from '../../../components/shared/TextField.tsx'

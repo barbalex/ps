@@ -1,4 +1,4 @@
-import { useMatches, useLocation } from 'react-router-dom'
+import { useMatches, useLocation } from 'react-router'
 
 // to only query when needed,
 // create two different breadcrumb components

@@ -1,6 +1,6 @@
 import { memo, useState, useCallback, useEffect } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
 

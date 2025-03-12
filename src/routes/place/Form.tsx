@@ -1,5 +1,5 @@
 import { useMemo, memo } from 'react'
-import { useParams, useOutletContext, useLocation } from 'react-router-dom'
+import { useParams, useOutletContext, useLocation } from 'react-router'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'

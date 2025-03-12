@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, memo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
 

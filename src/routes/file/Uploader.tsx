@@ -4,7 +4,7 @@ import {
   useParams,
   useLocation,
   useSearchParams,
-} from 'react-router-dom'
+} from 'react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 import { usePGlite } from '@electric-sql/pglite-react'

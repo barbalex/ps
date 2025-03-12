@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router'
 import { useSetAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 

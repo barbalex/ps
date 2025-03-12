@@ -1,5 +1,5 @@
 import { useEffect, useState, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 

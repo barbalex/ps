@@ -8,7 +8,7 @@ import {
   MenuItemRadio,
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 export const ChooseCrs = memo(() => {
