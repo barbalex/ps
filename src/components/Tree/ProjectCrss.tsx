@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { ProjectCrsNode } from './ProjectCrs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -37,7 +38,7 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
 
   const node = useMemo(
     () => ({
-      label: `CRS (${loading ? '...' : rows.length})`,
+      label: `CRS (${loading ? '...' : formatNumber(rows.length)})`,
     }),
     [loading, rows.length],
   )

@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { ProjectReportNode } from './ProjectReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, projectReportsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, projectReportsFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -48,16 +49,16 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const projectReportsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Reports (${
         isFiltered
-          ? `${rowsLoading ? '...' : rows.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
           : rowsLoading
           ? '...'
-          : rows.length
+          : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -104,7 +105,7 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={projectReportsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
