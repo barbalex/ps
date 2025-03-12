@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { PlaceReportValueNode } from './PlaceReportValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -49,7 +50,9 @@ export const PlaceReportValuesNode = memo(
 
     // TODO: get name by place_level
     const node = useMemo(
-      () => ({ label: `Values (${loading ? '...' : rows.length})` }),
+      () => ({
+        label: `Values (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 

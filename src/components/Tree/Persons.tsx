@@ -8,8 +8,9 @@ import { Node } from './Node.tsx'
 import { PersonNode } from './Person.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, personsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, personsFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -35,9 +36,9 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label
     `
-  const resultFiltered = useLiveQuery(sql, [project_id])
-  const persons = resultFiltered?.rows ?? []
-  const personsLoading = resultFiltered === undefined
+  const resFiltered = useLiveQuery(sql, [project_id])
+  const rows = resFiltered?.rows ?? []
+  const rowsLoading = resFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM persons WHERE project_id = $1`,
@@ -46,19 +47,19 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const personsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Persons (${
         isFiltered
-          ? `${personsLoading ? '...' : persons.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : personsLoading
+          : rowsLoading
           ? '...'
-          : persons.length
+          : formatNumber(rows.length)
       })`,
     }),
-    [isFiltered, personsLoading, persons.length, countLoading, countUnfiltered],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -102,17 +103,17 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={personsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={persons.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        persons.map((person) => (
+        rows.map((person) => (
           <PersonNode
             key={person.person_id}
             project_id={project_id}
