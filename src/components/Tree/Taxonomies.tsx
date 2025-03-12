@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { TaxonomyNode } from './Taxonomy.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -36,7 +37,9 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
   const loading = res === undefined
 
   const node = useMemo(
-    () => ({ label: `Taxonomies (${loading ? '...' : rows.length})` }),
+    () => ({
+      label: `Taxonomies (${loading ? '...' : formatNumber(rows.length)})`,
+    }),
     [loading, rows.length],
   )
 

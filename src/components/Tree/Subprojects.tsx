@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { SubprojectNode } from './Subproject.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, subprojectsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, subprojectsFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -41,13 +42,13 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
       ${isFiltered ? ` AND ${filterString}` : ''} 
     ORDER BY label
     `
-  const resultFiltered = useLiveIncrementalQuery(
+  const resFiltered = useLiveIncrementalQuery(
     sql,
     [project_id],
     'subproject_id',
   )
-  const subprojects = resultFiltered?.rows ?? []
-  const subprojectsLoading = resultFiltered === undefined
+  const rows = resFiltered?.rows ?? []
+  const rowsLoading = resFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM subprojects WHERE project_id = $1`,
@@ -56,25 +57,25 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const namePlural = subprojects?.[0]?.subproject_name_plural ?? 'Subprojects'
+  const namePlural = rows?.[0]?.subproject_name_plural ?? 'Subprojects'
 
-  const subprojectsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `${namePlural} (${
         isFiltered
-          ? `${subprojectsLoading ? '...' : subprojects.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : subprojectsLoading
+          : rowsLoading
           ? '...'
-          : subprojects.length
+          : formatNumber(rows.length)
       })`,
     }),
     [
       namePlural,
       isFiltered,
-      subprojectsLoading,
-      subprojects.length,
+      rowsLoading,
+      rows.length,
       countLoading,
       countUnfiltered,
     ],
@@ -124,17 +125,17 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={subprojectsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={subprojects.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        subprojects.map((subproject) => (
+        rows.map((subproject) => (
           <SubprojectNode
             key={subproject.subproject_id}
             project_id={project_id}
