@@ -29,7 +29,9 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, widget_type_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const res = await db.query(`SELECT * FROM widget_types order by label`)
+    const res = await db.query(
+      `SELECT widget_type_id FROM widget_types order by label`,
+    )
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.widget_type_id === widget_type_id)
@@ -41,7 +43,9 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, searchParams, widget_type_id])
 
   const toPrevious = useCallback(async () => {
-    const res = await db.query(`SELECT * FROM widget_types order by label`)
+    const res = await db.query(
+      `SELECT widget_type_id FROM widget_types order by label`,
+    )
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.widget_type_id === widget_type_id)

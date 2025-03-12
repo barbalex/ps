@@ -30,7 +30,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM widgets_for_fields ORDER BY label`,
+      `SELECT widget_for_field_id FROM widgets_for_fields ORDER BY label`,
     )
     const rows = res?.rows
     const len = rows.length
@@ -46,7 +46,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM widgets_for_fields ORDER BY label`,
+      `SELECT widget_for_field_id FROM widgets_for_fields ORDER BY label`,
     )
     const rows = res?.rows
     const len = rows.length
