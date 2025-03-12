@@ -33,7 +33,7 @@ export const OwnLayers = memo(() => {
           layer_presentations.vector_layer_id = vector_layers.vector_layer_id
           AND layer_presentations.active
       )
-    ORDER BY label ASC
+    ORDER BY label
   `,
     undefined,
     'vector_layer_id',
