@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { UnitNode } from './Unit.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, unitsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, unitsFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -41,8 +42,8 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
     [project_id],
     'unit_id',
   )
-  const units = resultFiltered?.rows ?? []
-  const unitsLoading = resultFiltered === undefined
+  const rows = resultFiltered?.rows ?? []
+  const rowsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM units WHERE project_id = $1`,
@@ -51,19 +52,19 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const unitsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Units (${
         isFiltered
-          ? `${unitsLoading ? '...' : units.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : unitsLoading
+          : rowsLoading
           ? '...'
-          : units.length
+          : formatNumber(rows.length)
       })`,
     }),
-    [isFiltered, unitsLoading, units.length, countLoading, countUnfiltered],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -107,17 +108,17 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={unitsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={units.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        units.map((unit) => (
+        rows.map((unit) => (
           <UnitNode
             key={unit.unit_id}
             project_id={project_id}

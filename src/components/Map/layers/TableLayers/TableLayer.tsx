@@ -7,6 +7,7 @@ import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { formatNumber } from '../../../../modules/formatNumber.ts'
 import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
@@ -186,7 +187,7 @@ export const TableLayer = memo(({ data, layerPresentation }) => {
                   // if value is a date, format it
                   // the date object blows up
                   if (value instanceof Date) {
-                    return [key, value.toLocaleString('de-CH')]
+                    return [key, formatNumber(value)]
                   }
                   return [key, value]
                 },

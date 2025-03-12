@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { ActionValueNode } from './ActionValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ActionValuesNode = memo(
@@ -28,14 +29,14 @@ export const ActionValuesNode = memo(
       [action_id],
       'action_value_id',
     )
-    const actionValues = res?.rows ?? []
+    const rows = res?.rows ?? []
     const loading = res === undefined
 
-    const actionValuesNode = useMemo(
+    const node = useMemo(
       () => ({
-        label: `Action Values (${loading ? '...' : actionValues.length})`,
+        label: `Action Values (${loading ? '...' : formatNumber(rows.length)})`,
       }),
-      [actionValues.length, loading],
+      [rows.length, loading],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -90,17 +91,17 @@ export const ActionValuesNode = memo(
     return (
       <>
         <Node
-          node={actionValuesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={actionValues.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          actionValues.map((actionValue) => (
+          rows.map((actionValue) => (
             <ActionValueNode
               key={actionValue.action_value_id}
               project_id={project_id}
