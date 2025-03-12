@@ -30,7 +30,9 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, field_type_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const res = await db.query(`SELECT * FROM field_types order by label`)
+    const res = await db.query(
+      `SELECT field_type_id FROM field_types order by label`,
+    )
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.field_type_id === field_type_id)
@@ -42,7 +44,9 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, field_type_id, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const res = await db.query(`SELECT * FROM field_types order by label`)
+    const res = await db.query(
+      `SELECT field_type_id FROM field_types order by label`,
+    )
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.field_type_id === field_type_id)
