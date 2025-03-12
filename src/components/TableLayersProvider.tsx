@@ -43,7 +43,9 @@ export const TableLayersProvider = memo(() => {
             level, 
             name_plural, 
             name_singular, 
-            occurrences 
+            occurrences,
+            actions,
+            checks
           FROM place_levels 
           WHERE project_id = $1`,
           [project_id],
