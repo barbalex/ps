@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { CheckValueNode } from './CheckValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckValuesNode = memo(
@@ -32,7 +33,9 @@ export const CheckValuesNode = memo(
     const loading = res === undefined
 
     const checkValuesNode = useMemo(
-      () => ({ label: `Values (${loading ? '...' : rows.length})` }),
+      () => ({
+        label: `Values (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 
