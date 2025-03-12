@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { AccountNode } from './Account.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const AccountsNode = memo(() => {
@@ -31,7 +32,7 @@ export const AccountsNode = memo(() => {
 
   const node = useMemo(
     () => ({
-      label: `Accounts (${loading ? '...' : rows.length})`,
+      label: `Accounts (${loading ? '...' : formatNumber(rows.length)})`,
     }),
     [rows.length, loading],
   )

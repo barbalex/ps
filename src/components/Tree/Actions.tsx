@@ -17,6 +17,7 @@ import {
   actions2FilterAtom,
 } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 export const ActionsNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {
@@ -44,8 +45,8 @@ export const ActionsNode = memo(
       [place.place_id],
       'action_id',
     )
-    const actionsFiltered = resFiltered?.rows ?? []
-    const actionsLoading = resFiltered === undefined
+    const rows = resFiltered?.rows ?? []
+    const rowsLoading = resFiltered === undefined
 
     const unfilteredCountRes = useLiveQuery(
       `
@@ -54,28 +55,22 @@ export const ActionsNode = memo(
       WHERE place_id = $1`,
       [place.place_id],
     )
-    const actionsUnfilteredCount = unfilteredCountRes?.rows?.[0]?.count ?? 0
+    const countUnfiltered = unfilteredCountRes?.rows?.[0]?.count ?? 0
     const countLoading = unfilteredCountRes === undefined
 
-    const actionsNode = useMemo(
+    const node = useMemo(
       () => ({
         label: `Actions (${
           isFiltered
-            ? `${actionsLoading ? '...' : actionsFiltered.length}/${
-                countLoading ? '...' : actionsUnfilteredCount
+            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+                countLoading ? '...' : formatNumber(countUnfiltered)
               }`
-            : actionsLoading
+            : rowsLoading
             ? '...'
-            : actionsFiltered.length
+            : formatNumber(rows.length)
         })`,
       }),
-      [
-        actionsFiltered.length,
-        actionsLoading,
-        actionsUnfilteredCount,
-        countLoading,
-        isFiltered,
-      ],
+      [rows.length, rowsLoading, countUnfiltered, countLoading, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -128,17 +123,17 @@ export const ActionsNode = memo(
     return (
       <>
         <Node
-          node={actionsNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={actionsFiltered.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          actionsFiltered.map((action) => (
+          rows.map((action) => (
             <ActionNode
               key={action.action_id}
               project_id={project_id}
