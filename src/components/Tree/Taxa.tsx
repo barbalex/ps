@@ -6,6 +6,7 @@ import { useAtom } from 'jotai'
 
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { Node } from './Node.tsx'
 import { TaxonNode } from './Taxon.tsx'
 import { treeOpenNodesAtom } from '../../store.ts'
@@ -38,7 +39,9 @@ export const TaxaNode = memo(
     const loading = res === undefined
 
     const node = useMemo(
-      () => ({ label: `Taxa (${loading ? '...' : rows.length})` }),
+      () => ({
+        label: `Taxa (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 
