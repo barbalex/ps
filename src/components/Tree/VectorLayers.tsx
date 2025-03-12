@@ -38,13 +38,23 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const resFiltered = useLiveQuery(sql, [project_id])
   const rows = resFiltered?.rows ?? []
   const rowsLoading = resFiltered === undefined
+  // above query errors when filtering by a string column (label)
+  // https://github.com/electric-sql/pglite/issues/570
+  // console.warn('Tree.VectorLayersNode', {
+  //   rows,
+  //   rowsLoading,
+  //   resFiltered,
+  //   filterString,
+  //   filter,
+  //   sql,
+  // })
 
-  const resultCountUnfiltered = useLiveQuery(
+  const resCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM vector_layers WHERE project_id = $1`,
     [project_id],
   )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
+  const countUnfiltered = resCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resCountUnfiltered === undefined
 
   const node = useMemo(
     () => ({
