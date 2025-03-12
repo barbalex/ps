@@ -118,7 +118,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM vector_layers WHERE project_id = $1 order by label`,
+      `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
       [project_id],
     )
     const rows = res?.rows
@@ -133,7 +133,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM vector_layers WHERE project_id = $1 order by label`,
+      `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
       [project_id],
     )
     const rows = res?.rows
