@@ -29,6 +29,7 @@ export const WmsLayers = memo(() => {
   const db = usePGlite()
   // 1. list all layers (own, wms, vector)
 
+  // TODO: optimize query
   const resWmsLayers = useLiveIncrementalQuery(
     `SELECT * FROM wms_layers${
       project_id ? ` WHERE project_id = $1` : ''
