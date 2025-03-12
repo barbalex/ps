@@ -472,13 +472,12 @@ export const TableLayersProvider = memo(() => {
           }
 
           // 9.3 checks2LayerPresentation: always needed
-          const resChecks2LayerPresentations = await db.query(
-            `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+          const resChecks2LPCount = await db.query(
+            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
             [checks2VectorLayer.vector_layer_id],
           )
-          const checks2LayerPresentation =
-            resChecks2LayerPresentations?.rows?.[0]
-          if (!checks2LayerPresentation) {
+          const checks2LPCount = resChecks2LPCount?.rows?.[0]?.count
+          if (!checks2LPCount) {
             await createLayerPresentation({
               vector_layer_id: checks2VectorLayer.vector_layer_id,
               db,
@@ -509,26 +508,26 @@ export const TableLayersProvider = memo(() => {
           }
 
           // 10.2 occurrences_assigned2VectorLayerDisplay: always needed
-          const resOccurrencesAssigned2VectorLayerDisplays = await db.query(
-            `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+          const resOccurrencesAssigned2VLDCount = await db.query(
+            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
             [occurrencesAssigned2VectorLayer.vector_layer_id],
           )
-          const occurrencesAssigned2VectorLayerDisplay =
-            resOccurrencesAssigned2VectorLayerDisplays?.rows?.[0]
-          if (!occurrencesAssigned2VectorLayerDisplay) {
+          const occurrencesAssigned2VLDCount =
+            resOccurrencesAssigned2VLDCount?.rows?.[0]?.count
+          if (!occurrencesAssigned2VLDCount) {
             await createVectorLayerDisplay({
               vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
             })
           }
 
           // 10.3 occurrences_assigned2LayerPresentation: always needed
-          const resOccurrencesAssigned2LayerPresentations = await db.query(
-            `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+          const resOccurrencesAssigned2LPCount = await db.query(
+            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
             [occurrencesAssigned2VectorLayer.vector_layer_id],
           )
-          const occurrencesAssigned2LayerPresentation =
-            resOccurrencesAssigned2LayerPresentations?.rows?.[0]
-          if (!occurrencesAssigned2LayerPresentation) {
+          const occurrencesAssigned2LPCount =
+            resOccurrencesAssigned2LPCount?.rows?.[0]?.count
+          if (!occurrencesAssigned2LPCount) {
             await createLayerPresentation({
               vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
               db,
