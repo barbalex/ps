@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { SubprojectReportNode } from './SubprojectReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, subprojectReportsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, subprojectReportsFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -30,7 +31,7 @@ export const SubprojectReportsNode = memo(
 
     const filterString = filterStringFromFilter(filter)
     const isFiltered = !!filterString
-    const resultFiltered = useLiveIncrementalQuery(
+    const resFiltered = useLiveIncrementalQuery(
       `
       SELECT 
         subproject_report_id,
@@ -43,8 +44,8 @@ export const SubprojectReportsNode = memo(
       [subproject_id],
       'subproject_report_id',
     )
-    const subprojectReports = resultFiltered?.rows ?? []
-    const subprojectReportsLoading = resultFiltered === undefined
+    const rows = resFiltered?.rows ?? []
+    const rowsLoading = resFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM subproject_reports WHERE subproject_id = $1`,
@@ -57,21 +58,15 @@ export const SubprojectReportsNode = memo(
       () => ({
         label: `Reports (${
           isFiltered
-            ? `${subprojectReportsLoading ? '...' : subprojectReports.length}/${
-                countLoading ? '...' : countUnfiltered
+            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+                countLoading ? '...' : formatNumber(countUnfiltered)
               }`
-            : subprojectReportsLoading
+            : rowsLoading
             ? '...'
-            : subprojectReports.length
+            : formatNumber(rows.length)
         })`,
       }),
-      [
-        isFiltered,
-        subprojectReportsLoading,
-        subprojectReports.length,
-        countLoading,
-        countUnfiltered,
-      ],
+      [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -120,12 +115,12 @@ export const SubprojectReportsNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={subprojectReports.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          subprojectReports.map((subprojectReport) => (
+          rows.map((subprojectReport) => (
             <SubprojectReportNode
               key={subprojectReport.subproject_report_id}
               project_id={project_id}
