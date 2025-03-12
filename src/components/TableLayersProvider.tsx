@@ -24,8 +24,10 @@ export const TableLayersProvider = memo(() => {
   const projects = projectsResult?.rows ?? []
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
-  const occurrencesResult = useLiveQuery(`SELECT * FROM occurrences`)
-  const occurrences = occurrencesResult?.rows ?? []
+  const occurrenceCountResult = useLiveQuery(
+    `SELECT COUNT(*) FROM occurrences`,
+  )
+  const occurrenceCount = occurrenceCountResult?.rows?.[0]?.count ?? 0
 
   const firstRender = useFirstRender()
 
@@ -197,7 +199,7 @@ export const TableLayersProvider = memo(() => {
 
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned_lines1
-        if (placeLevel1?.occurrences && occurrences.length) {
+        if (placeLevel1?.occurrences && occurrenceCount) {
           let occurrencesAssigned1VectorLayer = vectorLayers?.find(
             (vl) =>
               vl.type === 'own' &&
@@ -247,7 +249,7 @@ export const TableLayersProvider = memo(() => {
         }
 
         // 5.1 occurrences_to_assess: needed if occurrences exist
-        if (occurrences.length) {
+        if (occurrenceCount) {
           let occurrencesToAssessVectorLayer = vectorLayers?.find(
             (vl) =>
               vl.type === 'own' && vl.own_table === 'occurrences_to_assess',
@@ -292,7 +294,7 @@ export const TableLayersProvider = memo(() => {
         }
 
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
-        if (occurrences.length) {
+        if (occurrenceCount) {
           let occurrencesNotToAssignVectorLayer = vectorLayers?.find(
             (vl) =>
               vl.type === 'own' && vl.own_table === 'occurrences_not_to_assign',
@@ -487,7 +489,7 @@ export const TableLayersProvider = memo(() => {
         }
 
         // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
-        if (placeLevel2?.occurrences && occurrences.length) {
+        if (placeLevel2?.occurrences && occurrenceCount) {
           let occurrencesAssigned2VectorLayer = vectorLayers?.find(
             (vl) =>
               vl.type === 'own' &&
@@ -540,7 +542,7 @@ export const TableLayersProvider = memo(() => {
     run()
     // use projects.length as dependency to run this effect only when projects change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects.length, occurrences.length])
+  }, [projects.length, occurrenceCount])
 
   return null
 })
