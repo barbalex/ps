@@ -43,7 +43,7 @@ export const Header = memo(
 
     const toNext = useCallback(async () => {
       const res = await db.query(
-        `SELECT * FROM occurrence_imports order by label`,
+        `SELECT occurrence_import_id FROM occurrence_imports order by label`,
       )
       const rows = res?.rows
       const len = rows.length
@@ -59,7 +59,7 @@ export const Header = memo(
 
     const toPrevious = useCallback(async () => {
       const res = await db.query(
-        `SELECT * FROM occurrence_imports order by label`,
+        `SELECT occurrence_import_id FROM occurrence_imports order by label`,
       )
       const rows = res?.rows
       const len = rows.length
