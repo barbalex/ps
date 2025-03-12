@@ -12,6 +12,7 @@ import { FileNode } from './File.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, filesFilterAtom } from '../../store.ts'
 
 interface Props {
@@ -68,7 +69,7 @@ export const FilesNode = memo(
 
     const filterString = filterStringFromFilter(filter)
     const isFiltered = !!filterString
-    const resultFiltered = useLiveIncrementalQuery(
+    const resFiltered = useLiveIncrementalQuery(
       `
       SELECT
         file_id,
@@ -81,8 +82,8 @@ export const FilesNode = memo(
       [hValue],
       'file_id',
     )
-    const files = resultFiltered?.rows ?? []
-    const filesLoading = resultFiltered === undefined
+    const rows = resFiltered?.rows ?? []
+    const rowsLoading = resFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM files WHERE ${hField} = $1`,
@@ -91,19 +92,19 @@ export const FilesNode = memo(
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resultCountUnfiltered === undefined
 
-    const filesNode = useMemo(
+    const node = useMemo(
       () => ({
         label: `Files (${
           isFiltered
-            ? `${filesLoading ? '...' : files.length}/${
-                countLoading ? '...' : countUnfiltered
+            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+                countLoading ? '...' : formatNumber(countUnfiltered)
               }`
-            : filesLoading
+            : rowsLoading
             ? '...'
-            : files.length
+            : formatNumber(rows.length)
         })`,
       }),
-      [isFiltered, filesLoading, files.length, countLoading, countUnfiltered],
+      [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -155,17 +156,17 @@ export const FilesNode = memo(
     return (
       <>
         <Node
-          node={filesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={files.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          files.map((file) => (
+          rows.map((file) => (
             <FileNode
               key={file.file_id}
               project_id={project_id}

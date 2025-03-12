@@ -13,6 +13,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, fieldsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 interface Props {
   project_id?: string
@@ -27,7 +28,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const resFiltered = useLiveIncrementalQuery(
     `
     SELECT 
       field_id, 
@@ -43,8 +44,8 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     undefined,
     'field_id',
   )
-  const fields = resultFiltered?.rows ?? []
-  const fieldsLoading = resultFiltered === undefined
+  const rows = resFiltered?.rows ?? []
+  const rowsLoading = resFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `
@@ -55,19 +56,19 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const fieldsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Fields (${
         isFiltered
-          ? `${fieldsLoading ? '...' : fields.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : fieldsLoading
+          : rowsLoading
           ? '...'
-          : fields.length
+          : formatNumber(rows.length)
       })`,
     }),
-    [isFiltered, fieldsLoading, fields.length, countLoading, countUnfiltered],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -114,17 +115,17 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   return (
     <>
       <Node
-        node={fieldsNode}
+        node={node}
         level={project_id ? 3 : 1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={fields.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        fields.map((field) => (
+        rows.map((field) => (
           <FieldNode
             key={field.field_id}
             field={field}
