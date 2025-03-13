@@ -9,7 +9,7 @@ const from = '/data/_authLayout/accounts/$accountId'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { accountId } = useParams({ from })
-  const navigate = useNavigate({ from })
+  const navigate = useNavigate()
 
   const db = usePGlite()
 
