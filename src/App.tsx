@@ -66,10 +66,6 @@ export const App = () => {
             id="router-container"
           >
             <UploaderContext.Provider value={uploaderRef}>
-              {/* <RouterProvider
-                router={router()}
-                future={{ v7_startTransition: true }}
-              /> */}
               <RouterProvider router={router} />
             </UploaderContext.Provider>
           </div>

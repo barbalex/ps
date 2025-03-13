@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProject } from '../../modules/createRows.ts'
@@ -15,7 +15,6 @@ interface Props {
 export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id } = useParams()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
@@ -26,16 +25,16 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     // TODO: add place_levels?
     // now navigate to the new project
     navigate({
-      pathname: `../${data.project_id}`,
-      search: searchParams.toString(),
+      to: `../$projectId`,
+      params: { projectId: data.project_id },
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams])
+  }, [autoFocusRef, db, navigate])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM projects WHERE project_id = $1`, [project_id])
-    navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db, navigate, project_id, searchParams])
+    navigate({ to: `..` })
+  }, [db, navigate, project_id])
 
   const toNext = useCallback(async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
@@ -44,10 +43,10 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const index = rows.findIndex((p) => p.project_id === project_id)
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `../${next.project_id}`,
-      search: searchParams.toString(),
+      to: `../$projectId`,
+      params: { projectId: next.project_id },
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, project_id])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
@@ -56,10 +55,10 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const index = rows.findIndex((p) => p.project_id === project_id)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.project_id}`,
-      search: searchParams.toString(),
+      to: `../$projectId`,
+      params: { projectId: previous.project_id },
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, project_id])
 
   return (
     <FormHeader

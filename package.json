@@ -44,6 +44,7 @@
     "@uploadcare/file-uploader": "1.14.0",
     "@uploadcare/react-uploader": "1.5.0",
     "allotment": "1.20.3",
+    "arktype": "2.1.9",
     "array-move": "4.0.0",
     "dayjs": "1.11.13",
     "framer-motion": "12.5.0",

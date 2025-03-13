@@ -1,20 +1,20 @@
 import { useRef, useCallback, memo } from 'react'
-import { useSearchParams, useParams } from 'react-router'
+import { useSearchParams, useParams } from '@tanstack/react-router'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
-import { Component as Form } from './Form.tsx'
-import { Design } from './Design/index.tsx'
+// import { Component as Form } from './Form.tsx'
+// import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { designingAtom } from '../../store.ts'
 
 import '../../form.css'
 
-export const Component = memo(() => {
+export const Project = memo(() => {
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { project_id } = useParams()
@@ -78,7 +78,7 @@ export const Component = memo(() => {
           </Tab>
         )}
       </TabList>
-      {tab === 'form' && (
+      {/* {tab === 'form' && (
         <div
           role="tabpanel"
           aria-labelledby="form"
@@ -95,7 +95,7 @@ export const Component = memo(() => {
           onChange={onChange}
           row={row}
         />
-      )}
+      )} */}
     </div>
   )
 })
