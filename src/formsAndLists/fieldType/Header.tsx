@@ -1,33 +1,31 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createFieldType } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = '/data/_authLayout/field-types/$fieldTypeId'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { field_type_id } = useParams()
+  const { fieldTypeId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const res = await createFieldType({ db })
     const fieldType = res?.rows?.[0]
-    navigate({
-      pathname: `../${fieldType.field_type_id}`,
-      search: searchParams.toString(),
-    })
+    navigate({ to: `../${fieldType.field_type_id}` })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams])
+  }, [autoFocusRef, db, navigate])
 
   const deleteRow = useCallback(async () => {
-    await db.quey(`DELETE FROM field_types WHERE field_type_id = $1`, [
-      field_type_id,
+    await db.query(`DELETE FROM field_types WHERE field_type_id = $1`, [
+      fieldTypeId,
     ])
-    navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db, field_type_id, navigate, searchParams])
+    navigate({ to: `..` })
+  }, [db, fieldTypeId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -35,13 +33,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.field_type_id === field_type_id)
+    const index = rows.findIndex((p) => p.field_type_id === fieldTypeId)
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `../${next.field_type_id}`,
-      search: searchParams.toString(),
+      to: `/data/field-types/${next.field_type_id}`,
+      params: (prev) => ({ ...prev, fieldTypeId: next.field_type_id }),
     })
-  }, [db, field_type_id, navigate, searchParams])
+  }, [db, fieldTypeId, navigate])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -49,13 +47,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.field_type_id === field_type_id)
+    const index = rows.findIndex((p) => p.field_type_id === fieldTypeId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.field_type_id}`,
-      search: searchParams.toString(),
+      to: `/data/field-types/${previous.field_type_id}`,
+      params: (prev) => ({ ...prev, fieldTypeId: previous.field_type_id }),
     })
-  }, [db, field_type_id, navigate, searchParams])
+  }, [db, fieldTypeId, navigate])
 
   return (
     <FormHeader

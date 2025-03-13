@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,15 +10,17 @@ import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { field_type_id } = useParams()
+const from = '/data/_authLayout/field-types/$fieldTypeId'
+
+export const FieldType = memo(() => {
+  const { fieldTypeId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM field_types WHERE field_type_id = $1`,
-    [field_type_id],
+    [fieldTypeId],
     'field_type_id',
   )
   const row = res?.rows?.[0]
@@ -30,9 +32,9 @@ export const Component = memo(() => {
       if (row[name] === value) return
 
       const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
-      db.query(sql, [value, field_type_id])
+      db.query(sql, [value, fieldTypeId])
     },
-    [db, field_type_id, row],
+    [db, fieldTypeId, row],
   )
 
   if (!row) return <Loading />

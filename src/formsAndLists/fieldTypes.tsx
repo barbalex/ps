@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -13,11 +13,11 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
-export const Component = memo(() => {
-  const [filter] = useAtom(fieldTypesFilterAtom)
+const from = '/data/_authLayout/field-types'
 
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+export const FieldTypes = memo(() => {
+  const [filter] = useAtom(fieldTypesFilterAtom)
+  const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -38,11 +38,8 @@ export const Component = memo(() => {
     const res = await createFieldType({ db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({
-      pathname: data.field_type_id,
-      search: searchParams.toString(),
-    })
-  }, [db, navigate, searchParams])
+    navigate({ to: data.field_type_id })
+  }, [db, navigate])
 
   return (
     <div className="list-view">
@@ -57,10 +54,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {fieldTypes.map(({ field_type_id, label }) => (
               <Row
                 key={field_type_id}
@@ -69,7 +65,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

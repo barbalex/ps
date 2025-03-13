@@ -170,7 +170,7 @@ export const createWidgetType = async ({ db }) =>
 
 export const createFieldType = async ({ db }) =>
   db.query(
-    `insert into field_types (field_type_id, sort) values ($1, $2, $3) returning field_type_id`,
+    `insert into field_types (field_type_id, sort) values ($1, $2) returning field_type_id`,
     [uuidv7(), 0],
   )
 

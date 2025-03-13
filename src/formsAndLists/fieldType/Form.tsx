@@ -1,20 +1,14 @@
 import { memo } from 'react'
-import { useOutletContext } from 'react-router'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = rowFromProps ?? outletContext?.row ?? {}
-
-    return (
-      <>
+// TODO: learn how to solve from filter with tanstack/react-router
+export const Component = memo(({ onChange, row, autoFocusRef }) => {
+  return (
+    <>
       <TextField
         label="Name"
         name="name"
@@ -35,7 +29,6 @@ export const Component = memo(
         value={row.comment ?? ''}
         onChange={onChange}
       />
-      </>
-    )
-  },
-)
+    </>
+  )
+})
