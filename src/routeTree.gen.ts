@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as PathlessLayoutImport } from './routes/_pathlessLayout'
 import { Route as DataIndexImport } from './routes/data/index'
 import { Route as PathlessLayoutIndexImport } from './routes/_pathlessLayout.index'
+import { Route as DataAuthImport } from './routes/data/auth'
 import { Route as PathlessLayoutDocsImport } from './routes/_pathlessLayout.docs'
 
 // Create/Update Routes
@@ -33,6 +34,12 @@ const PathlessLayoutIndexRoute = PathlessLayoutIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PathlessLayoutRoute,
+} as any)
+
+const DataAuthRoute = DataAuthImport.update({
+  id: '/data/auth',
+  path: '/data/auth',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const PathlessLayoutDocsRoute = PathlessLayoutDocsImport.update({
@@ -58,6 +65,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/docs'
       preLoaderRoute: typeof PathlessLayoutDocsImport
       parentRoute: typeof PathlessLayoutImport
+    }
+    '/data/auth': {
+      id: '/data/auth'
+      path: '/data/auth'
+      fullPath: '/data/auth'
+      preLoaderRoute: typeof DataAuthImport
+      parentRoute: typeof rootRoute
     }
     '/_pathlessLayout/': {
       id: '/_pathlessLayout/'
@@ -95,12 +109,14 @@ const PathlessLayoutRouteWithChildren = PathlessLayoutRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof PathlessLayoutRouteWithChildren
   '/docs': typeof PathlessLayoutDocsRoute
+  '/data/auth': typeof DataAuthRoute
   '/': typeof PathlessLayoutIndexRoute
   '/data': typeof DataIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/docs': typeof PathlessLayoutDocsRoute
+  '/data/auth': typeof DataAuthRoute
   '/': typeof PathlessLayoutIndexRoute
   '/data': typeof DataIndexRoute
 }
@@ -109,19 +125,21 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_pathlessLayout': typeof PathlessLayoutRouteWithChildren
   '/_pathlessLayout/docs': typeof PathlessLayoutDocsRoute
+  '/data/auth': typeof DataAuthRoute
   '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
   '/data/': typeof DataIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/docs' | '/' | '/data'
+  fullPaths: '' | '/docs' | '/data/auth' | '/' | '/data'
   fileRoutesByTo: FileRoutesByTo
-  to: '/docs' | '/' | '/data'
+  to: '/docs' | '/data/auth' | '/' | '/data'
   id:
     | '__root__'
     | '/_pathlessLayout'
     | '/_pathlessLayout/docs'
+    | '/data/auth'
     | '/_pathlessLayout/'
     | '/data/'
   fileRoutesById: FileRoutesById
@@ -129,11 +147,13 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   PathlessLayoutRoute: typeof PathlessLayoutRouteWithChildren
+  DataAuthRoute: typeof DataAuthRoute
   DataIndexRoute: typeof DataIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PathlessLayoutRoute: PathlessLayoutRouteWithChildren,
+  DataAuthRoute: DataAuthRoute,
   DataIndexRoute: DataIndexRoute,
 }
 
@@ -148,6 +168,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_pathlessLayout",
+        "/data/auth",
         "/data/"
       ]
     },
@@ -161,6 +182,9 @@ export const routeTree = rootRoute
     "/_pathlessLayout/docs": {
       "filePath": "_pathlessLayout.docs.tsx",
       "parent": "/_pathlessLayout"
+    },
+    "/data/auth": {
+      "filePath": "data/auth.tsx"
     },
     "/_pathlessLayout/": {
       "filePath": "_pathlessLayout.index.tsx",

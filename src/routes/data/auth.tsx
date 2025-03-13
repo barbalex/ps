@@ -1,8 +1,12 @@
 import { memo } from 'react'
 import { CorbadoAuth } from '@corbado/react'
-import { useNavigate } from 'react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-export const Component = memo(() => {
+export const Route = createFileRoute('/data/auth')({
+  component: Component,
+})
+
+const Component = memo(() => {
   const navigate = useNavigate()
 
   const onLoggedIn = () => {

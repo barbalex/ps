@@ -16,30 +16,6 @@ export const router = () => {
 
   return createBrowserRouter([
     {
-      element: <Layout />,
-      children: [
-        {
-          path: '/',
-          element: null,
-          errorElement: <ErrorPage />,
-          handle: {
-            crumb: {
-              text: 'Home',
-              table: 'root',
-              folder: true,
-            },
-            to: { table: 'root' },
-          },
-          children: [
-            {
-              index: true,
-              lazy: () => import('../routes/home/index.tsx'),
-            },
-          ],
-        },
-      ],
-    },
-    {
       element: <AuthAndDb />,
       children: [
         {
@@ -54,8 +30,6 @@ export const router = () => {
             to: { table: 'root' },
           },
           children: [
-            // add auth page
-            { path: 'auth', lazy: () => import('../routes/auth.tsx') },
             {
               path: 'projects',
               element: null,
