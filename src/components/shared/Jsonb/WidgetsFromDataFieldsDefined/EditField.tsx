@@ -2,12 +2,13 @@ import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdEdit } from 'react-icons/md'
 import { useAtom } from 'jotai'
+import { useNavigate } from '@tanstack/react-router'
 
 import { designingAtom } from '../../../../store.ts'
 
-export const EditField = memo(({ field_id, Route }) => {
+export const EditField = memo(({ field_id, from }) => {
   const [designing] = useAtom(designingAtom)
-  const navigate = Route.useNavigate()
+  const navigate = useNavigate({ from })
 
   const onClick = useCallback(
     async () => navigate({ search: { editingField: field_id } }),

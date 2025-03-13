@@ -4,12 +4,15 @@ import { ToggleButton } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
+import { useParams } from '@tanstack/react-router'
 
 import { designingAtom } from '../../store.ts'
 
-export const DesigningButton = memo(({ Route }) => {
+const from = '/data/_authLayout/projects/$projectId'
+
+export const DesigningButton = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)
-  const { project_id } = Route.useParams()
+  const { project_id } = useParams({ from })
   const { user } = useCorbado()
 
   const onClickDesigning = useCallback(

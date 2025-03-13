@@ -3,6 +3,7 @@ import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 
 import { Header } from './Header.tsx'
 import { ProjectForm as Form } from './Form.tsx'
@@ -13,11 +14,14 @@ import { designingAtom } from '../../store.ts'
 
 import '../../form.css'
 
+const from = '/data/_authLayout/projects/$projectId'
+
 export const Project = memo(({ Route }) => {
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const { projectId } = Route.useParams()
-  const { projectTab } = Route.useSearch()
+  const { projectId } = useParams({ from })
+  const { projectTab } = useSearch({ from })
+  const navigate = useNavigate()
 
   const db = usePGlite()
 
@@ -32,8 +36,8 @@ export const Project = memo(({ Route }) => {
 
   const onTabSelect = useCallback(
     (event: SelectTabEvent, data: SelectTabData) =>
-      Route.navigate({ search: data.value }),
-    [Route],
+      navigate({ search: data.value }),
+    [navigate],
   )
 
   const onChange = useCallback<InputProps['onChange']>(
@@ -90,7 +94,7 @@ export const Project = memo(({ Route }) => {
             row={row}
             onChange={onChange}
             autoFocusRef={autoFocusRef}
-            Route={Route}
+            from={from}
           />
         </div>
       )}

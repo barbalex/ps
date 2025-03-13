@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -7,14 +8,15 @@ import { DesigningButton } from './DesigningButton.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
-  Route: unknown
 }
+
+const from = '/data/_authLayout/projects/$projectId'
 
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
-export const Header = memo(({ autoFocusRef, Route }: Props) => {
-  const { project_id } = Route.useParams()
-  const navigate = Route.useNavigate()
+export const Header = memo(({ autoFocusRef }: Props) => {
+  const { project_id } = useParams({ from })
+  const navigate = useNavigate({ from })
 
   const db = usePGlite()
 
@@ -68,7 +70,7 @@ export const Header = memo(({ autoFocusRef, Route }: Props) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="project"
-      siblings={<DesigningButton Route={Route} />}
+      siblings={<DesigningButton />}
     />
   )
 })

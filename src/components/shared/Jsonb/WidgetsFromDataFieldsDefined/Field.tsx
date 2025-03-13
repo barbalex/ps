@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { useAtom } from 'jotai'
+import { useSearch } from '@tanstack/react-router'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
@@ -20,9 +21,9 @@ export const Field = memo(
     idField,
     autoFocus,
     ref,
-    Route,
+    from,
   }) => {
-    const { editingField } = Route.useSearch()
+    const { editingField } = useSearch({ from })
     const [designing] = useAtom(designingAtom)
 
     if (editingField === field.field_id) {
@@ -30,7 +31,7 @@ export const Field = memo(
         <FieldFormInForm
           key={field.field_id}
           field={field}
-          Route={Route}
+          from={from}
         />
       )
     }
@@ -53,7 +54,7 @@ export const Field = memo(
           orIndex={orIndex}
           autoFocus={autoFocusValue}
           ref={ref}
-          Route={Route}
+          from={from}
         />
       )
     }
@@ -73,7 +74,7 @@ export const Field = memo(
         orIndex={orIndex}
         autoFocus={autoFocusValue}
         ref={ref}
-        Route={Route}
+        from={from}
       />
     )
   },

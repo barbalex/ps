@@ -3,6 +3,7 @@ import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 
 import { createField } from '../../../modules/createRows.ts'
 import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
@@ -20,10 +21,11 @@ const buttonStyle = {
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddField = memo(({ tableName, level, Route }) => {
+export const AddField = memo(({ tableName, level, from }) => {
   const [designing] = useAtom(designingAtom)
-  const { projectId } = Route.useParams()
-  const navigate = Route.useNavigate()
+  const { projectId } = useParams({ from })
+  const navigate = useNavigate({ from })
+  const location = useLocation({ from })
 
   const db = usePGlite()
 
@@ -39,7 +41,7 @@ export const AddField = memo(({ tableName, level, Route }) => {
 
   if (!designing) return null
   // do not show the button on the filter page
-  if (Route.fullPath.endsWith('/filter')) return null
+  if (location.pathname.endsWith('/filter')) return null
 
   return (
     <Button

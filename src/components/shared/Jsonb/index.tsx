@@ -7,6 +7,7 @@
 import { memo, useCallback } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLocation, useParams } from '@tanstack/react-router'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -27,10 +28,11 @@ export const Jsonb = memo(
     data = {},
     autoFocus = false,
     ref,
-    Route,
+    from,
   }) => {
     const isAccountTable = accountTables.includes(table)
-    const { project_id, place_id, place_id2 } = Route.useParams()
+    const { project_id, place_id, place_id2 } = useParams({ from })
+    const location = useLocation({ from })
     const db = usePGlite()
 
     const useProjectId = project_id && table !== 'projects'
@@ -67,7 +69,7 @@ export const Jsonb = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        const isFilter = Route.fullPath.endsWith('filter')
+        const isFilter = location.pathname.endsWith('filter')
         const level =
           table === 'places' ?
             place_id ? 2
@@ -102,7 +104,7 @@ export const Jsonb = memo(
       },
       [
         data,
-        Route.fullPath,
+        location.pathname,
         table,
         place_id,
         place_id2,
@@ -134,7 +136,7 @@ export const Jsonb = memo(
             orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
-            Route={Route}
+            from={from}
           />
         : null}
         {dataKeysNotDefined.map((dataKey, index) => (
@@ -160,7 +162,7 @@ export const Jsonb = memo(
           key="addField"
           tableName={table}
           level={place_id2 ? 2 : 1}
-          Route={Route}
+          from={from}
         />
       </>
     )

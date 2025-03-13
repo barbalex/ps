@@ -77,7 +77,7 @@ export const WidgetDragAndDrop = memo(
     idField,
     autoFocus,
     ref,
-    Route,
+    from,
   }) => {
     const { registerItem, instanceId } = useDragAndDropContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
@@ -198,7 +198,7 @@ export const WidgetDragAndDrop = memo(
             orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
-            Route={Route}
+            from={from}
           />
           {closestEdge && (
             <DropIndicator

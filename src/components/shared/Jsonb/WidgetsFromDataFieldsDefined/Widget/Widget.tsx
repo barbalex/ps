@@ -1,5 +1,6 @@
 import { memo, useCallback } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useParams, useLocation } from '@tanstack/react-router'
 
 import { TextField } from '../../../TextField.tsx'
 import { CheckboxField } from '../../../CheckboxField.tsx'
@@ -30,9 +31,10 @@ export const Widget = memo(
     orIndex,
     autoFocus,
     ref,
-    Route,
+    from,
   }) => {
-    const { place_id, place_id2 } = Route.useParams()
+    const { place_id, place_id2 } = useParams({ from })
+    const location = useLocation({ from })
     const db = usePGlite()
 
     const onChange = useCallback<InputProps['onChange']>(
@@ -49,7 +51,7 @@ export const Widget = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        const isFilter = Route.fullPath.endsWith('filter')
+        const isFilter = location.pathname.endsWith('filter')
 
         if (isFilter) {
           const level =
@@ -98,7 +100,7 @@ export const Widget = memo(
       },
       [
         data,
-        Route.fullPath,
+        location.pathname,
         table,
         jsonFieldName,
         idField,
@@ -130,7 +132,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -147,7 +149,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -164,7 +166,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -181,7 +183,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
             indeterminate={true}
@@ -200,7 +202,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -216,7 +218,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -234,7 +236,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -252,7 +254,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -270,7 +272,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -287,7 +289,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -304,7 +306,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />
@@ -322,7 +324,7 @@ export const Widget = memo(
             button={
               <EditField
                 field_id={field.field_id}
-                Route={Route}
+                from={from}
               />
             }
           />

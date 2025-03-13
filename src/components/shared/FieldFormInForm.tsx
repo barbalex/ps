@@ -11,6 +11,7 @@ import {
   MenuGroupHeader,
 } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { FieldFormFetchingOwnData } from '../../formsAndLists/field/FormFetchingOwnData.tsx'
 
@@ -41,8 +42,8 @@ const menuStyle = {
   columnGap: 5,
 }
 
-export const FieldFormInForm = memo(({ field, Route }) => {
-  const navigate = Route.useNavigate()
+export const FieldFormInForm = memo(({ field, from }) => {
+  const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const onClickDelete = useCallback(async () => {
