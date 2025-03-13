@@ -96,13 +96,13 @@ export const ProjectsNode = memo(() => {
         toParams={undefined}
         onClickButton={onClickButton}
       />
-      {/* {isOpen &&
+      {isOpen &&
         rows.map((project) => (
           <ProjectNode
             key={project.project_id}
             project={project}
           />
-        ))} */}
+        ))}
     </>
   )
 })
