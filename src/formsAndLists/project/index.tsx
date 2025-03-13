@@ -1,5 +1,4 @@
 import { useRef, useCallback, memo } from 'react'
-import { useSearchParams, useParams } from '@tanstack/react-router'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -14,26 +13,27 @@ import { designingAtom } from '../../store.ts'
 
 import '../../form.css'
 
-export const Project = memo(() => {
+export const Project = memo(({ Route }) => {
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const { project_id } = useParams()
+  const { projectId } = Route.useParams()
+  const { projectTab } = Route.useSearch()
 
   const db = usePGlite()
 
+  console.log('Project', { projectTab, projectId })
+
   const res = useLiveIncrementalQuery(
     `SELECT * FROM projects WHERE project_id = $1`,
-    [project_id],
+    [projectId],
     'project_id',
   )
   const row = res?.rows?.[0]
 
-  const [searchParams, setSearchParams] = useSearchParams()
-  const tab = searchParams.get('projectTab') ?? 'form'
   const onTabSelect = useCallback(
     (event: SelectTabEvent, data: SelectTabData) =>
-      setSearchParams({ projectTab: data.value }),
-    [setSearchParams],
+      Route.navigate({ search: data.value }),
+    [Route],
   )
 
   const onChange = useCallback<InputProps['onChange']>(
@@ -45,22 +45,25 @@ export const Project = memo(() => {
       try {
         await db.query(
           `UPDATE projects SET ${name} = $1 WHERE project_id = $2`,
-          [value, project_id],
+          [value, projectId],
         )
       } catch (error) {
         console.error('error updating project', error)
       }
     },
-    [db, project_id, row],
+    [db, projectId, row],
   )
 
   if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        Route={Route}
+      />
       <TabList
-        selectedValue={tab}
+        selectedValue={projectTab}
         onTabSelect={onTabSelect}
       >
         <Tab
@@ -78,7 +81,7 @@ export const Project = memo(() => {
           </Tab>
         )}
       </TabList>
-      {/* {tab === 'form' && (
+      {/* {projectTab === 'form' && (
         <div
           role="tabpanel"
           aria-labelledby="form"
@@ -90,7 +93,7 @@ export const Project = memo(() => {
           />
         </div>
       )}
-      {tab === 'design' && designing && (
+      {projectTab === 'design' && designing && (
         <Design
           onChange={onChange}
           row={row}

@@ -1,5 +1,4 @@
 import { useCallback, memo } from 'react'
-import { useParams } from '@tanstack/react-router'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -8,9 +7,9 @@ import { useCorbado } from '@corbado/react'
 
 import { designingAtom } from '../../store.ts'
 
-export const DesigningButton = memo(() => {
+export const DesigningButton = memo(({ Route }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
-  const { project_id } = useParams()
+  const { project_id } = Route.useParams()
   const { user } = useCorbado()
 
   const onClickDesigning = useCallback(
