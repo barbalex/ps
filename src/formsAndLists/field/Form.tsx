@@ -6,7 +6,7 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { WidgetType } from './WidgetType.tsx'
-import { accountTables } from '../../routes/field/accountTables.ts'
+import { accountTables } from '../../formsAndLists/field/accountTables.ts'
 
 import '../../form.css'
 

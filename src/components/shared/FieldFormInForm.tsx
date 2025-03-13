@@ -12,7 +12,7 @@ import {
 } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { FieldFormFetchingOwnData } from '../../routes/field/FormFetchingOwnData.tsx'
+import { FieldFormFetchingOwnData } from '../../formsAndLists/field/FormFetchingOwnData.tsx'
 
 const containerStyle = {
   padding: '0px -10px',
