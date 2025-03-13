@@ -1,8 +1,13 @@
 import { memo } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 
 import './index.css'
 
-export const Component = memo(() => (
+export const Route = createFileRoute('/')({
+  component: Index,
+})
+
+const Index = memo(() => (
   <div style={{ height: '100%' }}>
     <picture>
       <source
