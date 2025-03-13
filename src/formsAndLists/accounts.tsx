@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createAccount } from '../modules/createRows.ts'
@@ -8,9 +8,10 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+const from = '/data/accounts'
+
+export const Accounts = memo(() => {
+  const navigate = useNavigate({ from })
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
@@ -25,11 +26,8 @@ export const Component = memo(() => {
     const res = await createAccount({ db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({
-      pathname: data.account_id,
-      search: searchParams.toString(),
-    })
-  }, [db, navigate, searchParams])
+    navigate({ to: data.account_id })
+  }, [db, navigate])
 
   return (
     <div className="list-view">
@@ -43,10 +41,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {accounts.map(({ account_id, label }) => (
               <Row
                 key={account_id}
@@ -55,7 +52,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

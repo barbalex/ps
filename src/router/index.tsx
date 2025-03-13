@@ -1144,33 +1144,6 @@ export const router = () => {
               ],
             },
             {
-              path: 'users',
-              element: null,
-              handle: {
-                crumb: {
-                  text: 'Users',
-                  table: 'users',
-                  folder: true,
-                },
-              },
-              children: [
-                {
-                  index: true,
-                  lazy: () => import('../routes/users.tsx'),
-                },
-                {
-                  path: ':user_id',
-                  lazy: () => import('../routes/user/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'users',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
-            },
-            {
               path: 'accounts',
               element: null,
               handle: {
