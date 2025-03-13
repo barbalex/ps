@@ -32,7 +32,6 @@ export const Widget = memo(
     ref,
     Route,
   }) => {
-    const { pathname } = Route.useLocation()
     const { place_id, place_id2 } = Route.useParams()
     const db = usePGlite()
 
@@ -50,7 +49,7 @@ export const Widget = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        const isFilter = pathname.endsWith('filter')
+        const isFilter = Route.fullPath.endsWith('filter')
 
         if (isFilter) {
           const level =
@@ -99,15 +98,15 @@ export const Widget = memo(
       },
       [
         data,
-        pathname,
+        Route.fullPath,
         table,
+        jsonFieldName,
+        idField,
         place_id,
         place_id2,
         orIndex,
         field.field_type,
         db,
-        jsonFieldName,
-        idField,
         id,
       ],
     )

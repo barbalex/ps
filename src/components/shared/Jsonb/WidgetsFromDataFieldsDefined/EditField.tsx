@@ -7,7 +7,6 @@ import { designingAtom } from '../../../../store.ts'
 
 export const EditField = memo(({ field_id, Route }) => {
   const [designing] = useAtom(designingAtom)
-  const { pathname } = Route.useLocation()
   const navigate = Route.useNavigate()
 
   const onClick = useCallback(
@@ -16,7 +15,7 @@ export const EditField = memo(({ field_id, Route }) => {
   )
 
   if (!designing) return null
-  if (pathname.endsWith('filter')) return null
+  if (Route.fullPath.endsWith('filter')) return null
 
   return (
     <Button

@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useOutletContext, useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
@@ -32,18 +32,10 @@ const widgetsNeedingList = [
 ] // options-few, options-many
 
 // this form is rendered from a parent or outlet
+// TODO: learn how to pass row/onChange through outlet using tanstack-router
 export const Component = memo(
-  ({
-    onChange: onChangeFromProps,
-    row: rowFromProps,
-    autoFocusRef,
-    isInForm = false,
-  }) => {
+  ({ onChange, row, autoFocusRef, isInForm = false }) => {
     const { project_id } = useParams()
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = rowFromProps ?? outletContext?.row ?? {}
 
     const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
 

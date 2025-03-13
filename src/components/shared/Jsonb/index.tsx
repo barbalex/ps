@@ -31,7 +31,6 @@ export const Jsonb = memo(
   }) => {
     const isAccountTable = accountTables.includes(table)
     const { project_id, place_id, place_id2 } = Route.useParams()
-    const { pathname } = Route.useLocation()
     const db = usePGlite()
 
     const useProjectId = project_id && table !== 'projects'
@@ -68,7 +67,7 @@ export const Jsonb = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        const isFilter = pathname.endsWith('filter')
+        const isFilter = Route.fullPath.endsWith('filter')
         const level =
           table === 'places' ?
             place_id ? 2
@@ -103,13 +102,13 @@ export const Jsonb = memo(
       },
       [
         data,
-        pathname,
+        Route.fullPath,
         table,
         place_id,
         place_id2,
-        db,
         jsonFieldName,
         idField,
+        db,
         id,
       ],
     )

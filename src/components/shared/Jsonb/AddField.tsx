@@ -23,7 +23,6 @@ const buttonStyle = {
 export const AddField = memo(({ tableName, level, Route }) => {
   const [designing] = useAtom(designingAtom)
   const { projectId } = Route.useParams()
-  const { pathname } = Route.useLocation()
   const navigate = Route.useNavigate()
 
   const db = usePGlite()
@@ -40,7 +39,7 @@ export const AddField = memo(({ tableName, level, Route }) => {
 
   if (!designing) return null
   // do not show the button on the filter page
-  if (pathname.endsWith('/filter')) return null
+  if (Route.fullPath.endsWith('/filter')) return null
 
   return (
     <Button
