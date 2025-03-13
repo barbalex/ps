@@ -15,10 +15,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
-import { Route as DataAuthLayoutImport } from './routes/data/_authLayout'
 import { Route as LayoutDocsImport } from './routes/_layout.docs'
-import { Route as DataAuthLayoutAuthImport } from './routes/data/_authLayout.auth'
-import { Route as DataAuthLayoutProjectsIndexImport } from './routes/data/_authLayout.projects/index'
+import { Route as DataAuthLayoutRouteImport } from './routes/data/_authLayout/route'
+import { Route as DataAuthLayoutProjectsIndexImport } from './routes/data/_authLayout/projects/index'
+import { Route as DataAuthLayoutAuthLayoutAuthImport } from './routes/data/_authLayout/_authLayout.auth'
 
 // Create Virtual Routes
 
@@ -43,28 +43,29 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const DataAuthLayoutRoute = DataAuthLayoutImport.update({
-  id: '/_authLayout',
-  getParentRoute: () => DataRoute,
-} as any)
-
 const LayoutDocsRoute = LayoutDocsImport.update({
   id: '/docs',
   path: '/docs',
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const DataAuthLayoutAuthRoute = DataAuthLayoutAuthImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => DataAuthLayoutRoute,
+const DataAuthLayoutRouteRoute = DataAuthLayoutRouteImport.update({
+  id: '/_authLayout',
+  getParentRoute: () => DataRoute,
 } as any)
 
 const DataAuthLayoutProjectsIndexRoute =
   DataAuthLayoutProjectsIndexImport.update({
     id: '/projects/',
     path: '/projects/',
-    getParentRoute: () => DataAuthLayoutRoute,
+    getParentRoute: () => DataAuthLayoutRouteRoute,
+  } as any)
+
+const DataAuthLayoutAuthLayoutAuthRoute =
+  DataAuthLayoutAuthLayoutAuthImport.update({
+    id: '/_authLayout/auth',
+    path: '/auth',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -78,13 +79,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
-    '/_layout/docs': {
-      id: '/_layout/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof LayoutDocsImport
-      parentRoute: typeof LayoutImport
-    }
     '/data': {
       id: '/data'
       path: '/data'
@@ -96,8 +90,15 @@ declare module '@tanstack/react-router' {
       id: '/data/_authLayout'
       path: '/data'
       fullPath: '/data'
-      preLoaderRoute: typeof DataAuthLayoutImport
+      preLoaderRoute: typeof DataAuthLayoutRouteImport
       parentRoute: typeof DataRoute
+    }
+    '/_layout/docs': {
+      id: '/_layout/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof LayoutDocsImport
+      parentRoute: typeof LayoutImport
     }
     '/_layout/': {
       id: '/_layout/'
@@ -106,19 +107,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
-    '/data/_authLayout/auth': {
-      id: '/data/_authLayout/auth'
+    '/data/_authLayout/_authLayout/auth': {
+      id: '/data/_authLayout/_authLayout/auth'
       path: '/auth'
       fullPath: '/data/auth'
-      preLoaderRoute: typeof DataAuthLayoutAuthImport
-      parentRoute: typeof DataAuthLayoutImport
+      preLoaderRoute: typeof DataAuthLayoutAuthLayoutAuthImport
+      parentRoute: typeof DataAuthLayoutRouteImport
     }
     '/data/_authLayout/projects/': {
       id: '/data/_authLayout/projects/'
       path: '/projects'
       fullPath: '/data/projects'
       preLoaderRoute: typeof DataAuthLayoutProjectsIndexImport
-      parentRoute: typeof DataAuthLayoutImport
+      parentRoute: typeof DataAuthLayoutRouteImport
     }
   }
 }
@@ -138,71 +139,70 @@ const LayoutRouteChildren: LayoutRouteChildren = {
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
-interface DataAuthLayoutRouteChildren {
-  DataAuthLayoutAuthRoute: typeof DataAuthLayoutAuthRoute
+interface DataAuthLayoutRouteRouteChildren {
+  DataAuthLayoutAuthLayoutAuthRoute: typeof DataAuthLayoutAuthLayoutAuthRoute
   DataAuthLayoutProjectsIndexRoute: typeof DataAuthLayoutProjectsIndexRoute
 }
 
-const DataAuthLayoutRouteChildren: DataAuthLayoutRouteChildren = {
-  DataAuthLayoutAuthRoute: DataAuthLayoutAuthRoute,
+const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
+  DataAuthLayoutAuthLayoutAuthRoute: DataAuthLayoutAuthLayoutAuthRoute,
   DataAuthLayoutProjectsIndexRoute: DataAuthLayoutProjectsIndexRoute,
 }
 
-const DataAuthLayoutRouteWithChildren = DataAuthLayoutRoute._addFileChildren(
-  DataAuthLayoutRouteChildren,
-)
+const DataAuthLayoutRouteRouteWithChildren =
+  DataAuthLayoutRouteRoute._addFileChildren(DataAuthLayoutRouteRouteChildren)
 
 interface DataRouteChildren {
-  DataAuthLayoutRoute: typeof DataAuthLayoutRouteWithChildren
+  DataAuthLayoutRouteRoute: typeof DataAuthLayoutRouteRouteWithChildren
 }
 
 const DataRouteChildren: DataRouteChildren = {
-  DataAuthLayoutRoute: DataAuthLayoutRouteWithChildren,
+  DataAuthLayoutRouteRoute: DataAuthLayoutRouteRouteWithChildren,
 }
 
 const DataRouteWithChildren = DataRoute._addFileChildren(DataRouteChildren)
 
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
+  '/data': typeof DataAuthLayoutRouteRouteWithChildren
   '/docs': typeof LayoutDocsRoute
-  '/data': typeof DataAuthLayoutRouteWithChildren
   '/': typeof LayoutIndexRoute
-  '/data/auth': typeof DataAuthLayoutAuthRoute
+  '/data/auth': typeof DataAuthLayoutAuthLayoutAuthRoute
   '/data/projects': typeof DataAuthLayoutProjectsIndexRoute
 }
 
 export interface FileRoutesByTo {
+  '/data': typeof DataAuthLayoutRouteRouteWithChildren
   '/docs': typeof LayoutDocsRoute
-  '/data': typeof DataAuthLayoutRouteWithChildren
   '/': typeof LayoutIndexRoute
-  '/data/auth': typeof DataAuthLayoutAuthRoute
+  '/data/auth': typeof DataAuthLayoutAuthLayoutAuthRoute
   '/data/projects': typeof DataAuthLayoutProjectsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
-  '/_layout/docs': typeof LayoutDocsRoute
   '/data': typeof DataRouteWithChildren
-  '/data/_authLayout': typeof DataAuthLayoutRouteWithChildren
+  '/data/_authLayout': typeof DataAuthLayoutRouteRouteWithChildren
+  '/_layout/docs': typeof LayoutDocsRoute
   '/_layout/': typeof LayoutIndexRoute
-  '/data/_authLayout/auth': typeof DataAuthLayoutAuthRoute
+  '/data/_authLayout/_authLayout/auth': typeof DataAuthLayoutAuthLayoutAuthRoute
   '/data/_authLayout/projects/': typeof DataAuthLayoutProjectsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/docs' | '/data' | '/' | '/data/auth' | '/data/projects'
+  fullPaths: '' | '/data' | '/docs' | '/' | '/data/auth' | '/data/projects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/docs' | '/data' | '/' | '/data/auth' | '/data/projects'
+  to: '/data' | '/docs' | '/' | '/data/auth' | '/data/projects'
   id:
     | '__root__'
     | '/_layout'
-    | '/_layout/docs'
     | '/data'
     | '/data/_authLayout'
+    | '/_layout/docs'
     | '/_layout/'
-    | '/data/_authLayout/auth'
+    | '/data/_authLayout/_authLayout/auth'
     | '/data/_authLayout/projects/'
   fileRoutesById: FileRoutesById
 }
@@ -238,34 +238,34 @@ export const routeTree = rootRoute
         "/_layout/"
       ]
     },
-    "/_layout/docs": {
-      "filePath": "_layout.docs.tsx",
-      "parent": "/_layout"
-    },
     "/data": {
-      "filePath": "data",
+      "filePath": "data/_authLayout",
       "children": [
         "/data/_authLayout"
       ]
     },
     "/data/_authLayout": {
-      "filePath": "data/_authLayout.tsx",
+      "filePath": "data/_authLayout/route.tsx",
       "parent": "/data",
       "children": [
-        "/data/_authLayout/auth",
+        "/data/_authLayout/_authLayout/auth",
         "/data/_authLayout/projects/"
       ]
+    },
+    "/_layout/docs": {
+      "filePath": "_layout.docs.tsx",
+      "parent": "/_layout"
     },
     "/_layout/": {
       "filePath": "_layout.index.tsx",
       "parent": "/_layout"
     },
-    "/data/_authLayout/auth": {
-      "filePath": "data/_authLayout.auth.tsx",
+    "/data/_authLayout/_authLayout/auth": {
+      "filePath": "data/_authLayout/_authLayout.auth.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/": {
-      "filePath": "data/_authLayout.projects/index.tsx",
+      "filePath": "data/_authLayout/projects/index.tsx",
       "parent": "/data/_authLayout"
     }
   }

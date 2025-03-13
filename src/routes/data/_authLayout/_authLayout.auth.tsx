@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { CorbadoAuth } from '@corbado/react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/data/_authLayout/auth')({
+export const Route = createFileRoute('/data/_authLayout/_authLayout/auth')({
   component: Component,
 })
 
