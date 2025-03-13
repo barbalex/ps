@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -9,9 +9,8 @@ import { userIdAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
   const setUserId = useSetAtom(userIdAtom)
-  const { user_id } = useParams()
+  const { userId } = useParams({ from: '/data/_authLayout/users/$userId' })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
@@ -19,42 +18,33 @@ export const Header = memo(({ autoFocusRef }) => {
     const res = await createUser({ db, setUserId })
     const data = res?.rows?.[0]
 
-    navigate({
-      pathname: `../${data.user_id}`,
-      search: searchParams.toString(),
-    })
+    navigate({ to: `../${data.user_id}` })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams, setUserId])
+  }, [autoFocusRef, db, navigate, setUserId])
 
   const deleteRow = useCallback(async () => {
     const sql = `DELETE FROM users WHERE user_id = $1`
-    await db.query(sql, [user_id])
-    navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db, user_id, navigate, searchParams])
+    await db.query(sql, [userId])
+    navigate({ to: `..` })
+  }, [db, userId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(`SELECT user_id FROM users order by label`)
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.user_id === user_id)
+    const index = rows.findIndex((p) => p.user_id === userId)
     const next = rows[(index + 1) % len]
-    navigate({
-      pathname: `../${next.user_id}`,
-      search: searchParams.toString(),
-    })
-  }, [db, navigate, searchParams, user_id])
+    navigate({ to: `../${next.user_id}` })
+  }, [db, navigate, userId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(`SELECT user_id FROM users order by label`)
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.user_id === user_id)
+    const index = rows.findIndex((p) => p.user_id === userId)
     const previous = rows[(index + len - 1) % len]
-    navigate({
-      pathname: `../${previous.user_id}`,
-      search: searchParams.toString(),
-    })
-  }, [db, navigate, searchParams, user_id])
+    navigate({ to: `../${previous.user_id}` })
+  }, [db, navigate, userId])
 
   return (
     <FormHeader

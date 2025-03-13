@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -11,10 +11,9 @@ import { userIdAtom } from '../store.ts'
 
 import '../form.css'
 
-export const Component = memo(() => {
+export const Users = memo(() => {
   const setUserId = useSetAtom(userIdAtom)
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
@@ -29,8 +28,8 @@ export const Component = memo(() => {
     const res = await createUser({ db, setUserId })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.user_id, search: searchParams.toString() })
-  }, [db, navigate, searchParams, setUserId])
+    navigate({ to: data.user_id })
+  }, [db, navigate, setUserId])
 
   return (
     <div className="list-view">
@@ -44,10 +43,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {users.map(({ user_id, label }) => (
               <Row
                 key={user_id}
@@ -56,7 +54,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

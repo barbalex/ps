@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,15 +10,15 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { user_id } = useParams()
+export const User = memo(() => {
+  const { userId } = useParams({ from: '/data/_authLayout/users/$userId' })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM users WHERE user_id = $1`,
-    [user_id],
+    [userId],
     'user_id',
   )
   const row = res?.rows?.[0]
@@ -29,9 +29,9 @@ export const Component = memo(() => {
       // only change if value has changed: maybe only focus entered and left
       if (row[name] === value) return
       const sql = `UPDATE users SET ${name} = $1 WHERE user_id = $2`
-      db.query(sql, [value, user_id])
+      db.query(sql, [value, userId])
     },
-    [db, row, user_id],
+    [db, row, userId],
   )
 
   if (!row) return <Loading />

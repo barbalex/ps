@@ -18,7 +18,9 @@ import { Route as LayoutIndexImport } from './routes/_layout.index'
 import { Route as LayoutDocsImport } from './routes/_layout.docs'
 import { Route as DataAuthLayoutRouteImport } from './routes/data/_authLayout/route'
 import { Route as DataAuthLayoutAuthImport } from './routes/data/_authLayout/auth'
+import { Route as DataAuthLayoutUsersIndexImport } from './routes/data/_authLayout/users/index'
 import { Route as DataAuthLayoutProjectsIndexImport } from './routes/data/_authLayout/projects/index'
+import { Route as DataAuthLayoutUsersUserIdImport } from './routes/data/_authLayout/users/$userId'
 import { Route as DataAuthLayoutProjectsProjectIdImport } from './routes/data/_authLayout/projects/$projectId'
 
 // Create Virtual Routes
@@ -61,12 +63,24 @@ const DataAuthLayoutAuthRoute = DataAuthLayoutAuthImport.update({
   getParentRoute: () => DataAuthLayoutRouteRoute,
 } as any)
 
+const DataAuthLayoutUsersIndexRoute = DataAuthLayoutUsersIndexImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => DataAuthLayoutRouteRoute,
+} as any)
+
 const DataAuthLayoutProjectsIndexRoute =
   DataAuthLayoutProjectsIndexImport.update({
     id: '/projects/',
     path: '/projects/',
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
+
+const DataAuthLayoutUsersUserIdRoute = DataAuthLayoutUsersUserIdImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => DataAuthLayoutRouteRoute,
+} as any)
 
 const DataAuthLayoutProjectsProjectIdRoute =
   DataAuthLayoutProjectsProjectIdImport.update({
@@ -128,11 +142,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/users/$userId': {
+      id: '/data/_authLayout/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/data/users/$userId'
+      preLoaderRoute: typeof DataAuthLayoutUsersUserIdImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/projects/': {
       id: '/data/_authLayout/projects/'
       path: '/projects'
       fullPath: '/data/projects'
       preLoaderRoute: typeof DataAuthLayoutProjectsIndexImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
+    '/data/_authLayout/users/': {
+      id: '/data/_authLayout/users/'
+      path: '/users'
+      fullPath: '/data/users'
+      preLoaderRoute: typeof DataAuthLayoutUsersIndexImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
   }
@@ -156,13 +184,17 @@ const LayoutRouteWithChildren =
 interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutAuthRoute: typeof DataAuthLayoutAuthRoute
   DataAuthLayoutProjectsProjectIdRoute: typeof DataAuthLayoutProjectsProjectIdRoute
+  DataAuthLayoutUsersUserIdRoute: typeof DataAuthLayoutUsersUserIdRoute
   DataAuthLayoutProjectsIndexRoute: typeof DataAuthLayoutProjectsIndexRoute
+  DataAuthLayoutUsersIndexRoute: typeof DataAuthLayoutUsersIndexRoute
 }
 
 const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
   DataAuthLayoutAuthRoute: DataAuthLayoutAuthRoute,
   DataAuthLayoutProjectsProjectIdRoute: DataAuthLayoutProjectsProjectIdRoute,
+  DataAuthLayoutUsersUserIdRoute: DataAuthLayoutUsersUserIdRoute,
   DataAuthLayoutProjectsIndexRoute: DataAuthLayoutProjectsIndexRoute,
+  DataAuthLayoutUsersIndexRoute: DataAuthLayoutUsersIndexRoute,
 }
 
 const DataAuthLayoutRouteRouteWithChildren =
@@ -185,7 +217,9 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/data/auth': typeof DataAuthLayoutAuthRoute
   '/data/projects/$projectId': typeof DataAuthLayoutProjectsProjectIdRoute
+  '/data/users/$userId': typeof DataAuthLayoutUsersUserIdRoute
   '/data/projects': typeof DataAuthLayoutProjectsIndexRoute
+  '/data/users': typeof DataAuthLayoutUsersIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -194,7 +228,9 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/data/auth': typeof DataAuthLayoutAuthRoute
   '/data/projects/$projectId': typeof DataAuthLayoutProjectsProjectIdRoute
+  '/data/users/$userId': typeof DataAuthLayoutUsersUserIdRoute
   '/data/projects': typeof DataAuthLayoutProjectsIndexRoute
+  '/data/users': typeof DataAuthLayoutUsersIndexRoute
 }
 
 export interface FileRoutesById {
@@ -206,7 +242,9 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/data/_authLayout/auth': typeof DataAuthLayoutAuthRoute
   '/data/_authLayout/projects/$projectId': typeof DataAuthLayoutProjectsProjectIdRoute
+  '/data/_authLayout/users/$userId': typeof DataAuthLayoutUsersUserIdRoute
   '/data/_authLayout/projects/': typeof DataAuthLayoutProjectsIndexRoute
+  '/data/_authLayout/users/': typeof DataAuthLayoutUsersIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -218,7 +256,9 @@ export interface FileRouteTypes {
     | '/'
     | '/data/auth'
     | '/data/projects/$projectId'
+    | '/data/users/$userId'
     | '/data/projects'
+    | '/data/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/data'
@@ -226,7 +266,9 @@ export interface FileRouteTypes {
     | '/'
     | '/data/auth'
     | '/data/projects/$projectId'
+    | '/data/users/$userId'
     | '/data/projects'
+    | '/data/users'
   id:
     | '__root__'
     | '/_layout'
@@ -236,7 +278,9 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/data/_authLayout/auth'
     | '/data/_authLayout/projects/$projectId'
+    | '/data/_authLayout/users/$userId'
     | '/data/_authLayout/projects/'
+    | '/data/_authLayout/users/'
   fileRoutesById: FileRoutesById
 }
 
@@ -283,7 +327,9 @@ export const routeTree = rootRoute
       "children": [
         "/data/_authLayout/auth",
         "/data/_authLayout/projects/$projectId",
-        "/data/_authLayout/projects/"
+        "/data/_authLayout/users/$userId",
+        "/data/_authLayout/projects/",
+        "/data/_authLayout/users/"
       ]
     },
     "/_layout/docs": {
@@ -302,8 +348,16 @@ export const routeTree = rootRoute
       "filePath": "data/_authLayout/projects/$projectId.tsx",
       "parent": "/data/_authLayout"
     },
+    "/data/_authLayout/users/$userId": {
+      "filePath": "data/_authLayout/users/$userId.tsx",
+      "parent": "/data/_authLayout"
+    },
     "/data/_authLayout/projects/": {
       "filePath": "data/_authLayout/projects/index.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/users/": {
+      "filePath": "data/_authLayout/users/index.tsx",
       "parent": "/data/_authLayout"
     }
   }
