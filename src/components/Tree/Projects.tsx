@@ -93,6 +93,7 @@ export const ProjectsNode = memo(() => {
         isActive={isActive}
         childrenCount={rows.length}
         to={ownUrl}
+        toParams={undefined}
         onClickButton={onClickButton}
       />
       {/* {isOpen &&

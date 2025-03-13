@@ -16,6 +16,7 @@ import { Route as DataIndexImport } from './routes/data/index'
 import { Route as PathlessLayoutIndexImport } from './routes/_pathlessLayout.index'
 import { Route as DataAuthImport } from './routes/data/auth'
 import { Route as PathlessLayoutDocsImport } from './routes/_pathlessLayout.docs'
+import { Route as DataProjectsIndexImport } from './routes/data/projects/index'
 
 // Create/Update Routes
 
@@ -46,6 +47,12 @@ const PathlessLayoutDocsRoute = PathlessLayoutDocsImport.update({
   id: '/docs',
   path: '/docs',
   getParentRoute: () => PathlessLayoutRoute,
+} as any)
+
+const DataProjectsIndexRoute = DataProjectsIndexImport.update({
+  id: '/data/projects/',
+  path: '/data/projects/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -87,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataIndexImport
       parentRoute: typeof rootRoute
     }
+    '/data/projects/': {
+      id: '/data/projects/'
+      path: '/data/projects'
+      fullPath: '/data/projects'
+      preLoaderRoute: typeof DataProjectsIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -112,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/data/auth': typeof DataAuthRoute
   '/': typeof PathlessLayoutIndexRoute
   '/data': typeof DataIndexRoute
+  '/data/projects': typeof DataProjectsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -119,6 +134,7 @@ export interface FileRoutesByTo {
   '/data/auth': typeof DataAuthRoute
   '/': typeof PathlessLayoutIndexRoute
   '/data': typeof DataIndexRoute
+  '/data/projects': typeof DataProjectsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -128,13 +144,14 @@ export interface FileRoutesById {
   '/data/auth': typeof DataAuthRoute
   '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
   '/data/': typeof DataIndexRoute
+  '/data/projects/': typeof DataProjectsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/docs' | '/data/auth' | '/' | '/data'
+  fullPaths: '' | '/docs' | '/data/auth' | '/' | '/data' | '/data/projects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/docs' | '/data/auth' | '/' | '/data'
+  to: '/docs' | '/data/auth' | '/' | '/data' | '/data/projects'
   id:
     | '__root__'
     | '/_pathlessLayout'
@@ -142,6 +159,7 @@ export interface FileRouteTypes {
     | '/data/auth'
     | '/_pathlessLayout/'
     | '/data/'
+    | '/data/projects/'
   fileRoutesById: FileRoutesById
 }
 
@@ -149,12 +167,14 @@ export interface RootRouteChildren {
   PathlessLayoutRoute: typeof PathlessLayoutRouteWithChildren
   DataAuthRoute: typeof DataAuthRoute
   DataIndexRoute: typeof DataIndexRoute
+  DataProjectsIndexRoute: typeof DataProjectsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PathlessLayoutRoute: PathlessLayoutRouteWithChildren,
   DataAuthRoute: DataAuthRoute,
   DataIndexRoute: DataIndexRoute,
+  DataProjectsIndexRoute: DataProjectsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -169,7 +189,8 @@ export const routeTree = rootRoute
       "children": [
         "/_pathlessLayout",
         "/data/auth",
-        "/data/"
+        "/data/",
+        "/data/projects/"
       ]
     },
     "/_pathlessLayout": {
@@ -192,6 +213,9 @@ export const routeTree = rootRoute
     },
     "/data/": {
       "filePath": "data/index.tsx"
+    },
+    "/data/projects/": {
+      "filePath": "data/projects/index.tsx"
     }
   }
 }

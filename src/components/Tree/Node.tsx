@@ -127,7 +127,7 @@ export const Node = memo(
                   fontWeight: 'bold',
                 }),
               )}
-              to={{ to }}
+              to={to}
             >
               {node.label ?? node.name ?? id ?? '(missing label)'}
             </Link>
