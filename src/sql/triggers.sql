@@ -56,6 +56,7 @@ BEGIN
     WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
     ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')'
   END;
+  WHERE account_id = NEW.account_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
