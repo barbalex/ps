@@ -2,7 +2,7 @@ import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
@@ -22,14 +22,13 @@ export const FieldList = memo(
     const { project_id } = useParams({ from })
 
     const db = usePGlite()
-    const res = useLiveIncrementalQuery(
+    const res = useLiveQuery(
       `
       SELECT name 
       FROM fields 
       WHERE project_id = $1 AND table_name = $2 
       ORDER BY table_name, label`,
       [project_id, fieldsTable],
-      'field_id',
     )
     const fields = useMemo(() => res?.rows ?? [], [res])
     const options = useMemo(() => fields.map(({ name }) => name), [fields])
