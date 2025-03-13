@@ -1,5 +1,5 @@
 import { useEffect, memo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 
 import { addOpenNodes } from '../modules/tree/addOpenNodes.ts'
 

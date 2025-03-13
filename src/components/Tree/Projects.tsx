@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -21,7 +21,6 @@ export const ProjectsNode = memo(() => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const filterString = filterStringFromFilter(filter)
   const resFiltered = useLiveIncrementalQuery(
@@ -46,13 +45,12 @@ export const ProjectsNode = memo(() => {
   const node = useMemo(
     () => ({
       label: `Projects (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-          ? '...'
-          : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            countLoading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? '...'
+        : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -60,7 +58,6 @@ export const ProjectsNode = memo(() => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(() => ['data'], [])
-  const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'projects'], [parentArray])
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -77,22 +74,14 @@ export const ProjectsNode = memo(() => {
       })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({ pathname: parentUrl, search: searchParams.toString() })
+        navigate({ to: '/data' })
       }
 
       return
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    searchParams,
-    urlPath.length,
-  ])
+  }, [isInActiveNodeArray, isOpen, navigate, ownArray, urlPath.length])
 
   return (
     <>
@@ -106,13 +95,13 @@ export const ProjectsNode = memo(() => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen &&
+      {/* {isOpen &&
         rows.map((project) => (
           <ProjectNode
             key={project.project_id}
             project={project}
           />
-        ))}
+        ))} */}
     </>
   )
 })

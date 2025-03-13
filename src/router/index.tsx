@@ -37,17 +37,6 @@ export const router = () => {
             },
           ],
         },
-        {
-          path: 'docs',
-          lazy: () => import('../routes/docs.tsx'),
-          handle: {
-            crumb: {
-              text: 'Docs',
-              table: 'docs',
-              folder: true,
-            },
-          },
-        },
       ],
     },
     {

@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import './index.css'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_pathlessLayout/')({
   component: Index,
 })
 
