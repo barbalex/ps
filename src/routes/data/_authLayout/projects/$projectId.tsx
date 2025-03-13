@@ -5,6 +5,7 @@ import { Project } from '../../../../formsAndLists/project/index.tsx'
 
 const schema = type({
   projectTab: `string = 'form'`,
+  editingField: `string = ''`,
 })
 
 export const Route = createFileRoute('/data/_authLayout/projects/$projectId')({

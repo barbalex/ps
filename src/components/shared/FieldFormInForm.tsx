@@ -10,7 +10,6 @@ import {
   MenuPopover,
   MenuGroupHeader,
 } from '@fluentui/react-components'
-import { useSearchParams } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FieldFormFetchingOwnData } from '../../routes/field/FormFetchingOwnData.tsx'
@@ -42,20 +41,18 @@ const menuStyle = {
   columnGap: 5,
 }
 
-export const FieldFormInForm = memo(({ field }) => {
-  const [searchParams, setSearchParams] = useSearchParams()
+export const FieldFormInForm = memo(({ field, Route }) => {
+  const navigate = Route.useNavigate()
   const db = usePGlite()
 
   const onClickDelete = useCallback(async () => {
     db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])
-    searchParams.delete('editingField')
-    setSearchParams(searchParams)
-  }, [db, field.field_id, searchParams, setSearchParams])
+    navigate({ search: { editingField: '' } })
+  }, [db, field.field_id, navigate])
 
   const onClickStopEditing = useCallback(async () => {
-    searchParams.delete('editingField')
-    setSearchParams(searchParams)
-  }, [searchParams, setSearchParams])
+    navigate({ search: { editingField: '' } })
+  }, [navigate])
 
   const fieldLabel = field.field_label ?? field.name ?? ''
 

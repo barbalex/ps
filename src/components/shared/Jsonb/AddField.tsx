@@ -1,12 +1,11 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
-import { useParams, useSearchParams, useLocation } from 'react-router'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createField } from '../../../modules/createRows.ts'
-import { accountTables } from '../../../routes/field/accountTables.ts'
+import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { designingAtom } from '../../../store.ts'
 
 const buttonStyle = {
@@ -21,23 +20,23 @@ const buttonStyle = {
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddField = memo(({ tableName, level }) => {
+export const AddField = memo(({ tableName, level, Route }) => {
   const [designing] = useAtom(designingAtom)
-  const { project_id } = useParams()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { pathname } = useLocation()
+  const { projectId } = Route.useParams()
+  const { pathname } = Route.useLocation()
+  const navigate = Route.useNavigate()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)
     const newFieldParams = { table_name: tableName, level, db }
-    if (!isAccountTable) newFieldParams.project_id = project_id
+    if (!isAccountTable) newFieldParams.project_id = projectId
     const res = await createField(newFieldParams)
     const newField = res?.rows?.[0]
-    setSearchParams({ editingField: newField.field_id })
-  }, [db, level, project_id, setSearchParams, tableName])
+    // TODO:
+    navigate({ search: { editingField: newField.field_id } })
+  }, [db, level, navigate, projectId, tableName])
 
   if (!designing) return null
   // do not show the button on the filter page

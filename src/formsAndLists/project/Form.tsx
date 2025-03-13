@@ -1,49 +1,40 @@
 import { memo, useMemo } from 'react'
-import { useOutletContext } from 'react-router'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
-export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = useMemo(
-      () => rowFromProps ?? outletContext?.row ?? {},
-      [outletContext?.row, rowFromProps],
-    )
-    const orIndex = outletContext?.orIndex
+// TODO: learn how to pass row, onChange and orIndex from filter to this form using tanstack/react-router
+// react-router passed via outlet context
+export const ProjectForm = memo(({ onChange, row, orIndex, autoFocusRef, Route }) => {
+  // need to extract the jsonb data from the row
+  // as inside filters it's name is a path
+  // instead of it being inside of the data field
+  const jsonbData = useMemo(() => jsonbDataFromRow(row), [row])
 
-    // need to extract the jsonb data from the row
-    // as inside filters it's name is a path
-    // instead of it being inside of the data field
-    const jsonbData = useMemo(() => jsonbDataFromRow(row), [row])
-
-    return (
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <Jsonb
-          table="projects"
-          idField="project_id"
-          id={row.project_id}
-          data={jsonbData}
-          orIndex={orIndex}
-        />
-      </div>
-    )
-  },
-)
+  return (
+    <div
+      className="form-container"
+      role="tabpanel"
+      aria-labelledby="form"
+    >
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChange}
+        autoFocus
+        ref={autoFocusRef}
+      />
+      <Jsonb
+        table="projects"
+        idField="project_id"
+        id={row.project_id}
+        data={jsonbData}
+        orIndex={orIndex}
+        Route={Route}
+      />
+    </div>
+  )
+})

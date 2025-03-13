@@ -5,7 +5,7 @@ import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
-// import { Component as Form } from './Form.tsx'
+import { ProjectForm as Form } from './Form.tsx'
 // import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -81,7 +81,7 @@ export const Project = memo(({ Route }) => {
           </Tab>
         )}
       </TabList>
-      {/* {projectTab === 'form' && (
+      {projectTab === 'form' && (
         <div
           role="tabpanel"
           aria-labelledby="form"
@@ -90,10 +90,11 @@ export const Project = memo(({ Route }) => {
             row={row}
             onChange={onChange}
             autoFocusRef={autoFocusRef}
+            Route={Route}
           />
         </div>
       )}
-      {projectTab === 'design' && designing && (
+      {/* {projectTab === 'design' && designing && (
         <Design
           onChange={onChange}
           row={row}

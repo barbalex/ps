@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import { useSearchParams } from 'react-router'
 import { useAtom } from 'jotai'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
@@ -21,9 +20,9 @@ export const Field = memo(
     idField,
     autoFocus,
     ref,
+    Route,
   }) => {
-    const [searchParams] = useSearchParams()
-    const editingField = searchParams.get('editingField')
+    const { editingField } = Route.useSearch()
     const [designing] = useAtom(designingAtom)
 
     if (editingField === field.field_id) {
@@ -31,6 +30,7 @@ export const Field = memo(
         <FieldFormInForm
           key={field.field_id}
           field={field}
+          Route={Route}
         />
       )
     }
@@ -53,6 +53,7 @@ export const Field = memo(
           orIndex={orIndex}
           autoFocus={autoFocusValue}
           ref={ref}
+          Route={Route}
         />
       )
     }
@@ -72,6 +73,7 @@ export const Field = memo(
         orIndex={orIndex}
         autoFocus={autoFocusValue}
         ref={ref}
+        Route={Route}
       />
     )
   },

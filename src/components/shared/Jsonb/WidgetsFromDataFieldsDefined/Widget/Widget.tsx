@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react'
-import { useLocation, useParams } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../../TextField.tsx'
@@ -31,9 +30,10 @@ export const Widget = memo(
     orIndex,
     autoFocus,
     ref,
+    Route,
   }) => {
-    const { pathname } = useLocation()
-    const { place_id, place_id2 } = useParams()
+    const { pathname } = Route.useLocation()
+    const { place_id, place_id2 } = Route.useParams()
     const db = usePGlite()
 
     const onChange = useCallback<InputProps['onChange']>(
@@ -54,7 +54,11 @@ export const Widget = memo(
 
         if (isFilter) {
           const level =
-            table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+            table === 'places' ?
+              place_id ? 2
+              : 1
+            : place_id2 ? 2
+            : 1
           const filterName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[filterName]
           // console.log('Jsonb.Widget.onChange', {
