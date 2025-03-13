@@ -27,7 +27,7 @@ export const Chart = memo(() => {
   const chart = resultChart?.rows?.[0]
 
   const resultSubjects = useLiveIncrementalQuery(
-    `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort asc, name asc`,
+    `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort, name`,
     [chart_id],
   )
   const subjects = useMemo(() => resultSubjects?.rows ?? [], [resultSubjects])

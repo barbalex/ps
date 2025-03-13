@@ -51,7 +51,7 @@ export const Component = memo(() => {
           name="unit_id"
           table="units"
           where="use_for_goal_report_values is true"
-          orderBy="sort asc, name asc"
+          orderBy="sort, name"
           value={row.unit_id ?? ''}
           onChange={onChange}
           autoFocus

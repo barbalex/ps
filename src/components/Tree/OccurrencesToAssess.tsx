@@ -38,7 +38,7 @@ export const OccurrencesToAssessNode = memo(
           AND o.not_to_assign IS NOT TRUE 
           AND o.place_id IS NULL
         ORDER BY 
-          o.label ASC
+          o.label
       `,
       [subproject_id],
       'occurrence_id',

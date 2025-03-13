@@ -17,7 +17,7 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
     WHERE 
       wms_service_id = $1 
     ORDER BY 
-      label ASC`,
+      label`,
     [wmsLayer.wms_service_id],
     'wms_service_layer_id',
   )
