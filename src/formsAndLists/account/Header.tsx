@@ -1,56 +1,48 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createAccount } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = '/data/_authLayout/accounts/$accountId'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { account_id } = useParams()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const { accountId } = useParams({ from })
+  const navigate = useNavigate({ from })
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const res = await createAccount({ db })
     const data = res?.rows?.[0]
-    navigate({
-      pathname: `../${data.account_id}`,
-      search: searchParams.toString(),
-    })
+    navigate({ to: `../${data.account_id}` })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams])
+  }, [autoFocusRef, db, navigate])
 
   const deleteRow = useCallback(async () => {
     const sql = `DELETE FROM accounts WHERE account_id = $1`
-    await db.query(sql, [account_id])
-    navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [account_id, db, navigate, searchParams])
+    await db.query(sql, [accountId])
+    navigate({ to: `..` })
+  }, [accountId, db, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(`SELECT account_id FROM accounts order by label`)
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.account_id === account_id)
+    const index = rows.findIndex((p) => p.account_id === accountId)
     const next = rows[(index + 1) % len]
-    navigate({
-      pathname: `../${next.account_id}`,
-      search: searchParams.toString(),
-    })
-  }, [account_id, db, navigate, searchParams])
+    navigate({ to: `../${next.account_id}` })
+  }, [accountId, db, navigate])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(`SELECT account_id FROM accounts order by label`)
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.account_id === account_id)
+    const index = rows.findIndex((p) => p.account_id === accountId)
     const previous = rows[(index + len - 1) % len]
-    navigate({
-      pathname: `../${previous.account_id}`,
-      search: searchParams.toString(),
-    })
-  }, [account_id, db, navigate, searchParams])
+    navigate({ to: `../${previous.account_id}` })
+  }, [accountId, db, navigate])
 
   return (
     <FormHeader

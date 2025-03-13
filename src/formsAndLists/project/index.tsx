@@ -16,7 +16,7 @@ import '../../form.css'
 
 const from = '/data/_authLayout/projects/$projectId'
 
-export const Project = memo(({ Route }) => {
+export const Project = memo(() => {
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
@@ -64,10 +64,7 @@ export const Project = memo(({ Route }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        Route={Route}
-      />
+      <Header autoFocusRef={autoFocusRef} />
       <TabList
         selectedValue={projectTab}
         onTabSelect={onTabSelect}

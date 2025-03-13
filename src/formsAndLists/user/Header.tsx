@@ -7,9 +7,11 @@ import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { userIdAtom } from '../../store.ts'
 
+const from = '/data/_authLayout/users/$userId'
+
 export const Header = memo(({ autoFocusRef }) => {
   const setUserId = useSetAtom(userIdAtom)
-  const { userId } = useParams({ from: '/data/_authLayout/users/$userId' })
+  const { userId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()

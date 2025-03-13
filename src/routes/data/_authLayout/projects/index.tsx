@@ -17,9 +17,11 @@ export const Route = createFileRoute('/data/_authLayout/projects/')({
 
 import '../../../../form.css'
 
+const from = '/data/_authLayout/projects'
+
 const Component = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
-  const navigate = useNavigate({ from: '/data/projects' })
+  const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)

@@ -11,9 +11,11 @@ import { userIdAtom } from '../store.ts'
 
 import '../form.css'
 
+const from = 'data/_authLayout/users'
+
 export const Users = memo(() => {
   const setUserId = useSetAtom(userIdAtom)
-  const navigate = useNavigate()
+  const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(

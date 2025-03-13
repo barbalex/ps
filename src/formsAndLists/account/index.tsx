@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,15 +12,17 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { account_id } = useParams()
+const from = '/data/_authLayout/accounts/$accountId'
+
+export const Account = memo(() => {
+  const { accountId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM accounts WHERE account_id = $1`,
-    [account_id],
+    [accountId],
     'account_id',
   )
   const row = res?.rows?.[0]
@@ -33,12 +35,12 @@ export const Component = memo(() => {
 
       const sql = `UPDATE accounts SET ${name} = $1 WHERE account_id = $2`
       try {
-        await db.query(sql, [value, account_id])
+        await db.query(sql, [value, accountId])
       } catch (error) {
         console.error('error changing account:', error)
       }
     },
-    [row, db, account_id],
+    [row, db, accountId],
   )
 
   if (!row) return <Loading />

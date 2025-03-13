@@ -9,10 +9,6 @@ const schema = type({
 })
 
 export const Route = createFileRoute('/data/_authLayout/projects/$projectId')({
-  component: Component,
+  component: Project,
   validateSearch: schema,
 })
-
-function Component() {
-  return <Project Route={Route} />
-}

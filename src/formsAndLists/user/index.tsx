@@ -10,8 +10,10 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
+const from = '/data/_authLayout/users/$userId'
+
 export const User = memo(() => {
-  const { userId } = useParams({ from: '/data/_authLayout/users/$userId' })
+  const { userId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
