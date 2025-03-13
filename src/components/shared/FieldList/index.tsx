@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from './DropdownField.tsx'
@@ -14,11 +14,12 @@ interface Props {
   fieldsTable: string
   id: string
   valueArray: string[]
+  from: string
 }
 
 export const FieldList = memo(
-  ({ name, label, table, fieldsTable, id, valueArray = [] }: Props) => {
-    const { project_id } = useParams()
+  ({ name, label, table, fieldsTable, id, valueArray = [], from }: Props) => {
+    const { project_id } = useParams({ from })
 
     const db = usePGlite()
     const res = useLiveIncrementalQuery(

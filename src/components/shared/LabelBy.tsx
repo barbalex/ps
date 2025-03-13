@@ -1,6 +1,6 @@
 import { useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
 
@@ -13,11 +13,20 @@ interface Props {
   table: string
   label?: string
   name: string
+  from: string
 }
 
 export const LabelBy = memo(
-  ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
-    const { project_id } = useParams()
+  ({
+    onChange,
+    value,
+    extraFieldNames = [],
+    table,
+    label,
+    name,
+    from,
+  }: Props) => {
+    const { project_id } = useParams({ from })
 
     const res = useLiveIncrementalQuery(
       `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,

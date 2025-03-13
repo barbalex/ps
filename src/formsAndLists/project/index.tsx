@@ -7,7 +7,7 @@ import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 
 import { Header } from './Header.tsx'
 import { ProjectForm as Form } from './Form.tsx'
-// import { Design } from './Design/index.tsx'
+import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { designingAtom } from '../../store.ts'
@@ -35,8 +35,10 @@ export const Project = memo(({ Route }) => {
   const row = res?.rows?.[0]
 
   const onTabSelect = useCallback(
-    (event: SelectTabEvent, data: SelectTabData) =>
-      navigate({ search: data.value }),
+    (event: SelectTabEvent, data: SelectTabData) => {
+      console.log('onTabSelect', data)
+      navigate({ search: { projectTab: data.value } })
+    },
     [navigate],
   )
 
@@ -98,12 +100,12 @@ export const Project = memo(({ Route }) => {
           />
         </div>
       )}
-      {/* {projectTab === 'design' && designing && (
+      {projectTab === 'design' && designing && (
         <Design
           onChange={onChange}
           row={row}
         />
-      )} */}
+      )}
     </div>
   )
 })

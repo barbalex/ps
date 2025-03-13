@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { Label, Divider } from '@fluentui/react-components'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -17,8 +17,10 @@ const labelStyle = {
   fontWeight: 700,
 }
 
+const from = '/data/_authLayout/projects/$projectId'
+
 export const Design = memo(({ onChange, row }) => {
-  const { project_id } = useParams()
+  const { project_id } = useParams({ from })
 
   return (
     <div
@@ -56,6 +58,7 @@ export const Design = memo(({ onChange, row }) => {
         value={row.goal_reports_label_by ?? ''}
         onChange={onChange}
         extraFieldNames={['id']}
+        from={from}
       />
       <LabelBy
         label="Places labelled by"
@@ -64,6 +67,7 @@ export const Design = memo(({ onChange, row }) => {
         value={row.places_label_by ?? ''}
         onChange={onChange}
         extraFieldNames={['id', 'level']}
+        from={from}
       />
       <FieldList
         label="Places ordered by"
@@ -72,6 +76,7 @@ export const Design = memo(({ onChange, row }) => {
         fieldsTable="places"
         id={project_id}
         valueArray={row.places_order_by ?? []}
+        from={from}
       />
       <TextFieldInactive
         label="Map Presentation CRS"
