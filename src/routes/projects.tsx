@@ -26,7 +26,7 @@ export const Component = memo(() => {
       label 
     FROM projects
     ${filterString ? ` WHERE ${filterString}` : ''} 
-    ORDER BY label ASC`
+    ORDER BY label`
   const res = useLiveIncrementalQuery(sql, undefined, 'project_id')
   const isLoading = res === undefined
   const projects = res?.rows ?? []

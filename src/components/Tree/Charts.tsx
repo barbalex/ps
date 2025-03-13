@@ -46,7 +46,7 @@ export const ChartsNode = memo(
     }, [place_id, place_id2, project_id, subproject_id])
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM charts WHERE ${field} = $1 order by label asc`,
+      `SELECT * FROM charts WHERE ${field} = $1 ORDER BY label`,
       [value],
       'chart_id',
     )

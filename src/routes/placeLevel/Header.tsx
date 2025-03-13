@@ -35,7 +35,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+      `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
     const placeLevels = res?.rows
@@ -52,7 +52,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+      `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
     const placeLevels = res?.rows

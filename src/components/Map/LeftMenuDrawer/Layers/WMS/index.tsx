@@ -33,7 +33,7 @@ export const WmsLayers = memo(() => {
   const resWmsLayers = useLiveIncrementalQuery(
     `SELECT * FROM wms_layers${
       project_id ? ` WHERE project_id = $1` : ''
-    } ORDER BY label ASC`,
+    } ORDER BY label`,
     [project_id],
     'wms_layer_id',
   )

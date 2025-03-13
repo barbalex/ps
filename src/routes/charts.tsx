@@ -33,7 +33,7 @@ export const Component = memo(() => {
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
-    `SELECT * FROM charts WHERE ${hKey} = $1 ORDER BY label ASC`,
+    `SELECT * FROM charts WHERE ${hKey} = $1 ORDER BY label`,
     [hValue],
     'chart_id',
   )

@@ -22,7 +22,7 @@ export const Component = memo(({ vectorLayerId }) => {
   const navigate = useNavigate()
 
   const res = useLiveIncrementalQuery(
-    `SELECT vector_layer_display_id, label FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
+    `SELECT vector_layer_display_id, label FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
     [vector_layer_id],
     'vector_layer_display_id',
   )

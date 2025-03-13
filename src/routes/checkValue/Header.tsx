@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label ASC',
+      'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
       [check_id],
     )
     const checkValues = res?.rows
@@ -48,7 +48,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label ASC',
+      'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
       [check_id],
     )
     const checkValues = res?.rows

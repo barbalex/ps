@@ -33,7 +33,7 @@ export const ActionReportValuesNode = memo(
         label
       FROM action_report_values 
       WHERE action_report_id = $1 
-      ORDER BY label asc`,
+      ORDER BY label`,
       [action_report_id],
       'action_report_value_id',
     )

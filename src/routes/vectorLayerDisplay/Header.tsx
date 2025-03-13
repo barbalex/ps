@@ -72,7 +72,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label ASC`,
+      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
       [vector_layer_id],
     )
     const vectorLayerDisplays = res?.rows
@@ -101,7 +101,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label ASC`,
+      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
       [vector_layer_id],
     )
     const vectorLayerDisplays = res?.rows

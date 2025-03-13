@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+      `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label`,
       [goal_id],
     )
     const goalReports = res?.rows
@@ -48,7 +48,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+      `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label`,
       [goal_id],
     )
     const goalReports = res?.rows

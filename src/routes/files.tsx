@@ -39,7 +39,7 @@ export const Component = memo(() => {
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
   const res = useLiveIncrementalQuery(
-    `SELECT file_id, label, url, mimetype FROM files WHERE ${hKey} = $1 ORDER BY label ASC`,
+    `SELECT file_id, label, url, mimetype FROM files WHERE ${hKey} = $1 ORDER BY label`,
     [hValue],
     'file_id',
   )

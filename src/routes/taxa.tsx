@@ -15,7 +15,7 @@ export const Component = memo(() => {
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
-    `SELECT taxon_id, label FROM taxa WHERE taxonomy_id = $1 order by label asc`,
+    `SELECT taxon_id, label FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
     [taxonomy_id],
     'taxon_id',
   )

@@ -13,7 +13,7 @@ export const Header = memo(() => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label ASC',
+      'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label',
       [project_id],
     )
     const occurrences = res?.rows
@@ -30,7 +30,7 @@ export const Header = memo(() => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label ASC',
+      'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label',
       [project_id],
     )
     const occurrences = res?.rows

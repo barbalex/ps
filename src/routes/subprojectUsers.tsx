@@ -15,7 +15,7 @@ export const Component = memo(() => {
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
-    `SELECT subproject_user_id, label FROM subproject_users WHERE subproject_id = $1 ORDER BY label ASC`,
+    `SELECT subproject_user_id, label FROM subproject_users WHERE subproject_id = $1 ORDER BY label`,
     [subproject_id],
     'subproject_user_id',
   )

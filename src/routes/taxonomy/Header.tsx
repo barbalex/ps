@@ -29,7 +29,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
+      `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
     const taxonomies = res?.rows
@@ -44,7 +44,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
+      `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
     const taxonomies = res?.rows
