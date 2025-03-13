@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router'
+import { Outlet } from '@tanstack/react-router'
 
 import { Header } from './Header/index.tsx'
 
