@@ -1,16 +1,19 @@
 import { memo, useCallback } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdLogin } from 'react-icons/md'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { pipe } from 'remeda'
 
 import { controls } from '../../../styles.ts'
 import { on } from '../../../css.ts'
 
 export const Menu = memo(() => {
-  const navigate = useNavigate()
+  const navigate = useNavigate({ from: '/' })
 
-  const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
+  const onClickEnter = useCallback(
+    () => navigate({ to: '/data/projects' }),
+    [navigate],
+  )
 
   return (
     <div style={controls}>
@@ -18,7 +21,7 @@ export const Menu = memo(() => {
         size="medium"
         icon={<MdLogin />}
         onClick={onClickEnter}
-        title={'Enter'}
+        title="Enter"
         style={pipe(
           {
             backgroundColor: 'rgba(38, 82, 37, 0)',
