@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_pathlessLayout/docs')({
+export const Route = createFileRoute('/_layout/docs')({
   component: Docs,
 })
 

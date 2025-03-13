@@ -8,173 +8,213 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as PathlessLayoutImport } from './routes/_pathlessLayout'
-import { Route as DataIndexImport } from './routes/data/index'
-import { Route as PathlessLayoutIndexImport } from './routes/_pathlessLayout.index'
-import { Route as DataAuthImport } from './routes/data/auth'
-import { Route as PathlessLayoutDocsImport } from './routes/_pathlessLayout.docs'
-import { Route as DataProjectsIndexImport } from './routes/data/projects/index'
+import { Route as LayoutImport } from './routes/_layout'
+import { Route as LayoutIndexImport } from './routes/_layout.index'
+import { Route as DataAuthLayoutImport } from './routes/data/_authLayout'
+import { Route as LayoutDocsImport } from './routes/_layout.docs'
+import { Route as DataAuthLayoutAuthImport } from './routes/data/_authLayout.auth'
+import { Route as DataAuthLayoutProjectsIndexImport } from './routes/data/_authLayout.projects/index'
+
+// Create Virtual Routes
+
+const DataImport = createFileRoute('/data')()
 
 // Create/Update Routes
 
-const PathlessLayoutRoute = PathlessLayoutImport.update({
-  id: '/_pathlessLayout',
+const DataRoute = DataImport.update({
+  id: '/data',
+  path: '/data',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DataIndexRoute = DataIndexImport.update({
-  id: '/data/',
-  path: '/data/',
+const LayoutRoute = LayoutImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRoute,
 } as any)
 
-const PathlessLayoutIndexRoute = PathlessLayoutIndexImport.update({
+const LayoutIndexRoute = LayoutIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => PathlessLayoutRoute,
+  getParentRoute: () => LayoutRoute,
 } as any)
 
-const DataAuthRoute = DataAuthImport.update({
-  id: '/data/auth',
-  path: '/data/auth',
-  getParentRoute: () => rootRoute,
+const DataAuthLayoutRoute = DataAuthLayoutImport.update({
+  id: '/_authLayout',
+  getParentRoute: () => DataRoute,
 } as any)
 
-const PathlessLayoutDocsRoute = PathlessLayoutDocsImport.update({
+const LayoutDocsRoute = LayoutDocsImport.update({
   id: '/docs',
   path: '/docs',
-  getParentRoute: () => PathlessLayoutRoute,
+  getParentRoute: () => LayoutRoute,
 } as any)
 
-const DataProjectsIndexRoute = DataProjectsIndexImport.update({
-  id: '/data/projects/',
-  path: '/data/projects/',
-  getParentRoute: () => rootRoute,
+const DataAuthLayoutAuthRoute = DataAuthLayoutAuthImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => DataAuthLayoutRoute,
 } as any)
+
+const DataAuthLayoutProjectsIndexRoute =
+  DataAuthLayoutProjectsIndexImport.update({
+    id: '/projects/',
+    path: '/projects/',
+    getParentRoute: () => DataAuthLayoutRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_pathlessLayout': {
-      id: '/_pathlessLayout'
+    '/_layout': {
+      id: '/_layout'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof PathlessLayoutImport
+      preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
-    '/_pathlessLayout/docs': {
-      id: '/_pathlessLayout/docs'
+    '/_layout/docs': {
+      id: '/_layout/docs'
       path: '/docs'
       fullPath: '/docs'
-      preLoaderRoute: typeof PathlessLayoutDocsImport
-      parentRoute: typeof PathlessLayoutImport
+      preLoaderRoute: typeof LayoutDocsImport
+      parentRoute: typeof LayoutImport
     }
-    '/data/auth': {
-      id: '/data/auth'
-      path: '/data/auth'
-      fullPath: '/data/auth'
-      preLoaderRoute: typeof DataAuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/_pathlessLayout/': {
-      id: '/_pathlessLayout/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof PathlessLayoutIndexImport
-      parentRoute: typeof PathlessLayoutImport
-    }
-    '/data/': {
-      id: '/data/'
+    '/data': {
+      id: '/data'
       path: '/data'
       fullPath: '/data'
-      preLoaderRoute: typeof DataIndexImport
+      preLoaderRoute: typeof DataImport
       parentRoute: typeof rootRoute
     }
-    '/data/projects/': {
-      id: '/data/projects/'
-      path: '/data/projects'
+    '/data/_authLayout': {
+      id: '/data/_authLayout'
+      path: '/data'
+      fullPath: '/data'
+      preLoaderRoute: typeof DataAuthLayoutImport
+      parentRoute: typeof DataRoute
+    }
+    '/_layout/': {
+      id: '/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/data/_authLayout/auth': {
+      id: '/data/_authLayout/auth'
+      path: '/auth'
+      fullPath: '/data/auth'
+      preLoaderRoute: typeof DataAuthLayoutAuthImport
+      parentRoute: typeof DataAuthLayoutImport
+    }
+    '/data/_authLayout/projects/': {
+      id: '/data/_authLayout/projects/'
+      path: '/projects'
       fullPath: '/data/projects'
-      preLoaderRoute: typeof DataProjectsIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof DataAuthLayoutProjectsIndexImport
+      parentRoute: typeof DataAuthLayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface PathlessLayoutRouteChildren {
-  PathlessLayoutDocsRoute: typeof PathlessLayoutDocsRoute
-  PathlessLayoutIndexRoute: typeof PathlessLayoutIndexRoute
+interface LayoutRouteChildren {
+  LayoutDocsRoute: typeof LayoutDocsRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
-const PathlessLayoutRouteChildren: PathlessLayoutRouteChildren = {
-  PathlessLayoutDocsRoute: PathlessLayoutDocsRoute,
-  PathlessLayoutIndexRoute: PathlessLayoutIndexRoute,
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutDocsRoute: LayoutDocsRoute,
+  LayoutIndexRoute: LayoutIndexRoute,
 }
 
-const PathlessLayoutRouteWithChildren = PathlessLayoutRoute._addFileChildren(
-  PathlessLayoutRouteChildren,
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
+interface DataAuthLayoutRouteChildren {
+  DataAuthLayoutAuthRoute: typeof DataAuthLayoutAuthRoute
+  DataAuthLayoutProjectsIndexRoute: typeof DataAuthLayoutProjectsIndexRoute
+}
+
+const DataAuthLayoutRouteChildren: DataAuthLayoutRouteChildren = {
+  DataAuthLayoutAuthRoute: DataAuthLayoutAuthRoute,
+  DataAuthLayoutProjectsIndexRoute: DataAuthLayoutProjectsIndexRoute,
+}
+
+const DataAuthLayoutRouteWithChildren = DataAuthLayoutRoute._addFileChildren(
+  DataAuthLayoutRouteChildren,
 )
 
+interface DataRouteChildren {
+  DataAuthLayoutRoute: typeof DataAuthLayoutRouteWithChildren
+}
+
+const DataRouteChildren: DataRouteChildren = {
+  DataAuthLayoutRoute: DataAuthLayoutRouteWithChildren,
+}
+
+const DataRouteWithChildren = DataRoute._addFileChildren(DataRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '': typeof PathlessLayoutRouteWithChildren
-  '/docs': typeof PathlessLayoutDocsRoute
-  '/data/auth': typeof DataAuthRoute
-  '/': typeof PathlessLayoutIndexRoute
-  '/data': typeof DataIndexRoute
-  '/data/projects': typeof DataProjectsIndexRoute
+  '': typeof LayoutRouteWithChildren
+  '/docs': typeof LayoutDocsRoute
+  '/data': typeof DataAuthLayoutRouteWithChildren
+  '/': typeof LayoutIndexRoute
+  '/data/auth': typeof DataAuthLayoutAuthRoute
+  '/data/projects': typeof DataAuthLayoutProjectsIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/docs': typeof PathlessLayoutDocsRoute
-  '/data/auth': typeof DataAuthRoute
-  '/': typeof PathlessLayoutIndexRoute
-  '/data': typeof DataIndexRoute
-  '/data/projects': typeof DataProjectsIndexRoute
+  '/docs': typeof LayoutDocsRoute
+  '/data': typeof DataAuthLayoutRouteWithChildren
+  '/': typeof LayoutIndexRoute
+  '/data/auth': typeof DataAuthLayoutAuthRoute
+  '/data/projects': typeof DataAuthLayoutProjectsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_pathlessLayout': typeof PathlessLayoutRouteWithChildren
-  '/_pathlessLayout/docs': typeof PathlessLayoutDocsRoute
-  '/data/auth': typeof DataAuthRoute
-  '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
-  '/data/': typeof DataIndexRoute
-  '/data/projects/': typeof DataProjectsIndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/docs': typeof LayoutDocsRoute
+  '/data': typeof DataRouteWithChildren
+  '/data/_authLayout': typeof DataAuthLayoutRouteWithChildren
+  '/_layout/': typeof LayoutIndexRoute
+  '/data/_authLayout/auth': typeof DataAuthLayoutAuthRoute
+  '/data/_authLayout/projects/': typeof DataAuthLayoutProjectsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/docs' | '/data/auth' | '/' | '/data' | '/data/projects'
+  fullPaths: '' | '/docs' | '/data' | '/' | '/data/auth' | '/data/projects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/docs' | '/data/auth' | '/' | '/data' | '/data/projects'
+  to: '/docs' | '/data' | '/' | '/data/auth' | '/data/projects'
   id:
     | '__root__'
-    | '/_pathlessLayout'
-    | '/_pathlessLayout/docs'
-    | '/data/auth'
-    | '/_pathlessLayout/'
-    | '/data/'
-    | '/data/projects/'
+    | '/_layout'
+    | '/_layout/docs'
+    | '/data'
+    | '/data/_authLayout'
+    | '/_layout/'
+    | '/data/_authLayout/auth'
+    | '/data/_authLayout/projects/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  PathlessLayoutRoute: typeof PathlessLayoutRouteWithChildren
-  DataAuthRoute: typeof DataAuthRoute
-  DataIndexRoute: typeof DataIndexRoute
-  DataProjectsIndexRoute: typeof DataProjectsIndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
+  DataRoute: typeof DataRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  PathlessLayoutRoute: PathlessLayoutRouteWithChildren,
-  DataAuthRoute: DataAuthRoute,
-  DataIndexRoute: DataIndexRoute,
-  DataProjectsIndexRoute: DataProjectsIndexRoute,
+  LayoutRoute: LayoutRouteWithChildren,
+  DataRoute: DataRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -187,35 +227,46 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_pathlessLayout",
-        "/data/auth",
-        "/data/",
-        "/data/projects/"
+        "/_layout",
+        "/data"
       ]
     },
-    "/_pathlessLayout": {
-      "filePath": "_pathlessLayout.tsx",
+    "/_layout": {
+      "filePath": "_layout.tsx",
       "children": [
-        "/_pathlessLayout/docs",
-        "/_pathlessLayout/"
+        "/_layout/docs",
+        "/_layout/"
       ]
     },
-    "/_pathlessLayout/docs": {
-      "filePath": "_pathlessLayout.docs.tsx",
-      "parent": "/_pathlessLayout"
+    "/_layout/docs": {
+      "filePath": "_layout.docs.tsx",
+      "parent": "/_layout"
     },
-    "/data/auth": {
-      "filePath": "data/auth.tsx"
+    "/data": {
+      "filePath": "data",
+      "children": [
+        "/data/_authLayout"
+      ]
     },
-    "/_pathlessLayout/": {
-      "filePath": "_pathlessLayout.index.tsx",
-      "parent": "/_pathlessLayout"
+    "/data/_authLayout": {
+      "filePath": "data/_authLayout.tsx",
+      "parent": "/data",
+      "children": [
+        "/data/_authLayout/auth",
+        "/data/_authLayout/projects/"
+      ]
     },
-    "/data/": {
-      "filePath": "data/index.tsx"
+    "/_layout/": {
+      "filePath": "_layout.index.tsx",
+      "parent": "/_layout"
     },
-    "/data/projects/": {
-      "filePath": "data/projects/index.tsx"
+    "/data/_authLayout/auth": {
+      "filePath": "data/_authLayout.auth.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/projects/": {
+      "filePath": "data/_authLayout.projects/index.tsx",
+      "parent": "/data/_authLayout"
     }
   }
 }

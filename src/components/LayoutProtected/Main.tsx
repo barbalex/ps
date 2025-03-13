@@ -31,6 +31,8 @@ export const Main = memo(() => {
 
   const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 
+  console.log('LayoutProtected.Main', { tabs })
+
   if (onlyForm) return <Outlet />
 
   // TODO:re-enable all

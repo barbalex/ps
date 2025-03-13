@@ -11,7 +11,7 @@ import { Loading } from '../../../components/shared/Loading.tsx'
 import { projectsFilterAtom } from '../../../store.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 
-export const Route = createFileRoute('/data/projects/')({
+export const Route = createFileRoute('/data/_authLayout/projects/')({
   component: Component,
 })
 
