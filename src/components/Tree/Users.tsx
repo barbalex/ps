@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -56,7 +56,6 @@ export const UsersNode = memo(() => {
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
           pathname: parentUrl,
-          search: searchParams.toString(),
         })
       }
       return

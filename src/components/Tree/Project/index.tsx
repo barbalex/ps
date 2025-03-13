@@ -51,9 +51,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
       removeChildNodes({ node: ownArray })
       // TODO: only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
