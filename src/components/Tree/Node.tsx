@@ -84,6 +84,7 @@ export const Node = memo(
     id,
     childrenCount,
     to,
+    toParams = {},
     onClickButton,
     sibling,
   }: Props) => {
@@ -128,6 +129,7 @@ export const Node = memo(
                 }),
               )}
               to={to}
+              params={toParams}
             >
               {node.label ?? node.name ?? id ?? '(missing label)'}
             </Link>
