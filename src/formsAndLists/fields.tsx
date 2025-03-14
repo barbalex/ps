@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,12 +12,11 @@ import { fieldsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+export const Fields = memo(({ from }) => {
   const [filter] = useAtom(fieldsFilterAtom)
 
-  const { project_id } = useParams()
+  const { project_id } = useParams({from})
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
@@ -40,8 +39,11 @@ export const Component = memo(() => {
     const res = await createField({ project_id, db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.field_id, search: searchParams.toString() })
-  }, [db, navigate, project_id, searchParams])
+    navigate({
+      to: data.field_id,
+      params: (prev) => ({ ...prev, fieldId: data.field_id }),
+    })
+  }, [db, navigate, project_id])
 
   return (
     <div className="list-view">
@@ -56,10 +58,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {fields.map(({ field_id, label }) => (
               <Row
                 key={field_id}
@@ -68,7 +69,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

@@ -1144,43 +1144,6 @@ export const router = () => {
               ],
             },
             {
-              path: 'widgets-for-fields',
-              element: null,
-              handle: {
-                crumb: {
-                  text: 'Widgets For Fields',
-                  table: 'widgets_for_fields',
-                  folder: true,
-                },
-              },
-              children: [
-                {
-                  index: true,
-                  lazy: () => import('../routes/widgetsForFields.tsx'),
-                },
-                {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/widgetForField/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':widget_for_field_id',
-                  lazy: () => import('../routes/widgetForField/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'widgets_for_fields',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
-            },
-            {
               path: 'fields',
               element: null,
               handle: {
