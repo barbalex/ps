@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'
@@ -9,13 +9,17 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
 
-export const Component = memo(() => {
+export const CRSS = memo(() => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
-    `SELECT * FROM crs ORDER BY label`,
+    `
+    SELECT 
+      crs_id, 
+      label 
+    FROM crs 
+    ORDER BY label`,
     undefined,
     'crs_id',
   )
@@ -26,8 +30,11 @@ export const Component = memo(() => {
     const res = await createCrs({ db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.crs_id, search: searchParams.toString() })
-  }, [db, navigate, searchParams])
+    navigate({
+      to: `/data/crs/${data.crs_id}`,
+      params: (prev) => ({ ...prev, crsId: data.crs_id }),
+    })
+  }, [db, navigate])
 
   return (
     <div className="list-view">

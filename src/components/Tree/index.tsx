@@ -36,7 +36,7 @@ export const Tree = memo(() => {
           <WidgetTypesNode />
           <WidgetsForFieldsNode />
           <FieldsNode />
-          {/* <CrssNode /> */}
+          <CrssNode />
         </>
       )}
       {/* <MessagesNode /> */}

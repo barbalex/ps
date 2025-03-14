@@ -5,7 +5,7 @@ import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
+export const CRS = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   return (
