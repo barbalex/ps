@@ -8,11 +8,11 @@ import { Component as Form } from './Form.tsx'
 
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = memo(
-  ({ field_id, autoFocusRef, isInForm = false }) => {
+  ({ fieldId, autoFocusRef, isInForm = false, from }) => {
     const db = usePGlite()
     const res = useLiveIncrementalQuery(
       `SELECT * FROM fields WHERE field_id = $1`,
-      [field_id],
+      [fieldId],
       'field_id',
     )
     const row = res?.rows?.[0]
@@ -25,10 +25,10 @@ export const FieldFormFetchingOwnData = memo(
 
         db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
           value,
-          field_id,
+          fieldId,
         ])
       },
-      [db, field_id, row],
+      [db, fieldId, row],
     )
 
     if (!row) return <Loading />
@@ -40,6 +40,7 @@ export const FieldFormFetchingOwnData = memo(
           row={row}
           autoFocusRef={autoFocusRef}
           isInForm={isInForm}
+          from={from}
         />
       </div>
     )

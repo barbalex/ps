@@ -34,8 +34,8 @@ const widgetsNeedingList = [
 // this form is rendered from a parent or outlet
 // TODO: learn how to pass row/onChange through outlet using tanstack-router
 export const Component = memo(
-  ({ onChange, row, autoFocusRef, isInForm = false }) => {
-    const { project_id } = useParams()
+  ({ onChange, row, autoFocusRef, isInForm = false, from }) => {
+    const { project_id } = useParams({ from })
 
     const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
 

@@ -15,7 +15,7 @@ import '../form.css'
 export const Fields = memo(({ from }) => {
   const [filter] = useAtom(fieldsFilterAtom)
 
-  const { project_id } = useParams({from})
+  const { project_id } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -58,18 +58,15 @@ export const Fields = memo(({ from }) => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {isLoading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {fields.map(({ field_id, label }) => (
-              <Row
-                key={field_id}
-                label={label ?? field_id}
-                to={field_id}
-              />
+              <Row key={field_id} label={label ?? field_id} to={field_id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
