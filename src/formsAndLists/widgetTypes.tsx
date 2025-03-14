@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -13,11 +13,12 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/widget-types'
+
+export const WidgetTypes = memo(() => {
   const [filter] = useAtom(widgetTypesFilterAtom)
 
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -38,8 +39,8 @@ export const Component = memo(() => {
     const res = await createWidgetType({ db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.widget_type_id, search: searchParams.toString() })
-  }, [db, navigate, searchParams])
+    navigate({ to: data.widget_type_id })
+  }, [db, navigate])
 
   return (
     <div className="list-view">
@@ -54,10 +55,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {widgetTypes.map(({ widget_type_id, label }) => (
               <Row
                 key={widget_type_id}
@@ -66,7 +66,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

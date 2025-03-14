@@ -33,7 +33,7 @@ export const Tree = memo(() => {
       {designing && (
         <>
           <FieldTypesNode />
-          {/* <WidgetTypesNode /> */}
+          <WidgetTypesNode />
           {/* <WidgetsForFieldsNode /> */}
           {/* <FieldsNode /> */}
           {/* <CrssNode /> */}

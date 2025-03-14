@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,15 +10,17 @@ import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { widget_type_id } = useParams<{ widget_type_id: string }>()
+const from = '/data/_authLayout/widget-types/$widgetTypeId'
+
+export const WidgetType = memo(() => {
+  const { widgetTypeId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM widget_types WHERE widget_type_id = $1`,
-    [widget_type_id],
+    [widgetTypeId],
     'widget_type_id',
   )
   const row = res?.rows?.[0]
@@ -30,9 +32,9 @@ export const Component = memo(() => {
       if (row[name] === value) return
 
       const sql = `UPDATE widget_types SET ${name} = $1 WHERE widget_type_id = $2`
-      db.query(sql, [value, widget_type_id])
+      db.query(sql, [value, widgetTypeId])
     },
-    [db, row, widget_type_id],
+    [db, row, widgetTypeId],
   )
 
   if (!row) return <Loading />
