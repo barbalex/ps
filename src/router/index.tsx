@@ -1,11 +1,9 @@
 import React from 'react'
 import { createBrowserRouter } from 'react-router'
 
-import { Layout } from '../components/Layout/index.tsx'
 import { ErrorPage } from '../routes/error.tsx'
 import { placesChildren } from './placesChildren.tsx'
 import { placesLevel2 } from './placesLevel2.tsx'
-import { Editing as EditingProject } from '../components/Tree/Project/Editing.tsx'
 
 import { Filter } from '../components/shared/Filter/index.tsx'
 
