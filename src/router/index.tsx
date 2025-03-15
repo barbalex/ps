@@ -1144,30 +1144,6 @@ export const router = () => {
               ],
             },
             {
-              path: 'messages',
-              element: null,
-              handle: {
-                crumb: {
-                  text: 'Messages',
-                  table: 'messages',
-                  folder: true,
-                },
-              },
-              children: [
-                { index: true, lazy: () => import('../routes/messages.tsx') },
-                {
-                  path: ':message_id',
-                  lazy: () => import('../routes/message/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'messages',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
-            },
-            {
               path: 'app-states',
               lazy: () => import('../routes/appStates.tsx'),
             },
