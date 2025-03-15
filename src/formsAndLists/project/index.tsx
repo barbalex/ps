@@ -65,30 +65,18 @@ export const Project = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <TabList
-        selectedValue={projectTab}
-        onTabSelect={onTabSelect}
-      >
-        <Tab
-          id="form"
-          value="form"
-        >
+      <TabList selectedValue={projectTab} onTabSelect={onTabSelect}>
+        <Tab id="form" value="form">
           Form
         </Tab>
         {designing && (
-          <Tab
-            id="design"
-            value="design"
-          >
+          <Tab id="design" value="design">
             Design
           </Tab>
         )}
       </TabList>
       {projectTab === 'form' && (
-        <div
-          role="tabpanel"
-          aria-labelledby="form"
-        >
+        <div role="tabpanel" aria-labelledby="form">
           <Form
             row={row}
             onChange={onChange}
@@ -98,10 +86,7 @@ export const Project = memo(() => {
         </div>
       )}
       {projectTab === 'design' && designing && (
-        <Design
-          onChange={onChange}
-          row={row}
-        />
+        <Design onChange={onChange} row={row} />
       )}
     </div>
   )

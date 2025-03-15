@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 
 import { controls } from '../../../styles.ts'
 import * as stores from '../../../store.ts'
@@ -13,13 +13,12 @@ type Props = {
 }
 
 export const FilterHeader = memo(
-  ({ title = 'Filter', isFiltered = false, filterName }:Props) => {
+  ({ title = 'Filter', isFiltered = false, filterName }: Props) => {
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const onClickBack = useCallback(
-      () => navigate({ pathname: '..', search: searchParams.toString() }),
-      [navigate, searchParams],
+      () => navigate({ pathname: '..' }),
+      [navigate],
     )
 
     const onClickClearFilter = useCallback(() => {

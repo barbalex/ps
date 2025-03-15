@@ -4,7 +4,7 @@ import {
   useLiveIncrementalQuery,
 } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useParams } from '@tanstack/react-router'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
@@ -23,8 +23,8 @@ const tabStyle = {
   minWidth: 60,
 }
 
-export const Filter = memo(({ level }) => {
-  const { project_id, place_id, place_id2 } = useParams()
+export const Filter = memo(({ level, from, children }) => {
+  const { project_id, place_id, place_id2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
@@ -183,14 +183,10 @@ export const Filter = memo(({ level }) => {
             i === filter.length - 1 && filter.length > 1
               ? 'Or'
               : i === 0
-              ? `Filter ${i + 1}`
-              : `Or filter ${i + 1}`
+                ? `Filter ${i + 1}`
+                : `Or filter ${i + 1}`
           return (
-            <Tab
-              key={i}
-              value={i + 1}
-              style={tabStyle}
-            >
+            <Tab key={i} value={i + 1} style={tabStyle}>
               {label}
             </Tab>
           )
@@ -200,6 +196,7 @@ export const Filter = memo(({ level }) => {
         filterName={filterAtomName}
         orFilters={filter}
         orIndex={activeTab - 1}
+        children={children}
       />
     </div>
   )

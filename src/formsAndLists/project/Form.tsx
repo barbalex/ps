@@ -5,8 +5,6 @@ import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
-// TODO: learn how to pass row, onChange and orIndex from filter to this form using tanstack/react-router
-// react-router passed via outlet context
 export const ProjectForm = memo(
   ({ onChange, row, orIndex, autoFocusRef, from }) => {
     // need to extract the jsonb data from the row
@@ -15,11 +13,7 @@ export const ProjectForm = memo(
     const jsonbData = useMemo(() => jsonbDataFromRow(row), [row])
 
     return (
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
+      <div className="form-container" role="tabpanel" aria-labelledby="form">
         <TextField
           label="Name"
           name="name"
