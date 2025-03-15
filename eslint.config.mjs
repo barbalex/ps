@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
 import { fixupConfigRules } from '@eslint/compat'
+import pluginRouter from '@tanstack/eslint-plugin-router'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -17,6 +18,7 @@ const compat = new FlatCompat({
 })
 
 export default [
+  ...pluginRouter.configs['flat/recommended'],
   {
     ignores: [
       '**/dist',
