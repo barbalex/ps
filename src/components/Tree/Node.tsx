@@ -5,7 +5,7 @@ import {
 } from 'react-icons/md'
 import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
-import { Link, useSearchParams } from 'react-router'
+import { Link } from '@tanstack/react-router'
 import { pipe } from 'remeda'
 
 import { on } from '../../css.ts'
@@ -84,10 +84,10 @@ export const Node = memo(
     id,
     childrenCount,
     to,
+    toParams = {},
     onClickButton,
     sibling,
   }: Props) => {
-    const [searchParams] = useSearchParams()
     // console.log('hello level:', level)
 
     return (
@@ -104,13 +104,10 @@ export const Node = memo(
           aria-label="toggle"
           size="small"
           icon={
-            !childrenCount ? (
-              <NoChildrenIcon style={svgStyle} />
-            ) : isOpen ? (
+            !childrenCount ? <NoChildrenIcon style={svgStyle} />
+            : isOpen ?
               <OpenWithChildrenIcon style={svgStyle} />
-            ) : (
-              <ClosedWithChildrenIcon style={svgStyle} />
-            )
+            : <ClosedWithChildrenIcon style={svgStyle} />
           }
           onClick={onClickButton}
           disabled={!childrenCount}
@@ -120,23 +117,23 @@ export const Node = memo(
           }}
         />
         <div style={contentStyle}>
-          {isActive ? (
+          {isActive ?
             <span style={contentLabelStyle}>
               {node.label ?? node?.name ?? id ?? '(missing label)'}
             </span>
-          ) : (
-            <Link
+          : <Link
               style={pipe(
                 contentLinkStyle,
                 on('&:hover', {
                   fontWeight: 'bold',
                 }),
               )}
-              to={{ pathname: to, search: searchParams.toString() }}
+              to={to}
+              params={toParams}
             >
               {node.label ?? node.name ?? id ?? '(missing label)'}
             </Link>
-          )}
+          }
           {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}
         </div>
       </div>

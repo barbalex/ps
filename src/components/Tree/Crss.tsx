@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -19,7 +19,6 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const res = useLiveIncrementalQuery(
     `
@@ -57,10 +56,7 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -72,7 +68,6 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -88,13 +83,7 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen &&
-        rows.map((cr) => (
-          <CrsNode
-            key={cr.crs_id}
-            crs={cr}
-          />
-        ))}
+      {isOpen && rows.map((cr) => <CrsNode key={cr.crs_id} crs={cr} />)}
     </>
   )
 })

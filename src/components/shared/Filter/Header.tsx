@@ -1,10 +1,12 @@
 import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
+import { useAtom } from 'jotai'
 
 import { controls } from '../../../styles.ts'
 import * as stores from '../../../store.ts'
+import { projectsFilterAtom } from '../../../store.ts'
 
 type Props = {
   title: string
@@ -13,17 +15,20 @@ type Props = {
 }
 
 export const FilterHeader = memo(
-  ({ title = 'Filter', isFiltered = false, filterName }:Props) => {
+  ({ title = 'Filter', filterName }: Props) => {
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
+    // ensure atom exists - got errors when it didn't
+    const [filter] = useAtom(stores[filterName] ?? projectsFilterAtom)
+    const isFiltered = filter.length > 0
 
-    const onClickBack = useCallback(
-      () => navigate({ pathname: '..', search: searchParams.toString() }),
-      [navigate, searchParams],
-    )
+    const onClickBack = useCallback(() => navigate({ to: '..' }), [navigate])
 
     const onClickClearFilter = useCallback(() => {
       const filterAtom = stores[filterName]
+      if (!filterAtom) {
+        return console.error('Filter atom not found:', filterName)
+      }
+
       stores?.store?.set?.(filterAtom, [])
     }, [filterName])
 

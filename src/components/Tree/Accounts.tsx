@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -15,7 +15,6 @@ export const AccountsNode = memo(() => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const res = useLiveIncrementalQuery(
     `
@@ -53,7 +52,7 @@ export const AccountsNode = memo(() => {
       removeChildNodes({ node: ownArray, isRoot: true })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({ pathname: parentUrl, search: searchParams.toString() })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -65,7 +64,6 @@ export const AccountsNode = memo(() => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 

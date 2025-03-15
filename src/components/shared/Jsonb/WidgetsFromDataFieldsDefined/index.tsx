@@ -4,7 +4,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
@@ -26,9 +26,10 @@ export const WidgetsFromDataFieldsDefined = memo(
     orIndex,
     autoFocus,
     ref,
+    from,
   }) => {
     const db = usePGlite()
-    const { project_id } = useParams()
+    const { project_id } = useParams({ from })
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
@@ -144,6 +145,7 @@ export const WidgetsFromDataFieldsDefined = memo(
             orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
+            from={from}
           />
         ))}
       </DragAndDropContext.Provider>

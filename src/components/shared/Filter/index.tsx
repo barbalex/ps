@@ -4,10 +4,12 @@ import {
   useLiveIncrementalQuery,
 } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useParams } from '@tanstack/react-router'
+import { useAtom } from 'jotai'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
+import { projectsFilterAtom } from '../../../store.ts'
 import { OrFilter } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
@@ -23,8 +25,8 @@ const tabStyle = {
   minWidth: 60,
 }
 
-export const Filter = memo(({ level }) => {
-  const { project_id, place_id, place_id2 } = useParams()
+export const Filter = memo(({ level, from, children }) => {
+  const { project_id, place_id, place_id2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
@@ -69,22 +71,13 @@ export const Filter = memo(({ level }) => {
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  const [, setRerenderCount] = useState(0)
-  const rerender = useCallback(() => setRerenderCount((c) => c + 1), [])
   const filterAtomName = filterAtomNameFromTableAndLevel({
     table: tableName,
     level,
   })
   const filterAtom = stores[filterAtomName]
-  // stores.store.set(filterAtom, [])
-
-  // Not using hook to enable fetching filter dynamically depending on name
-  // Thus need to subscribe to the store and enforce rerender when it changes
-  stores.store.sub(filterAtom, rerender)
-
-  const filter = stores?.store?.get?.(filterAtom)
-  const isFiltered = filter.length > 0
-  // console.log('Filter, filter:', filter)
+  // ensure atom exists - got errors when it didn't
+  const [filter] = useAtom(filterAtom ?? projectsFilterAtom)
 
   const { whereUnfilteredString, whereFilteredString } = useMemo(() => {
     let whereUnfiltered
@@ -171,7 +164,6 @@ export const Filter = memo(({ level }) => {
           isLoading ? `...` : totalCount
         })`}
         filterName={filterAtomName}
-        isFiltered={isFiltered}
       />
       <TabList
         selectedValue={activeTab}
@@ -183,14 +175,10 @@ export const Filter = memo(({ level }) => {
             i === filter.length - 1 && filter.length > 1
               ? 'Or'
               : i === 0
-              ? `Filter ${i + 1}`
-              : `Or filter ${i + 1}`
+                ? `Filter ${i + 1}`
+                : `Or filter ${i + 1}`
           return (
-            <Tab
-              key={i}
-              value={i + 1}
-              style={tabStyle}
-            >
+            <Tab key={i} value={i + 1} style={tabStyle}>
               {label}
             </Tab>
           )
@@ -200,6 +188,7 @@ export const Filter = memo(({ level }) => {
         filterName={filterAtomName}
         orFilters={filter}
         orIndex={activeTab - 1}
+        children={children}
       />
     </div>
   )

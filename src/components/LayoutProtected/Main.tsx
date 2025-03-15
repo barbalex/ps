@@ -1,11 +1,10 @@
 import { memo } from 'react'
-import { Outlet } from 'react-router'
-// import { useSearchParams } from 'react-router'
+import { Outlet } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
 import { useAtom } from 'jotai'
 
 import { Tree } from '../Tree/index.tsx'
-import { MapContainer } from '../Map/index.tsx'
+// import { MapContainer } from '../Map/index.tsx'
 import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
 
 const containerStyle = {
@@ -16,7 +15,8 @@ const containerStyle = {
   position: 'relative',
 }
 
-export const Main = memo(() => {
+// TODO: use search for tabs
+export const  Main = memo(() => {
   const [mapMaximized] = useAtom(mapMaximizedAtom)
   const [tabs] = useAtom(tabsAtom)
 
@@ -32,6 +32,8 @@ export const Main = memo(() => {
 
   const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 
+  // console.log('LayoutProtected.Main', { tabs })
+
   if (onlyForm) return <Outlet />
 
   // TODO:re-enable all
@@ -40,7 +42,7 @@ export const Main = memo(() => {
       <Allotment>
         {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />}
         {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
-        {tabs.includes('map') && <MapContainer />}
+        {/* {tabs.includes('map') && <MapContainer />} */}
       </Allotment>
     </div>
   )

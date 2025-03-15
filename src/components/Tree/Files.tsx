@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -16,23 +16,23 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, filesFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id?: string
-  subproject_id?: string
-  place_id?: string
-  place_id2?: string
-  check_id?: string
-  action_id?: string
+  projectId?: string
+  subprojectId?: string
+  placeId?: string
+  placeId2?: string
+  checkId?: string
+  actionId?: string
   level: number
 }
 
 export const FilesNode = memo(
   ({
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    check_id,
-    action_id,
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    checkId,
+    actionId,
     level,
   }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -40,54 +40,53 @@ export const FilesNode = memo(
 
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const { hField, hValue } = useMemo(() => {
       let hField
       let hValue
-      if (action_id) {
+      if (actionId) {
         hField = 'action_id'
-        hValue = action_id
-      } else if (check_id) {
+        hValue = actionId
+      } else if (checkId) {
         hField = 'check_id'
-        hValue = check_id
-      } else if (place_id2) {
+        hValue = checkId
+      } else if (placeId2) {
         hField = 'place_id'
-        hValue = place_id2
-      } else if (place_id) {
+        hValue = placeId2
+      } else if (placeId) {
         hField = 'place_id'
-        hValue = place_id
-      } else if (subproject_id) {
+        hValue = placeId
+      } else if (subprojectId) {
         hField = 'subproject_id'
-        hValue = subproject_id
-      } else if (project_id) {
+        hValue = subprojectId
+      } else if (projectId) {
         hField = 'project_id'
-        hValue = project_id
+        hValue = projectId
       }
       return { hField, hValue }
-    }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
+    }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
 
     const filterString = filterStringFromFilter(filter)
     const isFiltered = !!filterString
-    const resFiltered = useLiveIncrementalQuery(
+    const resFiltered = useLiveQuery(
       `
       SELECT
         file_id,
         label 
       FROM files 
       WHERE 
-        ${hField} = $1 
+        ${hField ? `${hField} = '${hValue}'` : 'true'} 
         ${isFiltered ? ` AND ${filterString} ` : ''} 
       ORDER BY label`,
-      [hValue],
-      'file_id',
     )
     const rows = resFiltered?.rows ?? []
     const rowsLoading = resFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
-      `SELECT count(*) FROM files WHERE ${hField} = $1`,
-      [hValue],
+      `
+      SELECT count(*) 
+      FROM files 
+      WHERE ${hField ? `${hField} = '${hValue}'` : 'true'} `,
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resultCountUnfiltered === undefined
@@ -100,8 +99,8 @@ export const FilesNode = memo(
                 countLoading ? '...' : formatNumber(countUnfiltered)
               }`
             : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+              ? '...'
+              : formatNumber(rows.length)
         })`,
       }),
       [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -111,14 +110,14 @@ export const FilesNode = memo(
     const parentArray = useMemo(
       () => [
         'data',
-        ...(project_id ? ['projects', project_id] : []),
-        ...(subproject_id ? ['subprojects', subproject_id] : []),
-        ...(place_id ? ['places', place_id] : []),
-        ...(place_id2 ? ['places', place_id2] : []),
-        ...(action_id ? ['actions', action_id] : []),
-        ...(check_id ? ['checks', check_id] : []),
+        ...(projectId ? ['projects', projectId] : []),
+        ...(subprojectId ? ['subprojects', subprojectId] : []),
+        ...(placeId ? ['places', placeId] : []),
+        ...(placeId2 ? ['places', placeId2] : []),
+        ...(actionId ? ['actions', actionId] : []),
+        ...(checkId ? ['checks', checkId] : []),
       ],
-      [action_id, check_id, place_id, place_id2, project_id, subproject_id],
+      [actionId, checkId, placeId, placeId2, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'files'], [parentArray])
@@ -134,10 +133,7 @@ export const FilesNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -149,7 +145,6 @@ export const FilesNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -169,12 +164,12 @@ export const FilesNode = memo(
           rows.map((file) => (
             <FileNode
               key={file.file_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
-              place_id2={place_id2}
-              action_id={action_id}
-              check_id={check_id}
+              project_id={projectId}
+              subproject_id={subprojectId}
+              place_id={placeId}
+              place_id2={placeId2}
+              action_id={actionId}
+              check_id={checkId}
               file={file}
               level={level + 1}
             />

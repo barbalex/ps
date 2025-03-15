@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -30,7 +30,6 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const showFiles = project.files_active_projects ?? false
 
@@ -52,10 +51,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
       removeChildNodes({ node: ownArray })
       // TODO: only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -67,7 +63,6 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -85,7 +80,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
         onClickButton={onClickButton}
         sibling={<Editing projectId={project.project_id} />}
       />
-      {isOpen && (
+      {/* {isOpen && (
         <>
           <SubprojectsNode project_id={project.project_id} />
           <ProjectReportsNode project_id={project.project_id} />
@@ -110,7 +105,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
             </>
           )}
         </>
-      )}
+      )} */}
     </>
   )
 })

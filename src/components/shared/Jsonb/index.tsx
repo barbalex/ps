@@ -5,13 +5,13 @@
 // 3. loop through fields
 // 4. build input depending on field properties
 import { memo, useCallback } from 'react'
-import { useParams, useLocation } from 'react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLocation, useParams } from '@tanstack/react-router'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
-import { accountTables } from '../../../routes/field/accountTables.ts'
+import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
@@ -28,10 +28,11 @@ export const Jsonb = memo(
     data = {},
     autoFocus = false,
     ref,
+    from,
   }) => {
     const isAccountTable = accountTables.includes(table)
-    const { project_id, place_id, place_id2 } = useParams()
-    const { pathname } = useLocation()
+    const { project_id, place_id, place_id2 } = useParams({ from })
+    const location = useLocation({ from })
     const db = usePGlite()
 
     const useProjectId = project_id && table !== 'projects'
@@ -68,9 +69,13 @@ export const Jsonb = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        const isFilter = pathname.endsWith('filter')
+        const isFilter = location.pathname.endsWith('filter')
         const level =
-          table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+          table === 'places' ?
+            place_id ? 2
+            : 1
+          : place_id2 ? 2
+          : 1
 
         if (isFilter) {
           // TODO: wait until new db and it's accessing lib. Then implement these queries
@@ -99,13 +104,13 @@ export const Jsonb = memo(
       },
       [
         data,
-        pathname,
+        location.pathname,
         table,
         place_id,
         place_id2,
-        db,
         jsonFieldName,
         idField,
+        db,
         id,
       ],
     )
@@ -119,7 +124,7 @@ export const Jsonb = memo(
 
     return (
       <>
-        {fields.length > 0 ? (
+        {fields.length > 0 ?
           <WidgetsFromDataFieldsDefined
             key="widgetsFromDataFieldsDefined"
             fields={fields}
@@ -131,8 +136,9 @@ export const Jsonb = memo(
             orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
+            from={from}
           />
-        ) : null}
+        : null}
         {dataKeysNotDefined.map((dataKey, index) => (
           <TextField
             key={dataKey}
@@ -156,6 +162,7 @@ export const Jsonb = memo(
           key="addField"
           tableName={table}
           level={place_id2 ? 2 : 1}
+          from={from}
         />
       </>
     )

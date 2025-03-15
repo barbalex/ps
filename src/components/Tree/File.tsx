@@ -1,17 +1,17 @@
 import { useMemo, memo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
 export const FileNode = memo(
   ({
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    check_id,
-    action_id,
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    checkId,
+    actionId,
     file,
     level = 2,
   }) => {
@@ -23,25 +23,25 @@ export const FileNode = memo(
     const ownArray = useMemo(
       () => [
         'data',
-        ...(project_id ? ['projects', project_id] : []),
-        ...(subproject_id ? ['subprojects', subproject_id] : []),
-        ...(place_id ? ['places', place_id] : []),
-        ...(place_id2 ? ['places', place_id2] : []),
-        ...(action_id ? ['actions', action_id] : []),
-        ...(check_id ? ['checks', check_id] : []),
+        ...(projectId ? ['projects', projectId] : []),
+        ...(subprojectId ? ['subprojects', subprojectId] : []),
+        ...(placeId ? ['places', placeId] : []),
+        ...(placeId2 ? ['places', placeId2] : []),
+        ...(actionId ? ['actions', actionId] : []),
+        ...(checkId ? ['checks', checkId] : []),
         'files',
         file.file_id,
         ...(isPreview ? ['preview'] : []),
       ],
       [
-        action_id,
-        check_id,
+        actionId,
+        checkId,
         file.file_id,
         isPreview,
-        place_id,
-        place_id2,
-        project_id,
-        subproject_id,
+        placeId,
+        placeId2,
+        projectId,
+        subprojectId,
       ],
     )
     const ownUrl = `/${ownArray.join('/')}`

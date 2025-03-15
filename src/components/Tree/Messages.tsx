@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -15,7 +15,6 @@ export const MessagesNode = memo(() => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const res = useLiveIncrementalQuery(
     `
@@ -56,10 +55,7 @@ export const MessagesNode = memo(() => {
       })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -72,7 +68,6 @@ export const MessagesNode = memo(() => {
     ownArray,
     parentArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -90,10 +85,7 @@ export const MessagesNode = memo(() => {
       />
       {isOpen &&
         rows.map((message) => (
-          <MessageNode
-            key={message.message_id}
-            message={message}
-          />
+          <MessageNode key={message.message_id} message={message} />
         ))}
     </>
   )

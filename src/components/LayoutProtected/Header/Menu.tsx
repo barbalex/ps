@@ -7,7 +7,12 @@ import {
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
-import { useNavigate, useSearchParams, useLocation } from 'react-router'
+import {
+  useNavigate,
+  useLocation,
+  useCanGoBack,
+  useRouter,
+} from '@tanstack/react-router'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
@@ -54,8 +59,8 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 export const Menu = memo(() => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-
+  const canGoBack = useCanGoBack()
+  const { history } = useRouter()
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
@@ -70,17 +75,18 @@ export const Menu = memo(() => {
   )
 
   const onClickOptions = useCallback(() => {
-    if (isAppStates) return navigate(-1)
+    if (isAppStates) {
+      return canGoBack ? history.go(-1) : navigate({ to: '/data' })
+    }
 
-    // TODO: change route to app-state
-    navigate({
-      pathname: `/data/app-states`,
-      search: searchParams.toString(),
-    })
-  }, [isAppStates, navigate, searchParams])
+    navigate({ to: `/data/app-states` })
+  }, [canGoBack, history, isAppStates, navigate])
 
   const onClickLogout = useCallback(() => logout(), [logout])
-  const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
+  const onClickEnter = useCallback(
+    () => navigate({ to: '/data/projects' }),
+    [navigate],
+  )
 
   const onClickMapView = useCallback(
     (e) => {
@@ -192,8 +198,8 @@ export const Menu = memo(() => {
           !isAuthenticated
             ? 'Login'
             : isHome
-            ? 'Enter'
-            : `Logout ${authUser?.email}`
+              ? 'Enter'
+              : `Logout ${authUser?.email}`
         }
         style={pipe(
           {

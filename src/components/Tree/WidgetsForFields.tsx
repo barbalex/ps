@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -21,7 +21,6 @@ export const WidgetsForFieldsNode = memo(() => {
 
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -48,13 +47,12 @@ export const WidgetsForFieldsNode = memo(() => {
   const widgetsForFieldsNode = useMemo(
     () => ({
       label: `Widgets For Fields (${
-        isFiltered
-          ? `${rowsLoading ? `...` : formatNumber(rows.length)}/${
-              countLoading ? `...` : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-          ? `...`
-          : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? `...` : formatNumber(rows.length)}/${
+            countLoading ? `...` : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? `...`
+        : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -82,10 +80,7 @@ export const WidgetsForFieldsNode = memo(() => {
       })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -97,7 +92,6 @@ export const WidgetsForFieldsNode = memo(() => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 

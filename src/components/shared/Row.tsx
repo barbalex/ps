@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 
 const imgStyle = {
   flexBasis: 50,
@@ -18,27 +18,22 @@ const labelStyle = {
 export const Row = memo(
   ({ label, to, onClick, imgSrc, lastHasImages = false }) => {
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const onClickLabel = useCallback(() => {
       // when used in map drawer, we don't want to navigate
       if (onClick) return onClick()
 
-      navigate({ pathname: to, search: searchParams.toString() })
-    }, [navigate, onClick, searchParams, to])
+      navigate({ to })
+    }, [navigate, onClick, to])
 
     const onClickImg = useCallback(
-      () =>
-        navigate({
-          pathname: `${to}/preview`,
-          search: searchParams.toString(),
-        }),
-      [navigate, searchParams, to],
+      () => navigate({ to: `${to}/preview` }),
+      [navigate, to],
     )
 
     return (
       <div className="row">
-        {imgSrc ? (
+        {imgSrc ?
           <img
             onClick={onClickImg}
             src={imgSrc}
@@ -47,14 +42,12 @@ export const Row = memo(
             width="50"
             height="50"
           />
-        ) : lastHasImages ? (
+        : lastHasImages ?
           <div
             onClick={onClickImg}
             style={imgDivStyle}
           />
-        ) : (
-          <div />
-        )}
+        : <div />}
         <div
           onClick={onClickLabel}
           style={labelStyle}

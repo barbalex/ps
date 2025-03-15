@@ -1,5 +1,5 @@
 import React, { createRef } from 'react'
-import { RouterProvider } from 'react-router/dom'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
 import { PGlite } from '@electric-sql/pglite'
@@ -15,9 +15,17 @@ import 'allotment/dist/style.css'
 import './style.css'
 
 import { lightTheme } from './modules/theme.ts'
-import { router } from './router/index.tsx'
+// import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store } from './store.ts'
+
+import { routeTree } from './routeTree.gen'
+const router = createRouter({ routeTree })
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
 
 const db = await PGlite.create('idb://ps', {
   extensions: { live },
@@ -53,15 +61,9 @@ export const App = () => {
             ref={uploaderRef}
           ></uc-upload-ctx-provider>
           <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-          <div
-            style={routerContainerStyle}
-            id="router-container"
-          >
+          <div style={routerContainerStyle} id="router-container">
             <UploaderContext.Provider value={uploaderRef}>
-              <RouterProvider
-                router={router()}
-                future={{ v7_startTransition: true }}
-              />
+              <RouterProvider router={router} />
             </UploaderContext.Provider>
           </div>
         </FluentProvider>

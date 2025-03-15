@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
-import { useLocation, useParams } from 'react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useParams, useLocation } from '@tanstack/react-router'
 
 import { TextField } from '../../../TextField.tsx'
 import { CheckboxField } from '../../../CheckboxField.tsx'
@@ -31,9 +31,10 @@ export const Widget = memo(
     orIndex,
     autoFocus,
     ref,
+    from,
   }) => {
-    const { pathname } = useLocation()
-    const { place_id, place_id2 } = useParams()
+    const { place_id, place_id2 } = useParams({ from })
+    const location = useLocation({ from })
     const db = usePGlite()
 
     const onChange = useCallback<InputProps['onChange']>(
@@ -50,11 +51,15 @@ export const Widget = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        const isFilter = pathname.endsWith('filter')
+        const isFilter = location.pathname.endsWith('filter')
 
         if (isFilter) {
           const level =
-            table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+            table === 'places' ?
+              place_id ? 2
+              : 1
+            : place_id2 ? 2
+            : 1
           const filterName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[filterName]
           // console.log('Jsonb.Widget.onChange', {
@@ -95,15 +100,15 @@ export const Widget = memo(
       },
       [
         data,
-        pathname,
+        location.pathname,
         table,
+        jsonFieldName,
+        idField,
         place_id,
         place_id2,
         orIndex,
         field.field_type,
         db,
-        jsonFieldName,
-        idField,
         id,
       ],
     )
@@ -124,7 +129,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'jes-no':
@@ -136,7 +146,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'checkbox-2':
@@ -148,7 +163,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'checkbox-3':
@@ -160,7 +180,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
             indeterminate={true}
           />
         )
@@ -174,7 +199,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'dropdown':
@@ -185,7 +215,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'options-many':
@@ -198,7 +233,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'options-few':
@@ -211,7 +251,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'datepicker':
@@ -224,7 +269,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'timepicker':
@@ -236,7 +286,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       case 'datetimepicker':
@@ -248,7 +303,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
       default:
@@ -261,7 +321,12 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
-            button={<EditField field_id={field.field_id} />}
+            button={
+              <EditField
+                field_id={field.field_id}
+                from={from}
+              />
+            }
           />
         )
     }

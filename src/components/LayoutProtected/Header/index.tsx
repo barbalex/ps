@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { Link } from '@tanstack/react-router'
 import { pipe } from 'remeda'
 
 import { on } from '../../../css.ts'
