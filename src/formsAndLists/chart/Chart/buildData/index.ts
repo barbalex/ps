@@ -1,6 +1,7 @@
 import { processPlaces as countPlacesRows } from './countPlacesRows.ts'
 
 export const buildData = async ({ db, chart, subjects, subproject_id }) => {
+  if (!subproject_id) return { data: [], years: [] }
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}

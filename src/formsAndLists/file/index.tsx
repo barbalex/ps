@@ -99,7 +99,7 @@ export const File = memo(({ from }) => {
           label="Subproject"
           name="subproject_id"
           table="subprojects"
-          where={`project_id = '${row?.project_id}'`}
+          where={`project_id ${row?.project_id ? `= '${row.project_id}'` : 'IS NULL'}`}
           value={row.subproject_id ?? ''}
           onChange={onChange}
         />
@@ -107,7 +107,7 @@ export const File = memo(({ from }) => {
           label="Place"
           name="place_id"
           table="places"
-          where={`subproject_id = '${row?.subproject_id}'`}
+          where={`subproject_id ${row?.subproject_id ? `= '${row?.subproject_id}'` : 'IS NULL'}`}
           value={row.place_id ?? ''}
           onChange={onChange}
         />
@@ -115,7 +115,7 @@ export const File = memo(({ from }) => {
           label="Action"
           name="action_id"
           table="actions"
-          where={`place_id = '${row?.place_id}'`}
+          where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
           value={row.action_id ?? ''}
           onChange={onChange}
         />
@@ -123,7 +123,7 @@ export const File = memo(({ from }) => {
           label="Check"
           name="check_id"
           table="checks"
-          where={`place_id = '${row?.place_id}'`}
+          where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
           value={row.check_id ?? ''}
           onChange={onChange}
         />
