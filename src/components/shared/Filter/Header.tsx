@@ -16,10 +16,7 @@ export const FilterHeader = memo(
   ({ title = 'Filter', isFiltered = false, filterName }: Props) => {
     const navigate = useNavigate()
 
-    const onClickBack = useCallback(
-      () => navigate({ pathname: '..' }),
-      [navigate],
-    )
+    const onClickBack = useCallback(() => navigate({ to: '..' }), [navigate])
 
     const onClickClearFilter = useCallback(() => {
       const filterAtom = stores[filterName]

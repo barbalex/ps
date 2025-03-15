@@ -4,6 +4,7 @@ import { Filter } from '../../../../components/shared/Filter/index.tsx'
 import { ProjectForm } from '../../../../formsAndLists/project/Form.tsx'
 
 const from = '/data/_authLayout/projects/filter'
+
 export const Route = createFileRoute(from)({
   component: RouteComponent,
 })

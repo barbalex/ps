@@ -80,9 +80,12 @@ export const Filter = memo(({ level, from, children }) => {
 
   // Not using hook to enable fetching filter dynamically depending on name
   // Thus need to subscribe to the store and enforce rerender when it changes
-  stores.store.sub(filterAtom, rerender)
+  if (filterAtom) stores.store.sub(filterAtom, rerender)
 
-  const filter = stores?.store?.get?.(filterAtom)
+  const filter = useMemo(
+    () => (filterAtom ? (stores?.store?.get?.(filterAtom) ?? []) : []),
+    [filterAtom],
+  )
   const isFiltered = filter.length > 0
   // console.log('Filter, filter:', filter)
 
