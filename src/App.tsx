@@ -30,7 +30,7 @@ declare module '@tanstack/react-router' {
 const db = await PGlite.create('idb://ps', {
   extensions: { live },
   relaxedDurability: true,
-  debug: true,
+  // debug: true,
 })
 
 const routerContainerStyle = {

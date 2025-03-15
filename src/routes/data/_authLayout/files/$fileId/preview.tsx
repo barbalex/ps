@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { FilePreview } from '../../../../formsAndLists/filePreview/index.tsx'
+import { FilePreview } from '../../../../../formsAndLists/filePreview/index.tsx'
 
 const from = '/data/_authLayout/files/$fileId/preview'
 
