@@ -1143,10 +1143,6 @@ export const router = () => {
                 },
               ],
             },
-            {
-              path: 'app-states',
-              lazy: () => import('../routes/appStates.tsx'),
-            },
           ],
         },
       ],
