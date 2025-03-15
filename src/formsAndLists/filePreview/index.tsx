@@ -1,5 +1,5 @@
 import { memo, useRef } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -28,13 +28,13 @@ const imageStyle = {
 }
 const textStyle = { alignSelf: 'center', paddingTop: '2em' }
 
-export const Component = memo(() => {
-  const { file_id } = useParams()
+export const FilePreview = memo(({ from }) => {
+  const { fileId } = useParams({ from })
   const previewRef = useRef<HTMLDivElement>(null)
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM files WHERE file_id = $1`,
-    [file_id],
+    [fileId],
     'file_id',
   )
   const row = res?.rows?.[0]
@@ -73,18 +73,9 @@ export const Component = memo(() => {
   return (
     <>
       <Uploader />
-      <div
-        ref={previewRef}
-        style={containerStyle}
-      >
-        <Header
-          row={row}
-          previewRef={previewRef}
-        />
-        <div
-          style={fileStyle}
-          ref={ref}
-        >
+      <div ref={previewRef} style={containerStyle}>
+        <Header row={row} previewRef={previewRef} />
+        <div style={fileStyle} ref={ref}>
           {isImage && row.url && width && (
             <img
               src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
