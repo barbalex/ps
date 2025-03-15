@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Filter } from '../../../../components/shared/Filter/index.tsx'
-import { WidgetTypeForm } from '../../../../formsAndLists/widgetType/Form.tsx'
+import { FieldTypeForm } from '../../../../formsAndLists/fieldType/Form.tsx'
 
-const from = '/data/_authLayout/widget-types/filter'
+const from = '/data/_authLayout/field-types/filter'
 
 export const Route = createFileRoute(from)({
   component: RouteComponent,
@@ -13,7 +13,7 @@ function RouteComponent() {
   return (
     <Filter from={from}>
       {({ row, onChange }) => (
-        <WidgetTypeForm row={row} onChange={onChange} from={from} />
+        <FieldTypeForm row={row} onChange={onChange} from={from} />
       )}
     </Filter>
   )

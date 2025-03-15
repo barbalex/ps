@@ -6,7 +6,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as Form } from './Form.tsx'
+import { FieldTypeForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
@@ -43,11 +43,7 @@ export const FieldType = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )

@@ -40,6 +40,7 @@ import { Route as DataAuthLayoutProjectsProjectIdImport } from './routes/data/_a
 import { Route as DataAuthLayoutMessagesMessageIdImport } from './routes/data/_authLayout/messages/$messageId'
 import { Route as DataAuthLayoutFieldsFilterImport } from './routes/data/_authLayout/fields/filter'
 import { Route as DataAuthLayoutFieldsFieldIdImport } from './routes/data/_authLayout/fields/$fieldId'
+import { Route as DataAuthLayoutFieldTypesFilterImport } from './routes/data/_authLayout/field-types/filter'
 import { Route as DataAuthLayoutFieldTypesFieldTypeIdImport } from './routes/data/_authLayout/field-types/$fieldTypeId'
 import { Route as DataAuthLayoutCrsCrsIdImport } from './routes/data/_authLayout/crs/$crsId'
 import { Route as DataAuthLayoutAccountsAccountIdImport } from './routes/data/_authLayout/accounts/$accountId'
@@ -234,6 +235,13 @@ const DataAuthLayoutFieldsFieldIdRoute =
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
+const DataAuthLayoutFieldTypesFilterRoute =
+  DataAuthLayoutFieldTypesFilterImport.update({
+    id: '/field-types/filter',
+    path: '/field-types/filter',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
+  } as any)
+
 const DataAuthLayoutFieldTypesFieldTypeIdRoute =
   DataAuthLayoutFieldTypesFieldTypeIdImport.update({
     id: '/field-types/$fieldTypeId',
@@ -347,6 +355,13 @@ declare module '@tanstack/react-router' {
       path: '/field-types/$fieldTypeId'
       fullPath: '/data/field-types/$fieldTypeId'
       preLoaderRoute: typeof DataAuthLayoutFieldTypesFieldTypeIdImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
+    '/data/_authLayout/field-types/filter': {
+      id: '/data/_authLayout/field-types/filter'
+      path: '/field-types/filter'
+      fullPath: '/data/field-types/filter'
+      preLoaderRoute: typeof DataAuthLayoutFieldTypesFilterImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
     '/data/_authLayout/fields/$fieldId': {
@@ -528,6 +543,7 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutAccountsAccountIdRoute: typeof DataAuthLayoutAccountsAccountIdRoute
   DataAuthLayoutCrsCrsIdRoute: typeof DataAuthLayoutCrsCrsIdRoute
   DataAuthLayoutFieldTypesFieldTypeIdRoute: typeof DataAuthLayoutFieldTypesFieldTypeIdRoute
+  DataAuthLayoutFieldTypesFilterRoute: typeof DataAuthLayoutFieldTypesFilterRoute
   DataAuthLayoutFieldsFieldIdRoute: typeof DataAuthLayoutFieldsFieldIdRoute
   DataAuthLayoutFieldsFilterRoute: typeof DataAuthLayoutFieldsFilterRoute
   DataAuthLayoutMessagesMessageIdRoute: typeof DataAuthLayoutMessagesMessageIdRoute
@@ -560,6 +576,7 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
   DataAuthLayoutCrsCrsIdRoute: DataAuthLayoutCrsCrsIdRoute,
   DataAuthLayoutFieldTypesFieldTypeIdRoute:
     DataAuthLayoutFieldTypesFieldTypeIdRoute,
+  DataAuthLayoutFieldTypesFilterRoute: DataAuthLayoutFieldTypesFilterRoute,
   DataAuthLayoutFieldsFieldIdRoute: DataAuthLayoutFieldsFieldIdRoute,
   DataAuthLayoutFieldsFilterRoute: DataAuthLayoutFieldsFilterRoute,
   DataAuthLayoutMessagesMessageIdRoute: DataAuthLayoutMessagesMessageIdRoute,
@@ -612,6 +629,7 @@ export interface FileRoutesByFullPath {
   '/data/accounts/$accountId': typeof DataAuthLayoutAccountsAccountIdRoute
   '/data/crs/$crsId': typeof DataAuthLayoutCrsCrsIdRoute
   '/data/field-types/$fieldTypeId': typeof DataAuthLayoutFieldTypesFieldTypeIdRoute
+  '/data/field-types/filter': typeof DataAuthLayoutFieldTypesFilterRoute
   '/data/fields/$fieldId': typeof DataAuthLayoutFieldsFieldIdRoute
   '/data/fields/filter': typeof DataAuthLayoutFieldsFilterRoute
   '/data/messages/$messageId': typeof DataAuthLayoutMessagesMessageIdRoute
@@ -645,6 +663,7 @@ export interface FileRoutesByTo {
   '/data/accounts/$accountId': typeof DataAuthLayoutAccountsAccountIdRoute
   '/data/crs/$crsId': typeof DataAuthLayoutCrsCrsIdRoute
   '/data/field-types/$fieldTypeId': typeof DataAuthLayoutFieldTypesFieldTypeIdRoute
+  '/data/field-types/filter': typeof DataAuthLayoutFieldTypesFilterRoute
   '/data/fields/$fieldId': typeof DataAuthLayoutFieldsFieldIdRoute
   '/data/fields/filter': typeof DataAuthLayoutFieldsFilterRoute
   '/data/messages/$messageId': typeof DataAuthLayoutMessagesMessageIdRoute
@@ -682,6 +701,7 @@ export interface FileRoutesById {
   '/data/_authLayout/accounts/$accountId': typeof DataAuthLayoutAccountsAccountIdRoute
   '/data/_authLayout/crs/$crsId': typeof DataAuthLayoutCrsCrsIdRoute
   '/data/_authLayout/field-types/$fieldTypeId': typeof DataAuthLayoutFieldTypesFieldTypeIdRoute
+  '/data/_authLayout/field-types/filter': typeof DataAuthLayoutFieldTypesFilterRoute
   '/data/_authLayout/fields/$fieldId': typeof DataAuthLayoutFieldsFieldIdRoute
   '/data/_authLayout/fields/filter': typeof DataAuthLayoutFieldsFilterRoute
   '/data/_authLayout/messages/$messageId': typeof DataAuthLayoutMessagesMessageIdRoute
@@ -719,6 +739,7 @@ export interface FileRouteTypes {
     | '/data/accounts/$accountId'
     | '/data/crs/$crsId'
     | '/data/field-types/$fieldTypeId'
+    | '/data/field-types/filter'
     | '/data/fields/$fieldId'
     | '/data/fields/filter'
     | '/data/messages/$messageId'
@@ -751,6 +772,7 @@ export interface FileRouteTypes {
     | '/data/accounts/$accountId'
     | '/data/crs/$crsId'
     | '/data/field-types/$fieldTypeId'
+    | '/data/field-types/filter'
     | '/data/fields/$fieldId'
     | '/data/fields/filter'
     | '/data/messages/$messageId'
@@ -786,6 +808,7 @@ export interface FileRouteTypes {
     | '/data/_authLayout/accounts/$accountId'
     | '/data/_authLayout/crs/$crsId'
     | '/data/_authLayout/field-types/$fieldTypeId'
+    | '/data/_authLayout/field-types/filter'
     | '/data/_authLayout/fields/$fieldId'
     | '/data/_authLayout/fields/filter'
     | '/data/_authLayout/messages/$messageId'
@@ -858,6 +881,7 @@ export const routeTree = rootRoute
         "/data/_authLayout/accounts/$accountId",
         "/data/_authLayout/crs/$crsId",
         "/data/_authLayout/field-types/$fieldTypeId",
+        "/data/_authLayout/field-types/filter",
         "/data/_authLayout/fields/$fieldId",
         "/data/_authLayout/fields/filter",
         "/data/_authLayout/messages/$messageId",
@@ -912,6 +936,10 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/field-types/$fieldTypeId": {
       "filePath": "data/_authLayout/field-types/$fieldTypeId.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/field-types/filter": {
+      "filePath": "data/_authLayout/field-types/filter.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/fields/$fieldId": {
