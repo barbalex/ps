@@ -32,6 +32,7 @@ import { Route as DataAuthLayoutCrsIndexImport } from './routes/data/_authLayout
 import { Route as DataAuthLayoutAccountsIndexImport } from './routes/data/_authLayout/accounts/index'
 import { Route as DataAuthLayoutWidgetsForFieldsFilterImport } from './routes/data/_authLayout/widgets-for-fields/filter'
 import { Route as DataAuthLayoutWidgetsForFieldsWidgetForFieldIdImport } from './routes/data/_authLayout/widgets-for-fields/$widgetForFieldId'
+import { Route as DataAuthLayoutWidgetTypesFilterImport } from './routes/data/_authLayout/widget-types/filter'
 import { Route as DataAuthLayoutWidgetTypesWidgetTypeIdImport } from './routes/data/_authLayout/widget-types/$widgetTypeId'
 import { Route as DataAuthLayoutUsersUserIdImport } from './routes/data/_authLayout/users/$userId'
 import { Route as DataAuthLayoutProjectsFilterImport } from './routes/data/_authLayout/projects/filter'
@@ -174,6 +175,13 @@ const DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute =
   DataAuthLayoutWidgetsForFieldsWidgetForFieldIdImport.update({
     id: '/widgets-for-fields/$widgetForFieldId',
     path: '/widgets-for-fields/$widgetForFieldId',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
+  } as any)
+
+const DataAuthLayoutWidgetTypesFilterRoute =
+  DataAuthLayoutWidgetTypesFilterImport.update({
+    id: '/widget-types/filter',
+    path: '/widget-types/filter',
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
@@ -390,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutWidgetTypesWidgetTypeIdImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/widget-types/filter': {
+      id: '/data/_authLayout/widget-types/filter'
+      path: '/widget-types/filter'
+      fullPath: '/data/widget-types/filter'
+      preLoaderRoute: typeof DataAuthLayoutWidgetTypesFilterImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/widgets-for-fields/$widgetForFieldId': {
       id: '/data/_authLayout/widgets-for-fields/$widgetForFieldId'
       path: '/widgets-for-fields/$widgetForFieldId'
@@ -520,6 +535,7 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutProjectsFilterRoute: typeof DataAuthLayoutProjectsFilterRoute
   DataAuthLayoutUsersUserIdRoute: typeof DataAuthLayoutUsersUserIdRoute
   DataAuthLayoutWidgetTypesWidgetTypeIdRoute: typeof DataAuthLayoutWidgetTypesWidgetTypeIdRoute
+  DataAuthLayoutWidgetTypesFilterRoute: typeof DataAuthLayoutWidgetTypesFilterRoute
   DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute: typeof DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute
   DataAuthLayoutWidgetsForFieldsFilterRoute: typeof DataAuthLayoutWidgetsForFieldsFilterRoute
   DataAuthLayoutAccountsIndexRoute: typeof DataAuthLayoutAccountsIndexRoute
@@ -552,6 +568,7 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
   DataAuthLayoutUsersUserIdRoute: DataAuthLayoutUsersUserIdRoute,
   DataAuthLayoutWidgetTypesWidgetTypeIdRoute:
     DataAuthLayoutWidgetTypesWidgetTypeIdRoute,
+  DataAuthLayoutWidgetTypesFilterRoute: DataAuthLayoutWidgetTypesFilterRoute,
   DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute:
     DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute,
   DataAuthLayoutWidgetsForFieldsFilterRoute:
@@ -602,6 +619,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/filter': typeof DataAuthLayoutProjectsFilterRoute
   '/data/users/$userId': typeof DataAuthLayoutUsersUserIdRoute
   '/data/widget-types/$widgetTypeId': typeof DataAuthLayoutWidgetTypesWidgetTypeIdRoute
+  '/data/widget-types/filter': typeof DataAuthLayoutWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataAuthLayoutWidgetsForFieldsFilterRoute
   '/data/accounts': typeof DataAuthLayoutAccountsIndexRoute
@@ -634,6 +652,7 @@ export interface FileRoutesByTo {
   '/data/projects/filter': typeof DataAuthLayoutProjectsFilterRoute
   '/data/users/$userId': typeof DataAuthLayoutUsersUserIdRoute
   '/data/widget-types/$widgetTypeId': typeof DataAuthLayoutWidgetTypesWidgetTypeIdRoute
+  '/data/widget-types/filter': typeof DataAuthLayoutWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataAuthLayoutWidgetsForFieldsFilterRoute
   '/data/accounts': typeof DataAuthLayoutAccountsIndexRoute
@@ -670,6 +689,7 @@ export interface FileRoutesById {
   '/data/_authLayout/projects/filter': typeof DataAuthLayoutProjectsFilterRoute
   '/data/_authLayout/users/$userId': typeof DataAuthLayoutUsersUserIdRoute
   '/data/_authLayout/widget-types/$widgetTypeId': typeof DataAuthLayoutWidgetTypesWidgetTypeIdRoute
+  '/data/_authLayout/widget-types/filter': typeof DataAuthLayoutWidgetTypesFilterRoute
   '/data/_authLayout/widgets-for-fields/$widgetForFieldId': typeof DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute
   '/data/_authLayout/widgets-for-fields/filter': typeof DataAuthLayoutWidgetsForFieldsFilterRoute
   '/data/_authLayout/accounts/': typeof DataAuthLayoutAccountsIndexRoute
@@ -706,6 +726,7 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/users/$userId'
     | '/data/widget-types/$widgetTypeId'
+    | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
     | '/data/accounts'
@@ -737,6 +758,7 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/users/$userId'
     | '/data/widget-types/$widgetTypeId'
+    | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
     | '/data/accounts'
@@ -771,6 +793,7 @@ export interface FileRouteTypes {
     | '/data/_authLayout/projects/filter'
     | '/data/_authLayout/users/$userId'
     | '/data/_authLayout/widget-types/$widgetTypeId'
+    | '/data/_authLayout/widget-types/filter'
     | '/data/_authLayout/widgets-for-fields/$widgetForFieldId'
     | '/data/_authLayout/widgets-for-fields/filter'
     | '/data/_authLayout/accounts/'
@@ -842,6 +865,7 @@ export const routeTree = rootRoute
         "/data/_authLayout/projects/filter",
         "/data/_authLayout/users/$userId",
         "/data/_authLayout/widget-types/$widgetTypeId",
+        "/data/_authLayout/widget-types/filter",
         "/data/_authLayout/widgets-for-fields/$widgetForFieldId",
         "/data/_authLayout/widgets-for-fields/filter",
         "/data/_authLayout/accounts/",
@@ -916,6 +940,10 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/widget-types/$widgetTypeId": {
       "filePath": "data/_authLayout/widget-types/$widgetTypeId.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/widget-types/filter": {
+      "filePath": "data/_authLayout/widget-types/filter.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/widgets-for-fields/$widgetForFieldId": {

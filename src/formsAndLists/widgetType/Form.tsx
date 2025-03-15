@@ -7,7 +7,7 @@ import '../../form.css'
 
 // this form is rendered from a parent or outlet
 // TODO: get working from filter
-export const Component = memo(({ onChange, row, autoFocusRef }) => {
+export const WidgetTypeForm = memo(({ onChange, row, autoFocusRef }) => {
   return (
     <>
       <TextField
