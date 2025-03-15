@@ -4,7 +4,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as Form } from './Form.tsx'
+import { FieldForm as Form } from './Form.tsx'
 
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = memo(

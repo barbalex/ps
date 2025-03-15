@@ -20,6 +20,10 @@ export const FilterHeader = memo(
 
     const onClickClearFilter = useCallback(() => {
       const filterAtom = stores[filterName]
+      if (!filterAtom) {
+        return console.error('Filter atom not found:', filterName)
+      }
+
       stores?.store?.set?.(filterAtom, [])
     }, [filterName])
 

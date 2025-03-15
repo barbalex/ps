@@ -31,9 +31,7 @@ const widgetsNeedingList = [
   '018ca1a1-c94b-7d29-b21c-42053ade0411',
 ] // options-few, options-many
 
-// this form is rendered from a parent or outlet
-// TODO: learn how to pass row/onChange through outlet using tanstack-router
-export const Component = memo(
+export const FieldForm = memo(
   ({ onChange, row, autoFocusRef, isInForm = false, from }) => {
     const { project_id } = useParams({ from })
 
