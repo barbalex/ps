@@ -14,17 +14,6 @@ export const router = () => {
   // console.log('router building')
 
   return createBrowserRouter([
-    { index: true, lazy: () => import('../routes/projects.tsx') },
-    {
-      path: 'filter',
-      element: <Filter />,
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/project/Form.tsx'),
-        },
-      ],
-    },
     {
       path: ':project_id',
       element: null,
