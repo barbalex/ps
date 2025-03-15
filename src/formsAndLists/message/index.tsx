@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -11,13 +11,15 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { message_id } = useParams()
+const from = '/data/messages/$messageId.tsx'
+
+export const Message = memo(() => {
+  const { messageId } = useParams({ from })
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM messages WHERE message_id = $1`,
-    [message_id],
+    [messageId],
     'message_id',
   )
   const row = res?.rows?.[0]
@@ -30,10 +32,10 @@ export const Component = memo(() => {
 
       db.query(`UPDATE messages SET ${name} = $1 WHERE message_id = $2`, [
         value,
-        message_id,
+        messageId,
       ])
     },
-    [db, message_id, row],
+    [db, messageId, row],
   )
 
   if (!row) return <Loading />

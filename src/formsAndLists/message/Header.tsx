@@ -1,14 +1,15 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = '/data/messages/$messageId.tsx'
+
 export const Header = memo(() => {
-  const { message_id } = useParams()
+  const { messageId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
@@ -16,15 +17,15 @@ export const Header = memo(() => {
     const res = await createMessage({ db })
     const data = res?.rows?.[0]
     navigate({
-      pathname: `../${data.message_id}`,
-      search: searchParams.toString(),
+      to: `/data/messages/${data.message_id}`,
+      params: (prev) => ({ ...prev, messageId: data.message_id }),
     })
-  }, [db, navigate, searchParams])
+  }, [db, navigate])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM messages WHERE message_id = $1`, [message_id])
-    navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db, message_id, navigate, searchParams])
+    db.query(`DELETE FROM messages WHERE message_id = $1`, [messageId])
+    navigate({ to: `/data/messages` })
+  }, [db, messageId, navigate])
 
   return (
     <FormHeader

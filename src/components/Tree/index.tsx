@@ -41,7 +41,7 @@ export const Tree = memo(() => {
           <FilesNode level={1} />
         </>
       )}
-      {/* <MessagesNode /> */}
+      <MessagesNode />
     </div>
   )
 })

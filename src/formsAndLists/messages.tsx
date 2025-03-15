@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../modules/createRows.ts'
@@ -9,9 +9,8 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-export const Component = memo(() => {
+export const Messages = memo(() => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
@@ -27,8 +26,11 @@ export const Component = memo(() => {
     const res = await createMessage({ db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.message_id, search: searchParams.toString() })
-  }, [db, navigate, searchParams])
+    navigate({
+      to: `/data/messages/${data.message_id}`,
+      params: (prev) => ({ ...prev, messageId: data.message_id }),
+    })
+  }, [db, navigate])
 
   return (
     <div className="list-view">
