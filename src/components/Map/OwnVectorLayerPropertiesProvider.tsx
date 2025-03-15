@@ -6,10 +6,10 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
 export const OwnVectorLayerPropertiesProvider = memo(() => {
-  const project_id = 'TODO:'
-  // const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
-  //   from: '/data',
-  // })
+  // const project_id = 'TODO:'
+  const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
+    from: '/data',
+  })
   const db = usePGlite()
 
   // get vector_layers

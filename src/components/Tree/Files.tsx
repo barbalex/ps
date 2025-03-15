@@ -83,8 +83,10 @@ export const FilesNode = memo(
     const rowsLoading = resFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
-      `SELECT count(*) FROM files WHERE ${hField} = $1`,
-      [hValue],
+      `
+      SELECT count(*) 
+      FROM files 
+      WHERE ${hField ? `${hField} = '${hValue}'` : 'true'} `,
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resultCountUnfiltered === undefined

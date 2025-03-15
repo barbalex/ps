@@ -15,6 +15,7 @@ const containerStyle = {
   position: 'relative',
 }
 
+// TODO: use search for tabs
 export const Main = memo(() => {
   const [mapMaximized] = useAtom(mapMaximizedAtom)
   const [tabs] = useAtom(tabsAtom)
@@ -31,7 +32,7 @@ export const Main = memo(() => {
 
   const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 
-  console.log('LayoutProtected.Main', { tabs })
+  // console.log('LayoutProtected.Main', { tabs })
 
   if (onlyForm) return <Outlet />
 

@@ -47,7 +47,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
     if (!firstExistingVectorLayerDisplay) {
       // create single display, then return
-      return await createVectorLayerDisplay({ vector_layer_id: vectorLayerId })
+      return await createVectorLayerDisplay({
+        vector_layer_id: vectorLayerId,
+        db,
+      })
     }
 
     // remove all other displays, then return
@@ -127,6 +130,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       await createVectorLayerDisplay({
         vector_layer_id: vectorLayerId,
         display_property_value: listValue.value,
+        db,
       })
     }
     return
@@ -227,6 +231,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     await createVectorLayerDisplay({
       vector_layer_id: vectorLayerId,
       display_property_value: value,
+      db,
     })
   }
   return

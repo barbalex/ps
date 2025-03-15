@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router'
 import { useSetAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery, usePGlite } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -17,6 +17,7 @@ export const Component = memo(({ vectorLayerId }) => {
   const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
   const params = useParams()
   const vector_layer_id = vectorLayerId || params.vector_layer_id
+  const db = usePGlite()
 
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ export const Component = memo(({ vectorLayerId }) => {
   const vlds = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createVectorLayerDisplay({ vector_layer_id })
+    const res = await createVectorLayerDisplay({ vector_layer_id, db })
     const data = res?.rows?.[0]
     if (!data) return
     if (vectorLayerId) {
@@ -44,6 +45,7 @@ export const Component = memo(({ vectorLayerId }) => {
       search: searchParams.toString(),
     })
   }, [
+    db,
     navigate,
     searchParams,
     setVectorLayerDisplayId,

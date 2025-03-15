@@ -30,7 +30,7 @@ declare module '@tanstack/react-router' {
 const db = await PGlite.create('idb://ps', {
   extensions: { live },
   relaxedDurability: true,
-  // debug: true,
+  debug: true,
 })
 
 const routerContainerStyle = {
@@ -61,10 +61,7 @@ export const App = () => {
             ref={uploaderRef}
           ></uc-upload-ctx-provider>
           <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-          <div
-            style={routerContainerStyle}
-            id="router-container"
-          >
+          <div style={routerContainerStyle} id="router-container">
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProvider router={router} />
             </UploaderContext.Provider>

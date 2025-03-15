@@ -29,6 +29,7 @@ const imageStyle = {
 const textStyle = { alignSelf: 'center', paddingTop: '2em' }
 
 export const FilePreview = memo(({ from }) => {
+  console.log('FilePreview', { from })
   const { fileId } = useParams({ from })
   const previewRef = useRef<HTMLDivElement>(null)
 
