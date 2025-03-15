@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -23,7 +23,6 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   // need project to know whether to show files
   const res = useLiveIncrementalQuery(
@@ -56,10 +55,7 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -71,7 +67,6 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -88,7 +83,7 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && (
+      {/* {isOpen && (
         <>
           <PlacesNode
             project_id={project_id}
@@ -135,7 +130,7 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
             level={5}
           />
         </>
-      )}
+      )} */}
     </>
   )
 })

@@ -80,32 +80,32 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
         onClickButton={onClickButton}
         sibling={<Editing projectId={project.project_id} />}
       />
-      {/* {isOpen && (
+      {isOpen && (
         <>
-          <SubprojectsNode project_id={project.project_id} />
-          <ProjectReportsNode project_id={project.project_id} />
-          <PersonsNode project_id={project.project_id} />
-          <WmsLayersNode project_id={project.project_id} />
-          <VectorLayersNode project_id={project.project_id} />
-          {showFiles && (
+          <SubprojectsNode projectId={project.project_id} />
+          {/* <ProjectReportsNode project_id={project.project_id} /> */}
+          {/* <PersonsNode project_id={project.project_id} /> */}
+          {/* <WmsLayersNode project_id={project.project_id} /> */}
+          {/* <VectorLayersNode project_id={project.project_id} /> */}
+          {/* {showFiles && (
             <FilesNode
               project_id={project.project_id}
               level={3}
             />
-          )}
+          )} */}
           {designing && (
             <>
-              <ProjectUsersNode project_id={project.project_id} />
-              <ListsNode project_id={project.project_id} />
-              <TaxonomiesNode project_id={project.project_id} />
-              <UnitsNode project_id={project.project_id} />
-              <ProjectCrssNode project_id={project.project_id} />
-              <PlaceLevelsNode project_id={project.project_id} />
-              <FieldsNode project_id={project.project_id} />
+              {/* <ProjectUsersNode project_id={project.project_id} /> */}
+              {/* <ListsNode project_id={project.project_id} /> */}
+              {/* <TaxonomiesNode project_id={project.project_id} /> */}
+              {/* <UnitsNode project_id={project.project_id} /> */}
+              {/* <ProjectCrssNode project_id={project.project_id} /> */}
+              {/* <PlaceLevelsNode project_id={project.project_id} /> */}
+              {/* <FieldsNode project_id={project.project_id} /> */}
             </>
           )}
         </>
-      )} */}
+      )}
     </>
   )
 })
