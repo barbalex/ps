@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useContext, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useParams } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
@@ -12,37 +12,33 @@ import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
 
-export const Component = memo(() => {
-  const {
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    action_id,
-    check_id,
-  } = useParams()
+export const Files = memo(({ from }) => {
+  const { projectId, subprojectId, placeId, placeId2, actionId, checkId } =
+    useParams({ from })
 
   const { hKey, hValue } = useMemo(() => {
-    if (action_id) {
-      return { hKey: 'action_id', hValue: action_id }
-    } else if (check_id) {
-      return { hKey: 'check_id', hValue: check_id }
-    } else if (place_id2) {
-      return { hKey: 'place_id2', hValue: place_id2 }
-    } else if (place_id) {
-      return { hKey: 'place_id', hValue: place_id }
-    } else if (subproject_id) {
-      return { hKey: 'subproject_id', hValue: subproject_id }
-    } else if (project_id) {
-      return { hKey: 'project_id', hValue: project_id }
+    if (actionId) {
+      return { hKey: 'action_id', hValue: actionId }
+    } else if (checkId) {
+      return { hKey: 'check_id', hValue: checkId }
+    } else if (placeId2) {
+      return { hKey: 'place_id2', hValue: placeId2 }
+    } else if (placeId) {
+      return { hKey: 'place_id', hValue: placeId }
+    } else if (subprojectId) {
+      return { hKey: 'subproject_id', hValue: subprojectId }
+    } else if (projectId) {
+      return { hKey: 'project_id', hValue: projectId }
     }
-  }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
+    return { hKey: undefined, hValue: undefined }
+  }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
 
-  const res = useLiveIncrementalQuery(
-    `SELECT file_id, label, url, mimetype FROM files WHERE ${hKey} = $1 ORDER BY label`,
-    [hValue],
-    'file_id',
-  )
+  const sql = `
+    SELECT file_id, label, url, mimetype 
+    FROM files 
+    ${hKey ? `WHERE ${hKey} = '${hValue}'` : ''}
+    ORDER BY label`
+  const res = useLiveQuery(sql)
   const isLoading = res === undefined
   const files = res?.rows ?? []
 

@@ -1,10 +1,5 @@
 import { useCallback, memo, useMemo, useContext } from 'react'
-import {
-  useParams,
-  useNavigate,
-  useLocation,
-  useSearchParams,
-} from 'react-router'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -13,7 +8,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 
-export const Header = memo(({ row, previewRef }) => {
+export const Header = memo(({ row, previewRef, from }) => {
   const {
     project_id,
     subproject_id,
@@ -22,25 +17,18 @@ export const Header = memo(({ row, previewRef }) => {
     action_id,
     check_id,
     file_id,
-  } = useParams()
+  } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
 
   const onClickPreview = useCallback(() => {
     if (isPreview) {
-      navigate({
-        pathname: pathname.replace('/preview', ''),
-        search: searchParams.toString(),
-      })
+      navigate({ to: pathname.replace('/preview', '') })
     } else {
-      navigate({
-        pathname: `${pathname}/preview`,
-        search: searchParams.toString(),
-      })
+      navigate({ to: `${pathname}/preview` })
     }
-  }, [isPreview, navigate, pathname, searchParams])
+  }, [isPreview, navigate, pathname])
 
   const db = usePGlite()
 
@@ -53,8 +41,8 @@ export const Header = memo(({ row, previewRef }) => {
 
   const deleteRow = useCallback(async () => {
     await db.query(`DELETE FROM files WHERE file_id = $1`, [file_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, file_id, navigate, searchParams])
+    navigate({ to: '..' })
+  }, [db, file_id, navigate])
 
   const { hFilterField, hFilterValue } = useMemo(() => {
     if (action_id) {
@@ -82,20 +70,12 @@ export const Header = memo(({ row, previewRef }) => {
     const index = rows.findIndex((p) => p.file_id === file_id)
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `${isPreview ? '../' : ''}../${next.file_id}${
+      to: `${isPreview ? '../' : ''}../${next.file_id}${
         isPreview ? '/preview' : ''
       }`,
-      search: searchParams.toString(),
+      params: (prev) => ({ ...prev, fileId: next.file_id }),
     })
-  }, [
-    db,
-    hFilterField,
-    hFilterValue,
-    navigate,
-    isPreview,
-    searchParams,
-    file_id,
-  ])
+  }, [db, hFilterField, hFilterValue, navigate, isPreview, file_id])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -107,20 +87,12 @@ export const Header = memo(({ row, previewRef }) => {
     const index = rows.findIndex((p) => p.file_id === file_id)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `${isPreview ? '../' : ''}../${previous.file_id}${
+      to: `${isPreview ? '../' : ''}../${previous.file_id}${
         isPreview ? '/preview' : ''
       }`,
-      search: searchParams.toString(),
+      params: (prev) => ({ ...prev, fileId: previous.file_id }),
     })
-  }, [
-    db,
-    hFilterField,
-    hFilterValue,
-    navigate,
-    isPreview,
-    searchParams,
-    file_id,
-  ])
+  }, [db, hFilterField, hFilterValue, navigate, isPreview, file_id])
 
   return (
     <FormHeader

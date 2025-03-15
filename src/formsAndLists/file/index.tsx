@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -14,13 +14,13 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { file_id } = useParams()
+export const File = memo(({ from }) => {
+  const { fileId } = useParams({ from })
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM files WHERE file_id = $1`,
-    [file_id],
+    [fileId],
     'file_id',
   )
   const row = res?.rows?.[0]
@@ -56,11 +56,11 @@ export const Component = memo(() => {
           }`),
       )
       db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
-        file_id,
+        fileId,
         ...Object.values(data),
       ])
     },
-    [db, file_id, row],
+    [db, fileId, row],
   )
 
   const { width, ref } = useResizeDetector({
@@ -73,12 +73,9 @@ export const Component = memo(() => {
   if (!row) return <Loading />
 
   return (
-    <div
-      className="form-outer-container"
-      ref={ref}
-    >
-      <Uploader />
-      <Header />
+    <div className="form-outer-container" ref={ref}>
+      <Uploader from={from} />
+      <Header from={from} />
       <div className="form-container">
         {(row.mimetype.includes('image') || row.mimetype.includes('pdf')) &&
           row.url &&
@@ -130,36 +127,21 @@ export const Component = memo(() => {
           value={row.check_id ?? ''}
           onChange={onChange}
         />
-        <TextFieldInactive
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-        />
-        <TextFieldInactive
-          label="Size"
-          name="size"
-          value={row.size ?? ''}
-        />
+        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
+        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
         <TextFieldInactive
           label="Mimetype"
           name="mimetype"
           value={row.mimetype ?? ''}
         />
-        <TextFieldInactive
-          label="Url"
-          name="url"
-          value={row.url ?? ''}
-        />
-        <TextFieldInactive
-          label="Uuid"
-          name="uuid"
-          value={row.uuid ?? ''}
-        />
+        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
+        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
         <Jsonb
           table="files"
           idField="file_id"
           id={row.file_id}
           data={row.data ?? {}}
+          from={from}
         />
       </div>
     </div>

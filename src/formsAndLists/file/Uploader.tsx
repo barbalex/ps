@@ -1,10 +1,5 @@
-import { useCallback, useEffect, useContext } from 'react'
-import {
-  useNavigate,
-  useParams,
-  useLocation,
-  useSearchParams,
-} from 'react-router'
+import { memo, useCallback, useEffect, useContext } from 'react'
+import { useNavigate, useParams, useLocation } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -20,17 +15,10 @@ import { UploaderContext } from '../../UploaderContext.ts'
 
 import '../../form.css'
 
-export const Uploader = () => {
+export const Uploader = memo(({ from }) => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const {
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    action_id,
-    check_id,
-  } = useParams()
+  const { projectId, subprojectId, placeId, placeId2, actionId, checkId } =
+    useParams({ from })
 
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
@@ -62,26 +50,26 @@ export const Uploader = () => {
         width: event.detail.fileInfo?.imageInfo?.width ?? null,
         height: event.detail.fileInfo?.imageInfo?.height ?? null,
       }
-      if (action_id) {
-        fileInput.action_id = action_id
-      } else if (check_id) {
-        fileInput.check_id = check_id
-      } else if (place_id2) {
-        fileInput.place_id = place_id2
-      } else if (place_id) {
-        fileInput.place_id = place_id
-      } else if (subproject_id) {
-        fileInput.subproject_id = subproject_id
-      } else if (project_id) {
-        fileInput.project_id = project_id
+      if (actionId) {
+        fileInput.action_id = actionId
+      } else if (checkId) {
+        fileInput.check_id = checkId
+      } else if (placeId2) {
+        fileInput.place_id = placeId2
+      } else if (placeId) {
+        fileInput.place_id = placeId
+      } else if (subprojectId) {
+        fileInput.subproject_id = subprojectId
+      } else if (projectId) {
+        fileInput.project_id = projectId
       }
       const res1 = await createFile(fileInput)
       const data = res1?.rows?.[0]
       navigate({
-        pathname: `${!isFileList ? '.' : ''}./${data.file_id}${
+        to: `${!isFileList ? '.' : ''}./${data.file_id}${
           isPreview ? '/preview' : ''
         }`,
-        search: searchParams.toString(),
+        params: (prev) => ({ ...prev, fileId: data.file_id }),
       })
       // close the uploader or it will be open when navigating to the list
       api?.doneFlow?.()
@@ -135,18 +123,17 @@ export const Uploader = () => {
       // - xlsx > pdf/png > ?
     },
     [
-      action_id,
+      actionId,
       api,
-      check_id,
+      checkId,
       db,
       isFileList,
       isPreview,
       navigate,
-      place_id,
-      place_id2,
-      project_id,
-      searchParams,
-      subproject_id,
+      placeId,
+      placeId2,
+      projectId,
+      subprojectId,
     ],
   )
 
@@ -181,4 +168,4 @@ export const Uploader = () => {
       <uc-data-input ctx-name="uploadcare-uploader"></uc-data-input>
     </uc-file-uploader-regular>
   )
-}
+})

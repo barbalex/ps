@@ -1,9 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/data/_authLayout/files/')({
+import { Files } from '../../../../formsAndLists/files.tsx'
+
+const from = '/data/_authLayout/files/'
+export const Route = createFileRoute(from)({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/data/_authLayout/files/"!</div>
+  return <Files from={from} />
 }
