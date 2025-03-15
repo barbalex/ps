@@ -46,6 +46,8 @@ export const FilePreview = memo(({ from }) => {
     refreshOptions: { leading: false, trailing: true },
   })
 
+  console.log('FilePreview', { row, fileId })
+
   if (!row) return <Loading />
 
   const isImage = row.mimetype.includes('image')

@@ -58,6 +58,7 @@ export const Header = memo(({ row, previewRef, from }) => {
     } else if (project_id) {
       return { hFilterField: 'project_id', hFilterValue: project_id }
     }
+    return { hFilterField: undefined, hFilterValue: undefined }
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
   const toNext = useCallback(async () => {
