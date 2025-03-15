@@ -5,9 +5,11 @@ import {
 } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from '@tanstack/react-router'
+import { useAtom } from 'jotai'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
+import { projectsFilterAtom } from '../../../store.ts'
 import { OrFilter } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
@@ -69,25 +71,13 @@ export const Filter = memo(({ level, from, children }) => {
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  const [, setRerenderCount] = useState(0)
-  const rerender = useCallback(() => setRerenderCount((c) => c + 1), [])
   const filterAtomName = filterAtomNameFromTableAndLevel({
     table: tableName,
     level,
   })
   const filterAtom = stores[filterAtomName]
-  // stores.store.set(filterAtom, [])
-
-  // Not using hook to enable fetching filter dynamically depending on name
-  // Thus need to subscribe to the store and enforce rerender when it changes
-  if (filterAtom) stores.store.sub(filterAtom, rerender)
-
-  const filter = useMemo(
-    () => (filterAtom ? (stores?.store?.get?.(filterAtom) ?? []) : []),
-    [filterAtom],
-  )
-  const isFiltered = filter.length > 0
-  // console.log('Filter, filter:', filter)
+  // ensure atom exists - got errors when it didn't
+  const [filter] = useAtom(filterAtom ?? projectsFilterAtom)
 
   const { whereUnfilteredString, whereFilteredString } = useMemo(() => {
     let whereUnfiltered
@@ -174,7 +164,6 @@ export const Filter = memo(({ level, from, children }) => {
           isLoading ? `...` : totalCount
         })`}
         filterName={filterAtomName}
-        isFiltered={isFiltered}
       />
       <TabList
         selectedValue={activeTab}

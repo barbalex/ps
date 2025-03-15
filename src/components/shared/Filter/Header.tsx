@@ -2,9 +2,11 @@ import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
+import { useAtom } from 'jotai'
 
 import { controls } from '../../../styles.ts'
 import * as stores from '../../../store.ts'
+import { projectsFilterAtom } from '../../../store.ts'
 
 type Props = {
   title: string
@@ -13,8 +15,11 @@ type Props = {
 }
 
 export const FilterHeader = memo(
-  ({ title = 'Filter', isFiltered = false, filterName }: Props) => {
+  ({ title = 'Filter', filterName }: Props) => {
     const navigate = useNavigate()
+    // ensure atom exists - got errors when it didn't
+    const [filter] = useAtom(stores[filterName] ?? projectsFilterAtom)
+    const isFiltered = filter.length > 0
 
     const onClickBack = useCallback(() => navigate({ to: '..' }), [navigate])
 
