@@ -7,7 +7,12 @@ import {
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
-import { useNavigate, useLocation } from '@tanstack/react-router'
+import {
+  useNavigate,
+  useLocation,
+  useCanGoBack,
+  useRouter,
+} from '@tanstack/react-router'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
@@ -54,7 +59,8 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 export const Menu = memo(() => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const navigate = useNavigate()
-
+  const canGoBack = useCanGoBack()
+  const { history } = useRouter()
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
@@ -69,13 +75,12 @@ export const Menu = memo(() => {
   )
 
   const onClickOptions = useCallback(() => {
-    if (isAppStates) return navigate(-1)
+    if (isAppStates) {
+      return canGoBack ? history.go(-1) : navigate({ to: '/data' })
+    }
 
-    // TODO: change route to app-state
-    navigate({
-      to: `/data/app-states`,
-    })
-  }, [isAppStates, navigate])
+    navigate({ to: `/data/app-states` })
+  }, [canGoBack, history, isAppStates, navigate])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(
@@ -140,15 +145,17 @@ export const Menu = memo(() => {
             </ToolbarToggleButton>
             <ToolbarToggleButton
               icon={
-                mapIsMaximized ?
+                mapIsMaximized ? (
                   <TbArrowsMinimize
                     onClick={onClickMapView}
                     title="Shrink Map"
                   />
-                : <TbArrowsMaximize
+                ) : (
+                  <TbArrowsMaximize
                     onClick={onClickMapView}
                     title="Maximize Map"
                   />
+                )
               }
               iconPosition="after"
               aria-label="Map"
@@ -188,10 +195,11 @@ export const Menu = memo(() => {
         icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
         onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
         title={
-          !isAuthenticated ? 'Login'
-          : isHome ?
-            'Enter'
-          : `Logout ${authUser?.email}`
+          !isAuthenticated
+            ? 'Login'
+            : isHome
+              ? 'Enter'
+              : `Logout ${authUser?.email}`
         }
         style={pipe(
           {

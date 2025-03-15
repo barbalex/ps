@@ -19,6 +19,7 @@ import { Route as LayoutDocsImport } from './routes/_layout.docs'
 import { Route as DataAuthLayoutRouteImport } from './routes/data/_authLayout/route'
 import { Route as DataAuthLayoutIndexImport } from './routes/data/_authLayout/index'
 import { Route as DataAuthLayoutAuthImport } from './routes/data/_authLayout/auth'
+import { Route as DataAuthLayoutAppStatesImport } from './routes/data/_authLayout/app-states'
 import { Route as DataAuthLayoutWidgetsForFieldsIndexImport } from './routes/data/_authLayout/widgets-for-fields/index'
 import { Route as DataAuthLayoutWidgetTypesIndexImport } from './routes/data/_authLayout/widget-types/index'
 import { Route as DataAuthLayoutUsersIndexImport } from './routes/data/_authLayout/users/index'
@@ -84,6 +85,12 @@ const DataAuthLayoutIndexRoute = DataAuthLayoutIndexImport.update({
 const DataAuthLayoutAuthRoute = DataAuthLayoutAuthImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => DataAuthLayoutRouteRoute,
+} as any)
+
+const DataAuthLayoutAppStatesRoute = DataAuthLayoutAppStatesImport.update({
+  id: '/app-states',
+  path: '/app-states',
   getParentRoute: () => DataAuthLayoutRouteRoute,
 } as any)
 
@@ -267,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/data/_authLayout/app-states': {
+      id: '/data/_authLayout/app-states'
+      path: '/app-states'
+      fullPath: '/data/app-states'
+      preLoaderRoute: typeof DataAuthLayoutAppStatesImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/auth': {
       id: '/data/_authLayout/auth'
       path: '/auth'
@@ -447,6 +461,7 @@ const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 interface DataAuthLayoutRouteRouteChildren {
+  DataAuthLayoutAppStatesRoute: typeof DataAuthLayoutAppStatesRoute
   DataAuthLayoutAuthRoute: typeof DataAuthLayoutAuthRoute
   DataAuthLayoutIndexRoute: typeof DataAuthLayoutIndexRoute
   DataAuthLayoutAccountsAccountIdRoute: typeof DataAuthLayoutAccountsAccountIdRoute
@@ -473,6 +488,7 @@ interface DataAuthLayoutRouteRouteChildren {
 }
 
 const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
+  DataAuthLayoutAppStatesRoute: DataAuthLayoutAppStatesRoute,
   DataAuthLayoutAuthRoute: DataAuthLayoutAuthRoute,
   DataAuthLayoutIndexRoute: DataAuthLayoutIndexRoute,
   DataAuthLayoutAccountsAccountIdRoute: DataAuthLayoutAccountsAccountIdRoute,
@@ -520,6 +536,7 @@ export interface FileRoutesByFullPath {
   '/data': typeof DataAuthLayoutRouteRouteWithChildren
   '/docs': typeof LayoutDocsRoute
   '/': typeof LayoutIndexRoute
+  '/data/app-states': typeof DataAuthLayoutAppStatesRoute
   '/data/auth': typeof DataAuthLayoutAuthRoute
   '/data/': typeof DataAuthLayoutIndexRoute
   '/data/accounts/$accountId': typeof DataAuthLayoutAccountsAccountIdRoute
@@ -549,6 +566,7 @@ export interface FileRoutesByTo {
   '/data': typeof DataAuthLayoutIndexRoute
   '/docs': typeof LayoutDocsRoute
   '/': typeof LayoutIndexRoute
+  '/data/app-states': typeof DataAuthLayoutAppStatesRoute
   '/data/auth': typeof DataAuthLayoutAuthRoute
   '/data/accounts/$accountId': typeof DataAuthLayoutAccountsAccountIdRoute
   '/data/crs/$crsId': typeof DataAuthLayoutCrsCrsIdRoute
@@ -580,6 +598,7 @@ export interface FileRoutesById {
   '/data/_authLayout': typeof DataAuthLayoutRouteRouteWithChildren
   '/_layout/docs': typeof LayoutDocsRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/data/_authLayout/app-states': typeof DataAuthLayoutAppStatesRoute
   '/data/_authLayout/auth': typeof DataAuthLayoutAuthRoute
   '/data/_authLayout/': typeof DataAuthLayoutIndexRoute
   '/data/_authLayout/accounts/$accountId': typeof DataAuthLayoutAccountsAccountIdRoute
@@ -612,6 +631,7 @@ export interface FileRouteTypes {
     | '/data'
     | '/docs'
     | '/'
+    | '/data/app-states'
     | '/data/auth'
     | '/data/'
     | '/data/accounts/$accountId'
@@ -640,6 +660,7 @@ export interface FileRouteTypes {
     | '/data'
     | '/docs'
     | '/'
+    | '/data/app-states'
     | '/data/auth'
     | '/data/accounts/$accountId'
     | '/data/crs/$crsId'
@@ -669,6 +690,7 @@ export interface FileRouteTypes {
     | '/data/_authLayout'
     | '/_layout/docs'
     | '/_layout/'
+    | '/data/_authLayout/app-states'
     | '/data/_authLayout/auth'
     | '/data/_authLayout/'
     | '/data/_authLayout/accounts/$accountId'
@@ -736,6 +758,7 @@ export const routeTree = rootRoute
       "filePath": "data/_authLayout/route.tsx",
       "parent": "/data",
       "children": [
+        "/data/_authLayout/app-states",
         "/data/_authLayout/auth",
         "/data/_authLayout/",
         "/data/_authLayout/accounts/$accountId",
@@ -768,6 +791,10 @@ export const routeTree = rootRoute
     "/_layout/": {
       "filePath": "_layout.index.tsx",
       "parent": "/_layout"
+    },
+    "/data/_authLayout/app-states": {
+      "filePath": "data/_authLayout/app-states.tsx",
+      "parent": "/data/_authLayout"
     },
     "/data/_authLayout/auth": {
       "filePath": "data/_authLayout/auth.tsx",

@@ -11,11 +11,7 @@ import { breadcrumbsOverflowingAtom, navsOverflowingAtom } from '../store.ts'
 
 import '../form.css'
 
-const spinnerStyle = {
-  paddingRight: 8,
-}
-
-export const Component = memo(() => {
+export const AppStates = memo(() => {
   const [breadcrumbsOverflowing, setBreadcrumbsOverflowing] = useAtom(
     breadcrumbsOverflowingAtom,
   )
