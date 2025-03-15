@@ -10,9 +10,11 @@ import { FilterButton } from '../../../../components/shared/FilterButton.tsx'
 import { Loading } from '../../../../components/shared/Loading.tsx'
 import { projectsFilterAtom } from '../../../../store.ts'
 import { filterStringFromFilter } from '../../../../modules/filterStringFromFilter.ts'
+import { NotFound } from '../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute('/data/_authLayout/projects/')({
   component: Component,
+  notFoundComponent: NotFound,
 })
 
 import '../../../../form.css'
@@ -61,9 +63,10 @@ const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {isLoading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {projects.map((project) => (
               <Row
                 key={project.project_id}
@@ -72,7 +75,7 @@ const Component = memo(() => {
               />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
