@@ -14,367 +14,368 @@ export const router = () => {
   // console.log('router building')
 
   return createBrowserRouter([
+    { index: true, lazy: () => import('../routes/projects.tsx') },
     {
-      path: 'projects',
+      path: 'filter',
+      element: <Filter />,
+      children: [
+        {
+          index: true,
+          lazy: () => import('../routes/project/Form.tsx'),
+        },
+      ],
+    },
+    {
+      path: ':project_id',
       element: null,
       handle: {
         crumb: {
-          text: 'Projects',
           table: 'projects',
-          folder: true,
+          folder: false,
+          sibling: <EditingProject />,
+        },
+        to: {
+          table: `projects`,
         },
       },
       children: [
-        { index: true, lazy: () => import('../routes/projects.tsx') },
         {
-          path: 'filter',
-          element: <Filter />,
-          children: [
-            {
-              index: true,
-              lazy: () => import('../routes/project/Form.tsx'),
-            },
-          ],
+          index: true,
+          lazy: () => import('../routes/project/index.tsx'),
         },
         {
-          path: ':project_id',
+          path: 'subprojects',
           element: null,
           handle: {
             crumb: {
-              table: 'projects',
-              folder: false,
-              sibling: <EditingProject />,
-            },
-            to: {
-              table: `projects`,
+              text: 'Subprojects',
+              table: 'subprojects',
+              folder: true,
             },
           },
           children: [
             {
               index: true,
-              lazy: () => import('../routes/project/index.tsx'),
+              lazy: () => import('../routes/subprojects.tsx'),
             },
             {
-              path: 'subprojects',
+              path: 'filter',
+              element: <Filter />,
+              children: [
+                {
+                  index: true,
+                  lazy: () => import('../routes/subproject/Form.tsx'),
+                },
+              ],
+            },
+            {
+              path: ':subproject_id',
               element: null,
               handle: {
                 crumb: {
-                  text: 'Subprojects',
                   table: 'subprojects',
-                  folder: true,
+                  folder: false,
+                },
+                to: {
+                  table: `subprojects`,
                 },
               },
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/subprojects.tsx'),
+                  lazy: () => import('../routes/subproject/index.tsx'),
                 },
                 {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/subproject/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':subproject_id',
+                  path: 'places',
                   element: null,
                   handle: {
                     crumb: {
-                      table: 'subprojects',
-                      folder: false,
-                    },
-                    to: {
-                      table: `subprojects`,
+                      text: 'Places',
+                      table: 'places',
+                      level: 1,
+                      folder: true,
                     },
                   },
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/subproject/index.tsx'),
+                      lazy: () => import('../routes/places.tsx'),
                     },
                     {
-                      path: 'places',
+                      path: 'filter',
+                      element: <Filter level={1} />,
+                      children: [
+                        {
+                          index: true,
+                          lazy: () => import('../routes/place/Form.tsx'),
+                        },
+                      ],
+                    },
+                    {
+                      path: ':place_id',
                       element: null,
                       handle: {
                         crumb: {
-                          text: 'Places',
                           table: 'places',
                           level: 1,
-                          folder: true,
+                          folder: false,
+                        },
+                        to: {
+                          table: `places`,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/places.tsx'),
+                          lazy: () => import('../routes/place/index.tsx'),
                         },
-                        {
-                          path: 'filter',
-                          element: <Filter level={1} />,
-                          children: [
-                            {
-                              index: true,
-                              lazy: () => import('../routes/place/Form.tsx'),
-                            },
-                          ],
-                        },
-                        {
-                          path: ':place_id',
-                          element: null,
-                          handle: {
-                            crumb: {
-                              table: 'places',
-                              level: 1,
-                              folder: false,
-                            },
-                            to: {
-                              table: `places`,
-                            },
-                          },
-                          children: [
-                            {
-                              index: true,
-                              lazy: () => import('../routes/place/index.tsx'),
-                            },
-                            placesLevel2(),
-                            ...placesChildren({ level: 1 }),
-                          ],
-                        },
+                        placesLevel2(),
+                        ...placesChildren({ level: 1 }),
                       ],
                     },
+                  ],
+                },
+                {
+                  path: 'users',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Users',
+                      table: 'subproject_users',
+                      folder: true,
+                    },
+                  },
+                  children: [
                     {
-                      path: 'users',
-                      element: null,
+                      index: true,
+                      lazy: () => import('../routes/subprojectUsers.tsx'),
+                    },
+                    {
+                      path: ':subproject_user_id',
+                      lazy: () => import('../routes/subprojectUser/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Users',
                           table: 'subproject_users',
-                          folder: true,
+                          folder: false,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () => import('../routes/subprojectUsers.tsx'),
-                        },
-                        {
-                          path: ':subproject_user_id',
-                          lazy: () =>
-                            import('../routes/subprojectUser/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'subproject_users',
-                              folder: false,
-                            },
-                          },
-                        },
-                      ],
+                    },
+                  ],
+                },
+                {
+                  path: 'occurrence-imports',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Occurrence Imports',
+                      table: 'occurrence_imports',
+                      folder: true,
+                    },
+                  },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/occurrenceImports.tsx'),
                     },
                     {
-                      path: 'occurrence-imports',
-                      element: null,
+                      path: ':occurrence_import_id',
+                      lazy: () =>
+                        import('../routes/occurrenceImport/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Occurrence Imports',
                           table: 'occurrence_imports',
-                          folder: true,
+                          folder: false,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () => import('../routes/occurrenceImports.tsx'),
-                        },
-                        {
-                          path: ':occurrence_import_id',
-                          lazy: () =>
-                            import('../routes/occurrenceImport/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'occurrence_imports',
-                              folder: false,
-                            },
-                          },
-                        },
-                      ],
+                    },
+                  ],
+                },
+                {
+                  path: 'files',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Files',
+                      table: 'files',
+                      folder: true,
+                    },
+                  },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/files.tsx'),
                     },
                     {
-                      path: 'files',
+                      path: ':file_id',
                       element: null,
                       handle: {
                         crumb: {
-                          text: 'Files',
                           table: 'files',
-                          folder: true,
+                          folder: false,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/files.tsx'),
+                          lazy: () => import('../routes/file/index.tsx'),
                         },
                         {
-                          path: ':file_id',
-                          element: null,
-                          handle: {
-                            crumb: {
-                              table: 'files',
-                              folder: false,
-                            },
-                          },
-                          children: [
-                            {
-                              index: true,
-                              lazy: () => import('../routes/file/index.tsx'),
-                            },
-                            {
-                              path: 'preview',
-                              lazy: () =>
-                                import('../routes/filePreview/index.tsx'),
-                            },
-                          ],
+                          path: 'preview',
+                          lazy: () => import('../routes/filePreview/index.tsx'),
                         },
                       ],
                     },
+                  ],
+                },
+                {
+                  path: 'taxa',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Taxa',
+                      table: 'subproject_taxa',
+                      folder: true,
+                    },
+                  },
+                  children: [
                     {
-                      path: 'taxa',
-                      element: null,
+                      index: true,
+                      lazy: () => import('../routes/subprojectTaxa.tsx'),
+                    },
+                    {
+                      path: ':subproject_taxon_id',
+                      lazy: () => import('../routes/subprojectTaxon/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Taxa',
                           table: 'subproject_taxa',
-                          folder: true,
+                          folder: false,
                         },
                       },
+                    },
+                  ],
+                },
+                {
+                  path: 'reports',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Reports',
+                      table: 'subproject_reports',
+                      folder: true,
+                    },
+                  },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/subprojectReports.tsx'),
+                    },
+                    {
+                      path: 'filter',
+                      element: <Filter />,
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/subprojectTaxa.tsx'),
-                        },
-                        {
-                          path: ':subproject_taxon_id',
                           lazy: () =>
-                            import('../routes/subprojectTaxon/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'subproject_taxa',
-                              folder: false,
-                            },
-                          },
+                            import('../routes/subprojectReport/Form.tsx'),
                         },
                       ],
                     },
                     {
-                      path: 'reports',
-                      element: null,
+                      path: ':subproject_report_id',
+                      lazy: () =>
+                        import('../routes/subprojectReport/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Reports',
                           table: 'subproject_reports',
-                          folder: true,
+                          folder: false,
                         },
                       },
+                    },
+                  ],
+                },
+                {
+                  path: 'goals',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Goals',
+                      table: 'goals',
+                      folder: true,
+                    },
+                  },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/goals.tsx'),
+                    },
+                    {
+                      path: 'filter',
+                      element: <Filter />,
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/subprojectReports.tsx'),
-                        },
-                        {
-                          path: 'filter',
-                          element: <Filter />,
-                          children: [
-                            {
-                              index: true,
-                              lazy: () =>
-                                import('../routes/subprojectReport/Form.tsx'),
-                            },
-                          ],
-                        },
-                        {
-                          path: ':subproject_report_id',
-                          lazy: () =>
-                            import('../routes/subprojectReport/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'subproject_reports',
-                              folder: false,
-                            },
-                          },
+                          lazy: () => import('../routes/goal/Form.tsx'),
                         },
                       ],
                     },
                     {
-                      path: 'goals',
+                      path: ':goal_id',
                       element: null,
                       handle: {
                         crumb: {
-                          text: 'Goals',
                           table: 'goals',
-                          folder: true,
+                          folder: false,
+                        },
+                        to: {
+                          table: `goals`,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/goals.tsx'),
+                          lazy: () => import('../routes/goal/index.tsx'),
                         },
                         {
-                          path: 'filter',
-                          element: <Filter />,
-                          children: [
-                            {
-                              index: true,
-                              lazy: () => import('../routes/goal/Form.tsx'),
-                            },
-                          ],
-                        },
-                        {
-                          path: ':goal_id',
+                          path: 'reports',
                           element: null,
                           handle: {
                             crumb: {
-                              table: 'goals',
-                              folder: false,
-                            },
-                            to: {
-                              table: `goals`,
+                              text: 'Reports',
+                              table: 'goal_reports',
+                              folder: true,
                             },
                           },
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/goal/index.tsx'),
+                              lazy: () => import('../routes/goalReports.tsx'),
                             },
                             {
-                              path: 'reports',
+                              path: ':goal_report_id',
                               element: null,
                               handle: {
                                 crumb: {
-                                  text: 'Reports',
                                   table: 'goal_reports',
-                                  folder: true,
+                                  folder: false,
+                                },
+                                to: {
+                                  table: `goal_reports`,
                                 },
                               },
                               children: [
                                 {
                                   index: true,
                                   lazy: () =>
-                                    import('../routes/goalReports.tsx'),
+                                    import('../routes/goalReport/index.tsx'),
                                 },
                                 {
-                                  path: ':goal_report_id',
+                                  path: 'values',
                                   element: null,
                                   handle: {
                                     crumb: {
-                                      table: 'goal_reports',
-                                      folder: false,
-                                    },
-                                    to: {
-                                      table: `goal_reports`,
+                                      text: 'Values',
+                                      table: 'goal_report_values',
+                                      folder: true,
                                     },
                                   },
                                   children: [
@@ -382,41 +383,21 @@ export const router = () => {
                                       index: true,
                                       lazy: () =>
                                         import(
-                                          '../routes/goalReport/index.tsx'
+                                          '../routes/goalReportValues.tsx'
                                         ),
                                     },
                                     {
-                                      path: 'values',
-                                      element: null,
+                                      path: ':goal_report_value_id',
+                                      lazy: () =>
+                                        import(
+                                          '../routes/goalReportValue/index.tsx'
+                                        ),
                                       handle: {
                                         crumb: {
-                                          text: 'Values',
                                           table: 'goal_report_values',
-                                          folder: true,
+                                          folder: false,
                                         },
                                       },
-                                      children: [
-                                        {
-                                          index: true,
-                                          lazy: () =>
-                                            import(
-                                              '../routes/goalReportValues.tsx'
-                                            ),
-                                        },
-                                        {
-                                          path: ':goal_report_value_id',
-                                          lazy: () =>
-                                            import(
-                                              '../routes/goalReportValue/index.tsx'
-                                            ),
-                                          handle: {
-                                            crumb: {
-                                              table: 'goal_report_values',
-                                              folder: false,
-                                            },
-                                          },
-                                        },
-                                      ],
                                     },
                                   ],
                                 },
@@ -426,135 +407,134 @@ export const router = () => {
                         },
                       ],
                     },
+                  ],
+                },
+                {
+                  path: 'occurrences-to-assess',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Occurrences to assess',
+                      table: 'occurrences',
+                      folder: true,
+                    },
+                    to: {
+                      table: `occurrences`,
+                    },
+                  },
+                  children: [
                     {
-                      path: 'occurrences-to-assess',
-                      element: null,
+                      index: true,
+                      lazy: () => import('../routes/occurrences.tsx'),
+                    },
+                    {
+                      path: ':occurrence_id',
+                      lazy: () => import('../routes/occurrence/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Occurrences to assess',
                           table: 'occurrences',
-                          folder: true,
+                          folder: false,
                         },
                         to: {
                           table: `occurrences`,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () => import('../routes/occurrences.tsx'),
-                        },
-                        {
-                          path: ':occurrence_id',
-                          lazy: () => import('../routes/occurrence/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'occurrences',
-                              folder: false,
-                            },
-                            to: {
-                              table: `occurrences`,
-                            },
-                          },
-                        },
-                      ],
+                    },
+                  ],
+                },
+                {
+                  path: 'occurrences-not-to-assign',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Occurrences not to assign',
+                      table: 'occurrences',
+                      folder: true,
+                    },
+                    to: {
+                      table: `occurrences`,
+                    },
+                  },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/occurrences.tsx'),
                     },
                     {
-                      path: 'occurrences-not-to-assign',
-                      element: null,
+                      path: ':occurrence_id',
+                      lazy: () => import('../routes/occurrence/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Occurrences not to assign',
                           table: 'occurrences',
-                          folder: true,
+                          folder: false,
                         },
                         to: {
                           table: `occurrences`,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () => import('../routes/occurrences.tsx'),
-                        },
-                        {
-                          path: ':occurrence_id',
-                          lazy: () => import('../routes/occurrence/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'occurrences',
-                              folder: false,
-                            },
-                            to: {
-                              table: `occurrences`,
-                            },
-                          },
-                        },
-                      ],
+                    },
+                  ],
+                },
+                {
+                  path: 'charts',
+                  element: null,
+                  handle: {
+                    crumb: {
+                      text: 'Charts',
+                      table: 'charts',
+                      folder: true,
+                    },
+                  },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/charts.tsx'),
                     },
                     {
-                      path: 'charts',
+                      path: ':chart_id',
                       element: null,
                       handle: {
                         crumb: {
-                          text: 'Charts',
                           table: 'charts',
-                          folder: true,
+                          folder: false,
+                        },
+                        to: {
+                          table: `charts`,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/charts.tsx'),
+                          lazy: () => import('../routes/chart/index.tsx'),
                         },
                         {
-                          path: ':chart_id',
+                          path: 'subjects',
                           element: null,
                           handle: {
                             crumb: {
-                              table: 'charts',
-                              folder: false,
-                            },
-                            to: {
-                              table: `charts`,
+                              text: 'Subjects',
+                              table: 'chart_subjects',
+                              folder: true,
                             },
                           },
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/chart/index.tsx'),
+                              lazy: () => import('../routes/chartSubjects.tsx'),
                             },
                             {
-                              path: 'subjects',
-                              element: null,
+                              path: ':chart_subject_id',
+                              lazy: () =>
+                                import('../routes/chartSubject/index.tsx'),
                               handle: {
                                 crumb: {
-                                  text: 'Subjects',
                                   table: 'chart_subjects',
-                                  folder: true,
+                                  folder: false,
+                                },
+                                to: {
+                                  table: `chart_subjects`,
                                 },
                               },
-                              children: [
-                                {
-                                  index: true,
-                                  lazy: () =>
-                                    import('../routes/chartSubjects.tsx'),
-                                },
-                                {
-                                  path: ':chart_subject_id',
-                                  lazy: () =>
-                                    import('../routes/chartSubject/index.tsx'),
-                                  handle: {
-                                    crumb: {
-                                      table: 'chart_subjects',
-                                      folder: false,
-                                    },
-                                    to: {
-                                      table: `chart_subjects`,
-                                    },
-                                  },
-                                },
-                              ],
                             },
                           ],
                         },
@@ -564,518 +544,516 @@ export const router = () => {
                 },
               ],
             },
+          ],
+        },
+        {
+          path: 'place-levels',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Place Levels',
+              table: 'place_levels',
+              folder: true,
+            },
+          },
+          children: [
             {
-              path: 'place-levels',
-              element: null,
+              index: true,
+              lazy: () => import('../routes/placeLevels.tsx'),
+            },
+            {
+              path: ':place_level_id',
+              lazy: () => import('../routes/placeLevel/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'Place Levels',
                   table: 'place_levels',
-                  folder: true,
+                  folder: false,
                 },
               },
+            },
+          ],
+        },
+        {
+          path: 'units',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Units',
+              table: 'units',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/units.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/placeLevels.tsx'),
-                },
-                {
-                  path: ':place_level_id',
-                  lazy: () => import('../routes/placeLevel/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'place_levels',
-                      folder: false,
-                    },
-                  },
+                  lazy: () => import('../routes/unit/Form.tsx'),
                 },
               ],
             },
             {
-              path: 'units',
-              element: null,
+              path: ':unit_id',
+              lazy: () => import('../routes/unit/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'Units',
                   table: 'units',
-                  folder: true,
+                  folder: false,
                 },
               },
+            },
+          ],
+        },
+        {
+          path: 'lists',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Lists',
+              table: 'lists',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/lists.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/units.tsx'),
-                },
-                {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/unit/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':unit_id',
-                  lazy: () => import('../routes/unit/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'units',
-                      folder: false,
-                    },
-                  },
+                  lazy: () => import('../routes/list/Form.tsx'),
                 },
               ],
             },
             {
-              path: 'lists',
+              path: ':list_id',
               element: null,
               handle: {
                 crumb: {
-                  text: 'Lists',
                   table: 'lists',
-                  folder: true,
+                  folder: false,
+                },
+                to: {
+                  table: `lists`,
                 },
               },
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/lists.tsx'),
+                  lazy: () => import('../routes/list/index.tsx'),
                 },
                 {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/list/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':list_id',
+                  path: 'values',
                   element: null,
                   handle: {
                     crumb: {
-                      table: 'lists',
-                      folder: false,
-                    },
-                    to: {
-                      table: `lists`,
+                      text: 'Values',
+                      table: 'list_values',
+                      folder: true,
                     },
                   },
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/list/index.tsx'),
+                      lazy: () => import('../routes/listValues.tsx'),
                     },
                     {
-                      path: 'values',
-                      element: null,
+                      path: ':list_value_id',
+                      lazy: () => import('../routes/listValue/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Values',
                           table: 'list_values',
-                          folder: true,
+                          folder: false,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () => import('../routes/listValues.tsx'),
-                        },
-                        {
-                          path: ':list_value_id',
-                          lazy: () => import('../routes/listValue/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'list_values',
-                              folder: false,
-                            },
-                          },
-                        },
-                      ],
                     },
                   ],
                 },
               ],
             },
+          ],
+        },
+        {
+          path: 'taxonomies',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Taxonomies',
+              table: 'taxonomies',
+              folder: true,
+            },
+          },
+          children: [
             {
-              path: 'taxonomies',
+              index: true,
+              lazy: () => import('../routes/taxonomies.tsx'),
+            },
+            {
+              path: ':taxonomy_id',
               element: null,
               handle: {
                 crumb: {
-                  text: 'Taxonomies',
                   table: 'taxonomies',
-                  folder: true,
+                  folder: false,
+                },
+                to: {
+                  table: `taxonomies`,
                 },
               },
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/taxonomies.tsx'),
+                  lazy: () => import('../routes/taxonomy/index.tsx'),
                 },
                 {
-                  path: ':taxonomy_id',
+                  path: 'taxa',
                   element: null,
                   handle: {
                     crumb: {
-                      table: 'taxonomies',
-                      folder: false,
-                    },
-                    to: {
-                      table: `taxonomies`,
+                      text: 'Taxa',
+                      table: 'taxa',
+                      folder: true,
                     },
                   },
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/taxonomy/index.tsx'),
+                      lazy: () => import('../routes/taxa.tsx'),
                     },
                     {
-                      path: 'taxa',
-                      element: null,
+                      path: ':taxon_id',
+                      lazy: () => import('../routes/taxon/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Taxa',
                           table: 'taxa',
-                          folder: true,
+                          folder: false,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () => import('../routes/taxa.tsx'),
-                        },
-                        {
-                          path: ':taxon_id',
-                          lazy: () => import('../routes/taxon/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'taxa',
-                              folder: false,
-                            },
-                          },
-                        },
-                      ],
                     },
                   ],
                 },
               ],
             },
+          ],
+        },
+        {
+          path: 'wms-layers',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'WMS Layers',
+              table: 'wms_layers',
+              folder: true,
+            },
+          },
+          children: [
             {
-              path: 'wms-layers',
-              element: null,
+              index: true,
+              lazy: () => import('../routes/wmsLayers.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
+              children: [
+                {
+                  index: true,
+                  lazy: () => import('../routes/wmsLayer/Form/index.tsx'),
+                },
+              ],
+            },
+            {
+              path: ':wms_layer_id',
+              lazy: () => import('../routes/wmsLayer/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'WMS Layers',
                   table: 'wms_layers',
-                  folder: true,
+                  folder: false,
                 },
               },
+            },
+          ],
+        },
+        {
+          path: 'vector-layers',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Vector Layers',
+              table: 'vector_layers',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/vectorLayers.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/wmsLayers.tsx'),
-                },
-                {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/wmsLayer/Form/index.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':wms_layer_id',
-                  lazy: () => import('../routes/wmsLayer/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'wms_layers',
-                      folder: false,
-                    },
-                  },
+                  lazy: () => import('../routes/vectorLayer/Form/index.tsx'),
                 },
               ],
             },
             {
-              path: 'vector-layers',
+              path: ':vector_layer_id',
               element: null,
               handle: {
                 crumb: {
-                  text: 'Vector Layers',
                   table: 'vector_layers',
-                  folder: true,
+                  folder: false,
+                },
+                to: {
+                  table: `vector_layers`,
                 },
               },
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/vectorLayers.tsx'),
+                  lazy: () => import('../routes/vectorLayer/index.tsx'),
                 },
                 {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () =>
-                        import('../routes/vectorLayer/Form/index.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':vector_layer_id',
+                  path: 'vector-layer-displays',
                   element: null,
                   handle: {
                     crumb: {
-                      table: 'vector_layers',
-                      folder: false,
-                    },
-                    to: {
-                      table: `vector_layers`,
+                      text: 'Displays',
+                      table: 'vector_layer_displays',
+                      folder: true,
                     },
                   },
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/vectorLayer/index.tsx'),
+                      lazy: () => import('../routes/vectorLayerDisplays.tsx'),
                     },
                     {
-                      path: 'vector-layer-displays',
-                      element: null,
+                      path: ':vector_layer_display_id',
+                      lazy: () =>
+                        import('../routes/vectorLayerDisplay/index.tsx'),
                       handle: {
                         crumb: {
-                          text: 'Displays',
                           table: 'vector_layer_displays',
-                          folder: true,
+                          folder: false,
                         },
                       },
-                      children: [
-                        {
-                          index: true,
-                          lazy: () =>
-                            import('../routes/vectorLayerDisplays.tsx'),
-                        },
-                        {
-                          path: ':vector_layer_display_id',
-                          lazy: () =>
-                            import('../routes/vectorLayerDisplay/index.tsx'),
-                          handle: {
-                            crumb: {
-                              table: 'vector_layer_displays',
-                              folder: false,
-                            },
-                          },
-                        },
-                      ],
                     },
                   ],
                 },
               ],
             },
+          ],
+        },
+        {
+          path: 'users',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Users',
+              table: 'project_users',
+              folder: true,
+            },
+          },
+          children: [
             {
-              path: 'users',
-              element: null,
+              index: true,
+              lazy: () => import('../routes/projectUsers.tsx'),
+            },
+            {
+              path: ':project_user_id',
+              lazy: () => import('../routes/projectUser/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'Users',
                   table: 'project_users',
-                  folder: true,
+                  folder: false,
                 },
               },
+            },
+          ],
+        },
+        {
+          path: 'reports',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Reports',
+              table: 'project_reports',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/projectReports.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/projectUsers.tsx'),
-                },
-                {
-                  path: ':project_user_id',
-                  lazy: () => import('../routes/projectUser/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'project_users',
-                      folder: false,
-                    },
-                  },
+                  lazy: () => import('../routes/projectReport/Form.tsx'),
                 },
               ],
             },
             {
-              path: 'reports',
-              element: null,
+              path: ':project_report_id',
+              lazy: () => import('../routes/projectReport/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'Reports',
                   table: 'project_reports',
-                  folder: true,
+                  folder: false,
                 },
               },
+            },
+          ],
+        },
+        {
+          path: 'fields',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Fields',
+              table: 'fields',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/fields.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/projectReports.tsx'),
-                },
-                {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/projectReport/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':project_report_id',
-                  lazy: () => import('../routes/projectReport/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'project_reports',
-                      folder: false,
-                    },
-                  },
+                  lazy: () => import('../routes/field/Form.tsx'),
                 },
               ],
             },
             {
-              path: 'fields',
-              element: null,
+              path: ':field_id',
+              lazy: () => import('../routes/field/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'Fields',
                   table: 'fields',
-                  folder: true,
+                  folder: false,
                 },
               },
+            },
+          ],
+        },
+        {
+          path: 'persons',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Persons',
+              table: 'persons',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/persons.tsx'),
+            },
+            {
+              path: 'filter',
+              element: <Filter />,
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/fields.tsx'),
-                },
-                {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/field/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':field_id',
-                  lazy: () => import('../routes/field/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'fields',
-                      folder: false,
-                    },
-                  },
+                  lazy: () => import('../routes/person/Form.tsx'),
                 },
               ],
             },
             {
-              path: 'persons',
-              element: null,
+              path: ':person_id',
+              lazy: () => import('../routes/person/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'Persons',
                   table: 'persons',
-                  folder: true,
+                  folder: false,
                 },
               },
-              children: [
-                {
-                  index: true,
-                  lazy: () => import('../routes/persons.tsx'),
-                },
-                {
-                  path: 'filter',
-                  element: <Filter />,
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/person/Form.tsx'),
-                    },
-                  ],
-                },
-                {
-                  path: ':person_id',
-                  lazy: () => import('../routes/person/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'persons',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
+            },
+          ],
+        },
+        {
+          path: 'project-crs',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'CRS',
+              table: 'project_crs',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/projectCrss/index.tsx'),
             },
             {
-              path: 'project-crs',
-              element: null,
+              path: ':project_crs_id',
+              lazy: () => import('../routes/projectCrs/index.tsx'),
               handle: {
                 crumb: {
-                  text: 'CRS',
                   table: 'project_crs',
-                  folder: true,
+                  folder: false,
                 },
               },
-              children: [
-                {
-                  index: true,
-                  lazy: () => import('../routes/projectCrss/index.tsx'),
-                },
-                {
-                  path: ':project_crs_id',
-                  lazy: () => import('../routes/projectCrs/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'project_crs',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
+            },
+          ],
+        },
+        {
+          path: 'files',
+          element: null,
+          handle: {
+            crumb: {
+              text: 'Files',
+              table: 'files',
+              folder: true,
+            },
+          },
+          children: [
+            {
+              index: true,
+              lazy: () => import('../routes/files.tsx'),
             },
             {
-              path: 'files',
+              path: ':file_id',
               element: null,
               handle: {
                 crumb: {
-                  text: 'Files',
                   table: 'files',
-                  folder: true,
+                  folder: false,
                 },
               },
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/files.tsx'),
+                  lazy: () => import('../routes/file/index.tsx'),
                 },
                 {
-                  path: ':file_id',
-                  element: null,
-                  handle: {
-                    crumb: {
-                      table: 'files',
-                      folder: false,
-                    },
-                  },
-                  children: [
-                    {
-                      index: true,
-                      lazy: () => import('../routes/file/index.tsx'),
-                    },
-                    {
-                      path: 'preview',
-                      lazy: () => import('../routes/filePreview/index.tsx'),
-                    },
-                  ],
+                  path: 'preview',
+                  lazy: () => import('../routes/filePreview/index.tsx'),
                 },
               ],
             },
