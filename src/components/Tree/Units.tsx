@@ -16,11 +16,11 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, unitsFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   level?: number
 }
 
-export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
+export const UnitsNode = memo(({ projectId, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(unitsFilterAtom)
   const location = useLocation()
@@ -38,7 +38,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
       project_id = $1
       ${isFiltered ? ` AND ${filterString}` : ''} 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'unit_id',
   )
   const rows = resultFiltered?.rows ?? []
@@ -46,7 +46,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM units WHERE project_id = $1`,
-    [project_id],
+    [projectId],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
@@ -68,8 +68,8 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
+    () => ['data', 'projects', projectId],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'units'], [parentArray])
@@ -114,7 +114,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
       />
       {isOpen &&
         rows.map((unit) => (
-          <UnitNode key={unit.unit_id} project_id={project_id} unit={unit} />
+          <UnitNode key={unit.unit_id} projectId={projectId} unit={unit} />
         ))}
     </>
   )

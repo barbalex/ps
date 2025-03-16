@@ -17,6 +17,7 @@ const from = '/data/_authLayout/projects/$projectId_/units/'
 export const Units = memo(() => {
   const [filter] = useAtom(unitsFilterAtom)
   const { projectId } = useParams({ from })
+  console.log('Units', projectId)
   const navigate = useNavigate()
   const db = usePGlite()
 
@@ -39,7 +40,7 @@ export const Units = memo(() => {
   const units = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createUnit({ db,  projectId })
+    const res = await createUnit({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
