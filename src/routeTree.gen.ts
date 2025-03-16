@@ -51,12 +51,12 @@ import { Route as DataAuthLayoutFilesFileIdPreviewImport } from './routes/data/_
 import { Route as DataAuthLayoutProjectsProjectIdUnitsIndexImport } from './routes/data/_authLayout/projects/$projectId_/units.index'
 import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesIndexImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects.index'
-import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels.index'
+import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels/index'
 import { Route as DataAuthLayoutProjectsProjectIdListsIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/index'
 import { Route as DataAuthLayoutFilesFileIdPreviewIndexImport } from './routes/data/_authLayout/files/$fileId_/preview.index'
 import { Route as DataAuthLayoutProjectsProjectIdUnitsUnitIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/units.$unitId.index'
 import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId.index'
-import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsPlaceLevelIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels.$placeLevelId.index'
+import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsPlaceLevelIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId.index'
 import { Route as DataAuthLayoutProjectsProjectIdListsListIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId.index'
 import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxaIndexImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxa.index'
 import { Route as DataAuthLayoutProjectsProjectIdListsListIdValuesIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId_/values.index'
@@ -1488,7 +1488,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/place-levels/": {
-      "filePath": "data/_authLayout/projects/$projectId_/place-levels.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/place-levels/index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/subprojects/": {
@@ -1508,7 +1508,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId/": {
-      "filePath": "data/_authLayout/projects/$projectId_/place-levels.$placeLevelId.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/place-levels/$placeLevelId.index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId/": {
