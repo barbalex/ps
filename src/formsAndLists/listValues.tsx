@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createListValue } from '../modules/createRows.ts'
@@ -8,30 +8,31 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const { list_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/lists/$listId_/values/'
+
+export const ListValues = memo(() => {
+  const { listId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT list_value_id, label FROM list_values WHERE list_id = $1 ORDER BY label`,
-    [list_id],
+    [listId],
     'list_value_id',
   )
   const isLoading = res === undefined
   const listValues = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createListValue({ db, list_id })
+    const res = await createListValue({ db, list_id: listId })
     const list_value_id = res?.rows?.[0]?.list_value_id
     if (!list_value_id) return
     navigate({
-      pathname: list_value_id,
-      search: searchParams.toString(),
+      to: list_value_id,
+      params: (prev) => ({ ...prev, listValueId: list_value_id }),
     })
-  }, [db, list_id, navigate, searchParams])
+  }, [db, listId, navigate])
 
   return (
     <div className="list-view">

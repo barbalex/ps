@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -13,15 +13,17 @@ import { Type } from './Type.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { taxonomy_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId/'
+
+export const Taxonomy = memo(() => {
+  const { taxonomyId } = useParams({ from })
   const db = usePGlite()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
-    [taxonomy_id],
+    [taxonomyId],
     'taxonomy_id',
   )
   const row = res?.rows?.[0]
@@ -34,10 +36,10 @@ export const Component = memo(() => {
 
       db.query(`UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`, [
         value,
-        taxonomy_id,
+        taxonomyId,
       ])
     },
-    [db, row, taxonomy_id],
+    [db, row, taxonomyId],
   )
 
   if (!row) return <Loading />
@@ -54,10 +56,7 @@ export const Component = memo(() => {
           autoFocus
           ref={autoFocusRef}
         />
-        <Type
-          row={row}
-          onChange={onChange}
-        />
+        <Type row={row} onChange={onChange} />
         <TextField
           label="Url"
           name="url"

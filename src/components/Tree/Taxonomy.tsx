@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -9,16 +9,15 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const TaxonomyNode = memo(({ project_id, taxonomy, level = 4 }) => {
+export const TaxonomyNode = memo(({ projectId, taxonomy, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id, 'taxonomies'],
-    [project_id],
+    () => ['data', 'projects', projectId, 'taxonomies'],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
@@ -37,10 +36,7 @@ export const TaxonomyNode = memo(({ project_id, taxonomy, level = 4 }) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -51,9 +47,7 @@ export const TaxonomyNode = memo(({ project_id, taxonomy, level = 4 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -71,10 +65,7 @@ export const TaxonomyNode = memo(({ project_id, taxonomy, level = 4 }) => {
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <TaxaNode
-          project_id={project_id}
-          taxonomy_id={taxonomy.taxonomy_id}
-        />
+        <TaxaNode projectId={projectId} taxonomyId={taxonomy.taxonomy_id} />
       )}
     </>
   )

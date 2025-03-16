@@ -1,61 +1,62 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxonomy } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId/'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, taxonomy_id } = useParams()
+  const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createTaxonomy({ db, project_id })
+    const res = await createTaxonomy({ db, project_id: projectId })
     const taxonomy = res?.rows?.[0]
     navigate({
-      pathname: `../${taxonomy.taxonomy_id}`,
-      search: searchParams.toString(),
+      to: `../${taxonomy.taxonomy_id}`,
+      params: (prev) => ({ ...prev, taxonomyId: taxonomy.taxonomy_id }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id, searchParams])
+  }, [autoFocusRef, db, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [taxonomy_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, navigate, taxonomy_id, searchParams])
+    db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [taxonomyId])
+    navigate({ to: '..' })
+  }, [db, navigate, taxonomyId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
-      [project_id],
+      [projectId],
     )
     const taxonomies = res?.rows
     const len = taxonomies.length
-    const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
+    const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const next = taxonomies[(index + 1) % len]
     navigate({
-      pathname: `../${next.taxonomy_id}`,
-      search: searchParams.toString(),
+      to: `../${next.taxonomy_id}`,
+      params: (prev) => ({ ...prev, taxonomyId: next.taxonomy_id }),
     })
-  }, [db, project_id, navigate, searchParams, taxonomy_id])
+  }, [db, projectId, navigate, taxonomyId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
-      [project_id],
+      [projectId],
     )
     const taxonomies = res?.rows
     const len = taxonomies.length
-    const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
+    const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const previous = taxonomies[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.taxonomy_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.taxonomy_id}`,
+      params: (prev) => ({ ...prev, taxonomyId: previous.taxonomy_id }),
     })
-  }, [db, navigate, project_id, taxonomy_id, searchParams])
+  }, [db, navigate, projectId, taxonomyId])
 
   return (
     <FormHeader

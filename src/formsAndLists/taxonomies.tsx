@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createTaxonomy } from '../modules/createRows.ts'
@@ -8,29 +8,30 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const { project_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/taxonomies/'
+
+export const Taxonomies = memo(() => {
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT taxonomy_id, label FROM taxonomies WHERE project_id = $1 ORDER BY label`,
-    [project_id],
+    [projectId],
     'taxonomy_id',
   )
   const isLoading = res === undefined
   const taxonomies = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createTaxonomy({ db, project_id })
+    const res = await createTaxonomy({ db, project_id: projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.taxonomy_id,
-      search: searchParams.toString(),
+      to: data.taxonomy_id,
+      params: (prev) => ({ ...prev, taxonomyId: data.taxonomy_id }),
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
