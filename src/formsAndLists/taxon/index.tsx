@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,15 +10,18 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { taxon_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
+
+export const Taxon = memo(() => {
+  const { taxonId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM taxa WHERE taxon_id = $1`,
-    [taxon_id],
+    [taxonId],
     'taxon_id',
   )
   const row = res?.rows?.[0]
@@ -31,10 +34,10 @@ export const Component = memo(() => {
 
       db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
         value,
-        taxon_id,
+        taxonId,
       ])
     },
-    [db, row, taxon_id],
+    [db, row, taxonId],
   )
 
   if (!row) return <Loading />

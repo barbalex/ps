@@ -1,61 +1,63 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { taxonomy_id, taxon_id } = useParams()
+  const { taxonomyId, taxonId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = createTaxon({ taxonomy_id, db })
+    const res = createTaxon({ taxonomyId, db })
     const taxon = res?.rows?.[0]
     navigate({
-      pathname: `../${taxon.taxon_id}`,
-      search: searchParams.toString(),
+      to: `../${taxon.taxon_id}`,
+      params: (prev) => ({ ...prev, taxonId: taxon.taxon_id }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, taxonomy_id, searchParams])
+  }, [autoFocusRef, db, navigate, taxonomyId])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM taxa WHERE taxon_id = $1`, [taxon_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, navigate, taxon_id, searchParams])
+    db.query(`DELETE FROM taxa WHERE taxon_id = $1`, [taxonId])
+    navigate({ to: '..' })
+  }, [db, navigate, taxonId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
-      [taxonomy_id],
+      [taxonomyId],
     )
     const taxa = res?.rows
     const len = taxa.length
-    const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
+    const index = taxa.findIndex((p) => p.taxon_id === taxonId)
     const next = taxa[(index + 1) % len]
     navigate({
-      pathname: `../${next.taxon_id}`,
-      search: searchParams.toString(),
+      to: `../${next.taxon_id}`,
+      params: (prev) => ({ ...prev, taxonId: next.taxon_id }),
     })
-  }, [db, navigate, taxon_id, taxonomy_id, searchParams])
+  }, [db, navigate, taxonId, taxonomyId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
-      [taxonomy_id],
+      [taxonomyId],
     )
     const taxa = res?.rows
     const len = taxa.length
-    const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
+    const index = taxa.findIndex((p) => p.taxon_id === taxonId)
     const previous = taxa[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.taxon_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.taxon_id}`,
+      params: (prev) => ({ ...prev, taxonId: previous.taxon_id }),
     })
-  }, [db, navigate, taxon_id, taxonomy_id, searchParams])
+  }, [db, navigate, taxonId, taxonomyId])
 
   return (
     <FormHeader

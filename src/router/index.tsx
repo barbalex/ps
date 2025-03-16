@@ -515,69 +515,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'taxonomies',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Taxonomies',
-          table: 'taxonomies',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/taxonomies.tsx'),
-        },
-        {
-          path: ':taxonomy_id',
-          element: null,
-          handle: {
-            crumb: {
-              table: 'taxonomies',
-              folder: false,
-            },
-            to: {
-              table: `taxonomies`,
-            },
-          },
-          children: [
-            {
-              index: true,
-              lazy: () => import('../routes/taxonomy/index.tsx'),
-            },
-            {
-              path: 'taxa',
-              element: null,
-              handle: {
-                crumb: {
-                  text: 'Taxa',
-                  table: 'taxa',
-                  folder: true,
-                },
-              },
-              children: [
-                {
-                  index: true,
-                  lazy: () => import('../routes/taxa.tsx'),
-                },
-                {
-                  path: ':taxon_id',
-                  lazy: () => import('../routes/taxon/index.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'taxa',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
       path: 'wms-layers',
       element: null,
       handle: {

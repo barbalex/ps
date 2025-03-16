@@ -25,7 +25,7 @@ export const Taxa = memo(() => {
   const taxa = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createTaxon({ taxonomy_id: taxonomyId, db })
+    const res = await createTaxon({ taxonomyId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({

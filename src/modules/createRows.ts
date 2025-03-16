@@ -355,10 +355,10 @@ export const createPlaceLevel = async ({ db }) =>
     [uuidv7(), 1, true, true, true, true, true, true, true, true, true],
   )
 
-export const createTaxon = async ({ taxonomy_id, db }) =>
+export const createTaxon = async ({ taxonomyId, db }) =>
   db.query(
     `insert into taxa (taxon_id, taxonomy_id) values ($1, $2) returning taxon_id`,
-    [uuidv7(), taxonomy_id],
+    [uuidv7(), taxonomyId],
   )
 
 export const createListValue = async ({ list_id, db }) =>
