@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,11 +12,12 @@ import { unitsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/projects/$projectId_/units/'
+
+export const Units = memo(() => {
   const [filter] = useAtom(unitsFilterAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -31,18 +32,21 @@ export const Component = memo(() => {
       project_id = $1
       ${isFiltered ? ` AND ${filterString}` : ''} 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'unit_id',
   )
   const isLoading = res === undefined
   const units = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createUnit({ db, project_id })
+    const res = await createUnit({ db,  projectId })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.unit_id, search: searchParams.toString() })
-  }, [db, navigate, project_id, searchParams])
+    navigate({
+      to: data.unit_id,
+      params: (prev) => ({ ...prev, unitId: data.unit_id }),
+    })
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -62,11 +66,7 @@ export const Component = memo(() => {
         ) : (
           <>
             {units.map(({ unit_id, label }) => (
-              <Row
-                key={unit_id}
-                label={label ?? unit_id}
-                to={unit_id}
-              />
+              <Row key={unit_id} label={label ?? unit_id} to={unit_id} />
             ))}
           </>
         )}

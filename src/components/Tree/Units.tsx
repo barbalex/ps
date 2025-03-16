@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -25,7 +25,6 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const [filter] = useAtom(unitsFilterAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -60,8 +59,8 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
               countLoading ? '...' : formatNumber(countUnfiltered)
             }`
           : rowsLoading
-          ? '...'
-          : formatNumber(rows.length)
+            ? '...'
+            : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -86,10 +85,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -101,7 +97,6 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -119,11 +114,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
       />
       {isOpen &&
         rows.map((unit) => (
-          <UnitNode
-            key={unit.unit_id}
-            project_id={project_id}
-            unit={unit}
-          />
+          <UnitNode key={unit.unit_id} project_id={project_id} unit={unit} />
         ))}
     </>
   )

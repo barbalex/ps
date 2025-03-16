@@ -1,16 +1,16 @@
 import { memo, useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const UnitNode = memo(({ project_id, unit, level = 4 }) => {
+export const UnitNode = memo(({ projectId, unit, level = 4 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = useMemo(
-    () => ['data', 'projects', project_id, 'units', unit.unit_id],
-    [project_id, unit.unit_id],
+    () => ['data', 'projects', projectId, 'units', unit.unit_id],
+    [projectId, unit.unit_id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 

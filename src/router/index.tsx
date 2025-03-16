@@ -515,33 +515,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'place-levels',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Place Levels',
-          table: 'place_levels',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/placeLevels.tsx'),
-        },
-        {
-          path: ':place_level_id',
-          lazy: () => import('../routes/placeLevel/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'place_levels',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'units',
       element: null,
       handle: {

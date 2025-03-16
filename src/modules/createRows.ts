@@ -245,12 +245,12 @@ export const createField = async ({
     ],
   )
 
-export const createUnit = async ({ project_id, db }) =>
+export const createUnit = async ({ projectId, db }) =>
   db.query(
     `INSERT INTO units (unit_id, project_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa, summable, sort, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning unit_id`,
     [
       uuidv7(),
-      project_id,
+      projectId,
       true,
       true,
       true,
