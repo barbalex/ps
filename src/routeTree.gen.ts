@@ -51,11 +51,11 @@ import { Route as DataAuthLayoutFilesFileIdPreviewImport } from './routes/data/_
 import { Route as DataAuthLayoutProjectsProjectIdUnitsIndexImport } from './routes/data/_authLayout/projects/$projectId_/units.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects.index'
 import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels.index'
-import { Route as DataAuthLayoutProjectsProjectIdListsIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists.index'
+import { Route as DataAuthLayoutProjectsProjectIdListsIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/index'
 import { Route as DataAuthLayoutFilesFileIdPreviewIndexImport } from './routes/data/_authLayout/files/$fileId_/preview.index'
 import { Route as DataAuthLayoutProjectsProjectIdUnitsUnitIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/units.$unitId.index'
 import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsPlaceLevelIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels.$placeLevelId.index'
-import { Route as DataAuthLayoutProjectsProjectIdListsListIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists.$listId.index'
+import { Route as DataAuthLayoutProjectsProjectIdListsListIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId.index'
 
 // Create Virtual Routes
 
@@ -1330,7 +1330,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout/files/$fileId_/preview"
     },
     "/data/_authLayout/projects/$projectId_/lists/": {
-      "filePath": "data/_authLayout/projects/$projectId_/lists.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/lists/index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/place-levels/": {
@@ -1346,7 +1346,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/lists/$listId/": {
-      "filePath": "data/_authLayout/projects/$projectId_/lists.$listId.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/lists/$listId.index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId/": {
