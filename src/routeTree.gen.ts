@@ -48,13 +48,13 @@ import { Route as DataAuthLayoutAccountsAccountIdImport } from './routes/data/_a
 import { Route as DataAuthLayoutProjectsProjectIdIndexImport } from './routes/data/_authLayout/projects/$projectId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsImport } from './routes/data/_authLayout/projects/$projectId_/subprojects'
 import { Route as DataAuthLayoutFilesFileIdPreviewImport } from './routes/data/_authLayout/files/$fileId_/preview'
-import { Route as DataAuthLayoutProjectsProjectIdUnitsIndexImport } from './routes/data/_authLayout/projects/$projectId_/units.index'
+import { Route as DataAuthLayoutProjectsProjectIdUnitsIndexImport } from './routes/data/_authLayout/projects/$projectId_/units/index'
 import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesIndexImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects.index'
 import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels/index'
 import { Route as DataAuthLayoutProjectsProjectIdListsIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/index'
 import { Route as DataAuthLayoutFilesFileIdPreviewIndexImport } from './routes/data/_authLayout/files/$fileId_/preview.index'
-import { Route as DataAuthLayoutProjectsProjectIdUnitsUnitIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/units.$unitId.index'
+import { Route as DataAuthLayoutProjectsProjectIdUnitsUnitIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/units/$unitId.index'
 import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId.index'
 import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsPlaceLevelIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId.index'
 import { Route as DataAuthLayoutProjectsProjectIdListsListIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId.index'
@@ -1500,7 +1500,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/units/": {
-      "filePath": "data/_authLayout/projects/$projectId_/units.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/units/index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/lists/$listId/": {
@@ -1516,7 +1516,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/units/$unitId/": {
-      "filePath": "data/_authLayout/projects/$projectId_/units.$unitId.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/units/$unitId.index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/lists/$listId_/values/": {
