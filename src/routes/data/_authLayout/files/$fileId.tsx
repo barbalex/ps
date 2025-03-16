@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { File } from '../../../../../formsAndLists/file/index.tsx'
-import { NotFound } from '../../../../../components/NotFound.tsx'
+import { File } from '../../../../formsAndLists/file/index.tsx'
+import { NotFound } from '../../../../components/NotFound.tsx'
 
 const from = '/data/_authLayout/files/$fileId'
 
