@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -12,17 +12,16 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
-  list_id: string
+  projectId: string
+  listId: string
   level?: number
 }
 
 export const ListValuesNode = memo(
-  ({ project_id, list_id, level = 5 }: Props) => {
+  ({ projectId, listId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -32,7 +31,7 @@ export const ListValuesNode = memo(
       FROM list_values 
       WHERE list_id = $1 
       ORDER BY label`,
-      [list_id],
+      [listId],
       'list_value_id',
     )
     const rows = res?.rows ?? []
@@ -47,8 +46,8 @@ export const ListValuesNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'lists', list_id],
-      [project_id, list_id],
+      () => ['data', 'projects', projectId, 'lists', listId],
+      [projectId, listId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
@@ -64,10 +63,7 @@ export const ListValuesNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -79,7 +75,6 @@ export const ListValuesNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -99,8 +94,8 @@ export const ListValuesNode = memo(
           rows.map((listValue) => (
             <ListValueNode
               key={listValue.list_value_id}
-              project_id={project_id}
-              list_id={list_id}
+              projectId={projectId}
+              listId={listId}
               listValue={listValue}
             />
           ))}

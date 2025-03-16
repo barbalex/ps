@@ -64,9 +64,9 @@ export const ListNode = memo(({ projectId, list, level = 4 }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {/* {isOpen && (
-        <ListValuesNode project_id={projectId} list_id={list.list_id} />
-      )} */}
+      {isOpen && (
+        <ListValuesNode projectId={projectId} listId={list.list_id} />
+      )}
     </>
   )
 })
