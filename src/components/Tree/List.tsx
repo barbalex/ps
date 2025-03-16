@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -9,16 +9,15 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const ListNode = memo(({ project_id, list, level = 4 }) => {
+export const ListNode = memo(({ projectId, list, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id, 'lists'],
-    [project_id],
+    () => ['data', 'projects', projectId, 'lists'],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
@@ -37,10 +36,7 @@ export const ListNode = memo(({ project_id, list, level = 4 }) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -51,9 +47,7 @@ export const ListNode = memo(({ project_id, list, level = 4 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -70,12 +64,9 @@ export const ListNode = memo(({ project_id, list, level = 4 }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && (
-        <ListValuesNode
-          project_id={project_id}
-          list_id={list.list_id}
-        />
-      )}
+      {/* {isOpen && (
+        <ListValuesNode project_id={projectId} list_id={list.list_id} />
+      )} */}
     </>
   )
 })

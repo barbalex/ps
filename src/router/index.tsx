@@ -515,43 +515,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'units',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Units',
-          table: 'units',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/units.tsx'),
-        },
-        {
-          path: 'filter',
-          element: <Filter />,
-          children: [
-            {
-              index: true,
-              lazy: () => import('../routes/unit/Form.tsx'),
-            },
-          ],
-        },
-        {
-          path: ':unit_id',
-          lazy: () => import('../routes/unit/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'units',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'lists',
       element: null,
       handle: {

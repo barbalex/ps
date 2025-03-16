@@ -1,61 +1,62 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createList } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = '/data/_authLayout/projects/$projectId_/lists/$listId/'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, list_id } = useParams()
+  const { projectId, listId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createList({ db, project_id })
+    const res = await createList({ db, project_id: projectId })
     const data = res?.rows?.[0]
     navigate({
-      pathname: `../${data.list_id}`,
-      search: searchParams.toString(),
+      to: `../${data.list_id}`,
+      params: (prev) => ({ ...prev, listId: data.list_id }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id, searchParams])
+  }, [autoFocusRef, db, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM lists WHERE list_id = $1`, [list_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, list_id, navigate, searchParams])
+    db.query(`DELETE FROM lists WHERE list_id = $1`, [listId])
+    navigate({ to: '..' })
+  }, [db, listId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
-      [project_id],
+      [projectId],
     )
     const lists = res?.rows
     const len = lists.length
-    const index = lists.findIndex((p) => p.list_id === list_id)
+    const index = lists.findIndex((p) => p.list_id === listId)
     const next = lists[(index + 1) % len]
     navigate({
-      pathname: `../${next.list_id}`,
-      search: searchParams.toString(),
+      to: `../${next.list_id}`,
+      params: (prev) => ({ ...prev, listId: next.list_id }),
     })
-  }, [db, list_id, navigate, project_id, searchParams])
+  }, [db, listId, navigate, projectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
-      [project_id],
+      [projectId],
     )
     const lists = res?.rows
     const len = lists.length
-    const index = lists.findIndex((p) => p.list_id === list_id)
+    const index = lists.findIndex((p) => p.list_id === listId)
     const previous = lists[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.list_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.list_id}`,
+      params: (prev) => ({ ...prev, listId: previous.list_id }),
     })
-  }, [db, list_id, navigate, project_id, searchParams])
+  }, [db, listId, navigate, projectId])
 
   return (
     <FormHeader

@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,11 +12,12 @@ import { listsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/projects/$projectId_/lists/'
+
+export const Lists = memo(() => {
   const [filter] = useAtom(listsFilterAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -31,18 +32,21 @@ export const Component = memo(() => {
       project_id = $1
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'list_id',
   )
   const isLoading = res === undefined
   const lists = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createList({ db, project_id })
+    const res = await createList({ db, project_id: projectId })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.list_id, search: searchParams.toString() })
-  }, [db, navigate, project_id, searchParams])
+    navigate({
+      to: data.list_id,
+      params: (prev) => ({ ...prev, listId: data.list_id }),
+    })
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -62,11 +66,7 @@ export const Component = memo(() => {
         ) : (
           <>
             {lists.map(({ list_id, label }) => (
-              <Row
-                key={list_id}
-                to={list_id}
-                label={label ?? list_id}
-              />
+              <Row key={list_id} to={list_id} label={label ?? list_id} />
             ))}
           </>
         )}
