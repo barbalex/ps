@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -13,15 +13,18 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { place_level_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId/'
+
+export const PlaceLevel = memo(() => {
+  const { placeLevelId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE place_level_id = $1`,
-    [place_level_id],
+    [placeLevelId],
     'place_level_id',
   )
   const row = res?.rows?.[0]
@@ -34,7 +37,7 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE place_levels SET ${name} = $1 WHERE place_level_id = $2`,
-        [value, place_level_id],
+        [value, placeLevelId],
       )
       // if name_plural was changed, need to update the label of corresponding vector layers
       if (
@@ -55,7 +58,7 @@ export const Component = memo(() => {
         })
       }
     },
-    [db, place_level_id, row],
+    [db, placeLevelId, row],
   )
 
   if (!row) return <Loading />
