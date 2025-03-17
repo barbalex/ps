@@ -16,11 +16,11 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, projectReportsFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   level?: number
 }
 
-export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
+export const ProjectReportsNode = memo(({ projectId, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(projectReportsFilterAtom)
   const location = useLocation()
@@ -37,13 +37,13 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
       project_id = $1
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`
-  const res = useLiveIncrementalQuery(sql, [project_id], 'project_report_id')
+  const res = useLiveIncrementalQuery(sql, [projectId], 'project_report_id')
   const rows = res?.rows ?? []
   const rowsLoading = res === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM project_reports WHERE project_id = $1`,
-    [project_id],
+    [projectId],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
@@ -64,8 +64,8 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
+    () => ['data', 'projects', projectId],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
@@ -112,7 +112,7 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
         rows.map((projectReport) => (
           <ProjectReportNode
             key={projectReport.project_report_id}
-            projectId={project_id}
+            projectId={projectId}
             projectReport={projectReport}
           />
         ))}

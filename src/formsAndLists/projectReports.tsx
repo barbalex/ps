@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,11 +12,12 @@ import { projectReportsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/projects/$projectId_/reports/'
+
+export const ProjectReports = memo(() => {
   const [filter] = useAtom(projectReportsFilterAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -30,21 +31,21 @@ export const Component = memo(() => {
     WHERE project_id = $1
     ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'project_report_id',
   )
   const isLoading = res === undefined
   const projectReports = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createProjectReport({ db, project_id })
+    const res = await createProjectReport({ db, project_id: projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.project_report_id,
-      search: searchParams.toString(),
+      to: data.project_report_id,
+      params: (prev) => ({ ...prev, projectReportId: data.project_report_id }),
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -59,10 +60,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {projectReports.map(({ project_report_id, label }) => (
               <Row
                 key={project_report_id}
@@ -71,7 +71,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
