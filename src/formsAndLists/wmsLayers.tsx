@@ -15,9 +15,9 @@ import { wmsLayersFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-const from = '/data/_authLayout/wms-layers/'
+const from = '/data/_authLayout/projects/$projectId_/wms-layers/'
 
-export const Component = memo(() => {
+export const WmsLayers = memo(() => {
   const [filter] = useAtom(wmsLayersFilterAtom)
   const { projectId } = useParams({ from })
   const navigate = useNavigate()

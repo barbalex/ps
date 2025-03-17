@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -16,16 +16,15 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, wmsLayersFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   level?: number
 }
 
-export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
+export const WmsLayersNode = memo(({ projectId, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(wmsLayersFilterAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -38,13 +37,13 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
       project_id = $1
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`
-  const resFiltered = useLiveIncrementalQuery(sql, [project_id], 'wms_layer_id')
+  const resFiltered = useLiveIncrementalQuery(sql, [projectId], 'wms_layer_id')
   const rows = resFiltered?.rows ?? []
   const rowsLoading = resFiltered === undefined
 
   const resCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM wms_layers WHERE project_id = $1`,
-    [project_id],
+    [projectId],
   )
   const countUnfiltered = resCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resCountUnfiltered === undefined
@@ -52,13 +51,12 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const wmsLayersNode = useMemo(
     () => ({
       label: `WMS Layers (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-          ? '...'
-          : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            countLoading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? '...'
+        : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -66,8 +64,8 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
+    () => ['data', 'projects', projectId],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'wms-layers'], [parentArray])
@@ -84,8 +82,7 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
+          to: parentUrl,
         })
       }
       return
@@ -98,7 +95,6 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -118,7 +114,7 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
         rows.map((wmsLayer) => (
           <WmsLayerNode
             key={wmsLayer.wms_layer_id}
-            project_id={project_id}
+            projectId={projectId}
             wmsLayer={wmsLayer}
           />
         ))}

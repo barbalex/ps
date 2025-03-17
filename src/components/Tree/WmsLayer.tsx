@@ -1,16 +1,16 @@
 import { memo, useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const WmsLayerNode = memo(({ project_id, wmsLayer, level = 4 }) => {
+export const WmsLayerNode = memo(({ projectId, wmsLayer, level = 4 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = useMemo(
-    () => ['data', 'projects', project_id, 'wms-layers', wmsLayer.wms_layer_id],
-    [project_id, wmsLayer.wms_layer_id],
+    () => ['data', 'projects', projectId, 'wms-layers', wmsLayer.wms_layer_id],
+    [projectId, wmsLayer.wms_layer_id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 

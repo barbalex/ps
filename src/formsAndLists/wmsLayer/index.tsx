@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,8 +10,10 @@ import { WmsLayerForm as Form } from './Form/index.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { wms_layer_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId'
+
+export const WmsLayer = memo(() => {
+  const { wmsLayerId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -19,7 +21,7 @@ export const Component = memo(() => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
-    [wms_layer_id],
+    [wmsLayerId],
     'wms_layer_id',
   )
   const row = res?.rows?.[0]
@@ -33,7 +35,7 @@ export const Component = memo(() => {
       try {
         await db.query(
           `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
-          [value, wms_layer_id],
+          [value, wmsLayerId],
         )
       } catch (error) {
         console.log('hello WmsLayer, onChange, error:', error)
@@ -43,7 +45,7 @@ export const Component = memo(() => {
       // 2. use wms_layers.queryable in the click listener for the info drawer
       return
     },
-    [db, row, wms_layer_id],
+    [db, row, wmsLayerId],
   )
 
   // console.log('WmsLayer, row:', wmsLayer)

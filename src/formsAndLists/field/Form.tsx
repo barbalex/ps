@@ -33,7 +33,7 @@ const widgetsNeedingList = [
 
 export const FieldForm = memo(
   ({ onChange, row, autoFocusRef, isInForm = false, from }) => {
-    const { project_id } = useParams({ from })
+    const { projectId } = useParams({ from })
 
     const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
 
@@ -46,7 +46,7 @@ export const FieldForm = memo(
               name="table_name"
               value={row.table_name ?? ''}
               onChange={onChange}
-              options={project_id ? projectTables : accountTables}
+              options={projectId ? projectTables : accountTables}
               autoFocus
               ref={autoFocusRef}
               validationMessage={row.table_name ? undefined : 'Required'}
