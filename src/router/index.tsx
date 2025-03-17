@@ -515,43 +515,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'wms-layers',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'WMS Layers',
-          table: 'wms_layers',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/wmsLayers.tsx'),
-        },
-        {
-          path: 'filter',
-          element: <Filter />,
-          children: [
-            {
-              index: true,
-              lazy: () => import('../routes/wmsLayer/Form/index.tsx'),
-            },
-          ],
-        },
-        {
-          path: ':wms_layer_id',
-          lazy: () => import('../routes/wmsLayer/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'wms_layers',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'vector-layers',
       element: null,
       handle: {
