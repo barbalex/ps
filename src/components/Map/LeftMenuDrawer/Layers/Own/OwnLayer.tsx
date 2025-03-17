@@ -12,6 +12,7 @@ import { BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
@@ -21,8 +22,8 @@ import {
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
-import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
-import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
+import { VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
+import { VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
 import {
   panelStyle,
   tabListStyle,
@@ -41,6 +42,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
   )
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
+  const { pathname } = useLocation()
 
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -140,8 +142,13 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
               {vectorLayerDisplayId ?
                 <VectorLayerDisplay
                   vectorLayerDisplayId={vectorLayerDisplayId}
+                  from={pathname}
                 />
-              : <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />}
+              : <VectorLayerDisplays
+                  vectorLayerId={layer.vector_layer_id}
+                  from={pathname}
+                />
+              }
             </>
           )}
         </AccordionPanel>

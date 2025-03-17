@@ -19,6 +19,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../../modules/createRows.ts'
@@ -32,8 +33,8 @@ import {
 } from '../../styles.ts'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
-import { Component as VectorLayerDisplays } from '../../../../../../routes/vectorLayerDisplays.tsx'
-import { Component as VectorLayerDisplay } from '../../../../../../routes/vectorLayerDisplay/index.tsx'
+import { VectorLayerDisplays } from '../../../../../../routes/vectorLayerDisplays.tsx'
+import { VectorLayerDisplay } from '../../../../../../routes/vectorLayerDisplay/index.tsx'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
@@ -52,6 +53,7 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
   )
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
+  const { pathname } = useLocation()
 
   const isVectorLayer = layer.layer_type === 'vector'
   const isWmsLayer = layer.layer_type === 'wms'
@@ -125,11 +127,11 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
         size="extra-large"
         expandIcon={designing ? undefined : null}
         style={
-          isOpen
-            ? {
-                backgroundColor: 'rgba(103, 216, 101, 0.1)',
-              }
-            : {}
+          isOpen ?
+            {
+              backgroundColor: 'rgba(103, 216, 101, 0.1)',
+            }
+          : {}
         }
       >
         {canDrag && <DragHandle ref={dragHandleRef} />}
@@ -193,19 +195,22 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
           </Menu>
         </TabList>
         {tab === 'config' &&
-          (isVectorLayer ? (
+          (isVectorLayer ?
             <VectorLayerEditing layer={layer} />
-          ) : (
-            <WmsLayerEditing layer={layer} />
-          ))}
+          : <WmsLayerEditing layer={layer} />)}
         {tab === 'overall-displays' && <LayerPresentationForm layer={layer} />}
         {tab === 'feature-displays' && isVectorLayer && (
           <>
-            {vectorLayerDisplayId ? (
-              <VectorLayerDisplay vectorLayerDisplayId={vectorLayerDisplayId} />
-            ) : (
-              <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />
-            )}
+            {vectorLayerDisplayId ?
+              <VectorLayerDisplay
+                vectorLayerDisplayId={vectorLayerDisplayId}
+                from={pathname}
+              />
+            : <VectorLayerDisplays
+                vectorLayerId={layer.vector_layer_id}
+                from={pathname}
+              />
+            }
           </>
         )}
       </AccordionPanel>

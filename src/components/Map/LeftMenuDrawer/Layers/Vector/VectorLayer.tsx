@@ -20,6 +20,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
@@ -37,8 +38,8 @@ import {
   deleteButtonStyle,
 } from '../styles.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
-import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
-import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
+import { VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
+import { VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
 import { on } from '../../../../../css.ts'
 
 // type Props = {
@@ -54,6 +55,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
+  const { pathname } = useLocation()
 
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
@@ -188,8 +190,13 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
               {vectorLayerDisplayId ?
                 <VectorLayerDisplay
                   vectorLayerDisplayId={vectorLayerDisplayId}
+                  from={pathname}
                 />
-              : <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />}
+              : <VectorLayerDisplays
+                  vectorLayerId={layer.vector_layer_id}
+                  from={pathname}
+                />
+              }
             </>
           )}
           {tab === 'config' && <VectorLayerEditing layer={layer} />}

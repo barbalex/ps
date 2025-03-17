@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 // import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -25,18 +25,22 @@ import '../../form.css'
 //   marker: 'Symbol',
 // }
 
-export const Component = ({ vectorLayerDisplayId }) => {
-  const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
-    useParams()
-  const vector_layer_display_id =
-    vectorLayerDisplayId ?? vectorLayerDisplayIdFromRouter
+export const VectorLayerDisplay = ({
+  vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
+  from,
+}) => {
+  const { vectorLayerDisplayId: vectorLayerDisplayIdFromRouter } = useParams({
+    from,
+  })
+  const vectorLayerDisplayId =
+    vectorLayerDisplayIdFromProps ?? vectorLayerDisplayIdFromRouter
   const db = usePGlite()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
-    [vector_layer_display_id],
+    [vectorLayerDisplayId],
     'vector_layer_display_id',
   )
   const row = res?.rows?.[0]
@@ -49,10 +53,10 @@ export const Component = ({ vectorLayerDisplayId }) => {
 
       db.query(
         `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
-        [value, vector_layer_display_id],
+        [value, vectorLayerDisplayId],
       )
     },
-    [db, row, vector_layer_display_id],
+    [db, row, vectorLayerDisplayId],
   )
 
   if (!row) return <Loading />
@@ -70,6 +74,7 @@ export const Component = ({ vectorLayerDisplayId }) => {
         <Header
           autoFocusRef={autoFocusRef}
           vectorLayerDisplayId={vectorLayerDisplayId}
+          from={from}
         />
         <div className="form-container">
           <MarkerType
