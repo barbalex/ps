@@ -323,17 +323,17 @@ export const createProjectUser = async ({ projectId, db }) =>
     [uuidv7(), projectId, 'reader'],
   )
 
-export const createProjectReport = async ({ db, project_id }) => {
+export const createProjectReport = async ({ db, projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    project_id,
+    project_id: projectId,
     table: 'project_reports',
   })
 
   const data = {
     project_report_id: uuidv7(),
-    project_id,
+    project_id: projectId,
     year: new Date().getFullYear(),
 
     ...presetData,

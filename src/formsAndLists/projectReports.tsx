@@ -38,7 +38,7 @@ export const ProjectReports = memo(() => {
   const projectReports = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createProjectReport({ db, project_id: projectId })
+    const res = await createProjectReport({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
