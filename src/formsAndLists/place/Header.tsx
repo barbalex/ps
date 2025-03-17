@@ -70,7 +70,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const newVectorLayer = resVL.rows?.[0]
 
     createVectorLayerDisplay({
-      vector_layer_id: newVectorLayer.vector_layer_id,
+      vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 

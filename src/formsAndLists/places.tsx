@@ -93,7 +93,7 @@ export const Component = memo(() => {
     const newVectorLayer = resVL?.rows?.[0]
 
     await createVectorLayerDisplay({
-      vector_layer_id: newVectorLayer.vector_layer_id,
+      vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 

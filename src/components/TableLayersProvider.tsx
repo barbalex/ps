@@ -93,7 +93,7 @@ export const TableLayersProvider = memo(() => {
         const places1VLDCount = resPlaces1VLDCount?.rows?.[0]?.count
         if (places1VLDCount === 0) {
           await createVectorLayerDisplay({
-            vector_layer_id: places1VectorLayer.vector_layer_id,
+            vectorLayerId: places1VectorLayer.vector_layer_id,
             db,
           })
         }
@@ -141,7 +141,7 @@ export const TableLayersProvider = memo(() => {
         const actions1VLDCount = resActions1VLDCount?.rows?.[0]?.count
         if (actions1VLDCount === 0) {
           await createVectorLayerDisplay({
-            vector_layer_id: actions1VectorLayer.vector_layer_id,
+            vectorLayerId: actions1VectorLayer.vector_layer_id,
             db,
           })
         }
@@ -189,7 +189,7 @@ export const TableLayersProvider = memo(() => {
         const checks1VLDCount = resChecks1VLDCount?.rows?.[0]?.count
         if (checks1VLDCount === 0) {
           await createVectorLayerDisplay({
-            vector_layer_id: checks1VectorLayer.vector_layer_id,
+            vectorLayerId: checks1VectorLayer.vector_layer_id,
             db,
           })
         }
@@ -240,7 +240,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesAssigned1VLDCount?.rows?.[0]?.count
           if (occurrencesAssigned1VLDCount === 0) {
             await createVectorLayerDisplay({
-              vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesAssigned1VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -286,7 +286,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesToAssessVLDCount?.rows?.[0]?.count
           if (occurrencesToAssessVLDCount === 0) {
             await createVectorLayerDisplay({
-              vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesToAssessVectorLayer.vector_layer_id,
               db,
             })
           }
@@ -332,8 +332,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesNotToAssignVLDCount?.rows?.[0]?.count
           if (!occurrencesNotToAssignVLDCount) {
             await createVectorLayerDisplay({
-              vector_layer_id:
-                occurrencesNotToAssignVectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesNotToAssignVectorLayer.vector_layer_id,
               db,
             })
           }
@@ -381,7 +380,7 @@ export const TableLayersProvider = memo(() => {
           const places2VLDCount = resPlaces2VLDCount?.rows?.[0]?.count
           if (!places2VLDCount) {
             await createVectorLayerDisplay({
-              vector_layer_id: places2VectorLayer.vector_layer_id,
+              vectorLayerId: places2VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -431,7 +430,7 @@ export const TableLayersProvider = memo(() => {
           const actions2VLDCount = resActions2VLDCount?.rows?.[0]?.count
           if (!actions2VLDCount) {
             await createVectorLayerDisplay({
-              vector_layer_id: actions2VectorLayer.vector_layer_id,
+              vectorLayerId: actions2VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -481,7 +480,7 @@ export const TableLayersProvider = memo(() => {
           const checks2VLDCount = resChecks2VLDCount?.rows?.[0]?.count
           if (!checks2VLDCount) {
             await createVectorLayerDisplay({
-              vector_layer_id: checks2VectorLayer.vector_layer_id,
+              vectorLayerId: checks2VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -532,7 +531,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesAssigned2VLDCount?.rows?.[0]?.count
           if (!occurrencesAssigned2VLDCount) {
             await createVectorLayerDisplay({
-              vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesAssigned2VectorLayer.vector_layer_id,
               db,
             })
           }

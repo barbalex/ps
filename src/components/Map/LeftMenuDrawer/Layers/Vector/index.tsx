@@ -53,7 +53,7 @@ export const VectorLayers = memo(() => {
     const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
     await createVectorLayerDisplay({
-      vector_layer_id: vectorLayer.vector_layer_id,
+      vectorLayerId: vectorLayer.vector_layer_id,
       db,
     })
     // also add layer_presentation

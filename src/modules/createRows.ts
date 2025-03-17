@@ -687,8 +687,8 @@ export const createWfsServiceLayer = async ({
   )
 
 export const createVectorLayerDisplay = async ({
-  vector_layer_id = null,
-  display_property_value = null,
+  vectorLayerId = null,
+  displayPropertyValue = null,
   db,
 }) =>
   db.query(
@@ -700,8 +700,8 @@ export const createVectorLayerDisplay = async ({
   `,
     [
       uuidv7(),
-      vector_layer_id,
-      display_property_value,
+      vectorLayerId,
+      displayPropertyValue,
       'circle',
       8,
       16,

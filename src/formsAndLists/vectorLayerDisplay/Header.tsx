@@ -24,13 +24,13 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     'vector_layer_display_id',
   )
   const vectorLayerDisplays = res?.rows ?? []
-  const vector_layer_id = vectorLayerDisplays?.[0]?.vector_layer_id
+  const vectorLayerId = vectorLayerDisplays?.[0]?.vector_layer_id
 
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const addRow = useCallback(async () => {
-    const res = await createVectorLayerDisplay({ vector_layer_id, db })
+    const res = await createVectorLayerDisplay({ vectorLayerId, db })
     const vectorLayerDisplay = res?.rows?.[0]
     if (vectorLayerDisplayId) {
       setMapLayerDrawerVectorLayerDisplayId(
@@ -49,7 +49,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     searchParams,
     setMapLayerDrawerVectorLayerDisplayId,
     vectorLayerDisplayId,
-    vector_layer_id,
+    vectorLayerId,
   ])
 
   const deleteRow = useCallback(async () => {
@@ -74,7 +74,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
-      [vector_layer_id],
+      [vectorLayerId],
     )
     const vectorLayerDisplays = res?.rows
     const len = vectorLayerDisplays.length
@@ -97,13 +97,13 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     setMapLayerDrawerVectorLayerDisplayId,
     vectorLayerDisplayId,
     vector_layer_display_id,
-    vector_layer_id,
+    vectorLayerId,
   ])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
-      [vector_layer_id],
+      [vectorLayerId],
     )
     const vectorLayerDisplays = res?.rows
     const len = vectorLayerDisplays.length
@@ -126,7 +126,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     setMapLayerDrawerVectorLayerDisplayId,
     vectorLayerDisplayId,
     vector_layer_display_id,
-    vector_layer_id,
+    vectorLayerId,
   ])
 
   return (

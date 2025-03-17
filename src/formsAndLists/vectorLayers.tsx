@@ -52,7 +52,7 @@ export const VectorLayers = memo(() => {
     if (!data) return
     // also add vector_layer_display
     await createVectorLayerDisplay({
-      vector_layer_id: data.vector_layer_id,
+      vectorLayerId: data.vector_layer_id,
       db,
     })
     // also add layer_presentation

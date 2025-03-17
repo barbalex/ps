@@ -13,10 +13,10 @@ import '../form.css'
 
 // this form can be used from the router or inside the left map drawer
 // map drawer passes the vector_layer_id as a prop
-export const Component = memo(({ vectorLayerId }) => {
+export const Component = memo(({ vectorLayerId: vectorLayerIdIn }) => {
   const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
   const params = useParams()
-  const vector_layer_id = vectorLayerId || params.vector_layer_id
+  const vectorLayerId = vectorLayerIdIn || params.vectorLayerId
   const db = usePGlite()
 
   const [searchParams] = useSearchParams()
@@ -24,14 +24,14 @@ export const Component = memo(({ vectorLayerId }) => {
 
   const res = useLiveIncrementalQuery(
     `SELECT vector_layer_display_id, label FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
-    [vector_layer_id],
+    [vectorLayerId],
     'vector_layer_display_id',
   )
   const isLoading = res === undefined
   const vlds = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createVectorLayerDisplay({ vector_layer_id, db })
+    const res = await createVectorLayerDisplay({ vectorLayerId, db })
     const data = res?.rows?.[0]
     if (!data) return
     if (vectorLayerId) {
@@ -44,14 +44,7 @@ export const Component = memo(({ vectorLayerId }) => {
       pathname: data.vector_layer_display_id,
       search: searchParams.toString(),
     })
-  }, [
-    db,
-    navigate,
-    searchParams,
-    setVectorLayerDisplayId,
-    vectorLayerId,
-    vector_layer_id,
-  ])
+  }, [db, navigate, searchParams, setVectorLayerDisplayId, vectorLayerId])
 
   const onClickRow = useCallback(
     (vector_layer_display_id) => {
@@ -79,10 +72,9 @@ export const Component = memo(({ vectorLayerId }) => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {vlds.map(({ vector_layer_display_id, label }) => (
               <Row
                 key={vector_layer_display_id}
@@ -92,7 +84,7 @@ export const Component = memo(({ vectorLayerId }) => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
