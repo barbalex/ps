@@ -19,7 +19,7 @@ interface Props {
   project_id?: string
 }
 
-export const FieldsNode = memo(({ project_id }: Props) => {
+export const FieldsNode = memo(({ projectId }: Props) => {
   const [filter] = useAtom(fieldsFilterAtom)
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -34,7 +34,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
       label 
     FROM fields 
     WHERE 
-      project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
+      project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
       ${filterString ? ` AND ${filterString}` : ''} 
     ORDER BY 
       table_name, 
@@ -50,7 +50,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     `
     SELECT count(*) 
     FROM fields 
-    WHERE project_id  ${project_id ? `= '${project_id}'` : 'IS NULL'}`,
+    WHERE project_id  ${projectId ? `= '${projectId}'` : 'IS NULL'}`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
@@ -58,13 +58,12 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   const node = useMemo(
     () => ({
       label: `Fields (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            countLoading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? '...'
+        : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -72,8 +71,8 @@ export const FieldsNode = memo(({ project_id }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', ...(project_id ? ['projects', project_id] : [])],
-    [project_id],
+    () => ['data', ...(projectId ? ['projects', projectId] : [])],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'fields'], [parentArray])
@@ -111,7 +110,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     <>
       <Node
         node={node}
-        level={project_id ? 3 : 1}
+        level={projectId ? 3 : 1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
@@ -124,7 +123,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
           <FieldNode
             key={field.field_id}
             field={field}
-            project_id={project_id}
+            projectId={projectId}
           />
         ))}
     </>

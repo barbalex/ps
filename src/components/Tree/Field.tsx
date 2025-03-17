@@ -4,19 +4,19 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const FieldNode = memo(({ project_id, field }) => {
-  const level: number = project_id ? 4 : 2
+export const FieldNode = memo(({ projectId, field }) => {
+  const level: number = projectId ? 4 : 2
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = useMemo(
     () => [
       'data',
-      ...(project_id ? ['projects', project_id] : []),
+      ...(projectId ? ['projects', projectId] : []),
       'fields',
       field.field_id,
     ],
-    [field.field_id, project_id],
+    [field.field_id, projectId],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
