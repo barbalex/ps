@@ -515,33 +515,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'users',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Users',
-          table: 'project_users',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/projectUsers.tsx'),
-        },
-        {
-          path: ':project_user_id',
-          lazy: () => import('../routes/projectUser/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'project_users',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'reports',
       element: null,
       handle: {
