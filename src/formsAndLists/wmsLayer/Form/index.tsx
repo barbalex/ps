@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import { useOutletContext, useLocation } from 'react-router'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
@@ -11,57 +10,48 @@ import { CreateWmsService } from './CreateWmsService/index.tsx'
 import '../../../form.css'
 
 // this form is rendered from a parent or outlet
-export const Component = memo(
-  ({ onChange: onChangeFromProps, wmsLayer: wmsLayerFromProps }) => {
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const wmsLayer = wmsLayerFromProps ?? outletContext?.row ?? {}
+export const WmsLayerForm = memo(({ onChange, wmsLayer, isFilter }) => {
+  // TODO: implement later
+  const isOffline = false
 
-    const { pathname } = useLocation()
-    const isFilter = pathname.endsWith('filter')
-
-    // TODO: implement later
-    const isOffline = false
-
-    return (
-      <>
-        <DropdownField
-          label="Web Map Service (WMS)"
-          name="wms_service_id"
-          labelField="url"
-          table="wms_services"
-          value={wmsLayer.wms_service_id ?? ''}
-          orderBy="url"
-          onChange={onChange}
-          autoFocus={true}
+  return (
+    <>
+      <DropdownField
+        label="Web Map Service (WMS)"
+        name="wms_service_id"
+        labelField="url"
+        table="wms_services"
+        value={wmsLayer.wms_service_id ?? ''}
+        orderBy="url"
+        onChange={onChange}
+        autoFocus={true}
+        validationMessage={
+          wmsLayer.wms_service_id ? '' : (
+            'Choose from a configured WMS. Or add a new one.'
+          )
+        }
+        noDataMessage="No WMS found. You can add one."
+        hideWhenNoData={true}
+      />
+      <CreateWmsService wmsLayer={wmsLayer} />
+      {(wmsLayer?.wms_service_id || isFilter) && (
+        <LayersDropdown
+          wmsLayer={wmsLayer}
           validationMessage={
-            wmsLayer.wms_service_id
-              ? ''
-              : 'Choose from a configured WMS. Or add a new one.'
+            wmsLayer.wms_service_layer_name ? '' : 'Select a layer'
           }
-          noDataMessage="No WMS found. You can add one."
-          hideWhenNoData={true}
         />
-        <CreateWmsService wmsLayer={wmsLayer} />
-        {(wmsLayer?.wms_service_id || isFilter) && (
-          <LayersDropdown
-            wmsLayer={wmsLayer}
-            validationMessage={
-              wmsLayer.wms_service_layer_name ? '' : 'Select a layer'
-            }
+      )}
+      {((!!wmsLayer.wms_service_id && !!wmsLayer?.wms_service_layer_name) ||
+        isFilter) && (
+        <>
+          <TextField
+            label="Label"
+            name="label"
+            value={wmsLayer.label ?? ''}
+            onChange={onChange}
           />
-        )}
-        {((!!wmsLayer.wms_service_id && !!wmsLayer?.wms_service_layer_name) ||
-          isFilter) && (
-          <>
-            <TextField
-              label="Label"
-              name="label"
-              value={wmsLayer.label ?? ''}
-              onChange={onChange}
-            />
-            {/* {wmsLayer?.wms_service_id && (
+          {/* {wmsLayer?.wms_service_id && (
               <>
                 <DropdownFieldFromWmsServiceLayers
                   label="(Image-)Format"
@@ -92,24 +82,23 @@ export const Component = memo(
                 />
               </>
             )} */}
-            {isOffline && (
-              <>
-                <div>TODO: show the following only if loaded for offline</div>
-                <TextFieldInactive
-                  label="Local Data Size"
-                  name="local_data_size"
-                  value={wmsLayer.local_data_size}
-                />
-                <TextFieldInactive
-                  label="Local Data Bounds"
-                  name="local_data_bounds"
-                  value={wmsLayer.local_data_bounds}
-                />
-              </>
-            )}
-          </>
-        )}
-      </>
-    )
-  },
-)
+          {isOffline && (
+            <>
+              <div>TODO: show the following only if loaded for offline</div>
+              <TextFieldInactive
+                label="Local Data Size"
+                name="local_data_size"
+                value={wmsLayer.local_data_size}
+              />
+              <TextFieldInactive
+                label="Local Data Bounds"
+                name="local_data_bounds"
+                value={wmsLayer.local_data_bounds}
+              />
+            </>
+          )}
+        </>
+      )}
+    </>
+  )
+})

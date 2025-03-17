@@ -46,7 +46,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
       // create the missing layer_presentation
       await createLayerPresentation({
-        vector_layer_id: layer.vector_layer_id,
+        vectorLayerId: layer.vector_layer_id,
         active: true,
         db,
       })
@@ -74,12 +74,12 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
         value={layer.vector_layer_id}
         style={{
           borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-          ...(isLast
-            ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-            : {}),
-          ...(isOpen
-            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
-            : {}),
+          ...(isLast ?
+            { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+          : {}),
+          ...(isOpen ?
+            { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
+          : {}),
         }}
       >
         <AccordionHeader
@@ -87,11 +87,11 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
           size="extra-large"
           expandIcon={designing ? undefined : null}
           style={
-            isOpen
-              ? {
-                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
-                }
-              : {}
+            isOpen ?
+              {
+                backgroundColor: 'rgba(103, 216, 101, 0.1)',
+              }
+            : {}
           }
         >
           <div style={headerContainerStyle}>
@@ -123,7 +123,10 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
             style={tabListStyle}
           >
             <Tab value="overall-displays">Overall Display</Tab>
-            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
+            <Tab
+              value="feature-displays"
+              onClick={onClickFeatureDisplays}
+            >
               Feature Displays
             </Tab>
             <Tab value="config">Config</Tab>
@@ -134,13 +137,11 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
           )}
           {tab === 'feature-displays' && (
             <>
-              {vectorLayerDisplayId ? (
+              {vectorLayerDisplayId ?
                 <VectorLayerDisplay
                   vectorLayerDisplayId={vectorLayerDisplayId}
                 />
-              ) : (
-                <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />
-              )}
+              : <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />}
             </>
           )}
         </AccordionPanel>

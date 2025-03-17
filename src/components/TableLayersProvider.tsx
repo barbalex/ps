@@ -106,7 +106,7 @@ export const TableLayersProvider = memo(() => {
         const places1LPCount = resPlaces1LPCount?.rows?.[0]?.count
         if (places1LPCount === 0) {
           await createLayerPresentation({
-            vector_layer_id: places1VectorLayer.vector_layer_id,
+            vectorLayerId: places1VectorLayer.vector_layer_id,
             db,
           })
         }
@@ -124,8 +124,9 @@ export const TableLayersProvider = memo(() => {
             type: 'own',
             own_table: 'actions',
             own_table_level: 1,
-            label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} Actions`
+            label:
+              placeLevel1?.name_singular ?
+                `${placeLevel1.name_singular} Actions`
               : 'Actions',
             db,
           })
@@ -153,7 +154,7 @@ export const TableLayersProvider = memo(() => {
         const actions1LPCount = resActions1LPCount?.rows?.[0]?.count
         if (actions1LPCount === 0) {
           await createLayerPresentation({
-            vector_layer_id: actions1VectorLayer.vector_layer_id,
+            vectorLayerId: actions1VectorLayer.vector_layer_id,
             db,
           })
         }
@@ -171,8 +172,9 @@ export const TableLayersProvider = memo(() => {
             type: 'own',
             own_table: 'checks',
             own_table_level: 1,
-            label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} Checks`
+            label:
+              placeLevel1?.name_singular ?
+                `${placeLevel1.name_singular} Checks`
               : 'Checks',
             db,
           })
@@ -200,7 +202,7 @@ export const TableLayersProvider = memo(() => {
         const checks1LPCount = resChecks1LPCount?.rows?.[0]?.count
         if (checks1LPCount === 0) {
           await createLayerPresentation({
-            vector_layer_id: checks1VectorLayer.vector_layer_id,
+            vectorLayerId: checks1VectorLayer.vector_layer_id,
             db,
           })
         }
@@ -220,8 +222,9 @@ export const TableLayersProvider = memo(() => {
               type: 'own',
               own_table: 'occurrences_assigned',
               own_table_level: 1,
-              label: placeLevel1?.name_singular
-                ? `${placeLevel1.name_singular} Occurrences assigned`
+              label:
+                placeLevel1?.name_singular ?
+                  `${placeLevel1.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
               db,
             })
@@ -251,7 +254,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesAssigned1LPCount?.rows?.[0]?.count
           if (occurrencesAssigned1LPCount === 0) {
             await createLayerPresentation({
-              vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesAssigned1VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -297,7 +300,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesToAssessLPCount?.rows?.[0]?.count
           if (occurrencesToAssessLPCount === 0) {
             await createLayerPresentation({
-              vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesToAssessVectorLayer.vector_layer_id,
               db,
             })
           }
@@ -344,8 +347,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesNotToAssignLPCount?.rows?.[0]?.count
           if (!occurrencesNotToAssignLPCount) {
             await createLayerPresentation({
-              vector_layer_id:
-                occurrencesNotToAssignVectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesNotToAssignVectorLayer.vector_layer_id,
               db,
             })
           }
@@ -392,7 +394,7 @@ export const TableLayersProvider = memo(() => {
           const places2LPCount = resPlaces2LPCount?.rows?.[0]?.count
           if (!places2LPCount) {
             await createLayerPresentation({
-              vector_layer_id: places2VectorLayer.vector_layer_id,
+              vectorLayerId: places2VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -412,8 +414,9 @@ export const TableLayersProvider = memo(() => {
               type: 'own',
               own_table: 'actions',
               own_table_level: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Actions`
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Actions`
                 : 'Actions',
               db,
             })
@@ -441,7 +444,7 @@ export const TableLayersProvider = memo(() => {
           const actions2LPCount = resActions2LPCount?.rows?.[0]?.count
           if (!actions2LPCount) {
             await createLayerPresentation({
-              vector_layer_id: actions2VectorLayer.vector_layer_id,
+              vectorLayerId: actions2VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -461,8 +464,9 @@ export const TableLayersProvider = memo(() => {
               type: 'own',
               own_table: 'checks',
               own_table_level: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Checks`
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Checks`
                 : 'Checks',
               db,
             })
@@ -490,7 +494,7 @@ export const TableLayersProvider = memo(() => {
           const checks2LPCount = resChecks2LPCount?.rows?.[0]?.count
           if (!checks2LPCount) {
             await createLayerPresentation({
-              vector_layer_id: checks2VectorLayer.vector_layer_id,
+              vectorLayerId: checks2VectorLayer.vector_layer_id,
               db,
             })
           }
@@ -510,8 +514,9 @@ export const TableLayersProvider = memo(() => {
               type: 'own',
               own_table: 'occurrences_assigned',
               own_table_level: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Occurrences assigned`
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
               db,
             })
@@ -541,7 +546,7 @@ export const TableLayersProvider = memo(() => {
             resOccurrencesAssigned2LPCount?.rows?.[0]?.count
           if (!occurrencesAssigned2LPCount) {
             await createLayerPresentation({
-              vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
+              vectorLayerId: occurrencesAssigned2VectorLayer.vector_layer_id,
               db,
             })
           }

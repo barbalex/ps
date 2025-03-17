@@ -24,7 +24,7 @@ const openItemsAtom = atom([])
 
 export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams()
 
   const db = usePGlite()
   // 1. list all layers (own, wms, vector)
@@ -32,9 +32,9 @@ export const WmsLayers = memo(() => {
   // TODO: optimize query
   const resWmsLayers = useLiveIncrementalQuery(
     `SELECT * FROM wms_layers${
-      project_id ? ` WHERE project_id = $1` : ''
+      projectId ? ` WHERE project_id = $1` : ''
     } ORDER BY label`,
-    [project_id],
+    [projectId],
     'wms_layer_id',
   )
   const wmsLayers = resWmsLayers?.rows ?? []
@@ -44,8 +44,8 @@ export const WmsLayers = memo(() => {
     `
     SELECT lp.* FROM layer_presentations lp
     JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
-    ${project_id ? ` WHERE project_id = $1` : ''}`,
-    [project_id],
+    ${projectId ? ` WHERE project_id = $1` : ''}`,
+    [projectId],
     'layer_presentation_id',
   )
   const layerPresentations = resLP?.rows ?? []
@@ -58,15 +58,15 @@ export const WmsLayers = memo(() => {
   )
 
   const addRow = useCallback(async () => {
-    const res = await createWmsLayer({ project_id, db })
+    const res = await createWmsLayer({ projectId, db })
     const wmsLayer = res?.rows?.[0]
     // also add layer_presentation
     await createLayerPresentation({
-      wms_layer_id: wmsLayer.wms_layer_id,
+      wmsLayerId: wmsLayer.wms_layer_id,
       db,
     })
     setOpenItems((prev) => [...prev, wmsLayer.wms_layer_id])
-  }, [db, project_id, setOpenItems])
+  }, [db, projectId, setOpenItems])
 
   const onToggleItem = useCallback(
     (event, { value: wmsLayerId, openItems }) => {
@@ -91,7 +91,7 @@ export const WmsLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!project_id) {
+  if (!projectId) {
     return (
       <section>
         <h2 style={titleStyle}>WMS</h2>
@@ -120,7 +120,7 @@ export const WmsLayers = memo(() => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {wms.length ? (
+          {wms.length ?
             wms?.map((l, index) => (
               <WmsLayer
                 key={l.wms_layer_id}
@@ -130,9 +130,7 @@ export const WmsLayers = memo(() => {
                 isOpen={openItems.includes(l.wms_layer_id)}
               />
             ))
-          ) : (
-            <p style={noneStyle}>No inactive WMS Layers</p>
-          )}
+          : <p style={noneStyle}>No inactive WMS Layers</p>}
           <Button
             size="small"
             icon={<FaPlus />}

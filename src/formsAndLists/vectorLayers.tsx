@@ -52,7 +52,7 @@ export const Component = memo(() => {
     })
     // also add layer_presentation
     await createLayerPresentation({
-      vector_layer_id: data.vector_layer_id,
+      vectorLayerId: data.vector_layer_id,
       db,
     })
     navigate({
@@ -74,10 +74,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {vectorLayers.map(({ vector_layer_id, label }) => (
               <Row
                 key={vector_layer_id}
@@ -86,7 +85,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

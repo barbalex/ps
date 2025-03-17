@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -15,11 +15,12 @@ import { wmsLayersFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
+const from = '/data/_authLayout/wms-layers/'
+
 export const Component = memo(() => {
   const [filter] = useAtom(wmsLayersFilterAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -32,26 +33,26 @@ export const Component = memo(() => {
     WHERE project_id = $1
     ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'wms_layer_id',
   )
   const isLoading = res === undefined
   const wmsLayers = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createWmsLayer({ project_id, db })
+    const res = await createWmsLayer({ projectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     // also add layer_presentation
     await createLayerPresentation({
-      wms_layer_id: data.wms_layer_id,
+      wmsLayerId: data.wms_layer_id,
       db,
     })
     navigate({
-      pathname: data.wms_layer_id,
-      search: searchParams.toString(),
+      to: data.wms_layer_id,
+      params: (prev) => ({ ...prev, wmsLayerId: data.wms_layer_id }),
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -66,10 +67,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {wmsLayers.map(({ wms_layer_id, label }) => (
               <Row
                 key={wms_layer_id}
@@ -78,7 +78,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

@@ -58,7 +58,7 @@ export const VectorLayers = memo(() => {
     })
     // also add layer_presentation
     await createLayerPresentation({
-      vector_layer_id: vectorLayer.vector_layer_id,
+      vectorLayerId: vectorLayer.vector_layer_id,
       db,
     })
     setOpenItems([openItems, vectorLayer.vector_layer_id])
@@ -114,7 +114,7 @@ export const VectorLayers = memo(() => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {vectors.length ? (
+          {vectors.length ?
             vectors.map((l, index) => (
               <VectorLayer
                 layer={l}
@@ -123,9 +123,7 @@ export const VectorLayers = memo(() => {
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
-          ) : (
-            <p style={noneStyle}>No inactive Vector Layers</p>
-          )}
+          : <p style={noneStyle}>No inactive Vector Layers</p>}
           <Button
             size="small"
             icon={<FaPlus />}

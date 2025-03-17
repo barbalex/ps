@@ -100,7 +100,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
     })
     // add layer_presentation
     await createLayerPresentation({
-      vector_layer_id: vectorLayer.vector_layer_id,
+      vectorLayerId: vectorLayer.vector_layer_id,
       db,
     })
     navigate({
@@ -156,15 +156,14 @@ export const Header = memo(({ autoFocusRef, row }) => {
       toPrevious={toPrevious}
       tableName="vector layer"
       siblings={
-        isDraggable ? (
+        isDraggable ?
           <Button
             size="medium"
             icon={<TreasureMapLinePulsating />}
             onClick={onClickToggleAssign}
             title="Stop assigning"
           />
-        ) : (
-          <Menu>
+        : <Menu>
             <MenuTrigger disableButtonEnhancement>
               <Button
                 size="medium"
@@ -179,7 +178,6 @@ export const Header = memo(({ autoFocusRef, row }) => {
               </MenuList>
             </MenuPopover>
           </Menu>
-        )
       }
     />
   )

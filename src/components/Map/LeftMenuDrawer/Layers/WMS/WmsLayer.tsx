@@ -66,7 +66,7 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
     // 2. if not, create one
     if (!presentation) {
       await createLayerPresentation({
-        wms_layer_id: layer.wms_layer_id,
+        wmsLayerId: layer.wms_layer_id,
         active: true,
         db,
       })
@@ -103,12 +103,12 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
         value={layer.wms_layer_id}
         style={{
           borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-          ...(isLast
-            ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-            : {}),
-          ...(isOpen
-            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
-            : {}),
+          ...(isLast ?
+            { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+          : {}),
+          ...(isOpen ?
+            { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
+          : {}),
         }}
       >
         <AccordionHeader
@@ -116,11 +116,11 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
           size="extra-large"
           expandIcon={designing ? undefined : null}
           style={
-            isOpen
-              ? {
-                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
-                }
-              : {}
+            isOpen ?
+              {
+                backgroundColor: 'rgba(103, 216, 101, 0.1)',
+              }
+            : {}
           }
         >
           <div style={headerContainerStyle}>

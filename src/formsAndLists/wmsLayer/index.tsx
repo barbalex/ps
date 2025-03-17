@@ -6,7 +6,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as Form } from './Form/index.tsx'
+import { WmsLayerForm as Form } from './Form/index.tsx'
 
 import '../../form.css'
 

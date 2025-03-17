@@ -625,10 +625,10 @@ export const createMessage = async ({ db }) =>
     [uuidv7(), new Date()],
   )
 
-export const createWmsLayer = async ({ project_id, db }) =>
+export const createWmsLayer = async ({ projectId, db }) =>
   db.query(
     `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2) returning wms_layer_id`,
-    [uuidv7(), project_id],
+    [uuidv7(), projectId],
   )
 
 export const createVectorLayer = ({
@@ -718,9 +718,9 @@ export const createVectorLayerDisplay = async ({
   )
 
 export const createLayerPresentation = async ({
-  vector_layer_id = null,
-  wms_layer_id = null,
-  account_id = null,
+  vectorLayerId = null,
+  wmsLayerId = null,
+  accountId = null,
   active = false,
   transparent = false,
   db,
@@ -734,9 +734,9 @@ export const createLayerPresentation = async ({
   `,
     [
       uuidv7(),
-      account_id,
-      vector_layer_id,
-      wms_layer_id,
+      accountId,
+      vectorLayerId,
+      wmsLayerId,
       active,
       100,
       false,

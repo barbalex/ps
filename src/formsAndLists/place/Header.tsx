@@ -75,7 +75,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     })
 
     await createLayerPresentation({
-      vector_layer_id: newVectorLayer.vector_layer_id,
+      vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 

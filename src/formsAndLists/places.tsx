@@ -98,7 +98,7 @@ export const Component = memo(() => {
     })
 
     await createLayerPresentation({
-      vector_layer_id: newVectorLayer.vector_layer_id,
+      vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 
@@ -134,10 +134,9 @@ export const Component = memo(() => {
         }
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {places.map(({ place_id, label }) => (
               <Row
                 key={place_id}
@@ -146,7 +145,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
