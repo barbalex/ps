@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createProjectUser } from '../modules/createRows.ts'
@@ -8,29 +8,30 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const { project_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/users/'
+
+export const ProjectUsers = memo(() => {
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT project_user_id, label FROM project_users WHERE project_id = $1 ORDER BY label`,
-    [project_id],
+    [projectId],
     'project_user_id',
   )
   const isLoading = res === undefined
   const projectUsers = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createProjectUser({ db, project_id })
+    const res = await createProjectUser({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.project_user_id,
-      search: searchParams.toString(),
+      to: data.project_user_id,
+      params: (prev) => ({ ...prev, projectUserId: data.project_user_id }),
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -44,10 +45,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {projectUsers.map(({ project_user_id, label }) => (
               <Row
                 key={project_user_id}
@@ -56,7 +56,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
