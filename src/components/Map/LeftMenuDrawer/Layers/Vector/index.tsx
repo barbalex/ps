@@ -25,7 +25,7 @@ const openItemsAtom = atom([])
 
 export const VectorLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams()
 
   const db = usePGlite()
 
@@ -35,7 +35,7 @@ export const VectorLayers = memo(() => {
     FROM vector_layers
     WHERE 
       type = ANY($1) 
-      ${project_id ? ` AND project_id = $2 ` : ''} 
+      ${projectId ? ` AND project_id = $2 ` : ''} 
       AND NOT EXISTS (
         SELECT 1
         FROM layer_presentations
@@ -43,13 +43,13 @@ export const VectorLayers = memo(() => {
         AND layer_presentations.active
       )
     order by label`,
-    [['wfs', 'upload'], ...(project_id ? [project_id] : [])],
+    [['wfs', 'upload'], ...(projectId ? [projectId] : [])],
     'vector_layer_id',
   )
   const vectors = res?.rows ?? []
 
   const addRow = useCallback(async () => {
-    const res = await createVectorLayer({ project_id, type: 'wfs', db })
+    const res = await createVectorLayer({ projectId, type: 'wfs', db })
     const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
     await createVectorLayerDisplay({
@@ -62,7 +62,7 @@ export const VectorLayers = memo(() => {
       db,
     })
     setOpenItems([openItems, vectorLayer.vector_layer_id])
-  }, [db, openItems, project_id, setOpenItems])
+  }, [db, openItems, projectId, setOpenItems])
 
   const onToggleItem = useCallback(
     (event, { value: vectorLayerId, openItems }) => {
@@ -86,7 +86,7 @@ export const VectorLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!project_id) {
+  if (!projectId) {
     return (
       <section>
         <h2 style={titleStyle}>Vectors</h2>

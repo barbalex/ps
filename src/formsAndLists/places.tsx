@@ -26,12 +26,12 @@ import '../form.css'
 export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { project_id, subproject_id, place_id } = useParams()
+  const { projectId, subprojectId, placeId } = useParams()
   const db = usePGlite()
 
   const [places1Filter] = useAtom(places1FilterAtom)
   const [places2Filter] = useAtom(places2FilterAtom)
-  const filter = place_id ? places2Filter : places1Filter
+  const filter = placeId ? places2Filter : places1Filter
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -41,11 +41,11 @@ export const Component = memo(() => {
       label 
     FROM places 
     WHERE 
-      parent_id ${place_id ? `= '${place_id}'` : `IS NULL`} 
+      parent_id ${placeId ? `= '${placeId}'` : `IS NULL`} 
       AND subproject_id = $1
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`
-  const params = [subproject_id]
+  const params = [subprojectId]
   const res = useLiveIncrementalQuery(sql, params, 'place_id')
   const isLoading = res === undefined
   const places = res?.rows ?? []
@@ -62,7 +62,7 @@ export const Component = memo(() => {
       project_id = $1 
       AND level = $2 
     ORDER BY label`,
-    [project_id, place_id ? 2 : 1],
+    [projectId, placeId ? 2 : 1],
   )
   const placeLevel = resultPlaceLevel?.rows?.[0]
   const placeNameSingular = placeLevel?.name_singular ?? 'Place'
@@ -71,10 +71,10 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createPlace({
       db,
-      project_id,
-      subproject_id,
-      parent_id: place_id ?? null,
-      level: place_id ? 2 : 1,
+      project_id: projectId,
+      subproject_id: subprojectId,
+      parent_id: placeId ?? null,
+      level: placeId ? 2 : 1,
     })
     const place = res?.rows?.[0]
     if (!place) return
@@ -83,10 +83,10 @@ export const Component = memo(() => {
     // 1. only if not yet exists
     // 2. better via trigger so it also works on import / project creation
     const resVL = await createVectorLayer({
-      project_id,
+      projectId,
       type: 'own',
       own_table: 'places',
-      own_table_level: place_id ? 2 : 1,
+      own_table_level: placeId ? 2 : 1,
       label: placeNamePlural,
       db,
     })
@@ -107,10 +107,10 @@ export const Component = memo(() => {
     db,
     navigate,
     placeNamePlural,
-    place_id,
-    project_id,
+    placeId,
+    projectId,
     searchParams,
-    subproject_id,
+    subprojectId,
   ])
 
   return (
@@ -126,7 +126,7 @@ export const Component = memo(() => {
           <>
             <LayerMenu
               table="places"
-              level={place_id ? 2 : 1}
+              level={placeId ? 2 : 1}
               placeNamePlural={placeNamePlural}
             />
             <FilterButton isFiltered={isFiltered} />

@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
-  const { project_id, vector_layer_id } = useParams()
+  const { projectId, vectorLayerId } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -91,7 +91,11 @@ export const Header = memo(({ autoFocusRef, row }) => {
   }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
 
   const addRow = useCallback(async () => {
-    const res = await createVectorLayer({ project_id, type: 'wfs', db })
+    const res = await createVectorLayer({
+      projectId,
+      type: 'wfs',
+      db,
+    })
     const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
     createVectorLayerDisplay({
@@ -108,44 +112,44 @@ export const Header = memo(({ autoFocusRef, row }) => {
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id, searchParams])
+  }, [autoFocusRef, db, navigate, projectId, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
-      vector_layer_id,
+      vectorLayerId,
     ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, vector_layer_id, navigate, searchParams])
+  }, [db, vectorLayerId, navigate, searchParams])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
-      [project_id],
+      [projectId],
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.vector_layer_id === vector_layer_id)
+    const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.vector_layer_id}`,
       search: searchParams.toString(),
     })
-  }, [db, project_id, navigate, searchParams, vector_layer_id])
+  }, [db, projectId, navigate, searchParams, vectorLayerId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
-      [project_id],
+      [projectId],
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.vector_layer_id === vector_layer_id)
+    const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.vector_layer_id}`,
       search: searchParams.toString(),
     })
-  }, [db, project_id, navigate, searchParams, vector_layer_id])
+  }, [db, projectId, navigate, searchParams, vectorLayerId])
 
   return (
     <FormHeader

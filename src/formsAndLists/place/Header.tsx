@@ -27,7 +27,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { project_id, subproject_id, place_id, place_id2 } = useParams()
+  const { projectId, subprojectId, placeId, placeId2 } = useParams()
 
   const db = usePGlite()
 
@@ -41,7 +41,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     WHERE 
       project_id = $1 
       AND level = $2`,
-    [project_id, place_id2 ? 2 : 1],
+    [projectId, placeId2 ? 2 : 1],
     'place_level_id',
   )
   const placeLevels = results?.rows ?? []
@@ -51,19 +51,19 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const addRow = useCallback(async () => {
     const resPlace = await createPlace({
       db,
-      project_id,
-      subproject_id,
-      parent_id: place_id2 ? place_id : null,
-      level: place_id2 ? 2 : 1,
+      project_id: projectId,
+      subproject_id: subprojectId,
+      parent_id: placeId2 ? placeId : null,
+      level: placeId2 ? 2 : 1,
     })
     const place = resPlace.rows?.[0]
 
     // need to create a corresponding vector layer and vector layer display
     const resVL = createVectorLayer({
-      project_id,
+      projectId,
       type: 'own',
       own_table: 'places',
-      own_table_level: place_id2 ? 2 : 1,
+      own_table_level: placeId2 ? 2 : 1,
       label: placeNamePlural,
       db,
     })
@@ -89,17 +89,17 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     db,
     navigate,
     placeNamePlural,
-    place_id,
-    place_id2,
-    project_id,
+    placeId,
+    placeId2,
+    projectId,
     searchParams,
-    subproject_id,
+    subprojectId,
   ])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM places WHERE place_id = $1`, [place_id])
+    db.query(`DELETE FROM places WHERE place_id = $1`, [placeId])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, navigate, place_id, searchParams])
+  }, [db, navigate, placeId, searchParams])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -107,21 +107,21 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       SELECT place_id 
       FROM places 
       WHERE 
-        parent_id ${place_id2 ? `= '${place_id}'` : `IS NULL`} 
+        parent_id ${placeId2 ? `= '${placeId}'` : `IS NULL`} 
         AND subproject_id = $1 
       ORDER BY label
       `,
-      [subproject_id],
+      [subprojectId],
     )
     const places = res?.rows ?? []
     const len = places.length
-    const index = places.findIndex((p) => p.place_id === place_id)
+    const index = places.findIndex((p) => p.place_id === placeId)
     const next = places[(index + 1) % len]
     navigate({
       pathname: `../${next.place_id}`,
       search: searchParams.toString(),
     })
-  }, [db, navigate, place_id, place_id2, searchParams, subproject_id])
+  }, [db, navigate, placeId, placeId2, searchParams, subprojectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -129,21 +129,21 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       SELECT place_id 
       FROM places 
       WHERE 
-        parent_id ${place_id2 ? `= '${place_id}'` : `IS NULL`} 
+        parent_id ${placeId2 ? `= '${placeId}'` : `IS NULL`} 
         AND subproject_id = $1 
       ORDER BY label
       `,
-      [subproject_id],
+      [subprojectId],
     )
     const places = res?.rows ?? []
     const len = places.length
-    const index = places.findIndex((p) => p.place_id === place_id)
+    const index = places.findIndex((p) => p.place_id === placeId)
     const previous = places[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.place_id}`,
       search: searchParams.toString(),
     })
-  }, [db, navigate, place_id, place_id2, searchParams, subproject_id])
+  }, [db, navigate, placeId, placeId2, searchParams, subprojectId])
 
   const alertNoGeometry = useCallback(() => {
     createNotification({
@@ -156,7 +156,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const onClickZoomTo = useCallback(async () => {
     const res = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
-      place_id2 ?? place_id,
+      placeId2 ?? placeId,
     ])
     const place = res?.rows?.[0]
     const geometry = place?.geometry
@@ -175,7 +175,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [db, place_id2, place_id, tabs, alertNoGeometry, setMapBounds, setTabs])
+  }, [db, placeId2, placeId, tabs, alertNoGeometry, setMapBounds, setTabs])
 
   return (
     <FormHeader

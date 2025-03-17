@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -16,11 +16,12 @@ import { vectorLayersFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/projects/$projectId_/vector-layers/'
+
+export const VectorLayers = memo(() => {
   const [filter] = useAtom(vectorLayersFilterAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -35,14 +36,18 @@ export const Component = memo(() => {
       project_id = $1
       ${isFiltered ? ` AND ${filterString}` : ''} 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'vector_layer_id',
   )
   const isLoading = res === undefined
   const vectorLayers = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createVectorLayer({ project_id, type: 'wfs', db })
+    const res = await createVectorLayer({
+      projectId,
+      type: 'wfs',
+      db,
+    })
     const data = res?.rows?.[0]
     if (!data) return
     // also add vector_layer_display
@@ -56,10 +61,10 @@ export const Component = memo(() => {
       db,
     })
     navigate({
-      pathname: data.vector_layer_id,
-      search: searchParams.toString(),
+      to: data.vector_layer_id,
+      params: (prev) => ({ ...prev, vectorLayerId: data.vector_layer_id }),
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">

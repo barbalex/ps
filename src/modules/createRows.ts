@@ -632,7 +632,7 @@ export const createWmsLayer = async ({ projectId, db }) =>
   )
 
 export const createVectorLayer = ({
-  project_id,
+  projectId,
   type = null,
   own_table = null,
   own_table_level = null,
@@ -644,7 +644,7 @@ export const createVectorLayer = ({
     `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7) returning vector_layer_id`,
     [
       uuidv7(),
-      project_id,
+      projectId,
       label,
       type,
       own_table,
