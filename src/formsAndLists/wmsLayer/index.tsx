@@ -60,7 +60,7 @@ export const WmsLayer = memo(() => {
       <div className="form-container">
         <Form
           onChange={onChange}
-          wmsLayer={row}
+          row={row}
           autoFocusRef={autoFocusRef}
         />
       </div>

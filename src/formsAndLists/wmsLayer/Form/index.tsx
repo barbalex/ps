@@ -10,7 +10,7 @@ import { CreateWmsService } from './CreateWmsService/index.tsx'
 import '../../../form.css'
 
 // this form is rendered from a parent or outlet
-export const WmsLayerForm = memo(({ onChange, wmsLayer, isFilter }) => {
+export const WmsLayerForm = memo(({ onChange, row, isFilter }) => {
   // TODO: implement later
   const isOffline = false
 
@@ -21,34 +21,32 @@ export const WmsLayerForm = memo(({ onChange, wmsLayer, isFilter }) => {
         name="wms_service_id"
         labelField="url"
         table="wms_services"
-        value={wmsLayer.wms_service_id ?? ''}
+        value={row.wms_service_id ?? ''}
         orderBy="url"
         onChange={onChange}
         autoFocus={true}
         validationMessage={
-          wmsLayer.wms_service_id ? '' : (
+          row.wms_service_id ? '' : (
             'Choose from a configured WMS. Or add a new one.'
           )
         }
         noDataMessage="No WMS found. You can add one."
         hideWhenNoData={true}
       />
-      <CreateWmsService wmsLayer={wmsLayer} />
-      {(wmsLayer?.wms_service_id || isFilter) && (
+      <CreateWmsService wmsLayer={row} />
+      {(row?.wms_service_id || isFilter) && (
         <LayersDropdown
-          wmsLayer={wmsLayer}
-          validationMessage={
-            wmsLayer.wms_service_layer_name ? '' : 'Select a layer'
-          }
+          wmsLayer={row}
+          validationMessage={row.wms_service_layer_name ? '' : 'Select a layer'}
         />
       )}
-      {((!!wmsLayer.wms_service_id && !!wmsLayer?.wms_service_layer_name) ||
+      {((!!row.wms_service_id && !!row?.wms_service_layer_name) ||
         isFilter) && (
         <>
           <TextField
             label="Label"
             name="label"
-            value={wmsLayer.label ?? ''}
+            value={row.label ?? ''}
             onChange={onChange}
           />
           {/* {wmsLayer?.wms_service_id && (
@@ -88,12 +86,12 @@ export const WmsLayerForm = memo(({ onChange, wmsLayer, isFilter }) => {
               <TextFieldInactive
                 label="Local Data Size"
                 name="local_data_size"
-                value={wmsLayer.local_data_size}
+                value={row.local_data_size}
               />
               <TextFieldInactive
                 label="Local Data Bounds"
                 name="local_data_bounds"
-                value={wmsLayer.local_data_bounds}
+                value={row.local_data_bounds}
               />
             </>
           )}

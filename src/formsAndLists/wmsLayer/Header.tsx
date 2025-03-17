@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createWmsLayer({ project_id: projectId, db })
+    const res = await createWmsLayer({ projectId, db })
     const wmsLayer = res?.rows?.[0]
     // also add layer_presentation
     await createLayerPresentation({

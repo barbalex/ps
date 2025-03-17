@@ -57,12 +57,12 @@ export const Filter = memo(({ level, from, children }) => {
   const title = useMemo(() => {
     // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
     const tableNameForTitle =
-      tableName === 'places'
-        ? placeNamePlural
-        : tableName
-            .split('_')
-            .map((w) => w[0].toUpperCase() + w.slice(1))
-            .join(' ')
+      tableName === 'places' ? placeNamePlural : (
+        tableName
+          .split('_')
+          .map((w) => w[0].toUpperCase() + w.slice(1))
+          .join(' ')
+      )
 
     const title = `${tableNameForTitle} Filters`
     return title
@@ -108,9 +108,8 @@ export const Filter = memo(({ level, from, children }) => {
       whereUnfiltered = projectFilter
     }
     const whereFilteredString = filterStringFromFilter(filter)
-    const whereUnfilteredString = whereUnfiltered
-      ? orFilterToSql(whereUnfiltered)
-      : ''
+    const whereUnfilteredString =
+      whereUnfiltered ? orFilterToSql(whereUnfiltered) : ''
 
     return { whereUnfilteredString, whereFilteredString }
   }, [filter, place_id, place_id2, project_id, tableName])
@@ -127,8 +126,7 @@ export const Filter = memo(({ level, from, children }) => {
   //   project_id,
   // })
 
-  const res = useLiveQuery(
-    `
+  const sql = `
       SELECT 
         (
           SELECT count(*)
@@ -142,19 +140,20 @@ export const Filter = memo(({ level, from, children }) => {
       ) as total_count  
       FROM ${tableName}
       limit 1
-    `,
-  )
+    `
+  const res = useLiveQuery(sql)
   const isLoading = res === undefined
   const row = res?.rows?.[0]
   const filteredCount = row?.filtered_count ?? 0
   const totalCount = row?.total_count ?? 0
 
-  // console.log('Filter 3, res:', {
+  // console.log('Filter 4, res:', {
   //   res,
   //   row,
   //   filteredCount,
   //   totalCount,
   //   isLoading,
+  //   sql,
   // })
 
   return (
@@ -172,13 +171,15 @@ export const Filter = memo(({ level, from, children }) => {
       >
         {filter.map((f, i) => {
           const label =
-            i === filter.length - 1 && filter.length > 1
-              ? 'Or'
-              : i === 0
-                ? `Filter ${i + 1}`
-                : `Or filter ${i + 1}`
+            i === filter.length - 1 && filter.length > 1 ? 'Or'
+            : i === 0 ? `Filter ${i + 1}`
+            : `Or filter ${i + 1}`
           return (
-            <Tab key={i} value={i + 1} style={tabStyle}>
+            <Tab
+              key={i}
+              value={i + 1}
+              style={tabStyle}
+            >
               {label}
             </Tab>
           )
