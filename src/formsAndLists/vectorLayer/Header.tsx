@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
 import {
@@ -25,15 +25,17 @@ import {
   droppableLayerAtom,
 } from '../../store.ts'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
+
 // type props
 
 export const Header = memo(({ autoFocusRef, row }) => {
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
-  const { projectId, vectorLayerId } = useParams()
+  const { projectId, vectorLayerId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
@@ -108,18 +110,21 @@ export const Header = memo(({ autoFocusRef, row }) => {
       db,
     })
     navigate({
-      pathname: `../${vectorLayer.vector_layer_id}`,
-      search: searchParams.toString(),
+      to: `../${vectorLayer.vector_layer_id}`,
+      params: (prev) => ({
+        ...prev,
+        vectorLayerId: vectorLayer.vector_layer_id,
+      }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId, searchParams])
+  }, [autoFocusRef, db, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
     await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
       vectorLayerId,
     ])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, vectorLayerId, navigate, searchParams])
+    navigate({ to: '..' })
+  }, [db, vectorLayerId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -131,10 +136,13 @@ export const Header = memo(({ autoFocusRef, row }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `../${next.vector_layer_id}`,
-      search: searchParams.toString(),
+      to: `../${next.vector_layer_id}`,
+      params: (prev) => ({
+        ...prev,
+        vectorLayerId: next.vector_layer_id,
+      }),
     })
-  }, [db, projectId, navigate, searchParams, vectorLayerId])
+  }, [db, projectId, navigate, vectorLayerId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -146,10 +154,13 @@ export const Header = memo(({ autoFocusRef, row }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.vector_layer_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.vector_layer_id}`,
+      params: (prev) => ({
+        ...prev,
+        vectorLayerId: previous.vector_layer_id,
+      }),
     })
-  }, [db, projectId, navigate, searchParams, vectorLayerId])
+  }, [db, projectId, navigate, vectorLayerId])
 
   return (
     <FormHeader

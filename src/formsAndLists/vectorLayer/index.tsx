@@ -1,17 +1,20 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as VectorLayerForm } from './Form/index.tsx'
+import { VectorLayerForm } from './Form/index.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { vector_layer_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
+
+export const VectorLayer = memo(() => {
+  const { vectorLayerId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -19,7 +22,7 @@ export const Component = memo(() => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
-    [vector_layer_id],
+    [vectorLayerId],
     'vector_layer_id',
   )
   const row = res?.rows?.[0]
@@ -32,16 +35,16 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE vector_layers SET ${name} = $1 WHERE vector_layer_id = $2`,
-        [value, vector_layer_id],
+        [value, vectorLayerId],
       )
       const newLabel = value?.label
       if (!newLabel) return
       db.query(
         `UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`,
-        [newLabel, vector_layer_id],
+        [newLabel, vectorLayerId],
       )
     },
-    [db, row, vector_layer_id],
+    [db, row, vectorLayerId],
   )
 
   if (!row) return <Loading />

@@ -19,6 +19,7 @@ function RouteComponent() {
           row={row}
           onChange={onChange}
           isFilter={true}
+          from={from}
         />
       )}
     </Filter>

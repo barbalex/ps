@@ -9,69 +9,67 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const VectorLayerNode = memo(
-  ({ project_id, vectorLayer, level = 4 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
-    const navigate = useNavigate()
+export const VectorLayerNode = memo(({ projectId, vectorLayer, level = 4 }) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const location = useLocation()
+  const navigate = useNavigate()
 
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'vector-layers'],
-      [project_id],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(
-      () => [...parentArray, vectorLayer.vector_layer_id],
-      [parentArray, vectorLayer.vector_layer_id],
-    )
-    const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const parentArray = useMemo(
+    () => ['data', 'projects', projectId, 'vector-layers'],
+    [projectId],
+  )
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(
+    () => [...parentArray, vectorLayer.vector_layer_id],
+    [parentArray, vectorLayer.vector_layer_id],
+  )
+  const ownUrl = `/${ownArray.join('/')}`
 
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({ node: ownArray })
-        // only navigate if urlPath includes ownArray
-        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({ to: parentUrl })
-        }
-        return
+  const onClickButton = useCallback(() => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
       }
-      // add to openNodes without navigating
-      addOpenNodes({ nodes: [ownArray] })
-    }, [
-      isInActiveNodeArray,
-      isOpen,
-      navigate,
-      ownArray,
-      parentUrl,
-      urlPath.length,
-    ])
+      return
+    }
+    // add to openNodes without navigating
+    addOpenNodes({ nodes: [ownArray] })
+  }, [
+    isInActiveNodeArray,
+    isOpen,
+    navigate,
+    ownArray,
+    parentUrl,
+    urlPath.length,
+  ])
 
-    return (
-      <>
-        <Node
-          node={vectorLayer}
-          id={vectorLayer.vector_layer_id}
-          level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isInActiveNodeArray}
-          isActive={isActive}
-          childrenCount={10}
-          to={ownUrl}
-          onClickButton={onClickButton}
+  return (
+    <>
+      <Node
+        node={vectorLayer}
+        id={vectorLayer.vector_layer_id}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={10}
+        to={ownUrl}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <VectorLayerDisplaysNode
+          projectId={projectId}
+          vectorLayerId={vectorLayer.vector_layer_id}
         />
-        {isOpen && (
-          <VectorLayerDisplaysNode
-            projectId={project_id}
-            vectorLayerId={vectorLayer.vector_layer_id}
-          />
-        )}
-      </>
-    )
-  },
-)
+      )}
+    </>
+  )
+})

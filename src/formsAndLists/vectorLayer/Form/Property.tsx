@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
@@ -7,8 +7,8 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisplaysForVectorLayer.ts'
 
-export const Property = memo(({ vectorLayer }) => {
-  const { project_id, vector_layer_id } = useParams()
+export const Property = memo(({ vectorLayer, from }) => {
+  const { projectId, vectorLayerId } = useParams({ from })
 
   const table = vectorLayer?.own_table
   const level = vectorLayer?.own_table_level
@@ -27,7 +27,7 @@ export const Property = memo(({ vectorLayer }) => {
       AND level = $2 
       AND project_id = $3 
     ORDER BY table_name, name, level`,
-    [table, level, project_id],
+    [table, level, projectId],
     'field_id',
   )
   const options = useMemo(
@@ -41,15 +41,15 @@ export const Property = memo(({ vectorLayer }) => {
       const { value } = getValueFromChange(e, data)
       await db.query(
         `UPDATE vector_layers SET display_by_property = $1 WHERE vector_layer_id = $2`,
-        [value, vector_layer_id],
+        [value, vectorLayerId],
       )
       // set vector_layer_displays
       upsertVectorLayerDisplaysForVectorLayer({
         db,
-        vectorLayerId: vector_layer_id,
+        vectorLayerId: vectorLayerId,
       })
     },
-    [db, vector_layer_id],
+    [db, vectorLayerId],
   )
 
   // console.log('VectorLayerForm.PropertyField, fields:', fields)
