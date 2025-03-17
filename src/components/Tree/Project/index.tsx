@@ -95,7 +95,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
           )} */}
           {designing && (
             <>
-              {/* <ProjectUsersNode project_id={project.project_id} /> */}
+              <ProjectUsersNode projectId={project.project_id} />
               <ListsNode projectId={project.project_id} />
               <TaxonomiesNode projectId={project.project_id} />
               <UnitsNode projectId={project.project_id} />
