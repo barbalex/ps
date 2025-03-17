@@ -21,9 +21,14 @@ export const VectorLayerDisplays = memo(
     const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
     const params = useParams({ from })
     const vectorLayerId = vectorLayerIdIn || params.vectorLayerId
+    const calledFromMapDrawer = vectorLayerIdIn !== undefined
+    console.log('VectorLayerDisplays', {
+      vectorLayerId,
+      vectorLayerIdIn,
+      params,
+    })
     const db = usePGlite()
 
-    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
 
     const res = useLiveIncrementalQuery(
@@ -45,10 +50,13 @@ export const VectorLayerDisplays = memo(
       }
       // we are in normal routing
       navigate({
-        pathname: data.vector_layer_display_id,
-        search: searchParams.toString(),
+        to: data.vector_layer_display_id,
+        params: (prev) => ({
+          ...prev,
+          vectorLayerDisplayId: data.vector_layer_display_id,
+        }),
       })
-    }, [db, navigate, searchParams, setVectorLayerDisplayId, vectorLayerId])
+    }, [db, navigate, setVectorLayerDisplayId, vectorLayerId])
 
     const onClickRow = useCallback(
       (vector_layer_display_id) => {
@@ -56,12 +64,19 @@ export const VectorLayerDisplays = memo(
           setVectorLayerDisplayId(vector_layer_display_id)
           return
         }
+        console.log('VectorLayerDisplays.onClickRow', {
+          vector_layer_display_id,
+          vectorLayerId,
+        })
         navigate({
-          pathname: vector_layer_display_id,
-          search: searchParams.toString(),
+          to: vector_layer_display_id,
+          params: (prev) => ({
+            ...prev,
+            vectorLayerDisplayId: vector_layer_display_id,
+          }),
         })
       },
-      [navigate, searchParams, setVectorLayerDisplayId, vectorLayerId],
+      [navigate, setVectorLayerDisplayId, vectorLayerId],
     )
 
     return (
@@ -84,7 +99,11 @@ export const VectorLayerDisplays = memo(
                   key={vector_layer_display_id}
                   to={vector_layer_display_id}
                   label={label ?? vector_layer_display_id}
-                  onClick={() => onClickRow(vector_layer_display_id)}
+                  onClick={
+                    calledFromMapDrawer ?
+                      () => onClickRow(vector_layer_display_id)
+                    : undefined
+                  }
                 />
               ))}
             </>

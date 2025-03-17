@@ -73,7 +73,6 @@ export const VectorLayerDisplay = ({
       <div className="form-outer-container">
         <Header
           autoFocusRef={autoFocusRef}
-          vectorLayerDisplayId={vectorLayerDisplayId}
           from={from}
         />
         <div className="form-container">

@@ -36,18 +36,18 @@ export const Header = memo(
 
     const addRow = useCallback(async () => {
       const res = await createVectorLayerDisplay({ vectorLayerId, db })
-      const vectorLayerDisplay = res?.rows?.[0]
+      const row = res?.rows?.[0]
       if (vectorLayerDisplayIdFromProps) {
         setMapLayerDrawerVectorLayerDisplayId(
-          vectorLayerDisplay.vector_layer_display_id,
+          row.vector_layer_display_id,
         )
         return
       }
       navigate({
-        to: `../${vectorLayerDisplay.vector_layer_display_id}`,
+        to: `../${row.vector_layer_display_id}`,
         params: (prev) => ({
           ...prev,
-          vectorLayerDisplayId: vectorLayerDisplay.vector_layer_display_id,
+          vectorLayerDisplayId: row.vector_layer_display_id,
         }),
       })
       autoFocusRef.current?.focus()
@@ -83,12 +83,13 @@ export const Header = memo(
         `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
         [vectorLayerId],
       )
-      const vectorLayerDisplays = res?.rows
-      const len = vectorLayerDisplays.length
-      const index = vectorLayerDisplays.findIndex(
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex(
         (p) => p.vector_layer_display_id === vectorLayerDisplayId,
       )
-      const next = vectorLayerDisplays[(index + 1) % len]
+      const next = rows[(index + 1) % len]
+      console.log('VectorLayerDisplay.Header.toNext', { next, rows, res, vectorLayerDisplayIdFromProps })
       if (vectorLayerDisplayIdFromProps) {
         setMapLayerDrawerVectorLayerDisplayId(next.vector_layer_display_id)
         return
