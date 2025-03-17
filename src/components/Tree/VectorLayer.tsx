@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -14,7 +14,6 @@ export const VectorLayerNode = memo(
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
@@ -38,10 +37,7 @@ export const VectorLayerNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -52,9 +48,7 @@ export const VectorLayerNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -73,8 +67,8 @@ export const VectorLayerNode = memo(
         />
         {isOpen && (
           <VectorLayerDisplaysNode
-            project_id={project_id}
-            vector_layer_id={vectorLayer.vector_layer_id}
+            projectId={project_id}
+            vectorLayerId={vectorLayer.vector_layer_id}
           />
         )}
       </>

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -12,17 +12,16 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
-  vector_layer_id: string
+  projectId: string
+  vectorLayerId: string
   level?: number
 }
 
 export const VectorLayerDisplaysNode = memo(
-  ({ project_id, vector_layer_id, level = 5 }: Props) => {
+  ({ projectId, vectorLayerId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -32,7 +31,7 @@ export const VectorLayerDisplaysNode = memo(
       FROM vector_layer_displays 
       WHERE vector_layer_id = $1 
       ORDER BY label`,
-      [vector_layer_id],
+      [vectorLayerId],
       'vector_layer_display_id',
     )
     const rows = res?.rows ?? []
@@ -47,8 +46,8 @@ export const VectorLayerDisplaysNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'vector-layers', vector_layer_id],
-      [project_id, vector_layer_id],
+      () => ['data', 'projects', projectId, 'vector-layers', vectorLayerId],
+      [projectId, vectorLayerId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
@@ -67,10 +66,7 @@ export const VectorLayerDisplaysNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -82,7 +78,6 @@ export const VectorLayerDisplaysNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -102,8 +97,8 @@ export const VectorLayerDisplaysNode = memo(
           rows.map((vld) => (
             <VectorLayerDisplayNode
               key={vld.vector_layer_display_id}
-              project_id={project_id}
-              vector_layer_id={vector_layer_id}
+              projectId={projectId}
+              vectorLayerId={vectorLayerId}
               vectorLayerDisplay={vld}
             />
           ))}

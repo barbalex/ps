@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
@@ -13,16 +13,15 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, vectorLayersFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   level?: number
 }
 
-export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
+export const VectorLayersNode = memo(({ projectId, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(vectorLayersFilterAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -35,7 +34,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
       project_id = $1
       ${isFiltered ? `AND ${filterString} ` : ''} 
     ORDER BY label;`
-  const resFiltered = useLiveQuery(sql, [project_id])
+  const resFiltered = useLiveQuery(sql, [projectId])
   const rows = resFiltered?.rows ?? []
   const rowsLoading = resFiltered === undefined
   // above query errors when filtering by a string column (label)
@@ -51,7 +50,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
 
   const resCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM vector_layers WHERE project_id = $1`,
-    [project_id],
+    [projectId],
   )
   const countUnfiltered = resCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resCountUnfiltered === undefined
@@ -59,13 +58,12 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const node = useMemo(
     () => ({
       label: `Vector Layers (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-          ? '...'
-          : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            countLoading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? '...'
+        : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -73,8 +71,8 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
+    () => ['data', 'projects', projectId],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
@@ -93,10 +91,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -108,7 +103,6 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -128,7 +122,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
         rows.map((vectorLayer) => (
           <VectorLayerNode
             key={vectorLayer.vector_layer_id}
-            project_id={project_id}
+            projectId={projectId}
             vectorLayer={vectorLayer}
           />
         ))}

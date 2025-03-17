@@ -1,11 +1,18 @@
 import { memo, useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
+interface Props {
+  projectId: string
+  vectorLayerId: string
+  vectorLayerDisplay: Record<string, unknown>
+  level?: number
+}
+
 export const VectorLayerDisplayNode = memo(
-  ({ project_id, vector_layer_id, vectorLayerDisplay, level = 6 }) => {
+  ({ projectId, vectorLayerId, vectorLayerDisplay, level = 6 }: Props) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -13,13 +20,13 @@ export const VectorLayerDisplayNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'vector-layers',
-        vector_layer_id,
+        vectorLayerId,
         'vector-layer-displays',
         vectorLayerDisplay.vector_layer_display_id,
       ],
-      [project_id, vectorLayerDisplay.vector_layer_display_id, vector_layer_id],
+      [projectId, vectorLayerDisplay.vector_layer_display_id, vectorLayerId],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
