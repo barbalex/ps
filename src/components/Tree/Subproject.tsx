@@ -89,10 +89,10 @@ export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
             projectId={projectId}
             subprojectId={subproject.subproject_id}
           />
-          {/* <SubprojectReportsNode
+          <SubprojectReportsNode
             projectId={projectId}
             subprojectId={subproject.subproject_id}
-          /> */}
+          />
           {/* <GoalsNode
             projectId={projectId}
             subprojectId={subproject.subproject_id}

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -22,12 +22,11 @@ interface Props {
 }
 
 export const SubprojectReportsNode = memo(
-  ({ project_id, subproject_id, level = 5 }: Props) => {
+  ({ projectId, subprojectId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(subprojectReportsFilterAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const filterString = filterStringFromFilter(filter)
     const isFiltered = !!filterString
@@ -41,7 +40,7 @@ export const SubprojectReportsNode = memo(
         subproject_id = $1
         ${isFiltered ? ` AND (${filterString})` : ''} 
       ORDER BY label`,
-      [subproject_id],
+      [subprojectId],
       'subproject_report_id',
     )
     const rows = resFiltered?.rows ?? []
@@ -49,7 +48,7 @@ export const SubprojectReportsNode = memo(
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM subproject_reports WHERE subproject_id = $1`,
-      [subproject_id],
+      [subprojectId],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resultCountUnfiltered === undefined
@@ -57,13 +56,12 @@ export const SubprojectReportsNode = memo(
     const subprojectReportsNode = useMemo(
       () => ({
         label: `Reports (${
-          isFiltered
-            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-                countLoading ? '...' : formatNumber(countUnfiltered)
-              }`
-            : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+          isFiltered ?
+            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
+            }`
+          : rowsLoading ? '...'
+          : formatNumber(rows.length)
         })`,
       }),
       [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -71,8 +69,8 @@ export const SubprojectReportsNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'subprojects', subproject_id],
-      [project_id, subproject_id],
+      () => ['data', 'projects', projectId, 'subprojects', subprojectId],
+      [projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
@@ -88,10 +86,7 @@ export const SubprojectReportsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -103,7 +98,6 @@ export const SubprojectReportsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -123,8 +117,8 @@ export const SubprojectReportsNode = memo(
           rows.map((subprojectReport) => (
             <SubprojectReportNode
               key={subprojectReport.subproject_report_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
               subprojectReport={subprojectReport}
               level={level + 1}
             />

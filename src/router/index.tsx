@@ -13,10 +13,6 @@ export const router = () => {
 
   return createBrowserRouter([
     {
-      index: true,
-      lazy: () => import('../routes/subproject/index.tsx'),
-    },
-    {
       path: 'places',
       element: null,
       handle: {
