@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -18,11 +18,10 @@ interface Props {
 }
 
 export const OccurrencesNotToAssignNode = memo(
-  ({ project_id, subproject_id, level = 5 }: Props) => {
+  ({ projectId, subprojectId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -39,7 +38,7 @@ export const OccurrencesNotToAssignNode = memo(
         ORDER BY 
           o.label
       `,
-      [subproject_id],
+      [subprojectId],
       'occurrence_id',
     )
     const rows = res?.rows ?? []
@@ -56,8 +55,8 @@ export const OccurrencesNotToAssignNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'subprojects', subproject_id],
-      [project_id, subproject_id],
+      () => ['data', 'projects', projectId, 'subprojects', subprojectId],
+      [projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
@@ -76,10 +75,7 @@ export const OccurrencesNotToAssignNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -91,7 +87,6 @@ export const OccurrencesNotToAssignNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -111,8 +106,8 @@ export const OccurrencesNotToAssignNode = memo(
           rows.map((occurrence) => (
             <OccurrenceNotToAssignNode
               key={occurrence.occurrence_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
               occurrence={occurrence}
               level={level + 1}
             />

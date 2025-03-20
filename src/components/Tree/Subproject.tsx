@@ -101,10 +101,10 @@ export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
             projectId={projectId}
             subprojectId={subproject.subproject_id}
           />
-          {/* <OccurrencesNotToAssignNode
+          <OccurrencesNotToAssignNode
             projectId={projectId}
             subprojectId={subproject.subproject_id}
-          /> */}
+          />
           {/* <SubprojectTaxaNode
             projectId={projectId}
             subprojectId={subproject.subproject_id}
