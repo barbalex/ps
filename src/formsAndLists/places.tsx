@@ -26,7 +26,7 @@ import '../form.css'
 const from =
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/'
 
-export const Component = memo(() => {
+export const Places = memo(() => {
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId } = useParams({ from })
   const db = usePGlite()
