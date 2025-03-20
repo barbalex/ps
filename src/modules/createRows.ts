@@ -50,17 +50,17 @@ export const createProject = async ({ db }) => {
   )
 }
 
-export const createSubproject = async ({ db, project_id }) => {
+export const createSubproject = async ({ db, projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    project_id,
+    project_id: projectId,
     table: 'subprojects',
   })
 
   const data = {
     subproject_id: uuidv7(),
-    project_id,
+    project_id: projectId,
 
     ...presetData,
   }

@@ -1,16 +1,18 @@
 import { useRef, memo, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
-import { Component as Form } from './Form.tsx'
+import { SubprojectForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { subproject_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId/'
+
+export const Subproject = memo(() => {
+  const { subprojectId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -23,7 +25,7 @@ export const Component = memo(() => {
       subprojects 
         inner join projects on projects.project_id = subprojects.project_id 
     WHERE subproject_id = $1`,
-    [subproject_id],
+    [subprojectId],
     'subproject_id',
   )
   const row = res?.rows?.[0]
@@ -36,10 +38,10 @@ export const Component = memo(() => {
 
       db.query(`UPDATE subprojects SET ${name} = $1 WHERE subproject_id = $2`, [
         value,
-        subproject_id,
+        subprojectId,
       ])
     },
-    [db, row, subproject_id],
+    [db, row, subprojectId],
   )
 
   if (!row) return <Loading />
@@ -59,6 +61,7 @@ export const Component = memo(() => {
           onChange={onChange}
           row={row}
           autoFocusRef={autoFocusRef}
+          from={from}
         />
       </div>
     </div>

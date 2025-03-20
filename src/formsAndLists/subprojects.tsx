@@ -18,7 +18,7 @@ export const Subprojects = memo(() => {
   const [filter] = useAtom(subprojectsFilterAtom)
 
   const { projectId } = useParams({ from })
-  const Navigate = useNavigate()
+  const navigate = useNavigate()
   const db = usePGlite()
 
   // TODO: ensure passing in filter works as expected (beware of joined table...)
@@ -48,11 +48,11 @@ export const Subprojects = memo(() => {
   const nameSingularLower = nameSingular.toLowerCase()
 
   const add = useCallback(async () => {
-    const res = await createSubproject({ db, project_id: projectId })
+    const res = await createSubproject({ db,  projectId })
     const data = res?.rows?.[0]
     if (!data) return
-    Navigate(`/data/projects/${projectId}/subprojects/${data.subproject_id}`)
-  }, [Navigate, db, projectId])
+    navigate(`../${data.subproject_id}`)
+  }, [navigate, db, projectId])
 
   return (
     <div className="list-view">
