@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import {
   usePGlite,
@@ -23,10 +23,12 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/'
+
 export const Component = memo(() => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { projectId, subprojectId, placeId } = useParams()
+  const { projectId, subprojectId, placeId } = useParams({ from })
   const db = usePGlite()
 
   const [places1Filter] = useAtom(places1FilterAtom)
@@ -102,16 +104,11 @@ export const Component = memo(() => {
       db,
     })
 
-    navigate({ pathname: place.place_id, search: searchParams.toString() })
-  }, [
-    db,
-    navigate,
-    placeNamePlural,
-    placeId,
-    projectId,
-    searchParams,
-    subprojectId,
-  ])
+    navigate({
+      to: place.place_id,
+      params: (prev) => ({ ...prev, placeId: place.place_id }),
+    })
+  }, [db, navigate, placeNamePlural, placeId, projectId, subprojectId])
 
   return (
     <div className="list-view">
