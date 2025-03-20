@@ -515,33 +515,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'project-crs',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'CRS',
-          table: 'project_crs',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/projectCrss/index.tsx'),
-        },
-        {
-          path: ':project_crs_id',
-          lazy: () => import('../routes/projectCrs/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'project_crs',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'files',
       element: null,
       handle: {
