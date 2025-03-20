@@ -1,6 +1,6 @@
 import { useRef, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { Header } from './Header.tsx'
@@ -8,14 +8,17 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { goal_report_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId/'
+
+export const GoalReport = memo(() => {
+  const { goalReportId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
-    [goal_report_id],
+    [goalReportId],
     'goal_report_id',
   )
   const row = res?.rows?.[0]
