@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { GoalForm } from '../../../../../../../../formsAndLists/goal/Form.tsx'
 import { Filter } from '../../../../../../../../components/shared/Filter/index.tsx'
 
 const from =
@@ -15,7 +16,7 @@ function RouteComponent() {
   return (
     <Filter from={from}>
       {({ row, onChange, orIndex }) => (
-        <SubprojectReportForm
+        <GoalForm
           row={row}
           onChange={onChange}
           orIndex={orIndex}

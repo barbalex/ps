@@ -1,61 +1,64 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createGoal } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, subproject_id, goal_id } = useParams()
+export const Header = memo(({ autoFocusRef, from }) => {
+  const { projectId, subprojectId, goalId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createGoal({ db, project_id, subproject_id })
+    const res = await createGoal({
+      db,
+      project_id: projectId,
+      subproject_id: subprojectId,
+    })
     const data = res?.rows?.[0]
     navigate({
-      pathname: `../${data.goal_id}`,
-      search: searchParams.toString(),
+      to: `../${data.goal_id}`,
+      params: (prev) => ({ ...prev, goalId: data.goal_id }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id, subproject_id, searchParams])
+  }, [autoFocusRef, db, navigate, projectId, subprojectId])
 
   const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM goals WHERE goal_id = $1`, [goal_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, goal_id, navigate, searchParams])
+    await db.query(`DELETE FROM goals WHERE goal_id = $1`, [goalId])
+    navigate({ to: '..' })
+  }, [db, goalId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
-      [subproject_id],
+      [subprojectId],
     )
     const goals = res?.rows
     const len = goals.length
-    const index = goals.findIndex((p) => p.goal_id === goal_id)
+    const index = goals.findIndex((p) => p.goal_id === goalId)
     const next = goals[(index + 1) % len]
     navigate({
-      pathname: `../${next.goal_id}`,
-      search: searchParams.toString(),
+      to: `../${next.goal_id}`,
+      params: (prev) => ({ ...prev, goalId: next.goal_id }),
     })
-  }, [db, subproject_id, navigate, searchParams, goal_id])
+  }, [db, subprojectId, navigate, goalId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
-      [subproject_id],
+      [subprojectId],
     )
     const goals = res?.rows
     const len = goals.length
-    const index = goals.findIndex((p) => p.goal_id === goal_id)
+    const index = goals.findIndex((p) => p.goal_id === goalId)
     const previous = goals[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.goal_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.goal_id}`,
+      params: (prev) => ({ ...prev, goalId: previous.goal_id }),
     })
-  }, [db, subproject_id, navigate, searchParams, goal_id])
+  }, [db, subprojectId, navigate, goalId])
 
   return (
     <FormHeader
