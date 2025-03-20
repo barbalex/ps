@@ -10,7 +10,7 @@ import { GoalForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(({ from }) => {
+export const Goal = memo(({ from }) => {
   const { goalId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
