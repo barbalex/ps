@@ -1,49 +1,44 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(() => {
-  const { project_id, occurrence_id } = useParams()
+export const Header = memo(({ from }) => {
+  const { projectId, occurrenceId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label',
-      [project_id],
+      [projectId],
     )
     const occurrences = res?.rows
     const len = occurrences.length
-    const index = occurrences.findIndex(
-      (p) => p.occurrence_id === occurrence_id,
-    )
+    const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
     const next = occurrences[(index + 1) % len]
     navigate({
-      pathname: `../${next.occurrence_id}`,
-      search: searchParams.toString(),
+      to: `../${next.occurrence_id}`,
+      params: (prev) => ({ ...prev, occurrenceId: next.occurrence_id }),
     })
-  }, [db, navigate, occurrence_id, project_id, searchParams])
+  }, [db, navigate, occurrenceId, projectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label',
-      [project_id],
+      [projectId],
     )
     const occurrences = res?.rows
     const len = occurrences.length
-    const index = occurrences.findIndex(
-      (p) => p.occurrence_id === occurrence_id,
-    )
+    const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
     const previous = occurrences[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.occurrence_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.occurrence_id}`,
+      params: (prev) => ({ ...prev, occurrenceId: previous.occurrence_id }),
     })
-  }, [db, navigate, occurrence_id, project_id, searchParams])
+  }, [db, navigate, occurrenceId, projectId])
 
   return (
     <FormHeader

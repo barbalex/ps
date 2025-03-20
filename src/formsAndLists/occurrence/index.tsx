@@ -1,5 +1,5 @@
 import { useRef, useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,8 +12,8 @@ import { OccurenceData } from './OccurrenceData/index.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { project_id, subproject_id, occurrence_id } = useParams()
+export const Occurrence = memo(({ from }) => {
+  const { projectId, subprojectId, occurrenceId } = useParams({ from })
   const navigate = useNavigate()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -22,7 +22,7 @@ export const Component = memo(() => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
-    [occurrence_id],
+    [occurrenceId],
     'occurrence_id',
   )
   const row = res?.rows?.[0]
@@ -36,7 +36,10 @@ export const Component = memo(() => {
       // Issue: for not_to_assign, the value needs to be null instead of false
       // because querying for null or false with electric-sql does not work
       const valueToUse =
-        name === 'not_to_assign' ? (value ? true : null) : value
+        name === 'not_to_assign' ?
+          value ? true
+          : null
+        : value
       const data = { [name]: valueToUse }
       // ensure that the combinations of not-to-assign and place_id make sense
       if (name === 'not_to_assign' && value) {
@@ -53,22 +56,22 @@ export const Component = memo(() => {
       })
       const vals = Object.values(data)
       const sql = `UPDATE occurrences SET ${sets} WHERE occurrence_id = $1`
-      db.query(sql, [occurrence_id, ...vals])
+      db.query(sql, [occurrenceId, ...vals])
       // ensure that the combinations of not-to-assign and place_id make sense
       if (name === 'not_to_assign' && value) {
         navigate(
-          `/data/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign/${occurrence_id}`,
+          `/data/projects/${projectId}/subprojects/${subprojectId}/occurrences-not-to-assign/${occurrenceId}`,
         )
       }
       if (name === 'not_to_assign' && !value) {
         navigate(
-          `/data/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
+          `/data/projects/${projectId}/subprojects/${subprojectId}/occurrences-to-assess/${occurrenceId}`,
         )
       }
       if (name === 'place_id' && !value) {
         // navigate to the subproject's occurrences-to-assess list
         navigate(
-          `/data/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
+          `/data/projects/${projectId}/subprojects/${subprojectId}/occurrences-to-assess/${occurrenceId}`,
         )
       }
       if (name === 'place_id' && value) {
@@ -79,13 +82,14 @@ export const Component = memo(() => {
           [value],
         )
         const parentPlaceId = res?.rows?.[0]?.parent_id
-        const url = parentPlaceId
-          ? `/data/projects/${project_id}/subprojects/${subproject_id}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrence_id}`
-          : `/data/projects/${project_id}/subprojects/${subproject_id}/places/${value}/occurrences-assigned/${occurrence_id}`
+        const url =
+          parentPlaceId ?
+            `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrenceId}`
+          : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/occurrences-assigned/${occurrenceId}`
         navigate(url)
       }
     },
-    [db, navigate, occurrence_id, project_id, row, subproject_id],
+    [db, navigate, occurrenceId, projectId, row, subprojectId],
   )
 
   if (!row) return <Loading />
@@ -94,7 +98,10 @@ export const Component = memo(() => {
   // - add place assigner
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         <SwitchField
           label="Not to assign"
@@ -112,7 +119,7 @@ export const Component = memo(() => {
           autoFocus
           ref={autoFocusRef}
         />
-        <OccurenceData />
+        <OccurenceData from={from} />
       </div>
     </div>
   )

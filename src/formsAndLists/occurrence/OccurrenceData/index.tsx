@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react'
-import { useParams } from 'react-router'
+import { memo, useCallback, useEffect } from 'react'
+import { useParams } from '@tanstack/react-router'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
@@ -25,11 +25,11 @@ const explainerStyle = {
   fontStyle: 'italic',
 }
 
-export const OccurenceData = () => {
+export const OccurenceData = memo(({ from }) => {
   const [occurrenceFieldsSorted, setOccurrenceFieldsSorted] = useAtom(
     occurrenceFieldsSortedAtom,
   )
-  const { occurrence_id } = useParams()
+  const { occurrenceId } = useParams({ from })
 
   const sortedBeobFields = occurrenceFieldsSorted.slice()
 
@@ -57,7 +57,7 @@ export const OccurenceData = () => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
-    [occurrence_id],
+    [occurrenceId],
     'occurrence_id',
   )
   const occurrence = res?.rows?.[0]
@@ -145,4 +145,4 @@ export const OccurenceData = () => {
       </div>
     </ErrorBoundary>
   )
-}
+})
