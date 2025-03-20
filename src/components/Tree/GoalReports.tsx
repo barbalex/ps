@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -14,16 +14,15 @@ import { treeOpenNodesAtom } from '../../store.ts'
 interface Props {
   projectId: string
   subprojectId: string
-  goal_id: string
+  goalId: string
   level?: number
 }
 
 export const GoalReportsNode = memo(
-  ({ project_id, subproject_id, goal_id, level = 7 }: Props) => {
+  ({ projectId, subprojectId, goalId, level = 7 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -33,7 +32,7 @@ export const GoalReportsNode = memo(
       FROM goal_reports 
       WHERE goal_id = $1 
       ORDER BY label`,
-      [goal_id],
+      [goalId],
       'goal_report_id',
     )
     const rows = res?.rows ?? []
@@ -51,13 +50,13 @@ export const GoalReportsNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'goals',
-        goal_id,
+        goalId,
       ],
-      [project_id, subproject_id, goal_id],
+      [projectId, subprojectId, goalId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
@@ -73,10 +72,7 @@ export const GoalReportsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -88,7 +84,6 @@ export const GoalReportsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -108,9 +103,9 @@ export const GoalReportsNode = memo(
           rows.map((goalReport) => (
             <GoalReportNode
               key={goalReport.goal_report_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              goal_id={goal_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              goalId={goalId}
               goalReport={goalReport}
             />
           ))}

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -22,12 +22,11 @@ interface Props {
 }
 
 export const GoalsNode = memo(
-  ({ project_id, subproject_id, level = 5 }: Props) => {
+  ({ projectId, subprojectId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(goalsFilterAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const filterString = filterStringFromFilter(filter)
     const isFiltered = !!filterString
@@ -41,7 +40,7 @@ export const GoalsNode = memo(
         subproject_id = $1
         ${isFiltered ? ` AND ${filterString}` : ''} 
       ORDER BY label`,
-      [subproject_id],
+      [subprojectId],
       'goal_id',
     )
     const rows = resFiltered?.rows ?? []
@@ -49,7 +48,7 @@ export const GoalsNode = memo(
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM goals WHERE subproject_id = $1`,
-      [subproject_id],
+      [subprojectId],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resultCountUnfiltered === undefined
@@ -57,13 +56,12 @@ export const GoalsNode = memo(
     const node = useMemo(
       () => ({
         label: `Goals (${
-          isFiltered
-            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-                countLoading ? '...' : formatNumber(countUnfiltered)
-              }`
-            : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+          isFiltered ?
+            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
+            }`
+          : rowsLoading ? '...'
+          : formatNumber(rows.length)
         })`,
       }),
       [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -71,8 +69,8 @@ export const GoalsNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'subprojects', subproject_id],
-      [project_id, subproject_id],
+      () => ['data', 'projects', projectId, 'subprojects', subprojectId],
+      [projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'goals'], [parentArray])
@@ -88,10 +86,7 @@ export const GoalsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -103,7 +98,6 @@ export const GoalsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -123,8 +117,8 @@ export const GoalsNode = memo(
           rows.map((goal) => (
             <GoalNode
               key={goal.goal_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
               goal={goal}
               level={level + 1}
             />

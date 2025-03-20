@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -10,25 +10,24 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const GoalReportNode = memo(
-  ({ project_id, subproject_id, goal_id, goalReport, level = 8 }) => {
+  ({ projectId, subprojectId, goalId, goalReport, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'goals',
-        goal_id,
+        goalId,
         'reports',
       ],
-      [goal_id, project_id, subproject_id],
+      [goalId, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
@@ -47,10 +46,7 @@ export const GoalReportNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -61,9 +57,7 @@ export const GoalReportNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -82,10 +76,10 @@ export const GoalReportNode = memo(
         />
         {isOpen && (
           <GoalReportValuesNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            goal_id={goal_id}
-            goal_report_id={goalReport.goal_report_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            goalId={goalId}
+            goalReportId={goalReport.goal_report_id}
           />
         )}
       </>
