@@ -91,12 +91,12 @@ export const Places = memo(({ from }) => {
     })
     const newVectorLayer = resVL?.rows?.[0]
 
-    await createVectorLayerDisplay({
+    createVectorLayerDisplay({
       vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 
-    await createLayerPresentation({
+    createLayerPresentation({
       vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })

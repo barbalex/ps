@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
@@ -20,14 +20,14 @@ import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
+  from: string
 }
 
-export const Header = memo(({ autoFocusRef }: Props) => {
+export const Header = memo(({ autoFocusRef, from }: Props) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { projectId, subprojectId, placeId, placeId2 } = useParams()
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
   const db = usePGlite()
 
@@ -59,7 +59,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const place = resPlace.rows?.[0]
 
     // need to create a corresponding vector layer and vector layer display
-    const resVL = createVectorLayer({
+    const resVL = await createVectorLayer({
       projectId,
       type: 'own',
       ownTable: 'places',
@@ -68,20 +68,30 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       db,
     })
     const newVectorLayer = resVL.rows?.[0]
+    console.log('Place.Header.addRow', {
+      newVectorLayer,
+      resVL,
+      projectId,
+      placeId2,
+      placeNamePlural,
+    })
 
     createVectorLayerDisplay({
       vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 
-    await createLayerPresentation({
+    createLayerPresentation({
       vectorLayerId: newVectorLayer.vector_layer_id,
       db,
     })
 
     navigate({
-      pathname: `../${place.place_id}`,
-      search: searchParams.toString(),
+      to: `../${place.place_id}`,
+      params: (prev) => ({
+        ...prev,
+        placeId: place.place_id,
+      }),
     })
     autoFocusRef.current?.focus()
   }, [
@@ -92,14 +102,13 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     placeId,
     placeId2,
     projectId,
-    searchParams,
     subprojectId,
   ])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM places WHERE place_id = $1`, [placeId])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, navigate, placeId, searchParams])
+    navigate({ to: '..' })
+  }, [db, navigate, placeId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -118,10 +127,13 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const index = places.findIndex((p) => p.place_id === placeId)
     const next = places[(index + 1) % len]
     navigate({
-      pathname: `../${next.place_id}`,
-      search: searchParams.toString(),
+      to: `../${next.place_id}`,
+      params: (prev) => ({
+        ...prev,
+        placeId: next.place_id,
+      }),
     })
-  }, [db, navigate, placeId, placeId2, searchParams, subprojectId])
+  }, [db, navigate, placeId, placeId2, subprojectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -140,10 +152,13 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const index = places.findIndex((p) => p.place_id === placeId)
     const previous = places[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.place_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.place_id}`,
+      params: (prev) => ({
+        ...prev,
+        placeId: previous.place_id,
+      }),
     })
-  }, [db, navigate, placeId, placeId2, searchParams, subprojectId])
+  }, [db, navigate, placeId, placeId2, subprojectId])
 
   const alertNoGeometry = useCallback(() => {
     createNotification({

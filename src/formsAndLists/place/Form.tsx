@@ -1,5 +1,5 @@
 import { useMemo, memo } from 'react'
-import { useParams, useOutletContext, useLocation } from 'react-router'
+import { useParams, useLocation } from '@tanstack/react-router'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -10,20 +10,11 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
-export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
-    const { subproject_id } = useParams()
+export const PlaceForm = memo(
+  ({ onChange, row, orIndex, from, autoFocusRef }) => {
+    const { subprojectId } = useParams({ from })
     const { pathname } = useLocation()
     const isFilter = pathname.endsWith('filter')
-
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = useMemo(
-      () => rowFromProps ?? outletContext?.row ?? {},
-      [outletContext?.row, rowFromProps],
-    )
-    const orIndex = outletContext?.orIndex
 
     // need to extract the jsonb data from the row
     // as inside filters it's name is a path
@@ -32,8 +23,8 @@ export const Component = memo(
 
     // TODO: only show parent place if level 2 exists in place_levels
     const parentPlaceWhere = useMemo(
-      () => `level = 1 and subproject_id = '${subproject_id}'`,
-      [subproject_id],
+      () => `level = 1 and subproject_id = '${subprojectId}'`,
+      [subprojectId],
     )
 
     return (
@@ -82,6 +73,7 @@ export const Component = memo(
           id={row.place_id}
           data={jsonbData}
           orIndex={orIndex}
+          from={from}
           autoFocus={row.level !== 2}
           ref={row.level !== 2 ? autoFocusRef : undefined}
         />

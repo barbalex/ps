@@ -1,9 +1,9 @@
 import { useRef, useCallback, memo } from 'react'
-import { useSearchParams, useParams } from 'react-router'
+import { useParams, useSearch } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
-import { Component as Form } from './Form.tsx'
+import { PlaceForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
@@ -11,18 +11,16 @@ import '../../form.css'
 
 const fieldsStyle = { padding: 10 }
 
-export const Component = memo(() => {
-  const { place_id, place_id2 } = useParams()
+export const Place = memo(({ from }) => {
+  const { placeId, placeId2 } = useParams({ from })
+  const { onlyForm } = useSearch({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
-
-  const [searchParams] = useSearchParams()
-  const onlyForm = searchParams.get('onlyForm')
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM places WHERE place_id = $1`,
-    [place_id2 ?? place_id],
+    [placeId2 ?? placeId],
     'place_id',
   )
   const row = res?.rows?.[0]
@@ -35,10 +33,10 @@ export const Component = memo(() => {
 
       db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
         value,
-        place_id,
+        placeId,
       ])
     },
-    [db, place_id, row],
+    [db, placeId, row],
   )
 
   if (!row) return <Loading />
@@ -55,7 +53,10 @@ export const Component = memo(() => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div style={fieldsStyle}></div>
       <Form
         row={row}
