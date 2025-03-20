@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,11 +12,13 @@ import { subprojectReportsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/reports/'
+
+export const SubprojectReports = memo(() => {
   const [filter] = useAtom(subprojectReportsFilterAtom)
-  const { project_id, subproject_id } = useParams()
+  const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -31,7 +33,7 @@ export const Component = memo(() => {
       subproject_id = $1
       ${isFiltered ? ` AND(${filterString})` : ''} 
     ORDER BY label`,
-    [subproject_id],
+    [subprojectId],
     'subproject_report_id',
   )
   const isLoading = res === undefined
@@ -40,16 +42,19 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createSubprojectReport({
       db,
-      project_id,
-      subproject_id,
+      project_id: projectId,
+      subproject_id: subprojectId,
     })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.subproject_report_id,
-      search: searchParams.toString(),
+      to: data.subproject_report_id,
+      params: (prev) => ({
+        ...prev,
+        subprojectReportId: data.subproject_report_id,
+      }),
     })
-  }, [db, navigate, project_id, searchParams, subproject_id])
+  }, [db, navigate, projectId, subprojectId])
 
   return (
     <div className="list-view">
@@ -64,10 +69,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {subprojectReports.map(({ subproject_report_id, label }) => (
               <Row
                 key={subproject_report_id}
@@ -76,7 +80,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
