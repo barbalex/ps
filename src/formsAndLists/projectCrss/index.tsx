@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
@@ -9,30 +9,31 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/projects/$projectId_/crs/'
+
+export const ProjectCrss = memo(() => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
 
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM project_crs WHERE project_id = $1 ORDER BY label`,
-    [project_id],
+    [projectId],
     'project_crs_id',
   )
   const isLoading = res === undefined
   const projectCrs = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createProjectCrs({ project_id, db })
+    const res = await createProjectCrs({ projectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.project_crs_id,
-      search: searchParams.toString(),
+      to: data.project_crs_id,
+      params: (prev) => ({ ...prev, projectCrsId: data.project_crs_id }),
     })
-  }, [db, navigate, project_id, searchParams])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -47,10 +48,9 @@ export const Component = memo(() => {
         info={<Info />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {projectCrs.map((cr) => (
               <Row
                 key={cr.project_crs_id}
@@ -59,7 +59,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

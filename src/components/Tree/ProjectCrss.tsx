@@ -48,7 +48,7 @@ export const ProjectCrssNode = memo(({ projectId, level = 3 }: Props) => {
     [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'project-crs'], [parentArray])
+  const ownArray = useMemo(() => [...parentArray, 'crs'], [parentArray])
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!

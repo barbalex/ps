@@ -9,13 +9,7 @@ export const ProjectCrsNode = memo(({ projectId, projectCrs, level = 4 }) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = useMemo(
-    () => [
-      'data',
-      'projects',
-      projectId,
-      'project-crs',
-      projectCrs.project_crs_id,
-    ],
+    () => ['data', 'projects', projectId, 'crs', projectCrs.project_crs_id],
     [projectId, projectCrs.project_crs_id],
   )
   const ownUrl = `/${ownArray.join('/')}`

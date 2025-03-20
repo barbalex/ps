@@ -50,35 +50,35 @@ export const buildNavs = async ({
         { path: '/data/accounts', text: 'Accounts' },
         { path: '/data/messages', text: 'Messages' },
         { path: '/docs', text: 'Docs' },
-        ...(designing
-          ? [
-              {
-                path: '/data/field-types',
-                text: 'Field Types',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: '/data/widget-types',
-                text: 'Widget Types',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: '/data/widgets-for-fields',
-                text: 'Widgets For Fields',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: '/data/fields',
-                text: 'Fields',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/data/crs`,
-                text: 'CRS',
-                showOnlyWhenDesigning: true,
-              },
-            ]
-          : []),
+        ...(designing ?
+          [
+            {
+              path: '/data/field-types',
+              text: 'Field Types',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: '/data/widget-types',
+              text: 'Widget Types',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: '/data/widgets-for-fields',
+              text: 'Widgets For Fields',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: '/data/fields',
+              text: 'Fields',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: `/data/crs`,
+              text: 'CRS',
+              showOnlyWhenDesigning: true,
+            },
+          ]
+        : []),
       ]
       break
     case `projects`: {
@@ -111,52 +111,52 @@ export const buildNavs = async ({
           path: `/data/projects/${project_id}/vector-layers`,
           text: 'Vector Layers',
         },
-        ...(filesActiveProjects
-          ? [
-              {
-                path: `/data/projects/${project_id}/files`,
-                text: 'Files',
-              },
-            ]
-          : []),
-        ...(designing
-          ? [
-              {
-                path: `/data/projects/${project_id}/users`,
-                text: 'Users',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/data/projects/${project_id}/lists`,
-                text: 'Lists',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/data/projects/${project_id}/taxonomies`,
-                text: 'Taxonomies',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/data/projects/${project_id}/units`,
-                text: 'Units',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/data/projects/${project_id}/project-crs`,
-                text: 'CRS',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/data/projects/${project_id}/place-levels`,
-                text: 'Place Levels',
-              },
-              {
-                path: `/data/projects/${project_id}/fields`,
-                text: 'Fields',
-                showOnlyWhenDesigning: true,
-              },
-            ]
-          : []),
+        ...(filesActiveProjects ?
+          [
+            {
+              path: `/data/projects/${project_id}/files`,
+              text: 'Files',
+            },
+          ]
+        : []),
+        ...(designing ?
+          [
+            {
+              path: `/data/projects/${project_id}/users`,
+              text: 'Users',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: `/data/projects/${project_id}/lists`,
+              text: 'Lists',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: `/data/projects/${project_id}/taxonomies`,
+              text: 'Taxonomies',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: `/data/projects/${project_id}/units`,
+              text: 'Units',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: `/data/projects/${project_id}/crs`,
+              text: 'CRS',
+              showOnlyWhenDesigning: true,
+            },
+            {
+              path: `/data/projects/${project_id}/place-levels`,
+              text: 'Place Levels',
+            },
+            {
+              path: `/data/projects/${project_id}/fields`,
+              text: 'Fields',
+              showOnlyWhenDesigning: true,
+            },
+          ]
+        : []),
       ]
     }
     case 'subprojects': {
@@ -207,14 +207,14 @@ export const buildNavs = async ({
           path: `/data/projects/${project_id}/subprojects/${subproject_id}/occurrence-imports`,
           text: 'Occurrence Imports',
         },
-        ...(filesActiveSubprojects
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/files`,
-                text: 'Files',
-              },
-            ]
-          : []),
+        ...(filesActiveSubprojects ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/files`,
+              text: 'Files',
+            },
+          ]
+        : []),
       ]
     }
     case 'places': {
@@ -237,44 +237,44 @@ export const buildNavs = async ({
       }
 
       return [
-        ...(needToIncludeLevel2
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
-                text: placeName,
-              },
-            ]
-          : []),
-        ...(placeLevel.checks
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                  level === 2 ? `/places/${place_id2}` : ''
-                }/checks`,
-                text: 'Checks',
-              },
-            ]
-          : []),
-        ...(placeLevel.actions
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                  level === 2 ? `/places/${place_id2}` : ''
-                }/actions`,
-                text: 'Actions',
-              },
-            ]
-          : []),
-        ...(placeLevel.reports
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                  level === 2 ? `/places/${place_id2}` : ''
-                }/reports`,
-                text: 'Reports',
-              },
-            ]
-          : []),
+        ...(needToIncludeLevel2 ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
+              text: placeName,
+            },
+          ]
+        : []),
+        ...(placeLevel.checks ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                level === 2 ? `/places/${place_id2}` : ''
+              }/checks`,
+              text: 'Checks',
+            },
+          ]
+        : []),
+        ...(placeLevel.actions ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                level === 2 ? `/places/${place_id2}` : ''
+              }/actions`,
+              text: 'Actions',
+            },
+          ]
+        : []),
+        ...(placeLevel.reports ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                level === 2 ? `/places/${place_id2}` : ''
+              }/reports`,
+              text: 'Reports',
+            },
+          ]
+        : []),
         {
           path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
@@ -287,16 +287,16 @@ export const buildNavs = async ({
           }/users`,
           text: 'Users',
         },
-        ...(filesActivePlaces
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                  level === 2 ? `/places/${place_id2}` : ''
-                }/files`,
-                text: 'Files',
-              },
-            ]
-          : []),
+        ...(filesActivePlaces ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                level === 2 ? `/places/${place_id2}` : ''
+              }/files`,
+              text: 'Files',
+            },
+          ]
+        : []),
       ]
     }
     case 'checks': {
@@ -313,16 +313,16 @@ export const buildNavs = async ({
           }/checks/${check_id}/taxa`,
           text: 'Taxa',
         },
-        ...(filesActiveChecks
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                  level === 2 ? `/places/${place_id2}` : ''
-                }/checks/${check_id}/files`,
-                text: 'Files',
-              },
-            ]
-          : []),
+        ...(filesActiveChecks ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                level === 2 ? `/places/${place_id2}` : ''
+              }/checks/${check_id}/files`,
+              text: 'Files',
+            },
+          ]
+        : []),
       ]
     }
     case 'actions':
@@ -339,16 +339,16 @@ export const buildNavs = async ({
           }/actions/${action_id}/reports`,
           text: 'Reports',
         },
-        ...(filesActiveActions
-          ? [
-              {
-                path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                  level === 2 ? `/places/${place_id2}` : ''
-                }/actions/${action_id}/files`,
-                text: 'Files',
-              },
-            ]
-          : []),
+        ...(filesActiveActions ?
+          [
+            {
+              path: `/data/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                level === 2 ? `/places/${place_id2}` : ''
+              }/actions/${action_id}/files`,
+              text: 'Files',
+            },
+          ]
+        : []),
       ]
     case 'action_reports':
       return [
