@@ -181,39 +181,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'occurrences-not-to-assign',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Occurrences not to assign',
-          table: 'occurrences',
-          folder: true,
-        },
-        to: {
-          table: `occurrences`,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/occurrences.tsx'),
-        },
-        {
-          path: ':occurrence_id',
-          lazy: () => import('../routes/occurrence/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'occurrences',
-              folder: false,
-            },
-            to: {
-              table: `occurrences`,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'charts',
       element: null,
       handle: {
