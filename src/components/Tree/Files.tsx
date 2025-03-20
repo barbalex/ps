@@ -2,10 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
@@ -94,13 +91,12 @@ export const FilesNode = memo(
     const node = useMemo(
       () => ({
         label: `Files (${
-          isFiltered
-            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-                countLoading ? '...' : formatNumber(countUnfiltered)
-              }`
-            : rowsLoading
-              ? '...'
-              : formatNumber(rows.length)
+          isFiltered ?
+            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
+            }`
+          : rowsLoading ? '...'
+          : formatNumber(rows.length)
         })`,
       }),
       [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -164,12 +160,12 @@ export const FilesNode = memo(
           rows.map((file) => (
             <FileNode
               key={file.file_id}
-              project_id={projectId}
-              subproject_id={subprojectId}
-              place_id={placeId}
-              place_id2={placeId2}
-              action_id={actionId}
-              check_id={checkId}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              actionId={actionId}
+              checkId={checkId}
               file={file}
               level={level + 1}
             />

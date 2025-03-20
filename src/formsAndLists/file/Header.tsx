@@ -10,13 +10,13 @@ import { FullscreenControl } from './FullscreenControl.tsx'
 
 export const Header = memo(({ row, previewRef, from }) => {
   const {
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    action_id,
-    check_id,
-    file_id,
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionId,
+    checkId,
+    fileId,
   } = useParams({ from })
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -40,35 +40,38 @@ export const Header = memo(({ row, previewRef, from }) => {
   const addRow = useCallback(async () => api.initFlow(), [api])
 
   const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM files WHERE file_id = $1`, [file_id])
+    await db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
     navigate({ to: '..' })
-  }, [db, file_id, navigate])
+  }, [db, fileId, navigate])
 
   const { hFilterField, hFilterValue } = useMemo(() => {
-    if (action_id) {
-      return { hFilterField: 'action_id', hFilterValue: action_id }
-    } else if (check_id) {
-      return { hFilterField: 'check_id', hFilterValue: check_id }
-    } else if (place_id2) {
-      return { hFilterField: 'place_id2', hFilterValue: place_id2 }
-    } else if (place_id) {
-      return { hFilterField: 'place_id', hFilterValue: place_id }
-    } else if (subproject_id) {
-      return { hFilterField: 'subproject_id', hFilterValue: subproject_id }
-    } else if (project_id) {
-      return { hFilterField: 'project_id', hFilterValue: project_id }
+    if (actionId) {
+      return { hFilterField: 'action_id', hFilterValue: actionId }
+    } else if (checkId) {
+      return { hFilterField: 'check_id', hFilterValue: checkId }
+    } else if (placeId2) {
+      return { hFilterField: 'place_id2', hFilterValue: placeId2 }
+    } else if (placeId) {
+      return { hFilterField: 'place_id', hFilterValue: placeId }
+    } else if (subprojectId) {
+      return { hFilterField: 'subproject_id', hFilterValue: subprojectId }
+    } else if (projectId) {
+      return { hFilterField: 'project_id', hFilterValue: projectId }
     }
     return { hFilterField: undefined, hFilterValue: undefined }
-  }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
+  }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT file_id FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
-      [hFilterValue],
+      `
+      SELECT file_id 
+      FROM files 
+      ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
+      ORDER BY label`,
     )
     const rows = res?.rows ?? []
     const len = rows.length
-    const index = rows.findIndex((p) => p.file_id === file_id)
+    const index = rows.findIndex((p) => p.file_id === fileId)
     const next = rows[(index + 1) % len]
     navigate({
       to: `${isPreview ? '../' : ''}../${next.file_id}${
@@ -76,16 +79,19 @@ export const Header = memo(({ row, previewRef, from }) => {
       }`,
       params: (prev) => ({ ...prev, fileId: next.file_id }),
     })
-  }, [db, hFilterField, hFilterValue, navigate, isPreview, file_id])
+  }, [db, hFilterField, hFilterValue, navigate, isPreview, fileId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT file_id FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
-      [hFilterValue],
+      `
+      SELECT file_id 
+      FROM files 
+      ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
+      ORDER BY label`,
     )
     const rows = res?.rows ?? []
     const len = rows.length
-    const index = rows.findIndex((p) => p.file_id === file_id)
+    const index = rows.findIndex((p) => p.file_id === fileId)
     const previous = rows[(index + len - 1) % len]
     navigate({
       to: `${isPreview ? '../' : ''}../${previous.file_id}${
@@ -93,7 +99,7 @@ export const Header = memo(({ row, previewRef, from }) => {
       }`,
       params: (prev) => ({ ...prev, fileId: previous.file_id }),
     })
-  }, [db, hFilterField, hFilterValue, navigate, isPreview, file_id])
+  }, [db, hFilterField, hFilterValue, navigate, isPreview, fileId])
 
   return (
     <FormHeader

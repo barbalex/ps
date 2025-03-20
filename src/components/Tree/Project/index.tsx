@@ -87,12 +87,12 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
           <PersonsNode projectId={project.project_id} />
           <WmsLayersNode projectId={project.project_id} />
           <VectorLayersNode projectId={project.project_id} />
-          {/* {showFiles && (
+          {showFiles && (
             <FilesNode
-              project_id={project.project_id}
+              projectId={project.project_id}
               level={3}
             />
-          )} */}
+          )}
           {designing && (
             <>
               <ProjectUsersNode projectId={project.project_id} />
