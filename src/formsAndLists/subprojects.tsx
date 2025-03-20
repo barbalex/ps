@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,10 +12,12 @@ import { subprojectsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from = '/data/_authLayout/projects/$projectId_/subprojects/'
+
+export const Subprojects = memo(() => {
   const [filter] = useAtom(subprojectsFilterAtom)
 
-  const { project_id } = useParams()
+  const { projectId } = useParams({ from })
   const Navigate = useNavigate()
   const db = usePGlite()
 
@@ -36,7 +38,7 @@ export const Component = memo(() => {
       sp.project_id = $1
       ${isFiltered ? ` AND ${filterString}` : ''} 
     ORDER BY sp.label`,
-    [project_id],
+    [projectId],
     'subproject_id',
   )
   const isLoading = res === undefined
@@ -46,11 +48,11 @@ export const Component = memo(() => {
   const nameSingularLower = nameSingular.toLowerCase()
 
   const add = useCallback(async () => {
-    const res = await createSubproject({ db, project_id })
+    const res = await createSubproject({ db, project_id: projectId })
     const data = res?.rows?.[0]
     if (!data) return
-    Navigate(`/data/projects/${project_id}/subprojects/${data.subproject_id}`)
-  }, [Navigate, db, project_id])
+    Navigate(`/data/projects/${projectId}/subprojects/${data.subproject_id}`)
+  }, [Navigate, db, projectId])
 
   return (
     <div className="list-view">
@@ -65,19 +67,18 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {subprojects.map(({ subproject_id, label }) => (
               <Row
                 key={subproject_id}
                 label={label ?? subproject_id}
-                to={`/data/projects/${project_id}/subprojects/${subproject_id}`}
+                to={`/data/projects/${projectId}/subprojects/${subproject_id}`}
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
