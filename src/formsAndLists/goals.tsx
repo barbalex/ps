@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,11 +12,13 @@ import { goalsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-export const Component = memo(() => {
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/'
+
+export const Goals = memo(() => {
   const [filter] = useAtom(goalsFilterAtom)
-  const { project_id, subproject_id } = useParams()
+  const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -31,18 +33,25 @@ export const Component = memo(() => {
       subproject_id = $1
       ${isFiltered ? ` AND(${filterString})` : ''}
     ORDER BY label`,
-    [subproject_id],
+    [subprojectId],
     'goal_id',
   )
   const isLoading = res === undefined
   const goals = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createGoal({ db, project_id, subproject_id })
+    const res = await createGoal({
+      db,
+      project_id: projectId,
+      subproject_id: subprojectId,
+    })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.goal_id, search: searchParams.toString() })
-  }, [db, navigate, project_id, searchParams, subproject_id])
+    navigate({
+      to: data.goal_id,
+      params: (prev) => ({ ...prev, goalId: data.goal_id }),
+    })
+  }, [db, navigate, projectId, subprojectId])
 
   return (
     <div className="list-view">
@@ -57,10 +66,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {goals.map(({ goal_id, label }) => (
               <Row
                 key={goal_id}
@@ -69,7 +77,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
