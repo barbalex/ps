@@ -99,7 +99,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
               <ListsNode projectId={project.project_id} />
               <TaxonomiesNode projectId={project.project_id} />
               <UnitsNode projectId={project.project_id} />
-              {/* <ProjectCrssNode project_id={project.project_id} /> */}
+              <ProjectCrssNode projectId={project.project_id} />
               <PlaceLevelsNode projectId={project.project_id} />
               <FieldsNode projectId={project.project_id} />
             </>

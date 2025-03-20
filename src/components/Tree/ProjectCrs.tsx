@@ -1,10 +1,10 @@
 import { memo, useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const ProjectCrsNode = memo(({ project_id, projectCrs, level = 4 }) => {
+export const ProjectCrsNode = memo(({ projectId, projectCrs, level = 4 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -12,11 +12,11 @@ export const ProjectCrsNode = memo(({ project_id, projectCrs, level = 4 }) => {
     () => [
       'data',
       'projects',
-      project_id,
+      projectId,
       'project-crs',
       projectCrs.project_crs_id,
     ],
-    [project_id, projectCrs.project_crs_id],
+    [projectId, projectCrs.project_crs_id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 

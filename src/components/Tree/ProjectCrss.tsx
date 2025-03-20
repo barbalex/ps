@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -12,15 +12,14 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   level?: number
 }
 
-export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
+export const ProjectCrssNode = memo(({ projectId, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const res = useLiveIncrementalQuery(
     `
@@ -30,7 +29,7 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
     FROM project_crs 
     WHERE project_id = $1 
     ORDER BY label`,
-    [project_id],
+    [projectId],
     'project_crs_id',
   )
   const rows = res?.rows ?? []
@@ -45,8 +44,8 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
+    () => ['data', 'projects', projectId],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'project-crs'], [parentArray])
@@ -62,10 +61,7 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -77,7 +73,6 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -97,7 +92,7 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
         rows.map((cr) => (
           <ProjectCrsNode
             key={cr.project_crs_id}
-            project_id={project_id}
+            projectId={projectId}
             projectCrs={cr}
           />
         ))}
