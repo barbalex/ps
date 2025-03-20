@@ -31,11 +31,11 @@ export const Jsonb = memo(
     from,
   }) => {
     const isAccountTable = accountTables.includes(table)
-    const { project_id, place_id, place_id2 } = useParams({ from })
-    const location = useLocation({ from })
+    const { projectId, placeId, placeId2 } = useParams({ from })
+    const location = useLocation()
     const db = usePGlite()
 
-    const useProjectId = project_id && table !== 'projects'
+    const useProjectId = projectId && table !== 'projects'
     const sql = `
       SELECT 
         fields.*,
@@ -49,10 +49,10 @@ export const Jsonb = memo(
           ) WITH ORDINALITY t(field_id, ord) USING (field_id)
       WHERE 
         fields.table_name = $1 
-        and fields.project_id ${useProjectId ? `= '${project_id}'` : 'IS NULL'}
+        and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
         ${!isAccountTable ? ` and level = $2` : ''} 
       ORDER BY t.ord`
-    const params = isAccountTable ? [table] : [table, place_id2 ? 2 : 1]
+    const params = isAccountTable ? [table] : [table, placeId2 ? 2 : 1]
     const res = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = res?.rows ?? []
 
@@ -72,9 +72,9 @@ export const Jsonb = memo(
         const isFilter = location.pathname.endsWith('filter')
         const level =
           table === 'places' ?
-            place_id ? 2
+            placeId ? 2
             : 1
-          : place_id2 ? 2
+          : placeId2 ? 2
           : 1
 
         if (isFilter) {
@@ -106,8 +106,8 @@ export const Jsonb = memo(
         data,
         location.pathname,
         table,
-        place_id,
-        place_id2,
+        placeId,
+        placeId2,
         jsonFieldName,
         idField,
         db,
@@ -161,7 +161,7 @@ export const Jsonb = memo(
         <AddField
           key="addField"
           tableName={table}
-          level={place_id2 ? 2 : 1}
+          level={placeId2 ? 2 : 1}
           from={from}
         />
       </>

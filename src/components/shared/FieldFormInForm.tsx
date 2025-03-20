@@ -42,8 +42,8 @@ const menuStyle = {
   columnGap: 5,
 }
 
-export const FieldFormInForm = memo(({ field, from }) => {
-  const navigate = useNavigate({ from })
+export const FieldFormInForm = memo(({ field }) => {
+  const navigate = useNavigate()
   const db = usePGlite()
 
   const onClickDelete = useCallback(async () => {

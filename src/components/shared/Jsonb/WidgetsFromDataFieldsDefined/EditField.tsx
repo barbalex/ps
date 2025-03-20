@@ -6,14 +6,14 @@ import { useNavigate, useLocation } from '@tanstack/react-router'
 
 import { designingAtom } from '../../../../store.ts'
 
-export const EditField = memo(({ field_id, from }) => {
+export const EditField = memo(({ fieldId }) => {
   const [designing] = useAtom(designingAtom)
-  const navigate = useNavigate({ from })
-  const location = useLocation({ from })
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const onClick = useCallback(
-    async () => navigate({ search: { editingField: field_id } }),
-    [field_id, navigate],
+    async () => navigate({ search: { editingField: fieldId } }),
+    [fieldId, navigate],
   )
 
   if (!designing) return null

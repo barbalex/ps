@@ -24,10 +24,12 @@ const buttonStyle = {
 export const AddField = memo(({ tableName, level, from }) => {
   const [designing] = useAtom(designingAtom)
   const { projectId } = useParams({ from })
-  const navigate = useNavigate({ from })
-  const location = useLocation({ from })
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const db = usePGlite()
+
+  console.log('AddField', { designing, tableName, level, from, projectId })
 
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)

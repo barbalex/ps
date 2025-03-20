@@ -25,13 +25,28 @@ export const Field = memo(
   }) => {
     const { editingField } = useSearch({ from })
     const [designing] = useAtom(designingAtom)
+    console.log('Jsonb.Field', {
+      field,
+      fieldsCount,
+      index,
+      data,
+      table,
+      jsonFieldName,
+      id,
+      orIndex,
+      idField,
+      autoFocus,
+      ref,
+      from,
+      designing,
+      editingField,
+    })
 
     if (editingField === field.field_id) {
       return (
         <FieldFormInForm
           key={field.field_id}
           field={field}
-          from={from}
         />
       )
     }

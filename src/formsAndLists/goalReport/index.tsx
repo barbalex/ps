@@ -23,6 +23,8 @@ export const GoalReport = memo(() => {
   )
   const row = res?.rows?.[0]
 
+  console.log('GoalReport', { goalReportId, row, res })
+
   if (!row) return <Loading />
 
   return (
@@ -36,6 +38,7 @@ export const GoalReport = memo(() => {
           data={row.data ?? {}}
           autoFocus
           ref={autoFocusRef}
+          from={from}
         />
       </div>
     </div>

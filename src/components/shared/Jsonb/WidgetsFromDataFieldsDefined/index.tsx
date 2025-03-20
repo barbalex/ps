@@ -29,7 +29,7 @@ export const WidgetsFromDataFieldsDefined = memo(
     from,
   }) => {
     const db = usePGlite()
-    const { project_id } = useParams({ from })
+    const { projectId } = useParams({ from })
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
@@ -72,13 +72,13 @@ export const WidgetsFromDataFieldsDefined = memo(
                 project_id = $1, 
                 table_name = $2, 
                 sorted_field_ids = $3`,
-            [project_id, table, newSorting],
+            [projectId, table, newSorting],
           )
         } catch (error) {
           console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
         }
       },
-      [db, fieldIds, project_id, table],
+      [db, fieldIds, projectId, table],
     )
 
     useEffect(() => {
