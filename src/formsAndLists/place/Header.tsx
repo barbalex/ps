@@ -51,9 +51,9 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const addRow = useCallback(async () => {
     const resPlace = await createPlace({
       db,
-      project_id: projectId,
-      subproject_id: subprojectId,
-      parent_id: placeId2 ? placeId : null,
+      projectId,
+      subprojectId,
+      parentId: placeId2 ? placeId : null,
       level: placeId2 ? 2 : 1,
     })
     const place = resPlace.rows?.[0]
@@ -62,8 +62,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const resVL = createVectorLayer({
       projectId,
       type: 'own',
-      own_table: 'places',
-      own_table_level: placeId2 ? 2 : 1,
+      ownTable: 'places',
+      ownTableLevel: placeId2 ? 2 : 1,
       label: placeNamePlural,
       db,
     })

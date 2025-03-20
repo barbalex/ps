@@ -73,9 +73,9 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createPlace({
       db,
-      project_id: projectId,
-      subproject_id: subprojectId,
-      parent_id: placeId ?? null,
+      projectId,
+      subprojectId,
+      parentId: placeId ?? null,
       level: placeId ? 2 : 1,
     })
     const place = res?.rows?.[0]
@@ -87,8 +87,8 @@ export const Component = memo(() => {
     const resVL = await createVectorLayer({
       projectId,
       type: 'own',
-      own_table: 'places',
-      own_table_level: placeId ? 2 : 1,
+      ownTable: 'places',
+      ownTableLevel: placeId ? 2 : 1,
       label: placeNamePlural,
       db,
     })

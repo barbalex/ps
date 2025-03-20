@@ -124,22 +124,22 @@ export const createFile = async ({
 
 export const createPlace = async ({
   db,
-  project_id,
-  subproject_id,
-  parent_id,
+  projectId,
+  subprojectId,
+  parentId,
   level,
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    project_id,
+    project_id: projectId,
     table: 'places',
   })
 
   const data = {
     place_id: uuidv7(),
-    subproject_id,
-    parent_id,
+    subproject_id: subprojectId,
+    parent_id: parentId,
     level,
 
     ...presetData,
@@ -634,23 +634,15 @@ export const createWmsLayer = async ({ projectId, db }) =>
 export const createVectorLayer = ({
   projectId,
   type = null,
-  own_table = null,
-  own_table_level = null,
+  ownTable = null,
+  ownTableLevel = null,
   label = null,
-  max_features = 1000,
+  maxFeatures = 1000,
   db,
 }) =>
   db.query(
     `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7) returning vector_layer_id`,
-    [
-      uuidv7(),
-      projectId,
-      label,
-      type,
-      own_table,
-      own_table_level,
-      max_features,
-    ],
+    [uuidv7(), projectId, label, type, ownTable, ownTableLevel, maxFeatures],
   )
 
 export const createWfsService = async ({

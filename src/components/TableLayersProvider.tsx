@@ -73,8 +73,8 @@ export const TableLayersProvider = memo(() => {
           const res = await createVectorLayer({
             projectId,
             type: 'own',
-            own_table: 'places',
-            own_table_level: 1,
+            ownTable: 'places',
+            ownTableLevel: 1,
             label: placeLevel1?.name_plural ?? 'Places',
             db,
           })
@@ -122,8 +122,8 @@ export const TableLayersProvider = memo(() => {
           const res = await createVectorLayer({
             projectId,
             type: 'own',
-            own_table: 'actions',
-            own_table_level: 1,
+            ownTable: 'actions',
+            ownTableLevel: 1,
             label:
               placeLevel1?.name_singular ?
                 `${placeLevel1.name_singular} Actions`
@@ -170,8 +170,8 @@ export const TableLayersProvider = memo(() => {
           const res = await createVectorLayer({
             projectId,
             type: 'own',
-            own_table: 'checks',
-            own_table_level: 1,
+            ownTable: 'checks',
+            ownTableLevel: 1,
             label:
               placeLevel1?.name_singular ?
                 `${placeLevel1.name_singular} Checks`
@@ -220,8 +220,8 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'occurrences_assigned',
-              own_table_level: 1,
+              ownTable: 'occurrences_assigned',
+              ownTableLevel: 1,
               label:
                 placeLevel1?.name_singular ?
                   `${placeLevel1.name_singular} Occurrences assigned`
@@ -270,7 +270,7 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'occurrences_to_assess',
+              ownTable: 'occurrences_to_assess',
               label: 'Occurrences to assess',
               db,
             })
@@ -316,7 +316,7 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'occurrences_not_to_assign',
+              ownTable: 'occurrences_not_to_assign',
               label: 'Occurrences not to assign',
               db,
             })
@@ -364,8 +364,8 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'places',
-              own_table_level: 2,
+              ownTable: 'places',
+              ownTableLevel: 2,
               label: placeLevel2?.name_plural ?? 'Places',
               db,
             })
@@ -411,8 +411,8 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'actions',
-              own_table_level: 2,
+              ownTable: 'actions',
+              ownTableLevel: 2,
               label:
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Actions`
@@ -461,8 +461,8 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'checks',
-              own_table_level: 2,
+              ownTable: 'checks',
+              ownTableLevel: 2,
               label:
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Checks`
@@ -511,8 +511,8 @@ export const TableLayersProvider = memo(() => {
             const res = await createVectorLayer({
               projectId,
               type: 'own',
-              own_table: 'occurrences_assigned',
-              own_table_level: 2,
+              ownTable: 'occurrences_assigned',
+              ownTableLevel: 2,
               label:
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Occurrences assigned`
