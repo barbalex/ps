@@ -181,43 +181,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'reports',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Reports',
-          table: 'subproject_reports',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/subprojectReports.tsx'),
-        },
-        {
-          path: 'filter',
-          element: <Filter />,
-          children: [
-            {
-              index: true,
-              lazy: () => import('../routes/subprojectReport/Form.tsx'),
-            },
-          ],
-        },
-        {
-          path: ':subproject_report_id',
-          lazy: () => import('../routes/subprojectReport/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'subproject_reports',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'goals',
       element: null,
       handle: {
