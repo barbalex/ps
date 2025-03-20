@@ -23,10 +23,7 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/'
-
-export const Places = memo(() => {
+export const Places = memo(({ from }) => {
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId } = useParams({ from })
   const db = usePGlite()
@@ -125,6 +122,7 @@ export const Places = memo(() => {
               table="places"
               level={placeId ? 2 : 1}
               placeNamePlural={placeNamePlural}
+              from={from}
             />
             <FilterButton isFiltered={isFiltered} />
           </>

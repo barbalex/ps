@@ -67,6 +67,7 @@ export const Component = memo(() => {
             <LayerMenu
               table="checks"
               level={place_id2 ? 2 : 1}
+              //TODO: from={from}
             />
             <FilterButton isFiltered={isFiltered} />
           </>

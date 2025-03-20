@@ -3,7 +3,7 @@ import { Button } from '@fluentui/react-components'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
@@ -13,9 +13,9 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom } from '../../store.ts'
 
-export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
+export const LayerMenu = memo(({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
-  const { project_id, subproject_id } = useParams()
+  const { projectId, subprojectId } = useParams({ from })
 
   const db = usePGlite()
 
@@ -24,7 +24,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     FROM layer_presentations lp
       inner join vector_layers vl on lp.vector_layer_id = vl.vector_layer_id
     WHERE vl.project_id = $1 AND vl.type = $2`,
-    [project_id, `${table}${level}`],
+    [projectId, `${table}${level}`],
     'layer_presentation_id',
   )
   const layerPresentation = res?.rows?.[0]
@@ -44,7 +44,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     let geometries = []
     const placesResult = await db.query(
       `SELECT place_id, geometry FROM places WHERE subproject_id = $1 AND level = $2`,
-      [subproject_id, level],
+      [subprojectId, level],
     )
     const places = placesResult?.rows
     if (table === 'places') {
@@ -91,7 +91,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     const newBounds = boundsFromBbox(newBbox)
 
     setMapBounds(newBounds)
-  }, [db, subproject_id, level, table, setMapBounds])
+  }, [db, subprojectId, level, table, setMapBounds])
 
   // TODO: implement onClickMapSettings
   // They should get their own url
@@ -106,9 +106,9 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
         icon={showLayer ? <MdLayersClear /> : <MdLayers />}
         onClick={onClickShowLayer}
         title={
-          showLayer
-            ? `Show ${placeNamePlural ?? table} layer in map`
-            : `Remove ${placeNamePlural ?? table} layer from map`
+          showLayer ?
+            `Show ${placeNamePlural ?? table} layer in map`
+          : `Remove ${placeNamePlural ?? table} layer from map`
         }
       />
       <Button
