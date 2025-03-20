@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createGoalReportValue } from '../modules/createRows.ts'
@@ -8,29 +8,37 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const { goal_report_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/'
+
+export const GoalReportValues = memo(() => {
+  const { goalReportId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT goal_report_value_id, label FROM goal_report_values WHERE goal_report_id = $1 ORDER BY label`,
-    [goal_report_id],
+    [goalReportId],
     'goal_report_value_id',
   )
   const isLoading = res === undefined
   const goalReportValues = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createGoalReportValue({ db, goal_report_id })
+    const res = await createGoalReportValue({
+      db,
+      goalReportId,
+    })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.goal_report_value_id,
-      search: searchParams.toString(),
+      to: data.goal_report_value_id,
+      params: (prev) => ({
+        ...prev,
+        goalReportValueId: data.goal_report_value_id,
+      }),
     })
-  }, [db, goal_report_id, navigate, searchParams])
+  }, [db, goalReportId, navigate])
 
   return (
     <div className="list-view">
@@ -44,10 +52,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {goalReportValues.map(({ goal_report_value_id, label }) => (
               <Row
                 key={goal_report_value_id}
@@ -56,7 +63,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

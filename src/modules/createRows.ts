@@ -426,10 +426,10 @@ export const createGoalReport = async ({ db, projectId, goalId }) => {
   return res
 }
 
-export const createGoalReportValue = async ({ db, goal_report_id }) =>
+export const createGoalReportValue = async ({ db, goalReportId }) =>
   db.query(
     `insert into goal_report_values (goal_report_value_id, goal_report_id) values ($1, $2) returning goal_report_value_id`,
-    [uuidv7(), goal_report_id],
+    [uuidv7(), goalReportId],
   )
 
 export const createSubprojectUser = async ({ db, subproject_id }) =>

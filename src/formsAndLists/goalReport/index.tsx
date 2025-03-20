@@ -23,8 +23,6 @@ export const GoalReport = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  console.log('GoalReport', { goalReportId, row, res })
-
   if (!row) return <Loading />
 
   return (
