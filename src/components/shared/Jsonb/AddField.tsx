@@ -29,8 +29,6 @@ export const AddField = memo(({ tableName, level, from }) => {
 
   const db = usePGlite()
 
-  console.log('AddField', { designing, tableName, level, from, projectId })
-
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)
     const newFieldParams = { table_name: tableName, level, db }
