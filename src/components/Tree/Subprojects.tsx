@@ -57,13 +57,12 @@ export const SubprojectsNode = memo(({ projectId, level = 3 }: Props) => {
   const node = useMemo(
     () => ({
       label: `${namePlural} (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            countLoading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? '...'
+        : formatNumber(rows.length)
       })`,
     }),
     [
@@ -129,7 +128,7 @@ export const SubprojectsNode = memo(({ projectId, level = 3 }: Props) => {
         rows.map((subproject) => (
           <SubprojectNode
             key={subproject.subproject_id}
-            project_id={projectId}
+            projectId={projectId}
             subproject={subproject}
           />
         ))}

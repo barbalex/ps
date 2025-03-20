@@ -19,7 +19,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
+export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -27,7 +27,7 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
   // need project to know whether to show files
   const res = useLiveIncrementalQuery(
     `SELECT * FROM projects WHERE project_id = $1`,
-    [project_id],
+    [projectId],
     'project_id',
   )
   const project = res?.rows?.[0]
@@ -35,8 +35,8 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id, 'subprojects'],
-    [project_id],
+    () => ['data', 'projects', projectId, 'subprojects'],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
