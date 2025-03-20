@@ -12,7 +12,7 @@ import { TaxonNode } from './Taxon.tsx'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   taxonomy_id: string
   level?: number
 }

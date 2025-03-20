@@ -12,8 +12,8 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
-  subproject_id: string
+  projectId: string
+  subprojectId: string
   place_id?: string
   place: Place
   place_report_id: string

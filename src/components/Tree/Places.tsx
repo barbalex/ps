@@ -20,8 +20,8 @@ import {
 } from '../../store.ts'
 
 interface Props {
-  project_id: string
-  subproject_id: string
+  projectId: string
+  subprojectId: string
   place_id?: string
 }
 
@@ -82,13 +82,12 @@ export const PlacesNode = memo(
     const node = useMemo(
       () => ({
         label: `${placeNamePlural} (${
-          isFiltered
-            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-                countLoading ? '...' : formatNumber(countUnfiltered)
-              }`
-            : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+          isFiltered ?
+            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
+            }`
+          : rowsLoading ? '...'
+          : formatNumber(rows.length)
         })`,
       }),
       [

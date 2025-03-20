@@ -16,8 +16,8 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, goalsFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
-  subproject_id: string
+  projectId: string
+  subprojectId: string
   level?: number
 }
 

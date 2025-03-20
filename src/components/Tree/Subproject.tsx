@@ -83,54 +83,54 @@ export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {/* {isOpen && (
+      {isOpen && (
         <>
           <PlacesNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
           />
-          <SubprojectReportsNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          <GoalsNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          <OccurrencesToAssessNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          <OccurrencesNotToAssignNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          <SubprojectTaxaNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          <SubprojectUsersNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          <OccurrenceImportsNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
-          />
-          {showFiles && (
+          {/* <SubprojectReportsNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* <GoalsNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* <OccurrencesToAssessNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* <OccurrencesNotToAssignNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* <SubprojectTaxaNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* <SubprojectUsersNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* <OccurrenceImportsNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
+          /> */}
+          {/* {showFiles && (
             <FilesNode
-              project_id={project_id}
-              subproject_id={subproject.subproject_id}
+              projectId={projectId}
+              subprojectId={subproject.subproject_id}
               level={5}
             />
-          )}
-          <ChartsNode
-            project_id={project_id}
-            subproject_id={subproject.subproject_id}
+          )} */}
+          {/* <ChartsNode
+            projectId={projectId}
+            subprojectId={subproject.subproject_id}
             level={5}
-          />
+          /> */}
         </>
-      )} */}
+      )}
     </>
   )
 })
