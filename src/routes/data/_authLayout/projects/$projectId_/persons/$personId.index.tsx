@@ -1,15 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { Person } from '../../../../../../formsAndLists/person/index.tsx'
+
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/persons/$personId/',
 )({
-  component: RouteComponent,
+  component: Person,
 })
-
-function RouteComponent() {
-  return (
-    <div>
-      Hello "/data/_authLayout/projects/$projectId_/persons/$personId/"!
-    </div>
-  )
-}

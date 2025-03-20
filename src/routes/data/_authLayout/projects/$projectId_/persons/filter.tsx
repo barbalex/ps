@@ -1,5 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { PersonForm } from '../../../../../../formsAndLists/person/Form.tsx'
+import { Filter } from '../../../../../../components/shared/Filter/index.tsx'
+
+const from = '/data/_authLayout/projects/$projectId_/persons/filter'
+
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/persons/filter',
 )({
@@ -8,6 +13,15 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <div>Hello "/data/_authLayout/projects/$projectId_/persons/filter"!</div>
+    <Filter from={from}>
+      {({ row, onChange, orIndex }) => (
+        <PersonForm
+          row={row}
+          onChange={onChange}
+          orIndex={orIndex}
+          from={from}
+        />
+      )}
+    </Filter>
   )
 }

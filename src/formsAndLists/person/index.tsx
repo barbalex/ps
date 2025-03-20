@@ -1,17 +1,19 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as Form } from './Form.tsx'
+import { PersonForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { person_id } = useParams()
+const from = '/data/_authLayout/projects/$projectId_/persons/$personId/'
+
+export const Person = memo(() => {
+  const { personId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -19,7 +21,7 @@ export const Component = memo(() => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM persons WHERE person_id = $1`,
-    [person_id],
+    [personId],
     'person_id',
   )
   const row = res?.rows?.[0]
@@ -32,10 +34,10 @@ export const Component = memo(() => {
 
       db.query(`UPDATE persons SET ${name} = $1 WHERE person_id = $2`, [
         value,
-        person_id,
+        personId,
       ])
     },
-    [db, person_id, row],
+    [db, personId, row],
   )
 
   if (!row) return <Loading />
@@ -48,6 +50,7 @@ export const Component = memo(() => {
           onChange={onChange}
           row={row}
           autoFocusRef={autoFocusRef}
+          from={from}
         />
       </div>
     </div>
