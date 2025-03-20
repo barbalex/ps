@@ -13,20 +13,19 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Fields = memo(({ from }) => {
-  const [filter] = useAtom(fieldsFilterAtom)
-
-  const { project_id } = useParams({ from })
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
+  const [filter] = useAtom(fieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
   const res = useLiveIncrementalQuery(
     `
     SELECT field_id, label 
     FROM fields 
-    WHERE project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
+    WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
     ${filterString ? ` AND ${filterString}` : ''} 
     ORDER BY table_name, name, level`,
     undefined,
@@ -35,15 +34,17 @@ export const Fields = memo(({ from }) => {
   const isLoading = res === undefined
   const fields = res?.rows ?? []
 
+  console.log('Fields', { filter, filterString, isFiltered, fields })
+
   const add = useCallback(async () => {
-    const res = await createField({ project_id, db })
+    const res = await createField({ project_id: projectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
       to: data.field_id,
       params: (prev) => ({ ...prev, fieldId: data.field_id }),
     })
-  }, [db, navigate, project_id])
+  }, [db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -58,15 +59,18 @@ export const Fields = memo(({ from }) => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {fields.map(({ field_id, label }) => (
-              <Row key={field_id} label={label ?? field_id} to={field_id} />
+              <Row
+                key={field_id}
+                label={label ?? field_id}
+                to={field_id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

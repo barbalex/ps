@@ -75,9 +75,10 @@ export const Filter = memo(({ level, from, children }) => {
     table: tableName,
     level,
   })
-  const filterAtom = stores[filterAtomName]
   // ensure atom exists - got errors when it didn't
-  const [filter] = useAtom(filterAtom ?? projectsFilterAtom)
+  const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
+  const [filter] = useAtom(filterAtom)
+  console.log('Filter', { filterAtomName, filter })
 
   const { whereUnfilteredString, whereFilteredString } = useMemo(() => {
     let whereUnfiltered
@@ -162,7 +163,7 @@ export const Filter = memo(({ level, from, children }) => {
         title={`${title} (${isLoading ? `...` : filteredCount}/${
           isLoading ? `...` : totalCount
         })`}
-        filterName={filterAtomName}
+        filterAtom={filterAtom}
       />
       <TabList
         selectedValue={activeTab}

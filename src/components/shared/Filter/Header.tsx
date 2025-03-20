@@ -5,56 +5,44 @@ import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { controls } from '../../../styles.ts'
-import * as stores from '../../../store.ts'
-import { projectsFilterAtom } from '../../../store.ts'
 
 type Props = {
   title: string
-  isFiltered: boolean
-  filterName: string
+  filterAtom: unknown
 }
 
-export const FilterHeader = memo(
-  ({ title = 'Filter', filterName }: Props) => {
-    const navigate = useNavigate()
-    // ensure atom exists - got errors when it didn't
-    const [filter] = useAtom(stores[filterName] ?? projectsFilterAtom)
-    const isFiltered = filter.length > 0
+export const FilterHeader = memo(({ title = 'Filter', filterAtom }: Props) => {
+  const navigate = useNavigate()
+  // ensure atom exists - got errors when it didn't
+  const [filter, setFilter] = useAtom(filterAtom)
+  const isFiltered = filter.length > 0
 
-    const onClickBack = useCallback(() => navigate({ to: '..' }), [navigate])
+  const onClickBack = useCallback(() => navigate({ to: '..' }), [navigate])
 
-    const onClickClearFilter = useCallback(() => {
-      const filterAtom = stores[filterName]
-      if (!filterAtom) {
-        return console.error('Filter atom not found:', filterName)
-      }
+  const onClickClearFilter = useCallback(() => setFilter([]), [setFilter])
 
-      stores?.store?.set?.(filterAtom, [])
-    }, [filterName])
-
-    return (
-      <div className="form-header filter">
-        <h1>{title}</h1>
-        <div style={controls}>
-          <ToggleButton
-            size="medium"
-            icon={<MdFilterAlt />}
-            onClick={onClickBack}
-            title="Leave Filter"
-            checked={true}
-            style={{
-              ...(isFiltered ? { color: 'rgba(255, 141, 2, 1' } : {}),
-            }}
-          />
-          <Button
-            size="medium"
-            icon={<MdFilterAltOff />}
-            onClick={onClickClearFilter}
-            title="Clear Filter"
-            disabled={!isFiltered}
-          />
-        </div>
+  return (
+    <div className="form-header filter">
+      <h1>{title}</h1>
+      <div style={controls}>
+        <ToggleButton
+          size="medium"
+          icon={<MdFilterAlt />}
+          onClick={onClickBack}
+          title="Leave Filter"
+          checked={true}
+          style={{
+            ...(isFiltered ? { color: 'rgba(255, 141, 2, 1' } : {}),
+          }}
+        />
+        <Button
+          size="medium"
+          icon={<MdFilterAltOff />}
+          onClick={onClickClearFilter}
+          title="Clear Filter"
+          disabled={!isFiltered}
+        />
       </div>
-    )
-  },
-)
+    </div>
+  )
+})

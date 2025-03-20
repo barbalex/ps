@@ -2,11 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Field } from '../../../../formsAndLists/field/index.tsx'
 
-const from = '/data/_authLayout/fields/$fieldId'
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/_authLayout/fields/$fieldId')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <Field from={from} />
+  return <Field from="/data/_authLayout/fields/$fieldId" />
 }
