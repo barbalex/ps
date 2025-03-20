@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
@@ -13,16 +13,15 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom, personsFilterAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
+  projectId: string
   level?: number
 }
 
-export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
+export const PersonsNode = memo(({ projectId, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(personsFilterAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -36,13 +35,13 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label
     `
-  const resFiltered = useLiveQuery(sql, [project_id])
+  const resFiltered = useLiveQuery(sql, [projectId])
   const rows = resFiltered?.rows ?? []
   const rowsLoading = resFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM persons WHERE project_id = $1`,
-    [project_id],
+    [projectId],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
@@ -50,13 +49,12 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   const node = useMemo(
     () => ({
       label: `Persons (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-          ? '...'
-          : formatNumber(rows.length)
+        isFiltered ?
+          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            countLoading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : rowsLoading ? '...'
+        : formatNumber(rows.length)
       })`,
     }),
     [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -64,8 +62,8 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
+    () => ['data', 'projects', projectId],
+    [projectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'persons'], [parentArray])
@@ -81,10 +79,7 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -96,7 +91,6 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
     navigate,
     ownArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -116,7 +110,7 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
         rows.map((person) => (
           <PersonNode
             key={person.person_id}
-            project_id={project_id}
+            projectId={projectId}
             person={person}
           />
         ))}

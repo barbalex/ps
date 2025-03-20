@@ -84,7 +84,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
         <>
           <SubprojectsNode projectId={project.project_id} />
           <ProjectReportsNode projectId={project.project_id} />
-          {/* <PersonsNode project_id={project.project_id} /> */}
+          <PersonsNode projectId={project.project_id} />
           <WmsLayersNode projectId={project.project_id} />
           <VectorLayersNode projectId={project.project_id} />
           {/* {showFiles && (
