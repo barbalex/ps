@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
@@ -22,21 +22,20 @@ import {
 interface Props {
   projectId: string
   subprojectId: string
-  place_id?: string
+  placeId?: string
 }
 
 export const PlacesNode = memo(
-  ({ project_id, subproject_id, place_id }: Props) => {
+  ({ projectId, subprojectId, placeId }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [places1Filter] = useAtom(places1FilterAtom)
     const [places2Filter] = useAtom(places2FilterAtom)
-    const filter = place_id ? places2Filter : places1Filter
+    const filter = placeId ? places2Filter : places1Filter
 
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
-    const level = place_id ? 7 : 5
+    const level = placeId ? 7 : 5
 
     // filtered places
     const filterString = filterStringFromFilter(filter)
@@ -48,10 +47,10 @@ export const PlacesNode = memo(
       FROM places 
       WHERE 
         subproject_id = $1 
-        and parent_id ${place_id ? `= $2` : `is null`}
+        and parent_id ${placeId ? `= $2` : `is null`}
         ${isFiltered ? ` AND ${filterString} ` : ''} 
       ORDER BY label`
-    const paramsFiltered = [subproject_id, ...(place_id ? [place_id] : [])]
+    const paramsFiltered = [subprojectId, ...(placeId ? [placeId] : [])]
     const resFiltered = useLiveIncrementalQuery(
       sqlFiltered,
       paramsFiltered,
@@ -63,16 +62,16 @@ export const PlacesNode = memo(
     // unfiltered count
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM places WHERE subproject_id = $1 and parent_id ${
-        place_id ? `= $2` : `is null`
+        placeId ? `= $2` : `is null`
       }`,
-      [subproject_id, ...(place_id ? [place_id] : [])],
+      [subprojectId, ...(placeId ? [placeId] : [])],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resultCountUnfiltered === undefined
 
     const resultPlaceLevels = useLiveIncrementalQuery(
       `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
-      [project_id, place_id ? 2 : 1],
+      [projectId, placeId ? 2 : 1],
       'place_level_id',
     )
     const placeLevels = resultPlaceLevels?.rows ?? []
@@ -105,12 +104,12 @@ export const PlacesNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
-        ...(place_id ? ['places', place_id] : []),
+        subprojectId,
+        ...(placeId ? ['places', placeId] : []),
       ],
-      [place_id, project_id, subproject_id],
+      [placeId, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'places'], [parentArray])
@@ -126,10 +125,7 @@ export const PlacesNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -142,7 +138,6 @@ export const PlacesNode = memo(
       urlPath.length,
       navigate,
       parentUrl,
-      searchParams,
     ])
 
     return (
@@ -161,9 +156,9 @@ export const PlacesNode = memo(
           rows.map((place) => (
             <PlaceNode
               key={place.place_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
               level={level + 1}
             />

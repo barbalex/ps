@@ -14,7 +14,7 @@ import { treeOpenNodesAtom } from '../../store.ts'
 interface Props {
   project_id?: string
   subproject_id?: string
-  place_id?: string
+  placeId?: string
   place_id2?: string
   level: number
 }
