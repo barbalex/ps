@@ -90,7 +90,7 @@ export const FieldFormInForm = memo(({ field }) => {
         </div>
       </div>
       <FieldFormFetchingOwnData
-        field_id={field.field_id}
+        fieldId={field.field_id}
         isInForm={true}
       />
     </div>

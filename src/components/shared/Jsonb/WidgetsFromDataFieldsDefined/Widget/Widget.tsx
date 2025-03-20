@@ -39,7 +39,6 @@ export const Widget = memo(
 
     const onChange = useCallback<InputProps['onChange']>(
       async (e, dataReturned) => {
-        // console.log('Jsonb.Widget.onChange')
         const { name, value } = getValueFromChange(e, dataReturned)
         const isDate = value instanceof Date
         const val = { ...data }
@@ -62,16 +61,7 @@ export const Widget = memo(
             : 1
           const filterName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[filterName]
-          // console.log('Jsonb.Widget.onChange', {
-          //   name,
-          //   value,
-          //   valuePassed: val[name],
-          //   orIndex,
-          //   filterName,
-          //   targetType: field.field_type,
-          // })
           const orFilters = stores.store.get(filterAtom)
-          // console.log('Jsonb.Widget.onChange', { orFilters })
           return setNewFilterFromOld({
             name: `data.${name}`,
             value: val[name],
@@ -82,15 +72,6 @@ export const Widget = memo(
           })
         }
         const sql = `update ${table} set ${jsonFieldName} = $1 where ${idField} = $2`
-        // console.log('Jsonb.Widget.onChange', {
-        //   sql,
-        //   jsonFieldName,
-        //   idField,
-        //   id,
-        //   val,
-        //   name,
-        //   value,
-        // })
         try {
           await db.query(sql, [val, id])
         } catch (error) {
