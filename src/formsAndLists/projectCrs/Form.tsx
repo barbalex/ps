@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -13,14 +13,16 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
+const from = '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/'
+
 // this form is rendered from a parent or outlet
-export const Component = memo(({ autoFocusRef }) => {
-  const { project_crs_id, project_id } = useParams()
+export const ProjectCrsForm = memo(({ autoFocusRef }) => {
+  const { projectCrsId, projectId } = useParams({ from })
 
   const db = usePGlite()
   const resProjectCrs = useLiveIncrementalQuery(
     `SELECT * FROM project_crs WHERE project_crs_id = $1`,
-    [project_crs_id],
+    [projectCrsId],
     'project_crs_id',
   )
   const row = resProjectCrs?.rows?.[0]
@@ -33,15 +35,15 @@ export const Component = memo(({ autoFocusRef }) => {
 
       db.query(
         `UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`,
-        [value, project_crs_id],
+        [value, projectCrsId],
       )
     },
-    [db, project_crs_id, row],
+    [db, projectCrsId, row],
   )
 
   const resProject = useLiveIncrementalQuery(
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
-    [project_id],
+    [projectId],
     'project_id',
   )
   const project = resProject?.rows?.[0]
@@ -49,10 +51,10 @@ export const Component = memo(({ autoFocusRef }) => {
     (e, data) => {
       db.query(
         `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
-        [data?.checked ? row?.code : null, project_id],
+        [data?.checked ? row?.code : null, projectId],
       )
     },
-    [db, project_id, row?.code],
+    [db, projectId, row?.code],
   )
 
   if (!row) return <Loading />

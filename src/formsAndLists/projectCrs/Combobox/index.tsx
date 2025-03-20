@@ -1,21 +1,24 @@
 import { memo, useState, useCallback, useEffect } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Options } from './options.tsx'
 
+const from = '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/'
+
 export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
   const db = usePGlite()
-  const { project_crs_id } = useParams()
+  const { projectCrsId } = useParams({ from })
 
   const [filter, setFilter] = useState('')
   const [crs, setCrs] = useState([])
 
   const fetchData = useCallback(async () => {
-    const sql = filter
-      ? 'SELECT * FROM crs WHERE code ILIKE $1 OR name ILIKE $1'
+    const sql =
+      filter ?
+        'SELECT * FROM crs WHERE code ILIKE $1 OR name ILIKE $1'
       : 'SELECT * FROM crs'
     const vals = filter ? [`%${filter}%`] : []
     const res = await db.query(sql, vals)
@@ -45,12 +48,12 @@ export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
           selectedOption?.code ?? null,
           selectedOption?.name ?? null,
           selectedOption?.proj4 ?? null,
-          project_crs_id,
+          projectCrsId,
         ],
       )
       setFilter('')
     },
-    [crs, db, project_crs_id],
+    [crs, db, projectCrsId],
   )
 
   return (
@@ -69,7 +72,10 @@ export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
         freeform
         clearable
       >
-        <Options filter={filter} optionsFiltered={crs} />
+        <Options
+          filter={filter}
+          optionsFiltered={crs}
+        />
       </Combobox>
     </Field>
   )

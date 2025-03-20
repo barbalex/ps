@@ -1,11 +1,11 @@
 import { useRef, memo } from 'react'
 
 import { Header } from './Header.tsx'
-import { Component as Form } from './Form.tsx'
+import { ProjectCrsForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
+export const ProjectCrs = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   return (
