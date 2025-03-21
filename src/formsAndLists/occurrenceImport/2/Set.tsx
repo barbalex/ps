@@ -4,7 +4,7 @@ import { MdDone } from 'react-icons/md'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { setGeometries } from './setGeometries.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
+import { formatNumber } from '../../../modules/formatNumber.ts'
 
 const notificationStyle = {
   color: 'red',

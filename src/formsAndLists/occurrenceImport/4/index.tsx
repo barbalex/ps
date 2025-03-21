@@ -1,13 +1,16 @@
 import { memo, useMemo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { PreviousImportOperation } from './PreviousImportOperation.tsx'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
+
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
-  const { occurrence_import_id, subproject_id } = useParams()
+  const { occurrenceImportId, subprojectId } = useParams({ from })
 
   const res = useLiveIncrementalQuery(
     `SELECT 
@@ -19,7 +22,7 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         occurrence_import_id <> $1 
         AND subproject_id = $2 
       ORDER BY label`,
-    [occurrence_import_id, subproject_id],
+    [occurrenceImportId, subprojectId],
     'occurrence_import_id',
   )
   const occurrenceImportOptions = useMemo(() => res?.rows ?? [], [res])
