@@ -5,7 +5,7 @@ import {
   SelectTabEvent,
   SelectTabData,
 } from '@fluentui/react-components'
-import { useSearchParams } from 'react-router'
+import { useSearch, navigate } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'
@@ -27,14 +27,16 @@ const formStyle = {
   width: '100%',
 }
 
+const from = '/data/_authLayout/projects'
+
 export const Content = memo(() => {
   const isNarrow = useContext(IsNarrowContext)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const tab = searchParams.get('leftMapDrawerTab') ?? 'layers'
+  // TODO: test
+  const { leftMapDrawerTab: tab = 'layers' } = useSearch({ from })
   const onTabSelect = useCallback(
     (event: SelectTabEvent, data: SelectTabData) =>
-      setSearchParams({ leftMapDrawerTab: data.value }),
-    [setSearchParams],
+      navigate({ search: { leftMapDrawerTab: data.value } }),
+    [],
   )
 
   return (
@@ -52,7 +54,9 @@ export const Content = memo(() => {
           <Tab value="legends">Legends</Tab>
         </TabList>
         <div style={formStyle}>
-          {tab === 'layers' ? <Layers /> : <Legends />}
+          {tab === 'layers' ?
+            <Layers />
+          : <Legends />}
         </div>
       </div>
     </ErrorBoundary>

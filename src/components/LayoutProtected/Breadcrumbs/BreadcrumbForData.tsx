@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
@@ -18,7 +18,6 @@ const labelStyle = {
 export const BreadcrumbForData = memo(
   ({ match, forOverflowMenu, wrapping = false, ref }) => {
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
@@ -196,12 +195,7 @@ export const BreadcrumbForData = memo(
               wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
             borderTop: wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
           }}
-          onClick={() =>
-            navigate({
-              to: match.pathname,
-              search: searchParams.toString(),
-            })
-          }
+          onClick={() => navigate({ to: match.pathname })}
           ref={ref}
         >
           <div style={labelStyle}>{label}</div>
