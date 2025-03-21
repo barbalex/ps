@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -13,8 +13,11 @@ const userRoles = ['manager', 'editor', 'reader']
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { subproject_user_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
+
+export const SubprojectUser = memo(() => {
+  const { subprojectUserId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -22,7 +25,7 @@ export const Component = memo(() => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
-    [subproject_user_id],
+    [subprojectUserId],
     'subproject_user_id',
   )
   const row = res?.rows?.[0]
@@ -35,10 +38,10 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
-        [value, subproject_user_id],
+        [value, subprojectUserId],
       )
     },
-    [db, row, subproject_user_id],
+    [db, row, subprojectUserId],
   )
 
   if (!row) return <Loading />

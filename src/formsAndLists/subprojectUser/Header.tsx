@@ -1,33 +1,39 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubprojectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { subprojectId, subprojectUserId } = useParams()
+  const { subprojectId, subprojectUserId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = createSubprojectUser({ subprojectId, db })
-    const subprojectUser = res?.rows?.[0]
+    const res = await createSubprojectUser({ subprojectId, db })
+    const row = res?.rows?.[0]
+    console.log('SubprojectUser.Header.addRow', { res, row })
     navigate({
-      pathname: `../${subprojectUser.subproject_user_id}`,
-      search: searchParams.toString(),
+      to: `../${row.subproject_user_id}`,
+      params: (prev) => ({
+        ...prev,
+        subprojectUserId: row.subproject_user_id,
+      }),
     })
     autoFocusRef.current?.focus()
-  }, [subprojectId, db, navigate, searchParams, autoFocusRef])
+  }, [subprojectId, db, navigate, autoFocusRef])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM subproject_users WHERE subproject_user_id = $1`, [
       subprojectUserId,
     ])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, subprojectUserId, navigate, searchParams])
+    navigate({ to: '..' })
+  }, [db, subprojectUserId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -41,10 +47,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `../${next.subproject_user_id}`,
-      search: searchParams.toString(),
+      to: `../${next.subproject_user_id}`,
+      params: (prev) => ({
+        ...prev,
+        subprojectUserId: next.subproject_user_id,
+      }),
     })
-  }, [db, subprojectId, navigate, searchParams, subprojectUserId])
+  }, [db, subprojectId, navigate, subprojectUserId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -58,10 +67,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.subproject_user_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.subproject_user_id}`,
+      params: (prev) => ({
+        ...prev,
+        subprojectUserId: previous.subproject_user_id,
+      }),
     })
-  }, [db, subprojectId, navigate, searchParams, subprojectUserId])
+  }, [db, subprojectId, navigate, subprojectUserId])
 
   return (
     <FormHeader
