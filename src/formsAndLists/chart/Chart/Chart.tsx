@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-import { formatNumber } from '../../modules/formatNumber.ts'
+import { formatNumber } from '../../../modules/formatNumber.ts'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
@@ -47,7 +47,7 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
       >
         <defs>
           {subjects.map((subject) =>
-            subject.fill_graded ? (
+            subject.fill_graded ?
               <linearGradient
                 key={`${subject.chart_subject_id}color`}
                 id={`${subject.chart_subject_id}color`}
@@ -67,10 +67,8 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
                   stopOpacity={0}
                 />
               </linearGradient>
-            ) : (
               // this is needed for gradient to work without missing key warning
-              <div key={`${subject.chart_subject_id}div`} />
-            ),
+            : <div key={`${subject.chart_subject_id}div`} />,
           )}
         </defs>
         <XAxis dataKey="year" />
@@ -98,9 +96,9 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
               stroke={subject.stroke ?? 'red'}
               strokeWidth={2}
               fill={
-                subject.fill_graded
-                  ? `url(#${subject.chart_subject_id}color)`
-                  : subject.fill ?? 'yellow'
+                subject.fill_graded ?
+                  `url(#${subject.chart_subject_id}color)`
+                : (subject.fill ?? 'yellow')
               }
               isAnimationActive={true} // false for print?
               dot={{ stroke: subject.stroke ?? 'red', strokeWidth: 3 }}
