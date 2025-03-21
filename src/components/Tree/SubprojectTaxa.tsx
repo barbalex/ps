@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -18,11 +18,10 @@ interface Props {
 }
 
 export const SubprojectTaxaNode = memo(
-  ({ project_id, subproject_id, level = 5 }: Props) => {
+  ({ projectId, subprojectId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -32,7 +31,7 @@ export const SubprojectTaxaNode = memo(
       FROM subproject_taxa 
       WHERE subproject_id = $1 
       ORDER BY label`,
-      [subproject_id],
+      [subprojectId],
       'subproject_taxon_id',
     )
     const rows = res?.rows ?? []
@@ -47,8 +46,8 @@ export const SubprojectTaxaNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'subprojects', subproject_id],
-      [project_id, subproject_id],
+      () => ['data', 'projects', projectId, 'subprojects', subprojectId],
+      [projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'taxa'], [parentArray])
@@ -64,10 +63,7 @@ export const SubprojectTaxaNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -79,7 +75,6 @@ export const SubprojectTaxaNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -99,8 +94,8 @@ export const SubprojectTaxaNode = memo(
           rows.map((subprojectTaxon) => (
             <SubprojectTaxonNode
               key={subprojectTaxon.subproject_taxon_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
               subprojectTaxon={subprojectTaxon}
             />
           ))}
