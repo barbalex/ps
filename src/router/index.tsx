@@ -63,33 +63,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'taxa',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Taxa',
-          table: 'subproject_taxa',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/subprojectTaxa.tsx'),
-        },
-        {
-          path: ':subproject_taxon_id',
-          lazy: () => import('../routes/subprojectTaxon/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'subproject_taxa',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'charts',
       element: null,
       handle: {
