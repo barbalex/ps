@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -12,15 +12,16 @@ import { placeReports1FilterAtom, placeReports2FilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
-  const { project_id, place_id, place_id2 } = useParams()
+  const { projectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
   const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
-  const filter = place_id2 ? placeReports2Filter : placeReports1Filter
+  const filter = placeId2 ? placeReports2Filter : placeReports1Filter
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
@@ -32,7 +33,7 @@ export const Component = memo(() => {
     FROM place_reports 
     WHERE place_id = $1${isFiltered ? ` AND ${filterString}` : ''} 
     ORDER BY label`,
-    [place_id2 ?? place_id],
+    [placeId2 ?? placeId],
     'place_report_id',
   )
   const isLoading = res === undefined
@@ -41,16 +42,16 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createPlaceReport({
       db,
-      project_id,
-      place_id: place_id2 ?? place_id,
+      project_id: projectId,
+      place_id: placeId2 ?? placeId,
     })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.place_report_id,
-      search: searchParams.toString(),
+      to: data.place_report_id,
+      params: (prev) => ({ ...prev, placeReportId: data.place_report_id }),
     })
-  }, [db, navigate, place_id, place_id2, project_id, searchParams])
+  }, [db, navigate, placeId, placeId2, projectId])
 
   return (
     <div className="list-view">
@@ -65,10 +66,9 @@ export const Component = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {placeReports.map(({ place_report_id, label }) => (
               <Row
                 key={place_report_id}
@@ -77,7 +77,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

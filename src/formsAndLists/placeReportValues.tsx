@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createPlaceReportValue } from '../modules/createRows.ts'
@@ -8,29 +8,36 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
-  const { place_report_id } = useParams()
+  const { placeReportId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT place_report_value_id, label FROM place_report_values WHERE place_report_id = $1 ORDER BY label`,
-    [place_report_id],
+    [placeReportId],
     'place_report_value_id',
   )
   const isLoading = res === undefined
   const placeReportValues = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createPlaceReportValue({ place_report_id, db })
+    const res = await createPlaceReportValue({
+      place_report_id: placeReportId,
+      db,
+    })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.place_report_value_id,
-      search: searchParams.toString(),
+      to: data.place_report_value_id,
+      params: (prev) => ({
+        ...prev,
+        placeReportValueId: data.place_report_value_id,
+      }),
     })
-  }, [db, navigate, place_report_id, searchParams])
+  }, [db, navigate, placeReportId])
 
   return (
     <div className="list-view">
@@ -44,10 +51,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {placeReportValues.map(({ place_report_value_id, label }) => (
               <Row
                 key={place_report_value_id}
@@ -56,7 +62,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

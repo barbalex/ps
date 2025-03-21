@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createPlaceUser } from '../modules/createRows.ts'
@@ -8,29 +8,30 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
-  const { place_id, place_id2 } = useParams()
+  const { placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT place_user_id, label FROM place_users WHERE place_id = $1 ORDER BY label`,
-    [place_id2 ?? place_id],
+    [placeId2 ?? placeId],
     'place_user_id',
   )
   const isLoading = res === undefined
   const placeUsers = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = createPlaceUser({ place_id: place_id2 ?? place_id, db })
+    const res = createPlaceUser({ place_id: placeId2 ?? placeId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.place_user_id,
-      search: searchParams.toString(),
+      to: data.place_user_id,
+      params: (prev) => ({ ...prev, placeUserId: data.place_user_id }),
     })
-  }, [db, navigate, place_id, place_id2, searchParams])
+  }, [db, navigate, placeId, placeId2])
 
   return (
     <div className="list-view">
@@ -44,10 +45,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {placeUsers.map(({ place_user_id, label }) => (
               <Row
                 key={place_user_id}
@@ -56,7 +56,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
