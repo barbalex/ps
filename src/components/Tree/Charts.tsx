@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -12,38 +12,37 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id?: string
-  subproject_id?: string
+  projectId?: string
+  subprojectId?: string
   placeId?: string
-  place_id2?: string
+  placeId2?: string
   level: number
 }
 
 export const ChartsNode = memo(
-  ({ project_id, subproject_id, place_id, place_id2, level }: Props) => {
+  ({ projectId, subprojectId, placeId, placeId2, level }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const { field, value } = useMemo(() => {
       let field
       let value
-      if (place_id2) {
+      if (placeId2) {
         field = 'place_id'
-        value = place_id2
-      } else if (place_id) {
+        value = placeId2
+      } else if (placeId) {
         field = 'place_id'
-        value = place_id
-      } else if (subproject_id) {
+        value = placeId
+      } else if (subprojectId) {
         field = 'subproject_id'
-        value = subproject_id
-      } else if (project_id) {
+        value = subprojectId
+      } else if (projectId) {
         field = 'project_id'
-        value = project_id
+        value = projectId
       }
       return { field, value }
-    }, [place_id, place_id2, project_id, subproject_id])
+    }, [placeId, placeId2, projectId, subprojectId])
 
     const res = useLiveIncrementalQuery(
       `SELECT * FROM charts WHERE ${field} = $1 ORDER BY label`,
@@ -64,12 +63,12 @@ export const ChartsNode = memo(
     const parentArray = useMemo(
       () => [
         'data',
-        ...(project_id ? ['projects', project_id] : []),
-        ...(subproject_id ? ['subprojects', subproject_id] : []),
-        ...(place_id ? ['places', place_id] : []),
-        ...(place_id2 ? ['places', place_id2] : []),
+        ...(projectId ? ['projects', projectId] : []),
+        ...(subprojectId ? ['subprojects', subprojectId] : []),
+        ...(placeId ? ['places', placeId] : []),
+        ...(placeId2 ? ['places', placeId2] : []),
       ],
-      [place_id, place_id2, project_id, subproject_id],
+      [placeId, placeId2, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'charts'], [parentArray])
@@ -85,10 +84,7 @@ export const ChartsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -100,7 +96,6 @@ export const ChartsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -120,10 +115,10 @@ export const ChartsNode = memo(
           rows.map((chart) => (
             <ChartNode
               key={chart.chart_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
-              place_id2={place_id2}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
               chart={chart}
               level={level + 1}
             />

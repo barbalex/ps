@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -10,29 +10,28 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ChartNode = ({
-  project_id,
-  subproject_id,
-  place_id,
-  place_id2,
+  projectId,
+  subprojectId,
+  placeId,
+  placeId2,
   chart,
   level = 2,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
     () => [
       'data',
-      ...(project_id ? ['projects', project_id] : []),
-      ...(subproject_id ? ['subprojects', subproject_id] : []),
-      ...(place_id ? ['places', place_id] : []),
-      ...(place_id2 ? ['places', place_id2] : []),
+      ...(projectId ? ['projects', projectId] : []),
+      ...(subprojectId ? ['subprojects', subprojectId] : []),
+      ...(placeId ? ['places', placeId] : []),
+      ...(placeId2 ? ['places', placeId2] : []),
       'charts',
     ],
-    [place_id, place_id2, project_id, subproject_id],
+    [placeId, placeId2, projectId, subprojectId],
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
@@ -51,10 +50,7 @@ export const ChartNode = ({
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          pathname: parentUrl,
-          search: searchParams.toString(),
-        })
+        navigate({ to: parentUrl })
       }
       return
     }
@@ -65,9 +61,7 @@ export const ChartNode = ({
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
-    searchParams,
     urlPath.length,
   ])
 
@@ -86,10 +80,10 @@ export const ChartNode = ({
       />
       {isOpen && (
         <ChartSubjectsNode
-          project_id={project_id}
-          subproject_id={subproject_id}
-          place_id={place_id}
-          place_id2={place_id2}
+          project_id={projectId}
+          subproject_id={subprojectId}
+          place_id={placeId}
+          place_id2={placeId2}
           chart_id={chart.chart_id}
           level={level + 1}
         />
