@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createActionValue } from '../modules/createRows.ts'
@@ -8,15 +8,16 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
-  const { action_id } = useParams()
+  const { actionId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT action_value_id, label FROM action_values WHERE action_id = $1 ORDER BY label`,
-    [action_id],
+    [actionId],
     'action_value_id',
   )
   const isLoading = res === undefined
@@ -25,15 +26,15 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createActionValue({
       db,
-      action_id,
+      action_id: actionId,
     })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.action_value_id,
-      search: searchParams.toString(),
+      to: data.action_value_id,
+      params: (prev) => ({ ...prev, actionValueId: data.action_value_id }),
     })
-  }, [action_id, db, navigate, searchParams])
+  }, [actionId, db, navigate])
 
   return (
     <div className="list-view">
@@ -47,10 +48,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {actionValues.map(({ action_value_id, label }) => (
               <Row
                 key={action_value_id}
@@ -59,7 +59,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
