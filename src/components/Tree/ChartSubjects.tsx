@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -12,27 +12,19 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id?: string
-  subproject_id?: string
+  projectId?: string
+  subprojectId?: string
   placeId?: string
-  place_id2?: string
-  chart_id: string
+  placeId2?: string
+  chartId: string
   level: number
 }
 
 export const ChartSubjectsNode = memo(
-  ({
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    chart_id,
-    level,
-  }: Props) => {
+  ({ projectId, subprojectId, placeId, placeId2, chartId, level }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -42,7 +34,7 @@ export const ChartSubjectsNode = memo(
       FROM chart_subjects 
       WHERE chart_id = $1 
       ORDER BY label`,
-      [chart_id],
+      [chartId],
       'chart_subject_id',
     )
     const rows = res?.rows ?? []
@@ -59,14 +51,14 @@ export const ChartSubjectsNode = memo(
     const parentArray = useMemo(
       () => [
         'data',
-        ...(project_id ? ['projects', project_id] : []),
-        ...(subproject_id ? ['subprojects', subproject_id] : []),
-        ...(place_id ? ['places', place_id] : []),
-        ...(place_id2 ? ['places', place_id2] : []),
+        ...(projectId ? ['projects', projectId] : []),
+        ...(subprojectId ? ['subprojects', subprojectId] : []),
+        ...(placeId ? ['places', placeId] : []),
+        ...(placeId2 ? ['places', placeId2] : []),
         'charts',
-        chart_id,
+        chartId,
       ],
-      [chart_id, place_id, place_id2, project_id, subproject_id],
+      [chartId, placeId, placeId2, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'subjects'], [parentArray])
@@ -82,10 +74,7 @@ export const ChartSubjectsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -97,7 +86,6 @@ export const ChartSubjectsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
@@ -117,11 +105,11 @@ export const ChartSubjectsNode = memo(
           rows.map((chartSubject) => (
             <ChartSubjectNode
               key={chartSubject.chart_subject_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
-              place_id2={place_id2}
-              chart_id={chart_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              chartId={chartId}
               chartSubject={chartSubject}
               level={level + 1}
             />

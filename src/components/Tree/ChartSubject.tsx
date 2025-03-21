@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
 // not using memo because: "Component is not a function"
 export const ChartSubjectNode = ({
-  project_id,
-  subproject_id,
-  place_id,
-  place_id2,
-  chart_id,
+  projectId,
+  subprojectId,
+  placeId,
+  placeId2,
+  chartId,
   chartSubject,
   level = 2,
 }) => {
@@ -20,22 +20,22 @@ export const ChartSubjectNode = ({
   const ownArray = useMemo(
     () => [
       'data',
-      ...(project_id ? ['projects', project_id] : []),
-      ...(subproject_id ? ['subprojects', subproject_id] : []),
-      ...(place_id ? ['places', place_id] : []),
-      ...(place_id2 ? ['places', place_id2] : []),
+      ...(projectId ? ['projects', projectId] : []),
+      ...(subprojectId ? ['subprojects', subprojectId] : []),
+      ...(placeId ? ['places', placeId] : []),
+      ...(placeId2 ? ['places', placeId2] : []),
       'charts',
-      chart_id,
+      chartId,
       'subjects',
       chartSubject.chart_subject_id,
     ],
     [
       chartSubject.chart_subject_id,
-      chart_id,
-      place_id,
-      place_id2,
-      project_id,
-      subproject_id,
+      chartId,
+      placeId,
+      placeId2,
+      projectId,
+      subprojectId,
     ],
   )
   const ownUrl = `/${ownArray.join('/')}`

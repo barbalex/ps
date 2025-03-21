@@ -80,11 +80,11 @@ export const ChartNode = ({
       />
       {isOpen && (
         <ChartSubjectsNode
-          project_id={projectId}
-          subproject_id={subprojectId}
-          place_id={placeId}
-          place_id2={placeId2}
-          chart_id={chart.chart_id}
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId}
+          placeId2={placeId2}
+          chartId={chart.chart_id}
           level={level + 1}
         />
       )}
