@@ -63,33 +63,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'users',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Users',
-          table: 'subproject_users',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/subprojectUsers.tsx'),
-        },
-        {
-          path: ':subproject_user_id',
-          lazy: () => import('../routes/subprojectUser/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'subproject_users',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'occurrence-imports',
       element: null,
       handle: {

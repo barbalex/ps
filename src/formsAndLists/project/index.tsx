@@ -25,8 +25,6 @@ export const Project = memo(() => {
 
   const db = usePGlite()
 
-  console.log('Project', { projectTab, projectId })
-
   const res = useLiveIncrementalQuery(
     `SELECT * FROM projects WHERE project_id = $1`,
     [projectId],

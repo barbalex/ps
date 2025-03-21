@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -18,11 +18,10 @@ interface Props {
 }
 
 export const OccurrenceImportsNode = memo(
-  ({ project_id, subproject_id, level = 5 }: Props) => {
+  ({ projectId, subprojectId, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -32,7 +31,7 @@ export const OccurrenceImportsNode = memo(
       FROM occurrence_imports 
       WHERE subproject_id = $1 
       ORDER BY label`,
-      [subproject_id],
+      [subprojectId],
       'occurrence_import_id',
     )
     const rows = res?.rows ?? []
@@ -49,8 +48,8 @@ export const OccurrenceImportsNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
-      () => ['data', 'projects', project_id, 'subprojects', subproject_id],
-      [project_id, subproject_id],
+      () => ['data', 'projects', projectId, 'subprojects', subprojectId],
+      [projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
@@ -69,10 +68,7 @@ export const OccurrenceImportsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -84,7 +80,6 @@ export const OccurrenceImportsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
     return (
@@ -103,8 +98,8 @@ export const OccurrenceImportsNode = memo(
           rows.map((occurrenceImport) => (
             <OccurrenceImportNode
               key={occurrenceImport.occurrence_import_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
               occurrenceImport={occurrenceImport}
             />
           ))}

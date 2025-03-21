@@ -1,5 +1,5 @@
 import { useCallback, useRef, useMemo, useState, memo } from 'react'
-import { useParams, useSearchParams } from 'react-router'
+import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
 import {
   usePGlite,
@@ -31,11 +31,13 @@ const tabNumberStyle = {
   lineHeight: '19px',
 }
 
-export const Component = memo(() => {
-  const { occurrence_import_id } = useParams()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const tabString = searchParams.get('occurrence-import-tab')
-  const tab = tabString ? +tabString : 1
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
+
+export const OccurrenceImport = memo(() => {
+  const { occurrenceImportId } = useParams({ from })
+  const navigate = useNavigate()
+  const { occurrenceImportTab: tab } = useSearch({ from })
 
   const [showPreview, setShowPreview] = useState(true)
 
@@ -45,21 +47,21 @@ export const Component = memo(() => {
 
   const oIResult = useLiveIncrementalQuery(
     `SELECT * FROM occurrence_imports WHERE occurrence_import_id = $1`,
-    [occurrence_import_id],
+    [occurrenceImportId],
     'occurrence_import_id',
   )
   const occurrenceImport = oIResult?.rows?.[0]
 
   const oResult = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
-    [occurrence_import_id],
+    [occurrenceImportId],
     'occurrence_id',
   )
   const occurrences = useMemo(() => oResult?.rows ?? [], [oResult])
 
   const occurrencesWithoutGeometryCountResult = useLiveQuery(
     `SELECT count(*) FROM occurrences WHERE occurrence_import_id = $1 AND geometry is null`,
-    [occurrence_import_id],
+    [occurrenceImportId],
   )
   const occurrencesWithoutGeometryCount =
     occurrencesWithoutGeometryCountResult?.rows?.[0]?.count ?? 0
@@ -74,29 +76,25 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
-        [value, occurrence_import_id],
+        [value, occurrenceImportId],
       )
     },
-    [db, occurrenceImport, occurrence_import_id],
+    [db, occurrenceImport, occurrenceImportId],
   )
 
   const onTabSelect = useCallback(
-    (e, data) => {
-      searchParams.set('occurrence-import-tab', data.value)
-      setSearchParams(searchParams)
-    },
-    [searchParams, setSearchParams],
+    (e, data) => navigate({ search: { occurrenceImportTab: data.value } }),
+    [navigate],
   )
 
   const tab1Style = useMemo(
     () => ({
       ...tabNumberStyle,
       backgroundColor:
-        occurrenceImport?.name && occurrences.length
-          ? 'var(--colorCompoundBrandStrokeHover)'
-          : tab === 1
-          ? 'black'
-          : 'grey',
+        occurrenceImport?.name && occurrences.length ?
+          'var(--colorCompoundBrandStrokeHover)'
+        : tab === 1 ? 'black'
+        : 'grey',
     }),
     [occurrenceImport?.name, occurrences, tab],
   )
@@ -106,13 +104,12 @@ export const Component = memo(() => {
       ...tabNumberStyle,
       backgroundColor:
         // green if all occurrences have geometry
-        occurrences.length && !occurrencesWithoutGeometryCount
-          ? 'var(--colorCompoundBrandStrokeHover)'
-          : // black if is current
-          tab === 2
-          ? 'black'
-          : // grey if no occurrences or not current
-            'grey',
+        occurrences.length && !occurrencesWithoutGeometryCount ?
+          'var(--colorCompoundBrandStrokeHover)'
+          // black if is current
+        : tab === 2 ? 'black'
+          // grey if no occurrences or not current
+        : 'grey',
     }),
     [occurrences, occurrencesWithoutGeometryCount, tab],
   )
@@ -122,13 +119,12 @@ export const Component = memo(() => {
       ...tabNumberStyle,
       backgroundColor:
         // green if label_creation exists
-        occurrenceImport?.label_creation
-          ? 'var(--colorCompoundBrandStrokeHover)'
-          : // black if is current
-          tab === 3
-          ? 'black'
-          : // grey if no occurrences or not current
-            'grey',
+        occurrenceImport?.label_creation ?
+          'var(--colorCompoundBrandStrokeHover)'
+          // black if is current
+        : tab === 3 ? 'black'
+          // grey if no occurrences or not current
+        : 'grey',
     }),
     [occurrenceImport?.label_creation, tab],
   )
@@ -136,10 +132,9 @@ export const Component = memo(() => {
   const tab4Style = useMemo(
     () => ({
       ...tabNumberStyle,
-      backgroundColor: occurrenceImport?.id_field
-        ? 'var(--colorCompoundBrandStrokeHover)'
-        : tab === 4
-        ? 'black'
+      backgroundColor:
+        occurrenceImport?.id_field ? 'var(--colorCompoundBrandStrokeHover)'
+        : tab === 4 ? 'black'
         : 'grey',
     }),
     [occurrenceImport?.id_field, tab],
@@ -207,10 +202,9 @@ export const Component = memo(() => {
         </Tab>
       </TabList>
       <div className="form-container">
-        {!occurrenceImport ? (
+        {!occurrenceImport ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {tab === 1 && (
               <One
                 occurrenceImport={occurrenceImport}
@@ -240,7 +234,7 @@ export const Component = memo(() => {
               />
             )}
           </>
-        )}
+        }
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createOccurrenceImport } from '../modules/createRows.ts'
@@ -9,30 +9,38 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-export const Component = memo(() => {
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/'
+
+export const OccurrenceImports = memo(() => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { subproject_id } = useParams()
+  const { subprojectId } = useParams({ from })
 
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT occurrence_import_id, label FROM occurrence_imports WHERE subproject_id = $1 ORDER BY label`,
-    [subproject_id],
+    [subprojectId],
     'occurrence_import_id',
   )
   const isLoading = res === undefined
   const occurrenceImports = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createOccurrenceImport({ subproject_id, db })
+    const res = await createOccurrenceImport({
+      subproject_id: subprojectId,
+      db,
+    })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.occurrence_import_id,
-      search: searchParams.toString(),
+      to: data.occurrence_import_id,
+      params: (prev) => ({
+        ...prev,
+        occurrenceImportId: data.occurrence_import_id,
+      }),
     })
-  }, [db, navigate, searchParams, subproject_id])
+  }, [db, navigate, subprojectId])
 
   return (
     <div className="list-view">
@@ -46,10 +54,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {occurrenceImports.map(({ occurrence_import_id, label }) => (
               <Row
                 key={occurrence_import_id}
@@ -58,7 +65,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
