@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -12,11 +12,10 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ActionReportsNode = memo(
-  ({ project_id, subproject_id, place_id, place, action_id, level = 9 }) => {
+  ({ projectId, subprojectId, placeId, place, actionId, level = 9 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
       `
@@ -26,7 +25,7 @@ export const ActionReportsNode = memo(
       FROM action_reports 
       WHERE action_id = $1 
       ORDER BY label`,
-      [action_id],
+      [actionId],
       'action_report_id',
     )
     const rows = res?.rows ?? []
@@ -44,16 +43,16 @@ export const ActionReportsNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'actions',
-        action_id,
+        actionId,
       ],
-      [action_id, place.place_id, place_id, project_id, subproject_id],
+      [actionId, place.place_id, placeId, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
@@ -69,10 +68,7 @@ export const ActionReportsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            to: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -85,7 +81,6 @@ export const ActionReportsNode = memo(
       urlPath.length,
       navigate,
       parentUrl,
-      searchParams,
     ])
 
     return (
@@ -104,11 +99,11 @@ export const ActionReportsNode = memo(
           rows.map((actionReport) => (
             <ActionReportNode
               key={actionReport.action_report_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              project_id={projectId}
+              subproject_id={subprojectId}
+              place_id={placeId}
               place={place}
-              action_id={action_id}
+              action_id={actionId}
               actionReport={actionReport}
               level={level + 1}
             />

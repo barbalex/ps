@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -14,16 +14,17 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
   const [actions1Filter] = useAtom(actions1FilterAtom)
   const [actions2Filter] = useAtom(actions2FilterAtom)
 
-  const { project_id, place_id, place_id2 } = useParams()
+  const { projectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const filter = place_id2 ? actions2Filter : actions1Filter
+  const filter = placeId2 ? actions2Filter : actions1Filter
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
   const sql = `
@@ -35,20 +36,23 @@ export const Component = memo(() => {
       place_id = $1
       ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`
-  const res = useLiveIncrementalQuery(sql, [place_id2 ?? place_id], 'action_id')
+  const res = useLiveIncrementalQuery(sql, [placeId2 ?? placeId], 'action_id')
   const isLoading = res === undefined
   const actions = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createAction({
       db,
-      project_id,
-      place_id: place_id2 ?? place_id,
+      project_id: projectId,
+      place_id: placeId2 ?? placeId,
     })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.action_id, search: searchParams.toString() })
-  }, [db, navigate, place_id, place_id2, project_id, searchParams])
+    navigate({
+      to: data.action_id,
+      params: (prev) => ({ ...prev, actionId: data.action_id }),
+    })
+  }, [db, navigate, placeId, placeId2, projectId])
 
   return (
     <div className="list-view">
@@ -64,7 +68,7 @@ export const Component = memo(() => {
           <>
             <LayerMenu
               table="actions"
-              level={place_id2 ? 2 : 1}
+              level={placeId2 ? 2 : 1}
               //TODO: from={from}
             />
             <FilterButton isFiltered={isFiltered} />

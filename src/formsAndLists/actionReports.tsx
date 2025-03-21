@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createActionReport } from '../modules/createRows.ts'
@@ -8,15 +8,16 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
-  const { project_id, action_id } = useParams()
+  const { projectId, actionId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT action_report_id, label FROM action_reports WHERE action_id = $1 ORDER BY label`,
-    [action_id],
+    [actionId],
     'action_report_id',
   )
   const isLoading = res === undefined
@@ -25,16 +26,16 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createActionReport({
       db,
-      project_id,
-      action_id,
+      project_id: projectId,
+      action_id: actionId,
     })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.action_report_id,
-      search: searchParams.toString(),
+      to: data.action_report_id,
+      params: (prev) => ({ ...prev, actionReportId: data.action_report_id }),
     })
-  }, [action_id, db, navigate, project_id, searchParams])
+  }, [actionId, db, navigate, projectId])
 
   return (
     <div className="list-view">
@@ -48,10 +49,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {actionReports.map(({ action_report_id, label }) => (
               <Row
                 key={action_report_id}
@@ -60,7 +60,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
