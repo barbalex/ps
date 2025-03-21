@@ -70,7 +70,7 @@ export const ActionReportsNode = memo(
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
-            pathname: parentUrl,
+            to: parentUrl,
             search: searchParams.toString(),
           })
         }

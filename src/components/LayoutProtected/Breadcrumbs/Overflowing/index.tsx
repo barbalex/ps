@@ -24,7 +24,7 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const isVisible = useIsOverflowItemVisible(id)
 
   const onClick = useCallback(() => {
-    navigate({ pathname: match.pathname, search: searchParams.toString() })
+    navigate({ to: match.pathname, search: searchParams.toString() })
     // somehow nav icon is not rendered without this
     upRerenderInteger()
   }, [match.pathname, navigate, searchParams, upRerenderInteger])
@@ -36,17 +36,16 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
 
   return (
     <MenuItem onClick={onClick}>
-      {table === 'root' || folder === false ? (
+      {table === 'root' || folder === false ?
         <BreadcrumbForFolder
           match={match}
           forOverflowMenu
         />
-      ) : (
-        <BreadcrumbForData
+      : <BreadcrumbForData
           match={match}
           forOverflowMenu
         />
-      )}
+      }
     </MenuItem>
   )
 }
