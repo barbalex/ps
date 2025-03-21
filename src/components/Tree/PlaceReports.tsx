@@ -3,7 +3,7 @@ import {
   useLiveIncrementalQuery,
   useLiveQuery,
 } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -27,7 +27,6 @@ export const PlaceReportsNode = memo(
 
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const filter = place_id ? placeReports2Filter : placeReports1Filter
     const filterString = filterStringFromFilter(filter)
@@ -61,13 +60,12 @@ export const PlaceReportsNode = memo(
     const node = useMemo(
       () => ({
         label: `Reports (${
-          isFiltered
-            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-                countLoading ? '...' : formatNumber(countUnfiltered)
-              }`
-            : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
+          isFiltered ?
+            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
+            }`
+          : rowsLoading ? '...'
+          : formatNumber(rows.length)
         })`,
       }),
       [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
@@ -101,10 +99,7 @@ export const PlaceReportsNode = memo(
         removeChildNodes({ node: ownArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -116,7 +111,6 @@ export const PlaceReportsNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
