@@ -63,33 +63,6 @@ export const router = () => {
       ],
     },
     {
-      path: 'occurrence-imports',
-      element: null,
-      handle: {
-        crumb: {
-          text: 'Occurrence Imports',
-          table: 'occurrence_imports',
-          folder: true,
-        },
-      },
-      children: [
-        {
-          index: true,
-          lazy: () => import('../routes/occurrenceImports.tsx'),
-        },
-        {
-          path: ':occurrence_import_id',
-          lazy: () => import('../routes/occurrenceImport/index.tsx'),
-          handle: {
-            crumb: {
-              table: 'occurrence_imports',
-              folder: false,
-            },
-          },
-        },
-      ],
-    },
-    {
       path: 'files',
       element: null,
       handle: {
