@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -7,64 +7,56 @@ import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { designingAtom } from '../../store.ts'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId/'
+
 export const Header = memo(({ autoFocusRef }) => {
   const [designing] = useAtom(designingAtom)
-  const { project_id, subproject_id, place_id, place_id2, chart_id } =
-    useParams()
+  const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
+    from,
+  })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const idToAdd = place_id2
-      ? { place_id2 }
-      : place_id
-      ? { place_id }
-      : subproject_id
-      ? { subproject_id }
-      : { project_id }
+    const idToAdd =
+      placeId2 ? { place_id2: placeId2 }
+      : placeId ? { place_id: placeId }
+      : subprojectId ? { subproject_id: subprojectId }
+      : { project_id: projectId }
     const res = await createChart({ ...idToAdd, db })
     const data = res?.rows?.[0]
     navigate({
-      pathname: `../${data.chart_id}`,
-      search: searchParams.toString(),
+      to: `../${data.chart_id}`,
+      params: (prev) => ({ ...prev, chartId: data.chart_id }),
     })
     autoFocusRef.current?.focus()
-  }, [
-    autoFocusRef,
-    db,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    searchParams,
-    subproject_id,
-  ])
+  }, [autoFocusRef, db, navigate, placeId, placeId2, projectId, subprojectId])
 
   const deleteRow = useCallback(async () => {
-    await db.query(`delete from charts where chart_id = $1`, [chart_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, chart_id, navigate, searchParams])
+    await db.query(`delete from charts where chart_id = $1`, [chartId])
+    navigate({ to: '..' })
+  }, [db, chartId, navigate])
 
   const { filterField, filterValue } = useMemo(() => {
     let filterField
     let filterValue
-    if (place_id2) {
+    if (placeId2) {
       filterField = 'place_id2'
-      filterValue = place_id2
-    } else if (place_id) {
+      filterValue = placeId2
+    } else if (placeId) {
       filterField = 'place_id'
-      filterValue = place_id
-    } else if (subproject_id) {
+      filterValue = placeId
+    } else if (subprojectId) {
       filterField = 'subproject_id'
-      filterValue = subproject_id
-    } else if (project_id) {
+      filterValue = subprojectId
+    } else if (projectId) {
       filterField = 'project_id'
-      filterValue = project_id
+      filterValue = projectId
     }
     return { filterField, filterValue }
-  }, [place_id, place_id2, project_id, subproject_id])
+  }, [placeId, placeId2, projectId, subprojectId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -73,13 +65,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.chart_id === chart_id)
+    const index = rows.findIndex((p) => p.chart_id === chartId)
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `../${next.chart_id}`,
-      search: searchParams.toString(),
+      to: `../${next.chart_id}`,
+      params: (prev) => ({ ...prev, chartId: next.chart_id }),
     })
-  }, [db, filterField, filterValue, navigate, searchParams, chart_id])
+  }, [db, filterField, filterValue, navigate, chartId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -88,13 +80,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.chart_id === chart_id)
+    const index = rows.findIndex((p) => p.chart_id === chartId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.chart_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.chart_id}`,
+      params: (prev) => ({ ...prev, chartId: previous.chart_id }),
     })
-  }, [db, filterField, filterValue, navigate, searchParams, chart_id])
+  }, [db, filterField, filterValue, navigate, chartId])
 
   return (
     <FormHeader

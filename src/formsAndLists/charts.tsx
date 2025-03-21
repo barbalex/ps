@@ -1,35 +1,36 @@
 import { useCallback, useMemo, memo } from 'react'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { createChart } from '../modules/createRows.ts'
 import { Loading } from '../components/shared/Loading.tsx'
+import { designingAtom } from '../store.ts'
 
 import '../form.css'
 
-import { designingAtom } from '../store.ts'
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/'
 
-export const Component = memo(() => {
+export const Charts = memo(() => {
   const [designing] = useAtom(designingAtom)
-  const { project_id, subproject_id, place_id, place_id2 } = useParams()
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const { hKey, hValue } = useMemo(() => {
-    if (place_id2) {
-      return { hKey: 'place_id2', hValue: place_id2 }
-    } else if (place_id) {
-      return { hKey: 'place_id', hValue: place_id }
-    } else if (subproject_id) {
-      return { hKey: 'subproject_id', hValue: subproject_id }
-    } else if (project_id) {
-      return { hKey: 'project_id', hValue: project_id }
+    if (placeId2) {
+      return { hKey: 'place_id2', hValue: placeId2 }
+    } else if (placeId) {
+      return { hKey: 'place_id', hValue: placeId }
+    } else if (subprojectId) {
+      return { hKey: 'subproject_id', hValue: subprojectId }
+    } else if (projectId) {
+      return { hKey: 'project_id', hValue: projectId }
     }
     return where
-  }, [place_id, place_id2, project_id, subproject_id])
+  }, [placeId, placeId2, projectId, subprojectId])
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
@@ -41,26 +42,19 @@ export const Component = memo(() => {
   const charts = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const idToAdd = place_id2
-      ? { place_id2 }
-      : place_id
-      ? { place_id }
-      : subproject_id
-      ? { subproject_id }
-      : { project_id }
+    const idToAdd =
+      placeId2 ? { place_id2: placeId2 }
+      : placeId ? { place_id: placeId }
+      : subprojectId ? { subproject_id: subprojectId }
+      : { project_id: projectId }
     const res = await createChart({ ...idToAdd, db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ pathname: data.chart_id, search: searchParams.toString() })
-  }, [
-    db,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    searchParams,
-    subproject_id,
-  ])
+    navigate({
+      to: data.chart_id,
+      params: (prev) => ({ ...prev, chartId: data.chart_id }),
+    })
+  }, [db, navigate, placeId, placeId2, projectId, subprojectId])
 
   // console.log('charts', charts)
 
@@ -78,10 +72,9 @@ export const Component = memo(() => {
         addRow={designing ? add : undefined}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {charts.map(({ chart_id, label }) => (
               <Row
                 key={chart_id}
@@ -90,7 +83,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

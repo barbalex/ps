@@ -1,5 +1,5 @@
 import { memo, useEffect, useState, useMemo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { buildData } from './buildData/index.ts'
@@ -13,22 +13,25 @@ const titleRowStyle = {
   fontWeight: 'bold',
 }
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId/'
+
 export const Chart = memo(() => {
-  const { project_id, subproject_id, chart_id } = useParams()
+  const { projectId, subprojectId, chartId } = useParams({ from })
 
   const db = usePGlite()
 
   // TODO: query subjects with charts
   const resultChart = useLiveIncrementalQuery(
     `SELECT * FROM charts WHERE chart_id = $1`,
-    [chart_id],
+    [chartId],
     'chart_id',
   )
   const chart = resultChart?.rows?.[0]
 
   const resultSubjects = useLiveIncrementalQuery(
     `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort, name`,
-    [chart_id],
+    [chartId],
   )
   const subjects = useMemo(() => resultSubjects?.rows ?? [], [resultSubjects])
 
@@ -44,13 +47,13 @@ export const Chart = memo(() => {
         db,
         chart,
         subjects,
-        subproject_id,
-        project_id,
+        subproject_id: subprojectId,
+        project_id: projectId,
       })
       setData(data)
     }
     run()
-  }, [chart_id, chart, db, project_id, subjects, subproject_id])
+  }, [chartId, chart, db, projectId, subjects, subprojectId])
 
   if (!chart || !subjects) return null
 
@@ -60,7 +63,7 @@ export const Chart = memo(() => {
   return (
     <>
       <div style={titleRowStyle}>{chart.title}</div>
-      {chart.subjects_single === true ? (
+      {chart.subjects_single === true ?
         subjects.map((subject) => (
           <SingleChart
             chart={chart}
@@ -69,13 +72,12 @@ export const Chart = memo(() => {
             synchronized={true}
           />
         ))
-      ) : (
-        <SingleChart
+      : <SingleChart
           chart={chart}
           subjects={subjects}
           data={data}
         />
-      )}
+      }
     </>
   )
 })

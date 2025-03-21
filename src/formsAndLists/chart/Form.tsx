@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -14,14 +14,17 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId/'
+
 // seperate from the route because it is also used inside other forms
 export const Form = memo(({ autoFocusRef }: Props) => {
-  const { chart_id } = useParams()
+  const { chartId } = useParams({ from })
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM charts WHERE chart_id = $1`,
-    [chart_id],
+    [chartId],
     'chart_id',
   )
   const row = res?.rows?.[0]
@@ -34,7 +37,7 @@ export const Form = memo(({ autoFocusRef }: Props) => {
 
       await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
         value,
-        chart_id,
+        chartId,
       ])
       // if one of the years settings is changed, prevent conflicts
       switch (name) {
@@ -51,7 +54,7 @@ export const Form = memo(({ autoFocusRef }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, null, null, null, null, chart_id],
+              [false, null, null, null, null, chartId],
             )
           }
           break
@@ -69,7 +72,7 @@ export const Form = memo(({ autoFocusRef }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, null, null, null, null, chart_id],
+              [false, null, null, null, null, chartId],
             )
           }
           break
@@ -87,7 +90,7 @@ export const Form = memo(({ autoFocusRef }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chart_id],
+              [false, false, null, null, null, chartId],
             )
           }
           break
@@ -105,7 +108,7 @@ export const Form = memo(({ autoFocusRef }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chart_id],
+              [false, false, null, null, null, chartId],
             )
           }
           break
@@ -123,7 +126,7 @@ export const Form = memo(({ autoFocusRef }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chart_id],
+              [false, false, null, null, null, chartId],
             )
           }
           break
@@ -141,14 +144,14 @@ export const Form = memo(({ autoFocusRef }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chart_id],
+              [false, false, null, null, null, chartId],
             )
           }
           break
         }
       }
     },
-    [db, chart_id],
+    [db, chartId],
   )
 
   if (!row) return <Loading />
