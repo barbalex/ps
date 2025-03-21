@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createSubprojectUser } from '../modules/createRows.ts'
@@ -8,29 +8,28 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const { subproject_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/users/'
+
+export const SubprojectUsers = memo(() => {
+  const { subprojectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
     `SELECT subproject_user_id, label FROM subproject_users WHERE subproject_id = $1 ORDER BY label`,
-    [subproject_id],
+    [subprojectId],
     'subproject_user_id',
   )
   const isLoading = res === undefined
   const subprojectUsers = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createSubprojectUser({ subproject_id, db })
+    const res = await createSubprojectUser({ subprojectId, db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({
-      pathname: data.subproject_user_id,
-      search: searchParams.toString(),
-    })
-  }, [db, navigate, searchParams, subproject_id])
+    navigate({ to: data.subproject_user_id })
+  }, [db, navigate, subprojectId])
 
   return (
     <div className="list-view">
@@ -44,10 +43,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {subprojectUsers.map(({ subproject_user_id, label }) => (
               <Row
                 key={subproject_user_id}
@@ -56,7 +54,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
