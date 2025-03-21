@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -22,7 +22,6 @@ export const ActionReportNode = memo(
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
@@ -58,10 +57,7 @@ export const ActionReportNode = memo(
         removeChildNodes({ node: ownArray })
         // TODO: only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
-          })
+          navigate({ to: parentUrl })
         }
         return
       }
@@ -74,7 +70,6 @@ export const ActionReportNode = memo(
       urlPath.length,
       navigate,
       parentUrl,
-      searchParams,
     ])
 
     return (

@@ -39,9 +39,9 @@ export const BreadcrumbForFolder = memo(
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
-      location.pathname === match.pathname
-        ? `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
-        : `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} link`
+      location.pathname === match.pathname ?
+        `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
+      : `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} link`
 
     const path = match.pathname.split('/').filter((p) => p !== '')
     const placesCount = path.filter((p) => p.includes('places')).length
@@ -51,9 +51,9 @@ export const BreadcrumbForFolder = memo(
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
     const db = usePGlite()
     const matchParam =
-      table === 'places' && levelWanted === 2
-        ? place_id2
-        : match.params[idField]
+      table === 'places' && levelWanted === 2 ?
+        place_id2
+      : match.params[idField]
 
     const res = useLiveQuery(
       `SELECT * FROM ${queryTable} WHERE ${idField} = $1`,
@@ -137,15 +137,14 @@ export const BreadcrumbForFolder = memo(
           className={className}
           onClick={() =>
             navigate({
-              pathname: match.pathname,
+              to: match.pathname,
               search: searchParams.toString(),
             })
           }
           ref={ref}
           style={{
-            borderBottom: wrapping
-              ? '1px solid rgba(55, 118, 28, 0.5) '
-              : 'none',
+            borderBottom:
+              wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
             borderTop: wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
           }}
         >

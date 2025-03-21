@@ -9,7 +9,7 @@ export const MenuItem = ({ path, text }) => {
   const onClick = useCallback(() => {
     // why do I need this timeout?
     setTimeout(() => {
-      navigate({ pathname: path, search: searchParams.toString() }), 100
+      navigate({ to: path, search: searchParams.toString() }), 100
     })
   }, [navigate, path, searchParams])
 
