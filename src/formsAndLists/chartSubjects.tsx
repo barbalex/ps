@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -9,29 +9,31 @@ import { createChartSubject } from '../modules/createRows.ts'
 
 import '../form.css'
 
-export const Component = memo(() => {
-  const { chart_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/'
+
+export const ChartSubjects = memo(() => {
+  const { chartId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT chart_subject_id, label FROM chart_subjects WHERE chart_id = $1 ORDER BY label`,
-    [chart_id],
+    [chartId],
     'chart_subject_id',
   )
   const isLoading = res === undefined
   const chartSubjects = res?.rows ?? []
 
   const addRow = useCallback(async () => {
-    const res = await createChartSubject({ chart_id, db })
+    const res = await createChartSubject({ chart_id: chartId, db })
     const data = res?.rows?.[0]
     navigate({
-      pathname: data.chart_subject_id,
-      search: searchParams.toString(),
+      to: data.chart_subject_id,
+      params: (prev) => ({ ...prev, chartSubjectId: data.chart_subject_id }),
     })
     autoFocusRef.current?.focus()
-  }, [chart_id, db, navigate, searchParams])
+  }, [chartId, db, navigate])
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite
@@ -47,10 +49,9 @@ export const Component = memo(() => {
         addRow={addRow}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {chartSubjects.map(({ chart_subject_id, label }) => (
               <Row
                 key={chart_subject_id}
@@ -59,7 +60,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
