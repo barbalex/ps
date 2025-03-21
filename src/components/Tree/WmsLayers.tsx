@@ -81,9 +81,7 @@ export const WmsLayersNode = memo(({ projectId, level = 3 }: Props) => {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({
-          to: parentUrl,
-        })
+        navigate({ to: parentUrl })
       }
       return
     }

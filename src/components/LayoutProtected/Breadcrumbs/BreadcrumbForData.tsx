@@ -22,9 +22,9 @@ export const BreadcrumbForData = memo(
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
-      location.pathname === match.pathname
-        ? `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
-        : `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} link`
+      location.pathname === match.pathname ?
+        `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
+      : `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} link`
 
     const path = match.pathname.split('/').filter((p) => p !== '')
     const placesCount = path.filter((p) => p.includes('places')).length
@@ -67,9 +67,9 @@ export const BreadcrumbForData = memo(
             where += ` AND not_to_assign IS TRUE`
           } else if (lastPathElement === 'occurrences-assigned') {
             where += ` AND place_id = '${
-              placesCountInPath === 1
-                ? match.params.place_id
-                : match.params.place_id2
+              placesCountInPath === 1 ?
+                match.params.place_id
+              : match.params.place_id2
             }'`
           }
           // if last path element is
@@ -192,14 +192,13 @@ export const BreadcrumbForData = memo(
         <div
           className={className}
           style={{
-            borderBottom: wrapping
-              ? '1px solid rgba(55, 118, 28, 0.5) '
-              : 'none',
+            borderBottom:
+              wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
             borderTop: wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
           }}
           onClick={() =>
             navigate({
-              pathname: match.pathname,
+              to: match.pathname,
               search: searchParams.toString(),
             })
           }

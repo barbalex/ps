@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -17,7 +17,6 @@ export const CheckNode = memo(
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     // need project to know whether to show files
     const resProject = useLiveIncrementalQuery(
@@ -61,8 +60,7 @@ export const CheckNode = memo(
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
-            pathname: parentUrl,
-            search: searchParams.toString(),
+            to: parentUrl,
           })
         }
         return
@@ -75,7 +73,6 @@ export const CheckNode = memo(
       navigate,
       ownArray,
       parentUrl,
-      searchParams,
       urlPath.length,
     ])
 
