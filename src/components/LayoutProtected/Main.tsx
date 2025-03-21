@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Outlet } from '@tanstack/react-router'
+import { Outlet, useSearch } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
 import { useAtom } from 'jotai'
 
@@ -15,20 +15,16 @@ const containerStyle = {
   position: 'relative',
 }
 
+const from = '/data'
+
 // TODO: use search for tabs
-export const  Main = memo(() => {
+export const Main = memo(() => {
   const [mapMaximized] = useAtom(mapMaximizedAtom)
   const [tabs] = useAtom(tabsAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
-  // TODO: this renders on every navigation!!! Thus temporarily disabled
-  // because of the searchParams? JES
-  // seems not solvable with react-router: https://github.com/remix-run/react-router/discussions/9851
-  // there is this pull request: https://github.com/remix-run/react-router/pull/10740
-  // const [searchParams] = useSearchParams()
-  // const onlyForm = searchParams.get('onlyForm')
-  const onlyForm = false
+  const { onlyForm } = useSearch({ from })
 
   const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 

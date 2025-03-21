@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { useAtom } from 'jotai'
+import { useSearch } from '@tanstack/react-router'
 // import { useSearchParams } from 'react-router'
 
 import { Main } from './Main.tsx'
@@ -13,19 +14,15 @@ import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertie
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
+const from = '/data/_authLayout'
+
 // memoizing this component creates error
 export const Layout = memo(() => {
   const [mapIsMaximized] = useAtom(mapMaximizedAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
-  // TODO: this renders on every navigation!!! This temporarily disabled
-  // because of the searchParams? JES
-  // seems not solvable with react-router: https://github.com/remix-run/react-router/discussions/9851
-  // there is this pull request: https://github.com/remix-run/react-router/pull/10740
-  // const [searchParams] = useSearchParams()
-  // const onlyForm = searchParams.get('onlyForm')
-  const onlyForm = false
+  const { onlyForm } = useSearch({ from })
 
   // Breadcrumbs and Navs are not protected because:
   // - they are not (very) sensitive
