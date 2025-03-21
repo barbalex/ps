@@ -43,7 +43,7 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
   const isVisible = useIsOverflowItemVisible(path)
 
   const onClick = useCallback(
-    () => navigate({ pathname: path, search: searchParams.toString() }),
+    () => navigate({ to: path, search: searchParams.toString() }),
     [navigate, path, searchParams],
   )
 
