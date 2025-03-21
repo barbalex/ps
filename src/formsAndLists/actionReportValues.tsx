@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createActionReportValue } from '../modules/createRows.ts'
@@ -8,15 +8,16 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
+const from = 'TODO:'
+
 export const Component = memo(() => {
-  const { action_report_id } = useParams()
+  const { actionReportId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `Select action_report_value_id, label from action_report_values where action_report_id = $1 ORDER BY label;`,
-    [action_report_id],
+    [actionReportId],
     'action_report_value_id',
   )
   const isLoading = res === undefined
@@ -25,15 +26,18 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createActionReportValue({
       db,
-      action_report_id,
+      action_report_id: actionReportId,
     })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.action_report_value_id,
-      search: searchParams.toString(),
+      to: data.action_report_value_id,
+      params: (prev) => ({
+        ...prev,
+        actionReportValueId: data.action_report_value_id,
+      }),
     })
-  }, [action_report_id, db, navigate, searchParams])
+  }, [actionReportId, db, navigate])
 
   return (
     <div className="list-view">
@@ -47,10 +51,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {actionReportValues.map(({ action_report_value_id, label }) => (
               <Row
                 key={action_report_value_id}
@@ -59,7 +62,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

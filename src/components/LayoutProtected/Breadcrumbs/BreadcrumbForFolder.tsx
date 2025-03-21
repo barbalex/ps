@@ -1,5 +1,5 @@
 import { useEffect, useState, memo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
@@ -20,7 +20,6 @@ export const BreadcrumbForFolder = memo(
   ({ match, forOverflowMenu, wrapping = false, ref }) => {
     const [designing] = useAtom(designingAtom)
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
     const {
       check_id,
       action_id,
@@ -135,12 +134,7 @@ export const BreadcrumbForFolder = memo(
       <div className="breadcrumbs__crumb_container">
         <div
           className={className}
-          onClick={() =>
-            navigate({
-              to: match.pathname,
-              search: searchParams.toString(),
-            })
-          }
+          onClick={() => navigate({ to: match.pathname })}
           ref={ref}
           style={{
             borderBottom:
