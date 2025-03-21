@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,11 +10,14 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
+
 // TODO: what was this for?
 const taxaInclude = { taxonomies: true }
 
-export const Component = memo(() => {
-  const { subproject_taxon_id } = useParams()
+export const SubprojectTaxon = memo(() => {
+  const { subprojectTaxonId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -22,7 +25,7 @@ export const Component = memo(() => {
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
-    [subproject_taxon_id],
+    [subprojectTaxonId],
     'subproject_taxon_id',
   )
   const row = res?.rows?.[0]
@@ -35,10 +38,10 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
-        [value, subproject_taxon_id],
+        [value, subprojectTaxonId],
       )
     },
-    [db, row, subproject_taxon_id],
+    [db, row, subprojectTaxonId],
   )
 
   if (!row) return <Loading />
