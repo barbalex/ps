@@ -46,15 +46,18 @@ export const Taxa = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {taxa.map(({ taxon_id, label }) => (
-              <Row key={taxon_id} label={label ?? taxon_id} to={taxon_id} />
+              <Row
+                key={taxon_id}
+                label={label ?? taxon_id}
+                to={taxon_id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

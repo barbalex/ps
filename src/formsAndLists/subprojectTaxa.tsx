@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createSubprojectTaxon } from '../modules/createRows.ts'
@@ -8,29 +8,34 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Component = memo(() => {
-  const { subproject_id } = useParams()
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/'
+
+export const SubprojectTaxa = memo(() => {
+  const { subprojectId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT subproject_taxon_id, label FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
-    [subproject_id],
+    [subprojectId],
     'subproject_taxon_id',
   )
   const isLoading = res === undefined
   const subprojectTaxa = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createSubprojectTaxon({ subproject_id, db })
+    const res = await createSubprojectTaxon({ subproject_id: subprojectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: data.subproject_taxon_id,
-      search: searchParams.toString(),
+      to: data.subproject_taxon_id,
+      params: (prev) => ({
+        ...prev,
+        subprojectTaxonId: data.subproject_taxon_id,
+      }),
     })
-  }, [db, navigate, searchParams, subproject_id])
+  }, [db, navigate, subprojectId])
 
   return (
     <div className="list-view">
@@ -44,10 +49,9 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {subprojectTaxa.map(({ subproject_taxon_id, label }) => (
               <Row
                 key={subproject_taxon_id}
@@ -56,7 +60,7 @@ export const Component = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
