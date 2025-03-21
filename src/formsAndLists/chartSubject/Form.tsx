@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -16,14 +16,17 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
+
 // separate from the route because it is also used inside other forms
 export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
-  const { chart_subject_id } = useParams()
+  const { chartSubjectId } = useParams({ from })
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
-    [chart_subject_id],
+    [chartSubjectId],
     'chart_subject_id',
   )
   const row = res?.rows?.[0]
@@ -36,10 +39,10 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
 
       db.query(
         `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
-        [value, chart_subject_id],
+        [value, chartSubjectId],
       )
     },
-    [row, db, chart_subject_id],
+    [row, db, chartSubjectId],
   )
 
   if (!row) return <Loading />

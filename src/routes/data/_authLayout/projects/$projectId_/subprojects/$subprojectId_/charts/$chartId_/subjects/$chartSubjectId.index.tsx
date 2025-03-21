@@ -1,16 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { ChartSubject } from '../../../../../../../../../../formsAndLists/chartSubject/index.tsx'
+
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/',
 )({
-  component: RouteComponent,
+  component: ChartSubject,
 })
-
-function RouteComponent() {
-  return (
-    <div>
-      Hello
-      "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/"!
-    </div>
-  )
-}

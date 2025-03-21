@@ -798,13 +798,13 @@ export const createChart = async ({
     ],
   )
 
-export const createChartSubject = async ({ chart_id, db }) =>
+export const createChartSubject = async ({ chartId, db }) =>
   db.query(
     `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning chart_subject_id`,
     [
       uuidv7(),
       '018cf958-27e2-7000-90d3-59f024d467be',
-      chart_id,
+      chartId,
       'monotone',
       '#FF0000',
       '#ffffff',

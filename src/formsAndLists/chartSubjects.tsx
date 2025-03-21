@@ -26,7 +26,7 @@ export const ChartSubjects = memo(() => {
   const chartSubjects = res?.rows ?? []
 
   const addRow = useCallback(async () => {
-    const res = await createChartSubject({ chart_id: chartId, db })
+    const res = await createChartSubject({ chartId, db })
     const data = res?.rows?.[0]
     navigate({
       to: data.chart_subject_id,

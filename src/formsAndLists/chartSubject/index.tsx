@@ -5,7 +5,7 @@ import { ChartSubjectForm } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
+export const ChartSubject = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   // TODO:
