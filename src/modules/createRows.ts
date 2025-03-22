@@ -438,10 +438,10 @@ export const createSubprojectUser = async ({ db, subprojectId }) =>
     [uuidv7(), subprojectId, 'reader'],
   )
 
-export const createPlaceUser = async ({ place_id, db }) =>
+export const createPlaceUser = async ({ placeId, db }) =>
   db.query(
     `insert into place_users (place_user_id, place_id, role) values ($1, $2, $3) returning place_user_id`,
-    [uuidv7(), place_id, 'reader'],
+    [uuidv7(), placeId, 'reader'],
   )
 
 export const createSubprojectTaxon = async ({ db, subproject_id }) =>
@@ -480,17 +480,17 @@ export const createSubprojectReport = async ({
   )
 }
 
-export const createCheck = async ({ db, project_id, place_id }) => {
+export const createCheck = async ({ db, projectId, placeId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    project_id,
+    project_id: projectId,
     table: 'checks',
   })
 
   const data = {
     check_id: uuidv7(),
-    place_id,
+    place_id: placeId,
     date: new Date(),
     relevant_for_reports: true,
     ...presetData,
@@ -506,16 +506,16 @@ export const createCheck = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createCheckValue = async ({ db, check_id }) =>
+export const createCheckValue = async ({ db, checkId }) =>
   db.query(
     `insert into check_values (check_value_id, check_id) values ($1, $2) returning check_value_id`,
-    [uuidv7(), check_id],
+    [uuidv7(), checkId],
   )
 
-export const createCheckTaxon = async ({ db, check_id }) =>
+export const createCheckTaxon = async ({ db, checkId }) =>
   db.query(
     `insert into check_taxa (check_taxon_id, check_id) values ($1, $2) returning check_taxon_id`,
-    [uuidv7(), check_id],
+    [uuidv7(), checkId],
   )
 
 export const createAction = async ({ db, project_id, place_id }) => {
@@ -582,17 +582,17 @@ export const createActionReportValue = async ({ db, action_report_id }) =>
     [uuidv7(), action_report_id],
   )
 
-export const createPlaceReport = async ({ db, project_id, place_id }) => {
+export const createPlaceReport = async ({ db, projectId, placeId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    project_id,
+    project_id: projectId,
     table: 'place_reports',
   })
 
   const data = {
     place_report_id: uuidv7(),
-    place_id,
+    place_id: placeId,
     year: new Date().getFullYear(),
     ...presetData,
   }
@@ -607,10 +607,10 @@ export const createPlaceReport = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createPlaceReportValue = async ({ place_report_id, db }) =>
+export const createPlaceReportValue = async ({ placeReportId, db }) =>
   db.query(
     `insert into place_report_values (place_report_value_id, place_report_id) values ($1, $2) returning place_report_value_id`,
-    [uuidv7(), place_report_id],
+    [uuidv7(), placeReportId],
   )
 
 export const createMessage = async ({ db }) =>

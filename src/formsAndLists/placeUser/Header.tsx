@@ -1,63 +1,62 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = 'TODO:'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { place_id, place_id2, place_user_id } = useParams()
+  const { placeId, placeId2, placeUserId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = createPlaceUser({ place_id: place_id2 ?? place_id, db })
-    const placeUser = res?.rows?.[0]
+    const res = createPlaceUser({ placeId: placeId2 ?? placeId, db })
+    const row = res?.rows?.[0]
     navigate({
-      pathname: `../${placeUser.place_user_id}`,
-      search: searchParams.toString(),
+      to: `../${row.place_user_id}`,
+      params: (prev) => ({ ...prev, placeUserId: row.place_user_id }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, place_id, place_id2, searchParams])
+  }, [autoFocusRef, db, navigate, placeId, placeId2])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM place_users WHERE place_user_id = $1`, [
-      place_user_id,
-    ])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db, place_user_id, navigate, searchParams])
+    db.query(`DELETE FROM place_users WHERE place_user_id = $1`, [placeUserId])
+    navigate({ to: '..' })
+  }, [db, placeUserId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
-      [place_id2 ?? place_id],
+      [placeId2 ?? placeId],
     )
-    const placeUsers = res?.rows
-    const len = placeUsers.length
-    const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
-    const next = placeUsers[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.place_user_id === placeUserId)
+    const next = rows[(index + 1) % len]
     navigate({
-      pathname: `../${next.place_user_id}`,
-      search: searchParams.toString(),
+      to: `../${next.place_user_id}`,
+      params: (prev) => ({ ...prev, placeUserId: next.place_user_id }),
     })
-  }, [db, navigate, place_id, place_id2, place_user_id, searchParams])
+  }, [db, navigate, placeId, placeId2, placeUserId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
-      [place_id2 ?? place_id],
+      [placeId2 ?? placeId],
     )
-    const placeUsers = res?.rows
-    const len = placeUsers.length
-    const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
-    const previous = placeUsers[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.place_user_id === placeUserId)
+    const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.place_user_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.place_user_id}`,
+      params: (prev) => ({ ...prev, placeUserId: previous.place_user_id }),
     })
-  }, [db, navigate, place_id, place_id2, place_user_id, searchParams])
+  }, [db, navigate, placeId, placeId2, placeUserId])
 
   return (
     <FormHeader
