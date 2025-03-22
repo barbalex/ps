@@ -37,7 +37,7 @@ export const Fields = memo(({ from }) => {
   console.log('Fields', { filter, filterString, isFiltered, fields })
 
   const add = useCallback(async () => {
-    const res = await createField({ project_id: projectId, db })
+    const res = await createField({ projectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({

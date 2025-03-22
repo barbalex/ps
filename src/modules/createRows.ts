@@ -77,11 +77,11 @@ export const createSubproject = async ({ db, projectId }) => {
 
 export const createFile = async ({
   db,
-  project_id = null,
-  subproject_id = null,
-  place_id = null,
-  action_id = null,
-  check_id = null,
+  projectId = null,
+  subprojectId = null,
+  placeId = null,
+  actionId = null,
+  checkId = null,
   name = null,
   size = null,
   mimetype = null,
@@ -95,11 +95,11 @@ export const createFile = async ({
 
   const data = {
     file_id: uuidv7(),
-    project_id,
-    subproject_id,
-    place_id,
-    action_id,
-    check_id,
+    project_id: projectId,
+    subproject_id: subprojectId,
+    place_id: placeId,
+    action_id: actionId,
+    check_id: checkId,
 
     name,
     size,
@@ -192,17 +192,17 @@ export const createUser = async ({ db, setUserId }) => {
   ])
 }
 
-export const createPerson = async ({ db, project_id }) => {
+export const createPerson = async ({ db, projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    projectId: project_id,
+    projectId,
     table: 'persons',
   })
 
   const data = {
     person_id: uuidv7(),
-    project_id,
+    project_id: projectId,
 
     ...presetData,
   }
@@ -228,7 +228,7 @@ export const createProjectCrs = async ({ projectId, db }) =>
   )
 
 export const createField = async ({
-  project_id = null,
+  projectId = null,
   table_name = null,
   level = null,
   db,
@@ -237,7 +237,7 @@ export const createField = async ({
     `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6) returning field_id`,
     [
       uuidv7(),
-      project_id,
+      projectId,
       table_name,
       level,
       '018ca19e-7a23-7bf4-8523-ff41e3b60807',

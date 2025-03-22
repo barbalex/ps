@@ -38,7 +38,7 @@ export const Persons = memo(() => {
   const persons = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createPerson({ db, project_id: projectId })
+    const res = await createPerson({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({

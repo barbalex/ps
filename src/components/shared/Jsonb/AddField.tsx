@@ -32,7 +32,7 @@ export const AddField = memo(({ tableName, level, from }) => {
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)
     const newFieldParams = { table_name: tableName, level, db }
-    if (!isAccountTable) newFieldParams.project_id = projectId
+    if (!isAccountTable) newFieldParams.projectId = projectId
     const res = await createField(newFieldParams)
     const newField = res?.rows?.[0]
     // TODO:

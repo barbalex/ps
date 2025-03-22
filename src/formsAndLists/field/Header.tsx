@@ -13,7 +13,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createField({ project_id: projectId, db })
+    const res = await createField({ projectId, db })
     const data = res?.rows?.[0]
     navigate({
       to: `/data/fields/${data.field_id}`,

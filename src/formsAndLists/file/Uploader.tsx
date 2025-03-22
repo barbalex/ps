@@ -51,17 +51,17 @@ export const Uploader = memo(({ from }) => {
         height: event.detail.fileInfo?.imageInfo?.height ?? null,
       }
       if (actionId) {
-        fileInput.action_id = actionId
+        fileInput.actionId = actionId
       } else if (checkId) {
-        fileInput.check_id = checkId
+        fileInput.checkId = checkId
       } else if (placeId2) {
-        fileInput.place_id = placeId2
+        fileInput.placeId = placeId2
       } else if (placeId) {
-        fileInput.place_id = placeId
+        fileInput.placeId = placeId
       } else if (subprojectId) {
-        fileInput.subproject_id = subprojectId
+        fileInput.subprojectId = subprojectId
       } else if (projectId) {
-        fileInput.project_id = projectId
+        fileInput.projectId = projectId
       }
       const res1 = await createFile(fileInput)
       const data = res1?.rows?.[0]
