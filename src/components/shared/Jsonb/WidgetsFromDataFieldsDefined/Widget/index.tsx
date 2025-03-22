@@ -174,7 +174,16 @@ export const WidgetDragAndDrop = memo(
           },
         }),
       )
-    }, [index, instanceId, field, fieldsCount, registerItem])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+      index,
+      instanceId,
+      field,
+      fieldsCount,
+      registerItem,
+      elementRef.current,
+      dragHandleRef.current,
+    ])
 
     // drag and drop to order
     // only if designing
