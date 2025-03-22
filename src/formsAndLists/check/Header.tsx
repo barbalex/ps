@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
@@ -13,71 +13,64 @@ import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
+const from = 'TODO:'
+
 export const Header = memo(({ autoFocusRef }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
-  const { project_id, place_id, place_id2, check_id } = useParams()
+  const { projectId, placeId, placeId2, checkId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const res = await createCheck({
       db,
-      project_id,
-      place_id: place_id2 ?? place_id,
+      projectId,
+      placeId: placeId2 ?? placeId,
     })
     const data = res?.rows?.[0]
     navigate({
-      pathname: `../${data.check_id}`,
-      search: searchParams.toString(),
+      to: `../${data.check_id}`,
+      params: (prev) => ({ ...prev, checkId: data.check_id }),
     })
     autoFocusRef.current?.focus()
-  }, [
-    autoFocusRef,
-    db,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    searchParams,
-  ])
+  }, [autoFocusRef, db, navigate, placeId, placeId2, projectId])
 
   const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM checks WHERE check_id = $1`, [check_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [check_id, db, navigate, searchParams])
+    await db.query(`DELETE FROM checks WHERE check_id = $1`, [checkId])
+    navigate({ to: '..' })
+  }, [checkId, db, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
-      [place_id2 ?? place_id],
+      [placeId2 ?? placeId],
     )
     const checks = res?.rows
     const len = checks.length
-    const index = checks.findIndex((p) => p.check_id === check_id)
+    const index = checks.findIndex((p) => p.check_id === checkId)
     const next = checks[(index + 1) % len]
     navigate({
-      pathname: `../${next.check_id}`,
-      search: searchParams.toString(),
+      to: `../${next.check_id}`,
+      params: (prev) => ({ ...prev, checkId: next.check_id }),
     })
-  }, [check_id, db, navigate, place_id, place_id2, searchParams])
+  }, [checkId, db, navigate, placeId, placeId2])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
-      [place_id2 ?? place_id],
+      [placeId2 ?? placeId],
     )
     const checks = res?.rows
     const len = checks.length
-    const index = checks.findIndex((p) => p.check_id === check_id)
+    const index = checks.findIndex((p) => p.check_id === checkId)
     const previous = checks[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.check_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.check_id}`,
+      params: (prev) => ({ ...prev, checkId: previous.check_id }),
     })
-  }, [check_id, db, navigate, place_id, place_id2, searchParams])
+  }, [checkId, db, navigate, placeId, placeId2])
 
   const alertNoGeometry = useCallback(async () => {
     createNotification({
@@ -90,7 +83,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const onClickZoomTo = useCallback(async () => {
     const res = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
-      check_id,
+      checkId,
     ])
     const check = res?.rows?.[0]
     const geometry = check?.geometry
@@ -105,7 +98,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [db, check_id, alertNoGeometry, tabs, setTabs, setMapBounds])
+  }, [db, checkId, alertNoGeometry, tabs, setTabs, setMapBounds])
 
   return (
     <FormHeader

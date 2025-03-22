@@ -45,8 +45,8 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createCheck({
       db,
-      project_id: projectId,
-      place_id: placeId2 ?? placeId,
+      projectId,
+      placeId: placeId2 ?? placeId,
     })
     const data = res?.rows?.[0]
     if (!data) return
