@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -13,12 +13,12 @@ import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ActionReportValuesNode = memo(
   ({
-    project_id,
-    subproject_id,
-    place_id,
+    projectId,
+    subprojectId,
+    placeId,
     place,
-    action_id,
-    action_report_id,
+    actionId,
+    actionReportId,
     level = 11,
   }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -33,7 +33,7 @@ export const ActionReportValuesNode = memo(
       FROM action_report_values 
       WHERE action_report_id = $1 
       ORDER BY label`,
-      [action_report_id],
+      [actionReportId],
       'action_report_value_id',
     )
     const rows = res?.rows ?? []
@@ -51,24 +51,24 @@ export const ActionReportValuesNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'actions',
-        action_id,
+        actionId,
         'reports',
-        action_report_id,
+        actionReportId,
       ],
       [
-        action_id,
-        action_report_id,
+        actionId,
+        actionReportId,
         place.place_id,
-        place_id,
-        project_id,
-        subproject_id,
+        placeId,
+        projectId,
+        subprojectId,
       ],
     )
     const parentUrl = `/${parentArray.join('/')}`
@@ -118,12 +118,12 @@ export const ActionReportValuesNode = memo(
           rows.map((actionReportValue) => (
             <ActionReportValueNode
               key={actionReportValue.action_report_value_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              project_id={projectId}
+              subproject_id={subprojectId}
+              place_id={placeId}
               place={place}
-              action_id={action_id}
-              action_report_id={action_report_id}
+              action_id={actionId}
+              action_report_id={actionReportId}
               actionReportValue={actionReportValue}
               level={level + 1}
             />
