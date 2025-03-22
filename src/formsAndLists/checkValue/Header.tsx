@@ -1,67 +1,68 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createCheckValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = 'TODO:'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { check_id, check_value_id } = useParams()
+  const { checkId, checkValueId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createCheckValue({ check_id, db })
+    const res = await createCheckValue({ checkId, db })
     const checkValue = res?.rows?.[0]
     navigate({
-      pathname: `../${checkValue.check_value_id}`,
-      search: searchParams.toString(),
+      to: `../${checkValue.check_value_id}`,
+      params: (prev) => ({ ...prev, checkValueId: checkValue.check_value_id }),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, check_id, db, navigate, searchParams])
+  }, [autoFocusRef, checkId, db, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.query('DELETE FROM check_values WHERE check_value_id = $1', [
-      check_value_id,
+      checkValueId,
     ])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [check_value_id, db, navigate, searchParams])
+    navigate({ to: '..' })
+  }, [checkValueId, db, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
-      [check_id],
+      [checkId],
     )
     const checkValues = res?.rows
     const len = checkValues.length
     const index = checkValues.findIndex(
-      (p) => p.check_value_id === check_value_id,
+      (p) => p.check_value_id === checkValueId,
     )
     const next = checkValues[(index + 1) % len]
     navigate({
-      pathname: `../${next.check_value_id}`,
-      search: searchParams.toString(),
+      to: `../${next.check_value_id}`,
+      params: (prev) => ({ ...prev, checkValueId: next.check_value_id }),
     })
-  }, [check_id, check_value_id, db, navigate, searchParams])
+  }, [checkId, checkValueId, db, navigate])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
-      [check_id],
+      [checkId],
     )
     const checkValues = res?.rows
     const len = checkValues.length
     const index = checkValues.findIndex(
-      (p) => p.check_value_id === check_value_id,
+      (p) => p.check_value_id === checkValueId,
     )
     const previous = checkValues[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.check_value_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.check_value_id}`,
+      params: (prev) => ({ ...prev, checkValueId: previous.check_value_id }),
     })
-  }, [check_id, check_value_id, db, navigate, searchParams])
+  }, [checkId, checkValueId, db, navigate])
 
   return (
     <FormHeader

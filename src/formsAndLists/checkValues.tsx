@@ -24,7 +24,7 @@ export const Component = memo(() => {
   const checkValues = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createCheckValue({ check_id: checkId, db })
+    const res = await createCheckValue({ checkId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
