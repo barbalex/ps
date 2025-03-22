@@ -26,8 +26,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const addRow = useCallback(async () => {
     const res = await createAction({
       db,
-      project_id: projectId,
-      place_id: placeId2 ?? placeId,
+      projectId,
+      placeId: placeId2 ?? placeId,
     })
     const data = res?.rows?.[0]
     navigate({

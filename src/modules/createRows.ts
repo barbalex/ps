@@ -514,17 +514,13 @@ export const createCheckTaxon = async ({ db, checkId }) =>
     [uuidv7(), checkId],
   )
 
-export const createAction = async ({ db, project_id, place_id }) => {
+export const createAction = async ({ db, projectId, placeId }) => {
   // find fields with preset values on the data column
-  const presetData = await getPresetData({
-    db,
-    projectId: project_id,
-    table: 'actions',
-  })
+  const presetData = await getPresetData({ db, projectId, table: 'actions' })
 
   const data = {
     action_id: uuidv7(),
-    place_id,
+    place_id: placeId,
     date: new Date(),
     relevant_for_reports: true,
     ...presetData,
@@ -541,23 +537,23 @@ export const createAction = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createActionValue = async ({ db, action_id }) =>
+export const createActionValue = async ({ db, actionId }) =>
   db.query(
     `insert into action_values (action_value_id, action_id) values ($1, $2) returning action_value_id`,
-    [uuidv7(), action_id],
+    [uuidv7(), actionId],
   )
 
-export const createActionReport = async ({ db, project_id, action_id }) => {
+export const createActionReport = async ({ db, projectId, actionId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    projectId: project_id,
+    projectId,
     table: 'action_reports',
   })
 
   const data = {
     action_report_id: uuidv7(),
-    action_id,
+    action_id: actionId,
     year: new Date().getFullYear(),
     ...presetData,
   }

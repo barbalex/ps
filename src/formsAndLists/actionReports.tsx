@@ -24,11 +24,7 @@ export const Component = memo(() => {
   const actionReports = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createActionReport({
-      db,
-      project_id: projectId,
-      action_id: actionId,
-    })
+    const res = await createActionReport({ db, projectId, actionId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
