@@ -24,7 +24,7 @@ export const Component = memo(() => {
   const checkTaxa = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createCheckTaxon({ db, check_id: checkId })
+    const res = await createCheckTaxon({ db, checkId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
