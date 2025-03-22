@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -13,7 +13,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckNode = memo(
-  ({ project_id, subproject_id, place_id, check, place, level = 8 }) => {
+  ({ projectId, subprojectId, placeId, check, place, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -21,7 +21,7 @@ export const CheckNode = memo(
     // need project to know whether to show files
     const resProject = useLiveIncrementalQuery(
       `SELECT project_id, files_active_checks FROM projects WHERE project_id = $1`,
-      [project_id],
+      [projectId],
       'project_id',
     )
     const project = resProject?.rows?.[0]
@@ -32,15 +32,15 @@ export const CheckNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'checks',
       ],
-      [place.place_id, place_id, project_id, subproject_id],
+      [place.place_id, placeId, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
@@ -92,27 +92,27 @@ export const CheckNode = memo(
         {isOpen && (
           <>
             <CheckValuesNode
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              project_id={projectId}
+              subproject_id={subprojectId}
+              place_id={placeId}
               place={place}
               check_id={check.check_id}
               level={level + 1}
             />
             <CheckTaxaNode
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              project_id={projectId}
+              subproject_id={subprojectId}
+              place_id={placeId}
               place={place}
               check_id={check.check_id}
               level={level + 1}
             />
             {showFiles && (
               <FilesNode
-                project_id={project_id}
-                subproject_id={subproject_id}
-                place_id={place_id ?? place.place_id}
-                place_id2={place_id ? place.place_id : undefined}
+                project_id={projectId}
+                subproject_id={subprojectId}
+                place_id={placeId ?? place.place_id}
+                place_id2={placeId ? place.place_id : undefined}
                 check_id={check.check_id}
                 level={level + 1}
               />
