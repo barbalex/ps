@@ -39,7 +39,7 @@ export const Lists = memo(() => {
   const lists = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createList({ db, project_id: projectId })
+    const res = await createList({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
@@ -61,15 +61,18 @@ export const Lists = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {lists.map(({ list_id, label }) => (
-              <Row key={list_id} to={list_id} label={label ?? list_id} />
+              <Row
+                key={list_id}
+                to={list_id}
+                label={label ?? list_id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

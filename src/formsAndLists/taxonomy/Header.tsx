@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createTaxonomy({ db, project_id: projectId })
+    const res = await createTaxonomy({ db, projectId })
     const taxonomy = res?.rows?.[0]
     navigate({
       to: `../${taxonomy.taxonomy_id}`,

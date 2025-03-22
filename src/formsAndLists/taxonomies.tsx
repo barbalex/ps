@@ -24,7 +24,7 @@ export const Taxonomies = memo(() => {
   const taxonomies = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createTaxonomy({ db, project_id: projectId })
+    const res = await createTaxonomy({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
@@ -45,10 +45,9 @@ export const Taxonomies = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {taxonomies.map(({ taxonomy_id, label }) => (
               <Row
                 key={taxonomy_id}
@@ -57,7 +56,7 @@ export const Taxonomies = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

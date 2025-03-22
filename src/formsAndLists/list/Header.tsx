@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createList({ db, project_id: projectId })
+    const res = await createList({ db, projectId })
     const data = res?.rows?.[0]
     navigate({
       to: `../${data.list_id}`,

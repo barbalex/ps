@@ -25,7 +25,7 @@ export const ListValues = memo(() => {
   const listValues = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createListValue({ db, list_id: listId })
+    const res = await createListValue({ db, listId })
     const list_value_id = res?.rows?.[0]?.list_value_id
     if (!list_value_id) return
     navigate({
@@ -46,10 +46,9 @@ export const ListValues = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {listValues.map(({ list_value_id, label }) => (
               <Row
                 key={list_value_id}
@@ -58,7 +57,7 @@ export const ListValues = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

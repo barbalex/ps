@@ -264,17 +264,13 @@ export const createUnit = async ({ projectId, db }) =>
     ],
   )
 
-export const createList = async ({ db, project_id, name = null }) => {
+export const createList = async ({ db, projectId, name = null }) => {
   // find fields with preset values on the data column
-  const presetData = await getPresetData({
-    db,
-    projectId: project_id,
-    table: 'lists',
-  })
+  const presetData = await getPresetData({ db, projectId, table: 'lists' })
 
   const data = {
     list_id: uuidv7(),
-    project_id,
+    project_id: projectId,
     name,
     obsolete: false,
 
@@ -291,17 +287,17 @@ export const createList = async ({ db, project_id, name = null }) => {
   )
 }
 
-export const createTaxonomy = async ({ db, project_id }) => {
+export const createTaxonomy = async ({ db, projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    projectId: project_id,
+    projectId,
     table: 'taxonomies',
   })
 
   const data = {
     taxonomy_id: uuidv7(),
-    project_id,
+    project_id: projectId,
     obsolete: false,
 
     ...presetData,
@@ -361,13 +357,13 @@ export const createTaxon = async ({ taxonomyId, db }) =>
     [uuidv7(), taxonomyId],
   )
 
-export const createListValue = async ({ list_id, db }) =>
+export const createListValue = async ({ listId, db }) =>
   db.query(
     `
     insert into list_values (list_value_id, account_id, list_id, obsolete) 
     values ($1, $2, $3, $4) 
     returning list_value_id`,
-    [uuidv7(), '018cf958-27e2-7000-90d3-59f024d467be', list_id, false],
+    [uuidv7(), '018cf958-27e2-7000-90d3-59f024d467be', listId, false],
   )
 
 export const createGoal = async ({ db, project_id, subproject_id }) => {
