@@ -1,68 +1,81 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createActionReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
+const from = 'TODO:'
+
 export const Header = memo(({ autoFocusRef }) => {
-  const { action_report_id, action_report_value_id } = useParams()
+  const { actionReportId, actionReportValueId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createActionReportValue({ db, action_report_id })
+    const res = await createActionReportValue({
+      db,
+      action_report_id: actionReportId,
+    })
     const actionReportValue = res?.rows?.[0]
     navigate({
-      pathname: `../${actionReportValue.action_report_value_id}`,
-      search: searchParams.toString(),
+      to: `../${actionReportValue.action_report_value_id}`,
+      params: (prev) => ({
+        ...prev,
+        actionReportValueId: actionReportValue.action_report_value_id,
+      }),
     })
     autoFocusRef.current?.focus()
-  }, [action_report_id, autoFocusRef, db, navigate, searchParams])
+  }, [actionReportId, autoFocusRef, db, navigate])
 
   const deleteRow = useCallback(async () => {
     db.query(
       `DELETE FROM action_report_values WHERE action_report_value_id = $1`,
-      [action_report_value_id],
+      [actionReportValueId],
     )
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [action_report_value_id, db, navigate, searchParams])
+    navigate({ to: '..' })
+  }, [actionReportValueId, db, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
-      [action_report_id],
+      [actionReportId],
     )
     const actionReportValues = res?.rows
     const len = actionReportValues.length
     const index = actionReportValues.findIndex(
-      (p) => p.action_report_value_id === action_report_value_id,
+      (p) => p.action_report_value_id === actionReportValueId,
     )
     const next = actionReportValues[(index + 1) % len]
     navigate({
-      pathname: `../${next.action_report_value_id}`,
-      search: searchParams.toString(),
+      to: `../${next.action_report_value_id}`,
+      params: (prev) => ({
+        ...prev,
+        actionReportValueId: next.action_report_value_id,
+      }),
     })
-  }, [action_report_id, action_report_value_id, db, navigate, searchParams])
+  }, [actionReportId, actionReportValueId, db, navigate])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
-      [action_report_id],
+      [actionReportId],
     )
     const actionReportValues = res?.rows
     const len = actionReportValues.length
     const index = actionReportValues.findIndex(
-      (p) => p.action_report_value_id === action_report_value_id,
+      (p) => p.action_report_value_id === actionReportValueId,
     )
     const previous = actionReportValues[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.action_report_value_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.action_report_value_id}`,
+      params: (prev) => ({
+        ...prev,
+        actionReportValueId: previous.action_report_value_id,
+      }),
     })
-  }, [action_report_id, action_report_value_id, db, navigate, searchParams])
+  }, [actionReportId, actionReportValueId, db, navigate])
 
   return (
     <FormHeader
