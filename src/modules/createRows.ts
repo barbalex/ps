@@ -789,13 +789,13 @@ export const createChartSubject = async ({ chartId, db }) =>
     ],
   )
 
-export const createOccurrenceImport = async ({ subproject_id, db }) =>
+export const createOccurrenceImport = async ({ subprojectId, db }) =>
   db.query(
     `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) returning occurrence_import_id`,
     [
       uuidv7(),
       '018cf958-27e2-7000-90d3-59f024d467be',
-      subproject_id,
+      subprojectId,
       'coordinates',
       'EPSG:4326',
       Date.now(),
@@ -804,10 +804,10 @@ export const createOccurrenceImport = async ({ subproject_id, db }) =>
   )
 
 // no insert as this data is inserted in bulk
-export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
+export const createOccurrence = ({ occurrenceImportId, data = null }) => ({
   occurrence_id: uuidv7(),
   account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
-  occurrence_import_id,
+  occurrence_import_id: occurrenceImportId,
   data,
 })
 

@@ -28,7 +28,7 @@ export const processData = async ({ file, additionalData, db }) => {
     })
     const occurrences = data.map((dat) =>
       createOccurrence({
-        occurrence_import_id: additionalData.occurrence_import_id,
+        occurrenceImportId: additionalData.occurrence_import_id,
         data: dat,
       }),
     )

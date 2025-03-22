@@ -27,10 +27,7 @@ export const Header = memo(
     }, [setShowPreview, showPreview])
 
     const addRow = useCallback(async () => {
-      const res = await createOccurrenceImport({
-        subproject_id: subprojectId,
-        db,
-      })
+      const res = await createOccurrenceImport({ subprojectId, db })
       const data = res?.rows?.[0]
       navigate({
         to: `../${data.occurrence_import_id}`,
