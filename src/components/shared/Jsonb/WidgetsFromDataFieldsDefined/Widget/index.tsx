@@ -89,6 +89,9 @@ export const WidgetDragAndDrop = memo(
     useEffect(() => {
       const element = elementRef.current
       const dragHandle = dragHandleRef.current
+      if (!element || !dragHandle) {
+        return
+      }
       invariant(element)
       invariant(dragHandle)
 
