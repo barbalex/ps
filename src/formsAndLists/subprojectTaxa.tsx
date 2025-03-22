@@ -25,7 +25,7 @@ export const SubprojectTaxa = memo(() => {
   const subprojectTaxa = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createSubprojectTaxon({ subproject_id: subprojectId, db })
+    const res = await createSubprojectTaxon({ subprojectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({

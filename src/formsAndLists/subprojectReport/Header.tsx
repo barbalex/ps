@@ -14,11 +14,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createSubprojectReport({
-      db,
-      project_id: projectId,
-      subproject_id: subprojectId,
-    })
+    const res = await createSubprojectReport({ db, projectId, subprojectId })
     const data = res?.rows?.[0]
     navigate({
       to: `../${data.subproject_report_id}`,

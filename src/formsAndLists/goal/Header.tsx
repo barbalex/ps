@@ -12,11 +12,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createGoal({
-      db,
-      project_id: projectId,
-      subproject_id: subprojectId,
-    })
+    const res = await createGoal({ db, projectId, subprojectId })
     const data = res?.rows?.[0]
     navigate({
       to: `../${data.goal_id}`,

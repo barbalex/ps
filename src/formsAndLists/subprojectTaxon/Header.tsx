@@ -15,7 +15,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createSubprojectTaxon({ db, subproject_id: subprojectId })
+    const res = await createSubprojectTaxon({ db, subprojectId })
     const subprojectTaxon = res?.rows?.[0]
     navigate({
       to: `../${subprojectTaxon.subproject_taxon_id}`,

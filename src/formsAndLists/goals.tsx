@@ -40,11 +40,7 @@ export const Goals = memo(() => {
   const goals = res?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = await createGoal({
-      db,
-      project_id: projectId,
-      subproject_id: subprojectId,
-    })
+    const res = await createGoal({ db, projectId, subprojectId })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({

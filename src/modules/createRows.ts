@@ -366,17 +366,17 @@ export const createListValue = async ({ listId, db }) =>
     [uuidv7(), '018cf958-27e2-7000-90d3-59f024d467be', listId, false],
   )
 
-export const createGoal = async ({ db, project_id, subproject_id }) => {
+export const createGoal = async ({ db, projectId, subprojectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    projectId: project_id,
+    projectId,
     table: 'goals',
   })
 
   const data = {
     goal_id: uuidv7(),
-    subproject_id,
+    subproject_id: subprojectId,
     year: new Date().getFullYear(),
 
     ...presetData,
@@ -440,27 +440,27 @@ export const createPlaceUser = async ({ placeId, db }) =>
     [uuidv7(), placeId, 'reader'],
   )
 
-export const createSubprojectTaxon = async ({ db, subproject_id }) =>
+export const createSubprojectTaxon = async ({ db, subprojectId }) =>
   db.query(
     `insert into subproject_taxa (subproject_taxon_id, subproject_id) values ($1, $2) returning subproject_taxon_id`,
-    [uuidv7(), subproject_id],
+    [uuidv7(), subprojectId],
   )
 
 export const createSubprojectReport = async ({
   db,
-  project_id,
-  subproject_id,
+  projectId,
+  subprojectId,
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
-    projectId: project_id,
+    projectId,
     table: 'subproject_reports',
   })
 
   const data = {
     subproject_report_id: uuidv7(),
-    subproject_id,
+    subproject_id: subprojectId,
     year: new Date().getFullYear(),
     ...presetData,
   }
