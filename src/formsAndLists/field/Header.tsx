@@ -8,7 +8,6 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 export const Header = memo(({ autoFocusRef, from }) => {
   const { projectId, fieldId } = useParams({ from })
   const navigate = useNavigate()
-  console.log('Field.Header', { projectId, fieldId, from })
 
   const db = usePGlite()
 
@@ -24,7 +23,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
 
   const deleteRow = useCallback(async () => {
     await db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
-    navigate({ pathname: '/data/fields' })
+    navigate({ to: '/data/fields' })
   }, [db, fieldId, navigate])
 
   const toNext = useCallback(async () => {
@@ -40,7 +39,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = rows.findIndex((p) => p.field_id === fieldId)
     const next = rows[(index + 1) % len]
     navigate({
-      pathname: `/data/fields/${next.field_id}`,
+      to: `/data/fields/${next.field_id}`,
       params: (prev) => ({ ...prev, fieldId: next.field_id }),
     })
   }, [db, projectId, navigate, fieldId])
@@ -58,7 +57,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = rows.findIndex((p) => p.field_id === fieldId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      pathname: `/data/fields/${previous.field_id}`,
+      to: `/data/fields/${previous.field_id}`,
       params: (prev) => ({ ...prev, fieldId: previous.field_id }),
     })
   }, [db, projectId, navigate, fieldId])
