@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
@@ -13,71 +13,64 @@ import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
+const from = 'TODO:'
+
 export const Header = memo(({ autoFocusRef }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
-  const { project_id, place_id, place_id2, action_id } = useParams()
+  const { projectId, placeId, placeId2, actionId } = useParams({ from })
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const res = await createAction({
       db,
-      project_id,
-      place_id: place_id2 ?? place_id,
+      project_id: projectId,
+      place_id: placeId2 ?? placeId,
     })
     const data = res?.rows?.[0]
     navigate({
-      pathname: `../${data.action_id}`,
-      search: searchParams.toString(),
+      to: `../${data.action_id}`,
+      params: (prev) => ({ ...prev, actionId: data.action_id }),
     })
     autoFocusRef.current?.focus()
-  }, [
-    autoFocusRef,
-    db,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    searchParams,
-  ])
+  }, [autoFocusRef, db, navigate, placeId, placeId2, projectId])
 
   const deleteRow = useCallback(async () => {
-    db.query('DELETE FROM actions WHERE action_id = $1', [action_id])
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [action_id, db, navigate, searchParams])
+    db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
+    navigate({ to: '..' })
+  }, [actionId, db, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
       'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
-      [place_id2 ?? place_id],
+      [placeId2 ?? placeId],
     )
     const actions = res?.rows
     const len = actions.length
-    const index = actions.findIndex((p) => p.action_id === action_id)
+    const index = actions.findIndex((p) => p.action_id === actionId)
     const next = actions[(index + 1) % len]
     navigate({
-      pathname: `../${next.action_id}`,
-      search: searchParams.toString(),
+      to: `../${next.action_id}`,
+      params: (prev) => ({ ...prev, actionId: next.action_id }),
     })
-  }, [action_id, db, navigate, place_id, place_id2, searchParams])
+  }, [actionId, db, navigate, placeId, placeId2])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
       'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
-      [place_id2 ?? place_id],
+      [placeId2 ?? placeId],
     )
     const actions = res?.rows
     const len = actions.length
-    const index = actions.findIndex((p) => p.action_id === action_id)
+    const index = actions.findIndex((p) => p.action_id === actionId)
     const previous = actions[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.action_id}`,
-      search: searchParams.toString(),
+      to: `../${previous.action_id}`,
+      params: (prev) => ({ ...prev, actionId: previous.action_id }),
     })
-  }, [action_id, db, navigate, place_id, place_id2, searchParams])
+  }, [actionId, db, navigate, placeId, placeId2])
 
   const alertNoGeometry = useCallback(() => {
     createNotification({
@@ -91,7 +84,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const onClickZoomTo = useCallback(async () => {
     const res = await db.query(
       'SELECT geometry FROM actions WHERE action_id = $1',
-      [action_id],
+      [actionId],
     )
     const action = res?.rows?.[0]
     const geometry = action?.geometry
@@ -108,7 +101,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [action_id, alertNoGeometry, db, setMapBounds, setTabs, tabs])
+  }, [actionId, alertNoGeometry, db, setMapBounds, setTabs, tabs])
 
   return (
     <FormHeader
