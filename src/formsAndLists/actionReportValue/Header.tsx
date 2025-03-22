@@ -14,10 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const res = await createActionReportValue({
-      db,
-      action_report_id: actionReportId,
-    })
+    const res = await createActionReportValue({ db, actionReportId })
     const actionReportValue = res?.rows?.[0]
     navigate({
       to: `../${actionReportValue.action_report_value_id}`,

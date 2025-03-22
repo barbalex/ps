@@ -56,7 +56,7 @@ export const FetchWmsCapabilities = memo(
         // 3. if not, create service, then update that
         const serviceData = await createWmsService({
           url: urlTrimmed,
-          project_id: wmsLayer.project_id,
+          projectId: wmsLayer.project_id,
           db,
         })
         service = serviceData.rows[0]
@@ -115,9 +115,9 @@ export const FetchWmsCapabilities = memo(
         style={buttonStyle}
         disabled={!url}
       >
-        {fetching
-          ? `Loading Capabilities (${wmsServiceLayersCount})`
-          : `Fetch Capabilities`}
+        {fetching ?
+          `Loading Capabilities (${wmsServiceLayersCount})`
+        : `Fetch Capabilities`}
       </Button>
     )
   },

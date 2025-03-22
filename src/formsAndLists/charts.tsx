@@ -43,10 +43,10 @@ export const Charts = memo(() => {
 
   const add = useCallback(async () => {
     const idToAdd =
-      placeId2 ? { place_id2: placeId2 }
-      : placeId ? { place_id: placeId }
-      : subprojectId ? { subproject_id: subprojectId }
-      : { project_id: projectId }
+      placeId2 ? { placeId: placeId2 }
+      : placeId ? { placeId }
+      : subprojectId ? { subprojectId }
+      : { projectId }
     const res = await createChart({ ...idToAdd, db })
     const data = res?.rows?.[0]
     if (!data) return

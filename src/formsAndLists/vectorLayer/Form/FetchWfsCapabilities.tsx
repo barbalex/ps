@@ -55,7 +55,7 @@ export const FetchWfsCapabilities = memo(
         // 3. if not, create service, then update that
         const res = await createWfsService({
           url: urlTrimmed,
-          project_id: vectorLayer.project_id,
+          projectId: vectorLayer.project_id,
           db,
         })
         const serviceData = res?.rows?.[0]
@@ -114,9 +114,9 @@ export const FetchWfsCapabilities = memo(
         style={buttonStyle}
         disabled={!url}
       >
-        {fetching
-          ? `Loading Capabilities (${wfsServiceLayersCount})`
-          : `Fetch Capabilities`}
+        {fetching ?
+          `Loading Capabilities (${wfsServiceLayersCount})`
+        : `Fetch Capabilities`}
       </Button>
     )
   },

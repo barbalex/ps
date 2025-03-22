@@ -568,10 +568,10 @@ export const createActionReport = async ({ db, projectId, actionId }) => {
   )
 }
 
-export const createActionReportValue = async ({ db, action_report_id }) =>
+export const createActionReportValue = async ({ db, actionReportId }) =>
   db.query(
     `insert into action_report_values (action_report_value_id, action_report_id) values ($1, $2) returning action_report_value_id`,
-    [uuidv7(), action_report_id],
+    [uuidv7(), actionReportId],
   )
 
 export const createPlaceReport = async ({ db, projectId, placeId }) => {
@@ -632,7 +632,7 @@ export const createVectorLayer = ({
   )
 
 export const createWfsService = async ({
-  project_id = null,
+  projectId = null,
   url = null,
   version = null,
   info_formats = null,
@@ -642,26 +642,18 @@ export const createWfsService = async ({
 }) =>
   db.query(
     `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7) returning wfs_service_id`,
-    [
-      uuidv7(),
-      project_id,
-      version,
-      url,
-      info_formats,
-      info_format,
-      default_crs,
-    ],
+    [uuidv7(), projectId, version, url, info_formats, info_format, default_crs],
   )
 
 export const createWfsServiceLayer = async ({
-  wfs_service_id,
+  wfsServiceId,
   name = null,
   label = null,
   db,
 }) =>
   db.query(
     `insert into wfs_service_layers (wfs_service_layer_id, wfs_service_id, name, label) values ($1, $2, $3, $4) returning wfs_service_layer_id`,
-    [uuidv7(), wfs_service_id, name, label],
+    [uuidv7(), wfsServiceId, name, label],
   )
 
 export const createVectorLayerDisplay = async ({
@@ -725,7 +717,7 @@ export const createLayerPresentation = async ({
   )
 
 export const createWmsService = async ({
-  project_id = null,
+  projectId = null,
   url = null,
   image_formats = null,
   image_format = null,
@@ -739,7 +731,7 @@ export const createWmsService = async ({
     `INSERT INTO wms_services (wms_service_id, project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *`,
     [
       uuidv7(),
-      project_id,
+      projectId,
       version,
       url,
       image_formats,
@@ -752,7 +744,7 @@ export const createWmsService = async ({
 
 // not in use - multiple insert used instead
 export const createWmsServiceLayer = async ({
-  wms_service_id,
+  wmsServiceId,
   name = null,
   label = null,
   queryable = null,
@@ -762,21 +754,13 @@ export const createWmsServiceLayer = async ({
 }) =>
   db.query(
     `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, legend_image) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *`,
-    [
-      uuidv7(),
-      wms_service_id,
-      name,
-      label,
-      queryable,
-      legend_url,
-      legend_image,
-    ],
+    [uuidv7(), wmsServiceId, name, label, queryable, legend_url, legend_image],
   )
 
 export const createChart = async ({
-  project_id = null,
-  subproject_id = null,
-  place_id = null,
+  projectId = null,
+  subprojectId = null,
+  placeId = null,
   db,
 }) =>
   db.query(
@@ -784,9 +768,9 @@ export const createChart = async ({
     [
       uuidv7(),
       '018cf958-27e2-7000-90d3-59f024d467be',
-      project_id,
-      subproject_id,
-      place_id,
+      projectId,
+      subprojectId,
+      placeId,
     ],
   )
 
