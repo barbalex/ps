@@ -90,28 +90,28 @@ export const ActionNode = memo(
         {isOpen && (
           <>
             <ActionValuesNode
-              project_id={projectId}
-              subproject_id={subprojectId}
-              place_id={placeId}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              action_id={action.action_id}
+              actionId={action.action_id}
               level={level + 1}
             />
             <ActionReportsNode
-              project_id={projectId}
-              subproject_id={subprojectId}
-              place_id={placeId}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              action_id={action.action_id}
+              actionId={action.action_id}
               level={level + 1}
             />
             {showFiles && (
               <FilesNode
-                project_id={projectId}
-                subproject_id={subprojectId}
-                place_id={placeId ?? place.place_id}
-                place_id2={placeId ? place.place_id : undefined}
-                action_id={action.action_id}
+                projectId={projectId}
+                subprojectId={subprojectId}
+                placeId={placeId ?? place.place_id}
+                placeId2={placeId ? place.place_id : undefined}
+                actionId={action.action_id}
                 level={level + 1}
               />
             )}

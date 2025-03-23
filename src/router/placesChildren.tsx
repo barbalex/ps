@@ -2,6 +2,143 @@ import { Filter } from '../components/shared/Filter/index.tsx'
 
 export const placesChildren = ({ level }) => [
   {
+    path: 'checks',
+    element: null,
+    handle: {
+      crumb: {
+        text: 'Checks',
+        table: 'checks',
+        folder: true,
+        level,
+      },
+    },
+    children: [
+      {
+        index: true,
+        lazy: () => import('../routes/checks.tsx'),
+      },
+      {
+        path: 'filter',
+        element: <Filter level={level} />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/check/Form.tsx'),
+          },
+        ],
+      },
+      {
+        path: ':check_id',
+        element: null,
+        handle: {
+          crumb: {
+            table: 'checks',
+            folder: false,
+            level,
+          },
+          to: {
+            table: `checks`,
+            level,
+          },
+        },
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/check/index.tsx'),
+          },
+          {
+            path: 'values',
+            element: null,
+            handle: {
+              crumb: {
+                text: 'Values',
+                table: 'check_values',
+                folder: true,
+              },
+            },
+            children: [
+              {
+                index: true,
+                lazy: () => import('../routes/checkValues.tsx'),
+              },
+              {
+                path: ':check_value_id',
+                lazy: () => import('../routes/checkValue/index.tsx'),
+                handle: {
+                  crumb: {
+                    table: 'check_values',
+                    folder: false,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            path: 'taxa',
+            element: null,
+            handle: {
+              crumb: {
+                text: 'Taxa',
+                table: 'check_taxa',
+                folder: true,
+              },
+            },
+            children: [
+              {
+                index: true,
+                lazy: () => import('../routes/checkTaxa.tsx'),
+              },
+              {
+                path: ':check_taxon_id',
+                lazy: () => import('../routes/checkTaxon/index.tsx'),
+                handle: {
+                  crumb: {
+                    table: 'check_taxa',
+                    folder: false,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            path: 'files',
+            element: null,
+            handle: {
+              crumb: {
+                text: 'Files',
+                table: 'files',
+                folder: true,
+              },
+            },
+            children: [
+              { index: true, lazy: () => import('../routes/files.tsx') },
+              {
+                path: ':file_id',
+                element: null,
+                handle: {
+                  crumb: {
+                    table: 'files',
+                    folder: false,
+                  },
+                },
+                children: [
+                  {
+                    index: true,
+                    lazy: () => import('../routes/file/index.tsx'),
+                  },
+                  {
+                    path: 'preview',
+                    lazy: () => import('../routes/filePreview/index.tsx'),
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
     path: 'actions',
     element: null,
     handle: {
