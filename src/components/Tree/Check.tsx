@@ -107,7 +107,7 @@ export const CheckNode = memo(
               checkId={check.check_id}
               level={level + 1}
             />
-            {/* {showFiles && (
+            {showFiles && (
               <FilesNode
                 projectId={projectId}
                 subprojectId={subprojectId}
@@ -116,7 +116,7 @@ export const CheckNode = memo(
                 checkId={check.check_id}
                 level={level + 1}
               />
-            )} */}
+            )}
           </>
         )}
       </>
