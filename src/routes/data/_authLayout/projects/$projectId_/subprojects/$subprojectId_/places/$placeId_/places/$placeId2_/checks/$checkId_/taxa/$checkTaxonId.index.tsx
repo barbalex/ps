@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { CheckTaxon } from '../../../../../../../../../../../../../../../formsAndLists/checkTaxon/index.tsx'
+import { CheckTaxon } from '../../../../../../../../../../../../../../formsAndLists/checkTaxon/index.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId/',
@@ -10,6 +10,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <CheckTaxon from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId/" />
+    <CheckTaxon from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId/" />
   )
 }

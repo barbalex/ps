@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { CheckValues } from '../../../../../../../../../../../../../../../formsAndLists/checkValues.tsx'
-import { NotFound } from '../../../../../../../../../../../../../../../components/NotFound.tsx'
+import { CheckValues } from '../../../../../../../../../../../../../../formsAndLists/checkValues.tsx'
+import { NotFound } from '../../../../../../../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/values/',
@@ -12,6 +12,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <CheckValues from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/values/" />
+    <CheckValues from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/values/" />
   )
 }
