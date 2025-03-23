@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Place } from '../../../../../../../../../../formsAndLists/place/index.tsx'
+import { Check } from '../../../../../../../../../../formsAndLists/check/index.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId/',
@@ -10,9 +10,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <div>
-      Hello
-      "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId/"!
-    </div>
+    <Check level={1} from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId/" />
   )
 }

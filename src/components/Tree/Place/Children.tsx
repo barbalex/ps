@@ -10,13 +10,13 @@ import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 
 export const PlaceChildren = memo(
-  ({ project_id, subproject_id, place_id, place }) => {
-    const level = place_id ? 8 : 6
+  ({ projectId, subprojectId, placeId, place }) => {
+    const level = placeId ? 8 : 6
 
     // query from place_level what children to show
     const resPlaceLevels = useLiveIncrementalQuery(
       `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
-      [project_id, place_id ? 2 : 1],
+      [projectId, placeId ? 2 : 1],
       'place_level_id',
     )
     const placeLevel = resPlaceLevels?.rows?.[0]
@@ -24,7 +24,7 @@ export const PlaceChildren = memo(
     // need project to know whether to show files
     const resProject = useLiveIncrementalQuery(
       `SELECT project_id, files_active_places FROM projects WHERE project_id = $1`,
-      [project_id],
+      [projectId],
       'project_id',
     )
     const project = resProject?.rows?.[0]
@@ -32,65 +32,65 @@ export const PlaceChildren = memo(
 
     return (
       <>
-        {!place_id && (
+        {!placeId && (
           <PlacesNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={place.place_id}
           />
         )}
         {!!placeLevel?.checks && (
           <ChecksNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
             place={place}
             level={level + 1}
           />
         )}
-        {!!placeLevel?.actions && (
+        {/* {!!placeLevel?.actions && (
           <ActionsNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
             place={place}
             level={level + 1}
           />
-        )}
-        {!!placeLevel?.reports && (
+        )} */}
+        {/* {!!placeLevel?.reports && (
           <PlaceReportsNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
             place={place}
             level={level + 1}
           />
-        )}
-        {!!placeLevel?.occurrences && (
+        )} */}
+        {/* {!!placeLevel?.occurrences && (
           <OccurrencesAssignedNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
             place={place}
             level={level + 1}
           />
-        )}
-        <PlaceUsersNode
-          project_id={project_id}
-          subproject_id={subproject_id}
-          place_id={place_id}
+        )} */}
+        {/* <PlaceUsersNode
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId}
           place={place}
           level={level + 1}
-        />
-        {showFiles && (
+        /> */}
+        {/* {showFiles && (
           <FilesNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place_id ?? place.place_id}
-            place_id2={place_id ? place.place_id : undefined}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId ?? place.place_id}
+            place_id2={placeId ? place.place_id : undefined}
             level={level + 1}
           />
-        )}
+        )} */}
       </>
     )
   },

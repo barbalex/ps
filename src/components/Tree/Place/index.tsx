@@ -76,7 +76,7 @@ export const PlaceNode = memo(({ projectId, subprojectId, placeId, place }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {/* {isOpen && (
+      {isOpen && (
         <PlaceChildren
           projectId={projectId}
           subprojectId={subprojectId}
@@ -84,7 +84,7 @@ export const PlaceNode = memo(({ projectId, subprojectId, placeId, place }) => {
           place={place}
           level={level}
         />
-      )} */}
+      )}
     </>
   )
 })
