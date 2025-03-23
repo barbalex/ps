@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ActionForm } from '../../../../../../../../../../../../../formsAndLists/action/Form.tsx'
-import { Filter } from '../../../../../../../../../../../../../components/shared/Filter/index.tsx'
+import { ActionForm } from '../../../../../../../../../../../../formsAndLists/action/Form.tsx'
+import { Filter } from '../../../../../../../../../../../../components/shared/Filter/index.tsx'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/filter'
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/filter'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/filter',
