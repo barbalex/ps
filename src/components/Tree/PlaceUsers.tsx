@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -12,7 +12,7 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const PlaceUsersNode = memo(
-  ({ project_id, subproject_id, place_id, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, place, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -43,14 +43,14 @@ export const PlaceUsersNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
       ],
-      [project_id, subproject_id, place_id, place.place_id],
+      [projectId, subprojectId, placeId, place.place_id],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'users'], [parentArray])
@@ -97,9 +97,9 @@ export const PlaceUsersNode = memo(
           rows.map((placeUser) => (
             <PlaceUserNode
               key={placeUser.place_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
               placeUser={placeUser}
               level={level + 1}

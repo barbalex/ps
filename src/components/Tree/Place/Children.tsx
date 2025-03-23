@@ -75,13 +75,13 @@ export const PlaceChildren = memo(
             level={level + 1}
           />
         )}
-        {/* <PlaceUsersNode
+        <PlaceUsersNode
           projectId={projectId}
           subprojectId={subprojectId}
           placeId={placeId}
           place={place}
           level={level + 1}
-        /> */}
+        />
         {/* {showFiles && (
           <FilesNode
             projectId={projectId}
