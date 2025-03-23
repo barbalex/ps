@@ -1,5 +1,5 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -11,15 +11,15 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { action_value_id } = useParams()
+export const ActionValue = memo(({ from }) => {
+  const { actionValueId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM action_values WHERE action_value_id = $1`,
-    [action_value_id],
+    [actionValueId],
     'action_value_id',
   )
   const row = res?.rows?.[0]
@@ -32,17 +32,20 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE action_values SET ${name} = $1 WHERE action_value_id = $2`,
-        [value, action_value_id],
+        [value, actionValueId],
       )
     },
-    [row, db, action_value_id],
+    [row, db, actionValueId],
   )
 
   if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         <DropdownField
           label="Unit"

@@ -14,9 +14,7 @@ import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
-const from = 'TODO:'
-
-export const Component = memo(() => {
+export const Actions = memo(({ from }) => {
   const [actions1Filter] = useAtom(actions1FilterAtom)
   const [actions2Filter] = useAtom(actions2FilterAtom)
 

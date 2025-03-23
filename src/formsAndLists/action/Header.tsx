@@ -13,9 +13,7 @@ import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
-const from = 'TODO:'
-
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, from }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { projectId, placeId, placeId2, actionId } = useParams({ from })

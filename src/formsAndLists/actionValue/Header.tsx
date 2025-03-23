@@ -5,9 +5,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createActionValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = 'TODO:'
-
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, from }) => {
   const { actionId, actionValueId } = useParams({ from })
   const navigate = useNavigate()
 
