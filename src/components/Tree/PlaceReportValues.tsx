@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -16,17 +16,17 @@ interface Props {
   subprojectId: string
   placeId?: string
   place: Place
-  place_report_id: string
+  placeReportId: string
   level?: number
 }
 
 export const PlaceReportValuesNode = memo(
   ({
-    project_id,
-    subproject_id,
-    place_id,
+    projectId,
+    subprojectId,
+    placeId,
     place,
-    place_report_id,
+    placeReportId,
     level = 9,
   }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -41,7 +41,7 @@ export const PlaceReportValuesNode = memo(
       FROM place_report_values 
       WHERE place_report_id = $1 
       ORDER BY label`,
-      [place_report_id],
+      [placeReportId],
       'place_report_value_id',
     )
     const rows = res?.rows ?? []
@@ -60,16 +60,16 @@ export const PlaceReportValuesNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'reports',
-        place_report_id,
+        placeReportId,
       ],
-      [place.place_id, place_id, place_report_id, project_id, subproject_id],
+      [place.place_id, placeId, placeReportId, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
@@ -116,11 +116,11 @@ export const PlaceReportValuesNode = memo(
           rows.map((placeReportValue) => (
             <PlaceReportValueNode
               key={placeReportValue.place_report_value_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              place_report_id={place_report_id}
+              placeReportId={placeReportId}
               placeReportValue={placeReportValue}
               level={level + 1}
             />

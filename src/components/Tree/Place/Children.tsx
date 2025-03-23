@@ -57,7 +57,7 @@ export const PlaceChildren = memo(
             level={level + 1}
           />
         )}
-        {/* {!!placeLevel?.reports && (
+        {!!placeLevel?.reports && (
           <PlaceReportsNode
             projectId={projectId}
             subprojectId={subprojectId}
@@ -65,7 +65,7 @@ export const PlaceChildren = memo(
             place={place}
             level={level + 1}
           />
-        )} */}
+        )}
         {/* {!!placeLevel?.occurrences && (
           <OccurrencesAssignedNode
             projectId={projectId}

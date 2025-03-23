@@ -1,16 +1,16 @@
 import { memo, useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
 export const PlaceReportValueNode = memo(
   ({
-    project_id,
-    subproject_id,
-    place_id,
+    projectId,
+    subprojectId,
+    placeId,
     place,
-    place_report_id,
+    placeReportId,
     placeReportValue,
     level = 10,
   }) => {
@@ -21,23 +21,23 @@ export const PlaceReportValueNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'reports',
-        place_report_id,
+        placeReportId,
         'values',
         placeReportValue.place_report_value_id,
       ],
       [
-        project_id,
-        subproject_id,
-        place_id,
+        projectId,
+        subprojectId,
+        placeId,
         place.place_id,
-        place_report_id,
+        placeReportId,
         placeReportValue.place_report_value_id,
       ],
     )

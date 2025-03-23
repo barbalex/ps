@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -10,7 +10,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const PlaceReportNode = memo(
-  ({ project_id, subproject_id, place_id, place, placeReport, level = 8 }) => {
+  ({ projectId, subprojectId, placeId, place, placeReport, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -20,15 +20,15 @@ export const PlaceReportNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'reports',
       ],
-      [project_id, subproject_id, place_id, place.place_id],
+      [projectId, subprojectId, placeId, place.place_id],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
@@ -77,11 +77,11 @@ export const PlaceReportNode = memo(
         />
         {isOpen && (
           <PlaceReportValuesNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place_id}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
             place={place}
-            place_report_id={placeReport.place_report_id}
+            place_reportId={placeReport.place_report_id}
             level={level + 1}
           />
         )}

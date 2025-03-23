@@ -3,7 +3,7 @@ import {
   useLiveIncrementalQuery,
   useLiveQuery,
 } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -20,7 +20,7 @@ import {
 } from '../../store.ts'
 
 export const PlaceReportsNode = memo(
-  ({ project_id, subproject_id, place_id, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, place, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
     const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
@@ -28,7 +28,7 @@ export const PlaceReportsNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
 
-    const filter = place_id ? placeReports2Filter : placeReports1Filter
+    const filter = placeId ? placeReports2Filter : placeReports1Filter
     const filterString = filterStringFromFilter(filter)
     const isFiltered = !!filterString
     const resFiltered = useLiveIncrementalQuery(
@@ -76,14 +76,14 @@ export const PlaceReportsNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
       ],
-      [place.place_id, place_id, project_id, subproject_id],
+      [place.place_id, placeId, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
@@ -130,9 +130,9 @@ export const PlaceReportsNode = memo(
           rows.map((placeReport) => (
             <PlaceReportNode
               key={placeReport.place_report_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
               placeReport={placeReport}
               level={level + 1}
