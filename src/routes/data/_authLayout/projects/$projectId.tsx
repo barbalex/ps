@@ -9,8 +9,8 @@ const defaultValues = {
 }
 
 const schema = type({
-  projectTab: `'form' | 'design' = 'form' `,
-  editingField: `string.uuid.v7 | undefined = undefined`,
+  projectTab: "'form' | 'design' = 'form'",
+  editingField: 'string.uuid.v7 | undefined = undefined',
 })
 
 export const Route = createFileRoute('/data/_authLayout/projects/$projectId')({
