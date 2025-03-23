@@ -14,6 +14,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
   const addRow = useCallback(async () => {
     const res = await createPlaceReportValue({ db, placeReportId })
     const placeReportValue = res?.rows?.[0]
+    console.log('PlaceReportValue, addRow, placeReportValue:', placeReportValue)
     navigate({
       to: `../${placeReportValue.place_report_value_id}`,
       params: (prev) => ({

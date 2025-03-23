@@ -81,7 +81,7 @@ export const PlaceReportNode = memo(
             subprojectId={subprojectId}
             placeId={placeId}
             place={place}
-            place_reportId={placeReport.place_report_id}
+            placeReportId={placeReport.place_report_id}
             level={level + 1}
           />
         )}
