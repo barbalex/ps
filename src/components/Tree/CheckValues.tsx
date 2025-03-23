@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -12,7 +12,7 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckValuesNode = memo(
-  ({ project_id, subproject_id, place_id, place, check_id, level = 9 }) => {
+  ({ projectId, subprojectId, placeId, place, checkId, level = 9 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -25,7 +25,7 @@ export const CheckValuesNode = memo(
       FROM check_values 
       WHERE check_id = $1 
       ORDER BY label`,
-      [check_id],
+      [checkId],
       'check_value_id',
     )
     const rows = res?.rows ?? []
@@ -43,16 +43,16 @@ export const CheckValuesNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'checks',
-        check_id,
+        checkId,
       ],
-      [project_id, subproject_id, place_id, place.place_id, check_id],
+      [projectId, subprojectId, placeId, place.place_id, checkId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
@@ -99,11 +99,11 @@ export const CheckValuesNode = memo(
           rows.map((checkValue) => (
             <CheckValueNode
               key={checkValue.check_value_id}
-              project_id={project_id}
-              subproject_id={subproject_id}
-              place_id={place_id}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              check_id={check_id}
+              checkId={checkId}
               checkValue={checkValue}
               level={level + 1}
             />
