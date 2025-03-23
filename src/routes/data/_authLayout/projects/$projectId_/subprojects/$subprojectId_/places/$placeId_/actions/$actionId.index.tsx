@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Action } from '../../../../../../../../../../formsAndLists/action/index.tsx'
 
 export const Route = createFileRoute(
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$checkId/',
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId/',
 )({
   component: RouteComponent,
 })
