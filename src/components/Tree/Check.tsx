@@ -91,23 +91,23 @@ export const CheckNode = memo(
         />
         {isOpen && (
           <>
-            <CheckValuesNode
+            {/* <CheckValuesNode
               project_id={projectId}
               subproject_id={subprojectId}
               place_id={placeId}
               place={place}
               check_id={check.check_id}
               level={level + 1}
-            />
-            <CheckTaxaNode
+            /> */}
+            {/* <CheckTaxaNode
               project_id={projectId}
               subproject_id={subprojectId}
               place_id={placeId}
               place={place}
               check_id={check.check_id}
               level={level + 1}
-            />
-            {showFiles && (
+            /> */}
+            {/* {showFiles && (
               <FilesNode
                 project_id={projectId}
                 subproject_id={subprojectId}
@@ -116,7 +116,7 @@ export const CheckNode = memo(
                 check_id={check.check_id}
                 level={level + 1}
               />
-            )}
+            )} */}
           </>
         )}
       </>
