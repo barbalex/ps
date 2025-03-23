@@ -68,13 +68,13 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
       db,
     })
     const newVectorLayer = resVL.rows?.[0]
-    console.log('Place.Header.addRow', {
-      newVectorLayer,
-      resVL,
-      projectId,
-      placeId2,
-      placeNamePlural,
-    })
+    // console.log('Place.Header.addRow', {
+    //   newVectorLayer,
+    //   resVL,
+    //   projectId,
+    //   placeId2,
+    //   placeNamePlural,
+    // })
 
     createVectorLayerDisplay({
       vectorLayerId: newVectorLayer.vector_layer_id,
@@ -86,11 +86,12 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
       db,
     })
 
+    const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: `../${place.place_id}`,
       params: (prev) => ({
         ...prev,
-        placeId: place.place_id,
+        [idName]: place.place_id,
       }),
     })
     autoFocusRef.current?.focus()
@@ -106,9 +107,9 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM places WHERE place_id = $1`, [placeId])
+    db.query(`DELETE FROM places WHERE place_id = $1`, [placeId2 ?? placeId])
     navigate({ to: '..' })
-  }, [db, navigate, placeId])
+  }, [db, navigate, placeId, placeId2])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -124,13 +125,14 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     )
     const places = res?.rows ?? []
     const len = places.length
-    const index = places.findIndex((p) => p.place_id === placeId)
+    const index = places.findIndex((p) => p.place_id === (placeId2 ?? placeId))
     const next = places[(index + 1) % len]
+    const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: `../${next.place_id}`,
       params: (prev) => ({
         ...prev,
-        placeId: next.place_id,
+        [idName]: next.place_id,
       }),
     })
   }, [db, navigate, placeId, placeId2, subprojectId])
@@ -149,13 +151,14 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     )
     const places = res?.rows ?? []
     const len = places.length
-    const index = places.findIndex((p) => p.place_id === placeId)
+    const index = places.findIndex((p) => p.place_id === (placeId2 ?? placeId))
     const previous = places[(index + len - 1) % len]
+    const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: `../${previous.place_id}`,
       params: (prev) => ({
         ...prev,
-        placeId: previous.place_id,
+        [idName]: previous.place_id,
       }),
     })
   }, [db, navigate, placeId, placeId2, subprojectId])

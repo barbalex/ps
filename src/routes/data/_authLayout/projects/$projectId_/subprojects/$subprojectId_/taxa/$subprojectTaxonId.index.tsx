@@ -5,5 +5,11 @@ import { SubprojectTaxon } from '../../../../../../../../formsAndLists/subprojec
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/',
 )({
-  component: SubprojectTaxon,
+  component: RouteComponent,
 })
+
+const RouteComponent = () => {
+  return (
+    <SubprojectTaxon from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/" />
+  )
+}

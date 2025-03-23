@@ -8,10 +8,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/'
-
-export const SubprojectTaxa = memo(() => {
+export const SubprojectTaxa = memo(({ from }) => {
   const { subprojectId } = useParams({ from })
   const navigate = useNavigate()
 

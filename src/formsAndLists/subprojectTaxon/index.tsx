@@ -10,13 +10,10 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
-
 // TODO: what was this for?
 const taxaInclude = { taxonomies: true }
 
-export const SubprojectTaxon = memo(() => {
+export const SubprojectTaxon = memo(({ from }) => {
   const { subprojectTaxonId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)

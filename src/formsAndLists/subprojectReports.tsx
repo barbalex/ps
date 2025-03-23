@@ -12,10 +12,7 @@ import { subprojectReportsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/reports/'
-
-export const SubprojectReports = memo(() => {
+export const SubprojectReports = memo(({ from }) => {
   const [filter] = useAtom(subprojectReportsFilterAtom)
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
