@@ -48,11 +48,11 @@ export const FieldFormInForm = memo(({ field }) => {
 
   const onClickDelete = useCallback(async () => {
     db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])
-    navigate({ search: { editingField: '' } })
+    navigate({ search: { editingField: undefined } })
   }, [db, field.field_id, navigate])
 
   const onClickStopEditing = useCallback(async () => {
-    navigate({ search: { editingField: '' } })
+    navigate({ search: { editingField: undefined } })
   }, [navigate])
 
   const fieldLabel = field.field_label ?? field.name ?? ''
