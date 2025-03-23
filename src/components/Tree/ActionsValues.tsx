@@ -33,7 +33,7 @@ export const ActionValuesNode = memo(
 
     const node = useMemo(
       () => ({
-        label: `Action Values (${loading ? '...' : formatNumber(rows.length)})`,
+        label: `Values (${loading ? '...' : formatNumber(rows.length)})`,
       }),
       [rows.length, loading],
     )

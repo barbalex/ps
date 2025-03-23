@@ -1,24 +1,24 @@
 import { useCallback, useRef, memo } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as Form } from './Form.tsx'
+import { ActionReportForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = memo(() => {
-  const { action_report_id } = useParams()
+export const ActionReport = memo(({ from }) => {
+  const { actionReportId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM action_reports WHERE action_report_id = $1`,
-    [action_report_id],
+    [actionReportId],
     'action_report_id',
   )
   const row = res?.rows?.[0]
@@ -33,22 +33,26 @@ export const Component = memo(() => {
 
       db.query(
         `UPDATE action_reports SET ${name} = $1 WHERE action_report_id = $2`,
-        [value, action_report_id],
+        [value, actionReportId],
       )
     },
-    [row, db, action_report_id],
+    [row, db, actionReportId],
   )
 
   if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         <Form
           onChange={onChange}
           row={row}
           autoFocusRef={autoFocusRef}
+          from={from}
         />
       </div>
     </div>

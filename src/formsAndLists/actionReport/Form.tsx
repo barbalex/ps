@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import { useOutletContext } from 'react-router'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -7,13 +6,8 @@ import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = rowFromProps ?? outletContext?.row ?? {}
-
+export const ActionReportForm = memo(
+  ({ onChange, row, orIndex, from, autoFocusRef }) => {
     return (
       <>
         <TextField
@@ -28,6 +22,8 @@ export const Component = memo(
           idField="action_report_id"
           id={row.action_report_id}
           data={row.data ?? {}}
+          orIndex={orIndex}
+          from={from}
           autoFocus
           ref={autoFocusRef}
         />

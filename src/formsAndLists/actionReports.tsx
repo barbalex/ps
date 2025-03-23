@@ -8,9 +8,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = 'TODO:'
-
-export const Component = memo(() => {
+export const ActionReports = memo(({ from }) => {
   const { projectId, actionId } = useParams({ from })
   const navigate = useNavigate()
 
