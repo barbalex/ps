@@ -1,32 +1,5 @@
 export const placesChildren = ({ level }) => [
   {
-    path: 'occurrences-assigned',
-    element: null,
-    handle: {
-      crumb: {
-        text: 'Occurrences assigned',
-        table: 'occurrences',
-        folder: true,
-      },
-    },
-    children: [
-      {
-        index: true,
-        lazy: () => import('../routes/occurrences.tsx'),
-      },
-      {
-        path: ':occurrence_id',
-        lazy: () => import('../routes/occurrence/index.tsx'),
-        handle: {
-          crumb: {
-            table: 'occurrences',
-            folder: false,
-          },
-        },
-      },
-    ],
-  },
-  {
     path: 'users',
     element: null,
     handle: {
