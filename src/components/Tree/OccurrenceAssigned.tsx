@@ -1,11 +1,11 @@
 import { memo, useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
 export const OccurrenceAssignedNode = memo(
-  ({ project_id, subproject_id, place_id, place, occurrence, level = 8 }) => {
+  ({ projectId, subprojectId, placeId, place, occurrence, level = 8 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -13,21 +13,21 @@ export const OccurrenceAssignedNode = memo(
       () => [
         'data',
         'projects',
-        project_id,
+        projectId,
         'subprojects',
-        subproject_id,
+        subprojectId,
         'places',
-        place_id ?? place.place_id,
-        ...(place_id ? ['places', place.place_id] : []),
+        placeId ?? place.place_id,
+        ...(placeId ? ['places', place.place_id] : []),
         'occurrences-assigned',
         occurrence.occurrence_id,
       ],
       [
         occurrence.occurrence_id,
         place.place_id,
-        place_id,
-        project_id,
-        subproject_id,
+        placeId,
+        projectId,
+        subprojectId,
       ],
     )
     const ownUrl = `/${ownArray.join('/')}`

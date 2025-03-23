@@ -1,5 +1,3 @@
-import { Filter } from '../components/shared/Filter/index.tsx'
-
 export const placesChildren = ({ level }) => [
   {
     path: 'occurrences-assigned',

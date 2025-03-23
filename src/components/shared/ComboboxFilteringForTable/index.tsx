@@ -19,8 +19,10 @@ export const ComboboxFilteringForTable = memo(
     const [filter, setFilter] = useState('')
 
     const res = useLiveQuery(
-      `SELECT * FROM ${table} WHERE ${idField ?? name} = $1`,
-      [value === '' ? '99999999-9999-9999-9999-999999999999' : value],
+      `
+      SELECT * FROM ${table} 
+      ${value ? `WHERE ${idField ?? name} = '${value}'` : ''}
+      ORDER BY label`,
     )
     const results = useMemo(() => res?.rows ?? [], [res])
     const selectedOptions = useMemo(
@@ -51,16 +53,17 @@ export const ComboboxFilteringForTable = memo(
       [name, onChange],
     )
 
-    console.log('hello FilteringCombobox', {
-      name,
-      label,
-      table,
-      value,
-      filter,
-      selectedOptions,
-      results,
-      idField,
-    })
+    // console.log('FilteringCombobox', {
+    //   name,
+    //   label,
+    //   table,
+    //   value,
+    //   filter,
+    //   selectedOptions,
+    //   results,
+    //   res,
+    //   idField,
+    // })
 
     return (
       <Field label={label ?? '(no label provided)'}>

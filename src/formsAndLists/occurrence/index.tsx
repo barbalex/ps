@@ -27,6 +27,8 @@ export const Occurrence = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
+  // console.log('Occurrence, row:', row)
+
   const onChange = useCallback<InputProps['onChange']>(
     async (e, eData) => {
       const { name, value } = getValueFromChange(e, eData)

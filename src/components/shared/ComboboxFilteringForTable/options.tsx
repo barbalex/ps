@@ -14,9 +14,8 @@ export const FilteringComboboxOptions = memo(
       `
       SELECT * 
       FROM ${table}
-      ${filter ? ` WHERE label ilike '%${filter}%'` : ''} 
+      ${filter ? `WHERE label ilike '%${filter}%'` : ''} 
       ORDER BY label`,
-      [filter],
     )
     const rows = res?.rows ?? []
     // labelFromResult allows passing in special data. Not in use yet.
@@ -30,11 +29,10 @@ export const FilteringComboboxOptions = memo(
     // console.log('hello FilteringComboboxOptions', {
     //   name,
     //   table,
-    //   where,
-    //   orderBy,
     //   filter,
     //   options,
-    //   results,
+    //   res,
+    //   rows,
     // })
 
     if (!options.length) {
