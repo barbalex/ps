@@ -26,7 +26,7 @@ const tabStyle = {
 }
 
 export const Filter = memo(({ level, from, children }) => {
-  const { project_id, place_id, place_id2 } = useParams({ from })
+  const { projectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
@@ -47,7 +47,7 @@ export const Filter = memo(({ level, from, children }) => {
 
   const resPlaceLevel = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
-    [project_id, place_id ? 2 : 1],
+    [projectId, placeId ? 2 : 1],
     'place_level_id',
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -84,7 +84,7 @@ export const Filter = memo(({ level, from, children }) => {
     let whereUnfiltered
     // add parent_id for all filterable tables below subprojects
     if (tableName === 'places') {
-      const parentFilter = { parent_id: place_id ?? null }
+      const parentFilter = { parent_id: placeId ?? null }
       for (const orFilter of filter) {
         Object.assign(orFilter, parentFilter)
       }
@@ -92,7 +92,7 @@ export const Filter = memo(({ level, from, children }) => {
       whereUnfiltered = parentFilter
     }
     if (['actions', 'checks', 'place_reports'].includes(tableName)) {
-      const placeFilter = { place_id: place_id2 ?? place_id }
+      const placeFilter = { place_id: placeId2 ?? placeId }
       for (const orFilter of filter) {
         Object.assign(orFilter, placeFilter)
       }
@@ -101,7 +101,7 @@ export const Filter = memo(({ level, from, children }) => {
     }
     // tables that need to be filtered by project_id
     if (['fields'].includes(tableName)) {
-      const projectFilter = { project_id: project_id ?? null }
+      const projectFilter = { project_id: projectId ?? null }
       for (const orFilter of filter) {
         Object.assign(orFilter, projectFilter)
       }
@@ -113,7 +113,7 @@ export const Filter = memo(({ level, from, children }) => {
       whereUnfiltered ? orFilterToSql(whereUnfiltered) : ''
 
     return { whereUnfilteredString, whereFilteredString }
-  }, [filter, place_id, place_id2, project_id, tableName])
+  }, [filter, placeId, placeId2, projectId, tableName])
 
   // console.log('Filter 3', {
   //   tableName,

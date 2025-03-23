@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { CheckForm } from '../../../../../../../../formsAndLists/check/Form.tsx'
+import { CheckForm } from '../../../../../../../../../../formsAndLists/check/Form.tsx'
 import { Filter } from '../../../../../../../../../../components/shared/Filter/index.tsx'
 
 const from =
@@ -14,7 +14,10 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <Filter from={from}>
+    <Filter
+      level={1}
+      from={from}
+    >
       {({ row, onChange, orIndex }) => (
         <CheckForm
           row={row}
