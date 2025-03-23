@@ -99,11 +99,11 @@ export const ActionReportsNode = memo(
           rows.map((actionReport) => (
             <ActionReportNode
               key={actionReport.action_report_id}
-              project_id={projectId}
-              subproject_id={subprojectId}
-              place_id={placeId}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              action_id={actionId}
+              actionId={actionId}
               actionReport={actionReport}
               level={level + 1}
             />

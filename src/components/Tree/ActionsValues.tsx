@@ -101,11 +101,11 @@ export const ActionValuesNode = memo(
           rows.map((actionValue) => (
             <ActionValueNode
               key={actionValue.action_value_id}
-              project_id={projectId}
-              subproject_id={subprojectId}
-              place_id={placeId}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              action_id={actionId}
+              actionId={actionId}
               actionValue={actionValue}
               level={level + 1}
             />

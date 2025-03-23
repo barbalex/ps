@@ -87,12 +87,12 @@ export const ActionReportNode = memo(
         />
         {isOpen && (
           <ActionReportValuesNode
-            project_id={projectId}
-            subproject_id={subprojectId}
-            place_id={placeId}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
             place={place}
-            action_id={actionId}
-            action_report_id={actionReport.action_report_id}
+            actionId={actionId}
+            actionReportId={actionReport.action_report_id}
             level={level + 1}
           />
         )}
