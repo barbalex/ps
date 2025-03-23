@@ -82,15 +82,15 @@ export const PlaceChildren = memo(
           place={place}
           level={level + 1}
         />
-        {/* {showFiles && (
+        {showFiles && (
           <FilesNode
             projectId={projectId}
             subprojectId={subprojectId}
             placeId={placeId ?? place.place_id}
-            place_id2={placeId ? place.place_id : undefined}
+            placeId2={placeId ? place.place_id : undefined}
             level={level + 1}
           />
-        )} */}
+        )}
       </>
     )
   },

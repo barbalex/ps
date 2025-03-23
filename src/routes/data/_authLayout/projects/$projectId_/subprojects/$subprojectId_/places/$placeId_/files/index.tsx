@@ -12,7 +12,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { projectId, subprojectId, placeId } = useParams({
-    from: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/',
+    from: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/files/',
   })
 
   return (
