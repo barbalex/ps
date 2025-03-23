@@ -5,9 +5,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createPlaceReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = 'TODO:'
-
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, from }) => {
   const { projectId, placeId, placeId2, placeReportId } = useParams({
     from,
   })

@@ -12,9 +12,7 @@ import { placeReports1FilterAtom, placeReports2FilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
-const from = 'TODO:'
-
-export const Component = memo(() => {
+export const PlaceReports = memo(({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
