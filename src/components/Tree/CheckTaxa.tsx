@@ -99,11 +99,11 @@ export const CheckTaxaNode = memo(
           rows.map((checkTaxon) => (
             <CheckTaxonNode
               key={checkTaxon.check_taxon_id}
-              project_id={projectId}
-              subproject_id={subprojectId}
-              place_id={placeId}
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
               place={place}
-              check_id={checkId}
+              checkId={checkId}
               checkTaxon={checkTaxon}
               level={level + 1}
             />
