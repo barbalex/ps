@@ -113,6 +113,7 @@ import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoa
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId.index'
 import { Route as DataAuthLayoutProjectsProjectIdListsListIdValuesListValueIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId_/values.$listValueId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdFilesFileIdPreviewImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/preview'
+import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/index'
@@ -123,6 +124,7 @@ import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsCh
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsFilterImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/filter'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksFilterImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/filter'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsFilterImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/filter'
+import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/$occurrenceId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId.index'
@@ -905,6 +907,15 @@ const DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdFilesFileIdPreviewRo
     } as any,
   )
 
+const DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute =
+  DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexImport.update(
+    {
+      id: '/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/',
+      path: '/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/',
+      getParentRoute: () => DataAuthLayoutRouteRoute,
+    } as any,
+  )
+
 const DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute =
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexImport.update(
     {
@@ -992,6 +1003,15 @@ const DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActions
     {
       id: '/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/filter',
       path: '/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/filter',
+      getParentRoute: () => DataAuthLayoutRouteRoute,
+    } as any,
+  )
+
+const DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute =
+  DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexImport.update(
+    {
+      id: '/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/',
+      path: '/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId/',
       getParentRoute: () => DataAuthLayoutRouteRoute,
     } as any,
   )
@@ -2031,6 +2051,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/': {
+      id: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/'
+      path: '/projects/$projectId/subprojects/$subprojectId/places/$placeId/users'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users'
+      preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/': {
       id: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
       path: '/projects/$projectId/subprojects/$subprojectId/charts/$chartId/subjects/$chartSubjectId'
@@ -2071,6 +2098,13 @@ declare module '@tanstack/react-router' {
       path: '/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports/$placeReportId'
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports/$placeReportId'
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
+    '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/': {
+      id: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/'
+      path: '/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId'
+      preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
     '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId': {
@@ -2452,12 +2486,14 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute
+  DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute
+  DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdValuesIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdValuesIndexRoute
@@ -2661,6 +2697,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute:
     DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute,
+  DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute:
+    DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute:
     DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdIndexRoute:
@@ -2673,6 +2711,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute:
     DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute,
+  DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute:
+    DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute:
     DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute:
@@ -2839,12 +2879,14 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/subjects/$chartSubjectId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned/$occurrenceId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports/$placeReportId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId/values': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdValuesIndexRoute
@@ -2973,12 +3015,14 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/subjects/$chartSubjectId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned/$occurrenceId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports/$placeReportId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId/values': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdValuesIndexRoute
@@ -3114,12 +3158,14 @@ export interface FileRoutesById {
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexRoute
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdSubjectsChartSubjectIdIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/$occurrenceId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdOccurrencesAssignedOccurrenceIdIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsPlaceReportIdIndexRoute
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/': typeof DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdReportsGoalReportIdValuesIndexRoute
@@ -3257,12 +3303,14 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users'
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/subjects/$chartSubjectId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned/$occurrenceId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports/$placeReportId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId/values'
@@ -3390,12 +3438,14 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users'
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/subjects/$chartSubjectId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/occurrences-assigned/$occurrenceId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/reports/$placeReportId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/reports/$goalReportId/values'
@@ -3529,12 +3579,14 @@ export interface FileRouteTypes {
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/'
+    | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/$occurrenceId/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId/'
+    | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId'
     | '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/'
@@ -3702,12 +3754,14 @@ export const routeTree = rootRoute
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/",
+        "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences-assigned/$occurrenceId/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId/",
+        "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId",
         "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/",
@@ -4177,6 +4231,10 @@ export const routeTree = rootRoute
       "filePath": "data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/index.tsx",
       "parent": "/data/_authLayout"
     },
+    "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/": {
+      "filePath": "data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/index.tsx",
+      "parent": "/data/_authLayout"
+    },
     "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/": {
       "filePath": "data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId.index.tsx",
       "parent": "/data/_authLayout"
@@ -4199,6 +4257,10 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId/": {
       "filePath": "data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId.index.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/": {
+      "filePath": "data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId.index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId": {
