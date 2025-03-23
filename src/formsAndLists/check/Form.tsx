@@ -1,5 +1,4 @@
 import { memo, useMemo } from 'react'
-import { useOutletContext } from 'react-router'
 
 import { DateField } from '../../components/shared/DateField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -10,17 +9,8 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
-    // beware: contextFromOutlet is undefined if not inside an outlet
-    const outletContext = useOutletContext()
-    const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = useMemo(
-      () => rowFromProps ?? outletContext?.row ?? {},
-      [outletContext?.row, rowFromProps],
-    )
-    const orIndex = outletContext?.orIndex
-
+export const CheckForm = memo(
+  ({ onChange, row, orIndex, from, autoFocusRef }) => {
     // need to extract the jsonb data from the row
     // as inside filters it's name is a path
     // instead of it being inside of the data field
@@ -46,6 +36,7 @@ export const Component = memo(
           id={row.check_id}
           data={jsonbData}
           orIndex={orIndex}
+          from={from}
           autoFocus
           ref={autoFocusRef}
         />

@@ -1,0 +1,28 @@
+import { createFileRoute } from '@tanstack/react-router'
+
+import { CheckForm } from '../../../../../../../../formsAndLists/check/Form.tsx'
+import { Filter } from '../../../../../../../../../../components/shared/Filter/index.tsx'
+
+const from =
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/filter'
+
+export const Route = createFileRoute(
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/filter',
+)({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  return (
+    <Filter from={from}>
+      {({ row, onChange, orIndex }) => (
+        <CheckForm
+          row={row}
+          onChange={onChange}
+          orIndex={orIndex}
+          from={from}
+        />
+      )}
+    </Filter>
+  )
+}
