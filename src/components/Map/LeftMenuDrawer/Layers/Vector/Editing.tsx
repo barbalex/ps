@@ -3,7 +3,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
-import { Component as VectorLayerForm } from '../../../../../routes/vectorLayer/Form/index.tsx'
+import { VectorLayerForm } from '../../../../../formsAndLists/vectorLayer/Form/index.tsx'
 
 // inset form and give it green shadow
 const formContainerStyle = {

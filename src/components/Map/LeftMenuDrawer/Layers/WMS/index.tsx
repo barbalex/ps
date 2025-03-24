@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
@@ -24,7 +24,7 @@ const openItemsAtom = atom([])
 
 export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { projectId } = useParams()
+  const { projectId } = useParams({ strict: false })
 
   const db = usePGlite()
   // 1. list all layers (own, wms, vector)
