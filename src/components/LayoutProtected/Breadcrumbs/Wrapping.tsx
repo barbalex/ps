@@ -1,4 +1,5 @@
-import { useMatches, useLocation } from 'react-router'
+import { useMatches } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 
 // to only query when needed,
 // create two different breadcrumb components

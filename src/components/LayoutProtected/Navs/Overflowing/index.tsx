@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useMatches, useLocation, useNavigate, useParams } from 'react-router'
+import { useMatches } from 'react-router'
+import { useLocation, useNavigate, useParams } from '@tanstack/react-router'
 import { BsCaretDown } from 'react-icons/bs'
 import {
   Menu,
@@ -88,8 +89,8 @@ export const OverflowMenu: React.FC = ({ tos }) => {
 export const NavsOverflowing = () => {
   const [designing] = useAtom(designingAtom)
   const location = useLocation()
+  const params = useParams({ strict: false })
   const matches = useMatches()
-  const params = useParams()
 
   const db = usePGlite()
 

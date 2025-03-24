@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, memo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -102,9 +102,8 @@ export const DataNavsOverflowing = memo(({ matches, ref }) => {
         } else if (lastPathElement === 'occurrences-not-to-assign') {
           filterParams.not_to_assign = true
         } else if (lastPathElement === 'occurrences-assigned') {
-          filterParams.place_id = isPlaces2
-            ? dataMatch.params.place_id2
-            : dataMatch.params.place_id
+          filterParams.place_id =
+            isPlaces2 ? dataMatch.params.place_id2 : dataMatch.params.place_id
         }
         // if last path element is
       } else {

@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
-import { useMatches, useLocation, useParams } from 'react-router'
+import { useMatches } from 'react-router'
+import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -12,8 +13,8 @@ import { designingAtom } from '../../../store.ts'
 export const NavsWrapping = () => {
   const [designing] = useAtom(designingAtom)
   const location = useLocation()
+  const params = useParams({ strict: false })
   const matches = useMatches()
-  const params = useParams()
   const db = usePGlite()
 
   // console.log('Wrapping Navs', { matches, pathname: location.pathname })
@@ -63,11 +64,9 @@ export const NavsWrapping = () => {
 
   return (
     <nav className="navs">
-      {tosToUse?.length ? (
+      {tosToUse?.length ?
         <ToNavs tos={tosToUse} />
-      ) : (
-        <DataNavs matches={thisPathsMatches} />
-      )}
+      : <DataNavs matches={thisPathsMatches} />}
     </nav>
   )
 }

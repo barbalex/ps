@@ -11,7 +11,8 @@ import {
   useOverflowMenu,
 } from '@fluentui/react-components'
 import { BsCaretDown } from 'react-icons/bs'
-import { useMatches, useNavigate } from 'react-router'
+import { useMatches } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { BreadcrumbForData } from '../BreadcrumbForData.tsx'

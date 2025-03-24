@@ -17,7 +17,6 @@ const containerStyle = {
 
 const from = '/data'
 
-// TODO: use search for tabs
 export const Main = memo(() => {
   const [mapMaximized] = useAtom(mapMaximizedAtom)
   const [tabs] = useAtom(tabsAtom)
