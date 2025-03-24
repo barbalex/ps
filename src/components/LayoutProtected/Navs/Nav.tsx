@@ -1,10 +1,10 @@
 import { memo } from 'react'
-import { Link } from 'react-router'
+import { Link } from '@tanstack/react-router'
 
 export const Nav = memo(({ label, to, ref }) => {
   return (
     <Link
-      to={{ pathname: to }}
+      to={to}
       ref={ref}
     >
       {label}
