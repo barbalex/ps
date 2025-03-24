@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -7,7 +7,7 @@ import { draggableLayersAtom } from '../../../../store.ts'
 
 export const OccurrencesAssigned1 = ({ layerPresentation }) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
-  const { subproject_id } = useParams()
+  const { subprojectId } = useParams({ strict: false })
 
   const res = useLiveIncrementalQuery(
     `
@@ -20,7 +20,7 @@ export const OccurrencesAssigned1 = ({ layerPresentation }) => {
       AND oi.subproject_id = $1
       AND p.parent_id IS NULL
   `,
-    [subproject_id],
+    [subprojectId],
     'occurrence_id',
   )
   const occurrences = res?.rows ?? []
