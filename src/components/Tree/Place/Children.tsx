@@ -9,6 +9,7 @@ import { PlacesNode } from '../Places.tsx'
 import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 
+// TODO: add charts?
 export const PlaceChildren = memo(
   ({ projectId, subprojectId, placeId, place }) => {
     const level = placeId ? 8 : 6
