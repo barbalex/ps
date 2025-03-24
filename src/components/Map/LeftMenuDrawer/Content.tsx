@@ -5,7 +5,7 @@ import {
   SelectTabEvent,
   SelectTabData,
 } from '@fluentui/react-components'
-import { useSearch, navigate } from '@tanstack/react-router'
+import { useSearch, useNavigate } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'
@@ -27,16 +27,15 @@ const formStyle = {
   width: '100%',
 }
 
-const from = '/data/_authLayout/projects'
-
 export const Content = memo(() => {
+  const navigate = useNavigate()
   const isNarrow = useContext(IsNarrowContext)
   // TODO: test
-  const { leftMapDrawerTab: tab = 'layers' } = useSearch({ from })
+  const { leftMapDrawerTab: tab = 'layers' } = useSearch({ strict: false })
   const onTabSelect = useCallback(
     (event: SelectTabEvent, data: SelectTabData) =>
       navigate({ search: { leftMapDrawerTab: data.value } }),
-    [],
+    [navigate],
   )
 
   return (

@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { Accordion } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -14,7 +14,7 @@ const openItemsAtom = atom([])
 
 export const OwnLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ strict: false })
 
   const db = usePGlite()
   // TODO: when including layer_presentations, no results are returned
@@ -25,7 +25,7 @@ export const OwnLayers = memo(() => {
     FROM vector_layers 
     WHERE
       type NOT IN ('wfs', 'upload')
-      ${project_id ? `AND project_id = '${project_id}'` : ''}
+      ${projectId ? `AND project_id = '${projectId}'` : ''}
       AND EXISTS (
         SELECT 1
         FROM layer_presentations
@@ -63,7 +63,7 @@ export const OwnLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!project_id) {
+  if (!projectId) {
     return (
       <section>
         <h2 style={titleStyle}>Own</h2>
@@ -86,7 +86,7 @@ export const OwnLayers = memo(() => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {ownVectorLayers.length ? (
+          {ownVectorLayers.length ?
             ownVectorLayers.map((l, index) => (
               <OwnLayer
                 key={l.vector_layer_id}
@@ -95,9 +95,7 @@ export const OwnLayers = memo(() => {
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
-          ) : (
-            <p style={noneStyle}>No inactive Own Layers</p>
-          )}
+          : <p style={noneStyle}>No inactive Own Layers</p>}
         </Accordion>
       </section>
     </ErrorBoundary>
