@@ -13,8 +13,6 @@ export const PlaceReportValues = memo(({ from }) => {
   const navigate = useNavigate()
   const db = usePGlite()
 
-  console.log('PlaceReportValues', { placeReportId, from })
-
   const res = useLiveIncrementalQuery(
     `SELECT place_report_value_id, label FROM place_report_values WHERE place_report_id = $1 ORDER BY label`,
     [placeReportId],
