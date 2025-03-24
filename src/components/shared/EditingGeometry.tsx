@@ -62,11 +62,9 @@ export const EditingGeometry = memo(({ row, table }) => {
   const lineCount = value ? value.split(/\r\n|\r|\n/).length : 1
 
   const switchFieldValue =
-    table === 'places'
-      ? row.place_id === editingPlaceGeometry
-      : table === 'checks'
-      ? row.check_id === editingCheckGeometry
-      : row.action_id === editingActionGeometry
+    table === 'places' ? row.place_id === editingPlaceGeometry
+    : table === 'checks' ? row.check_id === editingCheckGeometry
+    : row.action_id === editingActionGeometry
 
   return (
     <Field label="Geometry">
@@ -75,13 +73,15 @@ export const EditingGeometry = memo(({ row, table }) => {
         value={switchFieldValue}
         onChange={onChange}
       />
-      <Textarea
-        value={row.geometry ? JSON.stringify(row.geometry, null, 3) : ''}
-        appearance="outline"
-        resize="vertical"
-        rows={lineCount}
-        className="geometry-textarea"
-      />
+      {switchFieldValue && !!row.geometry && (
+        <Textarea
+          value={row.geometry ? JSON.stringify(row.geometry, null, 3) : ''}
+          appearance="outline"
+          resize="vertical"
+          rows={lineCount}
+          className="geometry-textarea"
+        />
+      )}
     </Field>
   )
 })
