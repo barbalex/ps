@@ -7,12 +7,12 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
+import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import {
   mapInfoAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
 } from '../../../store.ts'
-import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 
 export const ClickListener = memo(() => {
   const setMapInfo = useSetAtom(mapInfoAtom)

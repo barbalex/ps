@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router'
+import { useLocation } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { DrawControlComponent } from './DrawControl.tsx'
