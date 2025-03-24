@@ -1,6 +1,8 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { type } from 'arktype'
 
+// TODO:
+// search params are only accessible on the route
 const defaultValues = {
   onlyForm: false,
 }
