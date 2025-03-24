@@ -8,29 +8,32 @@ import {
   MenuItemRadio,
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 export const ChooseCrs = memo(() => {
-  const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
 
   const db = usePGlite()
 
   const resProjectCrs = useLiveIncrementalQuery(
     `SELECT * FROM project_crs WHERE project_id = $1`,
-    [project_id],
+    [projectId],
     'project_crs_id',
   )
   const projectCrs = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
   const resProject = useLiveIncrementalQuery(
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
-    [project_id],
+    [projectId],
     'project_id',
   )
   const project = resProject?.rows?.[0]
-  const checkedValues = project?.map_presentation_crs
-    ? { map_presentation_crs: [project.map_presentation_crs] }
+  const checkedValues =
+    project?.map_presentation_crs ?
+      { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }
 
   const onChange = useCallback(
@@ -38,14 +41,14 @@ export const ChooseCrs = memo(() => {
       // set projects.map_presentation_crs
       db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
         checkedItems?.[0] ?? null,
-        project_id,
+        projectId,
       ])
       // TODO: make coordinates update
     },
-    [db, project_id],
+    [db, projectId],
   )
 
-  if (!project_id) return null
+  if (!projectId) return null
   // single projectCrs: that will be chosen by default
   // no projectCrs: wgs84 is chosen
   // so only show menu when there are at least 2 projectCrs
