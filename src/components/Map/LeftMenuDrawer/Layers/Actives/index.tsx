@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useState, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
@@ -39,7 +39,7 @@ export const ActiveLayers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
 
-  const { project_id } = useParams()
+  const { projectId } = useParams({ strict: false })
 
   const db = usePGlite()
 
@@ -54,8 +54,8 @@ export const ActiveLayers = memo(() => {
       INNER JOIN layer_presentations 
         ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
         AND layer_presentations.active = TRUE
-    ${project_id ? 'WHERE project_id = $1' : ''}`,
-    project_id ? [project_id] : [],
+    ${projectId ? 'WHERE project_id = $1' : ''}`,
+    projectId ? [projectId] : [],
     'wms_layer_id',
   )
   const activeWmsLayers = useMemo(
@@ -74,8 +74,8 @@ export const ActiveLayers = memo(() => {
       INNER JOIN layer_presentations 
         ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
         AND layer_presentations.active = TRUE
-      ${project_id ? 'WHERE project_id = $1' : ''}`,
-    project_id ? [project_id] : [],
+      ${projectId ? 'WHERE project_id = $1' : ''}`,
+    projectId ? [projectId] : [],
     'vector_layer_id',
   )
   const activeVectorLayers = useMemo(
@@ -249,7 +249,7 @@ export const ActiveLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!project_id) {
+  if (!projectId) {
     return (
       <section>
         <h2 style={titleStyle}>Active</h2>
@@ -278,7 +278,7 @@ export const ActiveLayers = memo(() => {
             openItems={openItems}
             onToggle={onToggleItem}
           >
-            {activeLayers.length ? (
+            {activeLayers.length ?
               activeLayers?.map((l, index) => (
                 <ActiveLayer
                   key={l.wms_layer_id ?? l.vector_layer_id}
@@ -289,9 +289,7 @@ export const ActiveLayers = memo(() => {
                   isOpen={openItems.includes(l.layer_presentation_id)}
                 />
               ))
-            ) : (
-              <p style={noLayersStyle}>No active layers</p>
-            )}
+            : <p style={noLayersStyle}>No active layers</p>}
           </Accordion>
         </section>
       </DragAndDropContext.Provider>

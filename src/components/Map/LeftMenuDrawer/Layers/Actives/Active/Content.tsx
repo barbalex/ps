@@ -33,8 +33,8 @@ import {
 } from '../../styles.ts'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
-import { VectorLayerDisplays } from '../../../../../../routes/vectorLayerDisplays.tsx'
-import { VectorLayerDisplay } from '../../../../../../routes/vectorLayerDisplay/index.tsx'
+import { VectorLayerDisplays } from '../../../../../../formsAndLists/vectorLayerDisplays.tsx'
+import { VectorLayerDisplay } from '../../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
