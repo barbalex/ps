@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { WmsLegend } from './WMS.tsx'
@@ -17,7 +17,7 @@ const noLayersStyle = {
 
 export const Legends = memo(() => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
-  const { project_id } = useParams()
+  const { projectId } = useParams({ strict: false })
 
   const resWmsLayers = useLiveIncrementalQuery(
     `
@@ -31,7 +31,7 @@ export const Legends = memo(() => {
           wms_layers.wms_layer_id = lp.wms_layer_id 
           AND lp.active = true
       )
-      ${project_id ? `AND project_id = '${project_id}'` : ''}
+      ${projectId ? `AND project_id = '${projectId}'` : ''}
   `,
     undefined,
     'wms_layer_id',
@@ -54,7 +54,7 @@ export const Legends = memo(() => {
           vector_layers.vector_layer_id = lp.vector_layer_id 
           AND lp.active = true
       )
-      ${project_id ? `AND project_id = '${project_id}'` : ''}
+      ${projectId ? `AND project_id = '${projectId}'` : ''}
   `,
     undefined,
     'vector_layer_id',
@@ -79,26 +79,22 @@ export const Legends = memo(() => {
     [activeVectorLayers, activeWmsLayers, mapLayerSorting],
   )
 
-  return activeLayers.length ? (
-    activeLayers?.map((layer, index) => {
-      // display depends on layer type: wms / vector
-      const isVectorLayer = 'vector_layer_id' in layer
+  return activeLayers.length ?
+      activeLayers?.map((layer, index) => {
+        // display depends on layer type: wms / vector
+        const isVectorLayer = 'vector_layer_id' in layer
 
-      return (
-        <Container
-          key={layer.wms_layer_id ?? layer.vector_layer_id}
-          layer={layer}
-          isLast={index === activeLayers.length - 1}
-        >
-          {isVectorLayer ? (
-            <VectorLegend layer={layer} />
-          ) : (
-            <WmsLegend layer={layer} />
-          )}
-        </Container>
-      )
-    })
-  ) : (
-    <p style={noLayersStyle}>No active layers</p>
-  )
+        return (
+          <Container
+            key={layer.wms_layer_id ?? layer.vector_layer_id}
+            layer={layer}
+            isLast={index === activeLayers.length - 1}
+          >
+            {isVectorLayer ?
+              <VectorLegend layer={layer} />
+            : <WmsLegend layer={layer} />}
+          </Container>
+        )
+      })
+    : <p style={noLayersStyle}>No active layers</p>
 })
