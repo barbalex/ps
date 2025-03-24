@@ -1,5 +1,5 @@
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'
@@ -7,7 +7,7 @@ import { draggableLayersAtom } from '../../../../store.ts'
 
 export const OccurrencesToAssess = ({ layerPresentation }) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
-  const { subproject_id } = useParams()
+  const { subprojectId } = useParams({ strict: false })
   const res = useLiveIncrementalQuery(
     `
     SELECT o.*
@@ -19,7 +19,7 @@ export const OccurrencesToAssess = ({ layerPresentation }) => {
       AND (o.not_to_assign IS NULL OR o.not_to_assign = FALSE)
       AND o.geometry IS NOT NULL
   `,
-    [subproject_id],
+    [subprojectId],
     'occurrence_id',
   )
   const occurrences = res?.rows ?? []
