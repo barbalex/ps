@@ -1,7 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import { type } from 'arktype'
+
+const defaultValues = {
+  onlyForm: false,
+}
+
+const schema = type({
+  onlyForm: 'boolean = false',
+})
 
 import { Main } from '../../../components/LayoutProtected/Main.tsx'
 
 export const Route = createFileRoute('/data/_authLayout/')({
   component: Main,
+  validateSearch: schema,
+  middlewares: [stripSearchParams(defaultValues)],
 })
