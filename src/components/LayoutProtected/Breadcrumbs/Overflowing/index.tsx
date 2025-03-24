@@ -11,8 +11,8 @@ import {
   useOverflowMenu,
 } from '@fluentui/react-components'
 import { BsCaretDown } from 'react-icons/bs'
-import { useMatches } from 'react-router'
-import { useNavigate } from '@tanstack/react-router'
+// import { useMatches } from 'react-router'
+import { useNavigate, useMatches } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { BreadcrumbForData } from '../BreadcrumbForData.tsx'
@@ -97,7 +97,7 @@ export const BreadcrumbsOverflowing = () => {
     setRerenderInteger((i) => i + 1)
   }, [])
 
-  const matches = unfilteredMatches.filter((match) => match.handle?.crumb)
+  const matches = unfilteredMatches.filter((match) => match.handle?.context)
   const { width, ref } = useResizeDetector({
     handleHeight: false,
     refreshMode: 'debounce',
@@ -105,10 +105,12 @@ export const BreadcrumbsOverflowing = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  // console.log('hello BreadcrumbsOverflowing, matches:', {
-  //   matches,
-  //   unfilteredMatches,
-  // })
+  console.log('hello BreadcrumbsOverflowing, matches:', {
+    matches,
+    unfilteredMatches,
+  })
+
+  return null
 
   return (
     <Overflow
