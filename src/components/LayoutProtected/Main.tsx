@@ -4,7 +4,7 @@ import { Allotment } from 'allotment'
 import { useAtom } from 'jotai'
 
 import { Tree } from '../Tree/index.tsx'
-// import { MapContainer } from '../Map/index.tsx'
+import { MapContainer } from '../Map/index.tsx'
 import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
 
 const containerStyle = {
@@ -38,7 +38,7 @@ export const Main = memo(() => {
       <Allotment>
         {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />}
         {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
-        {/* {tabs.includes('map') && <MapContainer />} */}
+        {tabs.includes('map') && <MapContainer />}
       </Allotment>
     </div>
   )

@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
 import { useSetAtom, useAtom } from 'jotai'
@@ -19,14 +19,14 @@ export const ClickListener = memo(() => {
   const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
   const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
 
-  const { project_id } = useParams()
+  const { projectId } = useParams({ strict: false })
   const map = useMap()
   const db = usePGlite()
 
   const onClick = useCallback(
     async (event) => {
       // vector layers are defined on projects
-      if (!project_id) return
+      if (!projectId) return
 
       const { lat, lng } = event.latlng
       const zoom = map.getZoom()
@@ -62,7 +62,7 @@ export const ClickListener = memo(() => {
           ${filterString} 
         ORDER BY wl.label
       `,
-        [project_id],
+        [projectId],
       )
       const wmsLayers = resWmsLayers?.rows ?? []
 
@@ -105,7 +105,7 @@ export const ClickListener = memo(() => {
           ${filterStringVl ? ` AND ${filterStringVl}` : ''} 
         ORDER BY label
       `,
-        [project_id],
+        [projectId],
       )
       const activeVectorLayers = resActiveVectorLayers?.rows ?? []
       // need to buffer for points and polygons or it will be too hard to get their info
@@ -167,7 +167,7 @@ export const ClickListener = memo(() => {
 
       setMapInfo(mapInfo)
     },
-    [project_id, map, wmsLayersFilter, db, vectorLayersFilter, setMapInfo],
+    [projectId, map, wmsLayersFilter, db, vectorLayersFilter, setMapInfo],
   )
 
   useMapEvent('click', onClick)
