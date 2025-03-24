@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import {  useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -11,14 +11,11 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { projectsFilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
-
 import '../form.css'
-
-const from = '/data/_authLayout/projects'
 
 export const Projects = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
-  const navigate = useNavigate({ from })
+  const navigate = useNavigate()
   const db = usePGlite()
 
   const filterString = filterStringFromFilter(filter)
@@ -58,10 +55,9 @@ export const Projects = memo(() => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {projects.map((project) => (
               <Row
                 key={project.project_id}
@@ -70,7 +66,7 @@ export const Projects = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
