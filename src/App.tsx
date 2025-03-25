@@ -61,7 +61,10 @@ export const App = () => {
             ref={uploaderRef}
           ></uc-upload-ctx-provider>
           <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-          <div style={routerContainerStyle} id="router-container">
+          <div
+            style={routerContainerStyle}
+            id="router-container"
+          >
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProvider router={router} />
             </UploaderContext.Provider>

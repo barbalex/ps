@@ -17,4 +17,7 @@ export const Route = createFileRoute('/data/_authLayout/')({
   component: Main,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
+  beforeLoad: () => ({
+    context: '/data/_authLayout/',
+  }),
 })
