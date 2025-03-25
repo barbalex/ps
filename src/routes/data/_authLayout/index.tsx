@@ -18,6 +18,7 @@ export const Route = createFileRoute('/data/_authLayout/')({
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
   beforeLoad: () => ({
-    context: '/data/_authLayout/',
+    navDataFetcher: async () => console.log('fetching dataNavData'),
+    navDataName: 'useDataNavData',
   }),
 })

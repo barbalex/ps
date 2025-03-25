@@ -31,7 +31,6 @@ export const Main = memo(() => {
 
   if (onlyForm) return <Outlet />
 
-  // TODO:re-enable all
   return (
     <div style={containerStyle}>
       <Allotment>

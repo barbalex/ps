@@ -16,7 +16,9 @@ export const BreadcrumbsWrapping = () => {
 
   return null
 
-  const filteredMatches = matches.filter((match) => match.handle?.crumb)
+  const filteredMatches = matches.filter(
+    (match) => match.context?.navDataFetcher,
+  )
 
   // need to ensure the breadcrumbs rerender on every location change
 

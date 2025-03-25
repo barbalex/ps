@@ -21,19 +21,19 @@ export const BreadcrumbForFolder = memo(
     const [designing] = useAtom(designingAtom)
     const navigate = useNavigate()
     const {
-      check_id,
-      action_id,
-      action_report_id,
-      project_id,
-      subproject_id,
-      place_id,
-      place_id2,
-      place_report_id,
-      goal_id,
-      chart_id,
-      goal_report_id,
-      list_id,
-      taxonomy_id,
+      checkId,
+      actionId,
+      actionReportId,
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      placeReportId,
+      goalId,
+      chartId,
+      goalReportId,
+      listId,
+      taxonomyId,
     } = match.params
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
@@ -50,9 +50,7 @@ export const BreadcrumbForFolder = memo(
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
     const db = usePGlite()
     const matchParam =
-      table === 'places' && levelWanted === 2 ?
-        place_id2
-      : match.params[idField]
+      table === 'places' && levelWanted === 2 ? placeId2 : match.params[idField]
 
     const res = useLiveQuery(
       `SELECT * FROM ${queryTable} WHERE ${idField} = $1`,
@@ -65,19 +63,19 @@ export const BreadcrumbForFolder = memo(
       const fetch = async () => {
         const navs = await buildNavs({
           table,
-          action_id,
-          action_report_id,
-          project_id,
-          subproject_id,
-          place_id,
-          place_id2,
-          place_report_id,
-          goal_id,
-          chart_id,
-          goal_report_id,
-          list_id,
-          taxonomy_id,
-          check_id,
+          action_id: actionId,
+          action_report_id: actionReportId,
+          project_id: projectId,
+          subproject_id: subprojectId,
+          place_id: placeId,
+          place_id2: placeId2,
+          place_report_id: placeReportId,
+          goal_id: goalId,
+          chart_id: chartId,
+          goal_report_id: goalReportId,
+          list_id: listId,
+          taxonomy_id: taxonomyId,
+          check_id: checkId,
           db,
           level: levelWanted,
           designing,
@@ -87,19 +85,19 @@ export const BreadcrumbForFolder = memo(
       }
       fetch()
     }, [
-      check_id,
-      action_id,
-      action_report_id,
-      project_id,
-      subproject_id,
-      place_id,
-      place_id2,
-      place_report_id,
-      goal_id,
-      chart_id,
-      goal_report_id,
-      list_id,
-      taxonomy_id,
+      checkId,
+      actionId,
+      actionReportId,
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      placeReportId,
+      goalId,
+      chartId,
+      goalReportId,
+      listId,
+      taxonomyId,
       db,
       table,
       levelWanted,

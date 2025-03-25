@@ -97,7 +97,9 @@ export const BreadcrumbsOverflowing = () => {
     setRerenderInteger((i) => i + 1)
   }, [])
 
-  const matches = unfilteredMatches.filter((match) => match.handle?.context)
+  const matches = unfilteredMatches.filter(
+    (match) => !!match.context?.navDataFetcher,
+  )
   const { width, ref } = useResizeDetector({
     handleHeight: false,
     refreshMode: 'debounce',
