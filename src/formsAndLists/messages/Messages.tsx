@@ -2,12 +2,12 @@ import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-import { createMessage } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row.tsx'
-import { Loading } from '../components/shared/Loading.tsx'
+import { createMessage } from '../../modules/createRows.ts'
+import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
+import { Row } from '../../components/shared/Row.tsx'
+import { Loading } from '../../components/shared/Loading.tsx'
 
-import '../form.css'
+import '../../form.css'
 
 export const Messages = memo(() => {
   const navigate = useNavigate()
@@ -44,10 +44,9 @@ export const Messages = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {messages.map(({ message_id, date }) => (
               <Row
                 key={message_id}
@@ -56,7 +55,7 @@ export const Messages = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

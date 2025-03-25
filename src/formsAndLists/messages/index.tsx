@@ -2,12 +2,12 @@ import { memo } from 'react'
 import { useAtom } from 'jotai'
 
 import { isDesktopViewAtom } from '../../store.ts'
-import { Projects } from './Projects.tsx'
+import { Messages } from './Messages.tsx'
 
-export const ProjectsChooser = memo(() => {
+export const MessagesChooser = memo(() => {
   const [isDesktopView] = useAtom(isDesktopViewAtom)
 
   if (isDesktopView) return null
 
-  return <Projects />
+  return <Messages />
 })
