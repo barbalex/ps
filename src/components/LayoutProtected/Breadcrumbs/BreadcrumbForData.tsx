@@ -45,11 +45,11 @@ export const BreadcrumbForData = memo(
       // for instance: place_report_values > values
       const parentIdName = Object.keys(match.params)
         .find((key) => match.params[key] === parentId)
-        ?.replace('place_id2', 'place_id')
+        ?.replace('placeId2', 'placeId')
       const placesCountInPath = path.filter((p) => p.includes('places')).length
       if (parentIdName && parentId) {
         if (table === 'places' && placesCountInPath === 2) {
-          where += `parent_id = '${match.params.place_id}'`
+          where += `parent_id = '${match.params.placeId}'`
         } else if (table === 'places') {
           where += `${parentIdName} = '${parentId}' AND parent_id IS NULL`
         } else if (table === 'occurrences') {
@@ -67,8 +67,8 @@ export const BreadcrumbForData = memo(
           } else if (lastPathElement === 'occurrences-assigned') {
             where += ` AND place_id = '${
               placesCountInPath === 1 ?
-                match.params.place_id
-              : match.params.place_id2
+                match.params.placeId
+              : match.params.placeId2
             }'`
           }
           // if last path element is
@@ -136,7 +136,7 @@ export const BreadcrumbForData = memo(
           case 'places': {
             const res = await db.query(
               `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
-              [match.params.project_id, levelWanted],
+              [match.params.projectId, levelWanted],
             )
             const placeLevels = res?.rows ?? []
             const levelRow = placeLevels[0]
@@ -148,7 +148,7 @@ export const BreadcrumbForData = memo(
           case 'subprojects': {
             const res = await db.query(
               `SELECT * FROM projects WHERE project_id = $1`,
-              [match.params.project_id],
+              [match.params.projectId],
             )
             const project = res?.rows?.[0]
             const label = project?.subproject_name_plural ?? 'Subprojects'
@@ -156,10 +156,10 @@ export const BreadcrumbForData = memo(
             break
           }
           case 'occurrences': {
-            if (!match?.params?.subproject_id) return
+            if (!match?.params?.subprojectId) return
             const res = await db.query(
               `SELECT * FROM occurrence_imports WHERE subproject_id = $1`,
-              [match.params.subproject_id],
+              [match.params.subprojectId],
             )
             const occurrenceImports = res?.rows ?? []
             setOccurrenceImportIds(
@@ -172,7 +172,7 @@ export const BreadcrumbForData = memo(
         }
       }
       get()
-    }, [db, levelWanted, match, match.params, match.params.project_id, table])
+    }, [db, levelWanted, match, match.params, match.params.projectId, table])
 
     // console.log('BreadcrumbForData', {
     //   table,
