@@ -3,15 +3,15 @@ import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-import { createProject } from '../../modules/createRows.ts'
-import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
-import { Row } from '../../components/shared/Row.tsx'
-import { FilterButton } from '../../components/shared/FilterButton.tsx'
-import { Loading } from '../../components/shared/Loading.tsx'
-import { projectsFilterAtom } from '../../store.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { createProject } from '../modules/createRows.ts'
+import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
+import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
+import { projectsFilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
-import '../../form.css'
+import '../form.css'
 
 export const Projects = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
