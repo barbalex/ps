@@ -2,6 +2,7 @@
 export const constants = {
   // appBarHeight: 64,
   titleRowHeight: 52,
+  mobileViewMaxWidth: 999,
   // singleRowHeight: 48,
   // getAppUri: () =>
   //   window?.location?.hostname === 'localhost'

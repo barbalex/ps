@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Projects } from '../../../../formsAndLists/projects.tsx'
+import { ProjectsChooser } from '../../../../formsAndLists/projects/index.tsx'
 import { NotFound } from '../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute('/data/_authLayout/projects/')({
-  component: Projects,
+  component: ProjectsChooser,
   notFoundComponent: NotFound,
 })

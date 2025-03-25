@@ -1,5 +1,6 @@
 import { createStore, atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import { constants } from './modules/constants.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()

@@ -10,6 +10,7 @@ import { Header } from './Header/index.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
+import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
 const from = '/data/_authLayout'
@@ -43,6 +44,7 @@ export const Layout = memo(() => {
         <TableLayersProvider />
         <OwnVectorLayerPropertiesProvider />
         <OccurrenceAssignChooser />
+        <IsDesktopViewSetter />
         <Main />
       </ProtectedRoute>
     </>
