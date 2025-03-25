@@ -4,7 +4,6 @@ import { useSearch } from '@tanstack/react-router'
 
 import { Main } from './Main.tsx'
 import { Breadcrumbs } from './Breadcrumbs/index.tsx'
-// import { Navs } from './Navs/index.tsx'
 import { Notifications } from '../Notifications/index.tsx'
 import { ProtectedRoute } from '../ProtectedRoute.tsx'
 import { Header } from './Header/index.tsx'
@@ -30,19 +29,13 @@ export const Layout = memo(() => {
   // return <Main />
 
   // ignore Navs for now
-  // TODO: implement nav-lists to replace them
-  // TODO: reactivate Breadcrumbs
+  // TODO: implement nav-lists to replace previous navs
   return (
     <>
       {onlyForm !== true && (
         <>
           <Header />
-          {!mapIsMaximized && (
-            <>
-              <Breadcrumbs />
-              {/* <Navs /> */}
-            </>
-          )}
+          {!mapIsMaximized && <Breadcrumbs />}
           <Notifications />
         </>
       )}

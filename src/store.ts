@@ -98,11 +98,6 @@ export const showTreeMenusAtom = atom((get) => {
 export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)
-export const navsOverflowingAtom = atomWithStorage('navsOverflowingAtom', true)
-export const breadcrumbsOverflowingAtom = atomWithStorage(
-  'breadcrumbsOverflowingAtom',
-  true,
-)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
 // export const tabsAtom = atom(['tree', 'data'])
 export const syncingAtom = atomWithStorage('syncingAtom', false)

@@ -109,7 +109,7 @@ export const Breadcrumbs = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  console.log('hello BreadcrumbsOverflowing, matches:', {
+  console.log('Breadcrumbs, matches:', {
     matches,
     unfilteredMatches,
   })
