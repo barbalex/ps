@@ -236,6 +236,7 @@ export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // filter_place_users_2
 // filter_place_charts_2
 // filter_place_chart_subjects_2
+
 export const filterAtoms = {
   projects: projectsFilterAtom,
   fields: fieldsFilterAtom,
@@ -260,4 +261,122 @@ export const filterAtoms = {
   placeReports1: placeReports1FilterAtom,
   placeReports2: placeReports2FilterAtom,
   files: filesFilterAtom,
+}
+
+export const projectsNavListFilterIsVisibleAtom = atomWithStorage(
+  'projectsNavListFilterIsVisibleAtom',
+  false,
+)
+export const fieldsNavListFilterIsVisibleAtom = atomWithStorage(
+  'fieldsNavListFilterIsVisibleAtom',
+  false,
+)
+export const fieldTypesNavListFilterIsVisibleAtom = atomWithStorage(
+  'fieldTypesNavListFilterIsVisibleAtom',
+  false,
+)
+export const widgetTypesNavListFilterIsVisibleAtom = atomWithStorage(
+  'widgetTypesNavListFilterIsVisibleAtom',
+  false,
+)
+export const widgetsForFieldsNavListFilterIsVisibleAtom = atomWithStorage(
+  'widgetsForFieldsNavListFilterIsVisibleAtom',
+  false,
+)
+export const projectReportsNavListFilterIsVisibleAtom = atomWithStorage(
+  'projectReportsNavListFilterIsVisibleAtom',
+  false,
+)
+export const personsNavListFilterIsVisibleAtom = atomWithStorage(
+  'personsNavListFilterIsVisibleAtom',
+  false,
+)
+export const wmsLayersNavListFilterIsVisibleAtom = atomWithStorage(
+  'wmsLayersNavListFilterIsVisibleAtom',
+  false,
+)
+export const vectorLayersNavListFilterIsVisibleAtom = atomWithStorage(
+  'vectorLayersNavListFilterIsVisibleAtom',
+  false,
+)
+export const listsNavListFilterIsVisibleAtom = atomWithStorage(
+  'listsNavListFilterIsVisibleAtom',
+  false,
+)
+export const unitsNavListFilterIsVisibleAtom = atomWithStorage(
+  'unitsNavListFilterIsVisibleAtom',
+  false,
+)
+export const subprojectsNavListFilterIsVisibleAtom = atomWithStorage(
+  'subprojectsNavListFilterIsVisibleAtom',
+  false,
+)
+export const subprojectReportsNavListFilterIsVisibleAtom = atomWithStorage(
+  'subprojectReportsNavListFilterIsVisibleAtom',
+  false,
+)
+export const goalsNavListFilterIsVisibleAtom = atomWithStorage(
+  'goalsNavListFilterIsVisibleAtom',
+  false,
+)
+export const places1NavListFilterIsVisibleAtom = atomWithStorage(
+  'places1NavListFilterIsVisibleAtom',
+  false,
+)
+export const places2NavListFilterIsVisibleAtom = atomWithStorage(
+  'places2NavListFilterIsVisibleAtom',
+  false,
+)
+export const checks1NavListFilterIsVisibleAtom = atomWithStorage(
+  'checks1NavListFilterIsVisibleAtom',
+  false,
+)
+export const checks2NavListFilterIsVisibleAtom = atomWithStorage(
+  'checks2NavListFilterIsVisibleAtom',
+  false,
+)
+export const actions1NavListFilterIsVisibleAtom = atomWithStorage(
+  'actions1NavListFilterIsVisibleAtom',
+  false,
+)
+export const actions2NavListFilterIsVisibleAtom = atomWithStorage(
+  'actions2NavListFilterIsVisibleAtom',
+  false,
+)
+export const placeReports1NavListFilterIsVisibleAtom = atomWithStorage(
+  'placeReports1NavListFilterIsVisibleAtom',
+  false,
+)
+export const placeReports2NavListFilterIsVisibleAtom = atomWithStorage(
+  'placeReports2NavListFilterIsVisibleAtom',
+  false,
+)
+export const filesNavListFilterIsVisibleAtom = atomWithStorage(
+  'filesNavListFilterIsVisibleAtom',
+  false,
+)
+export const navListFilterIsVisibleAtoms = {
+  projects: projectsNavListFilterIsVisibleAtom,
+  fields: fieldsNavListFilterIsVisibleAtom,
+  fieldTypes: fieldTypesNavListFilterIsVisibleAtom,
+  widgetTypes: widgetTypesNavListFilterIsVisibleAtom,
+  widgetsForFields: widgetsForFieldsNavListFilterIsVisibleAtom,
+  projectReports: projectReportsNavListFilterIsVisibleAtom,
+  persons: personsNavListFilterIsVisibleAtom,
+  wmsLayers: wmsLayersNavListFilterIsVisibleAtom,
+  vectorLayers: vectorLayersNavListFilterIsVisibleAtom,
+  lists: listsNavListFilterIsVisibleAtom,
+  units: unitsNavListFilterIsVisibleAtom,
+  subprojects: subprojectsNavListFilterIsVisibleAtom,
+  subprojectReports: subprojectReportsNavListFilterIsVisibleAtom,
+  goals: goalsNavListFilterIsVisibleAtom,
+  places1: places1NavListFilterIsVisibleAtom,
+  places2: places2NavListFilterIsVisibleAtom,
+  checks1: checks1NavListFilterIsVisibleAtom,
+  checks2: checks2NavListFilterIsVisibleAtom,
+  actions1: actions1NavListFilterIsVisibleAtom,
+  actions2: actions2NavListFilterIsVisibleAtom,
+  placeReports1: placeReports1NavListFilterIsVisibleAtom,
+  placeReports2: placeReports2NavListFilterIsVisibleAtom,
+  files: filesNavListFilterIsVisibleAtom,
 }

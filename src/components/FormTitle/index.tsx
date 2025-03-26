@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { useAtom } from 'jotai'
 
+import { navListFilterIsVisibleAtoms } from '../../store.ts'
 import './style.css'
 
 const containerStyle = {
@@ -40,6 +41,10 @@ const titleStyle = {
 
 export const FormTitle = memo(
   ({ title, filterName, MenuComponent = null, menuProps = {} }) => {
+    const [navListFilterIsVisible, setNavListFilterIsVisible] = useAtom(
+      navListFilterIsVisibleAtoms[filterName] ?? 'undefined',
+    )
+
     return (
       <div
         style={containerStyle}
