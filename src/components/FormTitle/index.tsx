@@ -38,13 +38,15 @@ const titleStyle = {
   textOverflow: 'ellipsis',
 }
 
-export const FormTitle = memo(({ title }) => {
-  return (
-    <div
-      style={containerStyle}
-      className="form-title-container"
-    >
-      <h1>{title}</h1>
-    </div>
-  )
-})
+export const FormTitle = memo(
+  ({ title, filterName, MenuComponent = null, menuProps = {} }) => {
+    return (
+      <div
+        style={containerStyle}
+        className="form-title-container"
+      >
+        <h1>{title}</h1>
+      </div>
+    )
+  },
+)

@@ -236,3 +236,28 @@ export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // filter_place_users_2
 // filter_place_charts_2
 // filter_place_chart_subjects_2
+export const filterAtoms = {
+  projects: projectsFilterAtom,
+  fields: fieldsFilterAtom,
+  fieldTypes: fieldTypesFilterAtom,
+  widgetTypes: widgetTypesFilterAtom,
+  widgetsForFields: widgetsForFieldsFilterAtom,
+  projectReports: projectReportsFilterAtom,
+  persons: personsFilterAtom,
+  wmsLayers: wmsLayersFilterAtom,
+  vectorLayers: vectorLayersFilterAtom,
+  lists: listsFilterAtom,
+  units: unitsFilterAtom,
+  subprojects: subprojectsFilterAtom,
+  subprojectReports: subprojectReportsFilterAtom,
+  goals: goalsFilterAtom,
+  places1: places1FilterAtom,
+  places2: places2FilterAtom,
+  checks1: checks1FilterAtom,
+  checks2: checks2FilterAtom,
+  actions1: actions1FilterAtom,
+  actions2: actions2FilterAtom,
+  placeReports1: placeReports1FilterAtom,
+  placeReports2: placeReports2FilterAtom,
+  files: filesFilterAtom,
+}
