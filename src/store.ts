@@ -5,6 +5,19 @@ import { constants } from './modules/constants.ts'
 
 export const store = createStore()
 
+function atomWithToggleAndStorage(key, initialValue, storage) {
+  const anAtom = atomWithStorage(key, initialValue, storage)
+  const derivedAtom = atom(
+    (get) => get(anAtom),
+    (get, set, nextValue) => {
+      const update = nextValue ?? !get(anAtom)
+      set(anAtom, update)
+    },
+  )
+
+  return derivedAtom
+}
+
 // nav stuff
 
 export const enforceDesktopNavigationAtom = atomWithStorage(
@@ -263,95 +276,89 @@ export const filterAtoms = {
   files: filesFilterAtom,
 }
 
-export const projectsNavListFilterIsVisibleAtom = atomWithStorage(
+export const projectsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'projectsNavListFilterIsVisibleAtom',
   false,
 )
-export const fieldsNavListFilterIsVisibleAtom = atomWithStorage(
+export const fieldsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'fieldsNavListFilterIsVisibleAtom',
   false,
 )
-export const fieldTypesNavListFilterIsVisibleAtom = atomWithStorage(
+export const fieldTypesNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'fieldTypesNavListFilterIsVisibleAtom',
   false,
 )
-export const widgetTypesNavListFilterIsVisibleAtom = atomWithStorage(
+export const widgetTypesNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'widgetTypesNavListFilterIsVisibleAtom',
   false,
 )
-export const widgetsForFieldsNavListFilterIsVisibleAtom = atomWithStorage(
-  'widgetsForFieldsNavListFilterIsVisibleAtom',
-  false,
-)
-export const projectReportsNavListFilterIsVisibleAtom = atomWithStorage(
-  'projectReportsNavListFilterIsVisibleAtom',
-  false,
-)
-export const personsNavListFilterIsVisibleAtom = atomWithStorage(
+export const widgetsForFieldsNavListFilterIsVisibleAtom =
+  atomWithToggleAndStorage('widgetsForFieldsNavListFilterIsVisibleAtom', false)
+export const projectReportsNavListFilterIsVisibleAtom =
+  atomWithToggleAndStorage('projectReportsNavListFilterIsVisibleAtom', false)
+export const personsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'personsNavListFilterIsVisibleAtom',
   false,
 )
-export const wmsLayersNavListFilterIsVisibleAtom = atomWithStorage(
+export const wmsLayersNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'wmsLayersNavListFilterIsVisibleAtom',
   false,
 )
-export const vectorLayersNavListFilterIsVisibleAtom = atomWithStorage(
+export const vectorLayersNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'vectorLayersNavListFilterIsVisibleAtom',
   false,
 )
-export const listsNavListFilterIsVisibleAtom = atomWithStorage(
+export const listsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'listsNavListFilterIsVisibleAtom',
   false,
 )
-export const unitsNavListFilterIsVisibleAtom = atomWithStorage(
+export const unitsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'unitsNavListFilterIsVisibleAtom',
   false,
 )
-export const subprojectsNavListFilterIsVisibleAtom = atomWithStorage(
+export const subprojectsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'subprojectsNavListFilterIsVisibleAtom',
   false,
 )
-export const subprojectReportsNavListFilterIsVisibleAtom = atomWithStorage(
-  'subprojectReportsNavListFilterIsVisibleAtom',
-  false,
-)
-export const goalsNavListFilterIsVisibleAtom = atomWithStorage(
+export const subprojectReportsNavListFilterIsVisibleAtom =
+  atomWithToggleAndStorage('subprojectReportsNavListFilterIsVisibleAtom', false)
+export const goalsNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'goalsNavListFilterIsVisibleAtom',
   false,
 )
-export const places1NavListFilterIsVisibleAtom = atomWithStorage(
+export const places1NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'places1NavListFilterIsVisibleAtom',
   false,
 )
-export const places2NavListFilterIsVisibleAtom = atomWithStorage(
+export const places2NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'places2NavListFilterIsVisibleAtom',
   false,
 )
-export const checks1NavListFilterIsVisibleAtom = atomWithStorage(
+export const checks1NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'checks1NavListFilterIsVisibleAtom',
   false,
 )
-export const checks2NavListFilterIsVisibleAtom = atomWithStorage(
+export const checks2NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'checks2NavListFilterIsVisibleAtom',
   false,
 )
-export const actions1NavListFilterIsVisibleAtom = atomWithStorage(
+export const actions1NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'actions1NavListFilterIsVisibleAtom',
   false,
 )
-export const actions2NavListFilterIsVisibleAtom = atomWithStorage(
+export const actions2NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'actions2NavListFilterIsVisibleAtom',
   false,
 )
-export const placeReports1NavListFilterIsVisibleAtom = atomWithStorage(
+export const placeReports1NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'placeReports1NavListFilterIsVisibleAtom',
   false,
 )
-export const placeReports2NavListFilterIsVisibleAtom = atomWithStorage(
+export const placeReports2NavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'placeReports2NavListFilterIsVisibleAtom',
   false,
 )
-export const filesNavListFilterIsVisibleAtom = atomWithStorage(
+export const filesNavListFilterIsVisibleAtom = atomWithToggleAndStorage(
   'filesNavListFilterIsVisibleAtom',
   false,
 )
