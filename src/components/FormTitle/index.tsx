@@ -9,7 +9,7 @@ import {
 import { useAtom } from 'jotai'
 
 import { navListFilterIsVisibleAtoms } from '../../store.ts'
-import {FilterCollapse} from './FilterCollapse.tsx'
+import { FilterCollapse } from './FilterCollapse.tsx'
 import './style.css'
 
 const containerStyle = {
@@ -60,15 +60,19 @@ export const FormTitle = memo(
       >
         <div style={titleRowStyle}>
           <div style={titleStyle}>{title}</div>
-          {!!MenuBarComponent && (
-            <MenuBarComponent
+          {!!MenuComponent && (
+            <MenuComponent
               toggleFilterInput={toggleFilterInput}
-              {...menuBarProps}
+              {...menuProps}
             />
           )}
         </div>
         {!!listFilter && (
-          <FilterCollapse ref={filterInputRef} navListFilterIsVisible={navListFilterIsVisible} toggleNavListFilterIsVisible={toggleNavListFilterIsVisible} />
+          <FilterCollapse
+            ref={filterInputRef}
+            navListFilterIsVisible={navListFilterIsVisible}
+            toggleNavListFilterIsVisible={toggleNavListFilterIsVisible}
+          />
         )}
       </div>
     )
