@@ -26,6 +26,7 @@ const titleRowStyle = {
   flexWrap: 'nowrap',
   overflow: 'hidden',
 }
+// TODO: make this a h2 or h3?
 const titleStyle = {
   display: 'block',
   flewGrow: 0,
@@ -41,16 +42,30 @@ const titleStyle = {
 
 export const FormTitle = memo(
   ({ title, filterName, MenuComponent = null, menuProps = {} }) => {
+    // get list filter visibility from the correct atom
     const [navListFilterIsVisible, setNavListFilterIsVisible] = useAtom(
       navListFilterIsVisibleAtoms[filterName] ?? 'undefined',
     )
+    const filterInputRef = useRef(null)
+    const toggleFilterInput = useCallback(() => {
+      toggleFilterInputIsVisible()
+      setTimeout(() => filterInputRef?.current?.focus?.(), 0)
+    }, [filterInputIsVisible, toggleFilterInputIsVisible])
 
     return (
       <div
         style={containerStyle}
         className="form-title-container"
       >
-        <h1>{title}</h1>
+        <div style={titleRowStyle}>
+          <div style={titleStyle}>{title}</div>
+          {!!MenuBarComponent && (
+            <MenuBarComponent
+              toggleFilterInput={toggleFilterInput}
+              {...menuBarProps}
+            />
+          )}
+        </div>
       </div>
     )
   },
