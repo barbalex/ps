@@ -8,8 +8,12 @@ import {
   Children,
   cloneElement,
 } from 'react'
-import { IconButton, Menu } from '@mui/material'
-import Tooltip from '@mui/material/Tooltip'
+import {
+  Menu,
+  MenuTrigger,
+  MenuList,
+  Tooltip,
+} from '@fluentui/react-components'
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
 
@@ -30,8 +34,8 @@ const measuredOuterContainerStyle = {
   flexShrink: 0,
   columnGap: 0,
   // backgroundColor needed (not transparent) as in fullscreen backed by black
-  borderTop: '1px solid rgba(46, 125, 50, 0.15)',
-  borderBottom: '1px solid rgba(46, 125, 50, 0.15)',
+  borderTop: '1px solid rgba(225, 247, 224, 0.15)',
+  borderBottom: '1px solid rgba(225, 247, 224, 0.15)',
 }
 // StylingContainer overflows parent????!!!!
 // Possible solution: pass in max-width
@@ -70,16 +74,12 @@ export const MenuBar = memo(
     // files pass in titleComponent and its width
     titleComponent,
     titleComponentWidth,
-    bgColor = '#388e3c',
+    bgColor = 'rgb(225, 247, 224)',
     color = 'white',
     // top menu bar has no margin between menus, others do
     // and that needs to be compensated for
     addMargin = true,
   }) => {
-    const [menuAnchor, setMenuAnchor] = useState(null)
-    const menuIsOpen = Boolean(menuAnchor)
-    const onCloseMenu = useCallback(() => setMenuAnchor(null), [])
-
     const { visibleChildren, widths } = useMemo(() => {
       const visibleChildren = []
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -216,11 +216,6 @@ export const MenuBar = memo(
       }
     }, [rerenderer, checkOverflowDebounced])
 
-    const onClickMenuButton = useCallback(
-      (event) => setMenuAnchor(event.currentTarget),
-      [],
-    )
-
     return (
       <div
         ref={outerContainerRef}
@@ -236,35 +231,33 @@ export const MenuBar = memo(
         >
           {buttons}
           {!!menus.length && (
-            <>
-              <Tooltip title="Mehr Befehle">
-                <IconButton
-                  id="menubutton"
-                  onClick={onClickMenuButton}
+            <Menu
+              style={{ ...menuStyle, backgroundColor: bgColor }}
+              className="menubar-menu"
+            >
+              <MenuTrigger>
+                <Tooltip
+                  content="Mehr Befehle"
+                  relationship="label"
                 >
-                  <FaBars style={{ color }} />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                id="menubutton"
-                anchorEl={menuAnchor}
-                open={menuIsOpen}
-                onClose={onCloseMenu}
-                style={{ ...menuStyle, backgroundColor: bgColor }}
-                className="menubar-menu"
+                  <Button
+                    size="medium"
+                    icon={<FaBars style={{ color }} />}
+                    onClick={onClickMenuButton}
+                  />
+                </Tooltip>
+              </MenuTrigger>
+              <MenuList
+                bgColor={bgColor}
+                className="menubar-more-menus"
+                // GOAL: close menu on click on menu item
+                // TODO: prevents more menu opening on very narrow screens
+                onClick={onCloseMenu}
+                style={{ ...menuContentStyle, backgroundColor: bgColor }}
               >
-                <div
-                  bgColor={bgColor}
-                  className="menubar-more-menus"
-                  // GOAL: close menu on click on menu item
-                  // TODO: prevents more menu opening on very narrow screens
-                  onClick={onCloseMenu}
-                  style={{ ...menuContentStyle, backgroundColor: bgColor }}
-                >
-                  {menus}
-                </div>
-              </Menu>
-            </>
+                {menus}
+              </MenuList>
+            </Menu>
           )}
         </div>
       </div>
