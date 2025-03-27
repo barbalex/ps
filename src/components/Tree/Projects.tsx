@@ -2,58 +2,35 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ProjectNode } from './Project/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
+import { useProjectsNavData } from '../../modules/useProjectsNavData.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ProjectsNode = memo(() => {
-  const [filter] = useAtom(projectsFilterAtom)
-  const isFiltered = filter.length > 0
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
 
-  const filterString = filterStringFromFilter(filter)
-  const resFiltered = useLiveIncrementalQuery(
-    `
-    SELECT
-      project_id,
-      files_active_projects,
-      label
-    FROM projects
-    ${filterString ? ` WHERE ${filterString}` : ''} 
-    ORDER BY label`,
-    undefined,
-    'project_id',
-  )
-  const rows = resFiltered?.rows ?? []
-  const rowsLoading = resFiltered === undefined
-
-  const resultCountUnfiltered = useLiveQuery(`SELECT count(*) FROM projects`)
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
+  const { loading, navData, isFiltered, countLoading, countUnfiltered } =
+    useProjectsNavData()
 
   const node = useMemo(
     () => ({
       label: `Projects (${
         isFiltered ?
-          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+          `${loading ? '...' : formatNumber(navData.length)}/${
             countLoading ? '...' : formatNumber(countUnfiltered)
           }`
-        : rowsLoading ? '...'
-        : formatNumber(rows.length)
+        : loading ? '...'
+        : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
+    [isFiltered, loading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -91,13 +68,13 @@ export const ProjectsNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         toParams={undefined}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((project) => (
+        navData.map((project) => (
           <ProjectNode
             key={project.project_id}
             project={project}
