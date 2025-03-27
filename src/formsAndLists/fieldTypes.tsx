@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createFieldType } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -28,13 +28,9 @@ export const FieldTypes = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Field Types"
+      <ListHeader
+        label={navData.label}
         nameSingular="Field Type"
-        tablename="field_types"
-        isFiltered={isFiltered}
-        countFiltered={navData.length}
-        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -42,7 +38,7 @@ export const FieldTypes = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ field_type_id, label }) => (
+            {navData.navs.map(({ field_type_id, label }) => (
               <Row
                 key={field_type_id}
                 label={label ?? field_type_id}

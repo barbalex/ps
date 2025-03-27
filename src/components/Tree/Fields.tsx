@@ -50,7 +50,7 @@ export const FieldsNode = memo(({ projectId }: Props) => {
         isOpen={navData.isOpen}
         isInActiveNodeArray={navData.isInActiveNodeArray}
         isActive={navData.isActive}
-        childrenCount={navData.length}
+        childrenCount={navData.navs.length}
         to={navData.ownUrl}
         onClickButton={onClickButton}
       />
