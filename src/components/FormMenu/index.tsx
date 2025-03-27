@@ -3,7 +3,7 @@ import { FaPlus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { Button, Tooltip } from '@fluentui/react-components'
 
 import { Delete } from './Delete.tsx'
-import { MenuBar } from '../../MenuBar/index.tsx'
+import { MenuBar } from '../MenuBar/index.tsx'
 
 export const FormMenu = memo(
   ({ addRow, deleteRow, toNext, toPrevious, tableName = '', siblings }) => (

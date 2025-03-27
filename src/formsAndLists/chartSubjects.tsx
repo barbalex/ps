@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
+import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { createChartSubject } from '../modules/createRows.ts'

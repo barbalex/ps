@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-import { FormMenu } from '../FormHeader/FormMenu/index.tsx'
-import { formatNumber } from '../../modules/formatNumber.ts'
+import { FormMenu } from './FormMenu/index.tsx'
+import { formatNumber } from '../modules/formatNumber.ts'
 
 interface Props {
   namePlural: string

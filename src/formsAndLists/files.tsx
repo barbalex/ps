@@ -4,7 +4,7 @@ import { useParams } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
+import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { Uploader } from './file/Uploader.tsx'

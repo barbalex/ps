@@ -13,7 +13,7 @@ import {
   createVectorLayerDisplay,
   createLayerPresentation,
 } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
+import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'

@@ -4,7 +4,7 @@ import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createUser } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
+import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { userIdAtom } from '../store.ts'
