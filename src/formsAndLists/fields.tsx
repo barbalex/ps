@@ -3,7 +3,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createField } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -30,13 +30,9 @@ export const Fields = memo(({ from }) => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Fields"
+      <ListHeader
+        label={navData.label}
         nameSingular="Field"
-        tablename="fields"
-        isFiltered={isFiltered}
-        countFiltered={navData.length}
-        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -44,7 +40,7 @@ export const Fields = memo(({ from }) => {
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ field_id, label }) => (
+            {navData.navs.map(({ field_id, label }) => (
               <Row
                 key={field_id}
                 label={label ?? field_id}
