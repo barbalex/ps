@@ -2,13 +2,13 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { AccountNode } from './Account.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
+import { useAccountsNavData } from '../../modules/useAccountsNavData.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const AccountsNode = memo(() => {
@@ -16,24 +16,13 @@ export const AccountsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT
-      account_id,
-      label 
-    FROM accounts 
-    ORDER BY label`,
-    undefined,
-    'account_id',
-  )
-  const rows = res?.rows ?? []
-  const loading = res === undefined
+  const { isLoading, navData } = useAccountsNavData()
 
   const node = useMemo(
     () => ({
-      label: `Accounts (${loading ? '...' : formatNumber(rows.length)})`,
+      label: `Accounts (${isLoading ? '...' : formatNumber(navData.length)})`,
     }),
-    [rows.length, loading],
+    [navData.length, isLoading],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -75,12 +64,12 @@ export const AccountsNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((account) => (
+        navData.map((account) => (
           <AccountNode
             key={account.account_id}
             account={account}
