@@ -3,11 +3,12 @@ import { FaPlus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { Button } from '@fluentui/react-components'
 
 import { Delete } from './Delete.tsx'
+import { MenuBar } from '../../MenuBar/index.tsx'
 import { controls } from '../../../styles.ts'
 
 export const FormMenu = memo(
   ({ addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => (
-    <div style={controls}>
+    <MenuBar>
       {!!siblings && siblings}
       {!!toPrevious && (
         <Button
@@ -39,6 +40,6 @@ export const FormMenu = memo(
           title={`Next ${tableName}`}
         />
       )}
-    </div>
+    </MenuBar>
   ),
 )

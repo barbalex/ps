@@ -9,6 +9,7 @@ import {
   cloneElement,
 } from 'react'
 import {
+  Button,
   Menu,
   MenuTrigger,
   MenuList,
@@ -16,6 +17,7 @@ import {
 } from '@fluentui/react-components'
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
+import { controls } from '../../styles.ts'
 
 const buttonHeight = 40
 export const buttonWidth = 40
@@ -75,7 +77,7 @@ export const MenuBar = memo(
     titleComponent,
     titleComponentWidth,
     bgColor = 'rgb(225, 247, 224)',
-    color = 'white',
+    color = 'rgb(36, 36, 36)',
     // top menu bar has no margin between menus, others do
     // and that needs to be compensated for
     addMargin = true,
@@ -229,7 +231,7 @@ export const MenuBar = memo(
               Math.abs(outerContainerWidth ?? 0) - (titleComponentWidth ?? 0),
           }}
         >
-          {buttons}
+          <div style={controls}>{buttons}</div>
           {!!menus.length && (
             <Menu
               style={{ ...menuStyle, backgroundColor: bgColor }}
@@ -243,7 +245,7 @@ export const MenuBar = memo(
                   <Button
                     size="medium"
                     icon={<FaBars style={{ color }} />}
-                    onClick={onClickMenuButton}
+                    // onClick={onClickMenuButton}
                   />
                 </Tooltip>
               </MenuTrigger>
@@ -252,7 +254,7 @@ export const MenuBar = memo(
                 className="menubar-more-menus"
                 // GOAL: close menu on click on menu item
                 // TODO: prevents more menu opening on very narrow screens
-                onClick={onCloseMenu}
+                // onClick={onCloseMenu}
                 style={{ ...menuContentStyle, backgroundColor: bgColor }}
               >
                 {menus}
