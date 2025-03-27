@@ -34,7 +34,7 @@ export const Projects = memo(() => {
         nameSingular="project"
         tableName="projects"
         isFiltered={isFiltered}
-        countFiltered={navData.length}
+        countFiltered={navData.navs.length}
         isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
@@ -43,11 +43,11 @@ export const Projects = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.map((project) => (
+            {navData.navs.map((nav) => (
               <Row
-                key={project.project_id}
-                label={project.label}
-                to={project.project_id}
+                key={nav.project_id}
+                label={nav.label}
+                to={nav.project_id}
               />
             ))}
           </>
