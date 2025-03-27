@@ -3,7 +3,6 @@ import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProject } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
