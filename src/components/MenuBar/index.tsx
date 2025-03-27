@@ -11,6 +11,7 @@ import {
 import {
   Button,
   Menu,
+  MenuPopover,
   MenuTrigger,
   MenuList,
   Tooltip,
@@ -19,8 +20,8 @@ import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
 import { controls } from '../../styles.ts'
 
-const buttonHeight = 40
-export const buttonWidth = 40
+const buttonHeight = 32
+export const buttonWidth = 32
 
 const measuredOuterContainerStyle = {
   overflow: 'hidden',
@@ -54,9 +55,8 @@ const stylingContainerStyle = {
   maxHeight: buttonHeight,
   overflow: 'hidden',
 }
-// remove the margin mui adds to top and bottom of menu
-const menuStyle = {
-  overflow: 'hidden',
+const menuPopoverStyle = {
+  minWidth: 'unset !important',
 }
 const menuContentStyle = {
   display: 'flex',
@@ -64,6 +64,9 @@ const menuContentStyle = {
   rowGap: '3px',
   overflow: 'hidden',
   padding: '3px !important',
+}
+const buttonStyle = {
+  marginLeft: 10,
 }
 
 // possible improvement:
@@ -76,8 +79,6 @@ export const MenuBar = memo(
     // files pass in titleComponent and its width
     titleComponent,
     titleComponentWidth,
-    bgColor = 'rgb(225, 247, 224)',
-    color = 'rgb(36, 36, 36)',
     // top menu bar has no margin between menus, others do
     // and that needs to be compensated for
     addMargin = true,
@@ -221,7 +222,7 @@ export const MenuBar = memo(
     return (
       <div
         ref={outerContainerRef}
-        style={{ ...measuredOuterContainerStyle, backgroundColor: bgColor }}
+        style={measuredOuterContainerStyle}
       >
         {titleComponent}
         <div
@@ -233,32 +234,26 @@ export const MenuBar = memo(
         >
           <div style={controls}>{buttons}</div>
           {!!menus.length && (
-            <Menu
-              style={{ ...menuStyle, backgroundColor: bgColor }}
-              className="menubar-menu"
-            >
+            <Menu className="menubar-menu">
               <MenuTrigger>
-                <Tooltip
-                  content="Mehr Befehle"
-                  relationship="label"
-                >
+                <Tooltip content="More Actions">
                   <Button
                     size="medium"
-                    icon={<FaBars style={{ color }} />}
-                    // onClick={onClickMenuButton}
+                    icon={<FaBars />}
+                    style={buttonStyle}
                   />
                 </Tooltip>
               </MenuTrigger>
-              <MenuList
-                bgColor={bgColor}
-                className="menubar-more-menus"
-                // GOAL: close menu on click on menu item
-                // TODO: prevents more menu opening on very narrow screens
-                // onClick={onCloseMenu}
-                style={{ ...menuContentStyle, backgroundColor: bgColor }}
-              >
-                {menus}
-              </MenuList>
+              <MenuPopover style={menuPopoverStyle}>
+                <MenuList
+                  className="menubar-more-menus"
+                  // GOAL: close menu on click on menu item
+                  // TODO: prevents more menu opening on very narrow screens
+                  style={{ ...menuContentStyle }}
+                >
+                  {menus}
+                </MenuList>
+              </MenuPopover>
             </Menu>
           )}
         </div>

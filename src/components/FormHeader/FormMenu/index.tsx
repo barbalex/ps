@@ -1,30 +1,31 @@
 import { memo } from 'react'
 import { FaPlus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
+import { Button, Tooltip } from '@fluentui/react-components'
 
 import { Delete } from './Delete.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
-import { controls } from '../../../styles.ts'
 
 export const FormMenu = memo(
-  ({ addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => (
+  ({ addRow, deleteRow, toNext, toPrevious, tableName = '', siblings }) => (
     <MenuBar>
       {!!siblings && siblings}
       {!!toPrevious && (
-        <Button
-          size="medium"
-          icon={<FaChevronLeft />}
-          onClick={toPrevious}
-          title={`Previous ${tableName}`}
-        />
+        <Tooltip content={`Previous ${tableName}`}>
+          <Button
+            size="medium"
+            icon={<FaChevronLeft />}
+            onClick={toPrevious}
+          />
+        </Tooltip>
       )}
       {!!addRow && (
-        <Button
-          size="medium"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title={`New ${tableName}`}
-        />
+        <Tooltip content={`New ${tableName}`}>
+          <Button
+            size="medium"
+            icon={<FaPlus />}
+            onClick={addRow}
+          />
+        </Tooltip>
       )}
       {!!deleteRow && (
         <Delete
@@ -33,12 +34,13 @@ export const FormMenu = memo(
         />
       )}
       {!!toNext && (
-        <Button
-          size="medium"
-          icon={<FaChevronRight />}
-          onClick={toNext}
-          title={`Next ${tableName}`}
-        />
+        <Tooltip content={`Next ${tableName}`}>
+          <Button
+            size="medium"
+            icon={<FaChevronRight />}
+            onClick={toNext}
+          />
+        </Tooltip>
       )}
     </MenuBar>
   ),

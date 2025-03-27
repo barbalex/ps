@@ -9,16 +9,18 @@ import {
   MenuPopover,
   MenuGroup,
   MenuGroupHeader,
+  Tooltip,
 } from '@fluentui/react-components'
 
 export const Delete = memo(({ deleteRow, tableName }) => (
-  <Menu>
+  <Menu openOnHover={false}>
     <MenuTrigger>
-      <Button
-        size="medium"
-        icon={<FaMinus />}
-        title={`Delete ${tableName}`}
-      />
+      <Tooltip content={`Delete ${tableName}`}>
+        <Button
+          size="medium"
+          icon={<FaMinus />}
+        />
+      </Tooltip>
     </MenuTrigger>
     <MenuPopover>
       <MenuList>
