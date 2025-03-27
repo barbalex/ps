@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-import { Menu } from './Menu.tsx'
+import { FormMenu } from '../FormHeader/FormMenu/index.tsx'
 import { formatNumber } from '../../modules/formatNumber.ts'
 
 interface Props {
@@ -15,7 +15,6 @@ interface Props {
   info?: unknown
 }
 
-// TODO: use locale set by user for toLocaleString
 export const ListViewHeader = memo(
   ({
     namePlural,
@@ -33,21 +32,20 @@ export const ListViewHeader = memo(
     const countUnfilteredResult = useLiveQuery(countSql)
     const countUnfiltered = countUnfilteredResult?.rows?.[0]?.count ?? 0
     const title = `${namePlural} (${
-      isLoading
-        ? '...'
-        : isFiltered
-        ? `${formatNumber(countFiltered)}/${formatNumber(countUnfiltered)}`
-        : formatNumber(countFiltered)
+      isLoading ? '...'
+      : isFiltered ?
+        `${formatNumber(countFiltered)}/${formatNumber(countUnfiltered)}`
+      : formatNumber(countFiltered)
     })`
 
     return (
       <>
         <div className="list-view-header">
           <h1>{title}</h1>
-          <Menu
+          <FormMenu
             addRow={addRow}
-            nameSingular={nameSingular}
-            menus={menus}
+            tableName={nameSingular}
+            siblings={menus}
           />
         </div>
         {info && info}
