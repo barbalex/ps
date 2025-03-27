@@ -23,7 +23,7 @@ export const Delete = memo(({ deleteRow, tableName }) => (
     <MenuPopover>
       <MenuList>
         <MenuGroup>
-          <MenuGroupHeader>Sure?</MenuGroupHeader>
+          <MenuGroupHeader>Delete?</MenuGroupHeader>
           <MenuItem onClick={deleteRow}>Yes</MenuItem>
           <MenuItem>No</MenuItem>
         </MenuGroup>
