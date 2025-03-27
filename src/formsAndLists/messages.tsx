@@ -1,8 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../modules/createRows.ts'
+import { useMessagesNavData } from '../modules/useMessagesNavData.ts'
 import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -11,16 +12,9 @@ import '../form.css'
 
 export const Messages = memo(() => {
   const navigate = useNavigate()
-
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT message_id, date FROM messages order by date desc`,
-    undefined,
-    'message_id',
-  )
-  const isLoading = res === undefined
-  const messages = res?.rows ?? []
+  const { loading, navData } = useMessagesNavData()
 
   const add = useCallback(async () => {
     const res = await createMessage({ db })
@@ -39,15 +33,15 @@ export const Messages = memo(() => {
         nameSingular="message"
         tableName="messages"
         isFiltered={false}
-        countFiltered={messages.length}
-        isLoading={isLoading}
+        countFiltered={navData.length}
+        isLoading={loading}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {messages.map(({ message_id, date }) => (
+            {navData.map(({ message_id, date }) => (
               <Row
                 key={message_id}
                 to={message_id}

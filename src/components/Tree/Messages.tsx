@@ -2,13 +2,13 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { MessageNode } from './Message.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
+import { useMessagesNavData } from '../../modules/useMessagesNavData.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const MessagesNode = memo(() => {
@@ -16,24 +16,13 @@ export const MessagesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT 
-      message_id, 
-      date as label 
-    FROM messages 
-    ORDER BY date DESC`,
-    undefined,
-    'message_id',
-  )
-  const rows = res?.rows ?? []
-  const loading = res === undefined
+  const { loading, navData } = useMessagesNavData()
 
   const node = useMemo(
     () => ({
-      label: `Messages (${loading ? '...' : formatNumber(rows.length)})`,
+      label: `Messages (${loading ? '...' : formatNumber(navData.length)})`,
     }),
-    [loading, rows.length],
+    [loading, navData.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -79,13 +68,16 @@ export const MessagesNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((message) => (
-          <MessageNode key={message.message_id} message={message} />
+        navData.map((message) => (
+          <MessageNode
+            key={message.message_id}
+            message={message}
+          />
         ))}
     </>
   )
