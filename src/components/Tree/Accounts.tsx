@@ -16,13 +16,13 @@ export const AccountsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData } = useAccountsNavData()
+  const { loading, navData } = useAccountsNavData()
 
   const node = useMemo(
     () => ({
-      label: `Accounts (${isLoading ? '...' : formatNumber(navData.length)})`,
+      label: `Accounts (${loading ? '...' : formatNumber(navData.length)})`,
     }),
-    [navData.length, isLoading],
+    [navData.length, loading],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -14,7 +14,7 @@ export const CRSS = memo(() => {
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const { isLoading, navData } = useCrssNavData()
+  const { loading, navData } = useCrssNavData()
 
   const add = useCallback(async () => {
     const res = await createCrs({ db })
@@ -34,12 +34,12 @@ export const CRSS = memo(() => {
         tableName="crs"
         isFiltered={false}
         countFiltered={navData.length}
-        isLoading={isLoading}
+        isLoading={loading}
         addRow={add}
         info={<Info />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
             {navData.map((cr) => (

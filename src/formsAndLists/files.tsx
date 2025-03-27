@@ -11,8 +11,8 @@ import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
 
-export const Files = memo(({ from }) => {
-  const { isLoading, navData } = useFilesNavData({ from })
+export const Files = memo(() => {
+  const { loading, navData } = useFilesNavData({})
 
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
@@ -28,7 +28,7 @@ export const Files = memo(({ from }) => {
         tableName="files"
         isFiltered={false}
         countFiltered={navData.length}
-        isLoading={isLoading}
+        isLoading={loading}
         menus={
           <Button
             size="medium"
@@ -40,7 +40,7 @@ export const Files = memo(({ from }) => {
       />
       <div className="list-container">
         <Uploader />
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
             {navData.map(({ file_id, label, url, mimetype }) => {

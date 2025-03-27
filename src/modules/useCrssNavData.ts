@@ -8,8 +8,8 @@ export const useCrssNavData = () => {
     FROM crs 
     ORDER BY label`)
 
-  const isLoading = res === undefined
+  const loading = res === undefined
   const navData = res?.rows ?? []
 
-  return { isLoading, navData }
+  return { loading, navData }
 }

@@ -20,13 +20,13 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData } = useCrssNavData()
+  const { loading, navData } = useCrssNavData()
 
   const crsNode = useMemo(
     () => ({
-      label: `CRS (${isLoading ? '...' : formatNumber(navData.length)})`,
+      label: `CRS (${loading ? '...' : formatNumber(navData.length)})`,
     }),
-    [isLoading, navData.length],
+    [loading, navData.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -43,7 +43,7 @@ export const useFilesNavData = ({
     ORDER BY label`
   const res = useLiveQuery(sql)
 
-  const isLoading = res === undefined
+  const loading = res === undefined
   const navData = res?.rows ?? []
 
   const resultCountUnfiltered = useLiveQuery(
@@ -55,5 +55,5 @@ export const useFilesNavData = ({
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  return { isLoading, navData, isFiltered, countUnfiltered, countLoading }
+  return { loading, navData, isFiltered, countUnfiltered, countLoading }
 }

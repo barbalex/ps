@@ -17,7 +17,7 @@ export const FieldTypes = memo(() => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
-  const { isLoading, navData, isFiltered } = useFieldTypesNavData()
+  const { loading, navData, isFiltered } = useFieldTypesNavData()
 
   const add = useCallback(async () => {
     const res = await createFieldType({ db })
@@ -34,12 +34,12 @@ export const FieldTypes = memo(() => {
         tablename="field_types"
         isFiltered={isFiltered}
         countFiltered={navData.length}
-        isLoading={isLoading}
+        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
             {navData.map(({ field_type_id, label }) => (

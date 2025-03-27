@@ -15,8 +15,8 @@ export const useFieldTypesNavData = () => {
     ${filterString ? ` WHERE ${filterString}` : ''} 
     ORDER BY label`)
 
-  const isLoading = res === undefined
+  const loading = res === undefined
   const navData = res?.rows ?? []
 
-  return { isLoading, navData, isFiltered }
+  return { loading, navData, isFiltered }
 }

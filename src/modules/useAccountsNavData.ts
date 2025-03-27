@@ -4,8 +4,8 @@ export const useAccountsNavData = () => {
   const res = useLiveQuery(
     `SELECT account_id, label FROM accounts ORDER BY label`,
   )
-  const isLoading = res === undefined
+  const loading = res === undefined
   const navData = res?.rows ?? []
 
-  return { isLoading, navData }
+  return { loading, navData }
 }

@@ -18,7 +18,7 @@ export const WidgetsForFieldsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData, isFiltered } = useWidgetsForFieldsNavData()
+  const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widgets_for_fields`,
@@ -30,14 +30,14 @@ export const WidgetsForFieldsNode = memo(() => {
     () => ({
       label: `Widgets For Fields (${
         isFiltered ?
-          `${isLoading ? `...` : formatNumber(navData.length)}/${
+          `${loading ? `...` : formatNumber(navData.length)}/${
             countLoading ? `...` : formatNumber(countUnfiltered)
           }`
-        : isLoading ? `...`
+        : loading ? `...`
         : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
+    [isFiltered, loading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

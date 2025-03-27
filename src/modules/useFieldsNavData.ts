@@ -17,8 +17,8 @@ export const useFieldsNavData = ({ projectId }) => {
       ${filterString ? ` AND ${filterString}` : ''} 
     ORDER BY table_name, name, level`)
 
-  const isLoading = res === undefined
+  const loading = res === undefined
   const navData = res?.rows ?? []
 
-  return { isLoading, navData, isFiltered }
+  return { loading, navData, isFiltered }
 }

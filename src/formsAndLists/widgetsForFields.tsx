@@ -17,7 +17,7 @@ export const WidgetsForFields = memo(() => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
-  const { isLoading, navData, isFiltered } = useWidgetsForFieldsNavData()
+  const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
 
   const add = useCallback(async () => {
     const res = await createWidgetForField({ db })
@@ -34,12 +34,12 @@ export const WidgetsForFields = memo(() => {
         tableName="widgets_for_fields"
         isFiltered={isFiltered}
         countFiltered={navData.length}
-        isLoading={isLoading}
+        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
             {navData.map(({ widget_for_field_id, label }) => (

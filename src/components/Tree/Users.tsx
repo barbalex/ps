@@ -16,13 +16,13 @@ export const UsersNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData } = useUsersNavData()
+  const { loading, navData } = useUsersNavData()
 
   const node = useMemo(
     () => ({
-      label: `Users (${isLoading ? '...' : formatNumber(navData.length)})`,
+      label: `Users (${loading ? '...' : formatNumber(navData.length)})`,
     }),
-    [isLoading, navData.length],
+    [loading, navData.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -2,9 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
@@ -20,7 +18,7 @@ export const FieldTypesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData, isFiltered } = useFieldTypesNavData()
+  const { loading, navData, isFiltered } = useFieldTypesNavData()
 
   const countResultUnfiltered = useLiveQuery(`SELECT count(*) FROM field_types`)
   const countUnfiltered = countResultUnfiltered?.rows?.[0]?.count ?? 0
@@ -30,14 +28,14 @@ export const FieldTypesNode = memo(() => {
     () => ({
       label: `Field Types (${
         isFiltered ?
-          `${isLoading ? '...' : formatNumber(navData.length)}/${
+          `${loading ? '...' : formatNumber(navData.length)}/${
             countLoading ? '...' : formatNumber(countUnfiltered)
           }`
-        : isLoading ? '...'
+        : loading ? '...'
         : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
+    [isFiltered, loading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

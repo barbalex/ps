@@ -21,7 +21,7 @@ export const FieldsNode = memo(({ projectId }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData, isFiltered } = useFieldsNavData({ projectId })
+  const { loading, navData, isFiltered } = useFieldsNavData({ projectId })
 
   const resultCountUnfiltered = useLiveQuery(
     `
@@ -36,14 +36,14 @@ export const FieldsNode = memo(({ projectId }: Props) => {
     () => ({
       label: `Fields (${
         isFiltered ?
-          `${isLoading ? '...' : formatNumber(navData.length)}/${
+          `${loading ? '...' : formatNumber(navData.length)}/${
             countLoading ? '...' : formatNumber(countUnfiltered)
           }`
-        : isLoading ? '...'
+        : loading ? '...'
         : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
+    [isFiltered, loading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

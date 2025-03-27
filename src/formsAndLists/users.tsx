@@ -19,7 +19,7 @@ export const Users = memo(() => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
-  const { isLoading, navData } = useUsersNavData()
+  const { loading, navData } = useUsersNavData()
 
   const add = useCallback(async () => {
     const res = await createUser({ db, setUserId })
@@ -36,11 +36,11 @@ export const Users = memo(() => {
         tableName="users"
         isFiltered={false}
         countFiltered={navData.length}
-        isLoading={isLoading}
+        isLoading={loading}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
             {navData.map(({ user_id, label }) => (

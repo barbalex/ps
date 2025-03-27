@@ -18,7 +18,7 @@ export const WidgetTypesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { navData, isLoading, isFiltered } = useWidgetTypesNavData()
+  const { navData, loading, isFiltered } = useWidgetTypesNavData()
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widget_types`,
@@ -30,14 +30,14 @@ export const WidgetTypesNode = memo(() => {
     () => ({
       label: `Widget Types (${
         isFiltered ?
-          `${isLoading ? '...' : formatNumber(navData.length)}/${
+          `${loading ? '...' : formatNumber(navData.length)}/${
             countLoading ? '...' : formatNumber(countUnfiltered)
           }`
-        : isLoading ? '...'
+        : loading ? '...'
         : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
+    [isFiltered, loading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

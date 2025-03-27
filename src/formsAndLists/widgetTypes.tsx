@@ -17,7 +17,7 @@ export const WidgetTypes = memo(() => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
-  const { navData, isLoading, isFiltered } = useWidgetTypesNavData()
+  const { navData, loading, isFiltered } = useWidgetTypesNavData()
 
   const add = useCallback(async () => {
     const res = await createWidgetType({ db })
@@ -34,12 +34,12 @@ export const WidgetTypes = memo(() => {
         tableName="widget_types"
         isFiltered={isFiltered}
         countFiltered={navData.length}
-        isLoading={isLoading}
+        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
             {navData.map(({ widget_type_id, label }) => (
