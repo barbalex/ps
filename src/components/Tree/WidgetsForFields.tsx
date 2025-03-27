@@ -2,41 +2,23 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { WidgetForFieldNode } from './WidgetForField.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom, widgetsForFieldsFilterAtom } from '../../store.ts'
+import { useWidgetsForFieldsNavData } from '../../modules/useWidgetsForFieldsNavData.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 export const WidgetsForFieldsNode = memo(() => {
-  const [filter] = useAtom(widgetsForFieldsFilterAtom)
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const location = useLocation()
   const navigate = useNavigate()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
-    `
-    SELECT 
-      widget_for_field_id,
-      label
-    FROM widgets_for_fields
-    ${isFiltered ? ` WHERE ${filterString}` : ''} 
-    ORDER BY label`,
-    undefined,
-    'widget_for_field_id',
-  )
-  const rows = resultFiltered?.rows ?? []
-  const rowsLoading = resultFiltered === undefined
+  const { isLoading, navData, isFiltered } = useWidgetsForFieldsNavData()
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widgets_for_fields`,
@@ -48,14 +30,14 @@ export const WidgetsForFieldsNode = memo(() => {
     () => ({
       label: `Widgets For Fields (${
         isFiltered ?
-          `${rowsLoading ? `...` : formatNumber(rows.length)}/${
+          `${isLoading ? `...` : formatNumber(navData.length)}/${
             countLoading ? `...` : formatNumber(countUnfiltered)
           }`
-        : rowsLoading ? `...`
-        : formatNumber(rows.length)
+        : isLoading ? `...`
+        : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
+    [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -103,12 +85,12 @@ export const WidgetsForFieldsNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((widgetForField) => (
+        navData.map((widgetForField) => (
           <WidgetForFieldNode
             key={widgetForField.widget_for_field_id}
             widgetForField={widgetForField}
