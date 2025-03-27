@@ -35,7 +35,7 @@ export const FormHeader = memo(
               deleteRow={deleteRow}
               toNext={toNext}
               toPrevious={toPrevious}
-              tableName={tableName}
+              nameSingular={tableName}
               siblings={siblings}
             />
           )}

@@ -4,6 +4,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProject } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -29,13 +30,9 @@ export const Projects = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Projects"
+      <ListHeader
+        label={navData.label}
         nameSingular="project"
-        tableName="projects"
-        isFiltered={isFiltered}
-        countFiltered={navData.navs.length}
-        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />

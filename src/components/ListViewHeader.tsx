@@ -44,7 +44,7 @@ export const ListViewHeader = memo(
           <h1>{title}</h1>
           <FormMenu
             addRow={addRow}
-            tableName={nameSingular}
+            nameSingular={nameSingular}
             siblings={menus}
           />
         </div>
