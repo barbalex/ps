@@ -4,40 +4,23 @@ import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import {
   useLiveQuery,
-  useLiveIncrementalQuery,
 } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom, fieldTypesFilterAtom } from '../../store.ts'
+import { useFieldTypesNavData } from '../../modules/useFieldTypesNavData.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 export const FieldTypesNode = memo(() => {
-  const [filter] = useAtom(fieldTypesFilterAtom)
-
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const location = useLocation()
   const navigate = useNavigate()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const resFiltered = useLiveIncrementalQuery(
-    `
-    SELECT
-      field_type_id,
-      label
-    FROM field_types
-    ${isFiltered ? ` WHERE ${filterString}` : ''} 
-    ORDER BY label`,
-    undefined,
-    'field_type_id',
-  )
-  const rows = resFiltered?.rows ?? []
-  const rowsLoading = resFiltered === undefined
+  const { isLoading, navData, isFiltered } = useFieldTypesNavData()
 
   const countResultUnfiltered = useLiveQuery(`SELECT count(*) FROM field_types`)
   const countUnfiltered = countResultUnfiltered?.rows?.[0]?.count ?? 0
@@ -47,14 +30,14 @@ export const FieldTypesNode = memo(() => {
     () => ({
       label: `Field Types (${
         isFiltered ?
-          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+          `${isLoading ? '...' : formatNumber(navData.length)}/${
             countLoading ? '...' : formatNumber(countUnfiltered)
           }`
-        : rowsLoading ? '...'
-        : formatNumber(rows.length)
+        : isLoading ? '...'
+        : formatNumber(navData.length)
       })`,
     }),
-    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
+    [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -99,12 +82,12 @@ export const FieldTypesNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((fieldType) => (
+        navData.map((fieldType) => (
           <FieldTypeNode
             key={fieldType.field_type_id}
             fieldType={fieldType}

@@ -2,13 +2,13 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { UserNode } from './User.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
+import { useUsersNavData } from '../../modules/useUsersNavData.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const UsersNode = memo(() => {
@@ -16,22 +16,13 @@ export const UsersNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT
-      user_id,
-      label
-    FROM users 
-    ORDER BY label`,
-    undefined,
-    'user_id',
-  )
-  const rows = res?.rows ?? []
-  const loading = res === undefined
+  const { isLoading, navData } = useUsersNavData()
 
   const node = useMemo(
-    () => ({ label: `Users (${loading ? '...' : formatNumber(rows.length)})` }),
-    [loading, rows.length],
+    () => ({
+      label: `Users (${isLoading ? '...' : formatNumber(navData.length)})`,
+    }),
+    [isLoading, navData.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -76,12 +67,12 @@ export const UsersNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((user) => (
+        navData.map((user) => (
           <UserNode
             key={user.user_id}
             user={user}

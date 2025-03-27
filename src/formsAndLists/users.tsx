@@ -1,12 +1,13 @@
 import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createUser } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { useUsersNavData } from '../modules/useUsersNavData.ts'
 import { userIdAtom } from '../store.ts'
 
 import '../form.css'
@@ -18,13 +19,7 @@ export const Users = memo(() => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT user_id, label FROM users ORDER BY label`,
-    undefined,
-    'user_id',
-  )
-  const isLoading = res === undefined
-  const users = res?.rows ?? []
+  const { isLoading, navData } = useUsersNavData()
 
   const add = useCallback(async () => {
     const res = await createUser({ db, setUserId })
@@ -40,7 +35,7 @@ export const Users = memo(() => {
         nameSingular="User"
         tableName="users"
         isFiltered={false}
-        countFiltered={users.length}
+        countFiltered={navData.length}
         isLoading={isLoading}
         addRow={add}
       />
@@ -48,7 +43,7 @@ export const Users = memo(() => {
         {isLoading ?
           <Loading />
         : <>
-            {users.map(({ user_id, label }) => (
+            {navData.map(({ user_id, label }) => (
               <Row
                 key={user_id}
                 label={label ?? user_id}

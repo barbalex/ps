@@ -1,9 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-export const useAccountsNavData = () => {
-  const res = useLiveQuery(
-    `SELECT account_id, label FROM accounts ORDER BY label`,
-  )
+export const useUsersNavData = () => {
+  const res = useLiveQuery(`SELECT user_id, label FROM users ORDER BY label`)
   const isLoading = res === undefined
   const navData = res?.rows ?? []
 
