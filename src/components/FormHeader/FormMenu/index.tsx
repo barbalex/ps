@@ -1,8 +1,9 @@
 import { memo } from 'react'
+import { FaPlus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { Button } from '@fluentui/react-components'
-import { FaPlus, FaMinus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 
-import { controls } from '../../styles.ts'
+import { Delete } from './Delete.tsx'
+import { controls } from '../../../styles.ts'
 
 export const FormMenu = memo(
   ({ addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => (
@@ -11,7 +12,7 @@ export const FormMenu = memo(
       {!!toPrevious && (
         <Button
           size="medium"
-          icon={<FaChevronLeft />} 
+          icon={<FaChevronLeft />}
           onClick={toPrevious}
           title={`Previous ${tableName}`}
         />
@@ -25,11 +26,9 @@ export const FormMenu = memo(
         />
       )}
       {!!deleteRow && (
-        <Button
-          size="medium"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title={`Delete ${tableName}`}
+        <Delete
+          deleteRow={deleteRow}
+          tableName={tableName}
         />
       )}
       {!!toNext && (

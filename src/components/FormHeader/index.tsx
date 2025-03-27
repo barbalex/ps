@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-import { FormMenu } from './FormMenu.tsx'
+import { FormMenu } from './FormMenu/index.tsx'
 
 const titleStyle = {
   color: 'black',

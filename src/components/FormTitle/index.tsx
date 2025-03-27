@@ -1,15 +1,5 @@
-import {
-  memo,
-  useCallback,
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-} from 'react'
-import { useAtom } from 'jotai'
+import { memo } from 'react'
 
-import { navListFilterIsVisibleAtoms } from '../../store.ts'
-import { FilterCollapse } from './FilterCollapse.tsx'
 import './style.css'
 
 const containerStyle = {
@@ -42,17 +32,7 @@ const titleStyle = {
 }
 
 export const FormTitle = memo(
-  ({ title, filterName, MenuComponent = null, menuProps = {} }) => {
-    // get list filter visibility from the correct atom
-    const [navListFilterIsVisible, toggleNavListFilterIsVisible] = useAtom(
-      navListFilterIsVisibleAtoms[filterName] ?? 'undefined',
-    )
-    const filterInputRef = useRef(null)
-    const toggleFilterInput = useCallback(() => {
-      toggleNavListFilterIsVisible()
-      setTimeout(() => filterInputRef?.current?.focus?.(), 0)
-    }, [toggleNavListFilterIsVisible])
-
+  ({ title, MenuComponent = null, menuProps = {} }) => {
     return (
       <div
         style={containerStyle}
@@ -67,13 +47,6 @@ export const FormTitle = memo(
             />
           )}
         </div>
-        {!!listFilter && (
-          <FilterCollapse
-            ref={filterInputRef}
-            navListFilterIsVisible={navListFilterIsVisible}
-            toggleNavListFilterIsVisible={toggleNavListFilterIsVisible}
-          />
-        )}
       </div>
     )
   },
