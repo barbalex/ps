@@ -34,7 +34,7 @@ export const useProjectsNavData = () => {
   const navData = useMemo(() => {
     const parentArray = ['data']
     const ownArray = [...parentArray, 'projects']
-    const to = `/${ownArray.join('/')}`
+    const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -46,6 +46,10 @@ export const useProjectsNavData = () => {
       isActive,
       isOpen,
       level: 1,
+      ownArray,
+      urlPath,
+      ownUrl,
+      toParams: {},
       label: `Projects (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
@@ -54,10 +58,6 @@ export const useProjectsNavData = () => {
         : loading ? '...'
         : formatNumber(navs.length)
       })`,
-      ownArray,
-      urlPath,
-      to,
-      toParams: {},
       navs,
     }
   }, [

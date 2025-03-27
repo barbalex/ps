@@ -47,7 +47,7 @@ export const ProjectsNode = memo(() => {
         isInActiveNodeArray={navData.isInActiveNodeArray}
         isActive={navData.isActive}
         childrenCount={navData.navs.length}
-        to={navData.to}
+        to={navData.ownUrl}
         toParams={undefined}
         onClickButton={onClickButton}
       />
