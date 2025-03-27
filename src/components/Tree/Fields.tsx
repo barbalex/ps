@@ -21,7 +21,7 @@ export const FieldsNode = memo(({ projectId }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { isLoading, navData, isFiltered } = useFieldsNavData({ strict: false })
+  const { isLoading, navData, isFiltered } = useFieldsNavData({ projectId })
 
   const resultCountUnfiltered = useLiveQuery(
     `

@@ -16,7 +16,7 @@ export const Fields = memo(({ from }) => {
 
   const db = usePGlite()
 
-  const { isLoading, navData, isFiltered } = useFieldsNavData({ from })
+  const { isLoading, navData, isFiltered } = useFieldsNavData({ projectId })
 
   const add = useCallback(async () => {
     const res = await createField({ projectId, db })

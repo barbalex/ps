@@ -1,13 +1,10 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import { useParams } from '@tanstack/react-router'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { fieldsFilterAtom } from '../store.ts'
 
-export const useFieldsNavData = (params) => {
-  const { projectId } = useParams(params)
-
+export const useFieldsNavData = ({ projectId }) => {
   const [filter] = useAtom(fieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString

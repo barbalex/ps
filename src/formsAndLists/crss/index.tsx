@@ -1,8 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'
+import { useCrssNavData } from '../../modules/useCrssNavData.ts'
 import { ListViewHeader } from '../../components/ListViewHeader.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -13,18 +14,7 @@ export const CRSS = memo(() => {
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT 
-      crs_id, 
-      label 
-    FROM crs 
-    ORDER BY label`,
-    undefined,
-    'crs_id',
-  )
-  const isLoading = res === undefined
-  const crs = res?.rows ?? []
+  const { isLoading, navData } = useCrssNavData()
 
   const add = useCallback(async () => {
     const res = await createCrs({ db })
@@ -43,17 +33,16 @@ export const CRSS = memo(() => {
         nameSingular="crs"
         tableName="crs"
         isFiltered={false}
-        countFiltered={crs.length}
+        countFiltered={navData.length}
         isLoading={isLoading}
         addRow={add}
         info={<Info />}
       />
       <div className="list-container">
-        {isLoading ? (
+        {isLoading ?
           <Loading />
-        ) : (
-          <>
-            {crs.map((cr) => (
+        : <>
+            {navData.map((cr) => (
               <Row
                 key={cr.crs_id}
                 to={cr.crs_id}
@@ -61,7 +50,7 @@ export const CRSS = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

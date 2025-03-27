@@ -2,13 +2,13 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { CrsNode } from './Crs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
+import { useCrssNavData } from '../../modules/useCrssNavData.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -20,24 +20,13 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT
-      crs_id,
-      label
-    FROM crs 
-    ORDER BY label`,
-    undefined,
-    'crs_id',
-  )
-  const rows = res?.rows ?? []
-  const loading = res === undefined
+  const { isLoading, navData } = useCrssNavData()
 
   const crsNode = useMemo(
     () => ({
-      label: `CRS (${loading ? '...' : formatNumber(rows.length)})`,
+      label: `CRS (${isLoading ? '...' : formatNumber(navData.length)})`,
     }),
-    [loading, rows.length],
+    [isLoading, navData.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -79,11 +68,17 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navData.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && rows.map((cr) => <CrsNode key={cr.crs_id} crs={cr} />)}
+      {isOpen &&
+        navData.map((cr) => (
+          <CrsNode
+            key={cr.crs_id}
+            crs={cr}
+          />
+        ))}
     </>
   )
 })

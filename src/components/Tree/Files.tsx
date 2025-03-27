@@ -8,9 +8,9 @@ import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom, filesFilterAtom } from '../../store.ts'
+import { useFilesNavData } from '../../modules/useFilesNavData.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   projectId?: string
@@ -33,73 +33,32 @@ export const FilesNode = memo(
     level,
   }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
-    const [filter] = useAtom(filesFilterAtom)
 
     const location = useLocation()
     const navigate = useNavigate()
 
-    const { hField, hValue } = useMemo(() => {
-      let hField
-      let hValue
-      if (actionId) {
-        hField = 'action_id'
-        hValue = actionId
-      } else if (checkId) {
-        hField = 'check_id'
-        hValue = checkId
-      } else if (placeId2) {
-        hField = 'place_id'
-        hValue = placeId2
-      } else if (placeId) {
-        hField = 'place_id'
-        hValue = placeId
-      } else if (subprojectId) {
-        hField = 'subproject_id'
-        hValue = subprojectId
-      } else if (projectId) {
-        hField = 'project_id'
-        hValue = projectId
-      }
-      return { hField, hValue }
-    }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
-
-    const filterString = filterStringFromFilter(filter)
-    const isFiltered = !!filterString
-    const resFiltered = useLiveQuery(
-      `
-      SELECT
-        file_id,
-        label 
-      FROM files 
-      WHERE 
-        ${hField ? `${hField} = '${hValue}'` : 'true'} 
-        ${isFiltered ? ` AND ${filterString} ` : ''} 
-      ORDER BY label`,
-    )
-    const rows = resFiltered?.rows ?? []
-    const rowsLoading = resFiltered === undefined
-
-    const resultCountUnfiltered = useLiveQuery(
-      `
-      SELECT count(*) 
-      FROM files 
-      WHERE ${hField ? `${hField} = '${hValue}'` : 'true'} `,
-    )
-    const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-    const countLoading = resultCountUnfiltered === undefined
+    const { navData, isLoading, isFiltered, countUnfiltered, countLoading } =
+      useFilesNavData({
+        projectId,
+        subprojectId,
+        placeId,
+        placeId2,
+        actionId,
+        checkId,
+      })
 
     const node = useMemo(
       () => ({
         label: `Files (${
           isFiltered ?
-            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+            `${isLoading ? '...' : formatNumber(navData.length)}/${
               countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : rowsLoading ? '...'
-          : formatNumber(rows.length)
+          : isLoading ? '...'
+          : formatNumber(navData.length)
         })`,
       }),
-      [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
+      [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -152,12 +111,12 @@ export const FilesNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navData.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((file) => (
+          navData.map((file) => (
             <FileNode
               key={file.file_id}
               projectId={projectId}
