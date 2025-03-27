@@ -8,8 +8,11 @@ const containerStyle = {
 }
 
 export const Info = memo(() => (
-  <div style={containerStyle} tabIndex={-1}>
-    <p>This is a (hopefully) complete list of all known CRS.</p>
+  <div
+    style={containerStyle}
+    tabIndex={-1}
+  >
+    <p>This is a (hopefully) complete list of Coordinate Reference Systems.</p>
     <p>They can be added to projects.</p>
   </div>
 ))

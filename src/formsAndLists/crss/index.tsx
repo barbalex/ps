@@ -4,7 +4,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'
 import { useCrssNavData } from '../../modules/useCrssNavData.ts'
-import { ListViewHeader } from '../../components/ListViewHeader.tsx'
+import { ListHeader } from '../../components/ListHeader.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
@@ -28,13 +28,9 @@ export const CRSS = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="CRS: Coordinate Reference Systems"
+      <ListHeader
+        label={navData.label}
         nameSingular="crs"
-        tableName="crs"
-        isFiltered={false}
-        countFiltered={navData.length}
-        isLoading={loading}
         addRow={add}
         info={<Info />}
       />
@@ -42,7 +38,7 @@ export const CRSS = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.map((cr) => (
+            {navData.navs.map((cr) => (
               <Row
                 key={cr.crs_id}
                 to={cr.crs_id}

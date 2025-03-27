@@ -1,79 +1,54 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { CrsNode } from './Crs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
 import { useCrssNavData } from '../../modules/useCrssNavData.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
 
-interface Props {
-  level?: number
-}
-
-export const CrssNode = memo(({ level = 1 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
+export const CrssNode = memo(() => {
   const navigate = useNavigate()
 
-  const { loading, navData } = useCrssNavData()
-
-  const crsNode = useMemo(
-    () => ({
-      label: `CRS (${loading ? '...' : formatNumber(navData.length)})`,
-    }),
-    [loading, navData.length],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data'], [])
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'crs'], [parentArray])
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useCrssNavData()
 
   const onClickButton = useCallback(() => {
-    if (isOpen) {
-      removeChildNodes({ node: ownArray })
+    if (navData.isOpen) {
+      removeChildNodes({ node: navData.ownArray })
       // only navigate if urlPath includes ownArray
-      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({ to: parentUrl })
+      if (
+        navData.isInActiveNodeArray &&
+        navData.ownArray.length <= navData.urlPath.length
+      ) {
+        navigate({ to: navData.parentUrl })
       }
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({ nodes: [ownArray] })
+    addOpenNodes({ nodes: [navData.ownArray] })
   }, [
-    isInActiveNodeArray,
-    isOpen,
+    navData.isInActiveNodeArray,
+    navData.isOpen,
+    navData.ownArray,
+    navData.parentUrl,
+    navData.urlPath.length,
     navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
   ])
 
   return (
     <>
       <Node
-        node={crsNode}
-        level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isInActiveNodeArray}
-        isActive={isActive}
-        childrenCount={navData.length}
-        to={ownUrl}
+        node={{ label: navData.label }}
+        level={navData.level}
+        isOpen={navData.isOpen}
+        isInActiveNodeArray={navData.isInActiveNodeArray}
+        isActive={navData.isActive}
+        childrenCount={navData.navs.length}
+        to={navData.ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen &&
-        navData.map((cr) => (
+      {navData.isOpen &&
+        navData.navs.map((cr) => (
           <CrsNode
             key={cr.crs_id}
             crs={cr}
