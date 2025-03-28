@@ -65,6 +65,7 @@ import { Route as DataAuthLayoutProjectsProjectIdWmsLayersFilterImport } from '.
 import { Route as DataAuthLayoutProjectsProjectIdWmsLayersWmsLayerIdImport } from './routes/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId'
 import { Route as DataAuthLayoutProjectsProjectIdVectorLayersFilterImport } from './routes/data/_authLayout/projects/$projectId_/vector-layers/filter'
 import { Route as DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdImport } from './routes/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
+import { Route as DataAuthLayoutProjectsProjectIdUnitsFilterImport } from './routes/data/_authLayout/projects/$projectId_/units/filter'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsFilterImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/filter'
 import { Route as DataAuthLayoutProjectsProjectIdReportsFilterImport } from './routes/data/_authLayout/projects/$projectId_/reports/filter'
 import { Route as DataAuthLayoutProjectsProjectIdPersonsFilterImport } from './routes/data/_authLayout/projects/$projectId_/persons/filter'
@@ -561,6 +562,13 @@ const DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRoute =
   DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdImport.update({
     id: '/projects/$projectId_/vector-layers/$vectorLayerId',
     path: '/projects/$projectId/vector-layers/$vectorLayerId',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
+  } as any)
+
+const DataAuthLayoutProjectsProjectIdUnitsFilterRoute =
+  DataAuthLayoutProjectsProjectIdUnitsFilterImport.update({
+    id: '/projects/$projectId_/units/filter',
+    path: '/projects/$projectId/units/filter',
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
@@ -2055,6 +2063,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/projects/$projectId_/units/filter': {
+      id: '/data/_authLayout/projects/$projectId_/units/filter'
+      path: '/projects/$projectId/units/filter'
+      fullPath: '/data/projects/$projectId/units/filter'
+      preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdUnitsFilterImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId': {
       id: '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
       path: '/projects/$projectId/vector-layers/$vectorLayerId'
@@ -3317,6 +3332,7 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutProjectsProjectIdPersonsFilterRoute: typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   DataAuthLayoutProjectsProjectIdReportsFilterRoute: typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
+  DataAuthLayoutProjectsProjectIdUnitsFilterRoute: typeof DataAuthLayoutProjectsProjectIdUnitsFilterRoute
   DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRoute: typeof DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRouteWithChildren
   DataAuthLayoutProjectsProjectIdVectorLayersFilterRoute: typeof DataAuthLayoutProjectsProjectIdVectorLayersFilterRoute
   DataAuthLayoutProjectsProjectIdWmsLayersWmsLayerIdRoute: typeof DataAuthLayoutProjectsProjectIdWmsLayersWmsLayerIdRoute
@@ -3507,6 +3523,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutProjectsProjectIdReportsFilterRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute:
     DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute,
+  DataAuthLayoutProjectsProjectIdUnitsFilterRoute:
+    DataAuthLayoutProjectsProjectIdUnitsFilterRoute,
   DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRoute:
     DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRouteWithChildren,
   DataAuthLayoutProjectsProjectIdVectorLayersFilterRoute:
@@ -3841,6 +3859,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/persons/filter': typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
+  '/data/projects/$projectId/units/filter': typeof DataAuthLayoutProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId/vector-layers/$vectorLayerId': typeof DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRouteWithChildren
   '/data/projects/$projectId/vector-layers/filter': typeof DataAuthLayoutProjectsProjectIdVectorLayersFilterRoute
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataAuthLayoutProjectsProjectIdWmsLayersWmsLayerIdRoute
@@ -4029,6 +4048,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/persons/filter': typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
+  '/data/projects/$projectId/units/filter': typeof DataAuthLayoutProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId/vector-layers/filter': typeof DataAuthLayoutProjectsProjectIdVectorLayersFilterRoute
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataAuthLayoutProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataAuthLayoutProjectsProjectIdWmsLayersFilterRoute
@@ -4214,6 +4234,7 @@ export interface FileRoutesById {
   '/data/_authLayout/projects/$projectId_/persons/filter': typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   '/data/_authLayout/projects/$projectId_/reports/filter': typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   '/data/_authLayout/projects/$projectId_/subprojects/filter': typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
+  '/data/_authLayout/projects/$projectId_/units/filter': typeof DataAuthLayoutProjectsProjectIdUnitsFilterRoute
   '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId': typeof DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRouteWithChildren
   '/data/_authLayout/projects/$projectId_/vector-layers/filter': typeof DataAuthLayoutProjectsProjectIdVectorLayersFilterRoute
   '/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId': typeof DataAuthLayoutProjectsProjectIdWmsLayersWmsLayerIdRoute
@@ -4408,6 +4429,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/persons/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
+    | '/data/projects/$projectId/units/filter'
     | '/data/projects/$projectId/vector-layers/$vectorLayerId'
     | '/data/projects/$projectId/vector-layers/filter'
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
@@ -4595,6 +4617,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/persons/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
+    | '/data/projects/$projectId/units/filter'
     | '/data/projects/$projectId/vector-layers/filter'
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
@@ -4778,6 +4801,7 @@ export interface FileRouteTypes {
     | '/data/_authLayout/projects/$projectId_/persons/filter'
     | '/data/_authLayout/projects/$projectId_/reports/filter'
     | '/data/_authLayout/projects/$projectId_/subprojects/filter'
+    | '/data/_authLayout/projects/$projectId_/units/filter'
     | '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
     | '/data/_authLayout/projects/$projectId_/vector-layers/filter'
     | '/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId'
@@ -5006,6 +5030,7 @@ export const routeTree = rootRoute
         "/data/_authLayout/projects/$projectId_/persons/filter",
         "/data/_authLayout/projects/$projectId_/reports/filter",
         "/data/_authLayout/projects/$projectId_/subprojects/filter",
+        "/data/_authLayout/projects/$projectId_/units/filter",
         "/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId",
         "/data/_authLayout/projects/$projectId_/vector-layers/filter",
         "/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId",
@@ -5303,6 +5328,10 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/projects/$projectId_/subprojects/filter": {
       "filePath": "data/_authLayout/projects/$projectId_/subprojects/filter.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/projects/$projectId_/units/filter": {
+      "filePath": "data/_authLayout/projects/$projectId_/units/filter.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId": {
