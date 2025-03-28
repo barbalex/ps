@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createWidgetType } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -18,6 +18,7 @@ export const WidgetTypes = memo(() => {
   const db = usePGlite()
 
   const { navData, loading, isFiltered } = useWidgetTypesNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createWidgetType({ db })
@@ -28,13 +29,9 @@ export const WidgetTypes = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Widget Types"
-        nameSingular="Widget Type"
-        tableName="widget_types"
-        isFiltered={isFiltered}
-        countFiltered={navData.length}
-        isLoading={loading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -42,7 +39,7 @@ export const WidgetTypes = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ widget_type_id, label }) => (
+            {navs.map(({ widget_type_id, label }) => (
               <Row
                 key={widget_type_id}
                 label={label ?? widget_type_id}

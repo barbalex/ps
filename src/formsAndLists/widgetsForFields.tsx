@@ -18,6 +18,7 @@ export const WidgetsForFields = memo(() => {
   const db = usePGlite()
 
   const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createWidgetForField({ db })
@@ -29,8 +30,8 @@ export const WidgetsForFields = memo(() => {
   return (
     <div className="list-view">
       <ListHeader
-        label={navData.label}
-        nameSingular="Widget For Field"
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -38,7 +39,7 @@ export const WidgetsForFields = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.navs.map(({ widget_for_field_id, label }) => (
+            {navs.map(({ widget_for_field_id, label }) => (
               <Row
                 key={widget_for_field_id}
                 label={label ?? widget_for_field_id}

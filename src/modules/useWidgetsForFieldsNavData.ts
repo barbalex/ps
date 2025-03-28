@@ -63,6 +63,7 @@ export const useWidgetsForFieldsNavData = () => {
         : loading ? `...`
         : formatNumber(navs.length)
       })`,
+      nameSingular: 'Widget For Field',
       navs,
     }
   }, [
