@@ -4,7 +4,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createWidgetForField } from '../modules/createRows.ts'
 import { useWidgetsForFieldsNavData } from '../modules/useWidgetsForFieldsNavData.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -28,13 +28,9 @@ export const WidgetsForFields = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Widgets For Fields"
+      <ListHeader
+        label={navData.label}
         nameSingular="Widget For Field"
-        tableName="widgets_for_fields"
-        isFiltered={isFiltered}
-        countFiltered={navData.length}
-        isLoading={loading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -42,7 +38,7 @@ export const WidgetsForFields = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ widget_for_field_id, label }) => (
+            {navData.navs.map(({ widget_for_field_id, label }) => (
               <Row
                 key={widget_for_field_id}
                 label={label ?? widget_for_field_id}

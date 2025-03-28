@@ -13,84 +13,50 @@ import { useWidgetsForFieldsNavData } from '../../modules/useWidgetsForFieldsNav
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const WidgetsForFieldsNode = memo(() => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
-
-  const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM widgets_for_fields`,
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
-
-  const widgetsForFieldsNode = useMemo(
-    () => ({
-      label: `Widgets For Fields (${
-        isFiltered ?
-          `${loading ? `...` : formatNumber(navData.length)}/${
-            countLoading ? `...` : formatNumber(countUnfiltered)
-          }`
-        : loading ? `...`
-        : formatNumber(navData.length)
-      })`,
-    }),
-    [isFiltered, loading, navData.length, countLoading, countUnfiltered],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data'], [])
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(
-    () => [...parentArray, 'widgets-for-fields'],
-    [parentArray],
-  )
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useWidgetsForFieldsNavData()
 
   const onClickButton = useCallback(() => {
-    if (isOpen) {
+    if (navData.isOpen) {
       removeChildNodes({
-        node: ownArray,
+        node: navData.ownArray,
         isRoot: true,
       })
       // only navigate if urlPath includes ownArray
-      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-        navigate({ to: parentUrl })
+      if (
+        navData.isInActiveNodeArray &&
+        navData.ownArray.length <= navData.urlPath.length
+      ) {
+        navigate({ to: navData.parentUrl })
       }
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({ nodes: [ownArray] })
+    addOpenNodes({ nodes: [navData.ownArray] })
   }, [
-    isInActiveNodeArray,
-    isOpen,
+    navData.isInActiveNodeArray,
+    navData.isOpen,
+    navData.ownArray,
+    navData.parentUrl,
+    navData.urlPath.length,
     navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
   ])
 
   return (
     <>
       <Node
-        node={widgetsForFieldsNode}
-        level={1}
-        isOpen={isOpen}
-        isInActiveNodeArray={isInActiveNodeArray}
-        isActive={isActive}
-        childrenCount={navData.length}
-        to={ownUrl}
+        node={{ label: navData.label }}
+        level={navData.level}
+        isOpen={navData.isOpen}
+        isInActiveNodeArray={navData.isInActiveNodeArray}
+        isActive={navData.isActive}
+        childrenCount={navData.navs.length}
+        to={navData.ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen &&
-        navData.map((widgetForField) => (
+      {navData.isOpen &&
+        navData.navs.map((widgetForField) => (
           <WidgetForFieldNode
             key={widgetForField.widget_for_field_id}
             widgetForField={widgetForField}
