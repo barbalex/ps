@@ -1,15 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { ProjectUserNode } from './ProjectUser.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useProjectUsersNavData } from '../../modules/useProjectUsersNavData.ts'
 
 interface Props {
   projectId: string
@@ -17,42 +13,20 @@ interface Props {
 }
 
 export const ProjectUsersNode = memo(({ projectId, level = 3 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT
-      project_user_id,
-      label
-    FROM project_users 
-    WHERE project_id = $1 
-    ORDER BY label`,
-    [projectId],
-    'project_user_id',
-  )
-  const rows = res?.rows ?? []
-  const loading = res === undefined
-
-  const node = useMemo(
-    () => ({ label: `Users (${loading ? '...' : formatNumber(rows.length)})` }),
-    [loading, rows.length],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => ['data', 'projects', projectId],
-    [projectId],
-  )
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'users'], [parentArray])
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useProjectUsersNavData({ projectId })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -77,17 +51,17 @@ export const ProjectUsersNode = memo(({ projectId, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={node}
+        label={label}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((projectUser) => (
+        navs.map((projectUser) => (
           <ProjectUserNode
             key={projectUser.project_user_id}
             projectId={projectId}
