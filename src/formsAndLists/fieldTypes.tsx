@@ -18,6 +18,7 @@ export const FieldTypes = memo(() => {
   const db = usePGlite()
 
   const { loading, navData, isFiltered } = useFieldTypesNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createFieldType({ db })
@@ -29,8 +30,8 @@ export const FieldTypes = memo(() => {
   return (
     <div className="list-view">
       <ListHeader
-        label={navData.label}
-        nameSingular="Field Type"
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -38,7 +39,7 @@ export const FieldTypes = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.navs.map(({ field_type_id, label }) => (
+            {navs.map(({ field_type_id, label }) => (
               <Row
                 key={field_type_id}
                 label={label ?? field_type_id}

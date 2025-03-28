@@ -59,6 +59,7 @@ export const useFieldTypesNavData = () => {
         : loading ? '...'
         : formatNumber(navs.length)
       })`,
+      nameSingular: 'Field Type',
       navs,
     }
   }, [
@@ -71,5 +72,5 @@ export const useFieldTypesNavData = () => {
     res?.rows,
   ])
 
-  return { loading, navData, isFiltered, countLoading, countUnfiltered }
+  return { loading, navData, isFiltered }
 }
