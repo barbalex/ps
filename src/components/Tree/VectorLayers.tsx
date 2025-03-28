@@ -1,16 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { VectorLayerNode } from './VectorLayer.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom, vectorLayersFilterAtom } from '../../store.ts'
+import { useVectorLayersNavData } from '../../modules/useVectorLayersNavData.ts'
 
 interface Props {
   projectId: string
@@ -18,73 +13,20 @@ interface Props {
 }
 
 export const VectorLayersNode = memo(({ projectId, level = 3 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [filter] = useAtom(vectorLayersFilterAtom)
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const sql = `
-    SELECT
-      vector_layer_id,
-      label 
-    FROM vector_layers 
-    WHERE 
-      project_id = $1
-      ${isFiltered ? `AND ${filterString} ` : ''} 
-    ORDER BY label;`
-  const resFiltered = useLiveQuery(sql, [projectId])
-  const rows = resFiltered?.rows ?? []
-  const rowsLoading = resFiltered === undefined
-  // above query errors when filtering by a string column (label)
-  // https://github.com/electric-sql/pglite/issues/570
-  // console.warn('Tree.VectorLayersNode', {
-  //   rows,
-  //   rowsLoading,
-  //   resFiltered,
-  //   filterString,
-  //   filter,
-  //   sql,
-  // })
-
-  const resCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM vector_layers WHERE project_id = $1`,
-    [projectId],
-  )
-  const countUnfiltered = resCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resCountUnfiltered === undefined
-
-  const node = useMemo(
-    () => ({
-      label: `Vector Layers (${
-        isFiltered ?
-          `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-            countLoading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : rowsLoading ? '...'
-        : formatNumber(rows.length)
-      })`,
-    }),
-    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => ['data', 'projects', projectId],
-    [projectId],
-  )
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(
-    () => [...parentArray, 'vector-layers'],
-    [parentArray],
-  )
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useVectorLayersNavData({ projectId })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -109,17 +51,17 @@ export const VectorLayersNode = memo(({ projectId, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={node}
+        label={label}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((vectorLayer) => (
+        navs.map((vectorLayer) => (
           <VectorLayerNode
             key={vectorLayer.vector_layer_id}
             projectId={projectId}
