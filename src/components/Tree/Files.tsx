@@ -1,16 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
 import { useFilesNavData } from '../../modules/useFilesNavData.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   projectId?: string
@@ -32,56 +27,27 @@ export const FilesNode = memo(
     actionId,
     level,
   }: Props) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-
-    const location = useLocation()
     const navigate = useNavigate()
 
-    const { navData, isLoading, isFiltered, countUnfiltered, countLoading } =
-      useFilesNavData({
-        projectId,
-        subprojectId,
-        placeId,
-        placeId2,
-        actionId,
-        checkId,
-      })
-
-    const node = useMemo(
-      () => ({
-        label: `Files (${
-          isFiltered ?
-            `${isLoading ? '...' : formatNumber(navData.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : isLoading ? '...'
-          : formatNumber(navData.length)
-        })`,
-      }),
-      [isFiltered, isLoading, navData.length, countLoading, countUnfiltered],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        ...(projectId ? ['projects', projectId] : []),
-        ...(subprojectId ? ['subprojects', subprojectId] : []),
-        ...(placeId ? ['places', placeId] : []),
-        ...(placeId2 ? ['places', placeId2] : []),
-        ...(actionId ? ['actions', actionId] : []),
-        ...(checkId ? ['checks', checkId] : []),
-      ],
-      [actionId, checkId, placeId, placeId2, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'files'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // TODO: needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useFilesNavData({
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      actionId,
+      checkId,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -106,17 +72,17 @@ export const FilesNode = memo(
     return (
       <>
         <Node
-          node={node}
+          node={{ label }}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={navData.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navData.map((file) => (
+          navs.map((file) => (
             <FileNode
               key={file.file_id}
               projectId={projectId}

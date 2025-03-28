@@ -2,7 +2,7 @@ import { useCallback, useContext, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useFilesNavData } from '../modules/useFilesNavData.ts'
@@ -13,6 +13,7 @@ import '../form.css'
 
 export const Files = memo(() => {
   const { loading, navData } = useFilesNavData({})
+  const { navs, label, nameSingular } = navData
 
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
@@ -22,13 +23,9 @@ export const Files = memo(() => {
   // offline to SQLite
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Files"
-        nameSingular="File"
-        tableName="files"
-        isFiltered={false}
-        countFiltered={navData.length}
-        isLoading={loading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         menus={
           <Button
             size="medium"
@@ -43,7 +40,7 @@ export const Files = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ file_id, label, url, mimetype }) => {
+            {navs.map(({ file_id, label, url, mimetype }) => {
               let imgSrc = undefined
               if (
                 (mimetype.includes('image') || mimetype.includes('pdf')) &&

@@ -25,13 +25,13 @@ export const useProjectsNavData = () => {
     ORDER BY label`)
 
   const loading = res === undefined
-  const navs = useMemo(() => res?.rows ?? [], [res])
 
   const resultCountUnfiltered = useLiveQuery(`SELECT count(*) FROM projects`)
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
   const navData = useMemo(() => {
+    const navs = res?.rows ?? []
     const parentArray = ['data']
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = [...parentArray, 'projects']
@@ -69,8 +69,8 @@ export const useProjectsNavData = () => {
     isFiltered,
     loading,
     location.pathname,
-    navs,
     openNodes,
+    res?.rows,
   ])
 
   return { loading, navData, isFiltered, countUnfiltered, countLoading }

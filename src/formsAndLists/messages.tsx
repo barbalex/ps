@@ -4,7 +4,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../modules/createRows.ts'
 import { useMessagesNavData } from '../modules/useMessagesNavData.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 
@@ -15,6 +15,7 @@ export const Messages = memo(() => {
   const db = usePGlite()
 
   const { loading, navData } = useMessagesNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createMessage({ db })
@@ -28,20 +29,16 @@ export const Messages = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Messages"
-        nameSingular="message"
-        tableName="messages"
-        isFiltered={false}
-        countFiltered={navData.length}
-        isLoading={loading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ message_id, date }) => (
+            {navs.map(({ message_id, date }) => (
               <Row
                 key={message_id}
                 to={message_id}

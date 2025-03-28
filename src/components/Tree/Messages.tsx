@@ -1,40 +1,28 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { MessageNode } from './Message.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
 import { useMessagesNavData } from '../../modules/useMessagesNavData.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
 
 export const MessagesNode = memo(() => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const { loading, navData } = useMessagesNavData()
-
-  const node = useMemo(
-    () => ({
-      label: `Messages (${loading ? '...' : formatNumber(navData.length)})`,
-    }),
-    [loading, navData.length],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data'], [])
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'messages'], [parentArray])
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useMessagesNavData()
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    level,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -55,7 +43,6 @@ export const MessagesNode = memo(() => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     urlPath.length,
   ])
@@ -63,17 +50,17 @@ export const MessagesNode = memo(() => {
   return (
     <>
       <Node
-        node={node}
-        level={1}
+        node={{ label }}
+        level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={navData.length}
+        childrenCount={navs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navData.map((message) => (
+        navs.map((message) => (
           <MessageNode
             key={message.message_id}
             message={message}
