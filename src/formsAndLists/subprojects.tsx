@@ -1,76 +1,49 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubproject } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
-import { subprojectsFilterAtom } from '../store.ts'
-import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
+import { useSubprojectsNavData } from '../modules/useSubprojectsNavData.ts'
 import '../form.css'
 
 const from = '/data/_authLayout/projects/$projectId_/subprojects/'
 
 export const Subprojects = memo(() => {
-  const [filter] = useAtom(subprojectsFilterAtom)
-
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
 
-  // TODO: ensure passing in filter works as expected (beware of joined table...)
-  const filterString = filterStringFromFilter(filter, 'sp')
-  const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT 
-      sp.subproject_id, 
-      sp.label, 
-      p.subproject_name_plural, 
-      p.subproject_name_singular 
-    FROM 
-      subprojects sp 
-      INNER JOIN projects p ON p.project_id = sp.project_id 
-    WHERE 
-      sp.project_id = $1
-      ${isFiltered ? ` AND ${filterString}` : ''} 
-    ORDER BY sp.label`,
-    [projectId],
-    'subproject_id',
-  )
-  const isLoading = res === undefined
-  const subprojects = res?.rows ?? []
-  const namePlural = res?.rows?.[0]?.subproject_name_plural ?? 'Subprojects'
-  const nameSingular = res?.rows?.[0]?.subproject_name_singular ?? 'Subproject'
-  const nameSingularLower = nameSingular.toLowerCase()
+  const { loading, navData, isFiltered } = useSubprojectsNavData({ projectId })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
-    const res = await createSubproject({ db,  projectId })
+    const res = await createSubproject({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate(`../${data.subproject_id}`)
+    console.log('Subprojects.add', { res, data, projectId })
+    navigate({
+      to: data.subproject_id,
+      params: (prev) => ({ ...prev, subprojectId: data.subproject_id }),
+    })
   }, [navigate, db, projectId])
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural={namePlural}
-        nameSingular={nameSingularLower}
-        tableName="subprojects"
-        isFiltered={isFiltered}
-        countFiltered={subprojects.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {subprojects.map(({ subproject_id, label }) => (
+            {navs.map(({ subproject_id, label }) => (
               <Row
                 key={subproject_id}
                 label={label ?? subproject_id}

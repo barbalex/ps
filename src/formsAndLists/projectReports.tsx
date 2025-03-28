@@ -1,41 +1,26 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProjectReport } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
-import { projectReportsFilterAtom } from '../store.ts'
-import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
+import { useProjectReportsNavData } from '../modules/useProjectReportsNavData.ts'
 import '../form.css'
 
 const from = '/data/_authLayout/projects/$projectId_/reports/'
 
 export const ProjectReports = memo(() => {
-  const [filter] = useAtom(projectReportsFilterAtom)
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT 
-      project_report_id, 
-      label 
-    FROM project_reports 
-    WHERE project_id = $1
-    ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`,
-    [projectId],
-    'project_report_id',
-  )
-  const isLoading = res === undefined
-  const projectReports = res?.rows ?? []
+  const { loading, navData, isFiltered } = useProjectReportsNavData({
+    projectId,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createProjectReport({ db, projectId })
@@ -49,21 +34,17 @@ export const ProjectReports = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Project Reports"
-        nameSingular="project report"
-        tableName="project_reports"
-        isFiltered={isFiltered}
-        countFiltered={projectReports.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {projectReports.map(({ project_report_id, label }) => (
+            {navs.map(({ project_report_id, label }) => (
               <Row
                 key={project_report_id}
                 to={project_report_id}
