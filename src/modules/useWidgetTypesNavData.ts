@@ -74,5 +74,5 @@ export const useWidgetTypesNavData = () => {
     res?.rows,
   ])
 
-  return { loading, navData, isFiltered, countLoading, countUnfiltered }
+  return { loading, navData, isFiltered }
 }

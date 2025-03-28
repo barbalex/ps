@@ -73,5 +73,5 @@ export const useProjectsNavData = () => {
     res?.rows,
   ])
 
-  return { loading, navData, isFiltered, countUnfiltered, countLoading }
+  return { loading, navData, isFiltered }
 }
