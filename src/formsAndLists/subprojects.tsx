@@ -24,7 +24,6 @@ export const Subprojects = memo(() => {
     const res = await createSubproject({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
-    console.log('Subprojects.add', { res, data, projectId })
     navigate({
       to: data.subproject_id,
       params: (prev) => ({ ...prev, subprojectId: data.subproject_id }),
