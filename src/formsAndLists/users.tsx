@@ -4,7 +4,7 @@ import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createUser } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useUsersNavData } from '../modules/useUsersNavData.ts'
@@ -20,6 +20,7 @@ export const Users = memo(() => {
   const db = usePGlite()
 
   const { loading, navData } = useUsersNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createUser({ db, setUserId })
@@ -30,20 +31,16 @@ export const Users = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Users"
-        nameSingular="User"
-        tableName="users"
-        isFiltered={false}
-        countFiltered={navData.length}
-        isLoading={loading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
         {loading ?
           <Loading />
         : <>
-            {navData.map(({ user_id, label }) => (
+            {navs.map(({ user_id, label }) => (
               <Row
                 key={user_id}
                 label={label ?? user_id}

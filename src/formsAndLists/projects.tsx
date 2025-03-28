@@ -16,6 +16,7 @@ export const Projects = memo(() => {
   const db = usePGlite()
 
   const { loading, navData, isFiltered } = useProjectsNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createProject({ db })
@@ -30,8 +31,8 @@ export const Projects = memo(() => {
   return (
     <div className="list-view">
       <ListHeader
-        label={navData.label}
-        nameSingular="project"
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
@@ -39,7 +40,7 @@ export const Projects = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.navs.map((nav) => (
+            {navs.map((nav) => (
               <Row
                 key={nav.project_id}
                 label={nav.label}

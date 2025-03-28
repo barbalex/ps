@@ -33,6 +33,7 @@ export const useProjectsNavData = () => {
 
   const navData = useMemo(() => {
     const parentArray = ['data']
+    const parentUrl = `/${parentArray.join('/')}`
     const ownArray = [...parentArray, 'projects']
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
@@ -46,6 +47,7 @@ export const useProjectsNavData = () => {
       isActive,
       isOpen,
       level: 1,
+      parentUrl,
       ownArray,
       urlPath,
       ownUrl,
@@ -58,6 +60,7 @@ export const useProjectsNavData = () => {
         : loading ? '...'
         : formatNumber(navs.length)
       })`,
+      nameSingular: 'Project',
       navs,
     }
   }, [

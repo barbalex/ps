@@ -1,40 +1,28 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { UserNode } from './User.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
 import { useUsersNavData } from '../../modules/useUsersNavData.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
 
 export const UsersNode = memo(() => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const { loading, navData } = useUsersNavData()
-
-  const node = useMemo(
-    () => ({
-      label: `Users (${loading ? '...' : formatNumber(navData.length)})`,
-    }),
-    [loading, navData.length],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data'], [])
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'users'], [parentArray])
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useUsersNavData()
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    level,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -62,17 +50,17 @@ export const UsersNode = memo(() => {
   return (
     <>
       <Node
-        node={node}
-        level={1}
+        node={{ label }}
+        level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={navData.length}
+        childrenCount={navs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navData.map((user) => (
+        navs.map((user) => (
           <UserNode
             key={user.user_id}
             user={user}
