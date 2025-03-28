@@ -40,6 +40,7 @@ export const useAccountsNavData = () => {
       urlPath,
       toParams: {},
       label: `Accounts (${loading ? '...' : formatNumber(navs.length)})`,
+      nameSingular: 'Account',
       navs,
     }
   }, [loading, location.pathname, openNodes, res?.rows])

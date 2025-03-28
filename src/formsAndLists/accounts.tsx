@@ -16,6 +16,7 @@ export const Accounts = memo(() => {
   const db = usePGlite()
 
   const { loading, navData } = useAccountsNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createAccount({ db })
@@ -27,15 +28,15 @@ export const Accounts = memo(() => {
   return (
     <div className="list-view">
       <ListHeader
-        label={navData.label}
-        nameSingular="account"
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
         {loading ?
           <Loading />
         : <>
-            {navData.navs.map(({ account_id, label }) => (
+            {navs.map(({ account_id, label }) => (
               <Row
                 key={account_id}
                 label={label ?? account_id}
