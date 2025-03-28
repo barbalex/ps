@@ -1,41 +1,24 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPerson } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
-import { personsFilterAtom } from '../store.ts'
-import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
+import { usePersonsNavData } from '../modules/usePersonsNavData.ts'
 import '../form.css'
 
 const from = '/data/_authLayout/projects/$projectId_/persons/'
 
 export const Persons = memo(() => {
-  const [filter] = useAtom(personsFilterAtom)
-
   const navigate = useNavigate()
   const { projectId } = useParams({ from })
   const db = usePGlite()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT person_id, label 
-    FROM persons 
-    WHERE 
-      project_id = $1
-      ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`,
-    [projectId],
-    'person_id',
-  )
-  const isLoading = res === undefined
-  const persons = res?.rows ?? []
+  const { loading, navData, isFiltered } = usePersonsNavData({ projectId })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createPerson({ db, projectId })
@@ -49,21 +32,17 @@ export const Persons = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Persons"
-        nameSingular="person"
-        tableName="persons"
-        ifFiltered={isFiltered}
-        countFiltered={persons.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {persons.map(({ person_id, label }) => (
+            {navs.map(({ person_id, label }) => (
               <Row
                 key={person_id}
                 to={person_id}
