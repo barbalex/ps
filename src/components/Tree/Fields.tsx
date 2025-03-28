@@ -15,47 +15,55 @@ export const FieldsNode = memo(({ projectId }: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useFieldsNavData({ projectId })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
-    if (navData.isOpen) {
+    if (isOpen) {
       removeChildNodes({
-        node: navData.ownArray,
+        node: ownArray,
         isRoot: true,
       })
       // only navigate if urlPath includes ownArray
-      if (
-        navData.isInActiveNodeArray &&
-        navData.ownArray.length <= navData.urlPath.length
-      ) {
-        navigate({ to: navData.parentUrl })
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
       }
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({ nodes: [navData.ownArray] })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    navData.isInActiveNodeArray,
-    navData.isOpen,
-    navData.ownArray,
-    navData.parentUrl,
-    navData.urlPath.length,
+    isInActiveNodeArray,
+    isOpen,
+    ownArray,
+    parentUrl,
+    urlPath.length,
     navigate,
   ])
 
   return (
     <>
       <Node
-        node={{ label: navData.label }}
+        node={{ label }}
         level={projectId ? 3 : 1}
-        isOpen={navData.isOpen}
-        isInActiveNodeArray={navData.isInActiveNodeArray}
-        isActive={navData.isActive}
-        childrenCount={navData.navs.length}
-        to={navData.ownUrl}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={navs.length}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
-      {navData.isOpen &&
-        navData.navs.map((field) => (
+      {isOpen &&
+        navs.map((field) => (
           <FieldNode
             key={field.field_id}
             field={field}

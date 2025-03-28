@@ -52,7 +52,7 @@ export const useFieldsNavData = ({ projectId }) => {
       isInActiveNodeArray,
       isActive,
       isOpen,
-      level: 1,
+      // level: 1,
       parentUrl,
       ownArray,
       ownUrl,
@@ -66,6 +66,7 @@ export const useFieldsNavData = ({ projectId }) => {
         : loading ? '...'
         : formatNumber(navs.length)
       })`,
+      nameSingular: 'Field',
       navs,
     }
   }, [
@@ -79,5 +80,5 @@ export const useFieldsNavData = ({ projectId }) => {
     res?.rows,
   ])
 
-  return { loading, navData, isFiltered, countLoading, countUnfiltered }
+  return { loading, navData, isFiltered }
 }
