@@ -1,12 +1,13 @@
 import { memo, useCallback } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { useLiveIncrementalQuery, usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { createVectorLayerDisplay } from '../modules/createRows.ts'
+import { useVectorLayerDisplaysNavData } from '../modules/useVectorLayerDisplaysNavData.ts'
 import { mapDrawerVectorLayerDisplayAtom } from '../store.ts'
 
 import '../form.css'
@@ -20,24 +21,18 @@ export const VectorLayerDisplays = memo(
   ({ vectorLayerId: vectorLayerIdIn }) => {
     const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
     const params = useParams({ from })
+    const { projectId } = params
     const vectorLayerId = vectorLayerIdIn || params.vectorLayerId
     const calledFromMapDrawer = vectorLayerIdIn !== undefined
-    console.log('VectorLayerDisplays', {
-      vectorLayerId,
-      vectorLayerIdIn,
-      params,
-    })
     const db = usePGlite()
 
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `SELECT vector_layer_display_id, label FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
-      [vectorLayerId],
-      'vector_layer_display_id',
-    )
-    const isLoading = res === undefined
-    const vlds = res?.rows ?? []
+    const { loading, navData } = useVectorLayerDisplaysNavData({
+      projectId,
+      vectorLayerId,
+    })
+    const { navs, label, nameSingular } = navData
 
     const add = useCallback(async () => {
       const res = await createVectorLayerDisplay({ vectorLayerId, db })
@@ -81,20 +76,16 @@ export const VectorLayerDisplays = memo(
 
     return (
       <div className="list-view">
-        <ListViewHeader
-          namePlural="Vector Layer Displays"
-          nameSingular="Vector Layer Display"
-          tableName="vector_layer_displays"
-          isFiltered={false}
-          countFiltered={vlds.length}
-          isLoading={isLoading}
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
           addRow={add}
         />
         <div className="list-container">
-          {isLoading ?
+          {loading ?
             <Loading />
           : <>
-              {vlds.map(({ vector_layer_display_id, label }) => (
+              {navs.map(({ vector_layer_display_id, label }) => (
                 <Row
                   key={vector_layer_display_id}
                   to={vector_layer_display_id}
