@@ -15,6 +15,7 @@ export const CRSS = memo(() => {
   const db = usePGlite()
 
   const { loading, navData } = useCrssNavData()
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createCrs({ db })
@@ -29,8 +30,8 @@ export const CRSS = memo(() => {
   return (
     <div className="list-view">
       <ListHeader
-        label={navData.label}
-        nameSingular="crs"
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         info={<Info />}
       />
@@ -38,7 +39,7 @@ export const CRSS = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navData.navs.map((cr) => (
+            {navs.map((cr) => (
               <Row
                 key={cr.crs_id}
                 to={cr.crs_id}

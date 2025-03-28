@@ -44,6 +44,7 @@ export const useCrssNavData = () => {
       urlPath,
       toParams: {},
       label: `CRS (${loading ? '...' : formatNumber(navs.length)})`,
+      nameSingular: 'CRS',
       navs,
     }
   }, [loading, location.pathname, openNodes, res?.rows])
