@@ -1,9 +1,10 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
-import { ListViewHeader } from '../../components/ListViewHeader.tsx'
+import { useProjectCrsNavData } from '../../modules/useProjectCrsNavData.ts'
+import { ListHeader } from '../../components/ListHeader.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
@@ -17,13 +18,8 @@ export const ProjectCrss = memo(() => {
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM project_crs WHERE project_id = $1 ORDER BY label`,
-    [projectId],
-    'project_crs_id',
-  )
-  const isLoading = res === undefined
-  const projectCrs = res?.rows ?? []
+  const { loading, navData } = useProjectCrsNavData({ projectId })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createProjectCrs({ projectId, db })
@@ -37,21 +33,17 @@ export const ProjectCrss = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="CRS: Coordinate Reference Systems"
-        nameSingular="CRS"
-        tableName="project_crs"
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
-        isFiltered={false}
-        countFiltered={projectCrs.length}
-        isLoading={isLoading}
         info={<Info />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {projectCrs.map((cr) => (
+            {navs.map((cr) => (
               <Row
                 key={cr.project_crs_id}
                 to={cr.project_crs_id}
