@@ -53,7 +53,7 @@ export const FieldsNode = memo(({ projectId }: Props) => {
   return (
     <>
       <Node
-        node={{ label }}
+        label={label}
         level={projectId ? 3 : 1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}

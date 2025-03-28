@@ -50,7 +50,7 @@ export const WidgetsForFieldsNode = memo(() => {
   return (
     <>
       <Node
-        node={{ label }}
+        label={label}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
