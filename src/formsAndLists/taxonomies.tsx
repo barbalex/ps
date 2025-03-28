@@ -1,9 +1,10 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxonomy } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { useTaxonomiesNavData } from '../modules/useTaxonomiesNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
@@ -15,13 +16,8 @@ export const Taxonomies = memo(() => {
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT taxonomy_id, label FROM taxonomies WHERE project_id = $1 ORDER BY label`,
-    [projectId],
-    'taxonomy_id',
-  )
-  const isLoading = res === undefined
-  const taxonomies = res?.rows ?? []
+  const { loading, navData } = useTaxonomiesNavData({ projectId })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createTaxonomy({ db, projectId })
@@ -35,20 +31,16 @@ export const Taxonomies = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Taxonomies"
-        nameSingular="Taxonomy"
-        tableName="taxonomies"
-        isFiltered={false}
-        countFiltered={taxonomies.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {taxonomies.map(({ taxonomy_id, label }) => (
+            {navs.map(({ taxonomy_id, label }) => (
               <Row
                 key={taxonomy_id}
                 label={label ?? taxonomy_id}
