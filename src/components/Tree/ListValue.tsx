@@ -28,7 +28,7 @@ export const ListValueNode = memo(
 
     return (
       <Node
-        node={listValue}
+        label={listValue.label}
         id={listValue.list_value_id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}

@@ -30,6 +30,7 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, listValueId, navigate])
 
   const toNext = useCallback(async () => {
+    console.log('ListValue.Header.toNext')
     const res = await db.query(
       `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
       [listId],
@@ -38,6 +39,13 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = listValues.length
     const index = listValues.findIndex((p) => p.list_value_id === listValueId)
     const next = listValues[(index + 1) % len]
+    console.log('ListValue.Header.toNext', {
+      listValues,
+      len,
+      index,
+      next,
+      listValueId,
+    })
     navigate({
       to: `../${next.list_value_id}`,
       params: (prev) => ({ ...prev, listValueId: next.list_value_id }),
@@ -45,6 +53,7 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, listId, listValueId, navigate])
 
   const toPrevious = useCallback(async () => {
+    console.log('ListValue.Header.toPrevious')
     const res = await db.query(
       `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
       [listId],
@@ -53,6 +62,13 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = listValues.length
     const index = listValues.findIndex((p) => p.list_value_id === listValueId)
     const previous = listValues[(index + len - 1) % len]
+    console.log('ListValue.Header.toPrevious', {
+      listValues,
+      len,
+      index,
+      previous,
+      listValueId,
+    })
     navigate({
       to: `../${previous.list_value_id}`,
       params: (prev) => ({ ...prev, listValueId: previous.list_value_id }),

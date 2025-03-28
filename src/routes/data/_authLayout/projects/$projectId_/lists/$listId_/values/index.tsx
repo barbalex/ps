@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ListValues } from '../../../../../../../formsAndLists/listValues.tsx'
-import { NotFound } from '../../../../../../../components/NotFound.tsx'
+import { ListValues } from '../../../../../../../../formsAndLists/listValues.tsx'
+import { NotFound } from '../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/lists/$listId_/values/',

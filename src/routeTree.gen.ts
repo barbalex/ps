@@ -96,7 +96,7 @@ import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdOccurren
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdFilesIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/files/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/index'
-import { Route as DataAuthLayoutProjectsProjectIdListsListIdValuesIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId_/values.index'
+import { Route as DataAuthLayoutProjectsProjectIdListsListIdValuesIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId_/values/index'
 import { Route as DataAuthLayoutProjectsProjectIdFilesFileIdPreviewIndexImport } from './routes/data/_authLayout/projects/$projectId_/files/$fileId_/preview.index'
 import { Route as DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdVectorLayerDisplaysVectorLayerDisplayIdImport } from './routes/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer-displays/$vectorLayerDisplayId'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdReportsFilterImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/reports/filter'
@@ -113,7 +113,7 @@ import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdOccurren
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsOccurrenceImportIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdChartsChartIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId.index'
-import { Route as DataAuthLayoutProjectsProjectIdListsListIdValuesListValueIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId_/values.$listValueId.index'
+import { Route as DataAuthLayoutProjectsProjectIdListsListIdValuesListValueIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId_/values/$listValueId.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdFilesFileIdPreviewImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/preview'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdReportsIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/index'
@@ -5510,7 +5510,7 @@ export const routeTree = rootRoute
       "parent": "/data/_authLayout/projects/$projectId_/files/$fileId_/preview"
     },
     "/data/_authLayout/projects/$projectId_/lists/$listId_/values/": {
-      "filePath": "data/_authLayout/projects/$projectId_/lists/$listId_/values.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/lists/$listId_/values/index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/": {
@@ -5569,7 +5569,7 @@ export const routeTree = rootRoute
       ]
     },
     "/data/_authLayout/projects/$projectId_/lists/$listId_/values/$listValueId/": {
-      "filePath": "data/_authLayout/projects/$projectId_/lists/$listId_/values.$listValueId.index.tsx",
+      "filePath": "data/_authLayout/projects/$projectId_/lists/$listId_/values/$listValueId.index.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId/": {
