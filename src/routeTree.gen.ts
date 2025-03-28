@@ -69,6 +69,7 @@ import { Route as DataAuthLayoutProjectsProjectIdUnitsFilterImport } from './rou
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsFilterImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/filter'
 import { Route as DataAuthLayoutProjectsProjectIdReportsFilterImport } from './routes/data/_authLayout/projects/$projectId_/reports/filter'
 import { Route as DataAuthLayoutProjectsProjectIdPersonsFilterImport } from './routes/data/_authLayout/projects/$projectId_/persons/filter'
+import { Route as DataAuthLayoutProjectsProjectIdListsFilterImport } from './routes/data/_authLayout/projects/$projectId_/lists/filter'
 import { Route as DataAuthLayoutProjectsProjectIdFilesFileIdImport } from './routes/data/_authLayout/projects/$projectId_/files/$fileId'
 import { Route as DataAuthLayoutProjectsProjectIdFieldsFilterImport } from './routes/data/_authLayout/projects/$projectId_/fields/filter'
 import { Route as DataAuthLayoutProjectsProjectIdFieldsFieldIdImport } from './routes/data/_authLayout/projects/$projectId_/fields/$fieldId'
@@ -590,6 +591,13 @@ const DataAuthLayoutProjectsProjectIdPersonsFilterRoute =
   DataAuthLayoutProjectsProjectIdPersonsFilterImport.update({
     id: '/projects/$projectId_/persons/filter',
     path: '/projects/$projectId/persons/filter',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
+  } as any)
+
+const DataAuthLayoutProjectsProjectIdListsFilterRoute =
+  DataAuthLayoutProjectsProjectIdListsFilterImport.update({
+    id: '/projects/$projectId_/lists/filter',
+    path: '/projects/$projectId/lists/filter',
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
@@ -2042,6 +2050,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdFilesFileIdImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/projects/$projectId_/lists/filter': {
+      id: '/data/_authLayout/projects/$projectId_/lists/filter'
+      path: '/projects/$projectId/lists/filter'
+      fullPath: '/data/projects/$projectId/lists/filter'
+      preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdListsFilterImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/projects/$projectId_/persons/filter': {
       id: '/data/_authLayout/projects/$projectId_/persons/filter'
       path: '/projects/$projectId/persons/filter'
@@ -3329,6 +3344,7 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute: typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   DataAuthLayoutProjectsProjectIdFieldsFilterRoute: typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
   DataAuthLayoutProjectsProjectIdFilesFileIdRoute: typeof DataAuthLayoutProjectsProjectIdFilesFileIdRoute
+  DataAuthLayoutProjectsProjectIdListsFilterRoute: typeof DataAuthLayoutProjectsProjectIdListsFilterRoute
   DataAuthLayoutProjectsProjectIdPersonsFilterRoute: typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   DataAuthLayoutProjectsProjectIdReportsFilterRoute: typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
@@ -3517,6 +3533,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutProjectsProjectIdFieldsFilterRoute,
   DataAuthLayoutProjectsProjectIdFilesFileIdRoute:
     DataAuthLayoutProjectsProjectIdFilesFileIdRoute,
+  DataAuthLayoutProjectsProjectIdListsFilterRoute:
+    DataAuthLayoutProjectsProjectIdListsFilterRoute,
   DataAuthLayoutProjectsProjectIdPersonsFilterRoute:
     DataAuthLayoutProjectsProjectIdPersonsFilterRoute,
   DataAuthLayoutProjectsProjectIdReportsFilterRoute:
@@ -3856,6 +3874,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/fields/$fieldId': typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   '/data/projects/$projectId/fields/filter': typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
   '/data/projects/$projectId/files/$fileId': typeof DataAuthLayoutProjectsProjectIdFilesFileIdRoute
+  '/data/projects/$projectId/lists/filter': typeof DataAuthLayoutProjectsProjectIdListsFilterRoute
   '/data/projects/$projectId/persons/filter': typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
@@ -4045,6 +4064,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/fields/$fieldId': typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   '/data/projects/$projectId/fields/filter': typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
   '/data/projects/$projectId/files/$fileId': typeof DataAuthLayoutProjectsProjectIdFilesFileIdRoute
+  '/data/projects/$projectId/lists/filter': typeof DataAuthLayoutProjectsProjectIdListsFilterRoute
   '/data/projects/$projectId/persons/filter': typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
@@ -4231,6 +4251,7 @@ export interface FileRoutesById {
   '/data/_authLayout/projects/$projectId_/fields/$fieldId': typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   '/data/_authLayout/projects/$projectId_/fields/filter': typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
   '/data/_authLayout/projects/$projectId_/files/$fileId': typeof DataAuthLayoutProjectsProjectIdFilesFileIdRoute
+  '/data/_authLayout/projects/$projectId_/lists/filter': typeof DataAuthLayoutProjectsProjectIdListsFilterRoute
   '/data/_authLayout/projects/$projectId_/persons/filter': typeof DataAuthLayoutProjectsProjectIdPersonsFilterRoute
   '/data/_authLayout/projects/$projectId_/reports/filter': typeof DataAuthLayoutProjectsProjectIdReportsFilterRoute
   '/data/_authLayout/projects/$projectId_/subprojects/filter': typeof DataAuthLayoutProjectsProjectIdSubprojectsFilterRoute
@@ -4426,6 +4447,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/fields/$fieldId'
     | '/data/projects/$projectId/fields/filter'
     | '/data/projects/$projectId/files/$fileId'
+    | '/data/projects/$projectId/lists/filter'
     | '/data/projects/$projectId/persons/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
@@ -4614,6 +4636,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/fields/$fieldId'
     | '/data/projects/$projectId/fields/filter'
     | '/data/projects/$projectId/files/$fileId'
+    | '/data/projects/$projectId/lists/filter'
     | '/data/projects/$projectId/persons/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
@@ -4798,6 +4821,7 @@ export interface FileRouteTypes {
     | '/data/_authLayout/projects/$projectId_/fields/$fieldId'
     | '/data/_authLayout/projects/$projectId_/fields/filter'
     | '/data/_authLayout/projects/$projectId_/files/$fileId'
+    | '/data/_authLayout/projects/$projectId_/lists/filter'
     | '/data/_authLayout/projects/$projectId_/persons/filter'
     | '/data/_authLayout/projects/$projectId_/reports/filter'
     | '/data/_authLayout/projects/$projectId_/subprojects/filter'
@@ -5027,6 +5051,7 @@ export const routeTree = rootRoute
         "/data/_authLayout/projects/$projectId_/fields/$fieldId",
         "/data/_authLayout/projects/$projectId_/fields/filter",
         "/data/_authLayout/projects/$projectId_/files/$fileId",
+        "/data/_authLayout/projects/$projectId_/lists/filter",
         "/data/_authLayout/projects/$projectId_/persons/filter",
         "/data/_authLayout/projects/$projectId_/reports/filter",
         "/data/_authLayout/projects/$projectId_/subprojects/filter",
@@ -5316,6 +5341,10 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/projects/$projectId_/files/$fileId": {
       "filePath": "data/_authLayout/projects/$projectId_/files/$fileId.tsx",
+      "parent": "/data/_authLayout"
+    },
+    "/data/_authLayout/projects/$projectId_/lists/filter": {
+      "filePath": "data/_authLayout/projects/$projectId_/lists/filter.tsx",
       "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/persons/filter": {

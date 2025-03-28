@@ -1,19 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { ListNode } from './List.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom, listsFilterAtom } from '../../store.ts'
+import { useListsNavData } from '../../modules/useListsNavData.ts'
 
 interface Props {
   projectId: string
@@ -21,64 +13,20 @@ interface Props {
 }
 
 export const ListsNode = memo(({ projectId, level = 3 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [filter] = useAtom(listsFilterAtom)
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const resFiltered = useLiveIncrementalQuery(
-    `
-    SELECT 
-      list_id,
-      label
-    FROM lists 
-    WHERE 
-      project_id = $1
-      ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`,
-    [projectId],
-    'list_id',
-  )
-  const rows = resFiltered?.rows || []
-  const rowsLoading = resFiltered === undefined
-
-  const resultCountUnfiltered = useLiveQuery(
-    `SELECT COUNT(*) FROM lists WHERE project_id = $1`,
-    [projectId],
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count || 0
-  const countLoading = resultCountUnfiltered === undefined
-
-  const node = useMemo(
-    () => ({
-      label: `Lists (${
-        isFiltered
-          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading
-            ? '...'
-            : formatNumber(rows.length)
-      })`,
-    }),
-    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => ['data', 'projects', projectId],
-    [projectId],
-  )
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'lists'], [parentArray])
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = useListsNavData({ projectId })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -103,18 +51,22 @@ export const ListsNode = memo(({ projectId, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={node}
+        label={label}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((list) => (
-          <ListNode key={list.list_id} projectId={projectId} list={list} />
+        navs.map((list) => (
+          <ListNode
+            key={list.list_id}
+            projectId={projectId}
+            list={list}
+          />
         ))}
     </>
   )
