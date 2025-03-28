@@ -1,11 +1,12 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { createChartSubject } from '../modules/createRows.ts'
+import { useChartSubjectsNavData } from '../modules/useChartSubjectsNavData.ts'
 
 import '../form.css'
 
@@ -13,19 +14,20 @@ const from =
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/'
 
 export const ChartSubjects = memo(() => {
-  const { chartId } = useParams({ from })
+  const { projectId, subprojectId, chartId } = useParams({
+    from,
+  })
   const navigate = useNavigate()
-
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT chart_subject_id, label FROM chart_subjects WHERE chart_id = $1 ORDER BY label`,
-    [chartId],
-    'chart_subject_id',
-  )
-  const isLoading = res === undefined
-  const chartSubjects = res?.rows ?? []
 
-  const addRow = useCallback(async () => {
+  const { loading, navData } = useChartSubjectsNavData({
+    projectId,
+    subprojectId,
+    chartId,
+  })
+  const { navs, label, nameSingular } = navData
+
+  const add = useCallback(async () => {
     const res = await createChartSubject({ chartId, db })
     const data = res?.rows?.[0]
     navigate({
@@ -39,20 +41,16 @@ export const ChartSubjects = memo(() => {
   // offline to sqlite
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Chart Subjects"
-        nameSingular="chart subject"
-        tableName="chart_subjects"
-        isFiltered={false}
-        countFiltered={chartSubjects.length}
-        isLoading={isLoading}
-        addRow={addRow}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {chartSubjects.map(({ chart_subject_id, label }) => (
+            {navs.map(({ chart_subject_id, label }) => (
               <Row
                 key={chart_subject_id}
                 label={label ?? chart_subject_id}

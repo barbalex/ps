@@ -1,15 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { ChartSubjectNode } from './ChartSubject.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useChartSubjectsNavData } from '../../modules/useChartSubjectsNavData.ts'
 
 interface Props {
   projectId?: string
@@ -22,52 +18,26 @@ interface Props {
 
 export const ChartSubjectsNode = memo(
   ({ projectId, subprojectId, placeId, placeId2, chartId, level }: Props) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        chart_subject_id,
-        label 
-      FROM chart_subjects 
-      WHERE chart_id = $1 
-      ORDER BY label`,
-      [chartId],
-      'chart_subject_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Subjects (${loading ? '...' : formatNumber(rows.length)})`,
-      }),
-      [loading, rows.length],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        ...(projectId ? ['projects', projectId] : []),
-        ...(subprojectId ? ['subprojects', subprojectId] : []),
-        ...(placeId ? ['places', placeId] : []),
-        ...(placeId2 ? ['places', placeId2] : []),
-        'charts',
-        chartId,
-      ],
-      [chartId, placeId, placeId2, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'subjects'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useChartSubjectsNavData({
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      chartId,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -92,17 +62,17 @@ export const ChartSubjectsNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((chartSubject) => (
+          navs.map((chartSubject) => (
             <ChartSubjectNode
               key={chartSubject.chart_subject_id}
               projectId={projectId}
