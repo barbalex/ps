@@ -1,9 +1,10 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceLevel } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { usePlaceLevelsNavData } from '../modules/usePlaceLevelsNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
@@ -15,13 +16,8 @@ export const PlaceLevels = memo(() => {
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT place_level_id, label FROM place_levels WHERE project_id = $1 ORDER BY label`,
-    [projectId],
-    'place_level_id',
-  )
-  const isLoading = res === undefined
-  const placeLevels = res?.rows ?? []
+  const { loading, navData } = usePlaceLevelsNavData({ projectId })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createPlaceLevel({ db, project_id: projectId })
@@ -35,21 +31,16 @@ export const PlaceLevels = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Place Levels"
-        nameSingular="Place Level"
-        tableName="place level"
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
-        isFiltered={false}
-        countFiltered={placeLevels.length}
-        isLoading={isLoading}
       />
       <div className="list-container">
-        {isLoading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {placeLevels.map(({ place_level_id, label }) => (
+        : <>
+            {navs.map(({ place_level_id, label }) => (
               <Row
                 key={place_level_id}
                 to={place_level_id}
@@ -57,7 +48,7 @@ export const PlaceLevels = memo(() => {
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

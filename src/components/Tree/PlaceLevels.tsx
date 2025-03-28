@@ -1,15 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { PlaceLevelNode } from './PlaceLevel.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { usePlaceLevelsNavData } from '../../modules/usePlaceLevelsNavData.ts'
 
 interface Props {
   projectId: string
@@ -17,47 +13,20 @@ interface Props {
 }
 
 export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT
-      place_level_id,
-      label 
-    FROM place_levels 
-    WHERE project_id = $1 
-    ORDER BY label`,
-    [projectId],
-    'place_level_id',
-  )
-  const rows = res?.rows ?? []
-  const loading = res === undefined
-
-  const node = useMemo(
-    () => ({
-      label: `Place Levels (${loading ? '...' : formatNumber(rows.length)})`,
-    }),
-    [loading, rows.length],
-  )
-
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => ['data', 'projects', projectId],
-    [projectId],
-  )
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(
-    () => [...parentArray, 'place-levels'],
-    [parentArray],
-  )
-  const ownUrl = `/${ownArray.join('/')}`
-
-  // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const { navData } = usePlaceLevelsNavData({ projectId })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -82,17 +51,17 @@ export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={node}
+        label={label}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={rows.length}
+        childrenCount={navs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        rows.map((placeLevel) => (
+        navs.map((placeLevel) => (
           <PlaceLevelNode
             key={placeLevel.place_level_id}
             projectId={projectId}
