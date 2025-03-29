@@ -10,6 +10,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
+import { useOccurrencesNavData } from '../../modules/useOccurrencesNavData.ts'
 
 interface Props {
   projectId: string

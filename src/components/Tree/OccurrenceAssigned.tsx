@@ -3,6 +3,7 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
+import { useOccurrencesNavData } from '../../modules/useOccurrencesNavData.ts'
 
 export const OccurrenceAssignedNode = memo(
   ({ projectId, subprojectId, placeId, place, occurrence, level = 8 }) => {

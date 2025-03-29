@@ -3,17 +3,20 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { useOccurrencesNavData } from '../modules/useOccurrencesNavData.ts'
 
 import '../form.css'
 
 export const Occurrences = memo(
   ({ isToAssess, isAssigned, isNotToAssign, from }) => {
-    const title =
-      isAssigned ? 'Occurrences assigned'
-      : isToAssess ? 'Occurrences to assess'
-      : 'Occurrences not to assign'
+    const title = isAssigned
+      ? 'Occurrences assigned'
+      : isToAssess
+        ? 'Occurrences to assess'
+        : 'Occurrences not to assign'
 
     const { subprojectId, placeId, placeId2 } = useParams({ from })
 
@@ -65,9 +68,10 @@ export const Occurrences = memo(
           isLoading={isLoading}
         />
         <div className="list-container">
-          {isLoading ?
+          {isLoading ? (
             <Loading />
-          : <>
+          ) : (
+            <>
               {occurrences.map(({ occurrence_id, label }) => (
                 <Row
                   key={occurrence_id}
@@ -76,7 +80,7 @@ export const Occurrences = memo(
                 />
               ))}
             </>
-          }
+          )}
         </div>
       </div>
     )
