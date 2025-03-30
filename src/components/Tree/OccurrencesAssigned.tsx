@@ -1,70 +1,32 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { OccurrenceAssignedNode } from './OccurrenceAssigned.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useOccurrencesNavData } from '../../modules/useOccurrencesNavData.ts'
 
 export const OccurrencesAssignedNode = memo(
   ({ projectId, subprojectId, placeId, place, level = 7 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        occurrence_id,
-        label 
-      FROM occurrences 
-      WHERE place_id = $1 
-      ORDER BY label`,
-      [place.place_id],
-      'occurrence_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Occurrences assigned (${
-          loading ? '...' : formatNumber(rows.length)
-        })`,
-      }),
-      [loading, rows.length],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
-      ],
-      [projectId, subprojectId, placeId, place.place_id],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(
-      () => [...parentArray, 'occurrences-assigned'],
-      [parentArray],
-    )
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useOccurrencesNavData({
+      projectId,
+      subprojectId,
+      isToAssess: true,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -89,17 +51,17 @@ export const OccurrencesAssignedNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((occurrence) => (
+          navs.map((occurrence) => (
             <OccurrenceAssignedNode
               key={occurrence.occurrence_id}
               projectId={projectId}

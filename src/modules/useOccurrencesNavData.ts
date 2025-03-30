@@ -32,13 +32,13 @@ export const useOccurrencesNavData = ({
 
   const res = useLiveQuery(
     `
-  SELECT 
-    o.occurrence_id, 
-    o.label 
-  FROM occurrences o 
-    INNER JOIN occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
-  WHERE ${filter} 
-  ORDER BY label`,
+    SELECT 
+      o.occurrence_id, 
+      o.label 
+    FROM occurrences o 
+      INNER JOIN occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
+    WHERE ${filter} 
+    ORDER BY label`,
   )
 
   const loading = res === undefined
