@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 
 import { Occurrences } from '../../../../../../../../../../../../formsAndLists/occurrences.tsx'
 import { NotFound } from '../../../../../../../../../../../../components/NotFound.tsx'
@@ -11,10 +11,17 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({
+    from: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/occurrences-assigned/',
+  })
+
   return (
     <Occurrences
       isAssigned={true}
-      from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/occurrences-assigned/"
+      projectId={projectId}
+      subprojectId={subprojectId}
+      placeId={placeId}
+      placeId2={placeId2}
     />
   )
 }

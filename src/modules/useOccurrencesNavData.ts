@@ -12,22 +12,33 @@ export const useOccurrencesNavData = ({
   subprojectId,
   placeId,
   placeId2,
-  isToAssess,
-  isAssigned,
-  isNotToAssign,
+  isToAssess = false,
+  isAssigned = false,
+  isNotToAssign = false,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  let filter = `oi.subproject_id = '${subprojectId}'`
+  if (isAssigned) {
+    filter += ` AND o.place_id = '${placeId2 ?? placeId}'`
+  }
+  if (isToAssess) {
+    filter += ' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL'
+  }
+  if (isNotToAssign) {
+    filter += ' AND o.not_to_assign IS TRUE AND o.place_id IS NULL'
+  }
+
   const res = useLiveQuery(
     `
-      SELECT
-        subproject_taxon_id,
-        label 
-      FROM subproject_taxa 
-      WHERE subproject_id = $1 
-      ORDER BY label`,
-    [subprojectId],
+  SELECT 
+    o.occurrence_id, 
+    o.label 
+  FROM occurrences o 
+    INNER JOIN occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
+  WHERE ${filter} 
+  ORDER BY label`,
   )
 
   const loading = res === undefined
@@ -40,15 +51,30 @@ export const useOccurrencesNavData = ({
       projectId,
       'subprojects',
       subprojectId,
+      ...(placeId ? ['places', placeId] : []),
+      ...(placeId2 ? ['places', placeId2] : []),
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'taxa']
+    const ownArray = [
+      ...parentArray,
+      ...(isToAssess ? ['occurrences-to-assess']
+      : isNotToAssign ? ['occurrences-not-to-assign']
+      : ['occurrences']),
+    ]
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+    const namePlural =
+      isToAssess ? ' Occurrences to assess'
+      : isNotToAssign ? 'Occurrences not to assign'
+      : 'Occurrences assigned'
+    const nameSingular =
+      isToAssess ? ' Occurrence to assess'
+      : isNotToAssign ? 'Occurrence not to assign'
+      : 'Occurrence assigned'
 
     return {
       isInActiveNodeArray,
@@ -59,14 +85,18 @@ export const useOccurrencesNavData = ({
       urlPath,
       ownUrl,
       toParams: {},
-      label: `Taxa (${loading ? '...' : formatNumber(navs.length)})`,
-      nameSingular: 'Subproject Taxon',
+      label: `${namePlural} (${loading ? '...' : formatNumber(navs.length)})`,
+      nameSingular,
       navs,
     }
   }, [
+    isNotToAssign,
+    isToAssess,
     loading,
     location.pathname,
     openNodes,
+    placeId,
+    placeId2,
     projectId,
     res?.rows,
     subprojectId,
