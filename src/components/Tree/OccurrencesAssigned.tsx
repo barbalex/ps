@@ -31,22 +31,6 @@ export const OccurrencesAssignedNode = memo(
       navs,
     } = navData
 
-    console.log('OccurrencesAssignedNode', {
-      label,
-      parentUrl,
-      ownArray,
-      ownUrl,
-      urlPath,
-      isOpen,
-      isInActiveNodeArray,
-      isActive,
-      navs,
-      projectId,
-      subprojectId,
-      placeId,
-      placeId2,
-    })
-
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({ node: ownArray })

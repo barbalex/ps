@@ -73,21 +73,6 @@ export const useOccurrencesNavData = ({
       : isNotToAssign ? 'Occurrence not to assign'
       : 'Occurrence assigned'
 
-    console.log('useOccurrencesNavData', {
-      isToAssess,
-      isNotToAssign,
-      projectId,
-      subprojectId,
-      placeId,
-      placeId2,
-      navs,
-      filter,
-      parentArray,
-      parentUrl,
-      ownArray,
-      ownUrl,
-    })
-
     return {
       isInActiveNodeArray,
       isActive,
