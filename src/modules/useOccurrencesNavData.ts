@@ -19,14 +19,12 @@ export const useOccurrencesNavData = ({
   const location = useLocation()
 
   let filter = `oi.subproject_id = '${subprojectId}'`
-  if (!!placeId || !!placeId2) {
-    filter += ` AND o.place_id = '${placeId2 ?? placeId}'`
-  }
   if (isToAssess) {
     filter += ' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL'
-  }
-  if (isNotToAssign) {
+  } else if (isNotToAssign) {
     filter += ' AND o.not_to_assign IS TRUE AND o.place_id IS NULL'
+  } else if (!!placeId || !!placeId2) {
+    filter += ` AND o.place_id = '${placeId2 ?? placeId}'`
   }
 
   const res = useLiveQuery(
@@ -83,6 +81,11 @@ export const useOccurrencesNavData = ({
       placeId,
       placeId2,
       navs,
+      filter,
+      parentArray,
+      parentUrl,
+      ownArray,
+      ownUrl,
     })
 
     return {

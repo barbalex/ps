@@ -20,7 +20,7 @@ export const OccurrenceAssignedNode = memo(
         'places',
         placeId ?? place.place_id,
         ...(placeId ? ['places', place.place_id] : []),
-        'occurrences-assigned',
+        'occurrences',
         occurrence.occurrence_id,
       ],
       [

@@ -64,7 +64,7 @@ export const BreadcrumbForData = memo(
             where += ` AND not_to_assign IS NULL AND place_id IS NULL`
           } else if (lastPathElement === 'occurrences-not-to-assign') {
             where += ` AND not_to_assign IS TRUE`
-          } else if (lastPathElement === 'occurrences-assigned') {
+          } else if (lastPathElement === 'occurrences') {
             where += ` AND place_id = '${
               placesCountInPath === 1 ?
                 match.params.placeId

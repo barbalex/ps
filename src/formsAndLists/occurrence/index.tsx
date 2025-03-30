@@ -86,8 +86,8 @@ export const Occurrence = memo(({ from }) => {
         const parentPlaceId = res?.rows?.[0]?.parent_id
         const url =
           parentPlaceId ?
-            `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrenceId}`
-          : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/occurrences-assigned/${occurrenceId}`
+            `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/occurrences/${occurrenceId}`
+          : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/occurrences/${occurrenceId}`
         navigate(url)
       }
     },

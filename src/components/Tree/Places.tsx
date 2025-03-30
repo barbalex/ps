@@ -45,10 +45,10 @@ export const PlacesNode = memo(
       FROM places 
       WHERE 
         subproject_id = $1 
-        and parent_id ${placeId ? `= $2` : `is null`}
+        and parent_id ${placeId ? `= '${placeId}'` : `is null`}
         ${isFiltered ? ` AND ${filterString} ` : ''} 
       ORDER BY label`
-    const paramsFiltered = [subprojectId, ...(placeId ? [placeId] : [])]
+    const paramsFiltered = [subprojectId]
     const resFiltered = useLiveIncrementalQuery(
       sqlFiltered,
       paramsFiltered,
@@ -156,7 +156,7 @@ export const PlacesNode = memo(
               key={place.place_id}
               projectId={projectId}
               subprojectId={subprojectId}
-              placeId={placeId}
+              placeId={placeId ?? place.place_id}
               placeId2={placeId ? place.place_id : undefined}
               place={place}
               level={level + 1}

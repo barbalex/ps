@@ -16,7 +16,8 @@ export const OccurrencesAssignedNode = memo(
       subprojectId,
       placeId,
       placeId2,
-      isToAssess: true,
+      isToAssess: false,
+      isNotToAssign: false,
     })
     const {
       label,
@@ -29,6 +30,22 @@ export const OccurrencesAssignedNode = memo(
       isActive,
       navs,
     } = navData
+
+    console.log('OccurrencesAssignedNode', {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+    })
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
