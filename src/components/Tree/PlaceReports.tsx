@@ -1,98 +1,33 @@
-import { useCallback, useMemo, memo } from 'react'
-import {
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { PlaceReportNode } from './PlaceReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import {
-  treeOpenNodesAtom,
-  placeReports1FilterAtom,
-  placeReports2FilterAtom,
-} from '../../store.ts'
+import { usePlaceReportsNavData } from '../../modules/usePlaceReportsNavData.ts'
 
 export const PlaceReportsNode = memo(
-  ({ projectId, subprojectId, placeId, place, level = 7 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
-    const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
-
-    const location = useLocation()
+  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
     const navigate = useNavigate()
 
-    const filter = placeId ? placeReports2Filter : placeReports1Filter
-    const filterString = filterStringFromFilter(filter)
-    const isFiltered = !!filterString
-    const resFiltered = useLiveIncrementalQuery(
-      `
-      SELECT
-        place_report_id,
-        label 
-      FROM place_reports 
-      WHERE 
-        place_id = $1 
-        ${isFiltered ? ` AND ${filterString} ` : ``}
-      ORDER BY label`,
-      [place.place_id],
-      'place_report_id',
-    )
-    const rows = resFiltered?.rows ?? []
-    const rowsLoading = resFiltered === undefined
-
-    const resUnfiltered = useLiveQuery(
-      `
-      SELECT count(*) 
-      FROM place_reports 
-      WHERE place_id = $1`,
-      [place.place_id],
-    )
-    const countUnfiltered = resUnfiltered?.rows?.[0]?.count ?? 0
-    const countLoading = resUnfiltered === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Reports (${
-          isFiltered ?
-            `${rowsLoading ? '...' : formatNumber(rows.length)}/${
-              countLoading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : rowsLoading ? '...'
-          : formatNumber(rows.length)
-        })`,
-      }),
-      [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
-      ],
-      [place.place_id, placeId, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = usePlaceReportsNavData({
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -117,22 +52,23 @@ export const PlaceReportsNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((placeReport) => (
+          navs.map((placeReport) => (
             <PlaceReportNode
               key={placeReport.place_report_id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
+              placeId2={placeId2}
               place={place}
               placeReport={placeReport}
               level={level + 1}

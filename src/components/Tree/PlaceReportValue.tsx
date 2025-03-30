@@ -9,6 +9,7 @@ export const PlaceReportValueNode = memo(
     projectId,
     subprojectId,
     placeId,
+    placeId2,
     place,
     placeReportId,
     placeReportValue,

@@ -15,6 +15,7 @@ interface Props {
   projectId: string
   subprojectId: string
   placeId?: string
+  placeId2?: string
   place: Place
   placeReportId: string
   level?: number
@@ -25,6 +26,7 @@ export const PlaceReportValuesNode = memo(
     projectId,
     subprojectId,
     placeId,
+    placeId2,
     place,
     placeReportId,
     level = 9,
@@ -119,6 +121,7 @@ export const PlaceReportValuesNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
+              placeId2={placeId2}
               place={place}
               placeReportId={placeReportId}
               placeReportValue={placeReportValue}
