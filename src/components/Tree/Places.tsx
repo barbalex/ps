@@ -118,6 +118,15 @@ export const PlacesNode = memo(
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    // console.log('PlacesNode', {
+    //   openNodes,
+    //   isOpen,
+    //   ownUrl,
+    //   ownArray,
+    //   parentArray,
+    //   parentUrl,
+    // })
+
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({ node: ownArray })
