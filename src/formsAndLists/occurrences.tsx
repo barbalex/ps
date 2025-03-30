@@ -14,7 +14,6 @@ export const Occurrences = memo(
     placeId,
     placeId2,
     isToAssess = false,
-    isAssigned = false,
     isNotToAssign = false,
   }) => {
     const { loading, navData } = useOccurrencesNavData({
@@ -23,7 +22,6 @@ export const Occurrences = memo(
       placeId,
       placeId2,
       isToAssess,
-      isAssigned,
       isNotToAssign,
     })
     const { navs, label, nameSingular } = navData

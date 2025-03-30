@@ -13,14 +13,13 @@ export const useOccurrencesNavData = ({
   placeId,
   placeId2,
   isToAssess = false,
-  isAssigned = false,
   isNotToAssign = false,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
   let filter = `oi.subproject_id = '${subprojectId}'`
-  if (isAssigned) {
+  if (!!placeId || !!placeId2) {
     filter += ` AND o.place_id = '${placeId2 ?? placeId}'`
   }
   if (isToAssess) {
@@ -75,6 +74,16 @@ export const useOccurrencesNavData = ({
       isToAssess ? ' Occurrence to assess'
       : isNotToAssign ? 'Occurrence not to assign'
       : 'Occurrence assigned'
+
+    console.log('useOccurrencesNavData', {
+      isToAssess,
+      isNotToAssign,
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      navs,
+    })
 
     return {
       isInActiveNodeArray,

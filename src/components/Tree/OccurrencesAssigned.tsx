@@ -8,12 +8,14 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useOccurrencesNavData } from '../../modules/useOccurrencesNavData.ts'
 
 export const OccurrencesAssignedNode = memo(
-  ({ projectId, subprojectId, placeId, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
     const navigate = useNavigate()
 
     const { navData } = useOccurrencesNavData({
       projectId,
       subprojectId,
+      placeId,
+      placeId2,
       isToAssess: true,
     })
     const {
@@ -67,6 +69,7 @@ export const OccurrencesAssignedNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
+              placeId2={placeId2}
               place={place}
               occurrence={occurrence}
               level={level + 1}

@@ -11,13 +11,13 @@ import { FilesNode } from '../Files.tsx'
 
 // TODO: add charts?
 export const PlaceChildren = memo(
-  ({ projectId, subprojectId, placeId, place }) => {
-    const level = placeId ? 8 : 6
+  ({ projectId, subprojectId, placeId, placeId2, place, level }) => {
+    // const level = placeId2 ? 8 : 6
 
     // query from place_level what children to show
     const resPlaceLevels = useLiveIncrementalQuery(
       `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
-      [projectId, placeId ? 2 : 1],
+      [projectId, placeId2 ? 2 : 1],
       'place_level_id',
     )
     const placeLevel = resPlaceLevels?.rows?.[0]
@@ -33,18 +33,19 @@ export const PlaceChildren = memo(
 
     return (
       <>
-        {!placeId && (
+        {!placeId2 && (
           <PlacesNode
             projectId={projectId}
             subprojectId={subprojectId}
             placeId={place.place_id}
+            level={level + 1}
           />
         )}
         {!!placeLevel?.checks && (
           <ChecksNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={placeId}
+            placeId={place.place_id}
             place={place}
             level={level + 1}
           />
@@ -53,7 +54,7 @@ export const PlaceChildren = memo(
           <ActionsNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={placeId}
+            placeId={place.place_id}
             place={place}
             level={level + 1}
           />
@@ -62,7 +63,7 @@ export const PlaceChildren = memo(
           <PlaceReportsNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={placeId}
+            placeId={place.place_id}
             place={place}
             level={level + 1}
           />
@@ -72,6 +73,7 @@ export const PlaceChildren = memo(
             projectId={projectId}
             subprojectId={subprojectId}
             placeId={placeId}
+            placeId2={placeId2}
             place={place}
             level={level + 1}
           />
@@ -79,7 +81,7 @@ export const PlaceChildren = memo(
         <PlaceUsersNode
           projectId={projectId}
           subprojectId={subprojectId}
-          placeId={placeId}
+          placeId={place.place_id}
           place={place}
           level={level + 1}
         />
@@ -87,8 +89,8 @@ export const PlaceChildren = memo(
           <FilesNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={placeId ?? place.place_id}
-            placeId2={placeId ? place.place_id : undefined}
+            placeId={placeId}
+            placeId2={placeId2}
             level={level + 1}
           />
         )}

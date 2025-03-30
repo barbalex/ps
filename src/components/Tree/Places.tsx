@@ -26,7 +26,7 @@ interface Props {
 }
 
 export const PlacesNode = memo(
-  ({ projectId, subprojectId, placeId }: Props) => {
+  ({ projectId, subprojectId, placeId, level }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [places1Filter] = useAtom(places1FilterAtom)
     const [places2Filter] = useAtom(places2FilterAtom)
@@ -34,8 +34,6 @@ export const PlacesNode = memo(
 
     const location = useLocation()
     const navigate = useNavigate()
-
-    const level = placeId ? 7 : 5
 
     // filtered places
     const filterString = filterStringFromFilter(filter)
@@ -159,6 +157,7 @@ export const PlacesNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
+              placeId2={placeId ? place.place_id : undefined}
               place={place}
               level={level + 1}
             />
