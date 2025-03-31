@@ -63,10 +63,10 @@ export const FieldsNode = memo(({ projectId }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((field) => (
+        navs.map((nav) => (
           <FieldNode
-            key={field.field_id}
-            field={field}
+            key={nav.id}
+            nav={nav}
             projectId={projectId}
           />
         ))}

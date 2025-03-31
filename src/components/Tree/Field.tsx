@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const FieldNode = memo(({ projectId, field }) => {
+export const FieldNode = memo(({ projectId, nav }) => {
   const level: number = projectId ? 4 : 2
   const location = useLocation()
 
@@ -14,9 +14,9 @@ export const FieldNode = memo(({ projectId, field }) => {
       'data',
       ...(projectId ? ['projects', projectId] : []),
       'fields',
-      field.field_id,
+      nav.id,
     ],
-    [field.field_id, projectId],
+    [nav.id, projectId],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -25,8 +25,8 @@ export const FieldNode = memo(({ projectId, field }) => {
 
   return (
     <Node
-      node={field}
-      id={field.field_id}
+      label={nav.label}
+      id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}

@@ -17,7 +17,7 @@ export const useFieldsNavData = ({ projectId }) => {
   const isFiltered = !!filterString
 
   const res = useLiveQuery(`
-    SELECT field_id, label 
+    SELECT field_id AS id, label 
     FROM fields 
     WHERE 
       project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}

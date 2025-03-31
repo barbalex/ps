@@ -41,11 +41,11 @@ export const Fields = memo(({ from }) => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ field_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={field_id}
-                label={label ?? field_id}
-                to={field_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
