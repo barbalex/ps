@@ -23,7 +23,6 @@ export const PlaceReportValuesNode = memo(
     subprojectId,
     placeId,
     placeId2,
-    place,
     placeReportId,
     level = 9,
   }: Props) => {
@@ -34,7 +33,6 @@ export const PlaceReportValuesNode = memo(
       subprojectId,
       placeId,
       placeId2,
-      place,
       placeReportId,
     })
     const {
@@ -89,7 +87,6 @@ export const PlaceReportValuesNode = memo(
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              place={place}
               placeReportId={placeReportId}
               placeReportValue={placeReportValue}
               level={level + 1}

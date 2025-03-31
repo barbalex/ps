@@ -8,7 +8,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { usePlaceReportsNavData } from '../../modules/usePlaceReportsNavData.ts'
 
 export const PlaceReportsNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, level = 7 }) => {
     const navigate = useNavigate()
 
     const { navData } = usePlaceReportsNavData({
@@ -69,7 +69,6 @@ export const PlaceReportsNode = memo(
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              place={place}
               placeReport={placeReport}
               level={level + 1}
             />
