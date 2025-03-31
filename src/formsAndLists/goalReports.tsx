@@ -1,10 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createGoalReport } from '../modules/createRows.ts'
 import { useGoalReportsNavData } from '../modules/useGoalReportsNavData.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'

@@ -1,15 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { GoalReportValueNode } from './GoalReportValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useGoalReportValuesNavData } from '../../modules/useGoalReportValuesNavData.ts'
 
 interface Props {
   projectId: string
@@ -21,54 +17,25 @@ interface Props {
 
 export const GoalReportValuesNode = memo(
   ({ projectId, subprojectId, goalId, goalReportId, level = 9 }: Props) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        goal_report_value_id,
-        label
-      FROM goal_report_values 
-      WHERE goal_report_id = $1 
-      ORDER BY label`,
-      [goalReportId],
-      'goal_report_value_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Values (${loading ? '...' : formatNumber(rows.length)})`,
-      }),
-      [loading, rows.length],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'goals',
-        goalId,
-        'reports',
-        goalReportId,
-      ],
-      [goalId, goalReportId, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useGoalReportValuesNavData({
+      projectId,
+      subprojectId,
+      goalId,
+      goalReportId,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -93,24 +60,24 @@ export const GoalReportValuesNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((goalReportValue) => (
+          navs.map((nav) => (
             <GoalReportValueNode
-              key={goalReportValue.goal_report_value_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               goalId={goalId}
               goalReportId={goalReportId}
-              goalReportValue={goalReportValue}
+              nav={nav}
             />
           ))}
       </>
