@@ -16,7 +16,7 @@ export const ActionReportValuesNode = memo(
     projectId,
     subprojectId,
     placeId,
-    place,
+    placeId2,
     actionId,
     actionReportId,
     level = 11,
@@ -55,21 +55,14 @@ export const ActionReportValuesNode = memo(
         'subprojects',
         subprojectId,
         'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
+        placeId,
+        ...(placeId2 ? ['places', placeId2] : []),
         'actions',
         actionId,
         'reports',
         actionReportId,
       ],
-      [
-        actionId,
-        actionReportId,
-        place.place_id,
-        placeId,
-        projectId,
-        subprojectId,
-      ],
+      [actionId, actionReportId, placeId, placeId2, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
@@ -121,7 +114,7 @@ export const ActionReportValuesNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               actionId={actionId}
               actionReportId={actionReportId}
               actionReportValue={actionReportValue}

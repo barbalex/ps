@@ -13,15 +13,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ActionNode = memo(
-  ({
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    action,
-    place,
-    level = 8,
-  }) => {
+  ({ projectId, subprojectId, placeId, placeId2, action, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -109,7 +101,7 @@ export const ActionNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               actionId={action.action_id}
               level={level + 1}
             />
@@ -117,8 +109,8 @@ export const ActionNode = memo(
               <FilesNode
                 projectId={projectId}
                 subprojectId={subprojectId}
-                placeId={placeId ?? place.place_id}
-                placeId2={placeId ? place.place_id : undefined}
+                placeId={placeId}
+                placeId2={placeId2}
                 actionId={action.action_id}
                 level={level + 1}
               />

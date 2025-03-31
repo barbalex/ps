@@ -10,58 +10,30 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
+import { useActionReportsNavData } from '../../modules/useActionReportsNavData.ts'
 
 export const ActionReportsNode = memo(
-  ({ projectId, subprojectId, placeId, place, actionId, level = 9 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
+  ({ projectId, subprojectId, placeId, placeId2, actionId, level = 9 }) => {
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        action_report_id,
-        label
-      FROM action_reports 
-      WHERE action_id = $1 
-      ORDER BY label`,
-      [actionId],
-      'action_report_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Reports (${loading ? '...' : formatNumber(rows.length)})`,
-      }),
-      [loading, rows.length],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
-        'actions',
-        actionId,
-      ],
-      [actionId, place.place_id, placeId, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useActionReportsNavData({
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      actionId,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -86,23 +58,23 @@ export const ActionReportsNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((actionReport) => (
+          navs.map((actionReport) => (
             <ActionReportNode
               key={actionReport.action_report_id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               actionId={actionId}
               actionReport={actionReport}
               level={level + 1}

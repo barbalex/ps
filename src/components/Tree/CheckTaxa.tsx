@@ -12,7 +12,7 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckTaxaNode = memo(
-  ({ projectId, subprojectId, placeId, place, checkId, level = 9 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, checkId, level = 9 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -47,12 +47,12 @@ export const CheckTaxaNode = memo(
         'subprojects',
         subprojectId,
         'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
+        placeId,
+        ...(placeId2 ? ['places', placeId2] : []),
         'checks',
         checkId,
       ],
-      [checkId, place.place_id, placeId, projectId, subprojectId],
+      [checkId, placeId, placeId2, projectId, subprojectId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'taxa'], [parentArray])
@@ -102,7 +102,7 @@ export const CheckTaxaNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               checkId={checkId}
               checkTaxon={checkTaxon}
               level={level + 1}

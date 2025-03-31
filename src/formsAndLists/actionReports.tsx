@@ -1,25 +1,29 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createActionReport } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { useActionReportsNavData } from '../modules/useActionReportsNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const ActionReports = memo(({ from }) => {
-  const { projectId, actionId } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({
+    from,
+  })
   const navigate = useNavigate()
-
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT action_report_id, label FROM action_reports WHERE action_id = $1 ORDER BY label`,
-    [actionId],
-    'action_report_id',
-  )
-  const isLoading = res === undefined
-  const actionReports = res?.rows ?? []
+
+  const { loading, navData } = useActionReportsNavData({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionId,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createActionReport({ db, projectId, actionId })
@@ -33,20 +37,16 @@ export const ActionReports = memo(({ from }) => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Action Reports"
-        nameSingular="action report"
-        tableName="action_reports"
-        isFiltered={false}
-        countFiltered={actionReports.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {actionReports.map(({ action_report_id, label }) => (
+            {navs.map(({ action_report_id, label }) => (
               <Row
                 key={action_report_id}
                 label={label ?? account_report_id}

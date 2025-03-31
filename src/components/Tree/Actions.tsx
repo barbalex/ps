@@ -8,7 +8,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useActionsNavData } from '../../modules/useActionsNavData.ts'
 
 export const ActionsNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, level = 7 }) => {
     const navigate = useNavigate()
 
     const { navData } = useActionsNavData({
@@ -69,7 +69,6 @@ export const ActionsNode = memo(
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              place={place}
               action={action}
               level={level + 1}
             />

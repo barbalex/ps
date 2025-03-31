@@ -20,7 +20,7 @@ import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 
 export const ChecksNode = memo(
-  ({ projectId, subprojectId, placeId, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filterChecks1] = useAtom(checks1FilterAtom)
     const [filterChecks2] = useAtom(checks2FilterAtom)
@@ -81,10 +81,10 @@ export const ChecksNode = memo(
         'subprojects',
         subprojectId,
         'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
+        placeId,
+        ...(placeId2 ? ['places', placeId2] : []),
       ],
-      [projectId, subprojectId, placeId, place.place_id],
+      [projectId, subprojectId, placeId, placeId2],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'checks'], [parentArray])
@@ -134,6 +134,7 @@ export const ChecksNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
+              placeId2={placeId2}
               place={place}
               check={check}
               level={level + 1}
