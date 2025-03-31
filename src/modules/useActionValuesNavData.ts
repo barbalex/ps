@@ -4,51 +4,31 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { formatNumber } from './formatNumber.ts'
-import {
-  actions1FilterAtom,
-  actions2FilterAtom,
-  treeOpenNodesAtom,
-} from '../store.ts'
+import { treeOpenNodesAtom } from '../store.ts'
 
-export const useActionsNavData = ({
+export const useActionValuesNavData = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
+  actionId,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const [filter] = useAtom(placeId2 ? actions2FilterAtom : actions1FilterAtom)
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-
   const res = useLiveQuery(
     `
       SELECT
-        action_id,
+        action_value_id,
         label
-      FROM actions 
-      WHERE 
-        place_id = $1 
-        ${isFiltered ? ` AND ${filterString}` : ''}
+      FROM action_values 
+      WHERE action_id = $1 
       ORDER BY label`,
-    [placeId2 ?? placeId],
+    [actionId],
   )
 
   const loading = res === undefined
-
-  const resultCountUnfiltered = useLiveQuery(
-    `
-      SELECT count(*) 
-      FROM actions 
-      WHERE place_id = $1`,
-    [placeId2 ?? placeId],
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
 
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
@@ -61,9 +41,11 @@ export const useActionsNavData = ({
       'places',
       placeId,
       ...(placeId2 ? ['places', placeId2] : []),
+      'actions',
+      actionId,
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'actions']
+    const ownArray = [...parentArray, 'values']
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -80,21 +62,12 @@ export const useActionsNavData = ({
       urlPath,
       ownUrl,
       toParams: {},
-      label: `Actions (${
-        isFiltered ?
-          `${loading ? '...' : formatNumber(navs.length)}/${
-            countLoading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : loading ? '...'
-        : formatNumber(navs.length)
-      })`,
-      nameSingular: 'Action',
+      label: `Values (${loading ? '...' : formatNumber(navs.length)})`,
+      nameSingular: 'Action Value',
       navs,
     }
   }, [
-    countLoading,
-    countUnfiltered,
-    isFiltered,
+    actionId,
     loading,
     location.pathname,
     openNodes,
@@ -105,5 +78,5 @@ export const useActionsNavData = ({
     subprojectId,
   ])
 
-  return { loading, navData, isFiltered }
+  return { loading, navData }
 }

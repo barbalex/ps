@@ -1,67 +1,33 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import { Node } from './Node.tsx'
 import { ActionValueNode } from './ActionValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useActionValuesNavData } from '../../modules/useActionValuesNavData.ts'
 
 export const ActionValuesNode = memo(
-  ({ projectId, subprojectId, placeId, place, actionId, level = 9 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
+  ({ projectId, subprojectId, placeId, placeId2, actionId, level = 9 }) => {
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        action_value_id,
-        label
-      FROM action_values 
-      WHERE action_id = $1 
-      ORDER BY label`,
-      [actionId],
-      'action_value_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Values (${loading ? '...' : formatNumber(rows.length)})`,
-      }),
-      [rows.length, loading],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
-        'actions',
-        actionId,
-      ],
-      [actionId, place.place_id, placeId, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useActionValuesNavData({
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      actionId,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -88,23 +54,23 @@ export const ActionValuesNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((actionValue) => (
+          navs.map((actionValue) => (
             <ActionValueNode
               key={actionValue.action_value_id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               actionId={actionId}
               actionValue={actionValue}
               level={level + 1}

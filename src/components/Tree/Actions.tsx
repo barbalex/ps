@@ -68,6 +68,7 @@ export const ActionsNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
+              placeId2={placeId2}
               place={place}
               action={action}
               level={level + 1}
