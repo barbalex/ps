@@ -33,7 +33,11 @@ export const useChartsNavData = ({
   }
 
   const res = useLiveQuery(
-    `SELECT * FROM charts WHERE ${hKey} = $1 ORDER BY label`,
+    `
+    SELECT chart_id as id, label 
+    FROM charts 
+    WHERE ${hKey} = $1 
+    ORDER BY label`,
     [hValue],
   )
 

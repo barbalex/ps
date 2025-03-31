@@ -70,14 +70,14 @@ export const ChartsNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((chart) => (
+          navs.map((nav) => (
             <ChartNode
-              key={chart.chart_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              chart={chart}
+              nav={nav}
               level={level + 1}
             />
           ))}

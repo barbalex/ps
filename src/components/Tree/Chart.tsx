@@ -14,7 +14,7 @@ export const ChartNode = ({
   subprojectId,
   placeId,
   placeId2,
-  chart,
+  nav,
   level = 2,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -35,8 +35,8 @@ export const ChartNode = ({
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
-    () => [...parentArray, chart.chart_id],
-    [chart.chart_id, parentArray],
+    () => [...parentArray, nav.id],
+    [nav.id, parentArray],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -68,8 +68,8 @@ export const ChartNode = ({
   return (
     <>
       <Node
-        node={chart}
-        id={chart.chart_id}
+        label={nav.lbael}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
@@ -84,7 +84,7 @@ export const ChartNode = ({
           subprojectId={subprojectId}
           placeId={placeId}
           placeId2={placeId2}
-          chartId={chart.chart_id}
+          chartId={nav.id}
           level={level + 1}
         />
       )}

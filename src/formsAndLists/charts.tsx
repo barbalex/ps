@@ -52,11 +52,11 @@ export const Charts = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ chart_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={chart_id}
-                label={label ?? chart_id}
-                to={chart_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
