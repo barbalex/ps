@@ -9,7 +9,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const GoalNode = memo(({ projectId, subprojectId, goal, level = 6 }) => {
+export const GoalNode = memo(({ projectId, subprojectId, nav, level = 6 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -21,8 +21,8 @@ export const GoalNode = memo(({ projectId, subprojectId, goal, level = 6 }) => {
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
-    () => [...parentArray, goal.goal_id],
-    [goal.goal_id, parentArray],
+    () => [...parentArray, nav.id],
+    [nav.id, parentArray],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -54,8 +54,8 @@ export const GoalNode = memo(({ projectId, subprojectId, goal, level = 6 }) => {
   return (
     <>
       <Node
-        node={goal}
-        id={goal.goal_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
@@ -68,7 +68,7 @@ export const GoalNode = memo(({ projectId, subprojectId, goal, level = 6 }) => {
         <GoalReportsNode
           projectId={projectId}
           subprojectId={subprojectId}
-          goalId={goal.goal_id}
+          goalId={nav.id}
         />
       )}
     </>
