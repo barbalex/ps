@@ -13,7 +13,7 @@ export const useCrssNavData = () => {
 
   const res = useLiveQuery(`
     SELECT 
-      crs_id, 
+      crs_id as id, 
       label 
     FROM crs 
     ORDER BY label`)

@@ -4,11 +4,11 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const CrsNode = memo(({ crs, level = 2 }) => {
+export const CrsNode = memo(({ nav, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = useMemo(() => ['data', 'crs', crs.crs_id], [crs.crs_id])
+  const ownArray = useMemo(() => ['data', 'crs', nav.id], [nav.id])
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -16,8 +16,8 @@ export const CrsNode = memo(({ crs, level = 2 }) => {
 
   return (
     <Node
-      node={crs}
-      id={crs.crs_id}
+      label={nav.label}
+      id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}

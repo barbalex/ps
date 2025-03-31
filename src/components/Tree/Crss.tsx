@@ -57,10 +57,10 @@ export const CrssNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((cr) => (
+        navs.map((nav) => (
           <CrsNode
-            key={cr.crs_id}
-            crs={cr}
+            key={nav.id}
+            nav={nav}
           />
         ))}
     </>

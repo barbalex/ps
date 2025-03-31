@@ -39,11 +39,11 @@ export const CRSS = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map((cr) => (
+            {navs.map((nav) => (
               <Row
-                key={cr.crs_id}
-                to={cr.crs_id}
-                label={cr.label ?? cr.crs_id}
+                key={nav.id}
+                to={nav.id}
+                label={nav.label ?? nav.id}
               />
             ))}
           </>
