@@ -14,7 +14,7 @@ export const usePlaceLevelsNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT
-      place_level_id,
+      place_level_id AS id,
       label 
     FROM place_levels 
     WHERE project_id = $1 

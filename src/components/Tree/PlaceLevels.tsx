@@ -61,11 +61,11 @@ export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((placeLevel) => (
+        navs.map((nav) => (
           <PlaceLevelNode
-            key={placeLevel.place_level_id}
+            key={nav.id}
             projectId={projectId}
-            placeLevel={placeLevel}
+            nav={nav}
           />
         ))}
     </>

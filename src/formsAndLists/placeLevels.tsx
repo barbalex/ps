@@ -40,11 +40,11 @@ export const PlaceLevels = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ place_level_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={place_level_id}
-                to={place_level_id}
-                label={label ?? place_level_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>
