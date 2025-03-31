@@ -20,7 +20,7 @@ export const useActionValuesNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        action_value_id,
+        action_value_id as id,
         label
       FROM action_values 
       WHERE action_id = $1 
