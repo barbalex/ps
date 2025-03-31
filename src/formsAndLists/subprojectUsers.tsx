@@ -32,21 +32,24 @@ export const SubprojectUsers = memo(() => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ subproject_user_id, label }) => (
+        : <>
+            {navs.map(({ id, label }) => (
               <Row
-                key={subproject_user_id}
-                to={subproject_user_id}
-                label={label ?? subproject_user_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

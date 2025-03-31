@@ -63,12 +63,12 @@ export const SubprojectUsersNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((subprojectUser) => (
+          navs.map((nav) => (
             <SubprojectUserNode
-              key={subprojectUser.subproject_user_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
-              subprojectUser={subprojectUser}
+              nav={nav}
             />
           ))}
       </>
