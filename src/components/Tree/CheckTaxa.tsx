@@ -63,15 +63,15 @@ export const CheckTaxaNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((checkTaxon) => (
+          navs.map((nav) => (
             <CheckTaxonNode
-              key={checkTaxon.check_taxon_id}
+              key={nav.check_taxon_id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
               checkId={checkId}
-              checkTaxon={checkTaxon}
+              nav={nav}
               level={level + 1}
             />
           ))}

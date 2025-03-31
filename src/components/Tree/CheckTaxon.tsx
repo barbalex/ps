@@ -11,7 +11,7 @@ export const CheckTaxonNode = memo(
     placeId,
     placeId2,
     checkId,
-    checkTaxon,
+    nav,
     level = 10,
   }) => {
     const location = useLocation()
@@ -30,16 +30,9 @@ export const CheckTaxonNode = memo(
         'checks',
         checkId,
         'taxa',
-        checkTaxon.check_taxon_id,
+        nav.check_taxon_id,
       ],
-      [
-        projectId,
-        subprojectId,
-        placeId,
-        placeId2,
-        checkId,
-        checkTaxon.check_taxon_id,
-      ],
+      [projectId, subprojectId, placeId, placeId2, checkId, nav.check_taxon_id],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -48,8 +41,8 @@ export const CheckTaxonNode = memo(
 
     return (
       <Node
-        node={checkTaxon}
-        id={checkTaxon.check_taxon_id}
+        label={nav.label}
+        id={nav.check_taxon_id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
