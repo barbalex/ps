@@ -39,11 +39,11 @@ export const WidgetsForFields = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ widget_for_field_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={widget_for_field_id}
-                label={label ?? widget_for_field_id}
-                to={widget_for_field_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>

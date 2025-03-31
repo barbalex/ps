@@ -60,10 +60,10 @@ export const WidgetsForFieldsNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((widgetForField) => (
+        navs.map((nav) => (
           <WidgetForFieldNode
-            key={widgetForField.widget_for_field_id}
-            widgetForField={widgetForField}
+            key={nav.id}
+            nav={nav}
           />
         ))}
     </>

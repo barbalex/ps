@@ -18,7 +18,7 @@ export const useWidgetsForFieldsNavData = () => {
 
   const res = useLiveQuery(`
     SELECT 
-      widget_for_field_id, 
+      widget_for_field_id AS id,
       label 
     FROM widgets_for_fields
     ${isFiltered ? ` WHERE ${filterString}` : ''} 
