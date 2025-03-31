@@ -20,7 +20,7 @@ import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 
 export const ChecksNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filterChecks1] = useAtom(checks1FilterAtom)
     const [filterChecks2] = useAtom(checks2FilterAtom)
@@ -41,7 +41,7 @@ export const ChecksNode = memo(
         place_id = $1 
         ${isFiltered ? ` AND ${filterString} ` : ''}
       ORDER BY label`,
-      [place.place_id],
+      [placeId2 ?? placeId],
       'check_id',
     )
     const rows = resFiltered?.rows ?? []
@@ -52,7 +52,7 @@ export const ChecksNode = memo(
       SELECT count(*) 
       FROM checks 
       WHERE place_id = $1`,
-      [place.place_id],
+      [placeId2 ?? placeId],
     )
     const unfilteredCount = resUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resUnfiltered === undefined
@@ -135,7 +135,6 @@ export const ChecksNode = memo(
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              place={place}
               check={check}
               level={level + 1}
             />

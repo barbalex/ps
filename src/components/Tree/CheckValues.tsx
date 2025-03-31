@@ -12,7 +12,7 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckValuesNode = memo(
-  ({ projectId, subprojectId, placeId, place, checkId, level = 9 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, checkId, level = 9 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -47,12 +47,12 @@ export const CheckValuesNode = memo(
         'subprojects',
         subprojectId,
         'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
+        placeId,
+        ...(placeId2 ? ['places', placeId2] : []),
         'checks',
         checkId,
       ],
-      [projectId, subprojectId, placeId, place.place_id, checkId],
+      [projectId, subprojectId, placeId, placeId2, checkId],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
@@ -102,7 +102,7 @@ export const CheckValuesNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               checkId={checkId}
               checkValue={checkValue}
               level={level + 1}
