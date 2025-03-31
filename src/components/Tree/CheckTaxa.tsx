@@ -1,67 +1,34 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { CheckTaxonNode } from './CheckTaxon.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useCheckTaxaNavData } from '../../modules/useCheckTaxaNavData.ts'
 
 export const CheckTaxaNode = memo(
   ({ projectId, subprojectId, placeId, placeId2, checkId, level = 9 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        check_taxon_id,
-        label
-      FROM check_taxa 
-      WHERE check_id = $1 
-      ORDER BY label`,
-      [checkId],
-      'check_taxon_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Taxa (${loading ? '...' : formatNumber(rows.length)})`,
-      }),
-      [loading, rows.length],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'places',
-        placeId,
-        ...(placeId2 ? ['places', placeId2] : []),
-        'checks',
-        checkId,
-      ],
-      [checkId, placeId, placeId2, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, 'taxa'], [parentArray])
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useCheckTaxaNavData({
+      projectId,
+      subprojectId,
+      placeId,
+      placeId2,
+      checkId,
+    })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -86,17 +53,17 @@ export const CheckTaxaNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((checkTaxon) => (
+          navs.map((checkTaxon) => (
             <CheckTaxonNode
               key={checkTaxon.check_taxon_id}
               projectId={projectId}
