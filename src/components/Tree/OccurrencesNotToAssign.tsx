@@ -67,12 +67,12 @@ export const OccurrencesNotToAssignNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((occurrence) => (
+          navs.map((nav) => (
             <OccurrenceNotToAssignNode
-              key={occurrence.occurrence_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
-              occurrence={occurrence}
+              nav={nav}
               level={level + 1}
             />
           ))}

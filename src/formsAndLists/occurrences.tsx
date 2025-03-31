@@ -36,11 +36,11 @@ export const Occurrences = memo(
           {loading ?
             <Loading />
           : <>
-              {navs.map(({ occurrence_id, label }) => (
+              {navs.map(({ id, label }) => (
                 <Row
-                  key={occurrence_id}
-                  label={label ?? occurrence_id}
-                  to={occurrence_id}
+                  key={id}
+                  label={label ?? id}
+                  to={id}
                 />
               ))}
             </>

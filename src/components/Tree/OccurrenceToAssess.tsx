@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual'
 import { Node } from './Node.tsx'
 
 export const OccurrenceToAssessNode = memo(
-  ({ projectId, subprojectId, occurrence, level = 6 }) => {
+  ({ projectId, subprojectId, nav, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -16,7 +16,7 @@ export const OccurrenceToAssessNode = memo(
       'subprojects',
       subprojectId,
       'occurrences-to-assess',
-      occurrence.occurrence_id,
+      nav.id,
     ]
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -26,8 +26,8 @@ export const OccurrenceToAssessNode = memo(
     return (
       <>
         <Node
-          node={occurrence}
-          id={occurrence.occurrence_id}
+          label={nav.label}
+          id={nav.id}
           level={level}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
