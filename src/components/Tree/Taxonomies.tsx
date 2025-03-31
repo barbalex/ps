@@ -60,11 +60,11 @@ export const TaxonomiesNode = memo(({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((taxonomy) => (
+        navs.map((nav) => (
           <TaxonomyNode
-            key={taxonomy.taxonomy_id}
+            key={nav.id}
             projectId={projectId}
-            taxonomy={taxonomy}
+            nav={nav}
           />
         ))}
     </>

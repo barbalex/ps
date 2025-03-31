@@ -9,7 +9,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const TaxonomyNode = memo(({ projectId, taxonomy, level = 4 }) => {
+export const TaxonomyNode = memo(({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -21,8 +21,8 @@ export const TaxonomyNode = memo(({ projectId, taxonomy, level = 4 }) => {
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
-    () => [...parentArray, taxonomy.taxonomy_id],
-    [parentArray, taxonomy.taxonomy_id],
+    () => [...parentArray, nav.id],
+    [parentArray, nav.id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -54,8 +54,8 @@ export const TaxonomyNode = memo(({ projectId, taxonomy, level = 4 }) => {
   return (
     <>
       <Node
-        node={taxonomy}
-        id={taxonomy.taxonomy_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
@@ -65,7 +65,10 @@ export const TaxonomyNode = memo(({ projectId, taxonomy, level = 4 }) => {
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <TaxaNode projectId={projectId} taxonomyId={taxonomy.taxonomy_id} />
+        <TaxaNode
+          projectId={projectId}
+          taxonomyId={nav.id}
+        />
       )}
     </>
   )

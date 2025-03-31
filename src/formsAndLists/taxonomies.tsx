@@ -40,11 +40,11 @@ export const Taxonomies = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ taxonomy_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={taxonomy_id}
-                label={label ?? taxonomy_id}
-                to={taxonomy_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>

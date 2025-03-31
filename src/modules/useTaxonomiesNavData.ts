@@ -14,7 +14,7 @@ export const useTaxonomiesNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT
-      taxonomy_id,
+      taxonomy_id AS id,
       label 
     FROM taxonomies 
     WHERE project_id = $1 
