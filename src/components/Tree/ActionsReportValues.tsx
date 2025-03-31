@@ -74,16 +74,16 @@ export const ActionReportValuesNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((actionReportValue) => (
+          navs.map((nav) => (
             <ActionReportValueNode
-              key={actionReportValue.action_report_value_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
               actionId={actionId}
               actionReportId={actionReportId}
-              actionReportValue={actionReportValue}
+              nav={nav}
               level={level + 1}
             />
           ))}
