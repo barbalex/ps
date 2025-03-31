@@ -8,7 +8,7 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { formatNumber } from './formatNumber.ts'
 import { unitsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
-export const usePlaceReportsNavData = ({
+export const useActionsNavData = ({
   projectId,
   subprojectId,
   placeId,
@@ -23,21 +23,24 @@ export const usePlaceReportsNavData = ({
 
   const res = useLiveQuery(
     `
-    SELECT
-      place_report_id,
-      label 
-    FROM place_reports 
-    WHERE 
-      place_id = $1 
-      ${isFiltered ? ` AND ${filterString} ` : ``}
-    ORDER BY label`,
+      SELECT
+        action_id,
+        label
+      FROM actions 
+      WHERE 
+        place_id = $1 
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label`,
     [placeId2 ?? placeId],
   )
 
   const loading = res === undefined
 
   const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM place_reports WHERE place_id = $1`,
+    `
+      SELECT count(*) 
+      FROM actions 
+      WHERE place_id = $1`,
     [placeId2 ?? placeId],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
@@ -56,7 +59,7 @@ export const usePlaceReportsNavData = ({
       ...(placeId2 ? ['places', placeId2] : []),
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'reports']
+    const ownArray = [...parentArray, 'actions']
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -73,7 +76,7 @@ export const usePlaceReportsNavData = ({
       urlPath,
       ownUrl,
       toParams: {},
-      label: `Reports (${
+      label: `Actions (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
             countLoading ? '...' : formatNumber(countUnfiltered)

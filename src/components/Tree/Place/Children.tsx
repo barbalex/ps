@@ -45,7 +45,8 @@ export const PlaceChildren = memo(
           <ChecksNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={place.place_id}
+            placeId={placeId}
+            placeId2={placeId2}
             place={place}
             level={level + 1}
           />
@@ -54,7 +55,8 @@ export const PlaceChildren = memo(
           <ActionsNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={place.place_id}
+            placeId={placeId}
+            placeId2={placeId2}
             place={place}
             level={level + 1}
           />
@@ -63,7 +65,8 @@ export const PlaceChildren = memo(
           <PlaceReportsNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={place.place_id}
+            placeId={placeId}
+            placeId2={placeId2}
             place={place}
             level={level + 1}
           />
@@ -81,7 +84,8 @@ export const PlaceChildren = memo(
         <PlaceUsersNode
           projectId={projectId}
           subprojectId={subprojectId}
-          placeId={place.place_id}
+          placeId={placeId}
+          placeId2={placeId2}
           place={place}
           level={level + 1}
         />
