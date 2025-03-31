@@ -19,7 +19,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
+export const SubprojectNode = memo(({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -40,8 +40,8 @@ export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
-    () => [...parentArray, subproject.subproject_id],
-    [parentArray, subproject.subproject_id],
+    () => [...parentArray, nav.id],
+    [parentArray, nav.id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -73,8 +73,8 @@ export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
   return (
     <>
       <Node
-        node={subproject}
-        id={subproject.subproject_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
@@ -87,47 +87,47 @@ export const SubprojectNode = memo(({ projectId, subproject, level = 4 }) => {
         <>
           <PlacesNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
             level={5}
           />
           <SubprojectReportsNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           <GoalsNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           <OccurrenceImportsNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           <OccurrencesToAssessNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           <OccurrencesNotToAssignNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           <SubprojectTaxaNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           <SubprojectUsersNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
           />
           {showFiles && (
             <FilesNode
               projectId={projectId}
-              subprojectId={subproject.subproject_id}
+              subprojectId={nav.id}
               level={5}
             />
           )}
           <ChartsNode
             projectId={projectId}
-            subprojectId={subproject.subproject_id}
+            subprojectId={nav.id}
             level={5}
           />
         </>

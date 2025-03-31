@@ -42,11 +42,11 @@ export const Subprojects = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ subproject_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={subproject_id}
-                label={label ?? subproject_id}
-                to={`/data/projects/${projectId}/subprojects/${subproject_id}`}
+                key={id}
+                label={label ?? id}
+                to={`/data/projects/${projectId}/subprojects/${id}`}
               />
             ))}
           </>

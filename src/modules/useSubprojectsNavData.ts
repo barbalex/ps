@@ -19,7 +19,7 @@ export const useSubprojectsNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT 
-      sp.subproject_id,
+      sp.subproject_id AS id,
       sp.label, 
       p.subproject_name_plural, 
       p.subproject_name_singular
