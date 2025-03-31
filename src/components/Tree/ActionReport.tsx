@@ -16,7 +16,7 @@ export const ActionReportNode = memo(
     placeId,
     placeId2,
     actionId,
-    actionReport,
+    nav,
     level = 10,
   }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -42,8 +42,8 @@ export const ActionReportNode = memo(
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
-      () => [...parentArray, actionReport.action_report_id],
-      [actionReport.action_report_id, parentArray],
+      () => [...parentArray, nav.id],
+      [nav.id, parentArray],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -75,8 +75,8 @@ export const ActionReportNode = memo(
     return (
       <>
         <Node
-          node={actionReport}
-          id={actionReport.action_report_id}
+          node={nav}
+          id={nav.id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
@@ -92,7 +92,7 @@ export const ActionReportNode = memo(
             placeId={placeId}
             placeId2={placeId2}
             actionId={actionId}
-            actionReportId={actionReport.action_report_id}
+            actionReportId={nav.id}
             level={level + 1}
           />
         )}
