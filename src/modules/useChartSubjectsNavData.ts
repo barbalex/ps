@@ -20,7 +20,7 @@ export const useChartSubjectsNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        chart_subject_id,
+        chart_subject_id as id,
         label 
       FROM chart_subjects 
       WHERE chart_id = $1 

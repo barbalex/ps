@@ -11,7 +11,7 @@ export const ChartSubjectNode = ({
   placeId,
   placeId2,
   chartId,
-  chartSubject,
+  nav,
   level = 2,
 }) => {
   const location = useLocation()
@@ -27,16 +27,9 @@ export const ChartSubjectNode = ({
       'charts',
       chartId,
       'subjects',
-      chartSubject.chart_subject_id,
+      nav.id,
     ],
-    [
-      chartSubject.chart_subject_id,
-      chartId,
-      placeId,
-      placeId2,
-      projectId,
-      subprojectId,
-    ],
+    [nav.id, chartId, placeId, placeId2, projectId, subprojectId],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -45,8 +38,8 @@ export const ChartSubjectNode = ({
 
   return (
     <Node
-      node={chartSubject}
-      id={chartSubject.chart_subject_id}
+      label={nav.label}
+      id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}

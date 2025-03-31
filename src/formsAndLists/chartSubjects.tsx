@@ -50,11 +50,11 @@ export const ChartSubjects = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ chart_subject_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={chart_subject_id}
-                label={label ?? chart_subject_id}
-                to={chart_subject_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
