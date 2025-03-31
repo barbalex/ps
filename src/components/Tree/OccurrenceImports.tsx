@@ -1,15 +1,11 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
-import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useCallback, memo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
 import { OccurrenceImportNode } from './OccurrenceImport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { useOccurrenceImportsNavData } from '../../modules/useOccurrenceImportsNavData.ts'
 
 interface Props {
   projectId: string
@@ -19,49 +15,20 @@ interface Props {
 
 export const OccurrenceImportsNode = memo(
   ({ projectId, subprojectId, level = 5 }: Props) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
     const navigate = useNavigate()
 
-    const res = useLiveIncrementalQuery(
-      `
-      SELECT
-        occurrence_import_id,
-        label 
-      FROM occurrence_imports 
-      WHERE subproject_id = $1 
-      ORDER BY label`,
-      [subprojectId],
-      'occurrence_import_id',
-    )
-    const rows = res?.rows ?? []
-    const loading = res === undefined
-
-    const node = useMemo(
-      () => ({
-        label: `Occurrence Imports (${
-          loading ? '...' : formatNumber(rows.length)
-        })`,
-      }),
-      [loading, rows.length],
-    )
-
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => ['data', 'projects', projectId, 'subprojects', subprojectId],
-      [projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(
-      () => [...parentArray, 'occurrence-imports'],
-      [parentArray],
-    )
-    const ownUrl = `/${ownArray.join('/')}`
-
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+    const { navData } = useOccurrenceImportsNavData({ projectId, subprojectId })
+    const {
+      label,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      isOpen,
+      isInActiveNodeArray,
+      isActive,
+      navs,
+    } = navData
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -85,22 +52,22 @@ export const OccurrenceImportsNode = memo(
     return (
       <>
         <Node
-          node={node}
+          label={label}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={rows.length}
+          childrenCount={navs.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          rows.map((occurrenceImport) => (
+          navs.map((nav) => (
             <OccurrenceImportNode
-              key={occurrenceImport.occurrence_import_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
-              occurrenceImport={occurrenceImport}
+              nav={nav}
             />
           ))}
       </>

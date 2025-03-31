@@ -1,9 +1,10 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createOccurrenceImport } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { useOccurrenceImportsNavData } from '../modules/useOccurrenceImportsNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 
@@ -14,17 +15,14 @@ const from =
 
 export const OccurrenceImports = memo(() => {
   const navigate = useNavigate()
-  const { subprojectId } = useParams({ from })
-
+  const { projectId, subprojectId } = useParams({ from })
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT occurrence_import_id, label FROM occurrence_imports WHERE subproject_id = $1 ORDER BY label`,
-    [subprojectId],
-    'occurrence_import_id',
-  )
-  const isLoading = res === undefined
-  const occurrenceImports = res?.rows ?? []
+  const { loading, navData } = useOccurrenceImportsNavData({
+    projectId,
+    subprojectId,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createOccurrenceImport({ subprojectId, db })
@@ -41,24 +39,20 @@ export const OccurrenceImports = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Occurrence imports"
-        nameSingular="occurrence import"
-        tableName="occurrence_imports"
-        isFiltered={false}
-        countFiltered={occurrenceImports.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {occurrenceImports.map(({ occurrence_import_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={occurrence_import_id}
-                label={label ?? occurrence_import_id}
-                to={occurrence_import_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
