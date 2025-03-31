@@ -1,44 +1,29 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createCheck } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { useChecksNavData } from '../modules/useChecksNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
-import { checks1FilterAtom, checks2FilterAtom } from '../store.ts'
-import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
-export const Checks = memo(({from}) => {
-  const { projectId, placeId, placeId2 } = useParams({ from })
+export const Checks = memo(({ from }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const [checks1Filter] = useAtom(checks1FilterAtom)
-  const [checks2Filter] = useAtom(checks2FilterAtom)
-  const filter = placeId2 ? checks2Filter : checks1Filter
-
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `SELECT 
-      check_id, 
-      label 
-    FROM checks 
-    WHERE 
-      place_id = $1
-      ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`,
-    [placeId2 ?? placeId],
-    'check_id',
-  )
-  const isLoading = res === undefined
-  const checks = res?.rows ?? []
+  const { loading, navData, isFiltered } = useChecksNavData({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createCheck({
@@ -56,13 +41,9 @@ export const Checks = memo(({from}) => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Checks"
-        nameSingular="check"
-        tableName="checks"
-        isFiltered={isFiltered}
-        countFiltered={checks.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={
           <>
@@ -76,10 +57,10 @@ export const Checks = memo(({from}) => {
         }
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {checks.map(({ check_id, label }) => (
+            {navs.map(({ check_id, label }) => (
               <Row
                 key={check_id}
                 label={label ?? check_id}
