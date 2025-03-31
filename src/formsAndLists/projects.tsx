@@ -42,9 +42,9 @@ export const Projects = memo(() => {
         : <>
             {navs.map((nav) => (
               <Row
-                key={nav.project_id}
+                key={nav.id}
                 label={nav.label}
-                to={nav.project_id}
+                to={nav.id}
               />
             ))}
           </>

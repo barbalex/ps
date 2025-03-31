@@ -24,21 +24,18 @@ import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
 
 const parentArray = ['data', 'projects']
 
-export const ProjectNode = memo(({ project, level = 2 }) => {
+export const ProjectNode = memo(({ nav, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const showFiles = project.files_active_projects ?? false
+  const showFiles = nav.files_active_projects ?? false
 
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(
-    () => [...parentArray, project.project_id],
-    [project.project_id],
-  )
+  const ownArray = useMemo(() => [...parentArray, nav.id], [nav.id])
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
@@ -69,8 +66,8 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
   return (
     <>
       <Node
-        node={project}
-        id={project.project_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
@@ -78,30 +75,30 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
         childrenCount={10}
         to={ownUrl}
         onClickButton={onClickButton}
-        sibling={<Editing projectId={project.project_id} />}
+        sibling={<Editing projectId={nav.id} />}
       />
       {isOpen && (
         <>
-          <SubprojectsNode projectId={project.project_id} />
-          <ProjectReportsNode projectId={project.project_id} />
-          <PersonsNode projectId={project.project_id} />
-          <WmsLayersNode projectId={project.project_id} />
-          <VectorLayersNode projectId={project.project_id} />
+          <SubprojectsNode projectId={nav.id} />
+          <ProjectReportsNode projectId={nav.id} />
+          <PersonsNode projectId={nav.id} />
+          <WmsLayersNode projectId={nav.id} />
+          <VectorLayersNode projectId={nav.id} />
           {showFiles && (
             <FilesNode
-              projectId={project.project_id}
+              projectId={nav.id}
               level={3}
             />
           )}
           {designing && (
             <>
-              <ProjectUsersNode projectId={project.project_id} />
-              <ListsNode projectId={project.project_id} />
-              <TaxonomiesNode projectId={project.project_id} />
-              <UnitsNode projectId={project.project_id} />
-              <ProjectCrssNode projectId={project.project_id} />
-              <PlaceLevelsNode projectId={project.project_id} />
-              <FieldsNode projectId={project.project_id} />
+              <ProjectUsersNode projectId={nav.id} />
+              <ListsNode projectId={nav.id} />
+              <TaxonomiesNode projectId={nav.id} />
+              <UnitsNode projectId={nav.id} />
+              <ProjectCrssNode projectId={nav.id} />
+              <PlaceLevelsNode projectId={nav.id} />
+              <FieldsNode projectId={nav.id} />
             </>
           )}
         </>
