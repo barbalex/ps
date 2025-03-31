@@ -11,7 +11,12 @@ export const useUsersNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(`SELECT user_id, label FROM users ORDER BY label`)
+  const res = useLiveQuery(`
+    SELECT 
+      user_id AS id, 
+      label 
+    FROM users 
+    ORDER BY label`)
   const loading = res === undefined
 
   const navData = useMemo(() => {

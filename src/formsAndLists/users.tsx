@@ -40,11 +40,11 @@ export const Users = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ user_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={user_id}
-                label={label ?? user_id}
-                to={user_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
