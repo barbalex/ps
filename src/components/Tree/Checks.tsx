@@ -62,14 +62,14 @@ export const ChecksNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((check) => (
+          navs.map((nav) => (
             <CheckNode
-              key={check.check_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              check={check}
+              nav={nav}
               level={level + 1}
             />
           ))}

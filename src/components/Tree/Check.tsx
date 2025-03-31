@@ -13,7 +13,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, check, level = 8 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, nav, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -44,8 +44,8 @@ export const CheckNode = memo(
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
-      () => [...parentArray, check.check_id],
-      [check.check_id, parentArray],
+      () => [...parentArray, nav.id],
+      [nav.id, parentArray],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -79,8 +79,8 @@ export const CheckNode = memo(
     return (
       <>
         <Node
-          node={check}
-          id={check.check_id}
+          label={nav.label}
+          id={nav.id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
@@ -96,7 +96,7 @@ export const CheckNode = memo(
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              checkId={check.check_id}
+              checkId={nav.id}
               level={level + 1}
             />
             <CheckTaxaNode
@@ -104,7 +104,7 @@ export const CheckNode = memo(
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              checkId={check.check_id}
+              checkId={nav.id}
               level={level + 1}
             />
             {showFiles && (
@@ -113,7 +113,7 @@ export const CheckNode = memo(
                 subprojectId={subprojectId}
                 placeId={placeId}
                 placeId2={placeId2}
-                checkId={check.check_id}
+                checkId={nav.id}
                 level={level + 1}
               />
             )}

@@ -28,7 +28,7 @@ export const useChecksNavData = ({
   const res = useLiveQuery(
     `
       SELECT 
-        check_id, 
+        check_id as id, 
         label 
       FROM checks 
       WHERE 
