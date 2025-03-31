@@ -19,7 +19,7 @@ export const useProjectReportsNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT
-      project_report_id,
+      project_report_id AS id,
       label 
     FROM project_reports 
     WHERE 
