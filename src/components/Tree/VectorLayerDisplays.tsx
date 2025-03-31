@@ -66,12 +66,12 @@ export const VectorLayerDisplaysNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((vld) => (
+          navs.map((nav) => (
             <VectorLayerDisplayNode
-              key={vld.vector_layer_display_id}
+              key={nav.id}
               projectId={projectId}
               vectorLayerId={vectorLayerId}
-              vectorLayerDisplay={vld}
+              nav={nav}
             />
           ))}
       </>

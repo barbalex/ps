@@ -54,20 +54,16 @@ export const VectorLayerDisplays = memo(
     }, [db, navigate, setVectorLayerDisplayId, vectorLayerId])
 
     const onClickRow = useCallback(
-      (vector_layer_display_id) => {
+      (id) => {
         if (vectorLayerId) {
-          setVectorLayerDisplayId(vector_layer_display_id)
+          setVectorLayerDisplayId(id)
           return
         }
-        console.log('VectorLayerDisplays.onClickRow', {
-          vector_layer_display_id,
-          vectorLayerId,
-        })
         navigate({
-          to: vector_layer_display_id,
+          to: id,
           params: (prev) => ({
             ...prev,
-            vectorLayerDisplayId: vector_layer_display_id,
+            vectorLayerDisplayId: id,
           }),
         })
       },
@@ -85,15 +81,13 @@ export const VectorLayerDisplays = memo(
           {loading ?
             <Loading />
           : <>
-              {navs.map(({ vector_layer_display_id, label }) => (
+              {navs.map(({ id, label }) => (
                 <Row
-                  key={vector_layer_display_id}
-                  to={vector_layer_display_id}
-                  label={label ?? vector_layer_display_id}
+                  key={id}
+                  to={id}
+                  label={label ?? id}
                   onClick={
-                    calledFromMapDrawer ?
-                      () => onClickRow(vector_layer_display_id)
-                    : undefined
+                    calledFromMapDrawer ? () => onClickRow(id) : undefined
                   }
                 />
               ))}

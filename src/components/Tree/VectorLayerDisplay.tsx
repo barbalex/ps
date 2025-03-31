@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const VectorLayerDisplayNode = memo(
-  ({ projectId, vectorLayerId, vectorLayerDisplay, level = 6 }: Props) => {
+  ({ projectId, vectorLayerId, nav, level = 6 }: Props) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -24,9 +24,9 @@ export const VectorLayerDisplayNode = memo(
         'vector-layers',
         vectorLayerId,
         'vector-layer-displays',
-        vectorLayerDisplay.vector_layer_display_id,
+        nav.id,
       ],
-      [projectId, vectorLayerDisplay.vector_layer_display_id, vectorLayerId],
+      [projectId, nav.id, vectorLayerId],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -35,8 +35,8 @@ export const VectorLayerDisplayNode = memo(
 
     return (
       <Node
-        node={vectorLayerDisplay}
-        id={vectorLayerDisplay.vector_layer_display_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
