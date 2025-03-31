@@ -28,7 +28,7 @@ export const useActionsNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        action_id,
+        action_id as id,
         label
       FROM actions 
       WHERE 

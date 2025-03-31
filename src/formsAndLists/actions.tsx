@@ -60,11 +60,11 @@ export const Actions = memo(({ from }) => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ action_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={action_id}
-                label={label ?? action_id}
-                to={action_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>

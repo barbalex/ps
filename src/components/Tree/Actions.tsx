@@ -62,14 +62,14 @@ export const ActionsNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((action) => (
+          navs.map((nav) => (
             <ActionNode
-              key={action.action_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              action={action}
+              nav={nav}
               level={level + 1}
             />
           ))}
