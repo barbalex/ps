@@ -41,7 +41,11 @@ export const useFilesNavData = ({
   const isFiltered = !!filterString
 
   const sql = `
-    SELECT file_id, label, url, mimetype 
+    SELECT 
+      file_id, 
+      label, 
+      url, 
+      mimetype 
     FROM files 
     WHERE
         ${hKey ? `${hKey} = '${hValue}'` : 'true'} 

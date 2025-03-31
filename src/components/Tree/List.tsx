@@ -9,7 +9,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const ListNode = memo(({ projectId, list, level = 4 }) => {
+export const ListNode = memo(({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -21,8 +21,8 @@ export const ListNode = memo(({ projectId, list, level = 4 }) => {
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
-    () => [...parentArray, list.list_id],
-    [list.list_id, parentArray],
+    () => [...parentArray, nav.id],
+    [nav.id, parentArray],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -54,8 +54,8 @@ export const ListNode = memo(({ projectId, list, level = 4 }) => {
   return (
     <>
       <Node
-        label={list.label}
-        id={list.list_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
@@ -67,7 +67,7 @@ export const ListNode = memo(({ projectId, list, level = 4 }) => {
       {isOpen && (
         <ListValuesNode
           projectId={projectId}
-          listId={list.list_id}
+          listId={nav.id}
         />
       )}
     </>
