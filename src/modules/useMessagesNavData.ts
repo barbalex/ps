@@ -12,7 +12,10 @@ export const useMessagesNavData = () => {
   const location = useLocation()
 
   const res = useLiveQuery(
-    `SELECT message_id, date FROM messages order by date desc`,
+    `
+    SELECT message_id AS id, date 
+    FROM messages 
+    ORDER BY date DESC`,
   )
 
   const loading = res === undefined

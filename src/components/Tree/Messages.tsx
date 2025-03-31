@@ -60,10 +60,10 @@ export const MessagesNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((message) => (
+        navs.map((nav) => (
           <MessageNode
-            key={message.message_id}
-            message={message}
+            key={nav.id}
+            nav={nav}
           />
         ))}
     </>

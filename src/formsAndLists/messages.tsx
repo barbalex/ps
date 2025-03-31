@@ -38,11 +38,11 @@ export const Messages = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ message_id, date }) => (
+            {navs.map(({ id, date }) => (
               <Row
-                key={message_id}
-                to={message_id}
-                label={date ?? message_id}
+                key={id}
+                to={id}
+                label={date ?? id}
               />
             ))}
           </>
