@@ -19,7 +19,7 @@ export const useVectorLayersNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT
-      vector_layer_id,
+      vector_layer_id AS id,
       label 
     FROM vector_layers 
     WHERE 

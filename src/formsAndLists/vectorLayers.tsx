@@ -60,11 +60,11 @@ export const VectorLayers = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ vector_layer_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={vector_layer_id}
-                to={vector_layer_id}
-                label={label ?? vector_layer_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>

@@ -61,11 +61,11 @@ export const VectorLayersNode = memo(({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((vectorLayer) => (
+        navs.map((nav) => (
           <VectorLayerNode
-            key={vectorLayer.vector_layer_id}
+            key={nav.id}
             projectId={projectId}
-            vectorLayer={vectorLayer}
+            nav={nav}
           />
         ))}
     </>

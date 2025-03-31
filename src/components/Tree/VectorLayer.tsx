@@ -9,7 +9,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const VectorLayerNode = memo(({ projectId, vectorLayer, level = 4 }) => {
+export const VectorLayerNode = memo(({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -21,8 +21,8 @@ export const VectorLayerNode = memo(({ projectId, vectorLayer, level = 4 }) => {
   )
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
-    () => [...parentArray, vectorLayer.vector_layer_id],
-    [parentArray, vectorLayer.vector_layer_id],
+    () => [...parentArray, nav.id],
+    [parentArray, nav.id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -54,8 +54,8 @@ export const VectorLayerNode = memo(({ projectId, vectorLayer, level = 4 }) => {
   return (
     <>
       <Node
-        node={vectorLayer}
-        id={vectorLayer.vector_layer_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
@@ -67,7 +67,7 @@ export const VectorLayerNode = memo(({ projectId, vectorLayer, level = 4 }) => {
       {isOpen && (
         <VectorLayerDisplaysNode
           projectId={projectId}
-          vectorLayerId={vectorLayer.vector_layer_id}
+          vectorLayerId={nav.id}
         />
       )}
     </>
