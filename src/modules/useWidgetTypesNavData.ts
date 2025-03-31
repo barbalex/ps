@@ -17,7 +17,9 @@ export const useWidgetTypesNavData = () => {
   const isFiltered = !!filterString
 
   const res = useLiveQuery(`
-    SELECT widget_type_id, label 
+    SELECT 
+      widget_type_id AS id,
+      label 
     FROM widget_types
     ${isFiltered ? ` WHERE ${filterString}` : ''}
     ORDER BY label`)

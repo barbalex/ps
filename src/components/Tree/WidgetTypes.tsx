@@ -59,10 +59,10 @@ export const WidgetTypesNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((widgetType) => (
+        navs.map((nav) => (
           <WidgetTypeNode
-            key={widgetType.widget_type_id}
-            widgetType={widgetType}
+            key={nav.id}
+            nav={nav}
           />
         ))}
     </>

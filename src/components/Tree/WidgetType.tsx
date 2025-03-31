@@ -4,14 +4,11 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const WidgetTypeNode = memo(({ widgetType, level = 2 }) => {
+export const WidgetTypeNode = memo(({ nav, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = useMemo(
-    () => ['data', 'widget-types', widgetType.widget_type_id],
-    [widgetType.widget_type_id],
-  )
+  const ownArray = useMemo(() => ['data', 'widget-types', nav.id], [nav.id])
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -19,8 +16,8 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }) => {
 
   return (
     <Node
-      node={widgetType}
-      id={widgetType.widget_type_id}
+      label={nav.label}
+      id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}

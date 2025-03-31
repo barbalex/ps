@@ -39,11 +39,11 @@ export const WidgetTypes = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ widget_type_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={widget_type_id}
-                label={label ?? widget_type_id}
-                to={widget_type_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
