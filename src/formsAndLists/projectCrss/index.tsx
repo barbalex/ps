@@ -43,11 +43,11 @@ export const ProjectCrss = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map((cr) => (
+            {navs.map((nav) => (
               <Row
-                key={cr.project_crs_id}
-                to={cr.project_crs_id}
-                label={cr.label ?? cr.project_crs_id}
+                key={nav.id}
+                to={nav.id}
+                label={nav.label ?? nav.id}
               />
             ))}
           </>
