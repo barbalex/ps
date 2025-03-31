@@ -48,11 +48,11 @@ export const PlaceReportValues = memo(({ from }) => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ place_report_value_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={place_report_value_id}
-                to={place_report_value_id}
-                label={label ?? place_report_value_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>

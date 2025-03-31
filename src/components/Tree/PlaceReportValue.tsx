@@ -11,7 +11,7 @@ export const PlaceReportValueNode = memo(
     placeId,
     placeId2,
     placeReportId,
-    placeReportValue,
+    nav,
     level = 10,
   }) => {
     const location = useLocation()
@@ -30,16 +30,9 @@ export const PlaceReportValueNode = memo(
         'reports',
         placeReportId,
         'values',
-        placeReportValue.place_report_value_id,
+        nav.id,
       ],
-      [
-        projectId,
-        subprojectId,
-        placeId,
-        placeId2,
-        placeReportId,
-        placeReportValue.place_report_value_id,
-      ],
+      [projectId, subprojectId, placeId, placeId2, placeReportId, nav.id],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -48,8 +41,8 @@ export const PlaceReportValueNode = memo(
 
     return (
       <Node
-        node={placeReportValue}
-        id={placeReportValue.place_report_value_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
