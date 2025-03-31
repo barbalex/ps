@@ -19,7 +19,7 @@ export const useUnitsNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT
-      unit_id,
+      unit_id AS id,
       label
     FROM units 
     WHERE 
