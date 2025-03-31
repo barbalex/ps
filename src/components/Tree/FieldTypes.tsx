@@ -59,10 +59,10 @@ export const FieldTypesNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((fieldType) => (
+        navs.map((nav) => (
           <FieldTypeNode
-            key={fieldType.field_type_id}
-            fieldType={fieldType}
+            key={nav.id}
+            nav={nav}
           />
         ))}
     </>

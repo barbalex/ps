@@ -39,11 +39,11 @@ export const FieldTypes = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ field_type_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={field_type_id}
-                label={label ?? field_type_id}
-                to={field_type_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>

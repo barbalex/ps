@@ -17,7 +17,7 @@ export const useFieldTypesNavData = () => {
   const isFiltered = !!filterString
 
   const res = useLiveQuery(`
-    SELECT field_type_id, label 
+    SELECT field_type_id AS id, label 
     FROM field_types 
     ${filterString ? ` WHERE ${filterString}` : ''} 
     ORDER BY label`)

@@ -4,14 +4,11 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const FieldTypeNode = memo(({ fieldType, level = 2 }) => {
+export const FieldTypeNode = memo(({ nav, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = useMemo(
-    () => ['data', 'field-types', fieldType.field_type_id],
-    [fieldType.field_type_id],
-  )
+  const ownArray = useMemo(() => ['data', 'field-types', nav.id], [nav.id])
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -19,8 +16,8 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }) => {
 
   return (
     <Node
-      node={fieldType}
-      id={fieldType.field_type_id}
+      label={nav.label}
+      id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}
