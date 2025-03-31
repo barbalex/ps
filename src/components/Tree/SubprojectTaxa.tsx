@@ -63,12 +63,12 @@ export const SubprojectTaxaNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((subprojectTaxon) => (
+          navs.map((nav) => (
             <SubprojectTaxonNode
-              key={subprojectTaxon.subproject_taxon_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
-              subprojectTaxon={subprojectTaxon}
+              nav={nav}
             />
           ))}
       </>

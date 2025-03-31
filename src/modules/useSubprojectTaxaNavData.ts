@@ -14,7 +14,7 @@ export const useSubprojectTaxaNavData = ({ projectId, subprojectId }) => {
   const res = useLiveQuery(
     `
       SELECT
-        subproject_taxon_id,
+        subproject_taxon_id AS id,
         label 
       FROM subproject_taxa 
       WHERE subproject_id = $1 

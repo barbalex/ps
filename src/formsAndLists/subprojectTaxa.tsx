@@ -35,21 +35,24 @@ export const SubprojectTaxa = memo(({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ subproject_taxon_id, label }) => (
+        : <>
+            {navs.map(({ id, label }) => (
               <Row
-                key={subproject_taxon_id}
-                to={subproject_taxon_id}
-                label={label ?? subproject_taxon_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
