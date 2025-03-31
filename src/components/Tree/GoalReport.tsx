@@ -10,7 +10,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const GoalReportNode = memo(
-  ({ projectId, subprojectId, goalId, goalReport, level = 8 }) => {
+  ({ projectId, subprojectId, goalId, nav, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -31,8 +31,8 @@ export const GoalReportNode = memo(
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
-      () => [...parentArray, goalReport.goal_report_id],
-      [goalReport.goal_report_id, parentArray],
+      () => [...parentArray, nav.id],
+      [nav.id, parentArray],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -64,8 +64,8 @@ export const GoalReportNode = memo(
     return (
       <>
         <Node
-          node={goalReport}
-          id={goalReport.goal_report_id}
+          label={nav.label}
+          id={nav.id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
@@ -79,7 +79,7 @@ export const GoalReportNode = memo(
             projectId={projectId}
             subprojectId={subprojectId}
             goalId={goalId}
-            goalReportId={goalReport.goal_report_id}
+            goalReportId={nav.id}
           />
         )}
       </>

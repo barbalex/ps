@@ -3,7 +3,9 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createGoalReport } from '../modules/createRows.ts'
+import { useGoalReportsNavData } from '../modules/useGoalReportsNavData.ts'
 import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
@@ -12,18 +14,16 @@ const from =
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/'
 
 export const GoalReports = memo(() => {
-  const { projectId, goalId } = useParams({ from })
+  const { projectId, subprojectId, goalId } = useParams({ from })
   const navigate = useNavigate()
-
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT goal_report_id, label FROM goal_reports WHERE goal_id = $1 ORDER BY label`,
-    [goalId],
-    'goal_report_id',
-  )
-  const isLoading = res === undefined
-  const goals = res?.rows ?? []
+  const { loading, navData } = useGoalReportsNavData({
+    projectId,
+    subprojectId,
+    goalId,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createGoalReport({
@@ -41,24 +41,20 @@ export const GoalReports = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Goal Reports"
-        nameSingular="Goal Report"
-        tableName="goal_reports"
-        isFiltered={false}
-        countFiltered={goals.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {goals.map(({ goal_report_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={goal_report_id}
-                label={label ?? goal_report_id}
-                to={goal_report_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>
