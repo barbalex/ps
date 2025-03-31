@@ -10,7 +10,15 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const PlaceReportNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, place, placeReport, level = 8 }) => {
+  ({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    place,
+    placeReport,
+    level = 8,
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -24,11 +32,11 @@ export const PlaceReportNode = memo(
         'subprojects',
         subprojectId,
         'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
+        placeId,
+        ...(placeId2 ? ['places', placeId2] : []),
         'reports',
       ],
-      [projectId, subprojectId, placeId, place.place_id],
+      [projectId, subprojectId, placeId, placeId2],
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(

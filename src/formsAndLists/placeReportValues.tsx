@@ -1,25 +1,28 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceReportValue } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { usePlaceReportValuesNavData } from '../modules/usePlaceReportValuesNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const PlaceReportValues = memo(({ from }) => {
-  const { placeReportId } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, placeReportId } =
+    useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT place_report_value_id, label FROM place_report_values WHERE place_report_id = $1 ORDER BY label`,
-    [placeReportId],
-    'place_report_value_id',
-  )
-  const isLoading = res === undefined
-  const placeReportValues = res?.rows ?? []
+  const { loading, navData } = usePlaceReportValuesNavData({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    placeReportId,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createPlaceReportValue({ placeReportId, db })
@@ -36,20 +39,16 @@ export const PlaceReportValues = memo(({ from }) => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Place Report Values"
-        nameSingular="place report value"
-        tableName="place_report_values"
-        isFiltered={false}
-        countFiltered={placeReportValues.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {placeReportValues.map(({ place_report_value_id, label }) => (
+            {navs.map(({ place_report_value_id, label }) => (
               <Row
                 key={place_report_value_id}
                 to={place_report_value_id}
