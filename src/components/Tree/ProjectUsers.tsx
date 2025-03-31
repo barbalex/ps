@@ -61,11 +61,11 @@ export const ProjectUsersNode = memo(({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((projectUser) => (
+        navs.map((nav) => (
           <ProjectUserNode
-            key={projectUser.project_user_id}
+            key={nav.id}
             projectId={projectId}
-            projectUser={projectUser}
+            nav={nav}
           />
         ))}
     </>
