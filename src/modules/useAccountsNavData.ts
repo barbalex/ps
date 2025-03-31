@@ -12,7 +12,7 @@ export const useAccountsNavData = () => {
   const location = useLocation()
 
   const res = useLiveQuery(
-    `SELECT account_id, label FROM accounts ORDER BY label`,
+    `SELECT account_id as id, label FROM accounts ORDER BY label`,
   )
   const loading = res === undefined
 

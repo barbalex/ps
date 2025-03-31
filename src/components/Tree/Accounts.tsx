@@ -57,10 +57,10 @@ export const AccountsNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((account) => (
+        navs.map((nav) => (
           <AccountNode
-            key={account.account_id}
-            account={account}
+            key={nav.id}
+            nav={nav}
           />
         ))}
     </>

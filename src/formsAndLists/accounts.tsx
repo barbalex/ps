@@ -22,7 +22,7 @@ export const Accounts = memo(() => {
     const res = await createAccount({ db })
     const data = res?.rows?.[0]
     if (!data) return
-    navigate({ to: data.account_id })
+    navigate({ to: data.id })
   }, [db, navigate])
 
   return (
@@ -36,11 +36,11 @@ export const Accounts = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ account_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={account_id}
-                label={label ?? account_id}
-                to={`/data/accounts/${account_id}`}
+                key={id}
+                label={label ?? id}
+                to={`/data/accounts/${id}`}
               />
             ))}
           </>
