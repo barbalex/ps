@@ -51,7 +51,7 @@ export const FileNode = memo(
 
     return (
       <Node
-        node={file}
+        label={file.label}
         id={file.file_id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}

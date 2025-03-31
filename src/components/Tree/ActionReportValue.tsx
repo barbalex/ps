@@ -48,7 +48,7 @@ export const ActionReportValueNode = memo(
 
     return (
       <Node
-        node={nav}
+        label={nav.label}
         id={nav.id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}

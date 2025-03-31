@@ -77,7 +77,7 @@ export const ActionNode = memo(
     return (
       <>
         <Node
-          node={nav}
+          label={nav.label}
           id={nav.id}
           level={level}
           isOpen={isOpen}

@@ -16,7 +16,7 @@ export const AccountNode = memo(({ nav, level = 2 }) => {
 
   return (
     <Node
-      node={nav}
+      label={nav.label}
       id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
