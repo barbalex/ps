@@ -3,10 +3,9 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { useOccurrencesNavData } from '../../modules/useOccurrencesNavData.ts'
 
 export const OccurrenceAssignedNode = memo(
-  ({ projectId, subprojectId, placeId, place, occurrence, level = 8 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, occurrence, level = 8 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -18,18 +17,12 @@ export const OccurrenceAssignedNode = memo(
         'subprojects',
         subprojectId,
         'places',
-        placeId ?? place.place_id,
-        ...(placeId ? ['places', place.place_id] : []),
+        placeId,
+        ...(placeId2 ? ['places', placeId2] : []),
         'occurrences',
         occurrence.occurrence_id,
       ],
-      [
-        occurrence.occurrence_id,
-        place.place_id,
-        placeId,
-        projectId,
-        subprojectId,
-      ],
+      [occurrence.occurrence_id, placeId, placeId2, projectId, subprojectId],
     )
     const ownUrl = `/${ownArray.join('/')}`
 

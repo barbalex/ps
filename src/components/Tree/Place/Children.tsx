@@ -74,7 +74,6 @@ export const PlaceChildren = memo(
             subprojectId={subprojectId}
             placeId={placeId}
             placeId2={placeId2}
-            place={place}
             level={level + 1}
           />
         )}
