@@ -24,7 +24,7 @@ export const usePlaceReportsNavData = ({
   const res = useLiveQuery(
     `
     SELECT
-      place_report_id,
+      place_report_id AS id,
       label 
     FROM place_reports 
     WHERE 
