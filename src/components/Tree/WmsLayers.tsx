@@ -61,11 +61,11 @@ export const WmsLayersNode = memo(({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        navs.map((wmsLayer) => (
+        navs.map((nav) => (
           <WmsLayerNode
-            key={wmsLayer.wms_layer_id}
+            key={nav.id}
             projectId={projectId}
-            wmsLayer={wmsLayer}
+            nav={nav}
           />
         ))}
     </>

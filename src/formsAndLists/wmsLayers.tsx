@@ -50,11 +50,11 @@ export const WmsLayers = memo(() => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ wms_layer_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={wms_layer_id}
-                to={wms_layer_id}
-                label={label ?? wms_layer_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>

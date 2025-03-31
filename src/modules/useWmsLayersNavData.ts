@@ -19,7 +19,7 @@ export const useWmsLayersNavData = ({ projectId }) => {
   const res = useLiveQuery(
     `
     SELECT
-      wms_layer_id,
+      wms_layer_id AS id,
       label 
     FROM wms_layers 
     WHERE 

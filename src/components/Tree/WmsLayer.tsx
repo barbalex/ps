@@ -4,13 +4,13 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 
-export const WmsLayerNode = memo(({ projectId, wmsLayer, level = 4 }) => {
+export const WmsLayerNode = memo(({ projectId, nav, level = 4 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = useMemo(
-    () => ['data', 'projects', projectId, 'wms-layers', wmsLayer.wms_layer_id],
-    [projectId, wmsLayer.wms_layer_id],
+    () => ['data', 'projects', projectId, 'wms-layers', nav.id],
+    [projectId, nav.id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -19,8 +19,8 @@ export const WmsLayerNode = memo(({ projectId, wmsLayer, level = 4 }) => {
 
   return (
     <Node
-      node={wmsLayer}
-      id={wmsLayer.wms_layer_id}
+      label={nav.label}
+      id={nav.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}
