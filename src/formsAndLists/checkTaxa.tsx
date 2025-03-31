@@ -46,11 +46,11 @@ export const CheckTaxa = memo(({ from }) => {
         {loading ?
           <Loading />
         : <>
-            {navs.map(({ check_taxon_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={check_taxon_id}
-                label={label ?? check_taxon_id}
-                to={check_taxon_id}
+                key={id}
+                label={label ?? id}
+                to={id}
               />
             ))}
           </>

@@ -65,7 +65,7 @@ export const CheckTaxaNode = memo(
         {isOpen &&
           navs.map((nav) => (
             <CheckTaxonNode
-              key={nav.check_taxon_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}

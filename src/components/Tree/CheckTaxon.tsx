@@ -30,9 +30,9 @@ export const CheckTaxonNode = memo(
         'checks',
         checkId,
         'taxa',
-        nav.check_taxon_id,
+        nav.id,
       ],
-      [projectId, subprojectId, placeId, placeId2, checkId, nav.check_taxon_id],
+      [projectId, subprojectId, placeId, placeId2, checkId, nav.id],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -42,7 +42,7 @@ export const CheckTaxonNode = memo(
     return (
       <Node
         label={nav.label}
-        id={nav.check_taxon_id}
+        id={nav.id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}

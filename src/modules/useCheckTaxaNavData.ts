@@ -20,7 +20,7 @@ export const useCheckTaxaNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        check_taxon_id,
+        check_taxon_id as id,
         label
       FROM check_taxa 
       WHERE check_id = $1 
