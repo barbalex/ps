@@ -32,8 +32,8 @@ export const PlaceNode = memo(
     )
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
-      () => [...parentArray, place.place_id],
-      [parentArray, place.place_id],
+      () => [...parentArray, placeId2 ?? placeId],
+      [parentArray, placeId, placeId2],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -66,7 +66,7 @@ export const PlaceNode = memo(
       <>
         <Node
           node={place}
-          id={place.place_id}
+          id={placeId2 ?? placeId}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
@@ -81,7 +81,6 @@ export const PlaceNode = memo(
             subprojectId={subprojectId}
             placeId={placeId}
             placeId2={placeId2}
-            place={place}
             level={level}
           />
         )}

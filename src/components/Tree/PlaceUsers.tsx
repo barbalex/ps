@@ -12,7 +12,7 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const PlaceUsersNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, place, level = 7 }) => {
+  ({ projectId, subprojectId, placeId, placeId2, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
@@ -25,7 +25,7 @@ export const PlaceUsersNode = memo(
       FROM place_users 
       WHERE place_id = $1 
       ORDER BY label`,
-      [place.place_id],
+      [placeId2 ?? placeId],
       'place_user_id',
     )
     const rows = res?.rows ?? []
@@ -100,7 +100,7 @@ export const PlaceUsersNode = memo(
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
-              place={place}
+              placeId2={placeId2}
               placeUser={placeUser}
               level={level + 1}
             />

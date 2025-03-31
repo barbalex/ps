@@ -11,7 +11,7 @@ import { FilesNode } from '../Files.tsx'
 
 // TODO: add charts?
 export const PlaceChildren = memo(
-  ({ projectId, subprojectId, placeId, placeId2, place, level }) => {
+  ({ projectId, subprojectId, placeId, placeId2, level }) => {
     // const level = placeId2 ? 8 : 6
 
     // query from place_level what children to show
@@ -37,7 +37,7 @@ export const PlaceChildren = memo(
           <PlacesNode
             projectId={projectId}
             subprojectId={subprojectId}
-            placeId={place.place_id}
+            placeId={placeId}
             level={level + 1}
           />
         )}
@@ -82,7 +82,6 @@ export const PlaceChildren = memo(
           subprojectId={subprojectId}
           placeId={placeId}
           placeId2={placeId2}
-          place={place}
           level={level + 1}
         />
         {showFiles && (
