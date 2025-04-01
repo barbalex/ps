@@ -14,14 +14,6 @@ export const useCrssNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  // TODO:
-  // only query all labels if isOpen
-  // if is not open, query only the count
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'crs'], [])
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-
   const resCount = useLiveQuery(`SELECT COUNT(crs_id) as count FROM crs`)
   const count = resCount?.rows?.[0]?.count ?? 0
 
@@ -31,12 +23,16 @@ export const useCrssNavData = () => {
         label
       FROM crs
       ORDER BY label
-      limit 500`)
+      limit ${limit}`)
 
   const loading = res === undefined
 
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
+    const urlPath = location.pathname.split('/').filter((p) => p !== '')
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = [...parentArray, 'crs']
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const ownUrl = `/${ownArray.join('/')}`
 
     // needs to work not only works for urlPath, for all opened paths!
@@ -59,7 +55,7 @@ export const useCrssNavData = () => {
       nameSingular: 'CRS',
       navs,
     }
-  }, [count, isOpen, ownArray, parentUrl, res?.rows, resCount, urlPath])
+  }, [count, location.pathname, openNodes, res?.rows, resCount])
 
   return { loading, navData }
 }
