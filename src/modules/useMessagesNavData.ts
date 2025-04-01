@@ -42,7 +42,6 @@ export const useMessagesNavData = () => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Messages (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Message',
       navs,

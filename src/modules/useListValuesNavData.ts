@@ -44,7 +44,6 @@ export const useListValuesNavData = ({ projectId, listId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Values (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'List Value',
       navs,

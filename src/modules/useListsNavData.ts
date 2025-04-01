@@ -58,7 +58,6 @@ export const useListsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Lists (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${

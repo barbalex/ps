@@ -64,7 +64,6 @@ export const useGoalsNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Goals (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
