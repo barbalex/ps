@@ -59,7 +59,6 @@ export const useGoalReportValuesNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Values (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Goal Report Value',
       navs,

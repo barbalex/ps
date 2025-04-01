@@ -52,7 +52,6 @@ export const useGoalReportsNavData = ({ projectId, subprojectId, goalId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Goal Reports (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Goal Report',
       navs,

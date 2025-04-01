@@ -51,7 +51,6 @@ export const useFieldTypesNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      toParams: {},
       label: `Field Types (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${

@@ -93,7 +93,6 @@ export const useFilesNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Files (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
