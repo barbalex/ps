@@ -8,6 +8,11 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { formatNumber } from './formatNumber.ts'
 import { projectsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
+const parentArray = ['data']
+const parentUrl = `/${parentArray.join('/')}`
+const ownArray = [...parentArray, 'projects']
+const ownUrl = `/${ownArray.join('/')}`
+
 export const useProjectsNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -32,10 +37,6 @@ export const useProjectsNavData = () => {
 
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
-    const parentArray = ['data']
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'projects']
-    const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

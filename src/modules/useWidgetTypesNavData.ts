@@ -8,6 +8,11 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { formatNumber } from './formatNumber.ts'
 import { widgetTypesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
+const parentArray = ['data']
+const parentUrl = `/${parentArray.join('/')}`
+const ownArray = [...parentArray, 'widget-types']
+const ownUrl = `/${ownArray.join('/')}`
+
 export const useWidgetTypesNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -35,10 +40,6 @@ export const useWidgetTypesNavData = () => {
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = ['data']
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'widget-types']
-    const ownUrl = `/${ownArray.join('/')}`
 
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
