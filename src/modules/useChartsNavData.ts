@@ -69,7 +69,6 @@ export const useChartsNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Charts (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Chart',
       navs,

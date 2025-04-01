@@ -58,7 +58,6 @@ export const useChartSubjectsNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Subjects (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Chart Subject',
       navs,

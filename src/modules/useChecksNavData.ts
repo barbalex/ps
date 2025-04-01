@@ -79,7 +79,6 @@ export const useChecksNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Checks (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
