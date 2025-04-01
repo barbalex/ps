@@ -1,25 +1,26 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceUser } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { usePlaceUsersNavData } from '../modules/usePlaceUsersNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const PlaceUsers = memo(({ from }) => {
-  const { placeId, placeId2 } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
-
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT place_user_id, label FROM place_users WHERE place_id = $1 ORDER BY label`,
-    [placeId2 ?? placeId],
-    'place_user_id',
-  )
-  const isLoading = res === undefined
-  const placeUsers = res?.rows ?? []
+
+  const { loading, navData } = usePlaceUsersNavData({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = createPlaceUser({ placeId: placeId2 ?? placeId, db })
@@ -33,24 +34,20 @@ export const PlaceUsers = memo(({ from }) => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Users"
-        nameSingular="user"
-        tableName="users"
-        isFiltered={false}
-        countFiltered={placeUsers.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {placeUsers.map(({ place_user_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={place_user_id}
-                to={place_user_id}
-                label={label ?? place_user_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>
