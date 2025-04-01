@@ -45,7 +45,6 @@ export const useProjectCrsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `CRS (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'CRS',
       navs,

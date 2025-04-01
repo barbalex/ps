@@ -61,7 +61,6 @@ export const usePlaceReportValuesNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Values (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Place Report Value',
       navs,

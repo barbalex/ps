@@ -58,7 +58,6 @@ export const usePlaceUsersNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Users (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'User',
       navs,

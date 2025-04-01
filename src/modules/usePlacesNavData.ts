@@ -80,7 +80,6 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `${placeNamePlural} (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
