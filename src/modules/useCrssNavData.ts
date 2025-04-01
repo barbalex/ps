@@ -8,6 +8,8 @@ import { formatNumber } from './formatNumber.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
 const parentArray = ['data']
+const parentUrl = `/${parentArray.join('/')}`
+const ownArray = [...parentArray, 'crs']
 const limit = 100
 
 export const useCrssNavData = () => {
@@ -30,8 +32,6 @@ export const useCrssNavData = () => {
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'crs']
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const ownUrl = `/${ownArray.join('/')}`
 
