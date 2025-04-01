@@ -1,11 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
-import {
-  usePGlite,
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -13,13 +8,12 @@ import {
   createVectorLayerDisplay,
   createLayerPresentation,
 } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
-import { places1FilterAtom, places2FilterAtom } from '../store.ts'
-import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
+import { usePlacesNavData } from '../modules/usePlacesNavData.ts'
 
 import '../form.css'
 
@@ -28,44 +22,12 @@ export const Places = memo(({ from }) => {
   const { projectId, subprojectId, placeId } = useParams({ from })
   const db = usePGlite()
 
-  const [places1Filter] = useAtom(places1FilterAtom)
-  const [places2Filter] = useAtom(places2FilterAtom)
-  const filter = placeId ? places2Filter : places1Filter
-
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const sql = `
-    SELECT 
-      place_id, 
-      label 
-    FROM places 
-    WHERE 
-      parent_id ${placeId ? `= '${placeId}'` : `IS NULL`} 
-      AND subproject_id = $1
-      ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`
-  const params = [subprojectId]
-  const res = useLiveIncrementalQuery(sql, params, 'place_id')
-  const isLoading = res === undefined
-  const places = res?.rows ?? []
-
-  // TODO: get names in above query by joining with place_levels
-  // to save a render
-  const resultPlaceLevel = useLiveQuery(
-    `
-    SELECT 
-      name_singular, 
-      name_plural 
-    FROM place_levels 
-    WHERE 
-      project_id = $1 
-      AND level = $2 
-    ORDER BY label`,
-    [projectId, placeId ? 2 : 1],
-  )
-  const placeLevel = resultPlaceLevel?.rows?.[0]
-  const placeNameSingular = placeLevel?.name_singular ?? 'Place'
-  const placeNamePlural = placeLevel?.name_plural ?? 'Places'
+  const { loading, navData, isFiltered } = usePlacesNavData({
+    projectId,
+    subprojectId,
+    placeId,
+  })
+  const { navs, label, nameSingular, namePlural } = navData
 
   const add = useCallback(async () => {
     const res = await createPlace({
@@ -86,7 +48,7 @@ export const Places = memo(({ from }) => {
       type: 'own',
       ownTable: 'places',
       ownTableLevel: placeId ? 2 : 1,
-      label: placeNamePlural,
+      label: namePlural,
       db,
     })
     const newVectorLayer = resVL?.rows?.[0]
@@ -105,23 +67,20 @@ export const Places = memo(({ from }) => {
       to: place.place_id,
       params: (prev) => ({ ...prev, placeId: place.place_id }),
     })
-  }, [db, navigate, placeNamePlural, placeId, projectId, subprojectId])
+  }, [db, navigate, namePlural, placeId, projectId, subprojectId])
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural={placeNamePlural}
-        nameSingular={placeNameSingular}
-        tableName="places"
-        countFiltered={places.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={
           <>
             <LayerMenu
               table="places"
               level={placeId ? 2 : 1}
-              placeNamePlural={placeNamePlural}
+              placeNamePlural={namePlural}
               from={from}
             />
             <FilterButton isFiltered={isFiltered} />
@@ -129,14 +88,14 @@ export const Places = memo(({ from }) => {
         }
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {places.map(({ place_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={place_id}
-                to={place_id}
-                label={label ?? place_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>
