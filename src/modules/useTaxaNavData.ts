@@ -50,7 +50,6 @@ export const useTaxaNavData = ({ projectId, taxonomyId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Taxa (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Taxon',
       navs,

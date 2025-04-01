@@ -42,7 +42,6 @@ export const useUsersNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      toParams: {},
       label: `Users (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'User',
       navs,

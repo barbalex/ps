@@ -44,7 +44,6 @@ export const useTaxonomiesNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Taxonomies (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Taxonomy',
       navs,

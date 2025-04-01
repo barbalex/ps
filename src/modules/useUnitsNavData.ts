@@ -58,7 +58,6 @@ export const useUnitsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Units (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
