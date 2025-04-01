@@ -10,36 +10,46 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'crs']
+const ownUrl = `/${ownArray.join('/')}`
 const limit = 100
 
 export const useCrssNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const resCount = useLiveQuery(`SELECT COUNT(crs_id) as count FROM crs`)
-  const count = resCount?.rows?.[0]?.count ?? 0
-
-  const res = useLiveQuery(`
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes],
+  )
+  const sql =
+    isOpen ?
+      `
+      WITH crs_count AS (SELECT COUNT(crs_id) as count FROM crs)
       SELECT
         crs_id as id,
-        label
-      FROM crs
+        label,
+        crs_count.count as count
+      FROM crs, crs_count
       ORDER BY label
-      LIMIT ${limit}`)
+      LIMIT ${limit}`
+    : `SELECT COUNT(crs_id) as count FROM crs`
+
+  const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
+    const count = navs[0]?.count ?? 0
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const ownUrl = `/${ownArray.join('/')}`
 
     // needs to work not only works for urlPath, for all opened paths!
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
     const isLimited = count > limit && isOpen
-    const label = `CRS (${resCount === undefined ? '...' : formatNumber(count)}${isLimited ? `, first ${limit}` : ''})`
+    const label = `CRS (${loading ? '...' : formatNumber(count)}${isLimited ? `, first ${limit}` : ''})`
+
+    console.log('navs:', navs)
 
     return {
       isInActiveNodeArray,
@@ -55,7 +65,7 @@ export const useCrssNavData = () => {
       nameSingular: 'CRS',
       navs,
     }
-  }, [count, location.pathname, openNodes, res?.rows, resCount])
+  }, [isOpen, loading, location.pathname, res?.rows])
 
   return { loading, navData }
 }
