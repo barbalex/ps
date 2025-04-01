@@ -28,7 +28,7 @@ export const useCrssNavData = () => {
       SELECT
         crs_id as id,
         label,
-        crs_count.count as count
+        crs_count.count
       FROM crs, crs_count
       ORDER BY label
       LIMIT ${limit}`
@@ -48,8 +48,6 @@ export const useCrssNavData = () => {
     const isActive = isEqual(urlPath, ownArray)
     const isLimited = count > limit && isOpen
     const label = `CRS (${loading ? '...' : formatNumber(count)}${isLimited ? `, first ${limit}` : ''})`
-
-    console.log('navs:', navs)
 
     return {
       isInActiveNodeArray,
