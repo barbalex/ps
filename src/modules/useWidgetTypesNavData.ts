@@ -55,7 +55,6 @@ export const useWidgetTypesNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      toParams: {},
       label: `Widget Types (${
         isFiltered ?
           `${loading ? `...` : formatNumber(navs.length)}/${

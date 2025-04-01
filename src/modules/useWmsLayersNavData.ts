@@ -58,7 +58,6 @@ export const useWmsLayersNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `WMS Layers (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${

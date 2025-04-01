@@ -55,7 +55,6 @@ export const useWidgetsForFieldsNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      toParams: {},
       label: `Widgets For Fields (${
         isFiltered ?
           `${loading ? `...` : formatNumber(navs.length)}/${
