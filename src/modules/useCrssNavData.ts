@@ -23,7 +23,7 @@ export const useCrssNavData = () => {
         label
       FROM crs
       ORDER BY label
-      limit ${limit}`)
+      LIMIT ${limit}`)
 
   const loading = res === undefined
 
