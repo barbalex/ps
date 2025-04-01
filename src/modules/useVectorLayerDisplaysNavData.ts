@@ -50,7 +50,6 @@ export const useVectorLayerDisplaysNavData = ({ projectId, vectorLayerId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Displays (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Vector Layer Display',
       navs,

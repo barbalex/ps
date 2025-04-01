@@ -58,7 +58,6 @@ export const useVectorLayersNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Vector Layers (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
