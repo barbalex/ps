@@ -24,12 +24,12 @@ export const useCrssNavData = () => {
   const sql =
     isOpen ?
       `
-      WITH crs_count AS (SELECT COUNT(crs_id) as count FROM crs)
+      WITH count AS (SELECT COUNT(crs_id) as count FROM crs)
       SELECT
         crs_id as id,
         label,
-        crs_count.count
-      FROM crs, crs_count
+        count.count
+      FROM crs, count
       ORDER BY label
       LIMIT ${limit}`
     : `SELECT COUNT(crs_id) as count FROM crs`
