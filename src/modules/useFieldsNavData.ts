@@ -52,12 +52,10 @@ export const useFieldsNavData = ({ projectId }) => {
       isInActiveNodeArray,
       isActive,
       isOpen,
-      // level: 1,
       parentUrl,
       ownArray,
       ownUrl,
       urlPath,
-      toParams: {},
       label: `Fields (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${

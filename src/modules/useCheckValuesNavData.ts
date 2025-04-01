@@ -61,7 +61,6 @@ export const useCheckValuesNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Values (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Check Value',
       navs,

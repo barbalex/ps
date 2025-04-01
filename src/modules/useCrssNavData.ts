@@ -58,7 +58,6 @@ export const useCrssNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      toParams: {},
       label,
       nameSingular: 'CRS',
       navs,

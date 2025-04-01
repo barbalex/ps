@@ -61,7 +61,6 @@ export const useCheckTaxaNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Taxa (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Check Taxon',
       navs,
