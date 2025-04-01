@@ -50,7 +50,6 @@ export const useOccurrenceImportsNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Occurrence Imports (${
         loading ? '...' : formatNumber(navs.length)
       })`,

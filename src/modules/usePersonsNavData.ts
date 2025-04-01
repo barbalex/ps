@@ -59,7 +59,6 @@ export const usePersonsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Persons (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${

@@ -44,7 +44,6 @@ export const usePlaceLevelsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Place Levels (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Place Level',
       navs,

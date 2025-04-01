@@ -81,7 +81,6 @@ export const useOccurrencesNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `${namePlural} (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular,
       navs,

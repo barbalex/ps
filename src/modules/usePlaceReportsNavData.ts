@@ -72,7 +72,6 @@ export const usePlaceReportsNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Reports (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
