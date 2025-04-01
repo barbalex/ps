@@ -42,7 +42,14 @@ export const useProjectNavData = () => {
       ownUrl,
       label: row.label,
       // nameSingular: 'Project',
-      navs: {},
+      navs: [
+        { label: 'Project', isSelf: true },
+        {
+          label: `Subprojects`,
+          fetcherName: `useSubprojectsNavData`,
+          params: { projectId },
+        },
+      ],
     }
   }, [])
 }
