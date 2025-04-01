@@ -50,7 +50,6 @@ export const useSubprojectUsersNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Users (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Subproject User',
       navs,

@@ -50,7 +50,6 @@ export const useSubprojectTaxaNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Taxa (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Subproject Taxon',
       navs,
