@@ -31,19 +31,18 @@ export const useProjectNavData = () => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
-        return {
-          isInActiveNodeArray,
-          isActive,
-          isOpen,
-          level: 2,
-          parentUrl,
-          ownArray,
-          urlPath,
-          ownUrl,
-          toParams: {},
-          label: row.label,
-          // nameSingular: 'Project',
-          navs:{},
-        }
+    return {
+      isInActiveNodeArray,
+      isActive,
+      isOpen,
+      level: 2,
+      parentUrl,
+      ownArray,
+      urlPath,
+      ownUrl,
+      label: row.label,
+      // nameSingular: 'Project',
+      navs: {},
+    }
   }, [])
 }

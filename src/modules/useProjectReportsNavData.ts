@@ -58,7 +58,6 @@ export const useProjectReportsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Reports (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${

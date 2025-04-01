@@ -44,7 +44,6 @@ export const useProjectUsersNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Users (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Project User',
       navs,
