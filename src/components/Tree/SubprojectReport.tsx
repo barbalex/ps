@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual'
 import { Node } from './Node.tsx'
 
 export const SubprojectReportNode = memo(
-  ({ projectId, subprojectId, subprojectReport, level = 6 }) => {
+  ({ projectId, subprojectId, nav, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -17,9 +17,9 @@ export const SubprojectReportNode = memo(
         'subprojects',
         subprojectId,
         'reports',
-        subprojectReport.subproject_report_id,
+        nav.id,
       ],
-      [projectId, subprojectReport.subproject_report_id, subprojectId],
+      [projectId, nav.id, subprojectId],
     )
     const ownUrl = `/${ownArray.join('/')}`
 
@@ -28,8 +28,8 @@ export const SubprojectReportNode = memo(
 
     return (
       <Node
-        node={subprojectReport}
-        id={subprojectReport.subproject_report_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}

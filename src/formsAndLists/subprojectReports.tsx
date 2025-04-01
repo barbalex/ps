@@ -1,40 +1,25 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubprojectReport } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader.tsx'
+import { useSubprojectReportsNavData } from '../modules/useSubprojectReportsNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
-import { subprojectReportsFilterAtom } from '../store.ts'
-import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const SubprojectReports = memo(({ from }) => {
-  const [filter] = useAtom(subprojectReportsFilterAtom)
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT 
-      subproject_report_id, 
-      label 
-    FROM subproject_reports 
-    WHERE 
-      subproject_id = $1
-      ${isFiltered ? ` AND(${filterString})` : ''} 
-    ORDER BY label`,
-    [subprojectId],
-    'subproject_report_id',
-  )
-  const isLoading = res === undefined
-  const subprojectReports = res?.rows ?? []
+  const { loading, navData, isFiltered } = useSubprojectReportsNavData({
+    projectId,
+    subprojectId,
+  })
+  const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {
     const res = await createSubprojectReport({ db, projectId, subprojectId })
@@ -51,25 +36,21 @@ export const SubprojectReports = memo(({ from }) => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        namePlural="Subproject Reports"
-        nameSingular="subproject report"
-        tableName="subproject_reports"
-        ifFiltered={isFiltered}
-        countFiltered={subprojectReports.length}
-        isLoading={isLoading}
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {isLoading ?
+        {loading ?
           <Loading />
         : <>
-            {subprojectReports.map(({ subproject_report_id, label }) => (
+            {navs.map(({ id, label }) => (
               <Row
-                key={subproject_report_id}
-                to={subproject_report_id}
-                label={label ?? subproject_report_id}
+                key={id}
+                to={id}
+                label={label ?? id}
               />
             ))}
           </>

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { SubprojectReportForm } from '../../../../../../../../../../../formsAndLists/subprojectReport/Form.tsx'
+import { PlaceReportForm } from '../../../../../../../../../../../formsAndLists/placeReport/Form.tsx'
 import { Filter } from '../../../../../../../../../../../components/shared/Filter/index.tsx'
 
 const from =
@@ -16,7 +16,7 @@ function RouteComponent() {
   return (
     <Filter from={from}>
       {({ row, onChange, orIndex }) => (
-        <SubprojectReportForm
+        <PlaceReportForm
           row={row}
           onChange={onChange}
           orIndex={orIndex}
