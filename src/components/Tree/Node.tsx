@@ -65,7 +65,6 @@ interface Props {
   isActive: boolean
   isOpen: boolean
   level: number
-  node: { label: string; name?: string }
   label: string
   id: string
   childrenCount: number
@@ -80,10 +79,6 @@ export const Node = memo(
     isActive,
     isOpen = false,
     level,
-    // During transition:
-    // node was old way to pass data
-    node,
-    // label is the new way to pass from use...NavData hooks
     label,
     // id is used as a backup in case the label trigger did not work
     id,
@@ -124,7 +119,7 @@ export const Node = memo(
         <div style={contentStyle}>
           {isActive ?
             <span style={contentLabelStyle}>
-              {label ?? node?.label ?? node?.name ?? id ?? '(missing label)'}
+              {label ?? id ?? '(missing label)'}
             </span>
           : <Link
               style={pipe(
@@ -136,7 +131,7 @@ export const Node = memo(
               to={to}
               params={toParams}
             >
-              {label ?? node?.label ?? node?.name ?? id ?? '(missing label)'}
+              {label ?? id ?? '(missing label)'}
             </Link>
           }
           {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}
