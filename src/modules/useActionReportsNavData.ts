@@ -61,7 +61,6 @@ export const useActionReportsNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Reports (${loading ? '...' : formatNumber(navs.length)})`,
       nameSingular: 'Action Report',
       navs,

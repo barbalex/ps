@@ -79,7 +79,6 @@ export const useActionsNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      toParams: {},
       label: `Actions (${
         isFiltered ?
           `${loading ? '...' : formatNumber(navs.length)}/${
