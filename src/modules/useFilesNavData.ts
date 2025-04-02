@@ -129,7 +129,5 @@ export const useFilesNavData = ({
     res?.rows,
   ])
 
-  console.log('useFilesNavData', navData)
-
   return { loading, navData }
 }
