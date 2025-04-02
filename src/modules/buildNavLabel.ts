@@ -6,6 +6,8 @@ export const buildNavLabel = ({
   namePlural,
   loading,
   isFiltered = false,
+  isLimited = false,
+  limit = 100,
 }) =>
   isFiltered ?
     `${namePlural} (${
@@ -15,5 +17,5 @@ export const buildNavLabel = ({
         }`
       : loading ? '...'
       : formatNumber(countFiltered)
-    })`
-  : ` ${namePlural} (${loading ? '...' : formatNumber(countFiltered)})`
+    }${isLimited ? `, first ${limit}` : ''})`
+  : ` ${namePlural} (${loading ? '...' : formatNumber(countFiltered)}${isLimited ? `, first ${limit}` : ''})`

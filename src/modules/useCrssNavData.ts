@@ -48,7 +48,6 @@ export const useCrssNavData = () => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
     const isLimited = count > limit && isOpen
-    const label = `CRS (${loading ? '...' : formatNumber(count)}${isLimited ? `, first ${limit}` : ''})`
 
     return {
       isInActiveNodeArray,
@@ -59,7 +58,12 @@ export const useCrssNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      label,
+      label: buildNavLabel({
+        countFiltered: count,
+        namePlural: 'CRS',
+        loading,
+        isLimited,
+      }),
       nameSingular: 'CRS',
       navs,
     }
