@@ -4,7 +4,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -43,7 +42,11 @@ export const useUsersNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      label: `Users (${loading ? '...' : formatNumber(navs.length)})`,
+      label: buildNavLabel({
+        countFiltered: navs.length,
+        namePlural: 'Users',
+        loading,
+      }),
       nameSingular: 'User',
       navs,
     }
