@@ -15,7 +15,7 @@ const from = '/data/_authLayout/projects/$projectId_/project/'
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
 export const Header = memo(({ autoFocusRef }: Props) => {
-  const { project_id } = useParams({ from })
+  const { projectId } = useParams({ from })
   const navigate = useNavigate({ from })
 
   const db = usePGlite()
@@ -34,33 +34,33 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   }, [autoFocusRef, db, navigate])
 
   const deleteRow = useCallback(async () => {
-    db.query(`DELETE FROM projects WHERE project_id = $1`, [project_id])
+    db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
     navigate({ to: `..` })
-  }, [db, navigate, project_id])
+  }, [db, navigate, projectId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.project_id === project_id)
+    const index = rows.findIndex((p) => p.project_id === projectId)
     const next = rows[(index + 1) % len]
     navigate({
       to: `../$projectId`,
       params: { projectId: next.project_id },
     })
-  }, [db, navigate, project_id])
+  }, [db, navigate, projectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.project_id === project_id)
+    const index = rows.findIndex((p) => p.project_id === projectId)
     const previous = rows[(index + len - 1) % len]
     navigate({
       to: `../$projectId`,
       params: { projectId: previous.project_id },
     })
-  }, [db, navigate, project_id])
+  }, [db, navigate, projectId])
 
   return (
     <FormHeader

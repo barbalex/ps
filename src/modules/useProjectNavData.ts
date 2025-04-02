@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import {
@@ -11,9 +10,8 @@ import {
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
-export const useProjectNavData = () => {
+export const useProjectNavData = ({ projectId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
-  const { projectId } = useParams({ strict: false })
 
   const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
   const subprojectsFilterString = filterStringFromFilter(subprojectsFilter)
@@ -75,8 +73,9 @@ export const useProjectNavData = () => {
       label: row.label,
       // nameSingular: 'Project',
       navs: [
-        { label: 'Project', array: [...ownArray, 'project'] },
+        { id: 'project', label: 'Project' },
         {
+          id: 'subprojects',
           label: buildNavLabel({
             loading,
             isFiltered: subprojectIsFiltered,
@@ -84,9 +83,9 @@ export const useProjectNavData = () => {
             countUnfiltered: row?.subprojects_count_unfiltered ?? 0,
             namePlural: row?.subprojects_name_plural ?? 'Subprojects',
           }),
-          array: [...ownArray, 'subprojects'],
         },
         {
+          id: 'reports',
           label: buildNavLabel({
             loading,
             isFiltered: projectReportsIsFiltered,
@@ -94,7 +93,6 @@ export const useProjectNavData = () => {
             countUnfiltered: row?.project_reports_count_unfiltered ?? 0,
             namePlural: 'Reports',
           }),
-          array: [...ownArray, 'reports'],
         },
       ],
     }
@@ -111,4 +109,6 @@ export const useProjectNavData = () => {
     row?.subprojects_name_plural,
     subprojectIsFiltered,
   ])
+
+  return { navData, loading }
 }
