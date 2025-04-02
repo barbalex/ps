@@ -4,7 +4,6 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -60,7 +59,11 @@ export const useGoalReportValuesNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: `Values (${loading ? '...' : formatNumber(navs.length)})`,
+      label: buildNavLabel({
+        countFiltered: navs.length,
+        namePlural: 'Values',
+        loading,
+      }),
       nameSingular: 'Goal Report Value',
       navs,
     }
