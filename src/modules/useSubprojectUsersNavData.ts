@@ -4,7 +4,7 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { formatNumber } from './formatNumber.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
 export const useSubprojectUsersNavData = ({ projectId, subprojectId }) => {
@@ -50,7 +50,11 @@ export const useSubprojectUsersNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `Users (${loading ? '...' : formatNumber(navs.length)})`,
+      label: buildNavLabel({
+        loading,
+        countFiltered: navs.length,
+        namePlural: 'Users',
+      }),
       nameSingular: 'Subproject User',
       navs,
     }
