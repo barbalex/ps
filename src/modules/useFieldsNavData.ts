@@ -12,39 +12,60 @@ export const useFieldsNavData = ({ projectId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  const parentArray = useMemo(
+    () => ['data', ...(projectId ? ['projects', projectId] : [])],
+    [projectId],
+  )
+
+  const ownArray = useMemo(() => [...parentArray, 'fields'], [parentArray])
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes, ownArray],
+  )
+
   const [filter] = useAtom(fieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const res = useLiveQuery(`
-    SELECT field_id AS id, label 
-    FROM fields 
-    WHERE 
-      project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
-      ${filterString ? ` AND ${filterString}` : ''} 
-    ORDER BY table_name, name, level`)
+  const sql =
+    isOpen ?
+      `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}),
+        count_filtered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        field_id AS id,
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM fields, count_unfiltered, count_filtered
+      WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY table_name, name, level
+    `
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}),
+        count_filtered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
+  const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
-  const resultCountUnfiltered = useLiveQuery(
-    `
-    SELECT count(*) 
-    FROM fields 
-    WHERE project_id  ${projectId ? `= '${projectId}'` : 'IS NULL'}`,
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
-
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
+
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = ['data', ...(projectId ? ['projects', projectId] : [])]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'fields']
     const ownUrl = `/${ownArray.join('/')}`
 
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
@@ -59,7 +80,7 @@ export const useFieldsNavData = ({ projectId }) => {
       label: buildNavLabel({
         loading,
         isFiltered,
-        countFiltered: navs.length,
+        countFiltered,
         countUnfiltered,
         namePlural: 'Fields',
       }),
@@ -67,12 +88,12 @@ export const useFieldsNavData = ({ projectId }) => {
       navs,
     }
   }, [
-    countUnfiltered,
     isFiltered,
+    isOpen,
     loading,
     location.pathname,
-    openNodes,
-    projectId,
+    ownArray,
+    parentArray,
     res?.rows,
   ])
 
