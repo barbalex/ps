@@ -21,38 +21,8 @@ export const useChecksNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const [filter] = useAtom(placeId2 ? checks2FilterAtom : checks1FilterAtom)
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-
-  const res = useLiveQuery(
-    `
-      SELECT 
-        check_id as id, 
-        label 
-      FROM checks 
-      WHERE 
-        place_id = $1 
-        ${isFiltered ? ` AND ${filterString} ` : ''}
-      ORDER BY label`,
-    [placeId2 ?? placeId],
-  )
-
-  const loading = res === undefined
-
-  const resultCountUnfiltered = useLiveQuery(
-    `
-      SELECT count(*) 
-      FROM checks 
-      WHERE place_id = $1`,
-    [placeId2 ?? placeId],
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
-
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const parentArray = [
+  const parentArray = useMemo(
+    () => [
       'data',
       'projects',
       projectId,
@@ -61,12 +31,57 @@ export const useChecksNavData = ({
       'places',
       placeId,
       ...(placeId2 ? ['places', placeId2] : []),
-    ]
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'checks']
-    const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    ],
+    [placeId, placeId2, projectId, subprojectId],
+  )
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(() => [...parentArray, 'checks'], [parentArray])
+  const ownUrl = `/${ownArray.join('/')}`
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes, ownArray],
+  )
+
+  const [filter] = useAtom(placeId2 ? checks2FilterAtom : checks1FilterAtom)
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+
+  const sql =
+    isOpen ?
+      `
+      WITH 
+        count_unfiltered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT 
+        check_id AS id,
+        label, 
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM checks, count_unfiltered, count_filtered
+      WHERE 
+        place_id = '${placeId2 ?? placeId}'
+        ${isFiltered ? `AND ${filterString}` : ''} 
+      ORDER BY label
+    `
+    : `
+      WITH 
+        count_unfiltered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT 
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
+  const res = useLiveQuery(sql)
+
+  const loading = res === undefined
+
+  const navData = useMemo(() => {
+    const navs = res?.rows ?? []
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
+
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
@@ -82,7 +97,7 @@ export const useChecksNavData = ({
       label: buildNavLabel({
         loading,
         isFiltered,
-        countFiltered: navs.length,
+        countFiltered,
         countUnfiltered,
         namePlural: 'Checks',
       }),
@@ -90,16 +105,14 @@ export const useChecksNavData = ({
       navs,
     }
   }, [
-    countUnfiltered,
     isFiltered,
+    isOpen,
     loading,
     location.pathname,
-    openNodes,
-    placeId,
-    placeId2,
-    projectId,
+    ownArray,
+    ownUrl,
+    parentUrl,
     res?.rows,
-    subprojectId,
   ])
 
   return { loading, navData, isFiltered }
