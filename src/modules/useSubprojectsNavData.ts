@@ -64,19 +64,19 @@ export const useSubprojectsNavData = ({ projectId }) => {
 
   const loading = res === undefined
 
-  const navs = useMemo(() => res?.rows ?? [], [res])
-  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-  const countFiltered = navs[0]?.count_filtered ?? 0
-
-  const namePlural = navs[0]?.name_plural ?? 'Subprojects'
-  const nameSingular = navs[0]?.name_singular ?? 'Subproject'
-
   const navData = useMemo(() => {
     const parentUrl = `/${parentArray.join('/')}`
     const ownUrl = `/${ownArray.join('/')}`
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const navs = res?.rows ?? []
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
+
+    const namePlural = navs[0]?.name_plural ?? 'Subprojects'
+    const nameSingular = navs[0]?.name_singular ?? 'Subproject'
 
     return {
       isInActiveNodeArray,
@@ -97,17 +97,13 @@ export const useSubprojectsNavData = ({ projectId }) => {
       navs,
     }
   }, [
-    countFiltered,
-    countUnfiltered,
     isFiltered,
     isOpen,
     loading,
     location.pathname,
-    namePlural,
-    nameSingular,
-    navs,
     ownArray,
     parentArray,
+    res?.rows,
   ])
 
   return { loading, navData, isFiltered }
