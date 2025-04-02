@@ -17,32 +17,50 @@ export const useWidgetsForFieldsNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes],
+  )
+
   const [filter] = useAtom(widgetsForFieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const res = useLiveQuery(`
-    SELECT 
-      widget_for_field_id AS id,
-      label 
-    FROM widgets_for_fields
-    ${isFiltered ? ` WHERE ${filterString}` : ''} 
-    ORDER BY label`)
+  const sql =
+    isOpen ?
+      `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
+        count_filtered AS (SELECT count(*) FROM widgets_for_fields ${isFiltered ? ` WHERE ${filterString}` : ''})
+      SELECT
+        widget_for_field_id AS id,
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM widgets_for_fields, count_unfiltered, count_filtered
+      ${isFiltered ? ` WHERE ${filterString}` : ''}
+      ORDER BY label
+    `
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
+        count_filtered AS (SELECT count(*) FROM widgets_for_fields ${isFiltered ? ` WHERE ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
+  const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
-  const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM widgets_for_fields`,
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
-
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
 
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
@@ -58,21 +76,14 @@ export const useWidgetsForFieldsNavData = () => {
       label: buildNavLabel({
         loading,
         isFiltered,
-        countFiltered: navs.length,
+        countFiltered,
         countUnfiltered,
         namePlural: 'Widgets For Fields',
       }),
       nameSingular: 'Widget For Field',
       navs,
     }
-  }, [
-    countUnfiltered,
-    isFiltered,
-    loading,
-    location.pathname,
-    openNodes,
-    res?.rows,
-  ])
+  }, [isFiltered, isOpen, loading, location.pathname, res?.rows])
 
   return { loading, navData, isFiltered }
 }
