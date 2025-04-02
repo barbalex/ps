@@ -17,35 +17,8 @@ export const usePlaceReportsNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const [filter] = useAtom(unitsFilterAtom)
-  const filterString = filterStringFromFilter(filter)
-  const isFiltered = !!filterString
-
-  const res = useLiveQuery(
-    `
-    SELECT
-      place_report_id AS id,
-      label 
-    FROM place_reports 
-    WHERE 
-      place_id = $1 
-      ${isFiltered ? ` AND ${filterString} ` : ``}
-    ORDER BY label`,
-    [placeId2 ?? placeId],
-  )
-
-  const loading = res === undefined
-
-  const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM place_reports WHERE place_id = $1`,
-    [placeId2 ?? placeId],
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
-
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const parentArray = [
+  const parentArray = useMemo(
+    () => [
       'data',
       'projects',
       projectId,
@@ -54,12 +27,57 @@ export const usePlaceReportsNavData = ({
       'places',
       placeId,
       ...(placeId2 ? ['places', placeId2] : []),
-    ]
+    ],
+    [placeId, placeId2, projectId, subprojectId],
+  )
+  const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes, ownArray],
+  )
+
+  const [filter] = useAtom(unitsFilterAtom)
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+
+  const sql =
+    isOpen ?
+      `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}' ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        place_report_id AS id,
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM place_reports, count_unfiltered, count_filtered
+      WHERE
+        place_id = '${placeId2 ?? placeId}'
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label
+    `
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}' ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
+  const res = useLiveQuery(sql)
+
+  const loading = res === undefined
+
+  const navData = useMemo(() => {
+    const navs = res?.rows ?? []
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
+
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'reports']
     const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
@@ -75,24 +93,21 @@ export const usePlaceReportsNavData = ({
       label: buildNavLabel({
         loading,
         isFiltered,
-        countFiltered: navs.length,
+        countFiltered,
         countUnfiltered,
         namePlural: 'Reports',
       }),
-      nameSingular: 'Action',
+      nameSingular: 'Report',
       navs,
     }
   }, [
-    countUnfiltered,
     isFiltered,
+    isOpen,
     loading,
     location.pathname,
-    openNodes,
-    placeId,
-    placeId2,
-    projectId,
+    ownArray,
+    parentArray,
     res?.rows,
-    subprojectId,
   ])
 
   return { loading, navData, isFiltered }
