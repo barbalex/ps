@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import isEqual from 'lodash/isEqual'
 
 import {
   subprojectsFilterAtom,
@@ -54,7 +55,7 @@ export const useProjectNavData = ({ projectId }) => {
   const navData = useMemo(() => {
     const parentArray = ['data', 'projects']
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row.id]
+    const ownArray = [...parentArray, row?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -70,7 +71,7 @@ export const useProjectNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row.label,
+      label: row?.label,
       // nameSingular: 'Project',
       navs: [
         { id: 'project', label: 'Project' },
@@ -100,8 +101,8 @@ export const useProjectNavData = ({ projectId }) => {
     loading,
     openNodes,
     projectReportsIsFiltered,
-    row.id,
-    row.label,
+    row?.id,
+    row?.label,
     row?.project_reports_count_filtered,
     row?.project_reports_count_unfiltered,
     row?.subprojects_count_filtered,

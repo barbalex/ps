@@ -61,7 +61,10 @@ export const Project = memo(() => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <TabList
         selectedValue={projectTab}
         onTabSelect={onTabSelect}

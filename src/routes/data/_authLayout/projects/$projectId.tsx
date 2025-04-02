@@ -1,7 +1,7 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { type } from 'arktype'
 
-import { Project } from '../../../../formsAndLists/project/index.tsx'
+import { ProjectList } from '../../../../formsAndLists/project/List.tsx'
 
 const defaultValues = {
   projectTab: 'form',
@@ -14,7 +14,7 @@ const schema = type({
 })
 
 export const Route = createFileRoute('/data/_authLayout/projects/$projectId')({
-  component: Project,
+  component: ProjectList,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
 })

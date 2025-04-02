@@ -10,13 +10,13 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-const from = '/data/_authLayout/projects/$projectId_/project/'
-
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
-export const Header = memo(({ autoFocusRef }: Props) => {
+export const Header = memo(({ autoFocusRef, from, label }: Props) => {
+  console.log('Header, from:', from)
+  const isForm = from === '/data/_authLayout/projects/$projectId_/project/'
   const { projectId } = useParams({ from })
-  const navigate = useNavigate({ from })
+  const navigate = useNavigate()
 
   const db = usePGlite()
 
@@ -27,16 +27,16 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     // TODO: add place_levels?
     // now navigate to the new project
     navigate({
-      to: `../$projectId`,
+      to: isForm ? `../../$projectId/project` : `../$projectId/project`,
       params: { projectId: data.project_id },
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate])
+  }, [autoFocusRef, db, isForm, navigate])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
-    navigate({ to: `..` })
-  }, [db, navigate, projectId])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, isForm, navigate, projectId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
@@ -45,10 +45,10 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const index = rows.findIndex((p) => p.project_id === projectId)
     const next = rows[(index + 1) % len]
     navigate({
-      to: `../$projectId`,
+      to: isForm ? `../../$projectId/project` : `../$projectId`,
       params: { projectId: next.project_id },
     })
-  }, [db, navigate, projectId])
+  }, [db, isForm, navigate, projectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
@@ -57,14 +57,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const index = rows.findIndex((p) => p.project_id === projectId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to: `../$projectId`,
+      to: isForm ? `../../$projectId/project` : `../$projectId`,
       params: { projectId: previous.project_id },
     })
-  }, [db, navigate, projectId])
+  }, [db, isForm, navigate, projectId])
 
   return (
     <FormHeader
-      title="Project"
+      title={label ?? 'Project'}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
