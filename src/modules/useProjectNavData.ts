@@ -11,15 +11,28 @@ export const useProjectNavData = () => {
 
   const res = useLiveQuery(
     `
+      WITH 
+        subprojects_count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
+        subprojects_count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''} ),
+        subprojects_names AS (SELECT subproject_name_singular, subproject_name_plural FROM projects WHERE project_id = '${projectId}')
       SELECT
         project_id AS id,
-        label 
-      FROM projects
+        label,
+        subprojects_count_unfiltered.count AS subprojects_count_unfiltered,
+        subprojects_count_filtered.count AS subprojects_count_filtered,
+        subprojects_names.subproject_name_singular AS subprojects_name_singular,
+        subprojects_names.subproject_name_plural AS subprojects_name_plural
+      FROM projects, subprojects_count_unfiltered, subprojects_count_filtered, subprojects_names
       WHERE project_id = $1`,
     [projectId],
   )
   const loading = res === undefined
   const row = res?.rows?.[0]
+
+  const subprojectsCountUnfiltered = row?.subprojects_count_unfiltered ?? 0
+  const subprojectsCountFiltered = row?.subprojects_count_filtered ?? 0
+  const subprojectsNameSingular = row?.subprojects_name_singular ?? 'Subproject'
+  const subprojectsNamePlural = row?.subprojects_name_plural ?? 'Subprojects'
 
   const navData = useMemo(() => {
     const parentArray = ['data', 'projects']

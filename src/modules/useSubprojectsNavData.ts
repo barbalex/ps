@@ -5,7 +5,7 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { formatNumber } from './formatNumber.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 import { subprojectsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 export const useSubprojectsNavData = ({ projectId }) => {
@@ -36,8 +36,8 @@ export const useSubprojectsNavData = ({ projectId }) => {
       SELECT 
         sp.subproject_id AS id,
         sp.label, 
-        p.subproject_name_plural, 
-        p.subproject_name_singular,
+        p.subproject_name_plural AS name_plural, 
+        p.subproject_name_singular AS name_singular,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM subprojects sp
@@ -51,13 +51,15 @@ export const useSubprojectsNavData = ({ projectId }) => {
     : `
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''} )
+        count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''} ),
+        names AS (SELECT subproject_name_singular, subproject_name_plural FROM projects WHERE project_id = '${projectId}')
       SELECT 
         count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM count_unfiltered, count_filtered
+        count_filtered.count AS count_filtered,
+        names.subproject_name_singular AS name_singular,
+        names.subproject_name_plural AS name_plural
+      FROM count_unfiltered, count_filtered, names
     `
-  console.log('useSubprojectsNavData sql', sql)
   const res = useLiveQuery(sql)
 
   const loading = res === undefined
@@ -66,8 +68,8 @@ export const useSubprojectsNavData = ({ projectId }) => {
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
-  const namePlural = navs[0]?.subproject_name_plural ?? 'Subprojects'
-  const nameSingular = navs[0]?.subproject_name_singular ?? 'Subproject'
+  const namePlural = navs[0]?.name_plural ?? 'Subprojects'
+  const nameSingular = navs[0]?.name_singular ?? 'Subproject'
 
   const navData = useMemo(() => {
     const parentUrl = `/${parentArray.join('/')}`
@@ -84,14 +86,13 @@ export const useSubprojectsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `${namePlural} (${
-        isFiltered ?
-          `${loading ? '...' : formatNumber(countFiltered)}/${
-            loading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : loading ? '...'
-        : formatNumber(countFiltered)
-      })`,
+      label: buildNavLabel({
+        loading,
+        isFiltered,
+        countFiltered,
+        countUnfiltered,
+        namePlural,
+      }),
       nameSingular,
       navs,
     }
