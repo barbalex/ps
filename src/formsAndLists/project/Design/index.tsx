@@ -17,7 +17,7 @@ const labelStyle = {
   fontWeight: 700,
 }
 
-const from = '/data/_authLayout/projects/$projectId'
+const from = '/data/_authLayout/projects/$projectId_/project/'
 
 export const Design = memo(({ onChange, row }) => {
   const { project_id } = useParams({ from })

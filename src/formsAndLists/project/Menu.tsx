@@ -10,7 +10,7 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-const from = '/data/_authLayout/projects/$projectId'
+const from = '/data/_authLayout/projects/$projectId_/project/'
 
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project

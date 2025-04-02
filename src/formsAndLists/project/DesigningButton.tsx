@@ -8,7 +8,7 @@ import { useParams } from '@tanstack/react-router'
 
 import { designingAtom } from '../../store.ts'
 
-const from = '/data/_authLayout/projects/$projectId'
+const from = '/data/_authLayout/projects/$projectId_/project/'
 
 export const DesigningButton = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)

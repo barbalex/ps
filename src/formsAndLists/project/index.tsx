@@ -14,7 +14,7 @@ import { designingAtom } from '../../store.ts'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId'
+const from = '/data/_authLayout/projects/$projectId_/project/'
 
 export const Project = memo(() => {
   const [designing] = useAtom(designingAtom)
