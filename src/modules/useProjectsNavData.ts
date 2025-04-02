@@ -5,7 +5,6 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { projectsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
@@ -53,19 +52,17 @@ export const useProjectsNavData = () => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `Projects (${
-        isFiltered ?
-          `${loading ? '...' : formatNumber(navs.length)}/${
-            countLoading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : loading ? '...'
-        : formatNumber(navs.length)
-      })`,
+      label: buildNavLabel({
+        loading,
+        isFiltered,
+        countFiltered: navs.length,
+        countUnfiltered,
+        namePlural: 'Projects',
+      }),
       nameSingular: 'Project',
       navs,
     }
   }, [
-    countLoading,
     countUnfiltered,
     isFiltered,
     loading,
