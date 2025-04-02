@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { formatNumber } from './formatNumber.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 import { fieldTypesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 const parentArray = ['data']

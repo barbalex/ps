@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { formatNumber } from './formatNumber.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 import { subprojectReportsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 export const useSubprojectReportsNavData = ({ projectId, subprojectId }) => {
