@@ -45,14 +45,14 @@ export const Files = memo(
         />
         <div className="list-container">
           <Uploader />
-          {loading ? (
+          {loading ?
             <Loading />
-          ) : (
-            <>
+          : <>
               {navs.map(({ file_id, label, url, mimetype }) => {
                 let imgSrc = undefined
                 if (
-                  (mimetype.includes('image') || mimetype.includes('pdf')) &&
+                  (mimetype?.includes?.('image') ||
+                    mimetype?.includes?.('pdf')) &&
                   url
                 ) {
                   imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
@@ -69,7 +69,7 @@ export const Files = memo(
                 )
               })}
             </>
-          )}
+          }
         </div>
       </div>
     )

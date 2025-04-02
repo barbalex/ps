@@ -19,6 +19,25 @@ export const useFilesNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  const parentArray = useMemo(
+    () => [
+      'data',
+      ...(projectId ? ['projects', projectId] : []),
+      ...(subprojectId ? ['subprojects', subprojectId] : []),
+      ...(placeId ? ['places', placeId] : []),
+      ...(placeId2 ? ['places', placeId2] : []),
+      ...(actionId ? ['actions', actionId] : []),
+      ...(checkId ? ['checks', checkId] : []),
+    ],
+    [actionId, checkId, placeId, placeId2, projectId, subprojectId],
+  )
+  const ownArray = useMemo(() => [...parentArray, 'files'], [parentArray])
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes, ownArray],
+  )
+
   const { hKey, hValue } = useMemo(() => {
     if (actionId) {
       return { hKey: 'action_id', hValue: actionId }
@@ -40,46 +59,44 @@ export const useFilesNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = `
-    SELECT 
-      file_id, 
-      label, 
-      url, 
-      mimetype 
-    FROM files 
-    WHERE
-        ${hKey ? `${hKey} = '${hValue}'` : 'true'} 
-        ${isFiltered ? `AND ${filterString}` : ''} 
-    ORDER BY label`
+  const sql =
+    isOpen ?
+      `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}),
+        count_filtered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'} ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        file_id AS id,
+        label,
+        url,
+        mimetype,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM files, count_unfiltered, count_filtered
+      WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label
+    `
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}),
+        count_filtered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'} ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
   const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
-  const resultCountUnfiltered = useLiveQuery(
-    `
-        SELECT count(*) 
-        FROM files 
-        WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'} `,
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
-
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
-    const parentArray = [
-      'data',
-      ...(projectId ? ['projects', projectId] : []),
-      ...(subprojectId ? ['subprojects', subprojectId] : []),
-      ...(placeId ? ['places', placeId] : []),
-      ...(placeId2 ? ['places', placeId2] : []),
-      ...(actionId ? ['actions', actionId] : []),
-      ...(checkId ? ['checks', checkId] : []),
-    ]
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
+
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'files']
     const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
@@ -88,7 +105,6 @@ export const useFilesNavData = ({
       isInActiveNodeArray,
       isActive,
       isOpen,
-      // level: 1,
       parentUrl,
       ownArray,
       urlPath,
@@ -96,7 +112,7 @@ export const useFilesNavData = ({
       label: buildNavLabel({
         loading,
         isFiltered,
-        countFiltered: navs.length,
+        countFiltered,
         countUnfiltered,
         namePlural: 'Files',
       }),
@@ -104,19 +120,16 @@ export const useFilesNavData = ({
       navs,
     }
   }, [
-    actionId,
-    checkId,
-    countUnfiltered,
     isFiltered,
+    isOpen,
     loading,
     location.pathname,
-    openNodes,
-    placeId,
-    placeId2,
-    projectId,
+    ownArray,
+    parentArray,
     res?.rows,
-    subprojectId,
   ])
+
+  console.log('useFilesNavData', navData)
 
   return { loading, navData }
 }
