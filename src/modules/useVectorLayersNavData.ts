@@ -5,7 +5,6 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { vectorLayersFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
@@ -59,19 +58,17 @@ export const useVectorLayersNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `Vector Layers (${
-        isFiltered ?
-          `${loading ? '...' : formatNumber(navs.length)}/${
-            countLoading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : loading ? '...'
-        : formatNumber(navs.length)
-      })`,
+      label: buildNavLabel({
+        loading,
+        isFiltered,
+        countFiltered: navs.length,
+        countUnfiltered,
+        namePlural: 'Vector Layers',
+      }),
       nameSingular: 'Vector Layer',
       navs,
     }
   }, [
-    countLoading,
     countUnfiltered,
     isFiltered,
     loading,
