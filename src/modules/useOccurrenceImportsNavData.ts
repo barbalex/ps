@@ -4,7 +4,6 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -51,9 +50,11 @@ export const useOccurrenceImportsNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `Occurrence Imports (${
-        loading ? '...' : formatNumber(navs.length)
-      })`,
+      label: buildNavLabel({
+        countFiltered: navs.length,
+        namePlural: 'Occurrence Imports',
+        loading,
+      }),
       nameSingular: 'Occurrence Import',
       navs,
     }
