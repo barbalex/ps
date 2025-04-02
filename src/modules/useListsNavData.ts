@@ -5,7 +5,6 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { listsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
@@ -59,19 +58,17 @@ export const useListsNavData = ({ projectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `Lists (${
-        isFiltered ?
-          `${loading ? '...' : formatNumber(navs.length)}/${
-            countLoading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : loading ? '...'
-        : formatNumber(navs.length)
-      })`,
+      label: buildNavLabel({
+        loading,
+        isFiltered,
+        countFiltered: navs.length,
+        countUnfiltered,
+        namePlural: 'Lists',
+      }),
       nameSingular: 'List',
       navs,
     }
   }, [
-    countLoading,
     countUnfiltered,
     isFiltered,
     loading,
