@@ -16,34 +16,65 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  const parentArray = useMemo(
+    () => [
+      'data',
+      'projects',
+      projectId,
+      'subprojects',
+      subprojectId,
+      ...(placeId ? ['places', placeId] : []),
+    ],
+    [placeId, projectId, subprojectId],
+  )
+  const ownArray = useMemo(() => [...parentArray, 'places'], [parentArray])
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = useMemo(
+    () => openNodes.some((array) => isEqual(array, ownArray)),
+    [openNodes, ownArray],
+  )
+
   const [filter] = useAtom(placeId ? places2FilterAtom : places1FilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const res = useLiveQuery(
-    `
+  const sql =
+    isOpen ?
+      `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
+          placeId ? `= $2` : `IS NULL`
+        }),
+        count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
+          placeId ? `= $2` : `IS NULL`
+        } ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         place_id AS id,
-        label 
-      FROM places 
-      WHERE 
-        subproject_id = $1 
-        and parent_id ${placeId ? `= '${placeId}'` : `is null`}
-        ${isFiltered ? ` AND ${filterString} ` : ''} 
-      ORDER BY label`,
-    [subprojectId],
-  )
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM places, count_unfiltered, count_filtered
+      WHERE subproject_id = '${subprojectId}'
+        and parent_id ${placeId ? `= $2` : `IS NULL`}
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label
+    `
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
+          placeId ? `= $2` : `IS NULL`
+        }),
+        count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
+          placeId ? `= $2` : `IS NULL`
+        } ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
+  const res = useLiveQuery(sql)
 
   const loading = res === undefined
-
-  const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM places WHERE subproject_id = $1 and parent_id ${
-      placeId ? `= $2` : `IS NULL`
-    }`,
-    [subprojectId, ...(placeId ? [placeId] : [])],
-  )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
 
   const resultPlaceLevels = useLiveQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
@@ -55,19 +86,11 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
 
   const navData = useMemo(() => {
     const navs = res?.rows ?? []
-    const parentArray = [
-      'data',
-      'projects',
-      projectId,
-      'subprojects',
-      subprojectId,
-      ...(placeId ? ['places', placeId] : []),
-    ]
+    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+    const countFiltered = navs[0]?.count_filtered ?? 0
+
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'places']
     const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
@@ -83,7 +106,7 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
       label: buildNavLabel({
         loading,
         isFiltered,
-        countFiltered: navs.length,
+        countFiltered,
         countUnfiltered,
         namePlural: placeNamePlural,
       }),
@@ -92,17 +115,15 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
       navs,
     }
   }, [
-    countUnfiltered,
     isFiltered,
+    isOpen,
     loading,
     location.pathname,
-    openNodes,
-    placeId,
+    ownArray,
+    parentArray,
     placeNamePlural,
     placeNameSingular,
-    projectId,
     res?.rows,
-    subprojectId,
   ])
 
   return { loading, navData, isFiltered }
