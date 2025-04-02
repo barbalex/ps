@@ -5,7 +5,7 @@ export const buildNavLabel = ({
   countFiltered,
   namePlural,
   loading,
-  isFiltered,
+  isFiltered = false,
 }) =>
   isFiltered ?
     `${namePlural} (${
