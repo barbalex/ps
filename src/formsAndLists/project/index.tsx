@@ -17,6 +17,7 @@ import '../../form.css'
 const from = '/data/_authLayout/projects/$projectId_/project/'
 
 export const Project = memo(() => {
+  console.log('Project rendering')
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
