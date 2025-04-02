@@ -5,7 +5,6 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { formatNumber } from './formatNumber.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { subprojectReportsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
@@ -15,6 +14,7 @@ export const useSubprojectReportsNavData = ({ projectId, subprojectId }) => {
 
   const [filter] = useAtom(subprojectReportsFilterAtom)
   const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
 
   const res = useLiveQuery(
     `
@@ -64,21 +64,18 @@ export const useSubprojectReportsNavData = ({ projectId, subprojectId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: `Reports (${
-        filterString ?
-          `${loading ? '...' : formatNumber(navs.length)}/${
-            countLoading ? '...' : formatNumber(countUnfiltered)
-          }`
-        : loading ? '...'
-        : formatNumber(navs.length)
-      })`,
+      label: buildNavLabel({
+        loading,
+        isFiltered,
+        countFiltered: navs.length,
+        countUnfiltered,
+        namePlural: 'Reports',
+      }),
       nameSingular: 'Subproject Report',
       navs,
     }
   }, [
-    countLoading,
     countUnfiltered,
-    filterString,
     loading,
     location.pathname,
     openNodes,
