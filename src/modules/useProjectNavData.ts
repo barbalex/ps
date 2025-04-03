@@ -68,7 +68,8 @@ export const useProjectNavData = ({ projectId }) => {
         taxonomies_count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
         units_count_unfiltered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}'),
         units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''}),
-        project_crs_count_unfiltered AS (SELECT count(*) FROM project_crs WHERE project_id = '${projectId}')
+        project_crs_count_unfiltered AS (SELECT count(*) FROM project_crs WHERE project_id = '${projectId}'),
+        place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}')
       SELECT
         project_id AS id,
         label,
@@ -90,7 +91,8 @@ export const useProjectNavData = ({ projectId }) => {
         taxonomies_count_unfiltered.count AS taxonomies_count_unfiltered,
         units_count_unfiltered.count AS units_count_unfiltered,
         units_count_filtered.count AS units_count_filtered,
-        project_crs_count_unfiltered.count AS project_crs_count_unfiltered
+        project_crs_count_unfiltered.count AS project_crs_count_unfiltered,
+        place_levels_count_unfiltered.count AS place_levels_count_unfiltered
       FROM 
         projects, 
         subprojects_count_unfiltered, 
@@ -110,7 +112,8 @@ export const useProjectNavData = ({ projectId }) => {
         taxonomies_count_unfiltered,
         units_count_unfiltered,
         units_count_filtered,
-        project_crs_count_unfiltered
+        project_crs_count_unfiltered,
+        place_levels_count_unfiltered
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -233,6 +236,14 @@ export const useProjectNavData = ({ projectId }) => {
             namePlural: 'CRS',
           }),
         },
+        {
+          id: 'place-levels',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.place_levels_count_unfiltered ?? 0,
+            namePlural: 'Place Levels',
+          }),
+        },
       ],
     }
   }, [
@@ -247,6 +258,7 @@ export const useProjectNavData = ({ projectId }) => {
     row?.lists_count_unfiltered,
     row?.persons_count_filtered,
     row?.persons_count_unfiltered,
+    row?.place_levels_count_unfiltered,
     row?.project_crs_count_unfiltered,
     row?.project_reports_count_filtered,
     row?.project_reports_count_unfiltered,
