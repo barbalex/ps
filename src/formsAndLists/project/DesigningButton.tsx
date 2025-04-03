@@ -8,11 +8,9 @@ import { useParams } from '@tanstack/react-router'
 
 import { designingAtom } from '../../store.ts'
 
-const from = '/data/_authLayout/projects/$projectId_/project/'
-
-export const DesigningButton = memo(() => {
+export const DesigningButton = memo(({ from }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
-  const { project_id } = useParams({ from })
+  const { projectId } = useParams({ from })
   const { user } = useCorbado()
 
   const onClickDesigning = useCallback(
@@ -34,7 +32,7 @@ export const DesigningButton = memo(() => {
       WHERE 
         p.project_id = $1
     `,
-    [project_id, user?.email],
+    [projectId, user?.email],
     'project_id',
   )
   const project = resultProject?.rows?.[0]

@@ -14,9 +14,7 @@ import { designingAtom } from '../../store.ts'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/project/'
-
-export const Project = memo(() => {
+export const Project = memo(({ from }) => {
   console.log('Project rendering')
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -102,6 +100,7 @@ export const Project = memo(() => {
         <Design
           onChange={onChange}
           row={row}
+          from={from}
         />
       )}
     </div>

@@ -26,11 +26,11 @@ export const LabelBy = memo(
     name,
     from,
   }: Props) => {
-    const { project_id } = useParams({ from })
+    const { projectId } = useParams({ from })
 
     const res = useLiveIncrementalQuery(
       `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,
-      [table, ['files', 'projects'].includes(table) ? null : project_id],
+      [table, ['files', 'projects'].includes(table) ? null : projectId],
       'field_id',
     )
     const fields = useMemo(() => res?.rows ?? [], [res])

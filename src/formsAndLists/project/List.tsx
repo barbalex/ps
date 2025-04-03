@@ -6,9 +6,10 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 
-const from = '/data/_authLayout/projects/$projectId/'
+// const from = '/data/_authLayout/projects/$projectId/'
 
-export const ProjectList = memo(() => {
+export const ProjectList = memo(({ from }) => {
+  console.log('ProjectList', from)
   const { projectId } = useParams({ from })
   const { loading, navData } = useProjectNavData({ projectId })
   const { navs, label } = navData

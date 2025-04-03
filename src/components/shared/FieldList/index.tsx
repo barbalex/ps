@@ -19,7 +19,7 @@ interface Props {
 
 export const FieldList = memo(
   ({ name, label, table, fieldsTable, id, valueArray = [], from }: Props) => {
-    const { project_id } = useParams({ from })
+    const { projectId } = useParams({ from })
 
     const db = usePGlite()
     const res = useLiveQuery(
@@ -28,7 +28,7 @@ export const FieldList = memo(
       FROM fields 
       WHERE project_id = $1 AND table_name = $2 
       ORDER BY table_name, label`,
-      [project_id, fieldsTable],
+      [projectId, fieldsTable],
     )
     const fields = useMemo(() => res?.rows ?? [], [res])
     const options = useMemo(() => fields.map(({ name }) => name), [fields])

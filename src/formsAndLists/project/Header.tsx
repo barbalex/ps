@@ -70,7 +70,7 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="project"
-      siblings={<DesigningButton />}
+      siblings={<DesigningButton from={from} />}
     />
   )
 })

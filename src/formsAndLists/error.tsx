@@ -1,8 +1,11 @@
 export function ErrorPage({ error }) {
-  console.error(error)
+  console.error('Error caught by ErrorPage:', error)
 
   return (
-    <div id="error-page" className="form-outer-container">
+    <div
+      id="error-page"
+      className="form-outer-container"
+    >
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
       <p>

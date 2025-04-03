@@ -17,10 +17,8 @@ const labelStyle = {
   fontWeight: 700,
 }
 
-const from = '/data/_authLayout/projects/$projectId_/project/'
-
-export const Design = memo(({ onChange, row }) => {
-  const { project_id } = useParams({ from })
+export const Design = memo(({ onChange, row, from }) => {
+  const { projectId } = useParams({ from })
 
   return (
     <div
@@ -74,7 +72,7 @@ export const Design = memo(({ onChange, row }) => {
         name="places_order_by"
         table="projects"
         fieldsTable="places"
-        id={project_id}
+        id={projectId}
         valueArray={row.places_order_by ?? []}
         from={from}
       />
