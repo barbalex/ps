@@ -3,6 +3,7 @@ import {
   Button,
   Toolbar,
   ToolbarToggleButton,
+  Tooltip,
 } from '@fluentui/react-components'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
@@ -143,42 +144,65 @@ export const Menu = memo(() => {
             >
               Data
             </ToolbarToggleButton>
-            <ToolbarToggleButton
-              icon={
-                mapIsMaximized ? (
-                  <TbArrowsMinimize
-                    onClick={onClickMapView}
-                    title="Shrink Map"
-                  />
-                ) : (
-                  <TbArrowsMaximize
-                    onClick={onClickMapView}
-                    title="Maximize Map"
-                  />
-                )
-              }
-              iconPosition="after"
-              aria-label="Map"
-              name="tabs"
-              value="map"
-              style={buildButtonStyle({
-                prevIsActive: dataIsActive,
-                nextIsActive: false,
-                selfIsActive: mapIsActive,
-              })}
-              title={tabs.includes('map') ? 'Hide Map' : 'Show Map'}
-            >
-              Map
-            </ToolbarToggleButton>
+            <Tooltip content={mapIsActive ? 'Hide Map' : 'Show Map'}>
+              <ToolbarToggleButton
+                icon={
+                  !mapIsActive ? undefined
+                  : mapIsMaximized ?
+                    <Tooltip content="Shrink Map">
+                      <TbArrowsMinimize onClick={onClickMapView} />
+                    </Tooltip>
+                  : <Tooltip content="Maximize Map">
+                      <TbArrowsMaximize onClick={onClickMapView} />
+                    </Tooltip>
+
+                }
+                iconPosition="after"
+                aria-label="Map"
+                name="tabs"
+                value="map"
+                style={buildButtonStyle({
+                  prevIsActive: dataIsActive,
+                  nextIsActive: false,
+                  selfIsActive: mapIsActive,
+                })}
+              >
+                Map
+              </ToolbarToggleButton>
+            </Tooltip>
           </>
         )}
       </Toolbar>
       {!isHome && (
+        <Tooltip content={isAppStates ? 'Back' : 'Options'}>
+          <Button
+            size="medium"
+            icon={<FaCog />}
+            onClick={onClickOptions}
+            style={pipe(
+              {
+                backgroundColor: 'rgba(38, 82, 37, 0)',
+                border: 'none',
+                color: 'white',
+              },
+              on('&:hover', { filter: 'brightness(85%)' }),
+            )}
+            disabled={mapIsMaximized}
+          />
+        </Tooltip>
+      )}
+      <Tooltip
+        content={
+          !isAuthenticated ? 'Login'
+          : isHome ?
+            'Enter'
+          : `Logout ${authUser?.email}`
+        }
+      >
         <Button
           size="medium"
-          icon={<FaCog />}
-          onClick={onClickOptions}
-          title={isAppStates ? 'Back' : 'Options'}
+          icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
+          onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
           style={pipe(
             {
               backgroundColor: 'rgba(38, 82, 37, 0)',
@@ -187,29 +211,8 @@ export const Menu = memo(() => {
             },
             on('&:hover', { filter: 'brightness(85%)' }),
           )}
-          disabled={mapIsMaximized}
         />
-      )}
-      <Button
-        size="medium"
-        icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
-        onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
-        title={
-          !isAuthenticated
-            ? 'Login'
-            : isHome
-              ? 'Enter'
-              : `Logout ${authUser?.email}`
-        }
-        style={pipe(
-          {
-            backgroundColor: 'rgba(38, 82, 37, 0)',
-            border: 'none',
-            color: 'white',
-          },
-          on('&:hover', { filter: 'brightness(85%)' }),
-        )}
-      />
+      </Tooltip>
     </div>
   )
 })
