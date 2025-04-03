@@ -7,6 +7,7 @@ import {
   projectsFilterAtom,
   fieldTypesFilterAtom,
   widgetTypesFilterAtom,
+  widgetsForFieldsFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
 } from '../store.ts'
@@ -29,55 +30,67 @@ export const useDataNavData = () => {
   const widgetTypesFilterString = filterStringFromFilter(widgetTypesFilter)
   const widgetTypesIsFiltered = !!widgetTypesFilterString
 
+  const [widgetsForFieldsFilter] = useAtom(widgetsForFieldsFilterAtom)
+  const widgetsForFieldsFilterString = filterStringFromFilter(
+    widgetsForFieldsFilter,
+  )
+  const widgetsForFieldsIsFiltered = !!widgetsForFieldsFilterString
+
   const res = useLiveQuery(
     `
       WITH 
         projects_count_unfiltered AS (SELECT count(*) FROM projects),
         projects_count_filtered AS (SELECT count(*) FROM projects ${projectIsFiltered ? ` WHERE ${projectsFilterString}` : ''} ),
         users_count_unfiltered AS (SELECT count(*) FROM users),
-        accounts_count_unfiltered AS (SELECT count(*) FROM accounts)
+        accounts_count_unfiltered AS (SELECT count(*) FROM accounts),
         ${
           designing ?
-            `, 
+            ` 
             field_types_count_unfiltered AS (SELECT count(*) FROM field_types),
             field_types_count_filtered AS (SELECT count(*) FROM field_types ${fieldTypesIsFiltered ? ` WHERE ${fieldTypesFilterString}` : ''}),
             widget_types_count_unfiltered AS (SELECT count(*) FROM widget_types),
-            widget_types_count_filtered AS (SELECT count(*) FROM widget_types ${widgetTypesIsFiltered ? ` WHERE ${widgetTypesFilterString}` : ''})
+            widget_types_count_filtered AS (SELECT count(*) FROM widget_types ${widgetTypesIsFiltered ? ` WHERE ${widgetTypesFilterString}` : ''}),
+            widgets_for_fields_count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
+            widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
           `
           : ''
-        },
+        }
         messages_count_unfiltered AS (SELECT count(*) FROM messages)
       SELECT
         projects_count_unfiltered.count AS projects_count_unfiltered,
         projects_count_filtered.count AS projects_count_filtered,
         users_count_unfiltered.count AS users_count_unfiltered,
-        accounts_count_unfiltered.count AS accounts_count_unfiltered
+        accounts_count_unfiltered.count AS accounts_count_unfiltered,
         ${
           designing ?
-            `, 
+            `
               field_types_count_unfiltered.count AS field_types_count_unfiltered,
               field_types_count_filtered.count AS field_types_count_filtered,
               widget_types_count_unfiltered.count AS widget_types_count_unfiltered,
-              widget_types_count_filtered.count AS widget_types_count_filtered
+              widget_types_count_filtered.count AS widget_types_count_filtered,
+              widgets_for_fields_count_unfiltered.count AS widgets_for_fields_count_unfiltered,
+              widgets_for_fields_count_filtered.count AS widgets_for_fields_count_filtered,
             `
           : ''
-        },
+        }
         messages_count_unfiltered.count AS messages_count_unfiltered
       FROM 
         projects_count_unfiltered,
         projects_count_filtered,
         users_count_unfiltered,
-        accounts_count_unfiltered
+        accounts_count_unfiltered,
         ${
           designing ?
-            `, 
+            `
               field_types_count_unfiltered,
               field_types_count_filtered,
               widget_types_count_unfiltered,
-              widget_types_count_filtered
+              widget_types_count_filtered,
+              widgets_for_fields_count_unfiltered,
+              widgets_for_fields_count_filtered,
             `
           : ''
-        },
+        }
         messages_count_unfiltered
       `,
   )
@@ -155,8 +168,14 @@ export const useDataNavData = () => {
               }),
             },
             {
-              id: 'designing',
-              label: 'Designing',
+              id: 'widgets-for-fields',
+              label: buildNavLabel({
+                loading,
+                isFiltered: widgetsForFieldsIsFiltered,
+                countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
+                countUnfiltered: row?.widgets_for_fields_count_unfiltered ?? 0,
+                namePlural: 'Widgets For Fields',
+              }),
             },
           ]
         : []),
@@ -174,17 +193,22 @@ export const useDataNavData = () => {
     row?.id,
     row?.projects_count_filtered,
     row?.projects_count_unfiltered,
-    row?.projects_name_plural,
     row?.users_count_unfiltered,
     row?.accounts_count_unfiltered,
     row?.field_types_count_filtered,
     row?.field_types_count_unfiltered,
+    row?.widget_types_count_filtered,
+    row?.widget_types_count_unfiltered,
+    row?.widgets_for_fields_count_filtered,
+    row?.widgets_for_fields_count_unfiltered,
     row?.messages_count_unfiltered,
     openNodes,
     loading,
     projectIsFiltered,
     designing,
     fieldTypesIsFiltered,
+    widgetTypesIsFiltered,
+    widgetsForFieldsIsFiltered,
   ])
 
   return { navData, loading }
