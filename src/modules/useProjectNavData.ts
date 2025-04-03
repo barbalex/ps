@@ -10,6 +10,7 @@ import {
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
   listsFilterAtom,
+  unitsFilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -43,6 +44,10 @@ export const useProjectNavData = ({ projectId }) => {
   const listsFilterString = filterStringFromFilter(listsFilter)
   const listsIsFiltered = !!listsFilterString
 
+  const [unitsFilter] = useAtom(unitsFilterAtom)
+  const unitsFilterString = filterStringFromFilter(unitsFilter)
+  const unitsIsFiltered = !!unitsFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -60,7 +65,9 @@ export const useProjectNavData = ({ projectId }) => {
         project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
         lists_count_unfiltered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}'),
         lists_count_filtered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}' ${listsIsFiltered ? ` AND ${listsFilterString}` : ''}),
-        taxonomies_count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}')
+        taxonomies_count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
+        units_count_unfiltered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}'),
+        units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''})
       SELECT
         project_id AS id,
         label,
@@ -79,7 +86,9 @@ export const useProjectNavData = ({ projectId }) => {
         project_users_count_unfiltered.count AS project_users_count_unfiltered,
         lists_count_unfiltered.count AS lists_count_unfiltered,
         lists_count_filtered.count AS lists_count_filtered,
-        taxonomies_count_unfiltered.count AS taxonomies_count_unfiltered
+        taxonomies_count_unfiltered.count AS taxonomies_count_unfiltered,
+        units_count_unfiltered.count AS units_count_unfiltered,
+        units_count_filtered.count AS units_count_filtered
       FROM 
         projects, 
         subprojects_count_unfiltered, 
@@ -96,7 +105,9 @@ export const useProjectNavData = ({ projectId }) => {
         project_users_count_unfiltered,
         lists_count_unfiltered,
         lists_count_filtered,
-        taxonomies_count_unfiltered
+        taxonomies_count_unfiltered,
+        units_count_unfiltered,
+        units_count_filtered
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -201,6 +212,16 @@ export const useProjectNavData = ({ projectId }) => {
             namePlural: 'Taxonomies',
           }),
         },
+        {
+          id: 'units',
+          label: buildNavLabel({
+            loading,
+            isFiltered: unitsIsFiltered,
+            countFiltered: row?.units_count_filtered ?? 0,
+            countUnfiltered: row?.units_count_unfiltered ?? 0,
+            namePlural: 'Units',
+          }),
+        },
       ],
     }
   }, [
@@ -222,11 +243,14 @@ export const useProjectNavData = ({ projectId }) => {
     row?.subprojects_count_unfiltered,
     row?.subprojects_name_plural,
     row?.taxonomies_count_unfiltered,
+    row?.units_count_filtered,
+    row?.units_count_unfiltered,
     row?.vector_layers_count_filtered,
     row?.vector_layers_count_unfiltered,
     row?.wms_layers_count_filtered,
     row?.wms_layers_count_unfiltered,
     subprojectIsFiltered,
+    unitsIsFiltered,
     vectorLayersIsFiltered,
     wmsLayersIsFiltered,
   ])
