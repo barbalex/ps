@@ -46,7 +46,6 @@ import { Route as DataAuthLayoutFieldTypesFieldTypeIdImport } from './routes/dat
 import { Route as DataAuthLayoutCrsCrsIdImport } from './routes/data/_authLayout/crs/$crsId'
 import { Route as DataAuthLayoutAccountsAccountIdImport } from './routes/data/_authLayout/accounts/$accountId'
 import { Route as DataAuthLayoutProjectsProjectIdIndexImport } from './routes/data/_authLayout/projects/$projectId.index'
-import { Route as DataAuthLayoutProjectsProjectIdProjectImport } from './routes/data/_authLayout/projects/$projectId_/project'
 import { Route as DataAuthLayoutFilesFileIdPreviewImport } from './routes/data/_authLayout/files/$fileId_/preview'
 import { Route as DataAuthLayoutProjectsProjectIdWmsLayersIndexImport } from './routes/data/_authLayout/projects/$projectId_/wms-layers/index'
 import { Route as DataAuthLayoutProjectsProjectIdVectorLayersIndexImport } from './routes/data/_authLayout/projects/$projectId_/vector-layers/index'
@@ -437,13 +436,6 @@ const DataAuthLayoutProjectsProjectIdIndexRoute =
     getParentRoute: () => DataAuthLayoutProjectsProjectIdRoute,
   } as any)
 
-const DataAuthLayoutProjectsProjectIdProjectRoute =
-  DataAuthLayoutProjectsProjectIdProjectImport.update({
-    id: '/projects/$projectId_/project',
-    path: '/projects/$projectId/project',
-    getParentRoute: () => DataAuthLayoutRouteRoute,
-  } as any)
-
 const DataAuthLayoutFilesFileIdPreviewRoute =
   DataAuthLayoutFilesFileIdPreviewImport.update({
     id: '/files/$fileId_/preview',
@@ -502,9 +494,9 @@ const DataAuthLayoutProjectsProjectIdReportsIndexRoute =
 
 const DataAuthLayoutProjectsProjectIdProjectIndexRoute =
   DataAuthLayoutProjectsProjectIdProjectIndexImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => DataAuthLayoutProjectsProjectIdProjectRoute,
+    id: '/projects/$projectId_/project/',
+    path: '/projects/$projectId/project/',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
 const DataAuthLayoutProjectsProjectIdPlaceLevelsIndexRoute =
@@ -2058,13 +2050,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutFilesFileIdPreviewImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
-    '/data/_authLayout/projects/$projectId_/project': {
-      id: '/data/_authLayout/projects/$projectId_/project'
-      path: '/projects/$projectId/project'
-      fullPath: '/data/projects/$projectId/project'
-      preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdProjectImport
-      parentRoute: typeof DataAuthLayoutRouteImport
-    }
     '/data/_authLayout/projects/$projectId/': {
       id: '/data/_authLayout/projects/$projectId/'
       path: '/'
@@ -2207,10 +2192,10 @@ declare module '@tanstack/react-router' {
     }
     '/data/_authLayout/projects/$projectId_/project/': {
       id: '/data/_authLayout/projects/$projectId_/project/'
-      path: '/'
-      fullPath: '/data/projects/$projectId/project/'
+      path: '/projects/$projectId/project'
+      fullPath: '/data/projects/$projectId/project'
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdProjectIndexImport
-      parentRoute: typeof DataAuthLayoutProjectsProjectIdProjectImport
+      parentRoute: typeof DataAuthLayoutRouteImport
     }
     '/data/_authLayout/projects/$projectId_/reports/': {
       id: '/data/_authLayout/projects/$projectId_/reports/'
@@ -3240,21 +3225,6 @@ const DataAuthLayoutFilesFileIdPreviewRouteWithChildren =
     DataAuthLayoutFilesFileIdPreviewRouteChildren,
   )
 
-interface DataAuthLayoutProjectsProjectIdProjectRouteChildren {
-  DataAuthLayoutProjectsProjectIdProjectIndexRoute: typeof DataAuthLayoutProjectsProjectIdProjectIndexRoute
-}
-
-const DataAuthLayoutProjectsProjectIdProjectRouteChildren: DataAuthLayoutProjectsProjectIdProjectRouteChildren =
-  {
-    DataAuthLayoutProjectsProjectIdProjectIndexRoute:
-      DataAuthLayoutProjectsProjectIdProjectIndexRoute,
-  }
-
-const DataAuthLayoutProjectsProjectIdProjectRouteWithChildren =
-  DataAuthLayoutProjectsProjectIdProjectRoute._addFileChildren(
-    DataAuthLayoutProjectsProjectIdProjectRouteChildren,
-  )
-
 interface DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdRouteChildren {
   DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdIndexRoute
 }
@@ -3420,7 +3390,6 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutWidgetTypesIndexRoute: typeof DataAuthLayoutWidgetTypesIndexRoute
   DataAuthLayoutWidgetsForFieldsIndexRoute: typeof DataAuthLayoutWidgetsForFieldsIndexRoute
   DataAuthLayoutFilesFileIdPreviewRoute: typeof DataAuthLayoutFilesFileIdPreviewRouteWithChildren
-  DataAuthLayoutProjectsProjectIdProjectRoute: typeof DataAuthLayoutProjectsProjectIdProjectRouteWithChildren
   DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute: typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   DataAuthLayoutProjectsProjectIdFieldsFilterRoute: typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
   DataAuthLayoutProjectsProjectIdFilesFileIdRoute: typeof DataAuthLayoutProjectsProjectIdFilesFileIdRoute
@@ -3439,6 +3408,7 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutProjectsProjectIdListsIndexRoute: typeof DataAuthLayoutProjectsProjectIdListsIndexRoute
   DataAuthLayoutProjectsProjectIdPersonsIndexRoute: typeof DataAuthLayoutProjectsProjectIdPersonsIndexRoute
   DataAuthLayoutProjectsProjectIdPlaceLevelsIndexRoute: typeof DataAuthLayoutProjectsProjectIdPlaceLevelsIndexRoute
+  DataAuthLayoutProjectsProjectIdProjectIndexRoute: typeof DataAuthLayoutProjectsProjectIdProjectIndexRoute
   DataAuthLayoutProjectsProjectIdReportsIndexRoute: typeof DataAuthLayoutProjectsProjectIdReportsIndexRoute
   DataAuthLayoutProjectsProjectIdSubprojectsIndexRoute: typeof DataAuthLayoutProjectsProjectIdSubprojectsIndexRoute
   DataAuthLayoutProjectsProjectIdTaxonomiesIndexRoute: typeof DataAuthLayoutProjectsProjectIdTaxonomiesIndexRoute
@@ -3609,8 +3579,6 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutWidgetsForFieldsIndexRoute,
   DataAuthLayoutFilesFileIdPreviewRoute:
     DataAuthLayoutFilesFileIdPreviewRouteWithChildren,
-  DataAuthLayoutProjectsProjectIdProjectRoute:
-    DataAuthLayoutProjectsProjectIdProjectRouteWithChildren,
   DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute:
     DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute,
   DataAuthLayoutProjectsProjectIdFieldsFilterRoute:
@@ -3647,6 +3615,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutProjectsProjectIdPersonsIndexRoute,
   DataAuthLayoutProjectsProjectIdPlaceLevelsIndexRoute:
     DataAuthLayoutProjectsProjectIdPlaceLevelsIndexRoute,
+  DataAuthLayoutProjectsProjectIdProjectIndexRoute:
+    DataAuthLayoutProjectsProjectIdProjectIndexRoute,
   DataAuthLayoutProjectsProjectIdReportsIndexRoute:
     DataAuthLayoutProjectsProjectIdReportsIndexRoute,
   DataAuthLayoutProjectsProjectIdSubprojectsIndexRoute:
@@ -3958,7 +3928,6 @@ export interface FileRoutesByFullPath {
   '/data/widget-types': typeof DataAuthLayoutWidgetTypesIndexRoute
   '/data/widgets-for-fields': typeof DataAuthLayoutWidgetsForFieldsIndexRoute
   '/data/files/$fileId/preview': typeof DataAuthLayoutFilesFileIdPreviewRouteWithChildren
-  '/data/projects/$projectId/project': typeof DataAuthLayoutProjectsProjectIdProjectRouteWithChildren
   '/data/projects/$projectId/': typeof DataAuthLayoutProjectsProjectIdIndexRoute
   '/data/projects/$projectId/fields/$fieldId': typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   '/data/projects/$projectId/fields/filter': typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
@@ -3979,7 +3948,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/lists': typeof DataAuthLayoutProjectsProjectIdListsIndexRoute
   '/data/projects/$projectId/persons': typeof DataAuthLayoutProjectsProjectIdPersonsIndexRoute
   '/data/projects/$projectId/place-levels': typeof DataAuthLayoutProjectsProjectIdPlaceLevelsIndexRoute
-  '/data/projects/$projectId/project/': typeof DataAuthLayoutProjectsProjectIdProjectIndexRoute
+  '/data/projects/$projectId/project': typeof DataAuthLayoutProjectsProjectIdProjectIndexRoute
   '/data/projects/$projectId/reports': typeof DataAuthLayoutProjectsProjectIdReportsIndexRoute
   '/data/projects/$projectId/subprojects': typeof DataAuthLayoutProjectsProjectIdSubprojectsIndexRoute
   '/data/projects/$projectId/taxonomies': typeof DataAuthLayoutProjectsProjectIdTaxonomiesIndexRoute
@@ -4342,7 +4311,6 @@ export interface FileRoutesById {
   '/data/_authLayout/widget-types/': typeof DataAuthLayoutWidgetTypesIndexRoute
   '/data/_authLayout/widgets-for-fields/': typeof DataAuthLayoutWidgetsForFieldsIndexRoute
   '/data/_authLayout/files/$fileId_/preview': typeof DataAuthLayoutFilesFileIdPreviewRouteWithChildren
-  '/data/_authLayout/projects/$projectId_/project': typeof DataAuthLayoutProjectsProjectIdProjectRouteWithChildren
   '/data/_authLayout/projects/$projectId/': typeof DataAuthLayoutProjectsProjectIdIndexRoute
   '/data/_authLayout/projects/$projectId_/fields/$fieldId': typeof DataAuthLayoutProjectsProjectIdFieldsFieldIdRoute
   '/data/_authLayout/projects/$projectId_/fields/filter': typeof DataAuthLayoutProjectsProjectIdFieldsFilterRoute
@@ -4542,7 +4510,6 @@ export interface FileRouteTypes {
     | '/data/widget-types'
     | '/data/widgets-for-fields'
     | '/data/files/$fileId/preview'
-    | '/data/projects/$projectId/project'
     | '/data/projects/$projectId/'
     | '/data/projects/$projectId/fields/$fieldId'
     | '/data/projects/$projectId/fields/filter'
@@ -4563,7 +4530,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/lists'
     | '/data/projects/$projectId/persons'
     | '/data/projects/$projectId/place-levels'
-    | '/data/projects/$projectId/project/'
+    | '/data/projects/$projectId/project'
     | '/data/projects/$projectId/reports'
     | '/data/projects/$projectId/subprojects'
     | '/data/projects/$projectId/taxonomies'
@@ -4923,7 +4890,6 @@ export interface FileRouteTypes {
     | '/data/_authLayout/widget-types/'
     | '/data/_authLayout/widgets-for-fields/'
     | '/data/_authLayout/files/$fileId_/preview'
-    | '/data/_authLayout/projects/$projectId_/project'
     | '/data/_authLayout/projects/$projectId/'
     | '/data/_authLayout/projects/$projectId_/fields/$fieldId'
     | '/data/_authLayout/projects/$projectId_/fields/filter'
@@ -5158,7 +5124,6 @@ export const routeTree = rootRoute
         "/data/_authLayout/widget-types/",
         "/data/_authLayout/widgets-for-fields/",
         "/data/_authLayout/files/$fileId_/preview",
-        "/data/_authLayout/projects/$projectId_/project",
         "/data/_authLayout/projects/$projectId_/fields/$fieldId",
         "/data/_authLayout/projects/$projectId_/fields/filter",
         "/data/_authLayout/projects/$projectId_/files/$fileId",
@@ -5177,6 +5142,7 @@ export const routeTree = rootRoute
         "/data/_authLayout/projects/$projectId_/lists/",
         "/data/_authLayout/projects/$projectId_/persons/",
         "/data/_authLayout/projects/$projectId_/place-levels/",
+        "/data/_authLayout/projects/$projectId_/project/",
         "/data/_authLayout/projects/$projectId_/reports/",
         "/data/_authLayout/projects/$projectId_/subprojects/",
         "/data/_authLayout/projects/$projectId_/taxonomies/",
@@ -5440,13 +5406,6 @@ export const routeTree = rootRoute
         "/data/_authLayout/files/$fileId_/preview/"
       ]
     },
-    "/data/_authLayout/projects/$projectId_/project": {
-      "filePath": "data/_authLayout/projects/$projectId_/project.tsx",
-      "parent": "/data/_authLayout",
-      "children": [
-        "/data/_authLayout/projects/$projectId_/project/"
-      ]
-    },
     "/data/_authLayout/projects/$projectId/": {
       "filePath": "data/_authLayout/projects/$projectId.index.tsx",
       "parent": "/data/_authLayout/projects/$projectId"
@@ -5532,7 +5491,7 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/projects/$projectId_/project/": {
       "filePath": "data/_authLayout/projects/$projectId_/project.index.tsx",
-      "parent": "/data/_authLayout/projects/$projectId_/project"
+      "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/reports/": {
       "filePath": "data/_authLayout/projects/$projectId_/reports/index.tsx",
