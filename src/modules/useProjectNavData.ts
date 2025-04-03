@@ -8,6 +8,7 @@ import {
   projectReportsFilterAtom,
   personsFilterAtom,
   wmsLayersFilterAtom,
+  vectorLayersFilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -33,6 +34,10 @@ export const useProjectNavData = ({ projectId }) => {
   const wmsLayersFilterString = filterStringFromFilter(wmsLayersFilter)
   const wmsLayersIsFiltered = !!wmsLayersFilterString
 
+  const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
+  const vectorLayersFilterString = filterStringFromFilter(vectorLayersFilter)
+  const vectorLayersIsFiltered = !!vectorLayersFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -44,7 +49,9 @@ export const useProjectNavData = ({ projectId }) => {
         persons_count_unfiltered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}'),
         persons_count_filtered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}' ${personsIsFiltered ? ` AND ${personsFilterString}` : ''}),
         wms_layers_count_unfiltered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}'),
-        wms_layers_count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${wmsLayersIsFiltered ? ` AND ${wmsLayersFilterString}` : ''})
+        wms_layers_count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${wmsLayersIsFiltered ? ` AND ${wmsLayersFilterString}` : ''}),
+        vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
+        vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''})
       SELECT
         project_id AS id,
         label,
@@ -57,7 +64,9 @@ export const useProjectNavData = ({ projectId }) => {
         persons_count_unfiltered.count AS persons_count_unfiltered,
         persons_count_filtered.count AS persons_count_filtered,
         wms_layers_count_unfiltered.count AS wms_layers_count_unfiltered,
-        wms_layers_count_filtered.count AS wms_layers_count_filtered
+        wms_layers_count_filtered.count AS wms_layers_count_filtered,
+        vector_layers_count_unfiltered.count AS vector_layers_count_unfiltered,
+        vector_layers_count_filtered.count AS vector_layers_count_filtered
       FROM 
         projects, 
         subprojects_count_unfiltered, 
@@ -68,7 +77,9 @@ export const useProjectNavData = ({ projectId }) => {
         persons_count_unfiltered,
         persons_count_filtered,
         wms_layers_count_unfiltered,
-        wms_layers_count_filtered
+        wms_layers_count_filtered,
+        vector_layers_count_unfiltered,
+        vector_layers_count_filtered
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -137,6 +148,16 @@ export const useProjectNavData = ({ projectId }) => {
             namePlural: 'WMS Layers',
           }),
         },
+        {
+          id: 'vector-layers',
+          label: buildNavLabel({
+            loading,
+            isFiltered: vectorLayersIsFiltered,
+            countFiltered: row?.vector_layers_count_filtered ?? 0,
+            countUnfiltered: row?.vector_layers_count_unfiltered ?? 0,
+            namePlural: 'Vector Layers',
+          }),
+        },
       ],
     }
   }, [
@@ -153,9 +174,12 @@ export const useProjectNavData = ({ projectId }) => {
     row?.subprojects_count_filtered,
     row?.subprojects_count_unfiltered,
     row?.subprojects_name_plural,
+    row?.vector_layers_count_filtered,
+    row?.vector_layers_count_unfiltered,
     row?.wms_layers_count_filtered,
     row?.wms_layers_count_unfiltered,
     subprojectIsFiltered,
+    vectorLayersIsFiltered,
     wmsLayersIsFiltered,
   ])
 
