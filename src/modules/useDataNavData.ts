@@ -59,6 +59,7 @@ export const useDataNavData = () => {
             widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id IS NULL),
             fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id IS NULL ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
+            crs_count_unfiltered AS (SELECT count(*) FROM crs),
           `
           : ''
         }
@@ -79,6 +80,7 @@ export const useDataNavData = () => {
               widgets_for_fields_count_filtered.count AS widgets_for_fields_count_filtered,
               fields_count_unfiltered.count AS fields_count_unfiltered,
               fields_count_filtered.count AS fields_count_filtered,
+              crs_count_unfiltered.count AS crs_count_unfiltered,
             `
           : ''
         }
@@ -99,6 +101,7 @@ export const useDataNavData = () => {
               widgets_for_fields_count_filtered,
               fields_count_unfiltered,
               fields_count_filtered,
+              crs_count_unfiltered,
             `
           : ''
         }
@@ -196,6 +199,14 @@ export const useDataNavData = () => {
                 countFiltered: row?.fields_count_filtered ?? 0,
                 countUnfiltered: row?.fields_count_unfiltered ?? 0,
                 namePlural: 'Fields',
+              }),
+            },
+            {
+              id: 'crs',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.crs_count_unfiltered ?? 0,
+                namePlural: 'CRS',
               }),
             },
           ]
