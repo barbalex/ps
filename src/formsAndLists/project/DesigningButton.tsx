@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
-import { ToggleButton } from '@fluentui/react-components'
+import { ToggleButton, Tooltip } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
@@ -45,14 +45,17 @@ export const DesigningButton = memo(({ from }) => {
   if (!userMayDesign) return null
 
   return (
-    <ToggleButton
-      checked={designing}
-      title={
+    <Tooltip
+      content={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }
-      icon={designing ? <MdEdit /> : <MdEditOff />}
-      onClick={onClickDesigning}
-      className="designing-button"
-    />
+    >
+      <ToggleButton
+        checked={designing}
+        icon={designing ? <MdEdit /> : <MdEditOff />}
+        onClick={onClickDesigning}
+        className="designing-button"
+      />
+    </Tooltip>
   )
 })

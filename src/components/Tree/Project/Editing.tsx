@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
-import { Button } from '@fluentui/react-components'
+import { Button, Tooltip } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -66,20 +66,28 @@ export const Editing = memo(({ projectId }) => {
   if (!userMayDesign) return null
 
   return (
-    <Button
-      size="small"
-      icon={
-        designing ? <MdEdit style={svgStyle} /> : <MdEditOff style={svgStyle} />
-      }
-      onClick={onClick}
-      style={pipe(
-        buttonStyle,
-        on('&:hover', { filter: 'brightness(0.9)', backgroundColor: 'white' }),
-      )}
-      title={
+    <Tooltip
+      content={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }
-      className="designing-button"
-    />
+    >
+      <Button
+        size="small"
+        icon={
+          designing ?
+            <MdEdit style={svgStyle} />
+          : <MdEditOff style={svgStyle} />
+        }
+        onClick={onClick}
+        style={pipe(
+          buttonStyle,
+          on('&:hover', {
+            filter: 'brightness(0.9)',
+            backgroundColor: 'white',
+          }),
+        )}
+        className="designing-button"
+      />
+    </Tooltip>
   )
 })
