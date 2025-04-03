@@ -9,6 +9,7 @@ import {
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
   fieldsFilterAtom,
+  filesFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
 } from '../store.ts'
@@ -41,6 +42,10 @@ export const useDataNavData = () => {
   const fieldsFilterString = filterStringFromFilter(fieldsFilter)
   const fieldsIsFiltered = !!fieldsFilterString
 
+  const [filesFilter] = useAtom(filesFilterAtom)
+  const filesFilterString = filterStringFromFilter(filesFilter)
+  const filesIsFiltered = !!filesFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -60,6 +65,8 @@ export const useDataNavData = () => {
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id IS NULL),
             fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id IS NULL ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
             crs_count_unfiltered AS (SELECT count(*) FROM crs),
+            files_count_unfiltered AS (SELECT count(*) FROM files),
+            files_count_filtered AS (SELECT count(*) FROM files ${filesIsFiltered ? ` WHERE ${filesFilterString}` : ''}),
           `
           : ''
         }
@@ -81,6 +88,8 @@ export const useDataNavData = () => {
               fields_count_unfiltered.count AS fields_count_unfiltered,
               fields_count_filtered.count AS fields_count_filtered,
               crs_count_unfiltered.count AS crs_count_unfiltered,
+              files_count_unfiltered.count AS files_count_unfiltered,
+              files_count_filtered.count AS files_count_filtered,
             `
           : ''
         }
@@ -102,6 +111,8 @@ export const useDataNavData = () => {
               fields_count_unfiltered,
               fields_count_filtered,
               crs_count_unfiltered,
+              files_count_unfiltered,
+              files_count_filtered,
             `
           : ''
         }
@@ -209,6 +220,24 @@ export const useDataNavData = () => {
                 namePlural: 'CRS',
               }),
             },
+            {
+              id: 'files',
+              label: buildNavLabel({
+                loading,
+                isFiltered: filesIsFiltered,
+                countFiltered: row?.files_count_filtered ?? 0,
+                countUnfiltered: row?.files_count_unfiltered ?? 0,
+                namePlural: 'Files',
+              }),
+            },
+            {
+              id: 'widgets',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
+                namePlural: 'Widgets',
+              }),
+            },
           ]
         : []),
         {
@@ -235,6 +264,9 @@ export const useDataNavData = () => {
     row?.widgets_for_fields_count_unfiltered,
     row?.fields_count_filtered,
     row?.fields_count_unfiltered,
+    row?.crs_count_unfiltered,
+    row?.files_count_filtered,
+    row?.files_count_unfiltered,
     row?.messages_count_unfiltered,
     openNodes,
     loading,
@@ -244,6 +276,7 @@ export const useDataNavData = () => {
     widgetTypesIsFiltered,
     widgetsForFieldsIsFiltered,
     fieldsIsFiltered,
+    filesIsFiltered,
   ])
 
   return { navData, loading }
