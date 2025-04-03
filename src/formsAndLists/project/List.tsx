@@ -9,7 +9,6 @@ import { Header } from './Header.tsx'
 // const from = '/data/_authLayout/projects/$projectId/'
 
 export const ProjectList = memo(({ from }) => {
-  console.log('ProjectList', from)
   const { projectId } = useParams({ from })
   const { loading, navData } = useProjectNavData({ projectId })
   const { navs, label } = navData
