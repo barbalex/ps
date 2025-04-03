@@ -9,6 +9,7 @@ import {
   personsFilterAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
+  listsFilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -38,6 +39,10 @@ export const useProjectNavData = ({ projectId }) => {
   const vectorLayersFilterString = filterStringFromFilter(vectorLayersFilter)
   const vectorLayersIsFiltered = !!vectorLayersFilterString
 
+  const [listsFilter] = useAtom(listsFilterAtom)
+  const listsFilterString = filterStringFromFilter(listsFilter)
+  const listsIsFiltered = !!listsFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -51,7 +56,10 @@ export const useProjectNavData = ({ projectId }) => {
         wms_layers_count_unfiltered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}'),
         wms_layers_count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${wmsLayersIsFiltered ? ` AND ${wmsLayersFilterString}` : ''}),
         vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
-        vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''})
+        vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''}),
+        project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
+        lists_count_unfiltered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}'),
+        lists_count_filtered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}' ${listsIsFiltered ? ` AND ${listsFilterString}` : ''})
       SELECT
         project_id AS id,
         label,
@@ -66,7 +74,10 @@ export const useProjectNavData = ({ projectId }) => {
         wms_layers_count_unfiltered.count AS wms_layers_count_unfiltered,
         wms_layers_count_filtered.count AS wms_layers_count_filtered,
         vector_layers_count_unfiltered.count AS vector_layers_count_unfiltered,
-        vector_layers_count_filtered.count AS vector_layers_count_filtered
+        vector_layers_count_filtered.count AS vector_layers_count_filtered,
+        project_users_count_unfiltered.count AS project_users_count_unfiltered,
+        lists_count_unfiltered.count AS lists_count_unfiltered,
+        lists_count_filtered.count AS lists_count_filtered
       FROM 
         projects, 
         subprojects_count_unfiltered, 
@@ -79,7 +90,10 @@ export const useProjectNavData = ({ projectId }) => {
         wms_layers_count_unfiltered,
         wms_layers_count_filtered,
         vector_layers_count_unfiltered,
-        vector_layers_count_filtered
+        vector_layers_count_filtered,
+        project_users_count_unfiltered,
+        lists_count_unfiltered,
+        lists_count_filtered
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -158,19 +172,41 @@ export const useProjectNavData = ({ projectId }) => {
             namePlural: 'Vector Layers',
           }),
         },
+        {
+          id: 'users',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.project_users_count_unfiltered ?? 0,
+            namePlural: 'Users',
+          }),
+        },
+        {
+          id: 'lists',
+          label: buildNavLabel({
+            loading,
+            isFiltered: listsIsFiltered,
+            countFiltered: row?.lists_count_filtered ?? 0,
+            countUnfiltered: row?.lists_count_unfiltered ?? 0,
+            namePlural: 'Lists',
+          }),
+        },
       ],
     }
   }, [
+    listsIsFiltered,
     loading,
     openNodes,
     personsIsFiltered,
     projectReportsIsFiltered,
     row?.id,
     row?.label,
+    row?.lists_count_filtered,
+    row?.lists_count_unfiltered,
     row?.persons_count_filtered,
     row?.persons_count_unfiltered,
     row?.project_reports_count_filtered,
     row?.project_reports_count_unfiltered,
+    row?.project_users_count_unfiltered,
     row?.subprojects_count_filtered,
     row?.subprojects_count_unfiltered,
     row?.subprojects_name_plural,
