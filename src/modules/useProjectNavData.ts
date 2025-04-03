@@ -164,7 +164,6 @@ export const useProjectNavData = ({ projectId }) => {
       urlPath,
       ownUrl,
       label: row?.label,
-      // nameSingular: 'Project',
       navs: [
         { id: 'project', label: 'Project' },
         {

@@ -84,6 +84,7 @@ import { Route as DataAuthLayoutProjectsProjectIdPlaceLevelsPlaceLevelIdIndexImp
 import { Route as DataAuthLayoutProjectsProjectIdPersonsPersonIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/persons/$personId.index'
 import { Route as DataAuthLayoutProjectsProjectIdListsListIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/lists/$listId.index'
 import { Route as DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/crs/$projectCrsId.index'
+import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
 import { Route as DataAuthLayoutProjectsProjectIdFilesFileIdPreviewImport } from './routes/data/_authLayout/projects/$projectId_/files/$fileId_/preview'
 import { Route as DataAuthLayoutProjectsProjectIdVectorLayersVectorLayerIdVectorLayerDisplaysIndexImport } from './routes/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer-displays/index'
 import { Route as DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxaIndexImport } from './routes/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxa.index'
@@ -700,6 +701,13 @@ const DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute =
   DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexImport.update({
     id: '/projects/$projectId_/crs/$projectCrsId/',
     path: '/projects/$projectId/crs/$projectCrsId/',
+    getParentRoute: () => DataAuthLayoutRouteRoute,
+  } as any)
+
+const DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute =
+  DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyImport.update({
+    id: '/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy',
+    path: '/projects/$projectId/taxonomies/$taxonomyId/taxonomy',
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
@@ -2253,6 +2261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdFilesFileIdPreviewImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy': {
+      id: '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
+      path: '/projects/$projectId/taxonomies/$taxonomyId/taxonomy'
+      fullPath: '/data/projects/$projectId/taxonomies/$taxonomyId/taxonomy'
+      preLoaderRoute: typeof DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/': {
       id: '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/'
       path: '/projects/$projectId/crs/$projectCrsId'
@@ -3417,6 +3432,7 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutProjectsProjectIdVectorLayersIndexRoute: typeof DataAuthLayoutProjectsProjectIdVectorLayersIndexRoute
   DataAuthLayoutProjectsProjectIdWmsLayersIndexRoute: typeof DataAuthLayoutProjectsProjectIdWmsLayersIndexRoute
   DataAuthLayoutProjectsProjectIdFilesFileIdPreviewRoute: typeof DataAuthLayoutProjectsProjectIdFilesFileIdPreviewRouteWithChildren
+  DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute: typeof DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute
   DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute
   DataAuthLayoutProjectsProjectIdListsListIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdListsListIdIndexRoute
   DataAuthLayoutProjectsProjectIdPersonsPersonIdIndexRoute: typeof DataAuthLayoutProjectsProjectIdPersonsPersonIdIndexRoute
@@ -3633,6 +3649,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
     DataAuthLayoutProjectsProjectIdWmsLayersIndexRoute,
   DataAuthLayoutProjectsProjectIdFilesFileIdPreviewRoute:
     DataAuthLayoutProjectsProjectIdFilesFileIdPreviewRouteWithChildren,
+  DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute:
+    DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute,
   DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute:
     DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute,
   DataAuthLayoutProjectsProjectIdListsListIdIndexRoute:
@@ -3957,6 +3975,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/vector-layers': typeof DataAuthLayoutProjectsProjectIdVectorLayersIndexRoute
   '/data/projects/$projectId/wms-layers': typeof DataAuthLayoutProjectsProjectIdWmsLayersIndexRoute
   '/data/projects/$projectId/files/$fileId/preview': typeof DataAuthLayoutProjectsProjectIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId/taxonomies/$taxonomyId/taxonomy': typeof DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute
   '/data/projects/$projectId/crs/$projectCrsId': typeof DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute
   '/data/projects/$projectId/lists/$listId': typeof DataAuthLayoutProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId/persons/$personId': typeof DataAuthLayoutProjectsProjectIdPersonsPersonIdIndexRoute
@@ -4148,6 +4167,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/users': typeof DataAuthLayoutProjectsProjectIdUsersIndexRoute
   '/data/projects/$projectId/vector-layers': typeof DataAuthLayoutProjectsProjectIdVectorLayersIndexRoute
   '/data/projects/$projectId/wms-layers': typeof DataAuthLayoutProjectsProjectIdWmsLayersIndexRoute
+  '/data/projects/$projectId/taxonomies/$taxonomyId/taxonomy': typeof DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute
   '/data/projects/$projectId/crs/$projectCrsId': typeof DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute
   '/data/projects/$projectId/lists/$listId': typeof DataAuthLayoutProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId/persons/$personId': typeof DataAuthLayoutProjectsProjectIdPersonsPersonIdIndexRoute
@@ -4340,6 +4360,7 @@ export interface FileRoutesById {
   '/data/_authLayout/projects/$projectId_/vector-layers/': typeof DataAuthLayoutProjectsProjectIdVectorLayersIndexRoute
   '/data/_authLayout/projects/$projectId_/wms-layers/': typeof DataAuthLayoutProjectsProjectIdWmsLayersIndexRoute
   '/data/_authLayout/projects/$projectId_/files/$fileId_/preview': typeof DataAuthLayoutProjectsProjectIdFilesFileIdPreviewRouteWithChildren
+  '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy': typeof DataAuthLayoutProjectsProjectIdTaxonomiesTaxonomyIdTaxonomyRoute
   '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/': typeof DataAuthLayoutProjectsProjectIdCrsProjectCrsIdIndexRoute
   '/data/_authLayout/projects/$projectId_/lists/$listId/': typeof DataAuthLayoutProjectsProjectIdListsListIdIndexRoute
   '/data/_authLayout/projects/$projectId_/persons/$personId/': typeof DataAuthLayoutProjectsProjectIdPersonsPersonIdIndexRoute
@@ -4539,6 +4560,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers'
     | '/data/projects/$projectId/wms-layers'
     | '/data/projects/$projectId/files/$fileId/preview'
+    | '/data/projects/$projectId/taxonomies/$taxonomyId/taxonomy'
     | '/data/projects/$projectId/crs/$projectCrsId'
     | '/data/projects/$projectId/lists/$listId'
     | '/data/projects/$projectId/persons/$personId'
@@ -4729,6 +4751,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/users'
     | '/data/projects/$projectId/vector-layers'
     | '/data/projects/$projectId/wms-layers'
+    | '/data/projects/$projectId/taxonomies/$taxonomyId/taxonomy'
     | '/data/projects/$projectId/crs/$projectCrsId'
     | '/data/projects/$projectId/lists/$listId'
     | '/data/projects/$projectId/persons/$personId'
@@ -4919,6 +4942,7 @@ export interface FileRouteTypes {
     | '/data/_authLayout/projects/$projectId_/vector-layers/'
     | '/data/_authLayout/projects/$projectId_/wms-layers/'
     | '/data/_authLayout/projects/$projectId_/files/$fileId_/preview'
+    | '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
     | '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/'
     | '/data/_authLayout/projects/$projectId_/lists/$listId/'
     | '/data/_authLayout/projects/$projectId_/persons/$personId/'
@@ -5151,6 +5175,7 @@ export const routeTree = rootRoute
         "/data/_authLayout/projects/$projectId_/vector-layers/",
         "/data/_authLayout/projects/$projectId_/wms-layers/",
         "/data/_authLayout/projects/$projectId_/files/$fileId_/preview",
+        "/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy",
         "/data/_authLayout/projects/$projectId_/crs/$projectCrsId/",
         "/data/_authLayout/projects/$projectId_/lists/$listId/",
         "/data/_authLayout/projects/$projectId_/persons/$personId/",
@@ -5527,6 +5552,10 @@ export const routeTree = rootRoute
       "children": [
         "/data/_authLayout/projects/$projectId_/files/$fileId_/preview/"
       ]
+    },
+    "/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy": {
+      "filePath": "data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy.tsx",
+      "parent": "/data/_authLayout"
     },
     "/data/_authLayout/projects/$projectId_/crs/$projectCrsId/": {
       "filePath": "data/_authLayout/projects/$projectId_/crs/$projectCrsId.index.tsx",
