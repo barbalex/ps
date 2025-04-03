@@ -102,7 +102,7 @@ export const useDataNavData = () => {
             isFiltered: projectIsFiltered,
             countFiltered: row?.projects_count_filtered ?? 0,
             countUnfiltered: row?.projects_count_unfiltered ?? 0,
-            namePlural: row?.projects_name_plural ?? 'Subprojects',
+            namePlural: 'Projects',
           }),
         },
         {
