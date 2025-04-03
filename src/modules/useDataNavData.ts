@@ -8,6 +8,7 @@ import {
   fieldTypesFilterAtom,
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
+  fieldsFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
 } from '../store.ts'
@@ -36,6 +37,10 @@ export const useDataNavData = () => {
   )
   const widgetsForFieldsIsFiltered = !!widgetsForFieldsFilterString
 
+  const [fieldsFilter] = useAtom(fieldsFilterAtom)
+  const fieldsFilterString = filterStringFromFilter(fieldsFilter)
+  const fieldsIsFiltered = !!fieldsFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -52,6 +57,8 @@ export const useDataNavData = () => {
             widget_types_count_filtered AS (SELECT count(*) FROM widget_types ${widgetTypesIsFiltered ? ` WHERE ${widgetTypesFilterString}` : ''}),
             widgets_for_fields_count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
             widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
+            fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id IS NULL),
+            fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id IS NULL ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
           `
           : ''
         }
@@ -70,6 +77,8 @@ export const useDataNavData = () => {
               widget_types_count_filtered.count AS widget_types_count_filtered,
               widgets_for_fields_count_unfiltered.count AS widgets_for_fields_count_unfiltered,
               widgets_for_fields_count_filtered.count AS widgets_for_fields_count_filtered,
+              fields_count_unfiltered.count AS fields_count_unfiltered,
+              fields_count_filtered.count AS fields_count_filtered,
             `
           : ''
         }
@@ -88,6 +97,8 @@ export const useDataNavData = () => {
               widget_types_count_filtered,
               widgets_for_fields_count_unfiltered,
               widgets_for_fields_count_filtered,
+              fields_count_unfiltered,
+              fields_count_filtered,
             `
           : ''
         }
@@ -177,6 +188,16 @@ export const useDataNavData = () => {
                 namePlural: 'Widgets For Fields',
               }),
             },
+            {
+              id: 'fields',
+              label: buildNavLabel({
+                loading,
+                isFiltered: fieldsIsFiltered,
+                countFiltered: row?.fields_count_filtered ?? 0,
+                countUnfiltered: row?.fields_count_unfiltered ?? 0,
+                namePlural: 'Fields',
+              }),
+            },
           ]
         : []),
         {
@@ -201,6 +222,8 @@ export const useDataNavData = () => {
     row?.widget_types_count_unfiltered,
     row?.widgets_for_fields_count_filtered,
     row?.widgets_for_fields_count_unfiltered,
+    row?.fields_count_filtered,
+    row?.fields_count_unfiltered,
     row?.messages_count_unfiltered,
     openNodes,
     loading,
@@ -209,6 +232,7 @@ export const useDataNavData = () => {
     fieldTypesIsFiltered,
     widgetTypesIsFiltered,
     widgetsForFieldsIsFiltered,
+    fieldsIsFiltered,
   ])
 
   return { navData, loading }
