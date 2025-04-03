@@ -11,6 +11,7 @@ import {
   vectorLayersFilterAtom,
   listsFilterAtom,
   unitsFilterAtom,
+  fieldsFilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -48,6 +49,10 @@ export const useProjectNavData = ({ projectId }) => {
   const unitsFilterString = filterStringFromFilter(unitsFilter)
   const unitsIsFiltered = !!unitsFilterString
 
+  const [fieldsFilter] = useAtom(fieldsFilterAtom)
+  const fieldsFilterString = filterStringFromFilter(fieldsFilter)
+  const fieldsIsFiltered = !!fieldsFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -69,7 +74,9 @@ export const useProjectNavData = ({ projectId }) => {
         units_count_unfiltered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}'),
         units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''}),
         project_crs_count_unfiltered AS (SELECT count(*) FROM project_crs WHERE project_id = '${projectId}'),
-        place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}')
+        place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}'),
+        fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}'),
+        fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''})
       SELECT
         project_id AS id,
         label,
@@ -92,7 +99,9 @@ export const useProjectNavData = ({ projectId }) => {
         units_count_unfiltered.count AS units_count_unfiltered,
         units_count_filtered.count AS units_count_filtered,
         project_crs_count_unfiltered.count AS project_crs_count_unfiltered,
-        place_levels_count_unfiltered.count AS place_levels_count_unfiltered
+        place_levels_count_unfiltered.count AS place_levels_count_unfiltered,
+        fields_count_unfiltered.count AS fields_count_unfiltered,
+        fields_count_filtered.count AS fields_count_filtered
       FROM 
         projects, 
         subprojects_count_unfiltered, 
@@ -113,7 +122,9 @@ export const useProjectNavData = ({ projectId }) => {
         units_count_unfiltered,
         units_count_filtered,
         project_crs_count_unfiltered,
-        place_levels_count_unfiltered
+        place_levels_count_unfiltered,
+        fields_count_unfiltered,
+        fields_count_filtered
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -244,14 +255,27 @@ export const useProjectNavData = ({ projectId }) => {
             namePlural: 'Place Levels',
           }),
         },
+        {
+          id: 'fields',
+          label: buildNavLabel({
+            loading,
+            isFiltered: fieldsIsFiltered,
+            countFiltered: row?.fields_count_filtered ?? 0,
+            countUnfiltered: row?.fields_count_unfiltered ?? 0,
+            namePlural: 'Fields',
+          }),
+        },
       ],
     }
   }, [
+    fieldsIsFiltered,
     listsIsFiltered,
     loading,
     openNodes,
     personsIsFiltered,
     projectReportsIsFiltered,
+    row?.fields_count_filtered,
+    row?.fields_count_unfiltered,
     row?.id,
     row?.label,
     row?.lists_count_filtered,
