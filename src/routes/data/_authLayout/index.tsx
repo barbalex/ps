@@ -13,6 +13,7 @@ const schema = type({
 
 import { Main } from '../../../components/LayoutProtected/Main.tsx'
 
+// TODO: add root list like in useProjectNavData
 export const Route = createFileRoute('/data/_authLayout/')({
   component: Main,
   validateSearch: schema,
