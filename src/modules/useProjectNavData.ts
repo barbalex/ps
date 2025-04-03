@@ -67,7 +67,8 @@ export const useProjectNavData = ({ projectId }) => {
         lists_count_filtered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}' ${listsIsFiltered ? ` AND ${listsFilterString}` : ''}),
         taxonomies_count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
         units_count_unfiltered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}'),
-        units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''})
+        units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''}),
+        project_crs_count_unfiltered AS (SELECT count(*) FROM project_crs WHERE project_id = '${projectId}')
       SELECT
         project_id AS id,
         label,
@@ -88,7 +89,8 @@ export const useProjectNavData = ({ projectId }) => {
         lists_count_filtered.count AS lists_count_filtered,
         taxonomies_count_unfiltered.count AS taxonomies_count_unfiltered,
         units_count_unfiltered.count AS units_count_unfiltered,
-        units_count_filtered.count AS units_count_filtered
+        units_count_filtered.count AS units_count_filtered,
+        project_crs_count_unfiltered.count AS project_crs_count_unfiltered
       FROM 
         projects, 
         subprojects_count_unfiltered, 
@@ -107,7 +109,8 @@ export const useProjectNavData = ({ projectId }) => {
         lists_count_filtered,
         taxonomies_count_unfiltered,
         units_count_unfiltered,
-        units_count_filtered
+        units_count_filtered,
+        project_crs_count_unfiltered
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -222,6 +225,14 @@ export const useProjectNavData = ({ projectId }) => {
             namePlural: 'Units',
           }),
         },
+        {
+          id: 'crs',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.project_crs_count_unfiltered ?? 0,
+            namePlural: 'CRS',
+          }),
+        },
       ],
     }
   }, [
@@ -236,6 +247,7 @@ export const useProjectNavData = ({ projectId }) => {
     row?.lists_count_unfiltered,
     row?.persons_count_filtered,
     row?.persons_count_unfiltered,
+    row?.project_crs_count_unfiltered,
     row?.project_reports_count_filtered,
     row?.project_reports_count_unfiltered,
     row?.project_users_count_unfiltered,
