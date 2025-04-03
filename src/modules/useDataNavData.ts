@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual'
 import {
   projectsFilterAtom,
   fieldTypesFilterAtom,
+  widgetTypesFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
 } from '../store.ts'
@@ -24,6 +25,10 @@ export const useDataNavData = () => {
   const fieldTypesFilterString = filterStringFromFilter(fieldTypesFilter)
   const fieldTypesIsFiltered = !!fieldTypesFilterString
 
+  const [widgetTypesFilter] = useAtom(widgetTypesFilterAtom)
+  const widgetTypesFilterString = filterStringFromFilter(widgetTypesFilter)
+  const widgetTypesIsFiltered = !!widgetTypesFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -35,7 +40,9 @@ export const useDataNavData = () => {
           designing ?
             `, 
             field_types_count_unfiltered AS (SELECT count(*) FROM field_types),
-            field_types_count_filtered AS (SELECT count(*) FROM field_types ${fieldTypesIsFiltered ? ` WHERE ${fieldTypesFilterString}` : ''})
+            field_types_count_filtered AS (SELECT count(*) FROM field_types ${fieldTypesIsFiltered ? ` WHERE ${fieldTypesFilterString}` : ''}),
+            widget_types_count_unfiltered AS (SELECT count(*) FROM widget_types),
+            widget_types_count_filtered AS (SELECT count(*) FROM widget_types ${widgetTypesIsFiltered ? ` WHERE ${widgetTypesFilterString}` : ''})
           `
           : ''
         },
@@ -49,7 +56,9 @@ export const useDataNavData = () => {
           designing ?
             `, 
               field_types_count_unfiltered.count AS field_types_count_unfiltered,
-              field_types_count_filtered.count AS field_types_count_filtered
+              field_types_count_filtered.count AS field_types_count_filtered,
+              widget_types_count_unfiltered.count AS widget_types_count_unfiltered,
+              widget_types_count_filtered.count AS widget_types_count_filtered
             `
           : ''
         },
@@ -63,7 +72,9 @@ export const useDataNavData = () => {
           designing ?
             `, 
               field_types_count_unfiltered,
-              field_types_count_filtered
+              field_types_count_filtered,
+              widget_types_count_unfiltered,
+              widget_types_count_filtered
             `
           : ''
         },
@@ -132,6 +143,20 @@ export const useDataNavData = () => {
                 countUnfiltered: row?.field_types_count_unfiltered ?? 0,
                 namePlural: 'Field Types',
               }),
+            },
+            {
+              id: 'widget-types',
+              label: buildNavLabel({
+                loading,
+                isFiltered: widgetTypesIsFiltered,
+                countFiltered: row?.widget_types_count_filtered ?? 0,
+                countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
+                namePlural: 'Widget Types',
+              }),
+            },
+            {
+              id: 'designing',
+              label: 'Designing',
             },
           ]
         : []),
