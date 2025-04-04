@@ -84,8 +84,8 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
   const loading = res === undefined
 
   const navData = useMemo(() => {
-    const placeNameSingular = res?.rows?.[0]?.name_singular ?? 'Place'
-    const placeNamePlural = res?.rows?.[0]?.name_plural ?? 'Places'
+    const nameSingular = res?.rows?.[0]?.name_singular ?? 'Place'
+    const namePlural = res?.rows?.[0]?.name_plural ?? 'Places'
 
     const navs = res?.rows ?? []
     const countUnfiltered = navs[0]?.count_unfiltered ?? 0
@@ -110,10 +110,10 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
         isFiltered,
         countFiltered,
         countUnfiltered,
-        namePlural: placeNamePlural,
+        namePlural,
       }),
-      nameSingular: placeNameSingular,
-      namePlural: placeNamePlural,
+      nameSingular,
+      namePlural,
       navs,
     }
   }, [
