@@ -39,7 +39,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_reports_count_filtered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}' ${subprojectReportsIsFiltered ? ` AND ${subprojectReportsFilterString}` : ''}),
         goals_count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
         goals_count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${goalsIsFiltered ? ` AND ${goalsFilterString}` : ''}),
-        occurrence_imports_count AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}')
+        occurrence_imports_count AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}'),
+        occurrences_to_assess_count AS (SELECT count(*) FROM occurrences o INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL)
       SELECT
         sp.subproject_id AS id,
         sp.label, 
@@ -51,7 +52,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_reports_count_filtered.count AS subproject_reports_count_filtered,
         goals_count_unfiltered.count AS goals_count_unfiltered,
         goals_count_filtered.count AS goals_count_filtered,
-        occurrence_imports_count.count AS occurrence_imports_count
+        occurrence_imports_count.count AS occurrence_imports_count,
+        occurrences_to_assess_count.count AS occurrences_to_assess_count
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
@@ -62,7 +64,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_reports_count_filtered,
         goals_count_unfiltered,
         goals_count_filtered,
-        occurrence_imports_count
+        occurrence_imports_count,
+        occurrences_to_assess_count
       WHERE p.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -130,6 +133,14 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
             namePlural: 'Occurrence Imports',
           }),
         },
+        {
+          id: 'occurrences-to-assess',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.occurrences_to_assess_count ?? 0,
+            namePlural: 'Occurrences to assess',
+          }),
+        },
       ],
     }
   }, [
@@ -144,6 +155,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
     row?.goals_count_filtered,
     row?.goals_count_unfiltered,
     row?.occurrence_imports_count,
+    row?.occurrences_to_assess_count,
     openNodes,
     subprojectNameSingular,
     loading,
