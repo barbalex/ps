@@ -17,7 +17,7 @@ export const VectorLayerForm = ({
   row,
   autoFocusRef,
   isFilter,
-  from = '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId',
+  from,
 }) => (
   <>
     <DropdownFieldSimpleOptions

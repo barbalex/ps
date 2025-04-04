@@ -392,7 +392,7 @@ export const buildNavs = async ({
     case 'vector_layers':
       return [
         {
-          path: `/data/projects/${projectId}/vector-layers/${vectorLayerId}/vector-layer-displays`,
+          path: `/data/projects/${projectId}/vector-layers/${vectorLayerId}/displays`,
           text: 'Displays',
         },
       ]

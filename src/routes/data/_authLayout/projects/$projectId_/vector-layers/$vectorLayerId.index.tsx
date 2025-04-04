@@ -1,9 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { VectorLayer } from '../../../../../../formsAndLists/vectorLayer/index.tsx'
+import { VectorLayerList } from '../../../../../../formsAndLists/vectorLayer/List.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId/',
 )({
-  component: VectorLayer,
+  component: RouteComponent,
 })
+
+function RouteComponent() {
+  return (
+    <VectorLayerList from="/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId/" />
+  )
+}

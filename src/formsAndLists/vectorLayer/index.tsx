@@ -10,10 +10,7 @@ import { VectorLayerForm } from './Form/index.tsx'
 
 import '../../form.css'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
-
-export const VectorLayer = memo(() => {
+export const VectorLayer = memo(({ from }) => {
   const { vectorLayerId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -54,12 +51,14 @@ export const VectorLayer = memo(() => {
       <Header
         row={row}
         autoFocusRef={autoFocusRef}
+        from={from}
       />
       <div className="form-container">
         <VectorLayerForm
           onChange={onChange}
           row={row}
           autoFocusRef={autoFocusRef}
+          from={from}
         />
       </div>
     </div>

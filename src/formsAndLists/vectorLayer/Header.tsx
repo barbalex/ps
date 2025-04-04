@@ -25,12 +25,9 @@ import {
   droppableLayerAtom,
 } from '../../store.ts'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId'
-
 // type props
 
-export const Header = memo(({ autoFocusRef, row }) => {
+export const Header = memo(({ autoFocusRef, row, from }) => {
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)

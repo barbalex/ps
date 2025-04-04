@@ -4,7 +4,7 @@ import { VectorLayerDisplays } from '../../../../../../../../formsAndLists/vecto
 import { NotFound } from '../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(
-  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer-displays/',
+  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/displays/',
 )({
   component: RouteComponent,
   notFoundComponent: NotFound,
@@ -12,6 +12,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <VectorLayerDisplays from="/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer-displays/" />
+    <VectorLayerDisplays from="/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/displays/" />
   )
 }

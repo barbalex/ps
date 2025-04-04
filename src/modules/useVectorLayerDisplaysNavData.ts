@@ -34,7 +34,7 @@ export const useVectorLayerDisplaysNavData = ({ projectId, vectorLayerId }) => {
       vectorLayerId,
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'vector-layer-displays']
+    const ownArray = [...parentArray, 'displays']
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))

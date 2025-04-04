@@ -23,7 +23,7 @@ export const VectorLayerDisplayNode = memo(
         projectId,
         'vector-layers',
         vectorLayerId,
-        'vector-layer-displays',
+        'displays',
         nav.id,
       ],
       [projectId, nav.id, vectorLayerId],
