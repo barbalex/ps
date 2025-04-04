@@ -1,9 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { List } from '../../../../../../formsAndLists/list/index.tsx'
+import { ListList } from '../../../../../../formsAndLists/list/List.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/lists/$listId/',
 )({
-  component: List,
+  component: RouteComponent,
 })
+
+function RouteComponent() {
+  return (
+    <ListList from="/data/_authLayout/projects/$projectId_/lists/$listId/" />
+  )
+}

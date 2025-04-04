@@ -10,9 +10,7 @@ import { ListForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/lists/$listId/'
-
-export const List = memo(() => {
+export const List = memo(({ from }) => {
   const { listId } = useParams({ from })
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
@@ -42,9 +40,16 @@ export const List = memo(() => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )
