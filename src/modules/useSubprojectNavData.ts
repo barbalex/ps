@@ -3,7 +3,11 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import isEqual from 'lodash/isEqual'
 
-import { places1FilterAtom, treeOpenNodesAtom } from '../store.ts'
+import {
+  places1FilterAtom,
+  subprojectReportsFilterAtom,
+  treeOpenNodesAtom,
+} from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
@@ -14,25 +18,37 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
   const placesFilterString = filterStringFromFilter(placesFilter)
   const placesIsFiltered = !!placesFilterString
 
+  const [subprojectReportsFilter] = useAtom(subprojectReportsFilterAtom)
+  const subprojectReportsFilterString = filterStringFromFilter(
+    subprojectReportsFilter,
+  )
+  const subprojectReportsIsFiltered = !!subprojectReportsFilterString
+
   const res = useLiveQuery(
     `
       WITH 
         places_count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL),
         places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL ${placesIsFiltered ? ` AND ${placesFilterString}` : ''} ),
-        place_name_plural AS (SELECT name_plural FROM place_levels WHERE project_id = '${projectId}' AND level = 1)
+        place_name_plural AS (SELECT name_plural FROM place_levels WHERE project_id = '${projectId}' AND level = 1),
+        subproject_reports_count_unfiltered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}'),
+        subproject_reports_count_filtered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}' ${subprojectReportsIsFiltered ? ` AND ${subprojectReportsFilterString}` : ''})
       SELECT
         sp.subproject_id AS id,
         sp.label, 
         p.subproject_name_singular AS name_singular,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
-        place_name_plural.name_plural AS place_name_plural
+        place_name_plural.name_plural AS place_name_plural,
+        subproject_reports_count_unfiltered.count AS subproject_reports_count_unfiltered,
+        subproject_reports_count_filtered.count AS subproject_reports_count_filtered
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
         places_count_unfiltered, 
         places_count_filtered,
-        place_name_plural
+        place_name_plural,
+        subproject_reports_count_unfiltered,
+        subproject_reports_count_filtered
       WHERE p.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -72,6 +88,16 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
             namePlural: row?.place_name_plural ?? 'Places',
           }),
         },
+        {
+          id: 'reports',
+          label: buildNavLabel({
+            loading,
+            isFiltered: subprojectReportsIsFiltered,
+            countFiltered: row?.subproject_reports_count_filtered ?? 0,
+            countUnfiltered: row?.subproject_reports_count_unfiltered ?? 0,
+            namePlural: 'Reports',
+          }),
+        },
       ],
     }
   }, [
@@ -81,10 +107,13 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
     row?.places_count_filtered,
     row?.places_count_unfiltered,
     row?.place_name_plural,
+    row?.subproject_reports_count_filtered,
+    row?.subproject_reports_count_unfiltered,
     openNodes,
     subprojectNameSingular,
     loading,
     placesIsFiltered,
+    subprojectReportsIsFiltered,
   ])
 
   return { navData, loading }
