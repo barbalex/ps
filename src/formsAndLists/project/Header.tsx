@@ -26,7 +26,10 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
     // TODO: add place_levels?
     // now navigate to the new project
     navigate({
-      to: isForm ? `../../$projectId/project` : `../$projectId/project`,
+      to:
+        isForm ?
+          `../../${data.project_id}/project`
+        : `../${data.project_id}/project`,
       params: { projectId: data.project_id },
     })
     autoFocusRef?.current?.focus()
@@ -44,7 +47,7 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
     const index = rows.findIndex((p) => p.project_id === projectId)
     const next = rows[(index + 1) % len]
     navigate({
-      to: isForm ? `../../$projectId/project` : `../$projectId`,
+      to: isForm ? `../../${next.project_id}/project` : `../${next.project_id}`,
       params: { projectId: next.project_id },
     })
   }, [db, isForm, navigate, projectId])
@@ -56,7 +59,10 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
     const index = rows.findIndex((p) => p.project_id === projectId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to: isForm ? `../../$projectId/project` : `../$projectId`,
+      to:
+        isForm ?
+          `../../${previous.project_id}/project`
+        : `../${previous.project_id}`,
       params: { projectId: previous.project_id },
     })
   }, [db, isForm, navigate, projectId])
