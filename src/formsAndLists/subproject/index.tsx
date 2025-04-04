@@ -9,9 +9,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId/'
-
-export const Subproject = memo(() => {
+export const Subproject = memo(({ from }) => {
   const { subprojectId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -51,6 +49,7 @@ export const Subproject = memo(() => {
       <Header
         autoFocusRef={autoFocusRef}
         nameSingular={row.subproject_name_singular}
+        from={from}
       />
       <div
         className="form-container"

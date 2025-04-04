@@ -1,9 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Subproject } from '../../../../../../formsAndLists/subproject/index.tsx'
+import { SubprojectList } from '../../../../../../formsAndLists/subproject/List.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId/',
 )({
-  component: Subproject,
+  component: RouteComponent,
 })
+
+function RouteComponent() {
+  return (
+    <SubprojectList from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId/" />
+  )
+}
