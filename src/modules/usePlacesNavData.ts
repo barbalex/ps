@@ -77,7 +77,7 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
   const loading = res === undefined
 
   const resultPlaceLevels = useLiveQuery(
-    `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
+    `SELECT name_singular, name_plural FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [projectId, placeId ? 2 : 1],
   )
   const placeLevel = resultPlaceLevels?.rows?.[0]
