@@ -6,6 +6,8 @@ import { createList } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef, from }) => {
+  const isForm =
+    from === '/data/_authLayout/projects/$projectId_/lists/$listId_/list'
   const { projectId, listId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -15,16 +17,16 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const res = await createList({ db, projectId })
     const data = res?.rows?.[0]
     navigate({
-      to: `../${data.list_id}`,
+      to: isForm ? `../../$listId_/list` : `../$listId_/list`,
       params: (prev) => ({ ...prev, listId: data.list_id }),
     })
-    autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+    autoFocusRef?.current?.focus()
+  }, [autoFocusRef, db, isForm, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM lists WHERE list_id = $1`, [listId])
-    navigate({ to: '..' })
-  }, [db, listId, navigate])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, isForm, listId, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -36,10 +38,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = lists.findIndex((p) => p.list_id === listId)
     const next = lists[(index + 1) % len]
     navigate({
-      to: `../${next.list_id}`,
+      to: isForm ? `../../$listId_/list` : `../$listId_`,
       params: (prev) => ({ ...prev, listId: next.list_id }),
     })
-  }, [db, listId, navigate, projectId])
+  }, [db, isForm, listId, navigate, projectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -51,10 +53,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = lists.findIndex((p) => p.list_id === listId)
     const previous = lists[(index + len - 1) % len]
     navigate({
-      to: `../${previous.list_id}`,
+      to: isForm ? `../../$listId_/list` : `../$listId_`,
       params: (prev) => ({ ...prev, listId: previous.list_id }),
     })
-  }, [db, listId, navigate, projectId])
+  }, [db, isForm, listId, navigate, projectId])
 
   return (
     <FormHeader

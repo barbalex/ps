@@ -6,6 +6,9 @@ import { createTaxonomy } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef, from }) => {
+  const isForm =
+    from ===
+    '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
   const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -15,16 +18,16 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const res = await createTaxonomy({ db, projectId })
     const taxonomy = res?.rows?.[0]
     navigate({
-      to: `../${taxonomy.taxonomy_id}`,
+      to: isForm ? `../../$taxonomyId_/taxonomy` : `../$taxonomyId_/taxonomy`,
       params: (prev) => ({ ...prev, taxonomyId: taxonomy.taxonomy_id }),
     })
-    autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+    autoFocusRef?.current?.focus()
+  }, [autoFocusRef, db, isForm, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [taxonomyId])
-    navigate({ to: '..' })
-  }, [db, navigate, taxonomyId])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, isForm, navigate, taxonomyId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -36,10 +39,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const next = taxonomies[(index + 1) % len]
     navigate({
-      to: `../${next.taxonomy_id}`,
+      to: isForm ? `../../$taxonomyId_/taxonomy` : `../$taxonomyId_`,
       params: (prev) => ({ ...prev, taxonomyId: next.taxonomy_id }),
     })
-  }, [db, projectId, navigate, taxonomyId])
+  }, [db, projectId, navigate, isForm, taxonomyId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -51,10 +54,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const previous = taxonomies[(index + len - 1) % len]
     navigate({
-      to: `../${previous.taxonomy_id}`,
+      to: isForm ? `../../$taxonomyId_/taxonomy` : `../$taxonomyId_`,
       params: (prev) => ({ ...prev, taxonomyId: previous.taxonomy_id }),
     })
-  }, [db, navigate, projectId, taxonomyId])
+  }, [db, isForm, navigate, projectId, taxonomyId])
 
   return (
     <FormHeader

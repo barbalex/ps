@@ -28,6 +28,9 @@ import {
 // type props
 
 export const Header = memo(({ autoFocusRef, row, from }) => {
+  const isForm =
+    from ===
+    '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
@@ -108,20 +111,24 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
     })
     navigate({
       to: `../${vectorLayer.vector_layer_id}`,
+      to:
+        isForm ?
+          `../../$vectorLayerId_/vector-layer`
+        : `../$vectorLayerId_/vector-layer`,
       params: (prev) => ({
         ...prev,
         vectorLayerId: vectorLayer.vector_layer_id,
       }),
     })
-    autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+    autoFocusRef?.current?.focus()
+  }, [autoFocusRef, db, isForm, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
     await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
       vectorLayerId,
     ])
-    navigate({ to: '..' })
-  }, [db, vectorLayerId, navigate])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, vectorLayerId, navigate, isForm])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -133,13 +140,13 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const next = rows[(index + 1) % len]
     navigate({
-      to: `../${next.vector_layer_id}`,
+      to: isForm ? `../../$vectorLayerId_/vector-layer` : `../$vectorLayerId_`,
       params: (prev) => ({
         ...prev,
         vectorLayerId: next.vector_layer_id,
       }),
     })
-  }, [db, projectId, navigate, vectorLayerId])
+  }, [db, projectId, navigate, isForm, vectorLayerId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -151,13 +158,13 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to: `../${previous.vector_layer_id}`,
+      to: isForm ? `../../$vectorLayerId_/vector-layer` : `../$vectorLayerId_`,
       params: (prev) => ({
         ...prev,
         vectorLayerId: previous.vector_layer_id,
       }),
     })
-  }, [db, projectId, navigate, vectorLayerId])
+  }, [db, projectId, navigate, isForm, vectorLayerId])
 
   return (
     <FormHeader
