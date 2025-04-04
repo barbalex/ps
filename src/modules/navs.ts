@@ -185,11 +185,11 @@ export const buildNavs = async ({
         },
         {
           path: `/data/projects/${projectId}/subprojects/${subprojectId}/occurrences-to-assess`,
-          text: 'Occurrences to assess',
+          text: 'Occurrences To Assess',
         },
         {
           path: `/data/projects/${projectId}/subprojects/${subprojectId}/occurrences-not-to-assign`,
-          text: 'Occurrences not to assign',
+          text: 'Occurrences Not To Assign',
         },
         {
           path: `/data/projects/${projectId}/subprojects/${subprojectId}/taxa`,

@@ -271,7 +271,7 @@ export const TableLayersProvider = memo(() => {
               projectId,
               type: 'own',
               ownTable: 'occurrences_to_assess',
-              label: 'Occurrences to assess',
+              label: 'Occurrences To Assess',
               db,
             })
             occurrencesToAssessVectorLayer = res?.rows?.[0]
@@ -317,7 +317,7 @@ export const TableLayersProvider = memo(() => {
               projectId,
               type: 'own',
               ownTable: 'occurrences_not_to_assign',
-              label: 'Occurrences not to assign',
+              label: 'Occurrences Not To Assign',
               db,
             })
             occurrencesNotToAssignVectorLayer = res?.rows?.[0]

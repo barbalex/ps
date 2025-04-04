@@ -65,8 +65,8 @@ export const useOccurrencesNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
     const namePlural =
-      isToAssess ? ' Occurrences to assess'
-      : isNotToAssign ? 'Occurrences not to assign'
+      isToAssess ? ' Occurrences To Assess'
+      : isNotToAssign ? 'Occurrences Not To Assign'
       : 'Occurrences assigned'
     const nameSingular =
       isToAssess ? ' Occurrence to assess'

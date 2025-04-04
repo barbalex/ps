@@ -138,7 +138,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
           label: buildNavLabel({
             loading,
             countFiltered: row?.occurrences_to_assess_count ?? 0,
-            namePlural: 'Occurrences to assess',
+            namePlural: 'Occurrences To Assess',
           }),
         },
       ],
