@@ -35,7 +35,7 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
   )
 
   const [filter] = useAtom(placeId ? places2FilterAtom : places1FilterAtom)
-  const filterString = filterStringFromFilter(filter)
+  const filterString = filterStringFromFilter(filter, 'places')
   const isFiltered = !!filterString
 
   const sql =
@@ -47,15 +47,19 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
         }),
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= $2` : `IS NULL`
-        } ${isFiltered ? ` AND ${filterString}` : ''})
+        } ${isFiltered ? ` AND ${filterString}` : ''}),
+        names AS (SELECT name_singular, name_plural FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
       SELECT
         place_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM places, count_unfiltered, count_filtered
-      WHERE subproject_id = '${subprojectId}'
-        AND parent_id ${placeId ? `= $2` : `IS NULL`}
+        count_filtered.count AS count_filtered,
+        names.name_singular AS name_singular,
+        names.name_plural AS name_plural
+      FROM places, count_unfiltered, count_filtered, names
+      WHERE 
+        places.subproject_id = '${subprojectId}'
+        AND places.parent_id ${placeId ? `= $2` : `IS NULL`}
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label
     `
@@ -66,25 +70,23 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
         }),
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
           placeId ? `= $2` : `IS NULL`
-        } ${isFiltered ? ` AND ${filterString}` : ''})
+        } ${isFiltered ? ` AND ${filterString}` : ''}),
+        names AS (SELECT name_singular, name_plural FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
       SELECT
         count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM count_unfiltered, count_filtered
+        count_filtered.count AS count_filtered,
+        names.name_singular AS name_singular,
+        names.name_plural AS name_plural
+      FROM count_unfiltered, count_filtered, names
     `
   const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
-  const resultPlaceLevels = useLiveQuery(
-    `SELECT name_singular, name_plural FROM place_levels WHERE project_id = $1 and level = $2`,
-    [projectId, placeId ? 2 : 1],
-  )
-  const placeLevel = resultPlaceLevels?.rows?.[0]
-  const placeNameSingular = placeLevel?.name_singular ?? 'Place'
-  const placeNamePlural = placeLevel?.name_plural ?? 'Places'
-
   const navData = useMemo(() => {
+    const placeNameSingular = res?.rows?.[0]?.name_singular ?? 'Place'
+    const placeNamePlural = res?.rows?.[0]?.name_plural ?? 'Places'
+
     const navs = res?.rows ?? []
     const countUnfiltered = navs[0]?.count_unfiltered ?? 0
     const countFiltered = navs[0]?.count_filtered ?? 0
@@ -121,8 +123,6 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
     location.pathname,
     ownArray,
     parentArray,
-    placeNamePlural,
-    placeNameSingular,
     res?.rows,
   ])
 
