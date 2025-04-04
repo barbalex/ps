@@ -50,7 +50,7 @@ export const Header = memo(
           vectorLayerDisplayId: row.vector_layer_display_id,
         }),
       })
-      autoFocusRef.current?.focus()
+      autoFocusRef?.current?.focus()
     }, [
       autoFocusRef,
       db,

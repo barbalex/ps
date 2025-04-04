@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const res = await createWidgetForField({ db })
     const data = res?.rows?.[0]
     navigate({ to: `/data/widgets-for-fields/${data.widget_for_field_id}` })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [autoFocusRef, db, navigate])
 
   const deleteRow = useCallback(async () => {

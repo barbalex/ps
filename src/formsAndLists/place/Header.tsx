@@ -94,7 +94,7 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
         [idName]: place.place_id,
       }),
     })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [
     autoFocusRef,
     db,

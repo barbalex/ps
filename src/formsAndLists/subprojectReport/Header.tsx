@@ -23,7 +23,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         subprojectReportId: data.subproject_report_id,
       }),
     })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [autoFocusRef, db, navigate, projectId, subprojectId])
 
   const deleteRow = useCallback(async () => {

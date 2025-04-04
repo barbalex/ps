@@ -28,7 +28,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${wmsLayer.wms_layer_id}`,
       params: (prev) => ({ ...prev, wmsLayerId: wmsLayer.wms_layer_id }),
     })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [autoFocusRef, db, navigate, projectId])
 
   const deleteRow = useCallback(async () => {

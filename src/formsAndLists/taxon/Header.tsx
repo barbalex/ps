@@ -21,7 +21,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${taxon.taxon_id}`,
       params: (prev) => ({ ...prev, taxonId: taxon.taxon_id }),
     })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [autoFocusRef, db, navigate, taxonomyId])
 
   const deleteRow = useCallback(async () => {

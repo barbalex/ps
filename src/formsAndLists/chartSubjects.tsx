@@ -34,7 +34,7 @@ export const ChartSubjects = memo(() => {
       to: data.chart_subject_id,
       params: (prev) => ({ ...prev, chartSubjectId: data.chart_subject_id }),
     })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [chartId, db, navigate])
 
   // TODO: get uploader css locally if it should be possible to upload charts

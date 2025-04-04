@@ -18,7 +18,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
       to: `../${checkValue.check_value_id}`,
       params: (prev) => ({ ...prev, checkValueId: checkValue.check_value_id }),
     })
-    autoFocusRef.current?.focus()
+    autoFocusRef?.current?.focus()
   }, [autoFocusRef, checkId, db, navigate])
 
   const deleteRow = useCallback(async () => {
