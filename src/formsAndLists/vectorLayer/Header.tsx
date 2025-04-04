@@ -113,8 +113,8 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
       to: `../${vectorLayer.vector_layer_id}`,
       to:
         isForm ?
-          `../../$vectorLayerId_/vector-layer`
-        : `../$vectorLayerId_/vector-layer`,
+          `../../${vectorLayer.vector_layer_id}/vector-layer`
+        : `../${vectorLayer.vector_layer_id}/vector-layer`,
       params: (prev) => ({
         ...prev,
         vectorLayerId: vectorLayer.vector_layer_id,
@@ -140,7 +140,10 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const next = rows[(index + 1) % len]
     navigate({
-      to: isForm ? `../../$vectorLayerId_/vector-layer` : `../$vectorLayerId_`,
+      to:
+        isForm ?
+          `../../${next.vector_layer_id}/vector-layer`
+        : `../${next.vector_layer_id}`,
       params: (prev) => ({
         ...prev,
         vectorLayerId: next.vector_layer_id,
@@ -158,7 +161,10 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to: isForm ? `../../$vectorLayerId_/vector-layer` : `../$vectorLayerId_`,
+      to:
+        isForm ?
+          `../../${previous.vector_layer_id}/vector-layer`
+        : `../${previous.vector_layer_id}`,
       params: (prev) => ({
         ...prev,
         vectorLayerId: previous.vector_layer_id,
