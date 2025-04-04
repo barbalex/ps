@@ -13,9 +13,7 @@ import { Type } from './Type.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId/'
-
-export const Taxonomy = memo(() => {
+export const Taxonomy = memo(({ from }) => {
   const { taxonomyId } = useParams({ from })
   const db = usePGlite()
 
@@ -46,7 +44,10 @@ export const Taxonomy = memo(() => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         <TextField
           label="Name"
@@ -56,7 +57,10 @@ export const Taxonomy = memo(() => {
           autoFocus
           ref={autoFocusRef}
         />
-        <Type row={row} onChange={onChange} />
+        <Type
+          row={row}
+          onChange={onChange}
+        />
         <TextField
           label="Url"
           name="url"
