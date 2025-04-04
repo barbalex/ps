@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Taxonomy } from '../../../../../../formsAndLists/taxonomy/index.tsx'
+import { TaxonomyList } from '../../../../../../formsAndLists/taxonomy/List.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId/',
@@ -10,7 +10,7 @@ export const Route = createFileRoute(
 
 const RouteComponent = () => {
   return (
-    <Taxonomy
+    <TaxonomyList
       from={'/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId/'}
     />
   )

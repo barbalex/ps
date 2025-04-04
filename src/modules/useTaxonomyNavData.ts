@@ -14,17 +14,16 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
   const res = useLiveQuery(
     `
     WITH
-      taxa_count AS (SELECT COUNT(*) AS count FROM taxa WHERE taxonomy_id = $1),
+      taxa_count AS (SELECT COUNT(*) AS count FROM taxa WHERE taxonomy_id = '${taxonomyId}')
     SELECT
       taxonomy_id AS id,
       label,
-      taxa_count.count AS taxa_count_unfiltered,
+      taxa_count.count AS taxa_count_unfiltered
     FROM
       taxonomies, 
       taxa_count
     WHERE
-      taxonomies.taxonomy_id = $1`,
-    [taxonomyId],
+      taxonomies.taxonomy_id = '${taxonomyId}'`,
   )
 
   const loading = res === undefined
