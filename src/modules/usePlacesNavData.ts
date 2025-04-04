@@ -42,10 +42,10 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
     isOpen ?
       `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
+        count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= $2` : `IS NULL`
         }),
-        count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
+        count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= $2` : `IS NULL`
         } ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
@@ -55,7 +55,7 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
         count_filtered.count AS count_filtered
       FROM places, count_unfiltered, count_filtered
       WHERE subproject_id = '${subprojectId}'
-        and parent_id ${placeId ? `= $2` : `IS NULL`}
+        AND parent_id ${placeId ? `= $2` : `IS NULL`}
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label
     `
