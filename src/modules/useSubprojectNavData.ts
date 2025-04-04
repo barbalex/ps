@@ -50,7 +50,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
         subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
-        files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
+        files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
+        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}')
       SELECT
         sp.subproject_id AS id,
         sp.label, 
@@ -68,7 +69,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_taxa_count.count AS subproject_taxa_count,
         subproject_users_count.count AS subproject_users_count,
         files_count_unfiltered.count AS files_count_unfiltered,
-        files_count_filtered.count AS files_count_filtered
+        files_count_filtered.count AS files_count_filtered,
+        charts_count.count AS charts_count
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
@@ -85,7 +87,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_taxa_count,
         subproject_users_count,
         files_count_unfiltered,
-        files_count_filtered
+        files_count_filtered,
+        charts_count
       WHERE p.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -195,6 +198,14 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
             namePlural: 'Files',
           }),
         },
+        {
+          id: 'charts',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.charts_count ?? 0,
+            namePlural: 'Charts',
+          }),
+        },
       ],
     }
   }, [
@@ -215,6 +226,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
     row?.subproject_users_count,
     row?.files_count_filtered,
     row?.files_count_unfiltered,
+    row?.charts_count,
     openNodes,
     subprojectNameSingular,
     loading,
