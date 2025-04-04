@@ -5,7 +5,6 @@ import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
 export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
