@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const res = await createList({ db, projectId })
     const data = res?.rows?.[0]
     navigate({
-      to: isForm ? `../../$listId_/list` : `../$listId_/list`,
+      to: isForm ? `../../${data.list_id}/list` : `../${data.list_id}/list`,
       params: (prev) => ({ ...prev, listId: data.list_id }),
     })
     autoFocusRef?.current?.focus()
@@ -38,7 +38,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = lists.findIndex((p) => p.list_id === listId)
     const next = lists[(index + 1) % len]
     navigate({
-      to: isForm ? `../../$listId_/list` : `../$listId_`,
+      to: isForm ? `../../${next.list_id}/list` : `../${next.list_id}`,
       params: (prev) => ({ ...prev, listId: next.list_id }),
     })
   }, [db, isForm, listId, navigate, projectId])
@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = lists.findIndex((p) => p.list_id === listId)
     const previous = lists[(index + len - 1) % len]
     navigate({
-      to: isForm ? `../../$listId_/list` : `../$listId_`,
+      to: isForm ? `../../${previous.list_id}/list` : `../${previous.list_id}`,
       params: (prev) => ({ ...prev, listId: previous.list_id }),
     })
   }, [db, isForm, listId, navigate, projectId])

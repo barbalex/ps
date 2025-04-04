@@ -18,7 +18,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const res = await createTaxonomy({ db, projectId })
     const taxonomy = res?.rows?.[0]
     navigate({
-      to: isForm ? `../../$taxonomyId_/taxonomy` : `../$taxonomyId_/taxonomy`,
+      to:
+        isForm ?
+          `../../${taxonomy.taxonomy_id}/taxonomy`
+        : `../${taxonomy.taxonomy_id}/taxonomy`,
       params: (prev) => ({ ...prev, taxonomyId: taxonomy.taxonomy_id }),
     })
     autoFocusRef?.current?.focus()
@@ -39,7 +42,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const next = taxonomies[(index + 1) % len]
     navigate({
-      to: isForm ? `../../$taxonomyId_/taxonomy` : `../$taxonomyId_`,
+      to:
+        isForm ?
+          `../../${next.taxonomy_id}/taxonomy`
+        : `../${next.taxonomy_id}`,
       params: (prev) => ({ ...prev, taxonomyId: next.taxonomy_id }),
     })
   }, [db, projectId, navigate, isForm, taxonomyId])
@@ -54,7 +60,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const previous = taxonomies[(index + len - 1) % len]
     navigate({
-      to: isForm ? `../../$taxonomyId_/taxonomy` : `../$taxonomyId_`,
+      to:
+        isForm ?
+          `../../${previous.taxonomy_id}/taxonomy`
+        : `../${previous.taxonomy_id}`,
       params: (prev) => ({ ...prev, taxonomyId: previous.taxonomy_id }),
     })
   }, [db, isForm, navigate, projectId, taxonomyId])
