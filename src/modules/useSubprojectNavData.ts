@@ -7,6 +7,7 @@ import {
   places1FilterAtom,
   subprojectReportsFilterAtom,
   goalsFilterAtom,
+  filesFilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -29,6 +30,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
   const goalsFilterString = filterStringFromFilter(goalsFilter)
   const goalsIsFiltered = !!goalsFilterString
 
+  const [filesFilter] = useAtom(filesFilterAtom)
+  const filesFilterString = filterStringFromFilter(filesFilter)
+  const filesIsFiltered = !!filesFilterString
+
   const res = useLiveQuery(
     `
       WITH 
@@ -43,7 +48,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         occurrences_to_assess_count AS (SELECT count(*) FROM occurrences o INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL),
         occurrences_not_to_assign_count AS (SELECT count(*) FROM occurrences o INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
         subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
-        subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}')
+        subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
+        files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
+        files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
       SELECT
         sp.subproject_id AS id,
         sp.label, 
@@ -59,7 +66,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         occurrences_to_assess_count.count AS occurrences_to_assess_count,
         occurrences_not_to_assign_count.count AS occurrences_not_to_assign_count,
         subproject_taxa_count.count AS subproject_taxa_count,
-        subproject_users_count.count AS subproject_users_count
+        subproject_users_count.count AS subproject_users_count,
+        files_count_unfiltered.count AS files_count_unfiltered,
+        files_count_filtered.count AS files_count_filtered
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
@@ -74,7 +83,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         occurrences_to_assess_count,
         occurrences_not_to_assign_count,
         subproject_taxa_count,
-        subproject_users_count
+        subproject_users_count,
+        files_count_unfiltered,
+        files_count_filtered
       WHERE p.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -174,6 +185,16 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
             namePlural: 'Users',
           }),
         },
+        {
+          id: 'files',
+          label: buildNavLabel({
+            loading,
+            isFiltered: filesIsFiltered,
+            countFiltered: row?.files_count_filtered ?? 0,
+            countUnfiltered: row?.files_count_unfiltered ?? 0,
+            namePlural: 'Files',
+          }),
+        },
       ],
     }
   }, [
@@ -192,12 +213,15 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
     row?.occurrences_not_to_assign_count,
     row?.subproject_taxa_count,
     row?.subproject_users_count,
+    row?.files_count_filtered,
+    row?.files_count_unfiltered,
     openNodes,
     subprojectNameSingular,
     loading,
     placesIsFiltered,
     subprojectReportsIsFiltered,
     goalsIsFiltered,
+    filesIsFiltered,
   ])
 
   return { navData, loading }
