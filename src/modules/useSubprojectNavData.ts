@@ -38,7 +38,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_reports_count_unfiltered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}'),
         subproject_reports_count_filtered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}' ${subprojectReportsIsFiltered ? ` AND ${subprojectReportsFilterString}` : ''}),
         goals_count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
-        goals_count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${goalsIsFiltered ? ` AND ${goalsFilterString}` : ''})
+        goals_count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${goalsIsFiltered ? ` AND ${goalsFilterString}` : ''}),
+        occurrence_imports_count AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}')
       SELECT
         sp.subproject_id AS id,
         sp.label, 
@@ -49,7 +50,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_reports_count_unfiltered.count AS subproject_reports_count_unfiltered,
         subproject_reports_count_filtered.count AS subproject_reports_count_filtered,
         goals_count_unfiltered.count AS goals_count_unfiltered,
-        goals_count_filtered.count AS goals_count_filtered
+        goals_count_filtered.count AS goals_count_filtered,
+        occurrence_imports_count.count AS occurrence_imports_count
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
@@ -59,7 +61,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         subproject_reports_count_unfiltered,
         subproject_reports_count_filtered,
         goals_count_unfiltered,
-        goals_count_filtered
+        goals_count_filtered,
+        occurrence_imports_count
       WHERE p.project_id = '${projectId}'`,
   )
   const loading = res === undefined
@@ -119,6 +122,14 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
             namePlural: 'Goals',
           }),
         },
+        {
+          id: 'occurrence-imports',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.occurrence_imports_count ?? 0,
+            namePlural: 'Occurrence Imports',
+          }),
+        },
       ],
     }
   }, [
@@ -132,6 +143,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
     row?.subproject_reports_count_unfiltered,
     row?.goals_count_filtered,
     row?.goals_count_unfiltered,
+    row?.occurrence_imports_count,
     openNodes,
     subprojectNameSingular,
     loading,
