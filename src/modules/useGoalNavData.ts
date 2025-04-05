@@ -21,7 +21,7 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
         goals,
         goal_reports_count
       WHERE 
-        goals.goalId = '${goalId}'`,
+        goals.goal_id = '${goalId}'`,
   )
   const loading = res === undefined
   const row = res?.rows?.[0]

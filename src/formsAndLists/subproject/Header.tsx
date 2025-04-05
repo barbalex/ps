@@ -21,7 +21,6 @@ export const Header = memo(
       const res = await createSubproject({ db, projectId })
       const data = res?.rows?.[0]
       navigate({
-        to: `../${data.subproject_id}`,
         to:
           isForm ?
             `../../${data.subproject_id}/subproject`

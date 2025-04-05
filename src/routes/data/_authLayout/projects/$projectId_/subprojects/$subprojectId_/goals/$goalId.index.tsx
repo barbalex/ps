@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Goal } from '../../../../../../../../formsAndLists/goal/index.tsx'
+import { GoalList } from '../../../../../../../../formsAndLists/goal/List.tsx'
 
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId/',
@@ -10,6 +10,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <Goal from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId/" />
+    <GoalList from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId/" />
   )
 }
