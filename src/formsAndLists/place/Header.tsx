@@ -28,7 +28,7 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     from ===
       '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
     from ===
-      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId_/place/'
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/place/'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
@@ -93,7 +93,6 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
 
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to: `../${place.place_id}`,
       to:
         isForm ? `../../${place.place_id}/place` : `../${place.place_id}/place`,
       params: (prev) => ({

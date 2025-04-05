@@ -21,7 +21,7 @@ export const usePlaceReportNavData = ({
       SELECT
         place_report_id AS id,
         label,
-        place_report_values_count.count AS count,
+        place_report_values_count.count AS place_report_values_count
       FROM 
         place_reports,
         place_report_values_count
@@ -30,6 +30,16 @@ export const usePlaceReportNavData = ({
   const res = useLiveQuery(sql)
   const loading = res === undefined
   const row = res?.rows?.[0]
+
+  console.log('usePlaceReportNavData', {
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    placeReportId,
+    row,
+    loading,
+  })
 
   const navData = useMemo(() => {
     const parentArray = [

@@ -6,6 +6,11 @@ import { createPlaceReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef, from }) => {
+  const isForm =
+    from ===
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/report' ||
+    from ===
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/reports/$placeReportId_/report/'
   const { projectId, placeId, placeId2, placeReportId } = useParams({
     from,
   })
@@ -21,21 +26,24 @@ export const Header = memo(({ autoFocusRef, from }) => {
     })
     const placeReport = res?.rows?.[0]
     navigate({
-      to: `../${placeReport.place_report_id}`,
+      to:
+        isForm ?
+          `../../${placeReport.place_report_id}/report`
+        : `../${placeReport.place_report_id}/report`,
       params: (prev) => ({
         ...prev,
         placeReportId: placeReport.place_report_id,
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, placeId, placeId2, projectId])
+  }, [autoFocusRef, db, isForm, navigate, placeId, placeId2, projectId])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM place_reports WHERE place_report_id = $1`, [
       placeReportId,
     ])
-    navigate({ to: '..' })
-  }, [db, navigate, placeReportId])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, isForm, navigate, placeReportId])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -49,10 +57,13 @@ export const Header = memo(({ autoFocusRef, from }) => {
     )
     const next = placeReports[(index + 1) % len]
     navigate({
-      to: `../${next.place_report_id}`,
+      to:
+        isForm ?
+          `../../${next.place_report_id}/report`
+        : `../${next.place_report_id}`,
       params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
     })
-  }, [db, navigate, placeId, placeId2, placeReportId])
+  }, [db, isForm, navigate, placeId, placeId2, placeReportId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -66,13 +77,16 @@ export const Header = memo(({ autoFocusRef, from }) => {
     )
     const previous = placeReports[(index + len - 1) % len]
     navigate({
-      to: `../${previous.place_report_id}`,
+      to:
+        isForm ?
+          `../../${previous.place_report_id}/report`
+        : `../${previous.place_report_id}`,
       params: (prev) => ({
         ...prev,
         placeReportId: previous.place_report_id,
       }),
     })
-  }, [db, navigate, placeId, placeId2, placeReportId])
+  }, [db, isForm, navigate, placeId, placeId2, placeReportId])
 
   return (
     <FormHeader
