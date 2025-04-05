@@ -9,6 +9,8 @@ import {
   checks2FilterAtom,
   actions1FilterAtom,
   actions2FilterAtom,
+  placeReports1FilterAtom,
+  placeReports2FilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -38,6 +40,12 @@ export const usePlaceNavData = ({
   const actionsFilterString = filterStringFromFilter(actionsFilter)
   const actionsIsFiltered = !!actionsFilterString
 
+  const [placeReportsFilter] = useAtom(
+    placeId2 ? placeReports2FilterAtom : placeReports1FilterAtom,
+  )
+  const placeReportsFilterString = filterStringFromFilter(placeReportsFilter)
+  const placeReportsIsFiltered = !!placeReportsFilterString
+
   const sql = `
       WITH
         names AS (SELECT name_singular FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
@@ -51,7 +59,9 @@ export const usePlaceNavData = ({
         checks_count_unfiltered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'),
         checks_count_filtered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}' ${checksIsFiltered ? ` AND ${checksFilterString}` : ''}),
         actions_count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'),
-        actions_count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}' ${actionsIsFiltered ? ` AND ${actionsFilterString}` : ''})
+        actions_count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}' ${actionsIsFiltered ? ` AND ${actionsFilterString}` : ''}),
+        place_reports_count_unfiltered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'),
+        place_reports_count_filtered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeReportsIsFiltered ? ` AND ${placeReportsFilterString}` : ''})
       SELECT
         place_id AS id,
         label,
@@ -62,7 +72,9 @@ export const usePlaceNavData = ({
         checks_count_unfiltered.count AS checks_count_unfiltered,
         checks_count_filtered.count AS checks_count_filtered,
         actions_count_unfiltered.count AS actions_count_unfiltered,
-        actions_count_filtered.count AS actions_count_filtered
+        actions_count_filtered.count AS actions_count_filtered,
+        place_reports_count_unfiltered.count AS place_reports_count_unfiltered,
+        place_reports_count_filtered.count AS place_reports_count_filtered
       FROM 
         places,
         names,
@@ -72,7 +84,9 @@ export const usePlaceNavData = ({
         checks_count_unfiltered,
         checks_count_filtered,
         actions_count_unfiltered,
-        actions_count_filtered
+        actions_count_filtered,
+        place_reports_count_unfiltered,
+        place_reports_count_filtered
       WHERE 
         places.place_id = '${placeId}'`
   const res = useLiveQuery(sql)
@@ -145,6 +159,16 @@ export const usePlaceNavData = ({
             namePlural: 'Actions',
           }),
         },
+        {
+          id: 'reports',
+          label: buildNavLabel({
+            loading,
+            isFiltered: placeReportsIsFiltered,
+            countFiltered: row?.place_reports_count_filtered ?? 0,
+            countUnfiltered: row?.place_reports_count_unfiltered ?? 0,
+            namePlural: 'Reports',
+          }),
+        },
       ],
     }
   }, [
@@ -159,6 +183,8 @@ export const usePlaceNavData = ({
     row?.checks_count_unfiltered,
     row?.actions_count_filtered,
     row?.actions_count_unfiltered,
+    row?.place_reports_count_filtered,
+    row?.place_reports_count_unfiltered,
     openNodes,
     nameSingular,
     placeId2,
@@ -167,6 +193,7 @@ export const usePlaceNavData = ({
     childNamePlural,
     checksIsFiltered,
     actionsIsFiltered,
+    placeReportsIsFiltered,
   ])
 
   return { navData, loading }

@@ -6,7 +6,11 @@ import isEqual from 'lodash/isEqual'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { unitsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import {
+  placeReports1FilterAtom,
+  placeReports2FilterAtom,
+  treeOpenNodesAtom,
+} from '../store.ts'
 
 export const usePlaceReportsNavData = ({
   projectId,
@@ -37,7 +41,9 @@ export const usePlaceReportsNavData = ({
     [openNodes, ownArray],
   )
 
-  const [filter] = useAtom(unitsFilterAtom)
+  const [filter] = useAtom(
+    placeId2 ? placeReports2FilterAtom : placeReports1FilterAtom,
+  )
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
