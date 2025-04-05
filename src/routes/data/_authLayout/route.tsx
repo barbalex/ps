@@ -19,4 +19,10 @@ export const Route = createFileRoute('/data/_authLayout')({
   defaultNotFoundComponent: NotFound,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
+  beforeLoad: () => ({
+    navData: {
+      label: 'Data',
+      url: '/data',
+    },
+  }),
 })

@@ -13,7 +13,8 @@ const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'projects']
 const ownUrl = `/${ownArray.join('/')}`
 
-export const useProjectsNavData = () => {
+export const useProjectsNavData = (params) => {
+  const forBreadcrumb = params?.forBreadcrumb ?? false
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -26,9 +27,10 @@ export const useProjectsNavData = () => {
     () => openNodes.some((array) => isEqual(array, ownArray)),
     [openNodes],
   )
+  const withNavs = !forBreadcrumb || isOpen
 
   const sql =
-    isOpen ?
+    withNavs ?
       `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),

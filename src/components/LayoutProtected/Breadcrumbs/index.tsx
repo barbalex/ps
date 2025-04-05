@@ -12,7 +12,12 @@ import {
 } from '@fluentui/react-components'
 import { BsCaretDown } from 'react-icons/bs'
 // import { useMatches } from 'react-router'
-import { useNavigate, useMatches } from '@tanstack/react-router'
+import {
+  useNavigate,
+  useMatches,
+  useRouterState,
+  useRouteContext,
+} from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { BreadcrumbForData } from './BreadcrumbForData.tsx'
@@ -92,7 +97,11 @@ const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
 // problem: menu is not rendered after width changes
 // solution: rerender after width changes
 export const Breadcrumbs = () => {
-  const unfilteredMatches = useMatches()
+  // const unfilteredMatches = useMatches()
+  const unfilteredMatches = useRouterState({ select: (s) => s.matches })
+  const routeContext = useRouteContext({
+    from: '/data/_authLayout/projects/$projectId',
+  })
 
   const [rerenderInteger, setRerenderInteger] = useState(0)
   const upRerenderInteger = useCallback(() => {
@@ -100,7 +109,7 @@ export const Breadcrumbs = () => {
   }, [])
 
   const matches = unfilteredMatches.filter(
-    (match) => !!match.context?.navDataFetcher,
+    (match) => !!match.context?.navDataFetcher || !!match.context?.navData,
   )
   const { width, ref } = useResizeDetector({
     handleHeight: false,
@@ -112,6 +121,7 @@ export const Breadcrumbs = () => {
   console.log('Breadcrumbs, matches:', {
     matches,
     unfilteredMatches,
+    routeContext,
   })
 
   return null
