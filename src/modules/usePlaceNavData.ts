@@ -11,6 +11,7 @@ import {
   actions2FilterAtom,
   placeReports1FilterAtom,
   placeReports2FilterAtom,
+  filesFilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -46,6 +47,10 @@ export const usePlaceNavData = ({
   const placeReportsFilterString = filterStringFromFilter(placeReportsFilter)
   const placeReportsIsFiltered = !!placeReportsFilterString
 
+  const [filesFilter] = useAtom(filesFilterAtom)
+  const filesFilterString = filterStringFromFilter(filesFilter)
+  const filesIsFiltered = !!filesFilterString
+
   const sql = `
       WITH
         names AS (SELECT name_singular FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
@@ -63,7 +68,9 @@ export const usePlaceNavData = ({
         place_reports_count_unfiltered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'),
         place_reports_count_filtered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeReportsIsFiltered ? ` AND ${placeReportsFilterString}` : ''}),
         occurrences_count AS (SELECT count(*) FROM occurrences WHERE place_id = '${placeId2 ?? placeId}'),
-        place_users_count AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}')
+        place_users_count AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
+        files_count_unfiltered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}'),
+        files_count_filtered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
       SELECT
         place_id AS id,
         label,
@@ -78,7 +85,9 @@ export const usePlaceNavData = ({
         place_reports_count_unfiltered.count AS place_reports_count_unfiltered,
         place_reports_count_filtered.count AS place_reports_count_filtered,
         occurrences_count.count AS occurrences_count,
-        place_users_count.count AS place_users_count
+        place_users_count.count AS place_users_count,
+        files_count_unfiltered.count AS files_count_unfiltered,
+        files_count_filtered.count AS files_count_filtered
       FROM 
         places,
         names,
@@ -92,7 +101,9 @@ export const usePlaceNavData = ({
         place_reports_count_unfiltered,
         place_reports_count_filtered,
         occurrences_count,
-        place_users_count
+        place_users_count,
+        files_count_unfiltered,
+        files_count_filtered
       WHERE 
         places.place_id = '${placeId}'`
   const res = useLiveQuery(sql)
@@ -191,6 +202,16 @@ export const usePlaceNavData = ({
             namePlural: 'Users',
           }),
         },
+        {
+          id: 'files',
+          label: buildNavLabel({
+            loading,
+            isFiltered: filesIsFiltered,
+            countFiltered: row?.files_count_filtered ?? 0,
+            countUnfiltered: row?.files_count_unfiltered ?? 0,
+            namePlural: 'Files',
+          }),
+        },
       ],
     }
   }, [
@@ -209,6 +230,8 @@ export const usePlaceNavData = ({
     row?.place_reports_count_unfiltered,
     row?.occurrences_count,
     row?.place_users_count,
+    row?.files_count_filtered,
+    row?.files_count_unfiltered,
     openNodes,
     nameSingular,
     placeId2,
@@ -218,6 +241,7 @@ export const usePlaceNavData = ({
     checksIsFiltered,
     actionsIsFiltered,
     placeReportsIsFiltered,
+    filesIsFiltered,
   ])
 
   return { navData, loading }
