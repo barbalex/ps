@@ -5,6 +5,7 @@ import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 
 export const useActionReportsNavData = ({
   projectId,
