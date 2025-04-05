@@ -3,7 +3,12 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import isEqual from 'lodash/isEqual'
 
-import { places1FilterAtom, treeOpenNodesAtom } from '../store.ts'
+import {
+  places1FilterAtom,
+  checks1FilterAtom,
+  checks2FilterAtom,
+  treeOpenNodesAtom,
+} from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
@@ -19,6 +24,12 @@ export const usePlaceNavData = ({
   const placesFilterString = filterStringFromFilter(placesFilter)
   const placesIsFiltered = !!placesFilterString
 
+  const [checksFilter] = useAtom(
+    placeId2 ? checks2FilterAtom : checks1FilterAtom,
+  )
+  const checksFilterString = filterStringFromFilter(checksFilter)
+  const checksIsFiltered = !!checksFilterString
+
   const sql = `
       WITH
         names AS (SELECT name_singular FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
@@ -28,20 +39,26 @@ export const usePlaceNavData = ({
         }),
         places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
-        } ${placesIsFiltered ? ` AND ${placesFilterString}` : ''})
+        } ${placesIsFiltered ? ` AND ${placesFilterString}` : ''}),
+        checks_count_unfiltered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'),
+        checks_count_filtered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}' ${checksIsFiltered ? ` AND ${checksFilterString}` : ''})
       SELECT
         place_id AS id,
         label,
         names.name_singular AS name_singular,
         child_names.name_plural AS child_name_plural,
         places_count_unfiltered.count AS places_count_unfiltered,
-        places_count_filtered.count AS places_count_filtered
+        places_count_filtered.count AS places_count_filtered,
+        checks_count_unfiltered.count AS checks_count_unfiltered,
+        checks_count_filtered.count AS checks_count_filtered
       FROM 
         places,
         names,
         child_names,
         places_count_unfiltered,
-        places_count_filtered
+        places_count_filtered,
+        checks_count_unfiltered,
+        checks_count_filtered
       WHERE 
         places.place_id = '${placeId}'`
   const res = useLiveQuery(sql)
@@ -94,6 +111,16 @@ export const usePlaceNavData = ({
             },
           ]
         : []),
+        {
+          id: 'checks',
+          label: buildNavLabel({
+            loading,
+            isFiltered: checksIsFiltered,
+            countFiltered: row?.checks_count_filtered ?? 0,
+            countUnfiltered: row?.checks_count_unfiltered ?? 0,
+            namePlural: 'Checks',
+          }),
+        },
       ],
     }
   }, [
@@ -104,12 +131,15 @@ export const usePlaceNavData = ({
     row?.label,
     row?.places_count_filtered,
     row?.places_count_unfiltered,
+    row?.checks_count_filtered,
+    row?.checks_count_unfiltered,
     openNodes,
     nameSingular,
     placeId2,
     loading,
     placesIsFiltered,
     childNamePlural,
+    checksIsFiltered,
   ])
 
   return { navData, loading }
