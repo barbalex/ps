@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 import { ProjectList } from '../../../../formsAndLists/project/List.tsx'
 
@@ -10,5 +10,6 @@ export const Route = createFileRoute('/data/_authLayout/projects/$projectId')({
 })
 
 const RouteComponent = () => {
+  return <Outlet />
   return <ProjectList from={'/data/_authLayout/projects/$projectId'} />
 }
