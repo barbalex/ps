@@ -67,7 +67,7 @@ export const useOccurrencesNavData = ({
     const namePlural =
       isToAssess ? ' Occurrences To Assess'
       : isNotToAssign ? 'Occurrences Not To Assign'
-      : 'Occurrences assigned'
+      : 'Occurrences Assigned'
     const nameSingular =
       isToAssess ? ' Occurrence to assess'
       : isNotToAssign ? 'Occurrence not to assign'

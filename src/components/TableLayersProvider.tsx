@@ -224,8 +224,8 @@ export const TableLayersProvider = memo(() => {
               ownTableLevel: 1,
               label:
                 placeLevel1?.name_singular ?
-                  `${placeLevel1.name_singular} Occurrences assigned`
-                : 'Occurrences assigned',
+                  `${placeLevel1.name_singular} Occurrences Assigned`
+                : 'Occurrences Assigned',
               db,
             })
             occurrencesAssigned1VectorLayer = res?.rows?.[0]
@@ -515,8 +515,8 @@ export const TableLayersProvider = memo(() => {
               ownTableLevel: 2,
               label:
                 placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Occurrences assigned`
-                : 'Occurrences assigned',
+                  `${placeLevel2.name_singular} Occurrences Assigned`
+                : 'Occurrences Assigned',
               db,
             })
             occurrencesAssigned2VectorLayer = res?.rows?.[0]

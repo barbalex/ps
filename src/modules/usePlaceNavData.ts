@@ -61,7 +61,8 @@ export const usePlaceNavData = ({
         actions_count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'),
         actions_count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}' ${actionsIsFiltered ? ` AND ${actionsFilterString}` : ''}),
         place_reports_count_unfiltered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'),
-        place_reports_count_filtered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeReportsIsFiltered ? ` AND ${placeReportsFilterString}` : ''})
+        place_reports_count_filtered AS (SELECT count(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeReportsIsFiltered ? ` AND ${placeReportsFilterString}` : ''}),
+        occurrences_count AS (SELECT count(*) FROM occurrences WHERE place_id = '${placeId2 ?? placeId}')
       SELECT
         place_id AS id,
         label,
@@ -74,7 +75,8 @@ export const usePlaceNavData = ({
         actions_count_unfiltered.count AS actions_count_unfiltered,
         actions_count_filtered.count AS actions_count_filtered,
         place_reports_count_unfiltered.count AS place_reports_count_unfiltered,
-        place_reports_count_filtered.count AS place_reports_count_filtered
+        place_reports_count_filtered.count AS place_reports_count_filtered,
+        occurrences_count.count AS occurrences_count
       FROM 
         places,
         names,
@@ -86,7 +88,8 @@ export const usePlaceNavData = ({
         actions_count_unfiltered,
         actions_count_filtered,
         place_reports_count_unfiltered,
-        place_reports_count_filtered
+        place_reports_count_filtered,
+        occurrences_count
       WHERE 
         places.place_id = '${placeId}'`
   const res = useLiveQuery(sql)
@@ -169,6 +172,14 @@ export const usePlaceNavData = ({
             namePlural: 'Reports',
           }),
         },
+        {
+          id: 'occurrences',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.occurrences_count ?? 0,
+            namePlural: 'Occurrences Assigned',
+          }),
+        },
       ],
     }
   }, [
@@ -185,6 +196,7 @@ export const usePlaceNavData = ({
     row?.actions_count_unfiltered,
     row?.place_reports_count_filtered,
     row?.place_reports_count_unfiltered,
+    row?.occurrences_count,
     openNodes,
     nameSingular,
     placeId2,
