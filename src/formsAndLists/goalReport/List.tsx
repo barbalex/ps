@@ -1,17 +1,18 @@
 import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
-import { useGoalNavData } from '../../modules/useGoalNavData.ts'
+import { useGoalReportNavData } from '../../modules/useGoalReportNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 
-export const GoalList = memo(({ from }) => {
-  const { projectId, subprojectId, goalId } = useParams({ from })
-  const { loading, navData } = useGoalNavData({
+export const GoalReportList = memo(({ from }) => {
+  const { projectId, subprojectId, goalId, goalReportId } = useParams({ from })
+  const { loading, navData } = useGoalReportNavData({
     projectId,
     subprojectId,
     goalId,
+    goalReportId,
   })
   const { navs } = navData
 

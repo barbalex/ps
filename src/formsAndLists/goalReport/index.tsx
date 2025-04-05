@@ -8,10 +8,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId/'
-
-export const GoalReport = memo(() => {
+export const GoalReport = memo(({ from }) => {
   const { goalReportId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -23,11 +20,16 @@ export const GoalReport = memo(() => {
   )
   const row = res?.rows?.[0]
 
+  console.log('GoalReport', { goalReportId, res, row, from })
+
   if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         <Jsonb
           table="goal_reports"

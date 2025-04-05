@@ -5,10 +5,10 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createGoalReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId/'
-
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, from }) => {
+  const isForm =
+    from ===
+    '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/report'
   const { projectId, goalId, goalReportId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -22,18 +22,21 @@ export const Header = memo(({ autoFocusRef }) => {
     })
     const data = res?.rows?.[0]
     navigate({
-      to: `../${data.goal_report_id}`,
+      to:
+        isForm ?
+          `../../${data.goal_report_id}/report`
+        : `../${data.goal_report_id}/report`,
       params: (prev) => ({ ...prev, goalReportId: data.goal_report_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, goalId, navigate, projectId])
+  }, [autoFocusRef, db, goalId, isForm, navigate, projectId])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM goal_reports WHERE goal_report_id = $1`, [
       goalReportId,
     ])
-    navigate({ to: '..' })
-  }, [db, goalReportId, navigate])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, goalReportId, isForm, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -47,10 +50,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const next = goalReports[(index + 1) % len]
     navigate({
-      to: `../${next.goal_report_id}`,
+      to:
+        isForm ?
+          `../../${next.goal_report_id}/report`
+        : `../${next.goal_report_id}`,
       params: (prev) => ({ ...prev, goalReportId: next.goal_report_id }),
     })
-  }, [db, goalId, goalReportId, navigate])
+  }, [db, goalId, goalReportId, isForm, navigate])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -64,10 +70,13 @@ export const Header = memo(({ autoFocusRef }) => {
     )
     const previous = goalReports[(index + len - 1) % len]
     navigate({
-      to: `../${previous.goal_report_id}`,
+      to:
+        isForm ?
+          `../../${previous.goal_report_id}/report`
+        : `../${previous.goal_report_id}`,
       params: (prev) => ({ ...prev, goalReportId: previous.goal_report_id }),
     })
-  }, [db, goalId, goalReportId, navigate])
+  }, [db, goalId, goalReportId, isForm, navigate])
 
   return (
     <FormHeader
