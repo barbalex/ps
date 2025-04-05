@@ -18,16 +18,19 @@ export const useActionNavData = ({
   const sql = `
       WITH
         action_values_count AS (SELECT count(*) FROM action_values WHERE action_id = '${actionId}'),
-        action_reports_count AS (SELECT count(*) FROM action_reports WHERE action_id = '${actionId}')
+        action_reports_count AS (SELECT count(*) FROM action_reports WHERE action_id = '${actionId}'),
+        files_count AS (SELECT count(*) FROM files WHERE action_id = '${actionId}')
       SELECT
         action_id AS id,
         label,
         action_values_count.count AS action_values_count,
-        action_reports_count.count AS action_reports_count
+        action_reports_count.count AS action_reports_count,
+        files_count.count AS files_count
       FROM 
         actions,
         action_values_count,
-        action_reports_count
+        action_reports_count,
+        files_count
       WHERE 
         actions.action_id = '${actionId}'`
   const res = useLiveQuery(sql)
@@ -82,6 +85,14 @@ export const useActionNavData = ({
             namePlural: 'Reports',
           }),
         },
+        {
+          id: 'files',
+          label: buildNavLabel({
+            loading,
+            countFiltered: row?.files_count ?? 0,
+            namePlural: 'Files',
+          }),
+        },
       ],
     }
   }, [
@@ -93,6 +104,7 @@ export const useActionNavData = ({
     row?.label,
     row?.action_values_count,
     row?.action_reports_count,
+    row?.files_count,
     openNodes,
     loading,
   ])
