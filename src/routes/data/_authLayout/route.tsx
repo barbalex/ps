@@ -20,7 +20,7 @@ export const Route = createFileRoute('/data/_authLayout')({
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
   beforeLoad: () => ({
-    navData: {
+    navDataFetcher: {
       label: 'Data',
       url: '/data',
     },
