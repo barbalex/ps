@@ -14,6 +14,11 @@ import { createNotification } from '../../modules/createRows.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef, from }) => {
+  const isForm =
+    from ===
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/action' ||
+    from ===
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_//places/$placeId2_/actions/$actionId_/action'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { projectId, placeId, placeId2, actionId } = useParams({ from })
@@ -29,16 +34,19 @@ export const Header = memo(({ autoFocusRef, from }) => {
     })
     const data = res?.rows?.[0]
     navigate({
-      to: `../${data.action_id}`,
+      to:
+        isForm ?
+          `../../${data.action_id}/action`
+        : `../${data.action_id}/action`,
       params: (prev) => ({ ...prev, actionId: data.action_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, placeId, placeId2, projectId])
+  }, [autoFocusRef, db, isForm, navigate, placeId, placeId2, projectId])
 
   const deleteRow = useCallback(async () => {
     db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
-    navigate({ to: '..' })
-  }, [actionId, db, navigate])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [actionId, db, isForm, navigate])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -50,10 +58,10 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = actions.findIndex((p) => p.action_id === actionId)
     const next = actions[(index + 1) % len]
     navigate({
-      to: `../${next.action_id}`,
+      to: isForm ? `../../${next.action_id}/action` : `../${next.action_id}`,
       params: (prev) => ({ ...prev, actionId: next.action_id }),
     })
-  }, [actionId, db, navigate, placeId, placeId2])
+  }, [actionId, db, isForm, navigate, placeId, placeId2])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -65,10 +73,13 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const index = actions.findIndex((p) => p.action_id === actionId)
     const previous = actions[(index + len - 1) % len]
     navigate({
-      to: `../${previous.action_id}`,
+      to:
+        isForm ?
+          `../../${previous.action_id}/action`
+        : `../${previous.action_id}`,
       params: (prev) => ({ ...prev, actionId: previous.action_id }),
     })
-  }, [actionId, db, navigate, placeId, placeId2])
+  }, [actionId, db, isForm, navigate, placeId, placeId2])
 
   const alertNoGeometry = useCallback(() => {
     createNotification({

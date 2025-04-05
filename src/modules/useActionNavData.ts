@@ -6,27 +6,27 @@ import isEqual from 'lodash/isEqual'
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
-export const usePlaceReportNavData = ({
+export const useActionNavData = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
-  placeReportId,
+  actionId,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const sql = `
       WITH
-        place_report_values_count AS (SELECT count(*) FROM place_report_values WHERE place_report_id = '${placeReportId}')
+        action_values_count AS (SELECT count(*) FROM action_values WHERE action_id = '${actionId}')
       SELECT
-        place_report_id AS id,
+        action_id AS id,
         label,
-        place_report_values_count.count AS place_report_values_count
+        action_values_count.count AS action_values_count
       FROM 
-        place_reports,
-        place_report_values_count
+        actions,
+        action_values_count
       WHERE 
-        place_reports.place_report_id = '${placeReportId}'`
+        actions.action_id = '${actionId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
   const row = res?.rows?.[0]
@@ -41,7 +41,7 @@ export const usePlaceReportNavData = ({
       'places',
       placeId,
       ...(placeId2 ? ['places', placeId2] : []),
-      'reports',
+      'actions',
     ]
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = [...parentArray, row?.id]
@@ -62,12 +62,12 @@ export const usePlaceReportNavData = ({
       ownUrl,
       label: row?.label,
       navs: [
-        { id: 'report', label: 'Report' },
+        { id: 'action', label: 'Action' },
         {
           id: 'values',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.place_report_values_count ?? 0,
+            countFiltered: row?.action_values_count ?? 0,
             namePlural: 'Values',
           }),
         },
@@ -80,7 +80,7 @@ export const usePlaceReportNavData = ({
     placeId2,
     row?.id,
     row?.label,
-    row?.place_report_values_count,
+    row?.action_values_count,
     openNodes,
     loading,
   ])
