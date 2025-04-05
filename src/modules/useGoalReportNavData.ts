@@ -69,7 +69,7 @@ export const useGoalReportNavData = ({
           label: buildNavLabel({
             loading,
             countFiltered: row?.goal_report_values_count ?? 0,
-            namePlural: 'Goal Report Values',
+            namePlural: 'Values',
           }),
         },
       ],
