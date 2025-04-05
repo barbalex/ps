@@ -43,10 +43,10 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
       `
       WITH
         count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
-          placeId ? `= $2` : `IS NULL`
+          placeId ? `= '${placeId}'` : `IS NULL`
         }),
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
-          placeId ? `= $2` : `IS NULL`
+          placeId ? `= '${placeId}'` : `IS NULL`
         } ${isFiltered ? ` AND ${filterString}` : ''}),
         names AS (SELECT name_singular, name_plural FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
       SELECT
@@ -59,17 +59,17 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
       FROM places, count_unfiltered, count_filtered, names
       WHERE 
         places.subproject_id = '${subprojectId}'
-        AND places.parent_id ${placeId ? `= $2` : `IS NULL`}
+        AND places.parent_id ${placeId ? `= '${placeId}'` : `IS NULL`}
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label
     `
     : `
       WITH
         count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
-          placeId ? `= $2` : `IS NULL`
+          placeId ? `= '${placeId}'` : `IS NULL`
         }),
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
-          placeId ? `= $2` : `IS NULL`
+          placeId ? `= '${placeId}'` : `IS NULL`
         } ${isFiltered ? ` AND ${filterString}` : ''}),
         names AS (SELECT name_singular, name_plural FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
       SELECT

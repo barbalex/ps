@@ -24,6 +24,11 @@ interface Props {
 }
 
 export const Header = memo(({ autoFocusRef, from }: Props) => {
+  const isForm =
+    from ===
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
+    from ===
+      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId_/place/'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
@@ -89,6 +94,8 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: `../${place.place_id}`,
+      to:
+        isForm ? `../../${place.place_id}/place` : `../${place.place_id}/place`,
       params: (prev) => ({
         ...prev,
         [idName]: place.place_id,
@@ -96,20 +103,21 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     })
     autoFocusRef?.current?.focus()
   }, [
-    autoFocusRef,
     db,
-    navigate,
-    placeNamePlural,
-    placeId,
-    placeId2,
     projectId,
     subprojectId,
+    placeId2,
+    placeId,
+    placeNamePlural,
+    navigate,
+    isForm,
+    autoFocusRef,
   ])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM places WHERE place_id = $1`, [placeId2 ?? placeId])
-    navigate({ to: '..' })
-  }, [db, navigate, placeId, placeId2])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, isForm, navigate, placeId, placeId2])
 
   const toNext = useCallback(async () => {
     const res = await db.query(
@@ -129,13 +137,13 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     const next = places[(index + 1) % len]
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to: `../${next.place_id}`,
+      to: isForm ? `../../${next.place_id}/place` : `../${next.place_id}`,
       params: (prev) => ({
         ...prev,
         [idName]: next.place_id,
       }),
     })
-  }, [db, navigate, placeId, placeId2, subprojectId])
+  }, [db, isForm, navigate, placeId, placeId2, subprojectId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -155,13 +163,14 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     const previous = places[(index + len - 1) % len]
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to: `../${previous.place_id}`,
+      to:
+        isForm ? `../../${previous.place_id}/place` : `../${previous.place_id}`,
       params: (prev) => ({
         ...prev,
         [idName]: previous.place_id,
       }),
     })
-  }, [db, navigate, placeId, placeId2, subprojectId])
+  }, [db, isForm, navigate, placeId, placeId2, subprojectId])
 
   const alertNoGeometry = useCallback(() => {
     createNotification({
