@@ -19,49 +19,36 @@ export const usePlaceNavData = ({
   const placesFilterString = filterStringFromFilter(placesFilter)
   const placesIsFiltered = !!placesFilterString
 
-  const res = useLiveQuery(
-    `
+  const sql = `
       WITH
-        names AS (SELECT name_singular, namePlural FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
+        names AS (SELECT name_singular FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
+        child_names as (SELECT name_plural FROM place_levels WHERE project_id = '${projectId}' AND level = 2),
         places_count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
         }),
-        places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id = ${
+        places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
-        } ${placesIsFiltered ? ` AND ${placesFilterString}` : ''} )
+        } ${placesIsFiltered ? ` AND ${placesFilterString}` : ''})
       SELECT
         place_id AS id,
         label,
         names.name_singular AS name_singular,
-        names.name_plural AS name_plural,
+        child_names.name_plural AS child_name_plural,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered
       FROM 
         places,
         names,
+        child_names,
         places_count_unfiltered,
         places_count_filtered
       WHERE 
-        places.place_id = '${placeId}'`,
-  )
+        places.place_id = '${placeId}'`
+  const res = useLiveQuery(sql)
   const loading = res === undefined
   const row = res?.rows?.[0]
   const nameSingular = row?.name_singular ?? 'Place'
-  const namePlural = row?.name_plural ?? 'Places'
-
-  console.log('usePlaceNavData', {
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    res,
-    row,
-    loading,
-    placesIsFiltered,
-    placesFilterString,
-    nameSingular,
-    namePlural,
-  })
+  const childNamePlural = row?.child_name_plural ?? 'Places'
 
   const navData = useMemo(() => {
     const parentArray = [
@@ -102,7 +89,7 @@ export const usePlaceNavData = ({
                 isFiltered: placesIsFiltered,
                 countFiltered: row?.places_count_filtered ?? 0,
                 countUnfiltered: row?.places_count_unfiltered ?? 0,
-                namePlural,
+                namePlural: childNamePlural,
               }),
             },
           ]
@@ -122,10 +109,8 @@ export const usePlaceNavData = ({
     placeId2,
     loading,
     placesIsFiltered,
-    namePlural,
+    childNamePlural,
   ])
-
-  console.log('usePlaceNavData, navData:', navData)
 
   return { navData, loading }
 }
