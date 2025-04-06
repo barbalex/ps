@@ -6,6 +6,9 @@ export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/occurrences/$occurrenceId/',
 )({
   component: RouteComponent,
+  beforeLoad: () => ({
+    navDataFetcher: 'useOccurrenceNavData',
+  }),
 })
 
 function RouteComponent() {
