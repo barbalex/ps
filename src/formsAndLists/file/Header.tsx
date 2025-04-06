@@ -50,7 +50,7 @@ export const Header = memo(({ row, previewRef, from }) => {
     } else if (checkId) {
       return { hFilterField: 'check_id', hFilterValue: checkId }
     } else if (placeId2) {
-      return { hFilterField: 'place_id2', hFilterValue: placeId2 }
+      return { hFilterField: 'place_id', hFilterValue: placeId2 }
     } else if (placeId) {
       return { hFilterField: 'place_id', hFilterValue: placeId }
     } else if (subprojectId) {

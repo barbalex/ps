@@ -43,7 +43,7 @@ export const Header = memo(({ autoFocusRef }) => {
     let filterField
     let filterValue
     if (placeId2) {
-      filterField = 'place_id2'
+      filterField = 'place_id'
       filterValue = placeId2
     } else if (placeId) {
       filterField = 'place_id'

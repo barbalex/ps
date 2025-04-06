@@ -19,7 +19,7 @@ export const useChartsNavData = ({
   let hKey
   let hValue
   if (placeId2) {
-    hKey = 'place_id2'
+    hKey = 'place_id'
     hValue = placeId2
   } else if (placeId) {
     hKey = 'place_id'

@@ -44,7 +44,7 @@ export const useFilesNavData = ({
     } else if (checkId) {
       return { hKey: 'check_id', hValue: checkId }
     } else if (placeId2) {
-      return { hKey: 'place_id2', hValue: placeId2 }
+      return { hKey: 'place_id', hValue: placeId2 }
     } else if (placeId) {
       return { hKey: 'place_id', hValue: placeId }
     } else if (subprojectId) {
