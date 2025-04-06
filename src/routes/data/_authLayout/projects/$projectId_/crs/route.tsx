@@ -1,0 +1,10 @@
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+
+export const Route = createFileRoute(
+  '/data/_authLayout/projects/$projectId_/crs',
+)({
+  component: Outlet,
+  beforeLoad: () => ({
+    navDataFetcher: 'useCrssNavData',
+  }),
+})
