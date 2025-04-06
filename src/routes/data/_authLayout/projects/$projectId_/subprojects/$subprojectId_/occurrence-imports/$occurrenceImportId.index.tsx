@@ -17,4 +17,7 @@ export const Route = createFileRoute(
   component: OccurrenceImport,
   validateSearch: occurrenceImportTabSchema,
   middlewares: [stripSearchParams(defaultValues)],
+  beforeLoad: () => ({
+    navDataFetcher: 'useOccurrenceImportNavData',
+  }),
 })
