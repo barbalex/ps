@@ -6,6 +6,9 @@ export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/values/$placeReportValueId/',
 )({
   component: RouteComponent,
+  beforeLoad: () => ({
+    navDataFetcher: 'usePlaceReportValueNavData',
+  }),
 })
 
 function RouteComponent() {

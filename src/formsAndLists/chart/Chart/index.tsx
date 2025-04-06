@@ -14,7 +14,7 @@ const titleRowStyle = {
 }
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId/'
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/'
 
 export const Chart = memo(() => {
   const { projectId, subprojectId, chartId } = useParams({ from })

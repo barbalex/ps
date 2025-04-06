@@ -8,7 +8,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { designingAtom } from '../../store.ts'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId/'
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/'
 
 export const Header = memo(({ autoFocusRef }) => {
   const [designing] = useAtom(designingAtom)
