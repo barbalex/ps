@@ -6,7 +6,4 @@ import { NotFound } from '../../../../components/NotFound.tsx'
 export const Route = createFileRoute('/data/_authLayout/projects/')({
   component: Projects,
   notFoundComponent: NotFound,
-  beforeLoad: () => ({
-    navDataFetcher: 'useProjectsNavData',
-  }),
 })

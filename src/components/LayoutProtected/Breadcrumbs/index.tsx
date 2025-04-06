@@ -11,8 +11,7 @@ import {
   useOverflowMenu,
 } from '@fluentui/react-components'
 import { BsCaretDown } from 'react-icons/bs'
-// import { useMatches } from 'react-router'
-import { useNavigate, useMatches } from '@tanstack/react-router'
+import { useNavigate, useMatches, useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { BreadcrumbForData } from './BreadcrumbForData.tsx'
@@ -93,7 +92,7 @@ const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
 // solution: rerender after width changes
 export const Breadcrumbs = () => {
   const unfilteredMatches = useMatches()
-  // const unfilteredMatches = useRouterState({ select: (s) => s.matches })
+  const params = useParams({ strict: false })
 
   const [rerenderInteger, setRerenderInteger] = useState(0)
   const upRerenderInteger = useCallback(() => {
@@ -109,11 +108,11 @@ export const Breadcrumbs = () => {
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
-
-  console.log('Breadcrumbs, matches:', {
-    matches,
-    unfilteredMatches,
-  })
+  console.log(
+    'Breadcrumbs, navDataFetchers:',
+    matches.map((match) => match.context.navDataFetcher),
+  )
+  console.log('Breadcrumbs, params:', params)
 
   return null
 

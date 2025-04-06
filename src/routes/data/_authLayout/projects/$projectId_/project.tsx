@@ -14,7 +14,7 @@ const schema = type({
 })
 
 export const Route = createFileRoute(
-  '/data/_authLayout/projects/$projectId_/project/',
+  '/data/_authLayout/projects/$projectId_/project',
 )({
   component: RouteComponent,
   validateSearch: schema,
@@ -22,5 +22,5 @@ export const Route = createFileRoute(
 })
 
 const RouteComponent = () => {
-  return <Project from={'/data/_authLayout/projects/$projectId_/project/'} />
+  return <Project from={'/data/_authLayout/projects/$projectId_/project'} />
 }
