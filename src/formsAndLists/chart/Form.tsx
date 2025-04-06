@@ -14,11 +14,8 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/'
-
 // seperate from the route because it is also used inside other forms
-export const Form = memo(({ autoFocusRef }: Props) => {
+export const Form = memo(({ autoFocusRef, from }: Props) => {
   const { chartId } = useParams({ from })
 
   const db = usePGlite()

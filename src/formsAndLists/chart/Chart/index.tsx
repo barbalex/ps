@@ -13,10 +13,7 @@ const titleRowStyle = {
   fontWeight: 'bold',
 }
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/'
-
-export const Chart = memo(() => {
+export const Chart = memo(({ from }) => {
   const { projectId, subprojectId, chartId } = useParams({ from })
 
   const db = usePGlite()

@@ -13,7 +13,7 @@ export const ChartList = memo(({ from }) => {
   const { loading, navData } = useChartNavData({
     projectId,
     subprojectId,
-    chartId
+    chartId,
   })
   const { navs } = navData
 

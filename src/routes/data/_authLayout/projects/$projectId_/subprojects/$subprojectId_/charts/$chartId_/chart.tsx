@@ -6,6 +6,12 @@ import { NotFound } from '../../../../../../../../../components/NotFound.tsx'
 export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart',
 )({
-  component: Chart,
+  component: RouteComponent,
   notFoundComponent: NotFound,
 })
+
+const RouteComponent = () => {
+  return (
+    <Chart from="/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart" />
+  )
+}

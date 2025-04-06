@@ -7,10 +7,10 @@ import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { designingAtom } from '../../store.ts'
 
-const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/'
-
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, from }) => {
+  const isForm =
+    from ===
+    '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
   const [designing] = useAtom(designingAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
     from,
@@ -28,16 +28,25 @@ export const Header = memo(({ autoFocusRef }) => {
     const res = await createChart({ ...idToAdd, db })
     const data = res?.rows?.[0]
     navigate({
-      to: `../${data.chart_id}`,
+      to: isForm ? `../../${data.chart_id}/chart` : `../${data.chart_id}/chart`,
       params: (prev) => ({ ...prev, chartId: data.chart_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, placeId, placeId2, projectId, subprojectId])
+  }, [
+    autoFocusRef,
+    db,
+    isForm,
+    navigate,
+    placeId,
+    placeId2,
+    projectId,
+    subprojectId,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.query(`delete from charts where chart_id = $1`, [chartId])
-    navigate({ to: '..' })
-  }, [db, chartId, navigate])
+    navigate({ to: isForm ? `../..` : `..` })
+  }, [db, chartId, navigate, isForm])
 
   const { filterField, filterValue } = useMemo(() => {
     let filterField
@@ -68,10 +77,10 @@ export const Header = memo(({ autoFocusRef }) => {
     const index = rows.findIndex((p) => p.chart_id === chartId)
     const next = rows[(index + 1) % len]
     navigate({
-      to: `../${next.chart_id}`,
+      to: isForm ? `../../${next.chart_id}/chart` : `../${next.chart_id}`,
       params: (prev) => ({ ...prev, chartId: next.chart_id }),
     })
-  }, [db, filterField, filterValue, navigate, chartId])
+  }, [db, filterField, filterValue, navigate, isForm, chartId])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -83,10 +92,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const index = rows.findIndex((p) => p.chart_id === chartId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to: `../${previous.chart_id}`,
+      to:
+        isForm ? `../../${previous.chart_id}/chart` : `../${previous.chart_id}`,
       params: (prev) => ({ ...prev, chartId: previous.chart_id }),
     })
-  }, [db, filterField, filterValue, navigate, chartId])
+  }, [db, filterField, filterValue, navigate, isForm, chartId])
 
   return (
     <FormHeader
