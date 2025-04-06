@@ -11,7 +11,7 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const { projectId, subprojectId, placeId, checkId } = useParams({
+  const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({
     from: '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/',
   })
 
@@ -20,6 +20,7 @@ function RouteComponent() {
       projectId={projectId}
       subprojectId={subprojectId}
       placeId={placeId}
+      placeId2={placeId2}
       checkId={checkId}
     />
   )

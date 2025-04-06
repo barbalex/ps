@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { File } from '../../../../../../../../../../../../../../formsAndLists/file/index.tsx'
-import { NotFound } from '../../../../../../../../../../../../../../components/NotFound.tsx'
+import { File } from '../../../../../../../../../../../../../../../formsAndLists/file/index.tsx'
+import { NotFound } from '../../../../../../../../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId',
+  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/',
 )({
   component: RouteComponent,
   notFoundComponent: NotFound,
