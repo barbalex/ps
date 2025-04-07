@@ -8,4 +8,7 @@ export const Route = createFileRoute(
 )({
   component: File,
   notFoundComponent: NotFound,
+  beforeLoad: () => ({
+    navDataFetcher: 'useFileNavData',
+  }),
 })
