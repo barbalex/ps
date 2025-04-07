@@ -14,6 +14,7 @@ const containerStyle = {
   flexShrink: 0,
   padding: '0 3px',
   minHeight: 40,
+  maxHeight: 40,
   borderBottom: 'rgba(46, 125, 50, 0.5) solid 1px',
   overflowX: 'auto',
   overflowY: 'hidden',
