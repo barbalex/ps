@@ -4,10 +4,8 @@ import { Fetcher } from './Fetcher.tsx'
 import { Loading } from '../../shared/Loading.tsx'
 
 // pass on TransitionGroup's props
-export const FetcherImporter = memo(({ match, ...other }) => {
+export const FetcherImporter = memo(({ fetcherName, ...other }) => {
   const [fetcherModule, setFetcherModule] = useState(null)
-
-  const fetcherName = match.handle?.bookmarkFetcherName
 
   useEffect(() => {
     // return the module, not the hook as that would already be called
@@ -20,7 +18,7 @@ export const FetcherImporter = memo(({ match, ...other }) => {
 
   return (
     <Fetcher
-      match={match}
+      fetcherName={fetcherName}
       fetcherModule={fetcherModule}
       {...other}
     />

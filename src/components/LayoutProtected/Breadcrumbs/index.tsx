@@ -22,7 +22,7 @@ const containerStyle = {
 // this component extracts matches
 export const Breadcrumbs = memo(() => {
   const unfilteredMatches = useMatches()
-  const matches = unfilteredMatches
+  const navDataFetchers = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
     .map((match) => match.context.navDataFetcher)
 
@@ -31,10 +31,10 @@ export const Breadcrumbs = memo(() => {
   return (
     <div style={containerStyle}>
       <TransitionGroup component={null}>
-        {matches.map((match) => (
+        {navDataFetchers.map((fetcherName) => (
           <FetcherImporter
-            key={match.id}
-            match={match}
+            key={fetcherName}
+            fetcherName={fetcherName}
           />
         ))}
       </TransitionGroup>
