@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useSearch } from '@tanstack/react-router'
 
 import { Main } from './Main.tsx'
-import { Breadcrumbs } from './Breadcrumbs_old/index.tsx'
+import { Breadcrumbs } from './Breadcrumbs/index.tsx'
 import { Notifications } from '../Notifications/index.tsx'
 import { ProtectedRoute } from '../ProtectedRoute.tsx'
 import { Header } from './Header/index.tsx'

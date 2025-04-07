@@ -1,7 +1,7 @@
 import { memo, useRef } from 'react'
 import { Transition } from 'react-transition-group'
 
-import { Label } from './Label.jsx'
+import { Label } from './Label.tsx'
 
 import './style.css'
 

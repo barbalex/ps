@@ -1,7 +1,7 @@
 import { memo, useState, useEffect } from 'react'
 
-import { Fetcher } from './Fetcher.jsx'
-import { Spinner } from '../../shared/Spinner.jsx'
+import { Fetcher } from './Fetcher.tsx'
+import { Loading } from '../../shared/Loading.tsx'
 
 // pass on TransitionGroup's props
 export const FetcherImporter = memo(({ match, ...other }) => {
@@ -16,7 +16,7 @@ export const FetcherImporter = memo(({ match, ...other }) => {
     })
   }, [fetcherName])
 
-  if (!fetcherModule) return <Spinner />
+  if (!fetcherModule) return <Loading />
 
   return (
     <Fetcher

@@ -1,8 +1,8 @@
-import { memo, useMemo, useEffect, useState } from 'react'
-import { useMatches, useParams } from '@tanstack/react-router'
+import { memo } from 'react'
+import { useMatches } from '@tanstack/react-router'
 import { TransitionGroup } from 'react-transition-group'
 
-import { FetcherImporter } from './FetcherImporter.jsx'
+import { FetcherImporter } from './FetcherImporter.tsx'
 
 const containerStyle = {
   display: 'flex',
