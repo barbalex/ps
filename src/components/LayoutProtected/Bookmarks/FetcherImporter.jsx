@@ -11,7 +11,7 @@ export const FetcherImporter = memo(({ match, ...other }) => {
 
   useEffect(() => {
     // return the module, not the hook as that would already be called
-    import(`../../../modules/${fetcherName}.js`).then((module) => {
+    import(`../../../modules/${fetcherName}.ts`).then((module) => {
       setFetcherModule(module)
     })
   }, [fetcherName])

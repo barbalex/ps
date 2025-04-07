@@ -25,7 +25,6 @@ export const Bookmarks = memo(() => {
   const matches = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
     .map((match) => match.context.navDataFetcher)
-  const params = useParams({ strict: false }).reverse()
 
   // flex-direction row-reverse combined with reverse order of matches
   // to align bookmarks to the right, but still have them in order
