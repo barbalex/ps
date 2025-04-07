@@ -26,6 +26,7 @@ export const Breadcrumbs = memo(() => {
   const navDataFetchers = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
     .map((match) => match.context.navDataFetcher)
+    .reverse()
 
   console.log('Breadcrumbs, navDataFetchers', navDataFetchers)
 

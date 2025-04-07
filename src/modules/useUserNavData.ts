@@ -1,0 +1,55 @@
+import { useMemo } from 'react'
+import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLocation, useParams } from '@tanstack/react-router'
+import isEqual from 'lodash/isEqual'
+
+import { treeOpenNodesAtom } from '../store.ts'
+
+const parentArray = ['data']
+const parentUrl = `/${parentArray.join('/')}`
+const ownArray = [...parentArray, 'users']
+const ownUrl = `/${ownArray.join('/')}`
+
+export const useUserNavData = () => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const location = useLocation()
+  const { userId } = useParams({ strict: false })
+
+  const res = useLiveQuery(
+    `
+    SELECT 
+      user_id AS id, 
+      label 
+    FROM users
+    WHERE user_id = $1
+    ORDER BY label`,
+    [userId],
+  )
+  const loading = res === undefined
+
+  const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+    const urlPath = location.pathname.split('/').filter((p) => p !== '')
+
+    // needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
+
+    return {
+      isInActiveNodeArray,
+      isActive,
+      isOpen,
+      level: 1,
+      parentUrl,
+      ownArray,
+      ownUrl,
+      urlPath,
+      label: nav?.label,
+      nameSingular: 'User',
+    }
+  }, [location.pathname, openNodes, res?.rows])
+
+  return { loading, navData }
+}
