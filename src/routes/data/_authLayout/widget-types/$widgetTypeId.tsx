@@ -6,4 +6,7 @@ export const Route = createFileRoute(
   '/data/_authLayout/widget-types/$widgetTypeId',
 )({
   component: WidgetType,
+  beforeLoad: () => ({
+    navDataFetcher: 'useWidgetTypeNavData',
+  }),
 })

@@ -6,4 +6,7 @@ export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId',
 )({
   component: WmsLayer,
+  beforeLoad: () => ({
+    navDataFetcher: 'useWmsLayerNavData',
+  }),
 })

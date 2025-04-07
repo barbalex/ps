@@ -6,6 +6,9 @@ export const Route = createFileRoute(
   '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId',
 )({
   component: RouteComponent,
+  beforeLoad: () => ({
+    navDataFetcher: 'useVectorLayerDisplayNavData',
+  }),
 })
 
 function RouteComponent() {
