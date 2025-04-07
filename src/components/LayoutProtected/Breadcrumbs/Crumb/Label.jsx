@@ -7,28 +7,6 @@ import { observer } from 'mobx-react-lite'
 import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 import { MobxContext } from '../../../mobxContext.js'
 
-const StyledLink = styled(Link)`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-decoration: none;
-  align-content: center;
-  transition: opacity 700ms ease-in-out;
-  user-select: none;
-  &:hover {
-    text-decoration: underline;
-    text-decoration-color: rgba(55, 118, 28, 0.5);
-  }
-`
-const StyledText = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  align-content: center;
-  transition: opacity 700ms ease-in-out;
-  user-select: none;
-`
-
 export const Label = memo(
   observer(({ navData, outerContainerRef, labelStyle, ref }) => {
     const { pathname, search } = useLocation()
@@ -68,20 +46,22 @@ export const Label = memo(
     const label = useMemo(
       () =>
         linksToSomewhereElse ?
-          <StyledLink
+          <Link
+            className="crumb-label-link"
             to={{ pathname: navData.url, search }}
             onClick={onClick}
             ref={ref}
             style={{ ...labelStyle }}
           >
             {navData.labelShort ?? navData.label}
-          </StyledLink>
-        : <StyledText
+          </Link>
+        : <div
+            className="crumb-label-text"
             ref={ref}
             style={{ ...labelStyle }}
           >
             {navData.labelShort ?? navData.label}
-          </StyledText>,
+          </div>,
       [
         linksToSomewhereElse,
         navData.label,

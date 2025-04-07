@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { Spinner } from '../../shared/Spinner.jsx'
-import { Bookmark } from './Bookmark/index.jsx'
+import { Crumb } from './Crumb/index.jsx'
 
 // pass on TransitionGroup's props
 export const Fetcher = memo(({ match, fetcherModule, ...other }) => {
@@ -19,7 +19,7 @@ export const Fetcher = memo(({ match, fetcherModule, ...other }) => {
   if (loading) return <Spinner />
 
   return (
-    <Bookmark
+    <Crumb
       key={`${navData.id}`}
       navData={navData}
       {...other}

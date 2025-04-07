@@ -20,7 +20,7 @@ const containerStyle = {
 }
 
 // this component extracts matches
-export const Bookmarks = memo(() => {
+export const Breadcrumbs = memo(() => {
   const unfilteredMatches = useMatches()
   const matches = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
