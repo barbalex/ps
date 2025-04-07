@@ -1,6 +1,7 @@
 .crumb-outer-container {
   position: relative;
   padding-left: 25px;
+  padding-right: 15px;
 }
 .crumb-outer-container::after,
 .crumb-outer-container::before {

@@ -1,11 +1,7 @@
 import { memo, useRef } from 'react'
-import { Menu } from './Menu/index.jsx'
-import styled from '@emotion/styled'
 import { Transition } from 'react-transition-group'
-import { useAtom } from 'jotai'
 
 import { Label } from './Label.jsx'
-import { showBookmarksMenuAtom } from '../../../JotaiStore/index.js'
 
 import './style.css'
 
@@ -17,8 +13,6 @@ const transitionStyles = {
 }
 
 export const Crumb = memo(({ navData, in: inProp }) => {
-  const [showBookmarksMenu] = useAtom(showBookmarksMenuAtom)
-
   const outerContainerRef = useRef(null)
   const labelRef = useRef(null)
 
@@ -36,17 +30,13 @@ export const Crumb = memo(({ navData, in: inProp }) => {
           className="crumb-outer-container"
           ref={outerContainerRef}
         >
-          <div
-            className="crumb-container"
-            style={{ paddingRight: showBookmarksMenu ? 'unset' : 15 }}
-          >
+          <div className="crumb-container">
             <Label
               navData={navData}
               outerContainerRef={outerContainerRef}
               ref={labelRef}
               labelStyle={transitionStyles[state]}
             />
-            {!!navData.menus && showBookmarksMenu && <Menu navData={navData} />}
           </div>
         </div>
       )}

@@ -1,7 +1,6 @@
 import { memo, useCallback, useMemo, useContext } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router'
-import Tooltip from '@mui/material/Tooltip'
-import styled from '@emotion/styled'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { Tooltip } from '@fluentui/react-components'
 import { observer } from 'mobx-react-lite'
 
 import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
@@ -74,7 +73,7 @@ export const Label = memo(
 
     // tooltip can mess with touch, so hide it on touch devices
     if (!matchMedia('(pointer: coarse)').matches) {
-      return <Tooltip title={navData.label}>{label}</Tooltip>
+      return <Tooltip content={navData.label}>{label}</Tooltip>
     }
     return label
   }),
