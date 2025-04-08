@@ -4,4 +4,7 @@ import { Account } from '../../../../formsAndLists/account/index.tsx'
 
 export const Route = createFileRoute('/data/_authLayout/accounts/$accountId')({
   component: Account,
+  beforeLoad: () => ({
+    navDataFetcher: 'useAccountNavData',
+  }),
 })
