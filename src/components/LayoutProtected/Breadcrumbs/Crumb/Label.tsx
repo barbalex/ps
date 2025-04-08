@@ -1,18 +1,25 @@
-import { memo, useCallback, useMemo, useContext } from 'react'
-import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { memo, useCallback, useMemo } from 'react'
+import { Link, useLocation } from '@tanstack/react-router'
 import { Tooltip } from '@fluentui/react-components'
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 
 export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
 
   // issue: relative paths are not working!!!???
   // also: need to decode pathname (Zähleinheiten...)
   const pathnameDecoded = decodeURIComponent(pathname)
   const pathnameWithoutLastSlash = pathnameDecoded.replace(/\/$/, '')
-  const linksToSomewhereElse = !pathnameWithoutLastSlash.endsWith(navData.url)
+  const linksToSomewhereElse = !pathnameWithoutLastSlash.endsWith(
+    navData.ownUrl,
+  )
+  console.log('Crumb.Label', {
+    linksToSomewhereElse,
+    pathnameDecoded,
+    pathnameWithoutLastSlash,
+    ownUrl: navData.ownUrl,
+  })
 
   const onClick = useCallback(() => {
     // 1. ensure the clicked element is visible
@@ -43,7 +50,7 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
       linksToSomewhereElse ?
         <Link
           className="crumb-label-link"
-          to={{ pathname: navData.url }}
+          to={navData.ownUrl}
           onClick={onClick}
           ref={ref}
           style={{ ...labelStyle }}
@@ -59,9 +66,11 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
         </div>,
     [
       linksToSomewhereElse,
-      navData.label,
+      navData.ownUrl,
       navData.labelShort,
-      navData.url,
+      navData.label,
+      onClick,
+      ref,
       labelStyle,
     ],
   )

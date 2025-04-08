@@ -1,6 +1,6 @@
 const navData = {
   label: 'Data',
-  url: '/data',
+  ownUrl: '/data',
 }
 
 export const useDataBreadcrumbData = () => {
