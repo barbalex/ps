@@ -6,30 +6,31 @@ import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
-const parentArray = ['data', 'widget-types']
+const parentArray = ['data', 'widgets-for-fields']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useWidgetTypeNavData = ({ widgetTypeId }) => {
+export const useWidgetForFieldNavData = ({ widgetForFieldId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  // needs to work not only works for urlPath, for all opened paths!
+
   const res = useLiveQuery(
     `
-    SELECT
-      widget_type_id AS id,
-      label
-    FROM widget_types
-    WHERE widget_type_id = $1
+      SELECT
+        widget_for_field_id AS id,
+        label
+      FROM widgets_for_fields
+      WHERE widget_for_field_id = $1
     `,
-    [widgetTypeId],
+    [widgetForFieldId],
   )
 
   const loading = res === undefined
 
   const navData = useMemo(() => {
     const nav = res?.rows?.[0]
-
-    const ownArray = [...parentArray, widgetTypeId]
+    const ownArray = [...parentArray, widgetForFieldId]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -46,9 +47,9 @@ export const useWidgetTypeNavData = ({ widgetTypeId }) => {
       ownUrl,
       urlPath,
       label: nav?.label ?? nav?.id,
-      nameSingular: 'Widget Type',
+      nameSingular: 'Widget For Field',
     }
-  }, [location.pathname, openNodes, res?.rows, widgetTypeId])
+  }, [location.pathname, openNodes, res?.rows, widgetForFieldId])
 
   return { loading, navData }
 }
