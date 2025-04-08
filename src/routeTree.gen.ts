@@ -26,6 +26,7 @@ import { Route as DataAuthLayoutUsersRouteImport } from './routes/data/_authLayo
 import { Route as DataAuthLayoutProjectsRouteImport } from './routes/data/_authLayout/projects/route'
 import { Route as DataAuthLayoutFieldsRouteImport } from './routes/data/_authLayout/fields/route'
 import { Route as DataAuthLayoutFieldTypesRouteImport } from './routes/data/_authLayout/field-types/route'
+import { Route as DataAuthLayoutCrsRouteImport } from './routes/data/_authLayout/crs/route'
 import { Route as DataAuthLayoutAccountsRouteImport } from './routes/data/_authLayout/accounts/route'
 import { Route as DataAuthLayoutWidgetsForFieldsIndexImport } from './routes/data/_authLayout/widgets-for-fields/index'
 import { Route as DataAuthLayoutWidgetTypesIndexImport } from './routes/data/_authLayout/widget-types/index'
@@ -401,6 +402,12 @@ const DataAuthLayoutFieldTypesRouteRoute =
     getParentRoute: () => DataAuthLayoutRouteRoute,
   } as any)
 
+const DataAuthLayoutCrsRouteRoute = DataAuthLayoutCrsRouteImport.update({
+  id: '/crs',
+  path: '/crs',
+  getParentRoute: () => DataAuthLayoutRouteRoute,
+} as any)
+
 const DataAuthLayoutAccountsRouteRoute =
   DataAuthLayoutAccountsRouteImport.update({
     id: '/accounts',
@@ -462,9 +469,9 @@ const DataAuthLayoutFieldTypesIndexRoute =
   } as any)
 
 const DataAuthLayoutCrsIndexRoute = DataAuthLayoutCrsIndexImport.update({
-  id: '/crs/',
-  path: '/crs/',
-  getParentRoute: () => DataAuthLayoutRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => DataAuthLayoutCrsRouteRoute,
 } as any)
 
 const DataAuthLayoutAccountsIndexRoute =
@@ -558,9 +565,9 @@ const DataAuthLayoutFieldTypesFieldTypeIdRoute =
   } as any)
 
 const DataAuthLayoutCrsCrsIdRoute = DataAuthLayoutCrsCrsIdImport.update({
-  id: '/crs/$crsId',
-  path: '/crs/$crsId',
-  getParentRoute: () => DataAuthLayoutRouteRoute,
+  id: '/$crsId',
+  path: '/$crsId',
+  getParentRoute: () => DataAuthLayoutCrsRouteRoute,
 } as any)
 
 const DataAuthLayoutAccountsAccountIdRoute =
@@ -2998,6 +3005,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataAuthLayoutAccountsRouteImport
       parentRoute: typeof DataAuthLayoutRouteImport
     }
+    '/data/_authLayout/crs': {
+      id: '/data/_authLayout/crs'
+      path: '/crs'
+      fullPath: '/data/crs'
+      preLoaderRoute: typeof DataAuthLayoutCrsRouteImport
+      parentRoute: typeof DataAuthLayoutRouteImport
+    }
     '/data/_authLayout/field-types': {
       id: '/data/_authLayout/field-types'
       path: '/field-types'
@@ -3077,10 +3091,10 @@ declare module '@tanstack/react-router' {
     }
     '/data/_authLayout/crs/$crsId': {
       id: '/data/_authLayout/crs/$crsId'
-      path: '/crs/$crsId'
+      path: '/$crsId'
       fullPath: '/data/crs/$crsId'
       preLoaderRoute: typeof DataAuthLayoutCrsCrsIdImport
-      parentRoute: typeof DataAuthLayoutRouteImport
+      parentRoute: typeof DataAuthLayoutCrsRouteImport
     }
     '/data/_authLayout/field-types/$fieldTypeId': {
       id: '/data/_authLayout/field-types/$fieldTypeId'
@@ -3175,10 +3189,10 @@ declare module '@tanstack/react-router' {
     }
     '/data/_authLayout/crs/': {
       id: '/data/_authLayout/crs/'
-      path: '/crs'
-      fullPath: '/data/crs'
+      path: '/'
+      fullPath: '/data/crs/'
       preLoaderRoute: typeof DataAuthLayoutCrsIndexImport
-      parentRoute: typeof DataAuthLayoutRouteImport
+      parentRoute: typeof DataAuthLayoutCrsRouteImport
     }
     '/data/_authLayout/field-types/': {
       id: '/data/_authLayout/field-types/'
@@ -5060,6 +5074,22 @@ const DataAuthLayoutAccountsRouteRouteChildren: DataAuthLayoutAccountsRouteRoute
 const DataAuthLayoutAccountsRouteRouteWithChildren =
   DataAuthLayoutAccountsRouteRoute._addFileChildren(
     DataAuthLayoutAccountsRouteRouteChildren,
+  )
+
+interface DataAuthLayoutCrsRouteRouteChildren {
+  DataAuthLayoutCrsCrsIdRoute: typeof DataAuthLayoutCrsCrsIdRoute
+  DataAuthLayoutCrsIndexRoute: typeof DataAuthLayoutCrsIndexRoute
+}
+
+const DataAuthLayoutCrsRouteRouteChildren: DataAuthLayoutCrsRouteRouteChildren =
+  {
+    DataAuthLayoutCrsCrsIdRoute: DataAuthLayoutCrsCrsIdRoute,
+    DataAuthLayoutCrsIndexRoute: DataAuthLayoutCrsIndexRoute,
+  }
+
+const DataAuthLayoutCrsRouteRouteWithChildren =
+  DataAuthLayoutCrsRouteRoute._addFileChildren(
+    DataAuthLayoutCrsRouteRouteChildren,
   )
 
 interface DataAuthLayoutFieldTypesRouteRouteChildren {
@@ -6997,6 +7027,7 @@ const DataAuthLayoutFilesFileIdPreviewRouteWithChildren =
 
 interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutAccountsRouteRoute: typeof DataAuthLayoutAccountsRouteRouteWithChildren
+  DataAuthLayoutCrsRouteRoute: typeof DataAuthLayoutCrsRouteRouteWithChildren
   DataAuthLayoutFieldTypesRouteRoute: typeof DataAuthLayoutFieldTypesRouteRouteWithChildren
   DataAuthLayoutFieldsRouteRoute: typeof DataAuthLayoutFieldsRouteRouteWithChildren
   DataAuthLayoutProjectsRouteRoute: typeof DataAuthLayoutProjectsRouteRouteWithChildren
@@ -7006,10 +7037,8 @@ interface DataAuthLayoutRouteRouteChildren {
   DataAuthLayoutAppStatesRoute: typeof DataAuthLayoutAppStatesRoute
   DataAuthLayoutAuthRoute: typeof DataAuthLayoutAuthRoute
   DataAuthLayoutIndexRoute: typeof DataAuthLayoutIndexRoute
-  DataAuthLayoutCrsCrsIdRoute: typeof DataAuthLayoutCrsCrsIdRoute
   DataAuthLayoutFilesFileIdRoute: typeof DataAuthLayoutFilesFileIdRoute
   DataAuthLayoutMessagesMessageIdRoute: typeof DataAuthLayoutMessagesMessageIdRoute
-  DataAuthLayoutCrsIndexRoute: typeof DataAuthLayoutCrsIndexRoute
   DataAuthLayoutFilesIndexRoute: typeof DataAuthLayoutFilesIndexRoute
   DataAuthLayoutMessagesIndexRoute: typeof DataAuthLayoutMessagesIndexRoute
   DataAuthLayoutFilesFileIdPreviewRoute: typeof DataAuthLayoutFilesFileIdPreviewRouteWithChildren
@@ -7018,6 +7047,7 @@ interface DataAuthLayoutRouteRouteChildren {
 const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
   DataAuthLayoutAccountsRouteRoute:
     DataAuthLayoutAccountsRouteRouteWithChildren,
+  DataAuthLayoutCrsRouteRoute: DataAuthLayoutCrsRouteRouteWithChildren,
   DataAuthLayoutFieldTypesRouteRoute:
     DataAuthLayoutFieldTypesRouteRouteWithChildren,
   DataAuthLayoutFieldsRouteRoute: DataAuthLayoutFieldsRouteRouteWithChildren,
@@ -7031,10 +7061,8 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
   DataAuthLayoutAppStatesRoute: DataAuthLayoutAppStatesRoute,
   DataAuthLayoutAuthRoute: DataAuthLayoutAuthRoute,
   DataAuthLayoutIndexRoute: DataAuthLayoutIndexRoute,
-  DataAuthLayoutCrsCrsIdRoute: DataAuthLayoutCrsCrsIdRoute,
   DataAuthLayoutFilesFileIdRoute: DataAuthLayoutFilesFileIdRoute,
   DataAuthLayoutMessagesMessageIdRoute: DataAuthLayoutMessagesMessageIdRoute,
-  DataAuthLayoutCrsIndexRoute: DataAuthLayoutCrsIndexRoute,
   DataAuthLayoutFilesIndexRoute: DataAuthLayoutFilesIndexRoute,
   DataAuthLayoutMessagesIndexRoute: DataAuthLayoutMessagesIndexRoute,
   DataAuthLayoutFilesFileIdPreviewRoute:
@@ -7060,6 +7088,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof LayoutDocsRoute
   '/': typeof LayoutIndexRoute
   '/data/accounts': typeof DataAuthLayoutAccountsRouteRouteWithChildren
+  '/data/crs': typeof DataAuthLayoutCrsRouteRouteWithChildren
   '/data/field-types': typeof DataAuthLayoutFieldTypesRouteRouteWithChildren
   '/data/fields': typeof DataAuthLayoutFieldsRouteRouteWithChildren
   '/data/projects': typeof DataAuthLayoutProjectsRouteRouteWithChildren
@@ -7085,7 +7114,7 @@ export interface FileRoutesByFullPath {
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataAuthLayoutWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataAuthLayoutWidgetsForFieldsFilterRoute
   '/data/accounts/': typeof DataAuthLayoutAccountsIndexRoute
-  '/data/crs': typeof DataAuthLayoutCrsIndexRoute
+  '/data/crs/': typeof DataAuthLayoutCrsIndexRoute
   '/data/field-types/': typeof DataAuthLayoutFieldTypesIndexRoute
   '/data/fields/': typeof DataAuthLayoutFieldsIndexRoute
   '/data/files': typeof DataAuthLayoutFilesIndexRoute
@@ -7560,6 +7589,7 @@ export interface FileRoutesById {
   '/_layout/docs': typeof LayoutDocsRoute
   '/_layout/': typeof LayoutIndexRoute
   '/data/_authLayout/accounts': typeof DataAuthLayoutAccountsRouteRouteWithChildren
+  '/data/_authLayout/crs': typeof DataAuthLayoutCrsRouteRouteWithChildren
   '/data/_authLayout/field-types': typeof DataAuthLayoutFieldTypesRouteRouteWithChildren
   '/data/_authLayout/fields': typeof DataAuthLayoutFieldsRouteRouteWithChildren
   '/data/_authLayout/projects': typeof DataAuthLayoutProjectsRouteRouteWithChildren
@@ -7860,6 +7890,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/'
     | '/data/accounts'
+    | '/data/crs'
     | '/data/field-types'
     | '/data/fields'
     | '/data/projects'
@@ -7885,7 +7916,7 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
     | '/data/accounts/'
-    | '/data/crs'
+    | '/data/crs/'
     | '/data/field-types/'
     | '/data/fields/'
     | '/data/files'
@@ -8357,6 +8388,7 @@ export interface FileRouteTypes {
     | '/_layout/docs'
     | '/_layout/'
     | '/data/_authLayout/accounts'
+    | '/data/_authLayout/crs'
     | '/data/_authLayout/field-types'
     | '/data/_authLayout/fields'
     | '/data/_authLayout/projects'
@@ -8692,6 +8724,7 @@ export const routeTree = rootRoute
       "parent": "/data",
       "children": [
         "/data/_authLayout/accounts",
+        "/data/_authLayout/crs",
         "/data/_authLayout/field-types",
         "/data/_authLayout/fields",
         "/data/_authLayout/projects",
@@ -8701,10 +8734,8 @@ export const routeTree = rootRoute
         "/data/_authLayout/app-states",
         "/data/_authLayout/auth",
         "/data/_authLayout/",
-        "/data/_authLayout/crs/$crsId",
         "/data/_authLayout/files/$fileId",
         "/data/_authLayout/messages/$messageId",
-        "/data/_authLayout/crs/",
         "/data/_authLayout/files/",
         "/data/_authLayout/messages/",
         "/data/_authLayout/files/$fileId_/preview"
@@ -8724,6 +8755,14 @@ export const routeTree = rootRoute
       "children": [
         "/data/_authLayout/accounts/$accountId",
         "/data/_authLayout/accounts/"
+      ]
+    },
+    "/data/_authLayout/crs": {
+      "filePath": "data/_authLayout/crs/route.tsx",
+      "parent": "/data/_authLayout",
+      "children": [
+        "/data/_authLayout/crs/$crsId",
+        "/data/_authLayout/crs/"
       ]
     },
     "/data/_authLayout/field-types": {
@@ -8818,7 +8857,7 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/crs/$crsId": {
       "filePath": "data/_authLayout/crs/$crsId.tsx",
-      "parent": "/data/_authLayout"
+      "parent": "/data/_authLayout/crs"
     },
     "/data/_authLayout/field-types/$fieldTypeId": {
       "filePath": "data/_authLayout/field-types/$fieldTypeId.tsx",
@@ -8874,7 +8913,7 @@ export const routeTree = rootRoute
     },
     "/data/_authLayout/crs/": {
       "filePath": "data/_authLayout/crs/index.tsx",
-      "parent": "/data/_authLayout"
+      "parent": "/data/_authLayout/crs"
     },
     "/data/_authLayout/field-types/": {
       "filePath": "data/_authLayout/field-types/index.tsx",
