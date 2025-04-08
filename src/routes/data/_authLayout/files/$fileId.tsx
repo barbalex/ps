@@ -8,6 +8,9 @@ const from = '/data/_authLayout/files/$fileId'
 export const Route = createFileRoute(from)({
   component: RouteComponent,
   notFoundComponent: NotFound,
+  beforeLoad: () => ({
+    navDataFetcher: 'useFileNavData',
+  }),
 })
 
 function RouteComponent() {
