@@ -27,6 +27,8 @@ export const Messages = memo(() => {
     })
   }, [db, navigate])
 
+  console.log('Messages', { loading, navData })
+
   return (
     <div className="list-view">
       <ListHeader
@@ -42,7 +44,7 @@ export const Messages = memo(() => {
               <Row
                 key={id}
                 to={id}
-                label={date ?? id}
+                label={date?.toISOString?.() ?? id}
               />
             ))}
           </>
