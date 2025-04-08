@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -18,10 +18,12 @@ export const File = memo(({ from }) => {
   const { fileId } = useParams({ from })
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM files WHERE file_id = $1`,
+  const res = useLiveQuery(
+    `
+    SELECT file_id as id, * 
+    FROM files 
+    WHERE file_id = $1`,
     [fileId],
-    'file_id',
   )
   const row = res?.rows?.[0]
 
@@ -73,7 +75,10 @@ export const File = memo(({ from }) => {
   if (!row) return <Loading />
 
   return (
-    <div className="form-outer-container" ref={ref}>
+    <div
+      className="form-outer-container"
+      ref={ref}
+    >
       <Uploader from={from} />
       <Header from={from} />
       <div className="form-container">
@@ -127,15 +132,31 @@ export const File = memo(({ from }) => {
           value={row.check_id ?? ''}
           onChange={onChange}
         />
-        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
-        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
+        <TextFieldInactive
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+        />
+        <TextFieldInactive
+          label="Size"
+          name="size"
+          value={row.size ?? ''}
+        />
         <TextFieldInactive
           label="Mimetype"
           name="mimetype"
           value={row.mimetype ?? ''}
         />
-        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
-        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
+        <TextFieldInactive
+          label="Url"
+          name="url"
+          value={row.url ?? ''}
+        />
+        <TextFieldInactive
+          label="Uuid"
+          name="uuid"
+          value={row.uuid ?? ''}
+        />
         <Jsonb
           table="files"
           idField="file_id"

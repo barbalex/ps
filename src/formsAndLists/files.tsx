@@ -48,7 +48,7 @@ export const Files = memo(
           {loading ?
             <Loading />
           : <>
-              {navs.map(({ file_id, label, url, mimetype }) => {
+              {navs.map(({ id, label, url, mimetype }) => {
                 let imgSrc = undefined
                 if (
                   (mimetype?.includes?.('image') ||
@@ -60,9 +60,9 @@ export const Files = memo(
 
                 return (
                   <Row
-                    key={file_id}
-                    label={label ?? file_id}
-                    to={file_id}
+                    key={id}
+                    label={label ?? id}
+                    to={id}
                     imgSrc={imgSrc}
                     lastHasImages={true}
                   />
