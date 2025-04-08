@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useLocation, useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
@@ -9,19 +9,19 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data', 'accounts']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useAccountsNavData = () => {
+export const useAccountNavData = ({ accountId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-  const { accountId } = useParams({ strict: false })
 
   const res = useLiveQuery(
     `
     SELECT 
       account_id as id, 
       label 
-    FROM accounts 
-    WHERE account_id = $1
-    ORDER BY label`,
+    FROM 
+      accounts 
+    WHERE 
+      account_id = $1`,
     [accountId],
   )
   const loading = res === undefined
@@ -29,7 +29,7 @@ export const useAccountsNavData = () => {
   const navData = useMemo(() => {
     const nav = res?.rows?.[0]
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const ownArray = [...parentArray, nav.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
 
     // needs to work not only works for urlPath, for all opened paths!
@@ -46,10 +46,15 @@ export const useAccountsNavData = () => {
       ownArray,
       ownUrl,
       urlPath,
-      label: nav?.label,
+      label: nav?.label ?? nav?.id,
       nameSingular: 'Account',
     }
   }, [location.pathname, openNodes, res?.rows])
+
+  console.log('useAccountNavData', {
+    loading,
+    navData,
+  })
 
   return { loading, navData }
 }

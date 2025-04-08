@@ -11,7 +11,9 @@ export const Fetcher = memo(({ fetcherName, fetcherModule, ...other }) => {
   // those bookmark components will not have their params anymore and error
   const params = useParams({ strict: false })
 
-  const { navData, loading } = fetcherModule?.[fetcherName]?.(params)
+  const res = fetcherModule?.[fetcherName]?.(params)
+  const navData = res?.navData
+  const loading = res?.loading
 
   if (loading) return <Loading />
 

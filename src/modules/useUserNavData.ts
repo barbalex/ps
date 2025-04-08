@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useLocation, useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
@@ -11,10 +11,9 @@ const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'users']
 const ownUrl = `/${ownArray.join('/')}`
 
-export const useUserNavData = () => {
+export const useUserNavData = ({ userId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-  const { userId } = useParams({ strict: false })
 
   const res = useLiveQuery(
     `
@@ -22,8 +21,7 @@ export const useUserNavData = () => {
       user_id AS id, 
       label 
     FROM users
-    WHERE user_id = $1
-    ORDER BY label`,
+    WHERE user_id = $1`,
     [userId],
   )
   const loading = res === undefined

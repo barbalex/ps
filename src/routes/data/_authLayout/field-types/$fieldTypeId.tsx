@@ -6,4 +6,7 @@ export const Route = createFileRoute(
   '/data/_authLayout/field-types/$fieldTypeId',
 )({
   component: FieldType,
+  beforeLoad: () => ({
+    navDataFetcher: 'useFieldTypeNavData',
+  }),
 })
