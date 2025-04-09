@@ -1,10 +1,11 @@
 .crumb-outer-container {
   position: relative;
   padding-left: 25px;
+  /* margin-left: 25px; */
 }
 .crumb-outer-container::after,
 .crumb-outer-container::before {
-  background: rgb(255, 253, 231);
+  background: rgb(255, 255, 255);
   bottom: 0;
   clip-path: polygon(50% 50%, -50% -50%, 0 100%);
   content: '';
@@ -27,6 +28,7 @@
 .crumb-container {
   margin-right: -10px;
   position: relative;
+  padding-right: 15px;
   border-collapse: collapse;
   transition: background 0.2s linear;
   max-width: 45vw;
@@ -51,7 +53,7 @@
 }
 
 .crumb-container::before {
-  background: rgb(255, 253, 231);
+  background: rgb(255, 255, 255);
   margin-left: 1px;
 }
 
