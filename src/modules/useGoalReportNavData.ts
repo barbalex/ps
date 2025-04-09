@@ -29,7 +29,7 @@ export const useGoalReportNavData = ({
         goal_reports.goal_report_id = '${goalReportId}'`,
   )
   const loading = res === undefined
-  const row = res?.rows?.[0]
+  const nav = res?.rows?.[0]
 
   const navData = useMemo(() => {
     const parentArray = [
@@ -41,11 +41,9 @@ export const useGoalReportNavData = ({
       'goals',
       goalId,
       'reports',
-      goalReportId,
-      'values',
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, goalReportId]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -61,14 +59,14 @@ export const useGoalReportNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label: nav?.label ?? nav?.id,
       navs: [
         { id: 'report', label: 'Report' },
         {
           id: 'values',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.goal_report_values_count ?? 0,
+            countFiltered: nav?.goal_report_values_count ?? 0,
             namePlural: 'Values',
           }),
         },
@@ -79,10 +77,10 @@ export const useGoalReportNavData = ({
     subprojectId,
     goalId,
     goalReportId,
-    row?.id,
-    row?.label,
-    row?.goal_report_values_count,
     openNodes,
+    nav?.label,
+    nav?.id,
+    nav?.goal_report_values_count,
     loading,
   ])
 
