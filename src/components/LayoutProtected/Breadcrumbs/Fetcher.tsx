@@ -15,6 +15,12 @@ export const Fetcher = memo(({ fetcherName, fetcherModule, ...other }) => {
   const navData = res?.navData
   const loading = res?.loading
 
+  console.log('Fetcher', {
+    fetcherName,
+    navData,
+    loading,
+  })
+
   if (loading) return <Loading />
 
   return (
