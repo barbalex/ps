@@ -5,7 +5,7 @@ import { Node } from './Node.tsx'
 import { ProjectCrsNode } from './ProjectCrs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { useProjectCrsNavData } from '../../modules/useProjectCrsNavData.ts'
+import { useProjectCrssNavData } from '../../modules/useProjectCrssNavData.ts'
 
 interface Props {
   projectId: string
@@ -15,7 +15,7 @@ interface Props {
 export const ProjectCrssNode = memo(({ projectId, level = 3 }: Props) => {
   const navigate = useNavigate()
 
-  const { navData } = useProjectCrsNavData({ projectId })
+  const { navData } = useProjectCrssNavData({ projectId })
   const {
     label,
     parentUrl,

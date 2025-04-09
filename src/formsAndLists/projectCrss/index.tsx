@@ -3,7 +3,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
-import { useProjectCrsNavData } from '../../modules/useProjectCrsNavData.ts'
+import { useProjectCrssNavData } from '../../modules/useProjectCrssNavData.ts'
 import { ListHeader } from '../../components/ListHeader.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -18,7 +18,7 @@ export const ProjectCrss = memo(() => {
 
   const db = usePGlite()
 
-  const { loading, navData } = useProjectCrsNavData({ projectId })
+  const { loading, navData } = useProjectCrssNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = useCallback(async () => {

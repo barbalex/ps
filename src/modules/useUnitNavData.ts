@@ -4,33 +4,35 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
-export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
+export const useUnitNavData = ({ projectId, unitId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
   const res = useLiveQuery(
     `
-    SELECT
-      project_crs_id AS id,
-      label 
-    FROM project_crs 
-    WHERE project_crs_id = $1`,
-    [projectCrsId],
+      SELECT
+        unit_id AS id,
+        label
+      FROM units
+      WHERE
+        unit_id = $1
+    `,
+    [unitId],
   )
 
   const loading = res === undefined
 
   const navData = useMemo(() => {
     const nav = res?.rows?.[0]
-    const parentArray = ['data', 'projects', projectId, 'crs']
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, projectCrsId]
-    const ownUrl = `/${ownArray.join('/')}`
+
+    const parentArray = ['data', 'projects', projectId, 'units']
+    const ownArray = [...parentArray, unitId]
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownUrl = `/${ownArray.join('/')}`
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
@@ -39,15 +41,14 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
       isInActiveNodeArray,
       isActive,
       isOpen,
-      level: 1,
       parentUrl,
       ownArray,
       urlPath,
       ownUrl,
       label: nav?.label ?? nav?.id,
-      nameSingular: 'CRS',
+      nameSingular: 'Unit',
     }
-  }, [location.pathname, openNodes, projectCrsId, projectId, res?.rows])
+  }, [location.pathname, openNodes, projectId, res?.rows, unitId])
 
   return { loading, navData }
 }

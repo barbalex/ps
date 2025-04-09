@@ -7,6 +7,6 @@ export const Route = createFileRoute(
 )({
   component: ProjectCrs,
   beforeLoad: () => ({
-    navDataFetcher: 'useCrsNavData',
+    navDataFetcher: 'useProjectCrsNavData',
   }),
 })

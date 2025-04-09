@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
-export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
+export const useProjectCrssNavData = ({ projectId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -17,17 +17,18 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
       project_crs_id AS id,
       label 
     FROM project_crs 
-    WHERE project_crs_id = $1`,
-    [projectCrsId],
+    WHERE project_id = $1 
+    ORDER BY label`,
+    [projectId],
   )
 
   const loading = res === undefined
 
   const navData = useMemo(() => {
-    const nav = res?.rows?.[0]
-    const parentArray = ['data', 'projects', projectId, 'crs']
+    const navs = res?.rows ?? []
+    const parentArray = ['data', 'projects', projectId]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, projectCrsId]
+    const ownArray = [...parentArray, 'crs']
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -44,10 +45,15 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label: buildNavLabel({
+        countFiltered: navs.length,
+        namePlural: 'CRS',
+        loading,
+      }),
       nameSingular: 'CRS',
+      navs,
     }
-  }, [location.pathname, openNodes, projectCrsId, projectId, res?.rows])
+  }, [loading, location.pathname, openNodes, projectId, res?.rows])
 
   return { loading, navData }
 }
