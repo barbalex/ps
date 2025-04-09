@@ -105,12 +105,12 @@ export const usePlaceNavData = ({
         files_count_unfiltered,
         files_count_filtered
       WHERE 
-        places.place_id = '${placeId}'`
+        places.place_id = '${placeId2 ?? placeId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
-  const row = res?.rows?.[0]
-  const nameSingular = row?.name_singular ?? 'Place'
-  const childNamePlural = row?.child_name_plural ?? 'Places'
+  const nav = res?.rows?.[0]
+  const nameSingular = nav?.name_singular ?? 'Place'
+  const childNamePlural = nav?.child_name_plural ?? 'Places'
 
   const navData = useMemo(() => {
     const parentArray = [
@@ -119,11 +119,11 @@ export const usePlaceNavData = ({
       projectId,
       'subprojects',
       subprojectId,
-      ...(placeId ? ['places', placeId] : []),
+      ...(placeId && placeId2 ? ['places', placeId] : []),
       'places',
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -139,7 +139,7 @@ export const usePlaceNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label: nav?.label ?? nav?.id,
       navs: [
         { id: 'place', label: nameSingular },
         ...(!placeId2 ?
@@ -149,8 +149,8 @@ export const usePlaceNavData = ({
               label: buildNavLabel({
                 loading,
                 isFiltered: placesIsFiltered,
-                countFiltered: row?.places_count_filtered ?? 0,
-                countUnfiltered: row?.places_count_unfiltered ?? 0,
+                countFiltered: nav?.places_count_filtered ?? 0,
+                countUnfiltered: nav?.places_count_unfiltered ?? 0,
                 namePlural: childNamePlural,
               }),
             },
@@ -161,8 +161,8 @@ export const usePlaceNavData = ({
           label: buildNavLabel({
             loading,
             isFiltered: checksIsFiltered,
-            countFiltered: row?.checks_count_filtered ?? 0,
-            countUnfiltered: row?.checks_count_unfiltered ?? 0,
+            countFiltered: nav?.checks_count_filtered ?? 0,
+            countUnfiltered: nav?.checks_count_unfiltered ?? 0,
             namePlural: 'Checks',
           }),
         },
@@ -171,8 +171,8 @@ export const usePlaceNavData = ({
           label: buildNavLabel({
             loading,
             isFiltered: actionsIsFiltered,
-            countFiltered: row?.actions_count_filtered ?? 0,
-            countUnfiltered: row?.actions_count_unfiltered ?? 0,
+            countFiltered: nav?.actions_count_filtered ?? 0,
+            countUnfiltered: nav?.actions_count_unfiltered ?? 0,
             namePlural: 'Actions',
           }),
         },
@@ -181,8 +181,8 @@ export const usePlaceNavData = ({
           label: buildNavLabel({
             loading,
             isFiltered: placeReportsIsFiltered,
-            countFiltered: row?.place_reports_count_filtered ?? 0,
-            countUnfiltered: row?.place_reports_count_unfiltered ?? 0,
+            countFiltered: nav?.place_reports_count_filtered ?? 0,
+            countUnfiltered: nav?.place_reports_count_unfiltered ?? 0,
             namePlural: 'Reports',
           }),
         },
@@ -190,7 +190,7 @@ export const usePlaceNavData = ({
           id: 'occurrences',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.occurrences_count ?? 0,
+            countFiltered: nav?.occurrences_count ?? 0,
             namePlural: 'Occurrences Assigned',
           }),
         },
@@ -198,7 +198,7 @@ export const usePlaceNavData = ({
           id: 'users',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.place_users_count ?? 0,
+            countFiltered: nav?.place_users_count ?? 0,
             namePlural: 'Users',
           }),
         },
@@ -207,8 +207,8 @@ export const usePlaceNavData = ({
           label: buildNavLabel({
             loading,
             isFiltered: filesIsFiltered,
-            countFiltered: row?.files_count_filtered ?? 0,
-            countUnfiltered: row?.files_count_unfiltered ?? 0,
+            countFiltered: nav?.files_count_filtered ?? 0,
+            countUnfiltered: nav?.files_count_unfiltered ?? 0,
             namePlural: 'Files',
           }),
         },
@@ -218,20 +218,20 @@ export const usePlaceNavData = ({
     projectId,
     subprojectId,
     placeId,
-    row?.id,
-    row?.label,
-    row?.places_count_filtered,
-    row?.places_count_unfiltered,
-    row?.checks_count_filtered,
-    row?.checks_count_unfiltered,
-    row?.actions_count_filtered,
-    row?.actions_count_unfiltered,
-    row?.place_reports_count_filtered,
-    row?.place_reports_count_unfiltered,
-    row?.occurrences_count,
-    row?.place_users_count,
-    row?.files_count_filtered,
-    row?.files_count_unfiltered,
+    nav?.id,
+    nav?.label,
+    nav?.places_count_filtered,
+    nav?.places_count_unfiltered,
+    nav?.checks_count_filtered,
+    nav?.checks_count_unfiltered,
+    nav?.actions_count_filtered,
+    nav?.actions_count_unfiltered,
+    nav?.place_reports_count_filtered,
+    nav?.place_reports_count_unfiltered,
+    nav?.occurrences_count,
+    nav?.place_users_count,
+    nav?.files_count_filtered,
+    nav?.files_count_unfiltered,
     openNodes,
     nameSingular,
     placeId2,
