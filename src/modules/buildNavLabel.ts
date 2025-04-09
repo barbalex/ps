@@ -18,4 +18,4 @@ export const buildNavLabel = ({
       : loading ? '...'
       : formatNumber(countFiltered)
     }${isLimited ? `, first ${limit}` : ''})`
-  : ` ${namePlural} (${loading ? '...' : formatNumber(countFiltered)}${isLimited ? `, first ${limit}` : ''})`
+  : `${namePlural} (${loading ? '...' : formatNumber(countFiltered)}${isLimited ? `, first ${limit}` : ''})`

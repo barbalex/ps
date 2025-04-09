@@ -5,6 +5,6 @@ export const Route = createFileRoute(
 )({
   component: Outlet,
   beforeLoad: () => ({
-    navDataFetcher: 'useTaxaNavData',
+    navDataFetcher: 'useCheckTaxaNavData',
   }),
 })

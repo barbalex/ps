@@ -14,12 +14,12 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
   const linksToSomewhereElse = !pathnameWithoutLastSlash.endsWith(
     navData.ownUrl,
   )
-  console.log('Crumb.Label', {
-    linksToSomewhereElse,
-    pathnameDecoded,
-    pathnameWithoutLastSlash,
-    ownUrl: navData.ownUrl,
-  })
+  // console.log('Crumb.Label', {
+  //   linksToSomewhereElse,
+  //   pathnameDecoded,
+  //   pathnameWithoutLastSlash,
+  //   ownUrl: navData.ownUrl,
+  // })
 
   const onClick = useCallback(() => {
     // 1. ensure the clicked element is visible

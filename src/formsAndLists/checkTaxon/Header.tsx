@@ -58,7 +58,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Check taxon"
+      title="Check Taxon"
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
