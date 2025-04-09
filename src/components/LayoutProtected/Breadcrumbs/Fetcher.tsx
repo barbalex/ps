@@ -13,13 +13,14 @@ export const Fetcher = memo(({ fetcherName, fetcherModule, ...other }) => {
 
   const res = fetcherModule?.[fetcherName]?.(params)
   const navData = res?.navData
-  const loading = res?.loading
+  const loading = !!res?.loading
 
-  console.log('Fetcher', {
-    fetcherName,
-    navData,
-    loading,
-  })
+  // console.log('Fetcher', {
+  //   fetcherName,
+  //   navData,
+  //   loading,
+  //   res,
+  // })
 
   if (loading) return <Loading />
 

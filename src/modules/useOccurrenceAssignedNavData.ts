@@ -1,6 +1,6 @@
 import { useOccurrenceNavData } from './useOccurrenceNavData.ts'
 
-export const useOccurrenceNotToAssiguseOccurrenceAssignedNavDatanNavData = ({
+export const useOccurrenceAssignedNavData = ({
   projectId,
   subprojectId,
   placeId,
