@@ -65,6 +65,7 @@
   align-content: center;
   transition: opacity 700ms ease-in-out;
   user-select: none;
+  color: rgb(36, 36, 36);
 }
 
 .crumb-label-link:hover {
