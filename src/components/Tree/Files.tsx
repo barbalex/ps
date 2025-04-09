@@ -82,16 +82,16 @@ export const FilesNode = memo(
           onClickButton={onClickButton}
         />
         {isOpen &&
-          navs.map((file) => (
+          navs.map((nav) => (
             <FileNode
-              key={file.file_id}
+              key={nav.id}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
               actionId={actionId}
               checkId={checkId}
-              file={file}
+              nav={nav}
               level={level + 1}
             />
           ))}

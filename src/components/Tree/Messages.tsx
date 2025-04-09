@@ -14,6 +14,7 @@ export const MessagesNode = memo(() => {
   const {
     label,
     parentUrl,
+    parentArray,
     ownArray,
     ownUrl,
     urlPath,
@@ -43,6 +44,7 @@ export const MessagesNode = memo(() => {
     isOpen,
     navigate,
     ownArray,
+    parentArray,
     parentUrl,
     urlPath.length,
   ])

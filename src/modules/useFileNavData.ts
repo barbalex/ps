@@ -17,6 +17,7 @@ export const useFileNavData = ({
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const isPreview = location.pathname.endsWith('/preview')
 
   const res = useLiveQuery(
     `
@@ -46,7 +47,7 @@ export const useFileNavData = ({
       ...(checkId ? ['checks', checkId] : []),
       'files',
     ]
-    const ownArray = [...parentArray, fileId]
+    const ownArray = [...parentArray, fileId, ...(isPreview ? ['preview'] : [])]
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const parentUrl = `/${parentArray.join('/')}`
     const ownUrl = `/${ownArray.join('/')}`
@@ -69,6 +70,7 @@ export const useFileNavData = ({
     actionId,
     checkId,
     fileId,
+    isPreview,
     location.pathname,
     openNodes,
     placeId,

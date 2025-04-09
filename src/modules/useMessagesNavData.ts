@@ -39,6 +39,7 @@ export const useMessagesNavData = () => {
       isOpen,
       level: 1,
       parentUrl,
+      parentArray,
       ownArray,
       urlPath,
       ownUrl,

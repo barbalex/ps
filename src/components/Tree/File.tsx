@@ -12,7 +12,7 @@ export const FileNode = memo(
     placeId2,
     checkId,
     actionId,
-    file,
+    nav,
     level = 2,
   }) => {
     const location = useLocation()
@@ -30,13 +30,13 @@ export const FileNode = memo(
         ...(actionId ? ['actions', actionId] : []),
         ...(checkId ? ['checks', checkId] : []),
         'files',
-        file.file_id,
+        nav.id,
         ...(isPreview ? ['preview'] : []),
       ],
       [
         actionId,
         checkId,
-        file.file_id,
+        nav.id,
         isPreview,
         placeId,
         placeId2,
@@ -51,8 +51,8 @@ export const FileNode = memo(
 
     return (
       <Node
-        label={file.label}
-        id={file.file_id}
+        label={nav.label}
+        id={nav.id}
         level={level}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
