@@ -15,7 +15,7 @@ export const useMessageNavData = ({ messageId }) => {
 
   const res = useLiveQuery(
     `
-    SELECT message_id AS id, date 
+    SELECT message_id AS id, TO_CHAR(date, 'YYYY.MM.DD HH24:MI:SS') AS label 
     FROM messages 
     WHERE message_id = $1`,
     [messageId],
@@ -43,7 +43,7 @@ export const useMessageNavData = ({ messageId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.date?.toISOString?.() ?? nav?.id,
+      label: nav?.label ?? nav?.id,
       nameSingular: 'Message',
     }
   }, [location.pathname, messageId, openNodes, res?.rows])

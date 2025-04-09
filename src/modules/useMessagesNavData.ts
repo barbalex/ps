@@ -18,7 +18,7 @@ export const useMessagesNavData = () => {
 
   const res = useLiveQuery(
     `
-    SELECT message_id AS id, date 
+    SELECT message_id AS id, TO_CHAR(date, 'YYYY.MM.DD HH24:MI:SS') AS label
     FROM messages 
     ORDER BY date DESC`,
   )
