@@ -1,9 +1,10 @@
 import { memo, useEffect, useState, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { buildData } from './buildData/index.ts'
 import { SingleChart } from './Chart.tsx'
+import { NotFound } from '../../../components/NotFound.tsx'
 
 const titleRowStyle = {
   display: 'flex',
@@ -19,14 +20,12 @@ export const Chart = memo(({ from }) => {
   const db = usePGlite()
 
   // TODO: query subjects with charts
-  const resultChart = useLiveIncrementalQuery(
-    `SELECT * FROM charts WHERE chart_id = $1`,
-    [chartId],
-    'chart_id',
-  )
+  const resultChart = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
+    chartId,
+  ])
   const chart = resultChart?.rows?.[0]
 
-  const resultSubjects = useLiveIncrementalQuery(
+  const resultSubjects = useLiveQuery(
     `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort, name`,
     [chartId],
   )
@@ -51,6 +50,15 @@ export const Chart = memo(({ from }) => {
     }
     run()
   }, [chartId, chart, db, projectId, subjects, subprojectId])
+
+  if (!chart) {
+    return (
+      <NotFound
+        table="Chart"
+        id={chartId}
+      />
+    )
+  }
 
   if (!chart || !subjects) return null
 

@@ -9,6 +9,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { ChartType } from './ChartType.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -148,10 +149,19 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
         }
       }
     },
-    [db, chartId],
+    [row, db, chartId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Chart"
+        id={chartId}
+      />
+    )
+  }
 
   // console.log('hello ChartForm', { row, chart_id })
 
