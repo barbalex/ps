@@ -4,7 +4,6 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import isEqual from 'lodash/isEqual'
 
-import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
 export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
@@ -25,6 +24,7 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
 
   const navData = useMemo(() => {
     const nav = res?.rows?.[0]
+
     const parentArray = ['data', 'projects', projectId, 'crs']
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = [...parentArray, projectCrsId]
@@ -35,6 +35,9 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -44,10 +47,11 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'CRS',
     }
-  }, [location.pathname, openNodes, projectCrsId, projectId, res?.rows])
+  }, [location.pathname, openNodes, projectCrsId, projectId, res])
 
   return { loading, navData }
 }

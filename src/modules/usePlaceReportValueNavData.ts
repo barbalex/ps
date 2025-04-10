@@ -31,6 +31,7 @@ export const usePlaceReportValueNavData = ({
 
   const navData = useMemo(() => {
     const nav = res?.rows?.[0]
+
     const parentArray = [
       'data',
       'projects',
@@ -53,6 +54,9 @@ export const usePlaceReportValueNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -61,7 +65,8 @@ export const usePlaceReportValueNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Place Report Value',
     }
   }, [
@@ -72,7 +77,7 @@ export const usePlaceReportValueNavData = ({
     placeReportId,
     placeReportValueId,
     projectId,
-    res?.rows,
+    res,
     subprojectId,
   ])
 
