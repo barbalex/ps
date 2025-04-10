@@ -16,11 +16,9 @@ const spacerStyle = {
   height: 20,
 }
 
-export const NotFound = memo((data) => {
+export const NotFound = memo(({ table, id }) => {
   const router = useRouter()
   const canGoBack = useCanGoBack()
-  const table = data?.table
-  const id = data?.id
   const isTableId = table && id
 
   const goBack = useCallback(() => {
