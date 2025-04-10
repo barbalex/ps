@@ -8,12 +8,11 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
+import { Route as DataRouteImport } from './routes/data/route'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
 import { Route as LayoutDocsImport } from './routes/_layout.docs'
 import { Route as DataAuthLayoutRouteImport } from './routes/data/_authLayout/route'
@@ -312,20 +311,16 @@ import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPl
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview.index'
 import { Route as DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdReportsActionReportIdValuesActionReportValueIdIndexImport } from './routes/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/reports/$actionReportId_/values/$actionReportValueId.index'
 
-// Create Virtual Routes
-
-const DataImport = createFileRoute('/data')()
-
 // Create/Update Routes
-
-const DataRoute = DataImport.update({
-  id: '/data',
-  path: '/data',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DataRouteRoute = DataRouteImport.update({
+  id: '/data',
+  path: '/data',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -343,7 +338,7 @@ const LayoutDocsRoute = LayoutDocsImport.update({
 
 const DataAuthLayoutRouteRoute = DataAuthLayoutRouteImport.update({
   id: '/_authLayout',
-  getParentRoute: () => DataRoute,
+  getParentRoute: () => DataRouteRoute,
 } as any)
 
 const DataAuthLayoutIndexRoute = DataAuthLayoutIndexImport.update({
@@ -2978,6 +2973,13 @@ const DataAuthLayoutProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesP
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/data': {
+      id: '/data'
+      path: '/data'
+      fullPath: '/data'
+      preLoaderRoute: typeof DataRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/_layout': {
       id: '/_layout'
       path: ''
@@ -2985,19 +2987,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
-    '/data': {
-      id: '/data'
-      path: '/data'
-      fullPath: '/data'
-      preLoaderRoute: typeof DataImport
-      parentRoute: typeof rootRoute
-    }
     '/data/_authLayout': {
       id: '/data/_authLayout'
-      path: '/data'
+      path: ''
       fullPath: '/data'
       preLoaderRoute: typeof DataAuthLayoutRouteImport
-      parentRoute: typeof DataRoute
+      parentRoute: typeof DataRouteImport
     }
     '/_layout/docs': {
       id: '/_layout/docs'
@@ -5076,19 +5071,6 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-interface LayoutRouteChildren {
-  LayoutDocsRoute: typeof LayoutDocsRoute
-  LayoutIndexRoute: typeof LayoutIndexRoute
-}
-
-const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutDocsRoute: LayoutDocsRoute,
-  LayoutIndexRoute: LayoutIndexRoute,
-}
-
-const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
-
 interface DataAuthLayoutAccountsRouteRouteChildren {
   DataAuthLayoutAccountsAccountIdRoute: typeof DataAuthLayoutAccountsAccountIdRoute
   DataAuthLayoutAccountsIndexRoute: typeof DataAuthLayoutAccountsIndexRoute
@@ -7130,19 +7112,34 @@ const DataAuthLayoutRouteRouteChildren: DataAuthLayoutRouteRouteChildren = {
 const DataAuthLayoutRouteRouteWithChildren =
   DataAuthLayoutRouteRoute._addFileChildren(DataAuthLayoutRouteRouteChildren)
 
-interface DataRouteChildren {
+interface DataRouteRouteChildren {
   DataAuthLayoutRouteRoute: typeof DataAuthLayoutRouteRouteWithChildren
 }
 
-const DataRouteChildren: DataRouteChildren = {
+const DataRouteRouteChildren: DataRouteRouteChildren = {
   DataAuthLayoutRouteRoute: DataAuthLayoutRouteRouteWithChildren,
 }
 
-const DataRouteWithChildren = DataRoute._addFileChildren(DataRouteChildren)
+const DataRouteRouteWithChildren = DataRouteRoute._addFileChildren(
+  DataRouteRouteChildren,
+)
+
+interface LayoutRouteChildren {
+  LayoutDocsRoute: typeof LayoutDocsRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutDocsRoute: LayoutDocsRoute,
+  LayoutIndexRoute: LayoutIndexRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof LayoutRouteWithChildren
   '/data': typeof DataAuthLayoutRouteRouteWithChildren
+  '': typeof LayoutRouteWithChildren
   '/docs': typeof LayoutDocsRoute
   '/': typeof LayoutIndexRoute
   '/data/accounts': typeof DataAuthLayoutAccountsRouteRouteWithChildren
@@ -7643,8 +7640,8 @@ export interface FileRoutesByTo {
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/data': typeof DataRouteRouteWithChildren
   '/_layout': typeof LayoutRouteWithChildren
-  '/data': typeof DataRouteWithChildren
   '/data/_authLayout': typeof DataAuthLayoutRouteRouteWithChildren
   '/_layout/docs': typeof LayoutDocsRoute
   '/_layout/': typeof LayoutIndexRoute
@@ -7947,8 +7944,8 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | ''
     | '/data'
+    | ''
     | '/docs'
     | '/'
     | '/data/accounts'
@@ -8446,8 +8443,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/reports/$actionReportId/values/$actionReportValueId'
   id:
     | '__root__'
-    | '/_layout'
     | '/data'
+    | '/_layout'
     | '/data/_authLayout'
     | '/_layout/docs'
     | '/_layout/'
@@ -8749,13 +8746,13 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
+  DataRouteRoute: typeof DataRouteRouteWithChildren
   LayoutRoute: typeof LayoutRouteWithChildren
-  DataRoute: typeof DataRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  DataRouteRoute: DataRouteRouteWithChildren,
   LayoutRoute: LayoutRouteWithChildren,
-  DataRoute: DataRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -8768,8 +8765,14 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_layout",
-        "/data"
+        "/data",
+        "/_layout"
+      ]
+    },
+    "/data": {
+      "filePath": "data/route.tsx",
+      "children": [
+        "/data/_authLayout"
       ]
     },
     "/_layout": {
@@ -8777,12 +8780,6 @@ export const routeTree = rootRoute
       "children": [
         "/_layout/docs",
         "/_layout/"
-      ]
-    },
-    "/data": {
-      "filePath": "data/_authLayout",
-      "children": [
-        "/data/_authLayout"
       ]
     },
     "/data/_authLayout": {

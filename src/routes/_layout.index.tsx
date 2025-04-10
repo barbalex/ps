@@ -7,8 +7,12 @@ export const Route = createFileRoute('/_layout/')({
   component: Index,
 })
 
+const containerStyle = {
+  height: '100%',
+}
+
 const Index = memo(() => (
-  <div style={{ height: '100%' }}>
+  <div style={containerStyle}>
     <picture>
       <source
         srcSet="home_700.avif 700w, home_1000.avif 1000w, home_1400.avif 1400w, home_2000.avif 2000w, home_2500.avif 2500w"

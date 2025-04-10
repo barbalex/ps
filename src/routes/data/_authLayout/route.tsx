@@ -16,9 +16,9 @@ const schema = type({
 
 export const Route = createFileRoute('/data/_authLayout')({
   component: AuthAndDb,
-  defaultNotFoundComponent: NotFound,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
+  notFoundComponent: NotFound,
   beforeLoad: () => ({
     navDataFetcher: 'useDataBreadcrumbData',
   }),
