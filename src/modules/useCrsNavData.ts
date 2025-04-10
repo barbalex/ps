@@ -35,6 +35,9 @@ export const useCrsNavData = ({ crsId }) => {
     const isActive = isEqual(urlPath, ownArray)
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -44,10 +47,11 @@ export const useCrsNavData = ({ crsId }) => {
       ownArray,
       ownUrl,
       urlPath,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'CRS',
     }
-  }, [location.pathname, openNodes, res?.rows])
+  }, [location.pathname, openNodes, res])
 
   return { loading, navData }
 }
