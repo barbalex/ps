@@ -31,7 +31,7 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
         inline: 'start',
       })
     }, 1000)
-    // 2. TODO: sync tree openNodes
+    // 2. TODO: sync tree openNodes?
     // toggleNodeSymbol({
     //   node: {
     //     url: navData.url
@@ -43,7 +43,7 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
     //   search,
     //   navigate,
     // })
-  }, [])
+  }, [outerContainerRef])
 
   const label = useMemo(
     () =>
