@@ -41,6 +41,9 @@ export const useListValueNavData = ({ projectId, listId, listValueId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -49,10 +52,11 @@ export const useListValueNavData = ({ projectId, listId, listValueId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'List Value',
     }
-  }, [listId, listValueId, location.pathname, openNodes, projectId, res?.rows])
+  }, [listId, listValueId, location.pathname, openNodes, projectId, res])
 
   return { loading, navData }
 }

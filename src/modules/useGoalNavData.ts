@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { not } from '../css.ts'
 
 export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -24,9 +25,10 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
         goals.goal_id = '${goalId}'`,
   )
   const loading = res === undefined
-  const row = res?.rows?.[0]
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+
     const parentArray = [
       'data',
       'projects',
@@ -38,12 +40,15 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
       'reports',
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -54,29 +59,21 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       navs: [
         { id: 'goal', label: 'Goal' },
         {
           id: 'reports',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.goal_reports_count ?? 0,
+            countFiltered: nav?.goal_reports_count ?? 0,
             namePlural: 'Goal Reports',
           }),
         },
       ],
     }
-  }, [
-    projectId,
-    subprojectId,
-    goalId,
-    row?.id,
-    row?.label,
-    row?.goal_reports_count,
-    openNodes,
-    loading,
-  ])
+  }, [res, projectId, subprojectId, goalId, openNodes, loading])
 
   return { navData, loading }
 }
