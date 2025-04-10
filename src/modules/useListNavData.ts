@@ -27,18 +27,22 @@ export const useListNavData = ({ projectId, listId }) => {
   )
 
   const loading = res === undefined
-  const row = res?.rows?.[0]
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+
     const parentArray = ['data', 'projects', projectId, 'lists']
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -48,7 +52,8 @@ export const useListNavData = ({ projectId, listId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       nameSingular: 'List',
       navs: [
         { id: 'list', label: 'List' },
@@ -56,21 +61,13 @@ export const useListNavData = ({ projectId, listId }) => {
           id: 'values',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.list_values_count_unfiltered ?? 0,
+            countFiltered: nav?.list_values_count_unfiltered ?? 0,
             namePlural: 'Values',
           }),
         },
       ],
     }
-  }, [
-    loading,
-    location.pathname,
-    openNodes,
-    projectId,
-    row?.id,
-    row?.label,
-    row?.list_values_count_unfiltered,
-  ])
+  }, [res, projectId, openNodes, location.pathname, loading])
 
   return { loading, navData }
 }

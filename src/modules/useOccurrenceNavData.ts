@@ -57,6 +57,9 @@ export const useOccurrenceNavData = ({
       : isNotToAssign ? 'Occurrence Not To Assign'
       : 'Occurrence Assigned'
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -65,7 +68,8 @@ export const useOccurrenceNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular,
     }
   }, [
@@ -77,7 +81,7 @@ export const useOccurrenceNavData = ({
     placeId,
     placeId2,
     projectId,
-    res?.rows,
+    res,
     subprojectId,
   ])
 
