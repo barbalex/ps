@@ -23,9 +23,9 @@ export const useChartNavData = ({ projectId, subprojectId, chartId }) => {
         charts.chart_id = '${chartId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
-  const row = res?.rows?.[0]
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
     const parentArray = [
       'data',
       'projects',
@@ -35,12 +35,15 @@ export const useChartNavData = ({ projectId, subprojectId, chartId }) => {
       'charts',
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -51,28 +54,21 @@ export const useChartNavData = ({ projectId, subprojectId, chartId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       navs: [
         { id: 'chart', label: 'Chart' },
         {
           id: 'subjects',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.chart_subjects_count ?? 0,
+            countFiltered: nav?.chart_subjects_count ?? 0,
             namePlural: 'Subjects',
           }),
         },
       ],
     }
-  }, [
-    projectId,
-    subprojectId,
-    row?.id,
-    row?.label,
-    row?.chart_subjects_count,
-    openNodes,
-    loading,
-  ])
+  }, [res, projectId, subprojectId, openNodes, loading])
 
   return { navData, loading }
 }

@@ -37,6 +37,9 @@ export const useWmsLayerNavData = ({ projectId, wmsLayerId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -45,10 +48,11 @@ export const useWmsLayerNavData = ({ projectId, wmsLayerId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'WMS Layer',
     }
-  }, [location.pathname, openNodes, projectId, res?.rows, wmsLayerId])
+  }, [location.pathname, openNodes, projectId, res, wmsLayerId])
 
   return { loading, navData }
 }

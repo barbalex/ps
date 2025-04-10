@@ -50,6 +50,9 @@ export const useChartSubjectNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -58,7 +61,8 @@ export const useChartSubjectNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Chart Subject',
     }
   }, [
@@ -69,7 +73,7 @@ export const useChartSubjectNavData = ({
     placeId,
     placeId2,
     projectId,
-    res?.rows,
+    res,
     subprojectId,
   ])
 
