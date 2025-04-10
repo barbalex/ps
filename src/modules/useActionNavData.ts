@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { not } from '../css.ts'
 
 export const useActionNavData = ({
   projectId,
@@ -35,9 +36,10 @@ export const useActionNavData = ({
         actions.action_id = '${actionId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
-  const row = res?.rows?.[0]
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+
     const parentArray = [
       'data',
       'projects',
@@ -50,12 +52,15 @@ export const useActionNavData = ({
       'actions',
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -66,14 +71,15 @@ export const useActionNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       navs: [
         { id: 'action', label: 'Action' },
         {
           id: 'values',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.action_values_count ?? 0,
+            countFiltered: nav?.action_values_count ?? 0,
             namePlural: 'Values',
           }),
         },
@@ -81,7 +87,7 @@ export const useActionNavData = ({
           id: 'reports',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.action_reports_count ?? 0,
+            countFiltered: nav?.action_reports_count ?? 0,
             namePlural: 'Reports',
           }),
         },
@@ -89,25 +95,13 @@ export const useActionNavData = ({
           id: 'files',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.files_count ?? 0,
+            countFiltered: nav?.files_count ?? 0,
             namePlural: 'Files',
           }),
         },
       ],
     }
-  }, [
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    row?.id,
-    row?.label,
-    row?.action_values_count,
-    row?.action_reports_count,
-    row?.files_count,
-    openNodes,
-    loading,
-  ])
+  }, [res, projectId, subprojectId, placeId, placeId2, openNodes, loading])
 
   return { navData, loading }
 }

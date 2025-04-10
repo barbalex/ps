@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { not } from '../css.ts'
 
 export const useActionReportNavData = ({
   projectId,
@@ -30,22 +31,10 @@ export const useActionReportNavData = ({
         action_reports.action_report_id = '${actionReportId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
-  const row = res?.rows?.[0]
-
-  console.log('useActionReportNavData', {
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    actionId,
-    actionReportId,
-    row,
-    loading,
-    sql,
-    res,
-  })
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+
     const parentArray = [
       'data',
       'projects',
@@ -60,12 +49,15 @@ export const useActionReportNavData = ({
       'reports',
     ]
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -76,28 +68,27 @@ export const useActionReportNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       navs: [
         { id: 'report', label: 'Report' },
         {
           id: 'values',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.action_report_values_count ?? 0,
+            countFiltered: nav?.action_report_values_count ?? 0,
             namePlural: 'Values',
           }),
         },
       ],
     }
   }, [
+    res,
     projectId,
     subprojectId,
     placeId,
     placeId2,
     actionId,
-    row?.id,
-    row?.label,
-    row?.action_report_values_count,
     openNodes,
     loading,
   ])

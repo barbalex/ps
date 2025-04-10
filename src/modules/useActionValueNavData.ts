@@ -53,6 +53,9 @@ export const useActionValueNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -61,7 +64,8 @@ export const useActionValueNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Action Value',
     }
   }, [
@@ -72,7 +76,7 @@ export const useActionValueNavData = ({
     placeId,
     placeId2,
     projectId,
-    res?.rows,
+    res,
     subprojectId,
   ])
 
