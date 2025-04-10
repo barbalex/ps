@@ -27,18 +27,22 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }) => {
   )
 
   const loading = res === undefined
-  const row = res?.rows?.[0]
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+
     const parentArray = ['data', 'projects', projectId, 'vector-layers']
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -48,7 +52,8 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       nameSingular: 'Vector Layer',
       navs: [
         { id: 'vector-layer', label: 'Vector Layer' },
@@ -56,21 +61,13 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }) => {
           id: 'displays',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.vector_layer_displays_count_unfiltered ?? 0,
+            countFiltered: nav?.vector_layer_displays_count_unfiltered ?? 0,
             namePlural: 'Display',
           }),
         },
       ],
     }
-  }, [
-    loading,
-    location.pathname,
-    openNodes,
-    projectId,
-    row?.id,
-    row?.label,
-    row?.vector_layer_displays_count_unfiltered,
-  ])
+  }, [projectId, openNodes, location.pathname, res, loading])
 
   return { loading, navData }
 }

@@ -27,18 +27,21 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
   )
 
   const loading = res === undefined
-  const row = res?.rows?.[0]
+  const nav = res?.rows?.[0]
 
   const navData = useMemo(() => {
     const parentArray = ['data', 'projects', projectId, 'taxonomies']
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -48,7 +51,8 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound,
       nameSingular: 'Taxonomy',
       navs: [
         { id: 'taxonomy', label: 'Taxonomy' },
@@ -56,21 +60,13 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
           id: 'taxa',
           label: buildNavLabel({
             loading,
-            countFiltered: row?.taxa_count_unfiltered ?? 0,
+            countFiltered: nav?.taxa_count_unfiltered ?? 0,
             namePlural: 'Taxa',
           }),
         },
       ],
     }
-  }, [
-    loading,
-    location.pathname,
-    openNodes,
-    projectId,
-    row?.id,
-    row?.label,
-    row?.taxa_count_unfiltered,
-  ])
+  }, [projectId, nav, openNodes, location.pathname, res, loading])
 
   return { loading, navData }
 }

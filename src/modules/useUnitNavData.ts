@@ -37,6 +37,9 @@ export const useUnitNavData = ({ projectId, unitId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -45,10 +48,11 @@ export const useUnitNavData = ({ projectId, unitId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Unit',
     }
-  }, [location.pathname, openNodes, projectId, res?.rows, unitId])
+  }, [location.pathname, openNodes, projectId, res, unitId])
 
   return { loading, navData }
 }
