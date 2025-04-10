@@ -5,6 +5,7 @@ import { useActionReportNavData } from '../../modules/useActionReportNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 export const ActionReportList = memo(({ from }) => {
   const {
@@ -25,7 +26,16 @@ export const ActionReportList = memo(({ from }) => {
     actionId,
     actionReportId,
   })
-  const { navs } = navData
+  const { navs, notFound } = navData
+
+  if (notFound) {
+    return (
+      <NotFound
+        table="Action Report"
+        id={actionReportId}
+      />
+    )
+  }
 
   return (
     <div className="list-view">
