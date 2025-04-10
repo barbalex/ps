@@ -10,7 +10,7 @@ export const Route = createRootRoute({
   defaultNotFoundComponent: NotFoundRoot,
   notFoundComponent: NotFoundRoot,
   // notFoundComponent: () => <Outlet />,
-  notFoundMode: 'root',
+  // notFoundMode: 'root',
   errorComponent: ErrorPage,
   defaultErrorComponent: ErrorPage,
 })

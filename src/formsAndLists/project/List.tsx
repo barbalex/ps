@@ -9,7 +9,6 @@ import { Header } from './Header.tsx'
 // const from = '/data/projects/$projectId/'
 
 export const ProjectList = memo(({ from }) => {
-  console.log('ProjectList rendering')
   const { projectId } = useParams({ from })
   const { loading, navData } = useProjectNavData({ projectId })
   const { navs, label } = navData

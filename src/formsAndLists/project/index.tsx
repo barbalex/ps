@@ -2,7 +2,7 @@ import { useRef, useCallback, memo } from 'react'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 
 import { Header } from './Header.tsx'
@@ -11,11 +11,11 @@ import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { designingAtom } from '../../store.ts'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
 export const Project = memo(({ from }) => {
-  console.log('Project rendering')
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
@@ -24,12 +24,12 @@ export const Project = memo(({ from }) => {
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM projects WHERE project_id = $1`,
-    [projectId],
-    'project_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
+    projectId,
+  ])
   const row = res?.rows?.[0]
+
+  console.log('Project', { res, projectId })
 
   const onTabSelect = useCallback(
     (event: SelectTabEvent, data: SelectTabData) => {
@@ -56,7 +56,16 @@ export const Project = memo(({ from }) => {
     [db, projectId, row],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+  // if (!row) throw notFound({ table: 'Project', id: projectId })
+  if (!row) {
+    return (
+      <NotFound
+        table="Project"
+        id={projectId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
