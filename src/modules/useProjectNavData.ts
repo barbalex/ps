@@ -157,19 +157,20 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
-  const row = res?.rows?.[0]
+  const nav = res?.rows?.[0]
 
   const navData = useMemo(() => {
     const parentArray = ['data', 'projects']
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, row?.id]
+    const ownArray = [...parentArray, nav?.id]
     const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
-    const notFound = !!res && !row
-    const label = notFound ? 'Not Found' : (row?.label ?? row?.id)
+
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
     return {
       isInActiveNodeArray,
@@ -181,7 +182,7 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
       urlPath,
       ownUrl,
       label,
-      notFound: !!res && !row,
+      notFound,
       navs:
         forBreadcrumb ?
           []
@@ -192,9 +193,9 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
               label: buildNavLabel({
                 loading,
                 isFiltered: subprojectIsFiltered,
-                countFiltered: row?.subprojects_count_filtered ?? 0,
-                countUnfiltered: row?.subprojects_count_unfiltered ?? 0,
-                namePlural: row?.subprojects_name_plural ?? 'Subprojects',
+                countFiltered: nav?.subprojects_count_filtered ?? 0,
+                countUnfiltered: nav?.subprojects_count_unfiltered ?? 0,
+                namePlural: nav?.subprojects_name_plural ?? 'Subprojects',
               }),
             },
             {
@@ -202,8 +203,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
               label: buildNavLabel({
                 loading,
                 isFiltered: projectReportsIsFiltered,
-                countFiltered: row?.project_reports_count_filtered ?? 0,
-                countUnfiltered: row?.project_reports_count_unfiltered ?? 0,
+                countFiltered: nav?.project_reports_count_filtered ?? 0,
+                countUnfiltered: nav?.project_reports_count_unfiltered ?? 0,
                 namePlural: 'Reports',
               }),
             },
@@ -212,8 +213,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
               label: buildNavLabel({
                 loading,
                 isFiltered: personsIsFiltered,
-                countFiltered: row?.persons_count_filtered ?? 0,
-                countUnfiltered: row?.persons_count_unfiltered ?? 0,
+                countFiltered: nav?.persons_count_filtered ?? 0,
+                countUnfiltered: nav?.persons_count_unfiltered ?? 0,
                 namePlural: 'Persons',
               }),
             },
@@ -222,8 +223,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
               label: buildNavLabel({
                 loading,
                 isFiltered: wmsLayersIsFiltered,
-                countFiltered: row?.wms_layers_count_filtered ?? 0,
-                countUnfiltered: row?.wms_layers_count_unfiltered ?? 0,
+                countFiltered: nav?.wms_layers_count_filtered ?? 0,
+                countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
                 namePlural: 'WMS Layers',
               }),
             },
@@ -232,8 +233,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
               label: buildNavLabel({
                 loading,
                 isFiltered: vectorLayersIsFiltered,
-                countFiltered: row?.vector_layers_count_filtered ?? 0,
-                countUnfiltered: row?.vector_layers_count_unfiltered ?? 0,
+                countFiltered: nav?.vector_layers_count_filtered ?? 0,
+                countUnfiltered: nav?.vector_layers_count_unfiltered ?? 0,
                 namePlural: 'Vector Layers',
               }),
             },
@@ -243,7 +244,7 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   id: 'users',
                   label: buildNavLabel({
                     loading,
-                    countFiltered: row?.project_users_count_unfiltered ?? 0,
+                    countFiltered: nav?.project_users_count_unfiltered ?? 0,
                     namePlural: 'Users',
                   }),
                 },
@@ -252,8 +253,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   label: buildNavLabel({
                     loading,
                     isFiltered: listsIsFiltered,
-                    countFiltered: row?.lists_count_filtered ?? 0,
-                    countUnfiltered: row?.lists_count_unfiltered ?? 0,
+                    countFiltered: nav?.lists_count_filtered ?? 0,
+                    countUnfiltered: nav?.lists_count_unfiltered ?? 0,
                     namePlural: 'Lists',
                   }),
                 },
@@ -261,7 +262,7 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   id: 'taxonomies',
                   label: buildNavLabel({
                     loading,
-                    countFiltered: row?.taxonomies_count_unfiltered ?? 0,
+                    countFiltered: nav?.taxonomies_count_unfiltered ?? 0,
                     namePlural: 'Taxonomies',
                   }),
                 },
@@ -270,8 +271,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   label: buildNavLabel({
                     loading,
                     isFiltered: unitsIsFiltered,
-                    countFiltered: row?.units_count_filtered ?? 0,
-                    countUnfiltered: row?.units_count_unfiltered ?? 0,
+                    countFiltered: nav?.units_count_filtered ?? 0,
+                    countUnfiltered: nav?.units_count_unfiltered ?? 0,
                     namePlural: 'Units',
                   }),
                 },
@@ -279,7 +280,7 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   id: 'crs',
                   label: buildNavLabel({
                     loading,
-                    countFiltered: row?.project_crs_count_unfiltered ?? 0,
+                    countFiltered: nav?.project_crs_count_unfiltered ?? 0,
                     namePlural: 'CRS',
                   }),
                 },
@@ -287,7 +288,7 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   id: 'place-levels',
                   label: buildNavLabel({
                     loading,
-                    countFiltered: row?.place_levels_count_unfiltered ?? 0,
+                    countFiltered: nav?.place_levels_count_unfiltered ?? 0,
                     namePlural: 'Place Levels',
                   }),
                 },
@@ -296,8 +297,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
                   label: buildNavLabel({
                     loading,
                     isFiltered: fieldsIsFiltered,
-                    countFiltered: row?.fields_count_filtered ?? 0,
-                    countUnfiltered: row?.fields_count_unfiltered ?? 0,
+                    countFiltered: nav?.fields_count_filtered ?? 0,
+                    countUnfiltered: nav?.fields_count_unfiltered ?? 0,
                     namePlural: 'Fields',
                   }),
                 },
@@ -315,7 +316,7 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
     personsIsFiltered,
     projectReportsIsFiltered,
     res,
-    row,
+    nav,
     subprojectIsFiltered,
     unitsIsFiltered,
     vectorLayersIsFiltered,

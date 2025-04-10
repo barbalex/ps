@@ -38,6 +38,9 @@ export const useProjectReportNavData = ({ projectId, projectReportId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -46,10 +49,11 @@ export const useProjectReportNavData = ({ projectId, projectReportId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Project Report',
     }
-  }, [location.pathname, openNodes, projectId, projectReportId, res?.rows])
+  }, [location.pathname, openNodes, projectId, projectReportId, res])
 
   return { loading, navData }
 }
