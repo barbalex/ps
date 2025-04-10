@@ -34,6 +34,9 @@ export const useMessageNavData = ({ messageId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -43,10 +46,11 @@ export const useMessageNavData = ({ messageId }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Message',
     }
-  }, [location.pathname, messageId, openNodes, res?.rows])
+  }, [location.pathname, messageId, openNodes, res])
 
   return { loading, navData }
 }

@@ -45,6 +45,9 @@ export const useOccurrenceImportNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -53,7 +56,8 @@ export const useOccurrenceImportNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Occurrence Import',
     }
   }, [
@@ -61,7 +65,7 @@ export const useOccurrenceImportNavData = ({
     occurrenceImportId,
     openNodes,
     projectId,
-    res?.rows,
+    res,
     subprojectId,
   ])
 

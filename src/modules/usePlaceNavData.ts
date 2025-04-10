@@ -16,6 +16,7 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { not } from '../css.ts'
 
 export const usePlaceNavData = ({
   projectId,
@@ -108,11 +109,12 @@ export const usePlaceNavData = ({
         places.place_id = '${placeId2 ?? placeId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
-  const nav = res?.rows?.[0]
-  const nameSingular = nav?.name_singular ?? 'Place'
-  const childNamePlural = nav?.child_name_plural ?? 'Places'
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+    const nameSingular = nav?.name_singular ?? 'Place'
+    const childNamePlural = nav?.child_name_plural ?? 'Places'
+
     const parentArray = [
       'data',
       'projects',
@@ -130,6 +132,9 @@ export const usePlaceNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -139,7 +144,8 @@ export const usePlaceNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       navs: [
         { id: 'place', label: nameSingular },
         ...(!placeId2 ?
@@ -215,29 +221,14 @@ export const usePlaceNavData = ({
       ],
     }
   }, [
+    res,
     projectId,
     subprojectId,
     placeId,
-    nav?.id,
-    nav?.label,
-    nav?.places_count_filtered,
-    nav?.places_count_unfiltered,
-    nav?.checks_count_filtered,
-    nav?.checks_count_unfiltered,
-    nav?.actions_count_filtered,
-    nav?.actions_count_unfiltered,
-    nav?.place_reports_count_filtered,
-    nav?.place_reports_count_unfiltered,
-    nav?.occurrences_count,
-    nav?.place_users_count,
-    nav?.files_count_filtered,
-    nav?.files_count_unfiltered,
-    openNodes,
-    nameSingular,
     placeId2,
+    openNodes,
     loading,
     placesIsFiltered,
-    childNamePlural,
     checksIsFiltered,
     actionsIsFiltered,
     placeReportsIsFiltered,
