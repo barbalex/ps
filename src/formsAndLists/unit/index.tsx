@@ -10,7 +10,7 @@ import { UnitForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/units/$unitId/'
+const from = '/data/projects/$projectId_/units/$unitId/'
 
 export const Unit = memo(() => {
   const { unitId } = useParams({ from })

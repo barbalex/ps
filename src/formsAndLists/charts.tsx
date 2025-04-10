@@ -10,7 +10,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/'
 
 export const Charts = memo(() => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })

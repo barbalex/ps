@@ -5,7 +5,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createCrs } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = '/data/_authLayout/crs/$crsId'
+const from = '/data/crs/$crsId'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { crsId } = useParams({ from })

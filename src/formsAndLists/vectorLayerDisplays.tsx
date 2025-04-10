@@ -13,7 +13,7 @@ import { mapDrawerVectorLayerDisplayAtom } from '../store.ts'
 import '../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/displays/'
+  '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/'
 
 // this form can be used from the router or inside the left map drawer
 // map drawer passes the vectorLayerId as a prop

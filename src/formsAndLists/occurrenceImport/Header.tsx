@@ -13,7 +13,7 @@ interface Props {
 }
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
 
 export const Header = memo(
   ({ autoFocusRef, showPreview, setShowPreview }: Props) => {

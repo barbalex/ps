@@ -11,7 +11,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import '../../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
+  '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
 export const Taxon = memo(() => {
   const { taxonId } = useParams({ from })

@@ -11,6 +11,7 @@ import { Layout } from './LayoutProtected/index.tsx'
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
 export const AuthAndDb = memo(() => {
+  // console.log('AuthAndDb rendering')
   return (
     <CorbadoProvider
       projectId={CORBADO_PROJECT_ID}

@@ -14,7 +14,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useVectorLayersNavData } from '../modules/useVectorLayersNavData.ts'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/vector-layers/'
+const from = '/data/projects/$projectId_/vector-layers/'
 
 export const VectorLayers = memo(() => {
   const { projectId } = useParams({ from })

@@ -7,7 +7,7 @@ import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { userIdAtom } from '../../store.ts'
 
-const from = '/data/_authLayout/users/$userId'
+const from = '/data/users/$userId'
 
 export const Header = memo(({ autoFocusRef }) => {
   const setUserId = useSetAtom(userIdAtom)

@@ -11,7 +11,7 @@ import { useChartSubjectsNavData } from '../modules/useChartSubjectsNavData.ts'
 import '../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/'
 
 export const ChartSubjects = memo(() => {
   const { projectId, subprojectId, chartId } = useParams({

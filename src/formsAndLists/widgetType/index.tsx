@@ -10,7 +10,7 @@ import { WidgetTypeForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/widget-types/$widgetTypeId'
+const from = '/data/widget-types/$widgetTypeId'
 
 export const WidgetType = memo(() => {
   const { widgetTypeId } = useParams({ from })

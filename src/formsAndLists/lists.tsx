@@ -10,7 +10,7 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/lists/'
+const from = '/data/projects/$projectId_/lists/'
 
 export const Lists = memo(() => {
   const { projectId } = useParams({ from })

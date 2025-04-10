@@ -9,7 +9,7 @@ export const Header = memo(
   ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
     const isForm =
       from ===
-      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/subproject'
+      '/data/projects/$projectId_/subprojects/$subprojectId_/subproject'
     const { projectId, subprojectId } = useParams({ from })
     const navigate = useNavigate()
 

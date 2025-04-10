@@ -11,7 +11,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from = '/data/_authLayout/widgets-for-fields'
+const from = '/data/widgets-for-fields'
 
 export const WidgetsForFields = memo(() => {
   const navigate = useNavigate({ from })

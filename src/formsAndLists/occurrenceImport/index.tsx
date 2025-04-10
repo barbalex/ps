@@ -32,7 +32,7 @@ const tabNumberStyle = {
 }
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
 
 export const OccurrenceImport = memo(() => {
   const { occurrenceImportId } = useParams({ from })

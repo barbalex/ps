@@ -8,7 +8,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 export const Header = memo(({ autoFocusRef, from }) => {
   const isForm =
     from ===
-    '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
+    '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
   const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
 

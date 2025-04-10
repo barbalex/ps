@@ -10,7 +10,7 @@ interface Props {
 }
 
 const from =
-  '/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId/'
+  '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
 export const Header = memo(({ autoFocusRef }: Props) => {
   const { projectId, placeLevelId } = useParams({ from })

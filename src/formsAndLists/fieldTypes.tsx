@@ -11,7 +11,7 @@ import { useFieldTypesNavData } from '../modules/useFieldTypesNavData.ts'
 
 import '../form.css'
 
-const from = '/data/_authLayout/field-types'
+const from = '/data/field-types'
 
 export const FieldTypes = memo(() => {
   const navigate = useNavigate({ from })

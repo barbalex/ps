@@ -8,7 +8,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { designingAtom } from '../../store.ts'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
 
 // TODO: if not editing, hide add and remove buttons
 export const Header = memo(({ autoFocusRef }) => {

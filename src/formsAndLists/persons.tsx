@@ -10,7 +10,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { usePersonsNavData } from '../modules/usePersonsNavData.ts'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/persons/'
+const from = '/data/projects/$projectId_/persons/'
 
 export const Persons = memo(() => {
   const navigate = useNavigate()

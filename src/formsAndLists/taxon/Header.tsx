@@ -6,7 +6,7 @@ import { createTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
+  '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { taxonomyId, taxonId } = useParams({ from })

@@ -10,7 +10,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/crs/'
+const from = '/data/projects/$projectId_/crs/'
 
 export const ProjectCrss = memo(() => {
   const navigate = useNavigate()

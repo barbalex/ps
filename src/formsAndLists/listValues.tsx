@@ -9,7 +9,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/lists/$listId_/values/'
+const from = '/data/projects/$projectId_/lists/$listId_/values/'
 
 export const ListValues = memo(() => {
   const { projectId, listId } = useParams({ from })

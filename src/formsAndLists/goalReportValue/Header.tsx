@@ -6,7 +6,7 @@ import { createGoalReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/$goalReportValueId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/$goalReportValueId/'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { goalReportId, goalReportValueId } = useParams({ from })

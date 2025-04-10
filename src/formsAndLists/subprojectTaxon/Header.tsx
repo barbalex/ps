@@ -6,7 +6,7 @@ import { createSubprojectTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { subprojectId, subprojectTaxonId } = useParams({ from })

@@ -12,7 +12,7 @@ import { userIdAtom } from '../store.ts'
 
 import '../form.css'
 
-const from = 'data/_authLayout/users'
+const from = 'data/users'
 
 export const Users = memo(() => {
   const setUserId = useSetAtom(userIdAtom)

@@ -9,7 +9,7 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-const from = '/data/_authLayout/projects/$projectId_/persons/$personId/'
+const from = '/data/projects/$projectId_/persons/$personId/'
 
 export const Header = memo(({ autoFocusRef }: Props) => {
   const { projectId, personId } = useParams({ from })

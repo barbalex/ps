@@ -14,7 +14,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import '../../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/place-levels/$placeLevelId/'
+  '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
 export const PlaceLevel = memo(() => {
   const { placeLevelId } = useParams({ from })

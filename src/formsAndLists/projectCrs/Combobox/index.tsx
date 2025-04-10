@@ -6,7 +6,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Options } from './options.tsx'
 
-const from = '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/'
+const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
   const db = usePGlite()

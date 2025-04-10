@@ -5,7 +5,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createWidgetForField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = '/data/_authLayout/widgets-for-fields/$widgetForFieldId'
+const from = '/data/widgets-for-fields/$widgetForFieldId'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { widgetForFieldId } = useParams({ from })

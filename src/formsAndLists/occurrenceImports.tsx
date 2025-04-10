@@ -11,7 +11,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/'
 
 export const OccurrenceImports = memo(() => {
   const navigate = useNavigate()

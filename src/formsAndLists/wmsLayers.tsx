@@ -13,7 +13,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useWmsLayersNavData } from '../modules/useWmsLayersNavData.ts'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/wms-layers/'
+const from = '/data/projects/$projectId_/wms-layers/'
 
 export const WmsLayers = memo(() => {
   const { projectId } = useParams({ from })

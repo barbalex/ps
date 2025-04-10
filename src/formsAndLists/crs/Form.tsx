@@ -10,7 +10,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/crs/$crsId'
+const from = '/data/crs/$crsId'
 
 // this form is rendered from a parent or outlet
 export const Component = memo(() => {

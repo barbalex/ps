@@ -12,7 +12,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/accounts/$accountId'
+const from = '/data/accounts/$accountId'
 
 export const Account = memo(() => {
   const { accountId } = useParams({ from })

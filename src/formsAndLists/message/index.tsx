@@ -11,7 +11,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/messages/$messageId'
+const from = '/data/messages/$messageId'
 
 export const Message = memo(() => {
   const { messageId } = useParams({ from })

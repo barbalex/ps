@@ -6,7 +6,7 @@ import { createListValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/lists/$listId_/values/$listValueId/'
+  '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { listId, listValueId } = useParams({ from })

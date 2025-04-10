@@ -7,7 +7,7 @@ import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOp
 import { PreviousImportOperation } from './PreviousImportOperation.tsx'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
 
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrenceImportId, subprojectId } = useParams({ from })

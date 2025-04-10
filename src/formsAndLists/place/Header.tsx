@@ -26,9 +26,9 @@ interface Props {
 export const Header = memo(({ autoFocusRef, from }: Props) => {
   const isForm =
     from ===
-      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
     from ===
-      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/place/'
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/place/'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()

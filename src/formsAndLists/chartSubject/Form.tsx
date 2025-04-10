@@ -17,7 +17,7 @@ interface Props {
 }
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
 
 // separate from the route because it is also used inside other forms
 export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {

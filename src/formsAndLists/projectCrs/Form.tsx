@@ -13,7 +13,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/crs/$projectCrsId/'
+const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 // this form is rendered from a parent or outlet
 export const ProjectCrsForm = memo(({ autoFocusRef }) => {

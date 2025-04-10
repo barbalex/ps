@@ -10,7 +10,7 @@ import { WmsLayerForm as Form } from './Form/index.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId'
+const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
 
 export const WmsLayer = memo(() => {
   const { wmsLayerId } = useParams({ from })

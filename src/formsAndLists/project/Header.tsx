@@ -13,7 +13,7 @@ interface Props {
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
 export const Header = memo(({ autoFocusRef, from, label }: Props) => {
-  const isForm = from === '/data/_authLayout/projects/$projectId_/project/'
+  const isForm = from === '/data/projects/$projectId_/project/'
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
 

@@ -10,7 +10,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useProjectReportsNavData } from '../modules/useProjectReportsNavData.ts'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/reports/'
+const from = '/data/projects/$projectId_/reports/'
 
 export const ProjectReports = memo(() => {
   const { projectId } = useParams({ from })

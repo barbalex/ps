@@ -10,7 +10,7 @@ import { WidgetForFieldForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/widgets-for-fields/$widgetForFieldId'
+const from = '/data/widgets-for-fields/$widgetForFieldId'
 
 export const WidgetForField = memo(() => {
   const { widgetForFieldId } = useParams({ from })

@@ -10,7 +10,7 @@ import { FieldTypeForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/field-types/$fieldTypeId'
+const from = '/data/field-types/$fieldTypeId'
 
 export const FieldType = memo(() => {
   const { fieldTypeId } = useParams({ from })

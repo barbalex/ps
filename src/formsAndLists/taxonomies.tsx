@@ -9,7 +9,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/taxonomies/'
+const from = '/data/projects/$projectId_/taxonomies/'
 
 export const Taxonomies = memo(() => {
   const { projectId } = useParams({ from })

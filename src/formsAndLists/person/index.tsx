@@ -10,7 +10,7 @@ import { PersonForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-const from = '/data/_authLayout/projects/$projectId_/persons/$personId/'
+const from = '/data/projects/$projectId_/persons/$personId/'
 
 export const Person = memo(() => {
   const { personId } = useParams({ from })

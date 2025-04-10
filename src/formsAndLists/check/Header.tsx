@@ -16,9 +16,9 @@ import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 export const Header = memo(({ autoFocusRef, from }) => {
   const isForm =
     from ===
-      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/check' ||
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/check' ||
     from ===
-      '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { projectId, placeId, placeId2, checkId } = useParams({ from })

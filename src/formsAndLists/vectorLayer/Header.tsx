@@ -30,7 +30,7 @@ import {
 export const Header = memo(({ autoFocusRef, row, from }) => {
   const isForm =
     from ===
-    '/data/_authLayout/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
+    '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)

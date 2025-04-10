@@ -6,7 +6,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 
-// const from = '/data/_authLayout/projects/$projectId/'
+// const from = '/data/projects/$projectId/'
 
 export const ProjectList = memo(({ from }) => {
   console.log('ProjectList rendering')

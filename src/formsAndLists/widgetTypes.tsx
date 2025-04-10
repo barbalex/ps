@@ -11,7 +11,7 @@ import { useWidgetTypesNavData } from '../modules/useWidgetTypesNavData.ts'
 
 import '../form.css'
 
-const from = '/data/_authLayout/widget-types'
+const from = '/data/widget-types'
 
 export const WidgetTypes = memo(() => {
   const navigate = useNavigate({ from })

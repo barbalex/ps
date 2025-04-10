@@ -10,7 +10,7 @@ import { designingAtom } from '../../store.ts'
 export const Header = memo(({ autoFocusRef, from }) => {
   const isForm =
     from ===
-    '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
+    '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
   const [designing] = useAtom(designingAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
     from,

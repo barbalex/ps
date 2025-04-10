@@ -5,7 +5,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createFieldType } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = '/data/_authLayout/field-types/$fieldTypeId'
+const from = '/data/field-types/$fieldTypeId'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { fieldTypeId } = useParams({ from })

@@ -14,7 +14,7 @@ const userRoles = ['manager', 'editor', 'reader']
 import '../../form.css'
 
 const from =
-  '/data/_authLayout/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
 
 export const SubprojectUser = memo(() => {
   const { subprojectUserId } = useParams({ from })

@@ -5,7 +5,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createMessage } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = '/data/_authLayout/messages/$messageId'
+const from = '/data/messages/$messageId'
 
 export const Header = memo(() => {
   const { messageId } = useParams({ from })

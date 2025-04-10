@@ -8,7 +8,7 @@ import {
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = '/data/_authLayout/projects/$projectId_/wms-layers/$wmsLayerId'
+const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { projectId, wmsLayerId } = useParams({ from })

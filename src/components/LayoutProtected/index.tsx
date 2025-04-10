@@ -13,7 +13,7 @@ import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
-const from = '/data/_authLayout'
+const from = '/data'
 
 // memoizing this component creates error
 export const Layout = memo(() => {
