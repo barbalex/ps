@@ -14,7 +14,6 @@ const noMarginStyle = {
 }
 const spacerStyle = {
   height: 20,
-  width: '100%',
 }
 
 export const NotFound = memo((data) => {
