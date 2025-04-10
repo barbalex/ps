@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { FieldForm as Form } from './Form.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = memo(
@@ -31,7 +32,16 @@ export const FieldFormFetchingOwnData = memo(
       [db, fieldId, row],
     )
 
-    if (!row) return <Loading />
+    if (!res) return <Loading />
+
+    if (!row) {
+      return (
+        <NotFound
+          table="Field"
+          id={fieldId}
+        />
+      )
+    }
 
     return (
       <div className="form-container">

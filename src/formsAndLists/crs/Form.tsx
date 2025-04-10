@@ -5,8 +5,8 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
-
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -35,7 +35,16 @@ export const Component = memo(() => {
     [row, db, crsId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="CRS"
+        id={crsId}
+      />
+    )
+  }
 
   return (
     <>
