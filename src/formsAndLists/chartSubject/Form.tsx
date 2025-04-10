@@ -11,6 +11,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Table } from './Table.tsx'
 import { Level } from './Level.tsx'
 import { ValueSource } from './ValueSource.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -45,7 +46,16 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
     [row, db, chartSubjectId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Chart Subject"
+        id={chartSubjectId}
+      />
+    )
+  }
 
   return (
     <div className="form-container">
