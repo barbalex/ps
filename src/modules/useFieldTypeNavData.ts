@@ -36,6 +36,9 @@ export const useFieldTypeNavData = ({ fieldTypeId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -45,10 +48,11 @@ export const useFieldTypeNavData = ({ fieldTypeId }) => {
       ownArray,
       ownUrl,
       urlPath,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Field Type',
     }
-  }, [fieldTypeId, location.pathname, openNodes, res?.rows])
+  }, [fieldTypeId, location.pathname, openNodes, res])
 
   return { loading, navData }
 }

@@ -29,9 +29,10 @@ export const useGoalReportNavData = ({
         goal_reports.goal_report_id = '${goalReportId}'`,
   )
   const loading = res === undefined
-  const nav = res?.rows?.[0]
 
   const navData = useMemo(() => {
+    const nav = res?.rows?.[0]
+
     const parentArray = [
       'data',
       'projects',
@@ -50,6 +51,9 @@ export const useGoalReportNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -59,7 +63,8 @@ export const useGoalReportNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       navs: [
         { id: 'report', label: 'Report' },
         {
@@ -72,17 +77,7 @@ export const useGoalReportNavData = ({
         },
       ],
     }
-  }, [
-    projectId,
-    subprojectId,
-    goalId,
-    goalReportId,
-    openNodes,
-    nav?.label,
-    nav?.id,
-    nav?.goal_report_values_count,
-    loading,
-  ])
+  }, [res, projectId, subprojectId, goalId, goalReportId, openNodes, loading])
 
   return { navData, loading }
 }
