@@ -9,6 +9,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -43,7 +44,16 @@ export const Account = memo(() => {
     [row, db, accountId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Account"
+        id={accountId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">

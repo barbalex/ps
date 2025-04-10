@@ -29,7 +29,7 @@ export const NotFound = memo(({ table, id }) => {
     <div style={linkContentStyle}>
       {isTableId ?
         <>
-          <p style={noMarginStyle}>Sorry. A {table} with ID</p>
+          <p style={noMarginStyle}>Sorry. {table} with ID</p>
           <em>{id}</em>
           <p style={noMarginStyle}>was not found.</p>
         </>
