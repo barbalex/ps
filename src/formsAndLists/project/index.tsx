@@ -57,7 +57,7 @@ export const Project = memo(({ from }) => {
   )
 
   if (!res) return <Loading />
-  // if (!row) throw notFound({ table: 'Project', id: projectId })
+
   if (!row) {
     return (
       <NotFound

@@ -2,7 +2,6 @@ import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { type } from 'arktype'
 
 import { Project } from '../../../../formsAndLists/project/index.tsx'
-import { NotFound } from '../../../../components/NotFound.tsx'
 
 const defaultValues = {
   projectTab: 'form',
@@ -18,7 +17,6 @@ export const Route = createFileRoute('/data/projects/$projectId_/project')({
   component: RouteComponent,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
-  notFoundComponent: NotFound,
 })
 
 const RouteComponent = () => {

@@ -5,13 +5,24 @@ import { useProjectNavData } from '../../modules/useProjectNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 // const from = '/data/projects/$projectId/'
 
 export const ProjectList = memo(({ from }) => {
   const { projectId } = useParams({ from })
   const { loading, navData } = useProjectNavData({ projectId })
-  const { navs, label } = navData
+  const { navs, label, notFound } = navData
+  console.log('ProjectList', { loading, navData, notFound })
+
+  if (notFound) {
+    return (
+      <NotFound
+        table="Project"
+        id={projectId}
+      />
+    )
+  }
 
   return (
     <div className="list-view">

@@ -168,6 +168,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
+    const notFound = !!res && !row
+    const label = notFound ? 'Not Found' : (row?.label ?? row?.id)
 
     return {
       isInActiveNodeArray,
@@ -178,7 +180,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
       ownArray,
       urlPath,
       ownUrl,
-      label: row?.label,
+      label,
+      notFound: !!res && !row,
       navs:
         forBreadcrumb ?
           []
@@ -311,29 +314,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
     openNodes,
     personsIsFiltered,
     projectReportsIsFiltered,
-    row?.fields_count_filtered,
-    row?.fields_count_unfiltered,
-    row?.id,
-    row?.label,
-    row?.lists_count_filtered,
-    row?.lists_count_unfiltered,
-    row?.persons_count_filtered,
-    row?.persons_count_unfiltered,
-    row?.place_levels_count_unfiltered,
-    row?.project_crs_count_unfiltered,
-    row?.project_reports_count_filtered,
-    row?.project_reports_count_unfiltered,
-    row?.project_users_count_unfiltered,
-    row?.subprojects_count_filtered,
-    row?.subprojects_count_unfiltered,
-    row?.subprojects_name_plural,
-    row?.taxonomies_count_unfiltered,
-    row?.units_count_filtered,
-    row?.units_count_unfiltered,
-    row?.vector_layers_count_filtered,
-    row?.vector_layers_count_unfiltered,
-    row?.wms_layers_count_filtered,
-    row?.wms_layers_count_unfiltered,
+    res,
+    row,
     subprojectIsFiltered,
     unitsIsFiltered,
     vectorLayersIsFiltered,
