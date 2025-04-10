@@ -8,6 +8,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -38,7 +39,16 @@ export const ActionValue = memo(({ from }) => {
     [row, db, actionValueId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Action Value"
+        id={actionValueId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
