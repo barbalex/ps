@@ -29,8 +29,6 @@ export const Project = memo(({ from }) => {
   ])
   const row = res?.rows?.[0]
 
-  console.log('Project', { res, projectId })
-
   const onTabSelect = useCallback(
     (event: SelectTabEvent, data: SelectTabData) => {
       navigate({ search: { projectTab: data.value } })

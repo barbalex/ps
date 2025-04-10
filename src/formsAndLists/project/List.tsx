@@ -13,7 +13,6 @@ export const ProjectList = memo(({ from }) => {
   const { projectId } = useParams({ from })
   const { loading, navData } = useProjectNavData({ projectId })
   const { navs, label, notFound } = navData
-  console.log('ProjectList', { loading, navData, notFound })
 
   if (notFound) {
     return (
