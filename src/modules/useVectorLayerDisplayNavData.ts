@@ -45,6 +45,9 @@ export const useVectorLayerDisplayNavData = ({
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -53,14 +56,15 @@ export const useVectorLayerDisplayNavData = ({
       ownArray,
       urlPath,
       ownUrl,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'Vector Layer Display',
     }
   }, [
     location.pathname,
     openNodes,
     projectId,
-    res?.rows,
+    res,
     vectorLayerDisplayId,
     vectorLayerId,
   ])

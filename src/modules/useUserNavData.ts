@@ -35,6 +35,9 @@ export const useUserNavData = ({ userId }) => {
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
+    const notFound = !!res && !nav
+    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
     return {
       isInActiveNodeArray,
       isActive,
@@ -44,10 +47,11 @@ export const useUserNavData = ({ userId }) => {
       ownArray,
       ownUrl,
       urlPath,
-      label: nav?.label ?? nav?.id,
+      label,
+      notFound,
       nameSingular: 'User',
     }
-  }, [location.pathname, openNodes, res?.rows])
+  }, [location.pathname, openNodes, res])
 
   return { loading, navData }
 }
