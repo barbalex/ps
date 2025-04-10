@@ -9,17 +9,20 @@ const containerStyle = {
   width: '100%',
 }
 
-export const Loading = memo(({ label, alignLeft = false, size = 'medium' }) => (
-  <div
-    style={{
-      ...containerStyle,
-      justifyContent: alignLeft ? 'flex-start' : 'center',
-    }}
-  >
-    <Spinner
-      labelPosition="below"
-      label={label}
-      size={size}
-    />
-  </div>
-))
+export const Loading = memo(
+  ({ label, alignLeft = false, size = 'medium', width }) => (
+    <div
+      style={{
+        ...containerStyle,
+        justifyContent: alignLeft ? 'flex-start' : 'center',
+        ...(width ? { width } : {}),
+      }}
+    >
+      <Spinner
+        labelPosition="below"
+        label={label}
+        size={size}
+      />
+    </div>
+  ),
+)

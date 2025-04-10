@@ -14,7 +14,7 @@ export const FetcherImporter = memo(({ fetcherName, ...other }) => {
     })
   }, [fetcherName])
 
-  if (!fetcherModule) return <Loading />
+  if (!fetcherModule) return <Loading width={120} />
 
   return (
     <Fetcher

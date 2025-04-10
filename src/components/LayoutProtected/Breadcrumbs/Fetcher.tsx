@@ -22,7 +22,7 @@ export const Fetcher = memo(({ fetcherName, fetcherModule, ...other }) => {
   //   res,
   // })
 
-  if (loading) return <Loading />
+  if (loading) return <Loading width={120} />
 
   return (
     <Crumb
