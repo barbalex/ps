@@ -7,6 +7,7 @@ import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 import './style.css'
@@ -46,9 +47,16 @@ export const FilePreview = memo(({ from }) => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  console.log('FilePreview', { row, fileId })
+  if (!res) return <Loading />
 
-  if (!row) return <Loading />
+  if (!row) {
+    return (
+      <NotFound
+        table="File"
+        id={fileId}
+      />
+    )
+  }
 
   const isImage = row.mimetype.includes('image')
   const isPdf = row.mimetype.includes('pdf')
@@ -75,9 +83,18 @@ export const FilePreview = memo(({ from }) => {
   return (
     <>
       <Uploader />
-      <div ref={previewRef} style={containerStyle}>
-        <Header row={row} previewRef={previewRef} />
-        <div style={fileStyle} ref={ref}>
+      <div
+        ref={previewRef}
+        style={containerStyle}
+      >
+        <Header
+          row={row}
+          previewRef={previewRef}
+        />
+        <div
+          style={fileStyle}
+          ref={ref}
+        >
           {isImage && row.url && width && (
             <img
               src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
@@ -86,9 +103,9 @@ export const FilePreview = memo(({ from }) => {
               alt={row.name}
               width={width}
               height={
-                row.width && row.height
-                  ? (width / row.width) * row.height
-                  : undefined
+                row.width && row.height ?
+                  (width / row.width) * row.height
+                : undefined
               }
               style={imageStyle}
             />

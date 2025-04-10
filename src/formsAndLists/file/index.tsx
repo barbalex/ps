@@ -11,6 +11,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { Header } from './Header.tsx'
 import { Uploader } from './Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -72,7 +73,16 @@ export const File = memo(({ from }) => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="File"
+        id={fileId}
+      />
+    )
+  }
 
   return (
     <div
