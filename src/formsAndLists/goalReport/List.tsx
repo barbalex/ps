@@ -5,6 +5,7 @@ import { useGoalReportNavData } from '../../modules/useGoalReportNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 export const GoalReportList = memo(({ from }) => {
   const { projectId, subprojectId, goalId, goalReportId } = useParams({ from })
@@ -14,7 +15,16 @@ export const GoalReportList = memo(({ from }) => {
     goalId,
     goalReportId,
   })
-  const { navs } = navData
+  const { navs, notFound } = navData
+
+  if (notFound) {
+    return (
+      <NotFound
+        table="Goal Report"
+        id={goalReportId}
+      />
+    )
+  }
 
   return (
     <div className="list-view">

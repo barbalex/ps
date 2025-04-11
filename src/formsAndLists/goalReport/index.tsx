@@ -5,6 +5,7 @@ import { useParams } from '@tanstack/react-router'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -20,9 +21,16 @@ export const GoalReport = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  console.log('GoalReport', { goalReportId, res, row, from })
+  if (!res) return <Loading />
 
-  if (!row) return <Loading />
+  if (!row) {
+    return (
+      <NotFound
+        table="Goal Report"
+        id={goalReportId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
