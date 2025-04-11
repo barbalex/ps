@@ -53,14 +53,14 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
           to={navData.ownUrl}
           onClick={onClick}
           ref={ref}
-          style={{ ...labelStyle }}
+          style={labelStyle}
         >
           {navData.labelShort ?? navData.label}
         </Link>
       : <div
           className="crumb-label-text"
           ref={ref}
-          style={{ ...labelStyle }}
+          style={labelStyle}
         >
           {navData.labelShort ?? navData.label}
         </div>,
