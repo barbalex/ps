@@ -10,11 +10,11 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-const from =
-  '/data/projects/$projectId_/place-levels/$placeLevelId/'
+const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
 export const PlaceLevel = memo(() => {
   const { placeLevelId } = useParams({ from })
@@ -61,7 +61,16 @@ export const PlaceLevel = memo(() => {
     [db, placeLevelId, row],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Place Level"
+        id={placeLevelId}
+      />
+    )
+  }
 
   // console.log('place level', row)
 
