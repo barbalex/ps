@@ -8,11 +8,11 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-const from =
-  '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
+const from = '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
 
 export const ListValue = memo(() => {
   const { listValueId } = useParams({ from })
@@ -40,7 +40,16 @@ export const ListValue = memo(() => {
     [db, listValueId, row],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="List Value"
+        id={listValueId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
