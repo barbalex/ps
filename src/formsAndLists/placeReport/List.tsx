@@ -5,6 +5,7 @@ import { usePlaceReportNavData } from '../../modules/usePlaceReportNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 export const PlaceReportList = memo(({ from }) => {
   const { projectId, subprojectId, placeId, placeId2, placeReportId } =
@@ -16,7 +17,16 @@ export const PlaceReportList = memo(({ from }) => {
     placeId2,
     placeReportId,
   })
-  const { navs } = navData
+  const { navs, notFound } = navData
+
+  if (notFound) {
+    return (
+      <NotFound
+        table="Report"
+        id={placeReportId}
+      />
+    )
+  }
 
   return (
     <div className="list-view">
