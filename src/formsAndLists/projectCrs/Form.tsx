@@ -8,8 +8,8 @@ import { TextArea } from '../../components/shared/TextArea.tsx'
 import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
 import { ComboboxFilteringOptions } from './Combobox/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -20,12 +20,12 @@ export const ProjectCrsForm = memo(({ autoFocusRef }) => {
   const { projectCrsId, projectId } = useParams({ from })
 
   const db = usePGlite()
-  const resProjectCrs = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM project_crs WHERE project_crs_id = $1`,
     [projectCrsId],
     'project_crs_id',
   )
-  const row = resProjectCrs?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
@@ -57,7 +57,16 @@ export const ProjectCrsForm = memo(({ autoFocusRef }) => {
     [db, projectId, row?.code],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Project CRS"
+        id={projectCrsId}
+      />
+    )
+  }
 
   return (
     <>
