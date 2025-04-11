@@ -7,6 +7,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { SubprojectReportForm as Form } from './Form.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -37,7 +38,16 @@ export const SubprojectReport = memo(({ from }) => {
     [db, row, subprojectReportId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Report"
+        id={subprojectReportId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
