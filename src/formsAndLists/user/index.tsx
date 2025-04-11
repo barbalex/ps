@@ -7,6 +7,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -36,7 +37,16 @@ export const User = memo(() => {
     [db, row, userId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="User"
+        id={userId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
