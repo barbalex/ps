@@ -7,6 +7,7 @@ import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilte
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -41,7 +42,16 @@ export const SubprojectTaxon = memo(({ from }) => {
     [db, row, subprojectTaxonId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Taxon"
+        id={subprojectTaxonId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
