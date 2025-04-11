@@ -7,6 +7,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { GoalForm as Form } from './Form.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -37,7 +38,16 @@ export const Goal = memo(({ from }) => {
     [db, goalId, row],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Goal"
+        id={goalId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
