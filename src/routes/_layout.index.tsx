@@ -31,7 +31,7 @@ const Index = memo(() => (
       <div className="card-container">
         <div className="card">
           <h3 className="card-title">Arten und Biotope</h3>
-          Seltene und gefährdete Arten oder Biotope überwachen und fördern.
+          Seltene und gefährdete Arten und Biotope überwachen und fördern.
         </div>
         <div className="card">
           <h3 className="card-title">Ziele</h3>
@@ -56,7 +56,7 @@ const Index = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Kontrollen</h3>
-          erfassen den Zustand von (Teil-)Räumen und die Wirkung von Massnahmen.
+          erfassen den Zustand von Räumen und die Wirkung von Massnahmen.
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
