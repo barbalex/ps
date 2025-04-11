@@ -55,7 +55,7 @@ BEGIN
     WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id::text)
     WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
     ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')'
-  END;
+  END
   WHERE account_id = NEW.account_id;
   RETURN NEW;
 END;
