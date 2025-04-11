@@ -7,6 +7,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { WmsLayerForm as Form } from './Form/index.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -50,7 +51,16 @@ export const WmsLayer = memo(() => {
 
   // console.log('WmsLayer, row:', wmsLayer)
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="WMS Layer"
+        id={wmsLayerId}
+      />
+    )
+  }
 
   // console.log('hello WmsLayer, row:', row)
 
