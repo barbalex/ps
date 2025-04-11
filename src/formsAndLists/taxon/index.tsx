@@ -7,11 +7,11 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-const from =
-  '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
+const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
 export const Taxon = memo(() => {
   const { taxonId } = useParams({ from })
@@ -40,7 +40,16 @@ export const Taxon = memo(() => {
     [db, row, taxonId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Taxon"
+        id={taxonId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
