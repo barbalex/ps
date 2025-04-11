@@ -9,6 +9,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { OccurenceData } from './OccurrenceData/index.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -94,7 +95,16 @@ export const Occurrence = memo(({ from }) => {
     [db, navigate, occurrenceId, projectId, row, subprojectId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Occurrence"
+        id={occurrenceId}
+      />
+    )
+  }
 
   // TODO:
   // - add place assigner
