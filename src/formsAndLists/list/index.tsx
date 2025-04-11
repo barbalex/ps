@@ -7,6 +7,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { ListForm as Form } from './Form.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -36,7 +37,16 @@ export const List = memo(({ from }) => {
     [db, listId, row],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="List"
+        id={listId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
