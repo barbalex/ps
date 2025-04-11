@@ -5,11 +5,21 @@ import { useTaxonomyNavData } from '../../modules/useTaxonomyNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 export const TaxonomyList = memo(({ from }) => {
   const { projectId, taxonomyId } = useParams({ from })
   const { loading, navData } = useTaxonomyNavData({ projectId, taxonomyId })
-  const { navs, label } = navData
+  const { navs, label, notFound } = navData
+
+  if (notFound) {
+    return (
+      <NotFound
+        table="Taxonomy"
+        id={taxonomyId}
+      />
+    )
+  }
 
   return (
     <div className="list-view">
