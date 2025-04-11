@@ -16,6 +16,7 @@ import { MarkerType } from './MarkerType.tsx'
 import { LineCap } from './LineCap.tsx'
 import { LineJoin } from './LineJoin.tsx'
 import { FillRule } from './FillRule.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -59,7 +60,16 @@ export const VectorLayerDisplay = ({
     [db, row, vectorLayerDisplayId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Vector Layer Display"
+        id={vectorLayerDisplayId}
+      />
+    )
+  }
 
   // TODO:
   // - add display_property_value
