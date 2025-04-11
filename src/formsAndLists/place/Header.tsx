@@ -5,7 +5,7 @@ import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -23,7 +23,7 @@ interface Props {
   from: string
 }
 
-export const Header = memo(({ autoFocusRef, from }: Props) => {
+export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Props) => {
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
@@ -35,23 +35,6 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
   const db = usePGlite()
-
-  const results = useLiveIncrementalQuery(
-    `
-    SELECT 
-      place_level_id, 
-      name_singular, 
-      name_plural 
-    FROM place_levels 
-    WHERE 
-      project_id = $1 
-      AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
-    'place_level_id',
-  )
-  const placeLevels = results?.rows ?? []
-  const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
-  const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
   const addRow = useCallback(async () => {
     const resPlace = await createPlace({
@@ -69,7 +52,7 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
       type: 'own',
       ownTable: 'places',
       ownTableLevel: placeId2 ? 2 : 1,
-      label: placeNamePlural,
+      label: namePlural,
       db,
     })
     const newVectorLayer = resVL.rows?.[0]
@@ -107,7 +90,7 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
     subprojectId,
     placeId2,
     placeId,
-    placeNamePlural,
+    namePlural,
     navigate,
     isForm,
     autoFocusRef,
@@ -205,18 +188,18 @@ export const Header = memo(({ autoFocusRef, from }: Props) => {
 
   return (
     <FormHeader
-      title={placeNameSingular}
+      title={nameSingular}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName={placeNameSingular}
+      tableName={nameSingular}
       siblings={
         <Button
           size="medium"
           icon={<TbZoomScan />}
           onClick={onClickZoomTo}
-          title={`Zoom to ${placeNameSingular} in map`}
+          title={`Zoom to ${nameSingular} in map`}
         />
       }
     />

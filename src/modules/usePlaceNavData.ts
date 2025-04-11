@@ -16,7 +16,6 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { not } from '../css.ts'
 
 export const usePlaceNavData = ({
   projectId,
@@ -146,6 +145,7 @@ export const usePlaceNavData = ({
       ownUrl,
       label,
       notFound,
+      nameSingular,
       navs: [
         { id: 'place', label: nameSingular },
         ...(!placeId2 ?

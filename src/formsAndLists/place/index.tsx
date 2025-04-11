@@ -1,29 +1,50 @@
 import { useRef, useCallback, memo } from 'react'
 import { useParams, useSearch } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { PlaceForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
 const fieldsStyle = { padding: 10 }
 
 export const Place = memo(({ from }) => {
-  const { placeId, placeId2 } = useParams({ from })
+  const { projectId, placeId, placeId2 } = useParams({ from })
   const { onlyForm } = useSearch({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM places WHERE place_id = $1`,
+  const res = useLiveQuery(
+    `
+    SELECT 
+      *
+    FROM
+      places
+    WHERE place_id = $1`,
     [placeId2 ?? placeId],
-    'place_id',
   )
   const row = res?.rows?.[0]
+
+  const nameRes = useLiveQuery(
+    `
+    SELECT 
+      place_level_id, 
+      name_singular, 
+      name_plural 
+    FROM place_levels 
+    WHERE 
+      project_id = $1 
+      AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevels = nameRes?.rows ?? []
+  const nameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
+  const namePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
@@ -39,7 +60,16 @@ export const Place = memo(({ from }) => {
     [db, placeId, row],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table={nameSingular}
+        id={placeId2 ?? placeId}
+      />
+    )
+  }
 
   if (onlyForm) {
     return (
@@ -56,6 +86,8 @@ export const Place = memo(({ from }) => {
       <Header
         autoFocusRef={autoFocusRef}
         from={from}
+        nameSingular={nameSingular}
+        namePlural={namePlural}
       />
       <div style={fieldsStyle}></div>
       <Form
