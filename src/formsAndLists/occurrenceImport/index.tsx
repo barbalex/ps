@@ -15,6 +15,7 @@ import { Three } from './3.tsx'
 import { Four } from './4/index.tsx'
 import { Preview } from './Preview.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -153,6 +154,17 @@ export const OccurrenceImport = memo(() => {
   // - current step: circle is blue, title is bold
   // - the next stepper can not be accessed before the previous is completed
   // TODO: animate showing/hiding of preview
+
+  if (!oIResult) return <Loading />
+
+  if (!occurrenceImport) {
+    return (
+      <NotFound
+        table="Occurrence Import"
+        id={occurrenceImportId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
