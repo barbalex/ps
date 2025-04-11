@@ -7,6 +7,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { VectorLayerForm } from './Form/index.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -44,7 +45,16 @@ export const VectorLayer = memo(({ from }) => {
     [db, row, vectorLayerId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Vector Layer"
+        id={vectorLayerId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">

@@ -5,6 +5,7 @@ import { useVectorLayerNavData } from '../../modules/useVectorLayerNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 export const VectorLayerList = memo(({ from }) => {
   const { projectId, vectorLayerId } = useParams({ from })
@@ -12,7 +13,16 @@ export const VectorLayerList = memo(({ from }) => {
     projectId,
     vectorLayerId,
   })
-  const { navs, label } = navData
+  const { navs, label, notFound } = navData
+
+  if (notFound) {
+    return (
+      <NotFound
+        table="Vector Layer"
+        id={vectorLayerId}
+      />
+    )
+  }
 
   return (
     <div className="list-view">
