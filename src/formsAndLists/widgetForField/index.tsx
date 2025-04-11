@@ -7,6 +7,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { WidgetForFieldForm as Form } from './Form.tsx'
+import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
@@ -37,13 +38,26 @@ export const WidgetForField = memo(() => {
     [db, row, widgetForFieldId],
   )
 
-  if (!row) return <Loading />
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Widget For Field"
+        id={widgetForFieldId}
+      />
+    )
+  }
 
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )
