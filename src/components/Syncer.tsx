@@ -1,7 +1,8 @@
 import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useSetAtom } from 'jotai'
-import { ShapeStream, Shape } from '@electric-sql/client'
+// import { ShapeStream, Shape } from '@electric-sql/client'
+import { useShape } from '@electric-sql/react'
 
 import { syncingAtom } from '../store.ts'
 
@@ -10,6 +11,15 @@ export const Syncer = memo(() => {
   const setSyncing = useSetAtom(syncingAtom)
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
+
+  const { isLoading, data } = useShape<{ title: string }>({
+    url: `http://localhost:3000/v1/shape`,
+    params: {
+      table: 'users',
+    },
+  })
+
+  console.log('Syncer', { isLoading, data })
 
   useEffect(() => {
     // console.log('hello Syncer, syncing data for user:', authUser?.email)
@@ -245,32 +255,33 @@ export const Syncer = memo(() => {
     //   // console.log('hello Syncer, data synced')
     // }
     // syncItems()
-    const sync = async () => {
-      // TODO:
-      const stream = new ShapeStream({
-        url: `http://localhost:3000/v1/shape`,
-        params: {
-          table: 'users',
-        },
-        // headers: {
-        //   'Authorization': async () => `Bearer ${await getToken()}`
-        // },
-        // onError: async (error) => {
-        //   if (error instanceof FetchError && error.status === 401) {
-        //     // Force token refresh
-        //     await refreshToken()
-        //     // Return empty object to trigger a retry with the new token
-        //     // that will be fetched by our function-based header
-        //     return {}
-        //   }
-        //   // Rethrow errors we can't handle
-        //   throw error
-        // }
-      })
-      const shape = new Shape(stream)
-      shape.subscribe((data) => console.log(data))
-    }
-    sync()
+    //
+    // const sync = async () => {
+    //   // TODO:
+    //   const stream = new ShapeStream({
+    //     url: `http://localhost:3000/v1/shape`,
+    //     params: {
+    //       table: 'users',
+    //     },
+    //     // headers: {
+    //     //   'Authorization': async () => `Bearer ${await getToken()}`
+    //     // },
+    //     // onError: async (error) => {
+    //     //   if (error instanceof FetchError && error.status === 401) {
+    //     //     // Force token refresh
+    //     //     await refreshToken()
+    //     //     // Return empty object to trigger a retry with the new token
+    //     //     // that will be fetched by our function-based header
+    //     //     return {}
+    //     //   }
+    //     //   // Rethrow errors we can't handle
+    //     //   throw error
+    //     // }
+    //   })
+    //   const shape = new Shape(stream)
+    //   shape.subscribe((data) => console.log(data))
+    // }
+    // sync()
   }, [authUser?.email])
 
   return null
