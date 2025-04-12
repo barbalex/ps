@@ -12,7 +12,7 @@ export const Syncer = memo(() => {
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
 
-  const { isLoading, data } = useShape<{ title: string }>({
+  const { isLoading, data } = useShape({
     url: `http://localhost:3000/v1/shape`,
     params: {
       table: 'users',
