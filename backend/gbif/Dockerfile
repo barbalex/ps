@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 RUN apk add dumb-init
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Create app directory
 WORKDIR /usr/src/gbif
