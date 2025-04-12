@@ -1,6 +1,7 @@
 import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useSetAtom } from 'jotai'
+import { ShapeStream, Shape } from '@electric-sql/client'
 
 import { syncingAtom } from '../store.ts'
 
@@ -244,7 +245,33 @@ export const Syncer = memo(() => {
     //   // console.log('hello Syncer, data synced')
     // }
     // syncItems()
-  }, [authUser?.email, db])
+    const sync = async () => {
+      // TODO:
+      const stream = new ShapeStream({
+        url: `http://localhost:3000/v1/shape`,
+        params: {
+          table: 'users',
+        },
+        // headers: {
+        //   'Authorization': async () => `Bearer ${await getToken()}`
+        // },
+        // onError: async (error) => {
+        //   if (error instanceof FetchError && error.status === 401) {
+        //     // Force token refresh
+        //     await refreshToken()
+        //     // Return empty object to trigger a retry with the new token
+        //     // that will be fetched by our function-based header
+        //     return {}
+        //   }
+        //   // Rethrow errors we can't handle
+        //   throw error
+        // }
+      })
+      const shape = new Shape(stream)
+      shape.subscribe((data) => console.log(data))
+    }
+    sync()
+  }, [authUser?.email])
 
   return null
 })
