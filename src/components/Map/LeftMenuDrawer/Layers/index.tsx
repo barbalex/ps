@@ -8,7 +8,7 @@ import './index.css'
 
 export const Layers = memo(() => (
   <>
-    {/* <ActiveLayers /> */}
+    <ActiveLayers />
     {/* <WmsLayers /> */}
     {/* <VectorLayers /> */}
     {/* <OwnLayers /> */}
