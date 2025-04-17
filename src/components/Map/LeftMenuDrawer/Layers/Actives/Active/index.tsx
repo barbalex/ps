@@ -63,6 +63,8 @@ export const ActiveLayer = memo(
     useEffect(() => {
       const element = elementRef.current
       const dragHandle = dragHandleRef.current
+      if (!element || !dragHandle) return
+
       invariant(element)
       invariant(dragHandle)
 
@@ -153,11 +155,11 @@ export const ActiveLayer = memo(
         // needed for the drop indicator to appear
         position: 'relative',
         borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-        ...(isLast
-          ? {
-              borderBottom: `1px solid rgba(55, 118, 28, 0.5)`,
-            }
-          : {}),
+        ...(isLast ?
+          {
+            borderBottom: `1px solid rgba(55, 118, 28, 0.5)`,
+          }
+        : {}),
         ...(isOpen ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` } : {}),
       }),
       [isLast, isOpen],
