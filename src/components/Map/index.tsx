@@ -20,7 +20,7 @@ export const MapContainer = memo(() => {
       style={containerStyle}
       ref={containerRef}
     >
-      {/* <LeftMenuDrawer containerRef={containerRef} /> */}
+      <LeftMenuDrawer containerRef={containerRef} />
       <Map />
       <RightMenuDrawer containerRef={containerRef} />
     </div>

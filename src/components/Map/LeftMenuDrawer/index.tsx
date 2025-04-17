@@ -59,7 +59,10 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
   const toggleOpen = useCallback(
     (e) => {
       e.stopPropagation()
-      const newValue = isOpen ? 5 : isNarrow ? 500 : 380
+      const newValue =
+        isOpen ? 5
+        : isNarrow ? 500
+        : 380
       setSize(newValue)
     },
     [isNarrow, isOpen],
@@ -86,8 +89,9 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 
-      const newSidebarSize = isNarrow
-        ? window.innerHeight - clientY
+      const newSidebarSize =
+        isNarrow ?
+          window.innerHeight - clientY
         : clientX - sidebarRef.current.getBoundingClientRect().left
 
       animationFrame.current = requestAnimationFrame(() =>
@@ -165,59 +169,60 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
             <Button
               onClick={toggleOpen}
               icon={
-                isOpen ? (
+                isOpen ?
                   <BiSolidLeftArrow
                     style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
                   />
-                ) : (
-                  <BiSolidRightArrow
+                : <BiSolidRightArrow
                     style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
                   />
-                )
               }
               title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
               style={{
                 position: 'absolute',
-                top: isNarrow ? (isOpen ? 6 : -31) : 5,
-                right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
+                top:
+                  isNarrow ?
+                    isOpen ? 6
+                    : -31
+                  : 5,
+                right:
+                  isNarrow ? 'unset'
+                  : isOpen ? 0.5
+                  : -31.5,
                 left: isNarrow ? 5 : 'unset',
                 marginRight: isOpen ? 5 : 0,
                 zIndex: 100000000,
-                borderTopLeftRadius: isNarrow
-                  ? isOpen
-                    ? 0
+                borderTopLeftRadius:
+                  isNarrow ?
+                    isOpen ? 0
                     : 4
-                  : isOpen
-                  ? 4
+                  : isOpen ? 4
                   : 0,
-                borderBottomLeftRadius: isNarrow
-                  ? isOpen
-                    ? 4
+                borderBottomLeftRadius:
+                  isNarrow ?
+                    isOpen ? 4
                     : 0
-                  : isOpen
-                  ? 4
+                  : isOpen ? 4
                   : 0,
-                borderTopRightRadius: isNarrow
-                  ? isOpen
-                    ? 0
+                borderTopRightRadius:
+                  isNarrow ?
+                    isOpen ? 0
                     : 4
-                  : isOpen
-                  ? 0
+                  : isOpen ? 0
                   : 4,
-                borderBottomRightRadius: isNarrow
-                  ? isOpen
-                    ? 4
+                borderBottomRightRadius:
+                  isNarrow ?
+                    isOpen ? 4
                     : 0
-                  : isOpen
-                  ? 0
+                  : isOpen ? 0
                   : 4,
               }}
             />
           )}
-          <InlineDrawer
+          <div className="map-layers-drawer">drawer</div>
+          {/* <InlineDrawer
             open={!mapHideUi}
             ref={sidebarRef}
-            className="map-layers-drawer"
             style={{
               ...(isNarrow ? { height: size } : { width: size }),
             }}
@@ -229,7 +234,7 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
               startResizing={startResizing}
               isResizing={isResizing}
             />
-          </InlineDrawer>
+          </InlineDrawer> */}
         </div>
       </div>
     </IsNarrowContext.Provider>
