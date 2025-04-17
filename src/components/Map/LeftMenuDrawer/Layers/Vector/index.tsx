@@ -3,7 +3,11 @@ import { useParams } from '@tanstack/react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
@@ -23,29 +27,27 @@ import {
 // needs to be controlled to prevent opening when layer is deactivated
 const openItemsAtom = atom([])
 
+// TODO: this component re-renders indefinitely
 export const VectorLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { projectId } = useParams({ strict: false })
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `
-    SELECT vector_layer_id 
+  const sql = `
+    SELECT vector_layer_id
     FROM vector_layers
-    WHERE 
-      type = ANY($1) 
-      ${projectId ? ` AND project_id = $2 ` : ''} 
+    WHERE
+      type = ANY('{wfs,upload}')
+      ${projectId ? `AND project_id = '${projectId}'` : ''}
       AND NOT EXISTS (
         SELECT 1
         FROM layer_presentations
         WHERE layer_presentations.vector_layer_id = vector_layers.vector_layer_id
         AND layer_presentations.active
       )
-    order by label`,
-    [['wfs', 'upload'], ...(projectId ? [projectId] : [])],
-    'vector_layer_id',
-  )
+    ORDER BY label`
+  const res = useLiveQuery(sql)
   const vectors = res?.rows ?? []
 
   const addRow = useCallback(async () => {
