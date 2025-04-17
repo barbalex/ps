@@ -3,11 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
-import {
-  usePGlite,
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
@@ -28,16 +24,20 @@ const openItemsAtom = atom([])
 
 export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { projectId } = useParams({ strict: false })
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
 
   const db = usePGlite()
   // 1. list all layers (own, wms, vector)
 
   // TODO: optimize query
   const resWmsLayers = useLiveQuery(
-    `SELECT * FROM wms_layers${
-      projectId ? ` WHERE project_id = '${projectId}'` : ''
-    } ORDER BY label`,
+    `
+    SELECT * FROM wms_layers
+    WHERE project_id = $1
+    ORDER BY label`,
+    [projectId],
   )
   const wmsLayers = resWmsLayers?.rows ?? []
 
@@ -46,7 +46,8 @@ export const WmsLayers = memo(() => {
     `
     SELECT lp.* FROM layer_presentations lp
     JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
-    ${projectId ? ` WHERE project_id = '${projectId}'` : ''}`,
+    WHERE wms_layers.project_id = $1`,
+    [projectId],
   )
   const layerPresentations = resLP?.rows ?? []
   // 2. when one is set active, add layer_presentations for it
@@ -91,7 +92,7 @@ export const WmsLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!projectId) {
+  if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
         <h2 style={titleStyle}>WMS</h2>

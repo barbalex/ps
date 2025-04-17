@@ -48,7 +48,7 @@ export const ChooseCrs = memo(() => {
     [db, projectId],
   )
 
-  if (!projectId) return null
+  if (projectId === '99999999-9999-9999-9999-999999999999') return null
   // single projectCrs: that will be chosen by default
   // no projectCrs: wgs84 is chosen
   // so only show menu when there are at least 2 projectCrs

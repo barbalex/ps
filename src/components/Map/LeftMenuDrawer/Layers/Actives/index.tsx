@@ -6,7 +6,11 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
@@ -39,11 +43,13 @@ export const ActiveLayers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
 
-  const { projectId } = useParams({ strict: false })
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
 
   const db = usePGlite()
 
-  const resWmsLayers = useLiveIncrementalQuery(
+  const resWmsLayers = useLiveQuery(
     `
     SELECT 
       wms_layers.*, 
@@ -54,16 +60,15 @@ export const ActiveLayers = memo(() => {
       INNER JOIN layer_presentations 
         ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
         AND layer_presentations.active = TRUE
-    ${projectId ? 'WHERE project_id = $1' : ''}`,
-    projectId ? [projectId] : [],
-    'wms_layer_id',
+    WHERE project_id = $1`,
+    [projectId],
   )
   const activeWmsLayers = useMemo(
     () => resWmsLayers?.rows ?? [],
     [resWmsLayers],
   )
 
-  const resVectorLayers = useLiveIncrementalQuery(
+  const resVectorLayers = useLiveQuery(
     `
     SELECT 
       vector_layers.*,
@@ -74,9 +79,8 @@ export const ActiveLayers = memo(() => {
       INNER JOIN layer_presentations 
         ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
         AND layer_presentations.active = TRUE
-      ${projectId ? 'WHERE project_id = $1' : ''}`,
-    projectId ? [projectId] : [],
-    'vector_layer_id',
+      WHERE project_id = $1`,
+    [projectId],
   )
   const activeVectorLayers = useMemo(
     () => resVectorLayers?.rows ?? [],
@@ -249,7 +253,7 @@ export const ActiveLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!projectId) {
+  if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
         <h2 style={titleStyle}>Active</h2>

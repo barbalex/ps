@@ -11,6 +11,6 @@ export const Layers = memo(() => (
     <ActiveLayers />
     <WmsLayers />
     <VectorLayers />
-    {/* <OwnLayers /> */}
+    <OwnLayers />
   </>
 ))

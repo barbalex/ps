@@ -19,14 +19,16 @@ export const ClickListener = memo(() => {
   const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
   const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
 
-  const { projectId } = useParams({ strict: false })
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
   const map = useMap()
   const db = usePGlite()
 
   const onClick = useCallback(
     async (event) => {
       // vector layers are defined on projects
-      if (!projectId) return
+      if (projectId === '99999999-9999-9999-9999-999999999999') return
 
       const { lat, lng } = event.latlng
       const zoom = map.getZoom()

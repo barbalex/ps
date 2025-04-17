@@ -26,7 +26,9 @@ const openItemsAtom = atom([])
 // TODO: this component re-renders indefinitely
 export const VectorLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { projectId } = useParams({ strict: false })
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
 
   const db = usePGlite()
 
@@ -35,7 +37,7 @@ export const VectorLayers = memo(() => {
     FROM vector_layers
     WHERE
       type = ANY('{wfs,upload}')
-      ${projectId ? `AND project_id = '${projectId}'` : ''}
+      AND project_id = $1
       AND NOT EXISTS (
         SELECT 1
         FROM layer_presentations
@@ -43,7 +45,7 @@ export const VectorLayers = memo(() => {
         AND layer_presentations.active
       )
     ORDER BY label`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery(sql, [projectId])
   const vectors = res?.rows ?? []
 
   const addRow = useCallback(async () => {
@@ -84,7 +86,7 @@ export const VectorLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!projectId) {
+  if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
         <h2 style={titleStyle}>Vectors</h2>

@@ -14,7 +14,9 @@ const openItemsAtom = atom([])
 
 export const OwnLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const { projectId } = useParams({ strict: false })
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
 
   const db = usePGlite()
   // TODO: when including layer_presentations, no results are returned
@@ -25,7 +27,7 @@ export const OwnLayers = memo(() => {
     FROM vector_layers 
     WHERE
       type NOT IN ('wfs', 'upload')
-      ${projectId ? `AND project_id = '${projectId}'` : ''}
+      AND project_id = $1
       AND EXISTS (
         SELECT 1
         FROM layer_presentations
@@ -35,6 +37,7 @@ export const OwnLayers = memo(() => {
       )
     ORDER BY label
   `,
+    [projectId],
   )
   const ownVectorLayers = res?.rows ?? []
 
@@ -61,7 +64,7 @@ export const OwnLayers = memo(() => {
     [db, setOpenItems],
   )
 
-  if (!projectId) {
+  if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
         <h2 style={titleStyle}>Own</h2>
