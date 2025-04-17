@@ -2,7 +2,7 @@ import { memo, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Accordion } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
@@ -19,7 +19,7 @@ export const OwnLayers = memo(() => {
   const db = usePGlite()
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `
     SELECT * 
     FROM vector_layers 
@@ -35,8 +35,6 @@ export const OwnLayers = memo(() => {
       )
     ORDER BY label
   `,
-    undefined,
-    'vector_layer_id',
   )
   const ownVectorLayers = res?.rows ?? []
 
