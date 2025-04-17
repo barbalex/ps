@@ -39,7 +39,7 @@ export const WmsLayerEditing = memo(({ layer: row }) => {
       >
         <WmsLayerForm
           onChange={onChange}
-          wmsLayer={row}
+          row={row}
         />
       </div>
     </ErrorBoundary>
