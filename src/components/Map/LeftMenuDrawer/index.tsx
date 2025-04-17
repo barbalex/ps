@@ -219,9 +219,9 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
               }}
             />
           )}
-          <div className="map-layers-drawer">drawer</div>
-          {/* <InlineDrawer
+          <InlineDrawer
             open={!mapHideUi}
+            className="map-layers-drawer"
             ref={sidebarRef}
             style={{
               ...(isNarrow ? { height: size } : { width: size }),
@@ -229,12 +229,12 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
             position={isNarrow ? 'bottom' : 'start'}
             onMouseDown={(e) => isResizing && e.preventDefault()}
           >
-            <Content />
-            <Resizer
+            {/* <Content /> */}
+            {/* <Resizer
               startResizing={startResizing}
               isResizing={isResizing}
-            />
-          </InlineDrawer> */}
+            /> */}
+          </InlineDrawer>
         </div>
       </div>
     </IsNarrowContext.Provider>
