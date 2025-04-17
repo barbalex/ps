@@ -3,7 +3,11 @@ import { useParams } from '@tanstack/react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
@@ -30,23 +34,19 @@ export const WmsLayers = memo(() => {
   // 1. list all layers (own, wms, vector)
 
   // TODO: optimize query
-  const resWmsLayers = useLiveIncrementalQuery(
+  const resWmsLayers = useLiveQuery(
     `SELECT * FROM wms_layers${
-      projectId ? ` WHERE project_id = $1` : ''
+      projectId ? ` WHERE project_id = '${projectId}'` : ''
     } ORDER BY label`,
-    [projectId],
-    'wms_layer_id',
   )
   const wmsLayers = resWmsLayers?.rows ?? []
 
   // fetch all layer_presentations for the vector layers
-  const resLP = useLiveIncrementalQuery(
+  const resLP = useLiveQuery(
     `
     SELECT lp.* FROM layer_presentations lp
     JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
-    ${projectId ? ` WHERE project_id = $1` : ''}`,
-    [projectId],
-    'layer_presentation_id',
+    ${projectId ? ` WHERE project_id = '${projectId}'` : ''}`,
   )
   const layerPresentations = resLP?.rows ?? []
   // 2. when one is set active, add layer_presentations for it
