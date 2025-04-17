@@ -1,7 +1,11 @@
 import { memo, useMemo } from 'react'
 import { Pane } from 'react-leaflet'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { useParams } from '@tanstack/react-router'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
@@ -13,9 +17,14 @@ const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
 // TODO: text
 // layerPresentationId should be uuid for queries. Need to convert
+// TODO: only load layers of active project
+// 99999999-9999-9999-9999-999999999999
 export const Layer = memo(({ layerPresentationId, index }) => {
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
-  const resWms = useLiveIncrementalQuery(
+  const resWms = useLiveQuery(
     `
     SELECT 
       wms_layers.*,
@@ -25,20 +34,23 @@ export const Layer = memo(({ layerPresentationId, index }) => {
     FROM wms_layers
       INNER JOIN layer_presentations lp ON wms_layers.wms_layer_id = lp.wms_layer_id
       INNER JOIN wms_services ON wms_layers.wms_service_id = wms_services.wms_service_id
-    WHERE lp.layer_presentation_id = $1`,
-    [layerPresentationId],
-    'wms_layer_id',
+    WHERE 
+      lp.layer_presentation_id = $1
+      AND wms_layers.project_id = $2`,
+    [layerPresentationId, projectId],
   )
   const wmsLayer = useMemo(() => resWms?.rows?.[0], [resWms])
 
-  const resVector = useLiveIncrementalQuery(
+  const resVector = useLiveQuery(
     `
-    SELECT vector_layers.* 
-    FROM vector_layers 
-      INNER JOIN layer_presentations lp ON vector_layers.vector_layer_id = lp.vector_layer_id
-    WHERE lp.layer_presentation_id = $1`,
-    [layerPresentationId],
-    'vector_layer_id',
+    SELECT vl.* 
+    FROM 
+      vector_layers vl 
+      INNER JOIN layer_presentations lp ON vl.vector_layer_id = lp.vector_layer_id
+    WHERE 
+      lp.layer_presentation_id = $1
+      AND vl.project_id = $2`,
+    [layerPresentationId, projectId],
   )
   const vectorLayer = useMemo(() => resVector?.rows?.[0], [resVector])
   const isWfsLayer = vectorLayer?.type === 'wfs'
@@ -71,8 +83,9 @@ export const Layer = memo(({ layerPresentationId, index }) => {
 
   // // todo: add key, layerPresentationId
   if (wmsLayer) {
-    wmsLayer.opacity = layerPresentation.opacity_percent
-      ? layerPresentation.opacity_percent / 100
+    wmsLayer.opacity =
+      layerPresentation.opacity_percent ?
+        layerPresentation.opacity_percent / 100
       : 1
     const partsToRedrawOn = {
       max_zoom: layerPresentation.max_zoom,
