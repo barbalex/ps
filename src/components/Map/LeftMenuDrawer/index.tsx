@@ -229,7 +229,7 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
             position={isNarrow ? 'bottom' : 'start'}
             onMouseDown={(e) => isResizing && e.preventDefault()}
           >
-            {/* <Content /> */}
+            <Content />
             <Resizer
               startResizing={startResizing}
               isResizing={isResizing}

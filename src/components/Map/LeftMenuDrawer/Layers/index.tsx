@@ -8,9 +8,9 @@ import './index.css'
 
 export const Layers = memo(() => (
   <>
-    <ActiveLayers />
-    <WmsLayers />
-    <VectorLayers />
-    <OwnLayers />
+    {/* <ActiveLayers /> */}
+    {/* <WmsLayers /> */}
+    {/* <VectorLayers /> */}
+    {/* <OwnLayers /> */}
   </>
 ))
