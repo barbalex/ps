@@ -110,7 +110,6 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
       db,
     })
     navigate({
-      to: `../${vectorLayer.vector_layer_id}`,
       to:
         isForm ?
           `../../${vectorLayer.vector_layer_id}/vector-layer`
