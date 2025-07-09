@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { CheckForm } from '../../../../../../../../../../../formsAndLists/check/Form.tsx'
-import { Filter } from '../../../../../../../../../../../../../components/shared/Filter/index.tsx'
+import { Filter } from '../../../../../../../../../../../components/shared/Filter/index.tsx'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/filter'
