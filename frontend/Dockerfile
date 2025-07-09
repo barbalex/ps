@@ -15,5 +15,4 @@ CMD ["nginx", "-g", "daemon off;"]
 
 # docker build -t staticps .
 # docker run -p808:80 -d staticps
-
 # 127.0.0.1:808
