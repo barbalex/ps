@@ -5,7 +5,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # copy the static files
-COPY . .
+COPY ./dist .
 
 # expose nginx port
 EXPOSE 80

@@ -14,4 +14,8 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@electric-sql/pglite', '@electric-sql/pglite-tools'],
   },
+  build: {
+    outDir: 'frontend/dist',
+    emptyOutDir: true,
+  },
 })
