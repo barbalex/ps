@@ -15,6 +15,8 @@ EXPOSE 80
 # start nginx server
 CMD ["nginx", "-g", "daemon off;"]
 
+# npm run build
+# cd frontend
 # docker build -t staticps .
 # docker run --name staticps -p808:80 -d staticps
-# 127.0.0.1:808
+# 127.0.0.1:808, ps.barbalex.ch
