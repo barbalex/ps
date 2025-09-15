@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useLocation } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 

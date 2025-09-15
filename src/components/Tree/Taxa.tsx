@@ -1,7 +1,7 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'

@@ -1,5 +1,5 @@
 // seems not in use
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 
 export const removeOpenNodes = async ({
   nodes = [],

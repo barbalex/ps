@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'

@@ -2,7 +2,7 @@ import { useCallback, memo, useState, useEffect, useRef, useMemo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 
 import { FieldList } from './FieldList.tsx'
 import { Target } from './Target/index.tsx'

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'

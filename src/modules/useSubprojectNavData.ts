@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 
 import {
   places1FilterAtom,
