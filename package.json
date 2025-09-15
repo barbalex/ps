@@ -49,6 +49,7 @@
     "arktype": "2.1.22",
     "array-move": "4.0.0",
     "dayjs": "1.11.18",
+    "es-toolkit": "1.39.10",
     "framer-motion": "12.23.12",
     "is-uuid": "1.0.2",
     "jotai": "2.14.0",
