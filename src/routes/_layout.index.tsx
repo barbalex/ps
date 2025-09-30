@@ -31,11 +31,11 @@ const Index = memo(() => (
       <div className="card-container">
         <div className="card">
           <h3 className="card-title">Arten und Biotope</h3>
-          Seltene und gefährdete Arten und Biotope überwachen und fördern.
+          Seltene und bedrohte Arten und Biotope überwachen und fördern.
         </div>
         <div className="card">
           <h3 className="card-title">Ziele</h3>
-          beschreiben die gewünschte Entwicklung.
+          ...beschreiben die gewünschte Entwicklung.
         </div>
         <div className="card">
           <h3 className="card-title">Räume</h3>
@@ -47,31 +47,30 @@ const Index = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Verantwortliche</h3>
-          beschreiben Räume, organisieren Kontrollen und Massnahmen, analysieren
-          und berichten.
+          ...beschreiben Räume, organisieren Kontrollen und Massnahmen,
+          analysieren und berichten.
         </div>
         <div className="card">
           <h3 className="card-title">Massnahmen</h3>
-          verbessern den Zustand einer Art oder eines Biotops.
+          ...verbessern den Zustand einer Art oder eines Biotops.
         </div>
         <div className="card">
           <h3 className="card-title">Kontrollen</h3>
-          erfassen den Zustand von Räumen und die Wirkung von Massnahmen.
+          ...erfassen den Zustand von Räumen und die Wirkung von Massnahmen.
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
-          beschreiben die Entwick&shy;lung von Populationen, beurteilen den
+          ...beschreiben die Entwick&shy;lung von Populationen, beurteilen den
           Erfolg der Massnahmen und die Errei&shy;chung der Ziele.
         </div>
         <div className="card">
-          <h3 className="card-title">Beobachtungen</h3>
-          Von Dritten gemeldete Beobachtungen prüfen und den Popula&shy;tionen
-          und Biotopen zuordnen.
+          <h3 className="card-title">Beobachtungen Dritter</h3>
+          ...prüfen und den Popula&shy;tionen und Biotopen zuordnen.
         </div>
         <div className="card">
           <h3 className="card-title">Mobilfähig</h3>
           Promoting Species passt sich jeder Bildschirmgrösse an. Arbeiten Sie
-          effizient auf Ihrem Handy, Tablet oder Computer.
+          effizient auf Handy, Tablet oder Computer.
         </div>
         <div className="card">
           <h3 className="card-title">Bring your own device</h3>
@@ -80,22 +79,22 @@ const Index = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Kein Internet? Egal!</h3>
-          Promoting Species funktioniert auch offline. Sobald Sie wieder online
-          sind, werden die Daten synchronisiert.
+          Sie sind offline? Einfach weiter arbeiten. Sobald Sie wieder online
+          sind, werden Ihre Daten synchronisiert.
         </div>
         <div className="card">
           <h3 className="card-title">Flexible Konfiguration</h3>
           Sie können Ihr Projekt Ihren eigenen Bedürfnissen anpassen. Vermissen
-          Sie eine Funktion? Wir sind interessiert!
+          Sie eine Funktion? Ich bin interessiert!
         </div>
         <div className="card">
           <h3 className="card-title">Professionelle Konfiguration</h3>
-          Promoting Species kann rasch auf Ihre Bedürfnisse konfiguriert werden.
-          Ich helfe Ihnen gerne dabei.
+          Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team
+          möglichst effizient arbeitet.
         </div>
         <div className="card">
           <h3 className="card-title">Einfaches Onboarding</h3>
-          Erfassen Sie neue Mitarbeitende mit deren Email. Ergänzen Sie diese
+          Erfassen Sie neue Mitarbeitende mit ihrer Email. Ergänzen Sie diese
           Person bei allen Arten und Biotopen, in denen sie mitarbeiten soll.
           Fertig!
         </div>
