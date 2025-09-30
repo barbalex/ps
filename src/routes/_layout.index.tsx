@@ -60,8 +60,8 @@ const Index = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
-          beschreiben die Entwick&shy;lung von Populationen, den Erfolg der
-          Massnahmen und die Errei&shy;chung der Ziele.
+          beschreiben die Entwick&shy;lung von Populationen, beurteilen den
+          Erfolg der Massnahmen und die Errei&shy;chung der Ziele.
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
@@ -90,8 +90,8 @@ const Index = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Professionelle Konfiguration</h3>
-          Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Promoting
-          Species genau Ihre Bedürfnisse abbildet!
+          Promoting Species kann rasch auf Ihre Bedürfnisse konfiguriert werden.
+          Ich helfe Ihnen gerne dabei.
         </div>
         <div className="card">
           <h3 className="card-title">Einfaches Onboarding</h3>
