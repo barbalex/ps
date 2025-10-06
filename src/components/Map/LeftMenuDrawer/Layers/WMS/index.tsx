@@ -44,9 +44,10 @@ export const WmsLayers = memo(() => {
   // fetch all layer_presentations for the vector layers
   const resLP = useLiveQuery(
     `
-    SELECT lp.* FROM layer_presentations lp
-    JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
-    WHERE wms_layers.project_id = $1`,
+    SELECT lp.* 
+    FROM layer_presentations lp
+      JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
+    WHERE wms.project_id = $1`,
     [projectId],
   )
   const layerPresentations = resLP?.rows ?? []
