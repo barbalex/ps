@@ -60,7 +60,7 @@ export const ActiveLayers = memo(() => {
       INNER JOIN layer_presentations 
         ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
         AND layer_presentations.active = TRUE
-    WHERE project_id = $1`,
+    WHERE wms_layers.project_id = $1`,
     [projectId],
   )
   const activeWmsLayers = useMemo(
@@ -79,7 +79,7 @@ export const ActiveLayers = memo(() => {
       INNER JOIN layer_presentations 
         ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
         AND layer_presentations.active = TRUE
-      WHERE project_id = $1`,
+      WHERE vector_layers.project_id = $1`,
     [projectId],
   )
   const activeVectorLayers = useMemo(
