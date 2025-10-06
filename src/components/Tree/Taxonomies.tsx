@@ -47,6 +47,10 @@ export const TaxonomiesNode = memo(({ projectId, level = 3 }: Props) => {
     parentUrl,
     urlPath.length,
   ])
+
+  // only list navs if isOpen AND the first nav has an id
+  const showNavs = isOpen && navs.length > 0 && navs[0].id
+
   return (
     <>
       <Node
@@ -59,10 +63,10 @@ export const TaxonomiesNode = memo(({ projectId, level = 3 }: Props) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen &&
-        navs.map((nav) => (
+      {showNavs &&
+        navs.map((nav, i) => (
           <TaxonomyNode
-            key={nav.id}
+            key={`${nav.id}-${i}`}
             projectId={projectId}
             nav={nav}
           />

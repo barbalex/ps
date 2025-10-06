@@ -49,6 +49,9 @@ export const ActionsNode = memo(
       urlPath.length,
     ])
 
+    // only list navs if isOpen AND the first nav has an id
+    const showNavs = isOpen && navs.length > 0 && navs[0].id
+
     return (
       <>
         <Node
@@ -61,10 +64,10 @@ export const ActionsNode = memo(
           to={ownUrl}
           onClickButton={onClickButton}
         />
-        {isOpen &&
-          navs.map((nav) => (
+        {showNavs &&
+          navs.map((nav, i) => (
             <ActionNode
-              key={nav.id}
+              key={`${nav.id}-${i}`}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}

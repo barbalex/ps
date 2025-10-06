@@ -44,6 +44,9 @@ export const AccountsNode = memo(() => {
     navigate,
   ])
 
+  // only list navs if isOpen AND the first nav has an id
+  const showNavs = isOpen && navs.length > 0 && navs[0].id
+
   return (
     <>
       <Node
@@ -56,10 +59,10 @@ export const AccountsNode = memo(() => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen &&
-        navs.map((nav) => (
+      {showNavs &&
+        navs.map((nav, i) => (
           <AccountNode
-            key={nav.id}
+            key={`${nav.id}-${i}`}
             nav={nav}
           />
         ))}
