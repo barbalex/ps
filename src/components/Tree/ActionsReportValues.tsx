@@ -61,6 +61,9 @@ export const ActionReportValuesNode = memo(
       parentUrl,
     ])
 
+    // only list navs if isOpen AND the first nav has an id
+    const showNavs = isOpen && navs.length > 0 && navs[0].id
+
     return (
       <>
         <Node
@@ -73,10 +76,10 @@ export const ActionReportValuesNode = memo(
           to={ownUrl}
           onClickButton={onClickButton}
         />
-        {isOpen &&
-          navs.map((nav) => (
+        {showNavs &&
+          navs.map((nav, i) => (
             <ActionReportValueNode
-              key={nav.id}
+              key={`${nav.id}-${i}`}
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
