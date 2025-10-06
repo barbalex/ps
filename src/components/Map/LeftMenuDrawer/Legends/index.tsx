@@ -31,7 +31,7 @@ export const Legends = memo(() => {
           wms_layers.wms_layer_id = lp.wms_layer_id 
           AND lp.active = true
       )
-      ${projectId ? `AND project_id = '${projectId}'` : ''}
+      ${projectId ? `AND wms_layers.project_id = '${projectId}'` : ''}
   `,
     undefined,
     'wms_layer_id',
