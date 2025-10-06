@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react'
+import { useCallback, memo, ReactNode } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -11,7 +11,7 @@ type Props = {
   // filter is an object with keys and values
   orFilters: Record<string, unknown>[]
   orIndex: number
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export const OrFilter = memo(

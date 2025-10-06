@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import * as icons from 'react-icons/md'
 import type { InputProps } from '@fluentui/react-components'
 
@@ -21,7 +21,7 @@ interface Props {
   value: string | undefined
 }
 
-export const MarkerSymbolPicker = ({ onChange, value }) => {
+export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
   const wantedIconKeys = useMemo(
     () =>
       Object.keys(icons)

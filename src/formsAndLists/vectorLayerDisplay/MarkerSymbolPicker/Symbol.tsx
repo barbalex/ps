@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react'
+import { useCallback, ReactElement } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { pipe } from 'remeda'
 
 import { on } from '../../../css.ts'
 
 interface Props {
-  Component: React.ReactElement
+  Component: ReactElement
   name: string
   onChange: InputProps['onChange']
   active: boolean
@@ -22,7 +22,7 @@ const activeStyle = {
   backgroundColor: 'yellow',
 }
 
-export const Symbol = ({ Component, name, onChange, active }) => {
+export const Symbol = ({ Component, name, onChange, active }: Props) => {
   const onClick = useCallback(() => {
     onChange({
       target: {

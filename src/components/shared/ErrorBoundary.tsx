@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { Button } from '@fluentui/react-components'
 import { pipe } from 'remeda'
@@ -36,7 +36,7 @@ const ErrorFallback = ({
   error,
   componentStack,
   resetErrorBoundary,
-}) => (
+}: Props) => (
   <div style={containerStyle}>
     <p>Sorry, ein Fehler ist aufgetreten:</p>
     <pre style={preWrappingStyle}>{error.message}</pre>
