@@ -22,4 +22,11 @@ export default defineConfig({
     outDir: 'frontend/dist',
     emptyOutDir: true,
   },
+  css: {
+    modules: {
+      // enable using named exports for css classes
+      // https://vite.dev/guide/features.html#css-modules
+      localsConvention: 'camelCaseOnly',
+    },
+  },
 })
