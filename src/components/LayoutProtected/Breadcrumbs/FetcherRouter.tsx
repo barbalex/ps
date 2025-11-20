@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { GoalsFetcher } from './GoalsFetcher.tsx'
+import { GoalFetcher } from './GoalFetcher.tsx'
 import { OccurrenceImportsFetcher } from './OccurrenceImportsFetcher.tsx'
 import { OccurrenceImportFetcher } from './OccurrenceImportFetcher.tsx'
 import { OccurrencesToAssessFetcher } from './OccurrencesToAssessFetcher.tsx'
@@ -105,6 +107,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useGoalsNavData': {
+      return (
+        <GoalsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useGoalNavData': {
+      return (
+        <GoalFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useOccurrenceImportsNavData': {
       return (
         <OccurrenceImportsFetcher
