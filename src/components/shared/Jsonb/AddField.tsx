@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom } from 'jotai'
@@ -21,7 +20,7 @@ const buttonStyle = {
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddField = memo(({ tableName, level, from }) => {
+export const AddField = ({ tableName, level, from }) => {
   const [designing] = useAtom(designingAtom)
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
@@ -29,7 +28,7 @@ export const AddField = memo(({ tableName, level, from }) => {
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const isAccountTable = accountTables.includes(tableName)
     const newFieldParams = { table_name: tableName, level, db }
     if (!isAccountTable) newFieldParams.projectId = projectId
@@ -37,7 +36,7 @@ export const AddField = memo(({ tableName, level, from }) => {
     const newField = res?.rows?.[0]
     // TODO:
     navigate({ search: { editingField: newField.field_id } })
-  }, [db, level, navigate, projectId, tableName])
+  }
 
   if (!designing) return null
   // do not show the button on the filter page
@@ -54,4 +53,4 @@ export const AddField = memo(({ tableName, level, from }) => {
       Add Field
     </Button>
   )
-})
+}
