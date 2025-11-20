@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -7,78 +6,76 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useCheckValuesNavData } from '../../modules/useCheckValuesNavData.ts'
 
-export const CheckValuesNode = memo(
-  ({ projectId, subprojectId, placeId, placeId2, checkId, level = 9 }) => {
-    const navigate = useNavigate()
+export const CheckValuesNode = ({
+  projectId,
+  subprojectId,
+  placeId,
+  placeId2,
+  checkId,
+  level = 9,
+}) => {
+  const navigate = useNavigate()
 
-    const { navData } = useCheckValuesNavData({
-      projectId,
-      subprojectId,
-      placeId,
-      placeId2,
-      checkId,
-    })
-    const {
-      label,
-      parentUrl,
-      ownArray,
-      ownUrl,
-      urlPath,
-      isOpen,
-      isInActiveNodeArray,
-      isActive,
-      navs,
-    } = navData
+  const { navData } = useCheckValuesNavData({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    checkId,
+  })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({ node: ownArray })
-        // only navigate if urlPath includes ownArray
-        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({ to: parentUrl })
-        }
-        return
+  const onClickButton = () => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
       }
-      // add to openNodes without navigating
-      addOpenNodes({ nodes: [ownArray] })
-    }, [
-      isInActiveNodeArray,
-      isOpen,
-      navigate,
-      ownArray,
-      parentUrl,
-      urlPath.length,
-    ])
+      return
+    }
+    // add to openNodes without navigating
+    addOpenNodes({ nodes: [ownArray] })
+  }
 
-    // only list navs if isOpen AND the first nav has an id
-    const showNavs = isOpen && navs.length > 0 && navs[0].id
+  // only list navs if isOpen AND the first nav has an id
+  const showNavs = isOpen && navs.length > 0 && navs[0].id
 
-    return (
-      <>
-        <Node
-          label={label}
-          level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isInActiveNodeArray}
-          isActive={isActive}
-          childrenCount={navs.length}
-          to={ownUrl}
-          onClickButton={onClickButton}
-        />
-        {showNavs &&
-          navs.map((nav, i) => (
-            <CheckValueNode
-              key={`${nav.id}-${i}`}
-              projectId={projectId}
-              subprojectId={subprojectId}
-              placeId={placeId}
-              placeId2={placeId2}
-              checkId={checkId}
-              nav={nav}
-              level={level + 1}
-            />
-          ))}
-      </>
-    )
-  },
-)
+  return (
+    <>
+      <Node
+        label={label}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={navs.length}
+        to={ownUrl}
+        onClickButton={onClickButton}
+      />
+      {showNavs &&
+        navs.map((nav, i) => (
+          <CheckValueNode
+            key={`${nav.id}-${i}`}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
+            placeId2={placeId2}
+            checkId={checkId}
+            nav={nav}
+            level={level + 1}
+          />
+        ))}
+    </>
+  )
+}
