@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -6,7 +6,7 @@ import { mapLayerSortingAtom } from '../../../store.ts'
 import { Layer } from './Layer.tsx'
 
 // TODO: text
-export const Layers = memo(() => {
+export const Layers = () => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const db = usePGlite()
 
@@ -40,4 +40,4 @@ export const Layers = memo(() => {
       index={index}
     />
   ))
-})
+}

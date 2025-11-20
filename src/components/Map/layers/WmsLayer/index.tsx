@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useAtom } from 'jotai'
 
 import { WMS } from './WMS.tsx'
@@ -6,7 +5,7 @@ import { WMS } from './WMS.tsx'
 import { LocalMap } from './LocalMap.tsx'
 import { showLocalMapAtom } from '../../../../store.ts'
 
-export const WmsLayerComponent = memo(({ layerPresentation, layer }) => {
+export const WmsLayerComponent = ({ layerPresentation, layer }) => {
   const [showLocalMap] = useAtom(showLocalMapAtom)
 
   if (layer.type === 'wmts') {
@@ -18,6 +17,11 @@ export const WmsLayerComponent = memo(({ layerPresentation, layer }) => {
       </>
     )
   } else {
-    return <WMS layerPresentation={layerPresentation} layer={layer} />
+    return (
+      <WMS
+        layerPresentation={layerPresentation}
+        layer={layer}
+      />
+    )
   }
-})
+}
