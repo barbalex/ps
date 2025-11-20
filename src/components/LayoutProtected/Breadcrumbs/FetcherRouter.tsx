@@ -5,6 +5,8 @@ import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
 
+import { WmsLayersFetcher } from './WmsLayersFetcher.tsx'
+import { WmsLayerFetcher } from './WmsLayerFetcher.tsx'
 import { VectorLayerDisplaysFetcher } from './VectorLayerDisplaysFetcher.tsx'
 import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
@@ -43,6 +45,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useSubprojectsNavData': {
       return (
         <SubprojectsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsLayersNavData': {
+      return (
+        <WmsLayersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsLayerNavData': {
+      return (
+        <WmsLayerFetcher
           params={params}
           {...other}
         />
