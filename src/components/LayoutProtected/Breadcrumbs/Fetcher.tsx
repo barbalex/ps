@@ -1,4 +1,3 @@
-import { Loading } from '../../shared/Loading.tsx'
 import { Crumb } from './Crumb/index.tsx'
 
 // pass on TransitionGroup's props
@@ -23,7 +22,6 @@ export const Fetcher = ({ fetcherName, fetcherModule, params, ...other }) => {
   })
 
   // TODO: loading remains true and result never arrives
-  // if (loading) return <Loading width={120} />
   if (!navData.label) return null
 
   // this prevents:
