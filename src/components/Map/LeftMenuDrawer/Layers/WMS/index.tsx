@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
@@ -22,7 +21,7 @@ import {
 // needs to be controlled to prevent opening when layer is deactivated
 const openItemsAtom = atom([])
 
-export const WmsLayers = memo(() => {
+export const WmsLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -59,7 +58,7 @@ export const WmsLayers = memo(() => {
       ),
   )
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createWmsLayer({ projectId, db })
     const wmsLayer = res?.rows?.[0]
     // also add layer_presentation
@@ -68,30 +67,27 @@ export const WmsLayers = memo(() => {
       db,
     })
     setOpenItems((prev) => [...prev, wmsLayer.wms_layer_id])
-  }, [db, projectId, setOpenItems])
+  }
 
-  const onToggleItem = useCallback(
-    (event, { value: wmsLayerId, openItems }) => {
-      // use setTimeout to let the child checkbox set the layers active status
-      setTimeout(async () => {
-        // fetch layerPresentation's active status
-        const res = await db.query(
-          `SELECT active FROM layer_presentations WHERE wms_layer_id = $1`,
-          [wmsLayerId],
-        )
-        const layerPresentation = res?.rows?.[0]
-        const isActive = layerPresentation?.active
-        if (isActive) {
-          // if not active, remove this item
-          const newOpenItems = openItems.filter((id) => id !== wmsLayerId)
-          setOpenItems(newOpenItems)
-          return
-        }
-        setOpenItems(openItems)
-      }, 200)
-    },
-    [db, setOpenItems],
-  )
+  const onToggleItem = (event, { value: wmsLayerId, openItems }) => {
+    // use setTimeout to let the child checkbox set the layers active status
+    setTimeout(async () => {
+      // fetch layerPresentation's active status
+      const res = await db.query(
+        `SELECT active FROM layer_presentations WHERE wms_layer_id = $1`,
+        [wmsLayerId],
+      )
+      const layerPresentation = res?.rows?.[0]
+      const isActive = layerPresentation?.active
+      if (isActive) {
+        // if not active, remove this item
+        const newOpenItems = openItems.filter((id) => id !== wmsLayerId)
+        setOpenItems(newOpenItems)
+        return
+      }
+      setOpenItems(openItems)
+    }, 200)
+  }
 
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
@@ -144,4 +140,4 @@ export const WmsLayers = memo(() => {
       </section>
     </ErrorBoundary>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -10,26 +9,23 @@ const formContainerStyle = {
   padding: '1em',
 }
 
-export const WmsLayerEditing = memo(({ layer: row }) => {
+export const WmsLayerEditing = ({ layer: row }) => {
   const db = usePGlite()
 
-  const onChange = useCallback(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      try {
-        await db.query(
-          `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
-          [value, row.wms_layer_id],
-        )
-      } catch (error) {
-        console.log('hello WmsLayer, onChange, error:', error)
-      }
-    },
-    [db, row],
-  )
+    try {
+      await db.query(
+        `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
+        [value, row.wms_layer_id],
+      )
+    } catch (error) {
+      console.log('hello WmsLayer, onChange, error:', error)
+    }
+  }
 
   return (
     <ErrorBoundary>
@@ -44,4 +40,4 @@ export const WmsLayerEditing = memo(({ layer: row }) => {
       </div>
     </ErrorBoundary>
   )
-})
+}
