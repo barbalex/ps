@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -9,7 +8,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const ActionReportValues = memo(({ from }) => {
+export const ActionReportValues = ({ from }) => {
   const {
     projectId,
     subprojectId,
@@ -31,7 +30,7 @@ export const ActionReportValues = memo(({ from }) => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createActionReportValue({ db, actionReportId })
     const data = res?.rows?.[0]
     if (!data) return
@@ -42,7 +41,7 @@ export const ActionReportValues = memo(({ from }) => {
         actionReportValueId: data.action_report_value_id,
       }),
     })
-  }, [actionReportId, db, navigate])
+  }
 
   return (
     <div className="list-view">
@@ -67,4 +66,4 @@ export const ActionReportValues = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

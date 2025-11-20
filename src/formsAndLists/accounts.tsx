@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -11,19 +10,19 @@ import '../form.css'
 
 const from = '/data/accounts'
 
-export const Accounts = memo(() => {
+export const Accounts = () => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const { loading, navData } = useAccountsNavData()
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createAccount({ db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({ to: data.id })
-  }, [db, navigate])
+  }
 
   return (
     <div className="list-view">
@@ -48,4 +47,4 @@ export const Accounts = memo(() => {
       </div>
     </div>
   )
-})
+}

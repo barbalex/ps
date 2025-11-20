@@ -1,4 +1,3 @@
-import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
@@ -24,7 +23,7 @@ import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
 
 const parentArray = ['data', 'projects']
 
-export const ProjectNode = memo(({ nav, level = 2 }) => {
+export const ProjectNode = ({ nav, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
 
@@ -35,7 +34,7 @@ export const ProjectNode = memo(({ nav, level = 2 }) => {
 
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, nav.id], [nav.id])
+  const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
@@ -43,7 +42,7 @@ export const ProjectNode = memo(({ nav, level = 2 }) => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray })
       // TODO: only navigate if urlPath includes ownArray
@@ -54,14 +53,7 @@ export const ProjectNode = memo(({ nav, level = 2 }) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   return (
     <>
@@ -105,4 +97,4 @@ export const ProjectNode = memo(({ nav, level = 2 }) => {
       )}
     </>
   )
-})
+}

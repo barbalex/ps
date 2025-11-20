@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { Button, Tooltip } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -20,17 +19,14 @@ const svgStyle = {
   fontSize: 'medium',
 }
 
-export const Editing = memo(({ projectId }) => {
+export const Editing = ({ projectId }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const { user } = useCorbado()
 
-  const onClick = useCallback(
-    (e) => {
-      e.stopPropagation()
-      setDesigning(!designing)
-    },
-    [designing, setDesigning],
-  )
+  const onClick = (e) => {
+    e.stopPropagation()
+    setDesigning(!designing)
+  }
 
   // TODO: check if this works as intended (also: project.DesigningButton.tsx)
   const resultProject = useLiveIncrementalQuery(
@@ -90,4 +86,4 @@ export const Editing = memo(({ projectId }) => {
       />
     </Tooltip>
   )
-})
+}
