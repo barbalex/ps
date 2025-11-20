@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -7,10 +6,10 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useProjectsNavData } from '../../modules/useProjectsNavData.ts'
 
-export const ProjectsNode = memo(() => {
+export const ProjectsNode = () => {
   const navigate = useNavigate()
 
-  const { navData } = useProjectsNavData()
+  const { navData } = useProjectsNavData({})
   const {
     label,
     parentUrl,
@@ -24,7 +23,7 @@ export const ProjectsNode = memo(() => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
@@ -39,14 +38,7 @@ export const ProjectsNode = memo(() => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isOpen,
-    ownArray,
-    isInActiveNodeArray,
-    urlPath.length,
-    navigate,
-    parentUrl,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -73,4 +65,4 @@ export const ProjectsNode = memo(() => {
         ))}
     </>
   )
-})
+}
