@@ -1,9 +1,9 @@
-import { useEffect, memo } from 'react'
+import { useEffect } from 'react'
 import { useCorbado } from '@corbado/react'
 
 import { subKey } from '../auth.ts'
 
-export const SessionStorageSetter = memo(() => {
+export const SessionStorageSetter = () => {
   const { shortSession } = useCorbado()
 
   useEffect(() => {
@@ -14,4 +14,4 @@ export const SessionStorageSetter = memo(() => {
   }, [shortSession])
 
   return null
-})
+}

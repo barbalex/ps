@@ -1,5 +1,3 @@
-import { memo } from 'react'
-import * as React from 'react'
 import { Button } from '@fluentui/react-components'
 import { Link } from '@tanstack/react-router'
 
@@ -34,7 +32,7 @@ const linkContentStyle = {
   padding: '20px',
 }
 
-export const NotFoundRoot = memo(() => (
+export const NotFoundRoot = () => (
   <>
     <Header />
     <div style={homeOutletStyle}>
@@ -63,4 +61,4 @@ export const NotFoundRoot = memo(() => (
       </div>
     </div>
   </>
-))
+)
