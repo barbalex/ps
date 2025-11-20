@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -13,7 +12,7 @@ import '../form.css'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/'
 
-export const OccurrenceImports = memo(() => {
+export const OccurrenceImports = () => {
   const navigate = useNavigate()
   const { projectId, subprojectId } = useParams({ from })
   const db = usePGlite()
@@ -24,7 +23,7 @@ export const OccurrenceImports = memo(() => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createOccurrenceImport({ subprojectId, db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -35,7 +34,7 @@ export const OccurrenceImports = memo(() => {
         occurrenceImportId: data.occurrence_import_id,
       }),
     })
-  }, [db, navigate, subprojectId])
+  }
 
   return (
     <div className="list-view">
@@ -60,4 +59,4 @@ export const OccurrenceImports = memo(() => {
       </div>
     </div>
   )
-})
+}

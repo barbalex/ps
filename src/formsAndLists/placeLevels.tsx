@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -11,7 +10,7 @@ import '../form.css'
 
 const from = '/data/projects/$projectId_/place-levels/'
 
-export const PlaceLevels = memo(() => {
+export const PlaceLevels = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -19,7 +18,7 @@ export const PlaceLevels = memo(() => {
   const { loading, navData } = usePlaceLevelsNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createPlaceLevel({ db, project_id: projectId })
     const data = res?.rows?.[0]
     if (!data) return
@@ -27,7 +26,7 @@ export const PlaceLevels = memo(() => {
       to: `/data/project/${projectId}/place-levels/${data.place_level_id}`,
       params: (prev) => ({ ...prev, placeLevelId: data.place_level_id }),
     })
-  }, [db, navigate, projectId])
+  }
 
   return (
     <div className="list-view">
@@ -52,4 +51,4 @@ export const PlaceLevels = memo(() => {
       </div>
     </div>
   )
-})
+}

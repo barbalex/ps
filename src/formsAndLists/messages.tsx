@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,14 +9,14 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-export const Messages = memo(() => {
+export const Messages = () => {
   const navigate = useNavigate()
   const db = usePGlite()
 
   const { loading, navData } = useMessagesNavData()
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createMessage({ db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -25,9 +24,7 @@ export const Messages = memo(() => {
       to: `/data/messages/${data.message_id}`,
       params: (prev) => ({ ...prev, messageId: data.message_id }),
     })
-  }, [db, navigate])
-
-  console.log('Messages', { loading, navData })
+  }
 
   return (
     <div className="list-view">
@@ -52,4 +49,4 @@ export const Messages = memo(() => {
       </div>
     </div>
   )
-})
+}
