@@ -17,8 +17,12 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { SubprojectUsersFetcher } from './SubprojectUsersFetcher.tsx'
+import { SubprojectUserFetcher } from './SubprojectUserFetcher.tsx'
 import { ChartsFetcher } from './ChartsFetcher.tsx'
 import { ChartFetcher } from './ChartFetcher.tsx'
+import { ChartSubjectsFetcher } from './ChartSubjectsFetcher.tsx'
+import { ChartSubjectFetcher } from './ChartSubjectFetcher.tsx'
 import { ProjectUsersFetcher } from './ProjectUsersFetcher.tsx'
 import { ProjectUserFetcher } from './ProjectUserFetcher.tsx'
 import { ListValuesFetcher } from './ListValuesFetcher.tsx'
@@ -93,6 +97,54 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useSubprojectUsersNavData': {
+      return (
+        <SubprojectUsersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useSubprojectUserNavData': {
+      return (
+        <SubprojectUserFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useChartsNavData': {
+      return (
+        <ChartsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useChartNavData': {
+      return (
+        <ChartFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useChartSubjectsNavData': {
+      return (
+        <ChartSubjectsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useChartSubjectNavData': {
+      return (
+        <ChartSubjectFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useProjectReportsNavData': {
       return (
         <ProjectReportsFetcher
@@ -168,23 +220,6 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useVectorLayerDisplayNavData': {
       return (
         <VectorLayerDisplayFetcher
-          params={params}
-          {...other}
-        />
-      )
-    }
-
-    case 'useChartsNavData': {
-      return (
-        <ChartsFetcher
-          params={params}
-          {...other}
-        />
-      )
-    }
-    case 'useChartNavData': {
-      return (
-        <ChartFetcher
           params={params}
           {...other}
         />
