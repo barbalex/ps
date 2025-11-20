@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { SubprojectTaxaFetcher } from './SubprojectTaxaFetcher.tsx'
+import { SubprojectTaxonFetcher } from './SubprojectTaxonFetcher.tsx'
 import { SubprojectUsersFetcher } from './SubprojectUsersFetcher.tsx'
 import { SubprojectUserFetcher } from './SubprojectUserFetcher.tsx'
 import { ChartsFetcher } from './ChartsFetcher.tsx'
@@ -97,6 +99,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useSubprojectTaxaNavData': {
+      return (
+        <SubprojectTaxaFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useSubprojectTaxonNavData': {
+      return (
+        <SubprojectTaxonFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useSubprojectUsersNavData': {
       return (
         <SubprojectUsersFetcher
