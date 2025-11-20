@@ -1,15 +1,9 @@
-import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import { isEqual } from 'es-toolkit'
-import { useAtom } from 'jotai'
+import { useNavigate } from '@tanstack/react-router'
 
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { formatNumber } from '../../modules/formatNumber.ts'
 import { Node } from './Node.tsx'
 import { TaxonNode } from './Taxon.tsx'
-import { treeOpenNodesAtom } from '../../store.ts'
 import { useTaxaNavData } from '../../modules/useTaxaNavData.ts'
 
 interface Props {
@@ -18,9 +12,7 @@ interface Props {
   level?: number
 }
 
-export const TaxaNode = memo(({ projectId, taxonomyId, level = 5 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
+export const TaxaNode = ({ projectId, taxonomyId, level = 5 }: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useTaxaNavData({ projectId, taxonomyId })
@@ -36,7 +28,7 @@ export const TaxaNode = memo(({ projectId, taxonomyId, level = 5 }: Props) => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
@@ -47,14 +39,7 @@ export const TaxaNode = memo(({ projectId, taxonomyId, level = 5 }: Props) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -82,4 +67,4 @@ export const TaxaNode = memo(({ projectId, taxonomyId, level = 5 }: Props) => {
         ))}
     </>
   )
-})
+}
