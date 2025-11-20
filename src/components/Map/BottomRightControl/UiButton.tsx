@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, memo } from 'react'
+import { useRef, useEffect } from 'react'
 import { Switch } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 
@@ -27,7 +27,7 @@ const switchStyle = {
   borderRadius: 4,
 }
 
-export const UiButton = memo(() => {
+export const UiButton = () => {
   const [hideMapUi, setHideMapUi] = useAtom(mapHideUiAtom)
 
   // prevent click propagation on to map
@@ -38,10 +38,7 @@ export const UiButton = memo(() => {
     L.DomEvent.disableScrollPropagation(ref.current)
   }, [])
 
-  const onChange = useCallback(
-    () => setHideMapUi(!hideMapUi),
-    [setHideMapUi, hideMapUi],
-  )
+  const onChange = () => setHideMapUi(!hideMapUi)
 
   return (
     <div
@@ -56,4 +53,4 @@ export const UiButton = memo(() => {
       />
     </div>
   )
-})
+}

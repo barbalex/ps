@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { useRef } from 'react'
 import { Transition } from 'react-transition-group'
 
 import { Label } from './Label.tsx'
@@ -12,7 +12,7 @@ const transitionStyles = {
   exited: { opacity: 0 },
 }
 
-export const Crumb = memo(({ navData, in: inProp }) => {
+export const Crumb = ({ navData, in: inProp }) => {
   const outerContainerRef = useRef(null)
   const labelRef = useRef(null)
 
@@ -42,4 +42,4 @@ export const Crumb = memo(({ navData, in: inProp }) => {
       )}
     </Transition>
   )
-})
+}
