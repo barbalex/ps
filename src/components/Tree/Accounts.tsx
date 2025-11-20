@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -7,7 +6,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useAccountsNavData } from '../../modules/useAccountsNavData.ts'
 
-export const AccountsNode = memo(() => {
+export const AccountsNode = () => {
   const navigate = useNavigate()
 
   const { navData } = useAccountsNavData()
@@ -24,7 +23,7 @@ export const AccountsNode = memo(() => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray, isRoot: true })
       // only navigate if urlPath includes ownArray
@@ -35,14 +34,7 @@ export const AccountsNode = memo(() => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-    navigate,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -68,4 +60,4 @@ export const AccountsNode = memo(() => {
         ))}
     </>
   )
-})
+}

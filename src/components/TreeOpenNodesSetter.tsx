@@ -1,10 +1,10 @@
-import { useEffect, memo } from 'react'
+import { useEffect } from 'react'
 import { useLocation } from '@tanstack/react-router'
 
 import { addOpenNodes } from '../modules/tree/addOpenNodes.ts'
 
 // ensure all parts of urlPath are included in openNodes
-export const TreeOpenNodesSetter = memo(() => {
+export const TreeOpenNodesSetter = () => {
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
@@ -22,4 +22,4 @@ export const TreeOpenNodesSetter = memo(() => {
   }, [location.pathname, urlPath])
 
   return null
-})
+}

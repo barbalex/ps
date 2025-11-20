@@ -1,15 +1,11 @@
-import { useCallback, memo } from 'react'
 import { ToggleButton } from '@fluentui/react-components'
 import { MdFilterAlt } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
 
-export const FilterButton = memo(({ isFiltered = false }) => {
+export const FilterButton = ({ isFiltered = false }) => {
   const navigate = useNavigate()
 
-  const onClick = useCallback(
-    async () => navigate({ to: './filter' }),
-    [navigate],
-  )
+  const onClick = () => navigate({ to: './filter' })
 
   return (
     <ToggleButton
@@ -23,4 +19,4 @@ export const FilterButton = memo(({ isFiltered = false }) => {
       }}
     />
   )
-})
+}

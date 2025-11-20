@@ -1,4 +1,3 @@
-import { useMemo, memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
@@ -16,40 +15,38 @@ interface Props {
   from: string
 }
 
-export const LabelBy = memo(
-  ({
-    onChange,
-    value,
-    extraFieldNames = [],
-    table,
-    label,
-    name,
-    from,
-  }: Props) => {
-    const { projectId } = useParams({ from })
+export const LabelBy = ({
+  onChange,
+  value,
+  extraFieldNames = [],
+  table,
+  label,
+  name,
+  from,
+}: Props) => {
+  const { projectId } = useParams({ from })
 
-    const res = useLiveIncrementalQuery(
-      `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,
-      [table, ['files', 'projects'].includes(table) ? null : projectId],
-      'field_id',
-    )
-    const fields = useMemo(() => res?.rows ?? [], [res])
-    // Could add some fields from root here if needed
-    const fieldNames = useMemo(
-      () => [...fields.map(({ name }) => name), ...extraFieldNames].sort(),
-      [extraFieldNames, fields],
-    )
+  const res = useLiveIncrementalQuery(
+    `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,
+    [table, ['files', 'projects'].includes(table) ? null : projectId],
+    'field_id',
+  )
+  const fields = res?.rows ?? []
+  // Could add some fields from root here if needed
+  const fieldNames = [
+    ...fields.map(({ name }) => name),
+    ...extraFieldNames,
+  ].sort()
 
-    return (
-      <DropdownFieldSimpleOptions
-        label={label ?? `${table} labeled by`}
-        name={name}
-        value={value}
-        onChange={onChange}
-        options={fieldNames}
-        validationState="none"
-        validationMessage={`If no value is set, ${table} are labeled by id.`}
-      />
-    )
-  },
-)
+  return (
+    <DropdownFieldSimpleOptions
+      label={label ?? `${table} labeled by`}
+      name={name}
+      value={value}
+      onChange={onChange}
+      options={fieldNames}
+      validationState="none"
+      validationMessage={`If no value is set, ${table} are labeled by id.`}
+    />
+  )
+}

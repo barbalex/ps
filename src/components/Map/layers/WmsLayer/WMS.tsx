@@ -1,11 +1,10 @@
-import { memo } from 'react'
 import { useMap, WMSTileLayer } from 'react-leaflet'
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { onTileError } from './onTileError.ts'
 
-export const WMS = memo(({ layerPresentation, layer }) => {
+export const WMS = ({ layerPresentation, layer }) => {
   const map = useMap()
   const db = usePGlite()
 
@@ -35,4 +34,4 @@ export const WMS = memo(({ layerPresentation, layer }) => {
       }}
     />
   )
-})
+}

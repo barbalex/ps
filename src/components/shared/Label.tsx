@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 const labelStyle = {
   marginTop: '10px',
   cursor: 'text',
@@ -11,6 +9,6 @@ const labelStyle = {
 }
 
 // TODO: use fluent ui label
-export const Label = memo(({ label }: { label: string }) => (
+export const Label = ({ label }: { label: string }) => (
   <div style={labelStyle}>{label}</div>
-))
+)

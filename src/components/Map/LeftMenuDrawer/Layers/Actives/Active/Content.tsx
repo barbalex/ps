@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   AccordionHeader,
   AccordionPanel,
@@ -46,7 +46,7 @@ import './active.css'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
+export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
@@ -79,7 +79,7 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
     layer.wms_service_layer_name,
   ])
 
-  const onChangeActive = useCallback(() => {
+  const onChangeActive = () => {
     if (!layer.layer_presentation_id) {
       // if no presentation exists, create notification
       return createNotification({
@@ -92,21 +92,15 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
       `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
       [layer.layer_presentation_id],
     )
-  }, [db, layer.layer_presentation_id])
+  }
 
   const canDrag = layerCount > 1
 
-  const onTabSelect = useCallback(
-    (event, data: SelectTabData) => setTab(data.value),
-    [],
-  )
+  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
 
-  const onClickFeatureDisplays = useCallback(
-    () => setVectorLayerDisplayId(null),
-    [setVectorLayerDisplayId],
-  )
+  const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
-  const onDelete = useCallback(() => {
+  const onDelete = () => {
     if (isVectorLayer) {
       db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
         layer.vector_layer_id,
@@ -116,7 +110,7 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
         layer.wms_layer_id,
       ])
     }
-  }, [db, isVectorLayer, layer.vector_layer_id, layer.wms_layer_id])
+  }
 
   // drag and drop items by dragging the drag icon
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
@@ -216,4 +210,4 @@ export const Content = memo(({ layer, isOpen, layerCount, dragHandleRef }) => {
       </AccordionPanel>
     </ErrorBoundary>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import * as React from 'react'
 import { Button } from '@fluentui/react-components'
 import { Link, useRouter, useCanGoBack } from '@tanstack/react-router'
@@ -16,14 +15,12 @@ const spacerStyle = {
   height: 20,
 }
 
-export const NotFound = memo(({ table, id }) => {
+export const NotFound = ({ table, id }) => {
   const router = useRouter()
   const canGoBack = useCanGoBack()
   const isTableId = table && id
 
-  const goBack = useCallback(() => {
-    router.history.back()
-  }, [router])
+  const goBack = () => router.history.back()
 
   return (
     <div style={linkContentStyle}>
@@ -43,4 +40,4 @@ export const NotFound = memo(({ table, id }) => {
       }
     </div>
   )
-})
+}

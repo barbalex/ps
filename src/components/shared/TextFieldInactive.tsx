@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { useState } from 'react'
 import { makeStyles, Input, Body1, Field } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
@@ -6,7 +6,7 @@ const useStyles = makeStyles({
   body: { color: 'grey' },
 })
 
-export const TextFieldInactive = memo((props: InputProps) => {
+export const TextFieldInactive = (props: InputProps) => {
   const styles = useStyles()
 
   const [changed, setChanged] = useState(false)
@@ -37,4 +37,4 @@ export const TextFieldInactive = memo((props: InputProps) => {
       )}
     </Field>
   )
-})
+}

@@ -1,9 +1,8 @@
-import { memo } from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Marker } from 'react-leaflet'
 import { MdNotListedLocation } from 'react-icons/md'
 
-export const InfoMarker = memo(({ mapInfo }) => {
+export const InfoMarker = ({ mapInfo }) => {
   if (!mapInfo?.lat) return null
 
   return (
@@ -23,4 +22,4 @@ export const InfoMarker = memo(({ mapInfo }) => {
       })}
     />
   )
-})
+}

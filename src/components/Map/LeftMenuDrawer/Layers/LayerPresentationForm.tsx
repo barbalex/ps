@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
@@ -13,7 +12,7 @@ const containerStyle = {
   padding: '1rem',
 }
 
-export const LayerPresentationForm = memo(({ layer }) => {
+export const LayerPresentationForm = ({ layer }) => {
   const db = usePGlite()
 
   const res = useLiveIncrementalQuery(
@@ -23,31 +22,26 @@ export const LayerPresentationForm = memo(({ layer }) => {
 
   const row = res?.rows?.[0]
 
-  const onChange = useCallback(
-    (e, data) => {
-      if (!row?.layer_presentation_id) {
-        // if no presentation exists, create notification
-        createNotification({
-          title: 'Layer presentation not found',
-          type: 'warning',
-          db,
-        })
-      }
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    if (!row?.layer_presentation_id) {
+      // if no presentation exists, create notification
+      createNotification({
+        title: 'Layer presentation not found',
+        type: 'warning',
+        db,
+      })
+    }
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
-        [value, row?.layer_presentation_id],
-      )
-    },
-    [db, row],
-  )
-
-  if (!row) {
-    return <Loading />
+    db.query(
+      `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
+      [value, row?.layer_presentation_id],
+    )
   }
+
+  if (!row) return <Loading />
 
   // TODO: drag and drop items by dragging the drag icon
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
@@ -104,4 +98,4 @@ export const LayerPresentationForm = memo(({ layer }) => {
       </div>
     </ErrorBoundary>
   )
-})
+}

@@ -1,10 +1,9 @@
-import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { Loading } from './Loading.tsx'
 
-export const RadioGroupField = memo((props) => {
+export const RadioGroupField = (props) => {
   const {
     name,
     label,
@@ -29,17 +28,14 @@ export const RadioGroupField = memo((props) => {
 
   const verticalLayout = !!width && width < 500
 
-  const onClick = useCallback(
-    (e) => {
-      const valueChoosen = e.target.value
-      // if valueChoosen equals value, set value to null
-      // else set value to valueChoosen
-      onChangePassed(e, {
-        value: valueChoosen === value ? null : valueChoosen,
-      })
-    },
-    [onChangePassed, value],
-  )
+  const onClick = (e) => {
+    const valueChoosen = e.target.value
+    // if valueChoosen equals value, set value to null
+    // else set value to valueChoosen
+    onChangePassed(e, {
+      value: valueChoosen === value ? null : valueChoosen,
+    })
+  }
 
   return (
     <Field
@@ -55,10 +51,9 @@ export const RadioGroupField = memo((props) => {
         appearance="underline"
         disabled={disabled}
       >
-        {isLoading ? (
+        {isLoading ?
           <Loading alignLeft={true} />
-        ) : (
-          <>
+        : <>
             {list.map((val, index) => (
               <Radio
                 key={val}
@@ -72,8 +67,8 @@ export const RadioGroupField = memo((props) => {
               />
             ))}
           </>
-        )}
+        }
       </RadioGroup>
     </Field>
   )
-})
+}

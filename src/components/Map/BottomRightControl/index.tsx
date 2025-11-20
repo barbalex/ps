@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useAtom } from 'jotai'
 
 import { UiButton } from './UiButton.tsx'
@@ -22,7 +21,7 @@ const containerStyle = {
   alignItems: 'stretch',
 }
 
-export const BottomRightControl = memo(() => {
+export const BottomRightControl = () => {
   const [hideMapUi] = useAtom(mapHideUiAtom)
 
   return (
@@ -36,4 +35,4 @@ export const BottomRightControl = memo(() => {
       <UiButton />
     </div>
   )
-})
+}

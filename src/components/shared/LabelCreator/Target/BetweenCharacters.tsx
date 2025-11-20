@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { Input } from '@fluentui/react-components'
 
 import { TargetElement } from './TargetElements.tsx'
@@ -23,40 +22,43 @@ interface Props {
   children: React.ReactNode
 }
 
-export const BetweenCharacters = memo(
-  ({ el, label, onChange, index, children, snapshot, provided }: Props) => {
-    const onBlur = useCallback(
-      (event) => {
-        const newLabel = [...label]
-        newLabel.forEach((labelElement, i) => {
-          if (i === index) {
-            labelElement.value = event.target.value
-          }
-        })
-        onChange(newLabel)
-      },
-      [index, label, onChange],
-    )
+export const BetweenCharacters = ({
+  el,
+  label,
+  onChange,
+  index,
+  children,
+  snapshot,
+  provided,
+}: Props) => {
+  const onBlur = (event) => {
+    const newLabel = [...label]
+    newLabel.forEach((labelElement, i) => {
+      if (i === index) {
+        labelElement.value = event.target.value
+      }
+    })
+    onChange(newLabel)
+  }
 
-    return (
-      <div
-        style={{
-          ...(snapshot.isDragging ? {} : containerStyle),
-          ...provided.draggableProps.style,
-        }}
-      >
-        <Input
-          label="Separator (any Text)"
-          placeholder="Enter any text"
-          defaultValue={el.value ?? ''}
-          appearance="outline"
-          size="small"
-          onChange={onBlur}
-          style={inputStyle}
-          autoFocus
-        />
-        {children}
-      </div>
-    )
-  },
-)
+  return (
+    <div
+      style={{
+        ...(snapshot.isDragging ? {} : containerStyle),
+        ...provided.draggableProps.style,
+      }}
+    >
+      <Input
+        label="Separator (any Text)"
+        placeholder="Enter any text"
+        defaultValue={el.value ?? ''}
+        appearance="outline"
+        size="small"
+        onChange={onBlur}
+        style={inputStyle}
+        autoFocus
+      />
+      {children}
+    </div>
+  )
+}

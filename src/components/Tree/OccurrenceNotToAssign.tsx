@@ -1,43 +1,42 @@
-import { memo, useMemo } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const OccurrenceNotToAssignNode = memo(
-  ({ projectId, subprojectId, nav, level = 6 }) => {
-    const location = useLocation()
+export const OccurrenceNotToAssignNode = ({
+  projectId,
+  subprojectId,
+  nav,
+  level = 6,
+}) => {
+  const location = useLocation()
 
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const ownArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'occurrences-not-to-assign',
-        nav.id,
-      ],
-      [nav.id, projectId, subprojectId],
-    )
-    const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const ownArray = [
+    'data',
+    'projects',
+    projectId,
+    'subprojects',
+    subprojectId,
+    'occurrences-not-to-assign',
+    nav.id,
+  ]
+  const ownUrl = `/${ownArray.join('/')}`
 
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    return (
-      <>
-        <Node
-          label={nav.label}
-          id={nav.id}
-          level={level}
-          isInActiveNodeArray={isInActiveNodeArray}
-          isActive={isActive}
-          childrenCount={0}
-          to={ownUrl}
-        />
-      </>
-    )
-  },
-)
+  return (
+    <>
+      <Node
+        label={nav.label}
+        id={nav.id}
+        level={level}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={0}
+        to={ownUrl}
+      />
+    </>
+  )
+}

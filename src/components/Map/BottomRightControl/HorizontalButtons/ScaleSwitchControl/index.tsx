@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 
@@ -32,13 +32,13 @@ const textStyle = {
   height: 30,
 }
 
-export const ScaleSwitchControl = memo(() => {
+export const ScaleSwitchControl = () => {
   const map = useMap()
 
   const [scale, setScale] = useState(1)
 
   const [open, setOpen] = useState(false)
-  const close = useCallback(() => setOpen(false), [])
+  const close = () => setOpen(false)
 
   // pixels per meter are needed if ratio: true.
   const [pixelsInMeterWidth, setPixelsInMeterWidth] = useState(0)
@@ -52,7 +52,7 @@ export const ScaleSwitchControl = memo(() => {
     setPixelsInMeterWidth(px)
   }, [scale])
 
-  const updateScale = useCallback(() => {
+  const updateScale = () => {
     if (!(map.getSize().x > 0)) return
 
     const bounds = map.getBounds()
@@ -62,14 +62,14 @@ export const ScaleSwitchControl = memo(() => {
       (pixelsInMeterWidth * mapWidth) / map.options.crs.scale(map.getZoom())
     const scale = Math.round(ratio / 1000) * 1000
     setScale(scale)
-  }, [map, pixelsInMeterWidth])
+  }
 
   useMapEvents({
     moveend: updateScale,
     zoomend: updateScale,
   })
 
-  const onClick = useCallback(() => setOpen(!open), [open])
+  const onClick = () => setOpen(!open)
 
   const { width, ref } = useResizeDetector({
     handleHeight: false,
@@ -96,4 +96,4 @@ export const ScaleSwitchControl = memo(() => {
       </div>
     </div>
   )
-})
+}

@@ -1,8 +1,7 @@
-import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
-export const RadioGroupFromOptions = memo((props) => {
+export const RadioGroupFromOptions = (props) => {
   const {
     name,
     label,
@@ -27,17 +26,14 @@ export const RadioGroupFromOptions = memo((props) => {
   const verticalLayout = !!width && width < 500
 
   // TODO: enable nulling when clicking on the selected radio
-  // as in other RedioGroup components
+  // as in other RadioGroup components
   // do this when this component is actually used (not used now)
-  const onChange = useCallback(
-    (e, data) => {
-      const fakeEvent = {
-        target: { name, value: data.value },
-      }
-      onChangePassed(fakeEvent)
-    },
-    [name, onChangePassed],
-  )
+  const onChange = (e, data) => {
+    const fakeEvent = {
+      target: { name, value: data.value },
+    }
+    onChangePassed(fakeEvent)
+  }
 
   return (
     <Field
@@ -66,4 +62,4 @@ export const RadioGroupFromOptions = memo((props) => {
       </RadioGroup>
     </Field>
   )
-})
+}

@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 const containerStyle = {
   padding: 10,
 }
@@ -8,7 +6,7 @@ const titleStyle = {
   paddingBottom: 5,
 }
 
-export const Container = memo(({ children, layer, isLast }) => (
+export const Container = ({ children, layer, isLast }) => (
   <section
     style={{
       ...containerStyle,
@@ -19,4 +17,4 @@ export const Container = memo(({ children, layer, isLast }) => (
     <div style={titleStyle}>{layer.label}</div>
     {children}
   </section>
-))
+)

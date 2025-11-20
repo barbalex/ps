@@ -1,10 +1,9 @@
-import { memo, useCallback, useMemo } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 import { Tooltip } from '@fluentui/react-components'
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 
-export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
+export const Label = ({ navData, outerContainerRef, labelStyle, ref }) => {
   const { pathname } = useLocation()
 
   // issue: relative paths are not working!!!???
@@ -21,7 +20,7 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
   //   ownUrl: navData.ownUrl,
   // })
 
-  const onClick = useCallback(() => {
+  const onClick = () => {
     // 1. ensure the clicked element is visible
     const element = outerContainerRef.current
     if (!element) return
@@ -43,41 +42,31 @@ export const Label = memo(({ navData, outerContainerRef, labelStyle, ref }) => {
     //   search,
     //   navigate,
     // })
-  }, [outerContainerRef])
+  }
 
-  const label = useMemo(
-    () =>
-      linksToSomewhereElse ?
-        <Link
-          className="crumb-label-link"
-          to={navData.ownUrl}
-          onClick={onClick}
-          ref={ref}
-          style={labelStyle}
-        >
-          {navData.labelShort ?? navData.label}
-        </Link>
-      : <div
-          className="crumb-label-text"
-          ref={ref}
-          style={labelStyle}
-        >
-          {navData.labelShort ?? navData.label}
-        </div>,
-    [
-      linksToSomewhereElse,
-      navData.ownUrl,
-      navData.labelShort,
-      navData.label,
-      onClick,
-      ref,
-      labelStyle,
-    ],
-  )
+  const label =
+    linksToSomewhereElse ?
+      <Link
+        className="crumb-label-link"
+        to={navData.ownUrl}
+        onClick={onClick}
+        ref={ref}
+        style={labelStyle}
+      >
+        {navData.labelShort ?? navData.label}
+      </Link>
+    : <div
+        className="crumb-label-text"
+        ref={ref}
+        style={labelStyle}
+      >
+        {navData.labelShort ?? navData.label}
+      </div>
 
   // tooltip can mess with touch, so hide it on touch devices
   if (!matchMedia('(pointer: coarse)').matches) {
     return <Tooltip content={navData.label}>{label}</Tooltip>
   }
+
   return label
-})
+}

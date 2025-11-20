@@ -1,4 +1,4 @@
-import { useState, memo, useCallback, useMemo } from 'react'
+import { useState } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from '@tanstack/react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -21,7 +21,24 @@ const containerStyle = {
   background: 'rgba(255, 255, 255, 0.7)',
 }
 
-export const CoordinatesControl = memo(() => {
+const getCoordinates = ({
+  map,
+  center,
+  projectMapPresentationCrs,
+  projectCrs,
+}) => {
+  if (!map) return null
+  if (!center) return null
+  const [x, y] = epsgFrom4326({
+    x: center.lng,
+    y: center.lat,
+    projectMapPresentationCrs,
+    crs: projectCrs.find((cr) => cr.code === projectMapPresentationCrs),
+  })
+  return { x: round(x), y: round(y) }
+}
+
+export const CoordinatesControl = () => {
   const map = useMap()
   const bounds = map.getBounds()
   const center = bounds.getCenter()
@@ -42,23 +59,18 @@ export const CoordinatesControl = memo(() => {
     [projectId],
     'project_crs_id',
   )
-  const projectCrs = useMemo(() => resProjectCrs?.rows ?? [], [resProjectCrs])
+  const projectCrs = resProjectCrs?.rows ?? []
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [renderCount, setRenderCount] = useState(0)
-  const rerender = useCallback(() => setRenderCount((prev) => prev + 1), [])
+  const rerender = () => setRenderCount((prev) => prev + 1)
 
-  const coordinates = useMemo(() => {
-    if (!map) return null
-    if (!center) return null
-    const [x, y] = epsgFrom4326({
-      x: center.lng,
-      y: center.lat,
-      projectMapPresentationCrs,
-      crs: projectCrs.find((cr) => cr.code === projectMapPresentationCrs),
-    })
-    return { x: round(x), y: round(y) }
-  }, [center, projectCrs, map, projectMapPresentationCrs])
+  const coordinates = getCoordinates({
+    map,
+    center,
+    projectMapPresentationCrs,
+    projectCrs,
+  })
 
   useMapEvent('dragend', rerender)
 
@@ -72,4 +84,4 @@ export const CoordinatesControl = memo(() => {
       <ChooseCrs />
     </div>
   )
-})
+}

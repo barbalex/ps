@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo, useCallback } from 'react'
+import { useRef, useEffect } from 'react'
 import { Toolbar, ToolbarButton } from '@fluentui/react-components'
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { useMap } from 'react-leaflet'
@@ -31,12 +31,12 @@ const toolbarButtonStyle = {
   height: 40,
 }
 
-export const VerticalButtons = memo(() => {
+export const VerticalButtons = () => {
   const map = useMap()
 
-  const onClickZoomIn = useCallback(() => map.zoomIn(), [map])
+  const onClickZoomIn = () => map.zoomIn()
 
-  const onClickZoomOut = useCallback(() => map.zoomOut(), [map])
+  const onClickZoomOut = () => map.zoomOut()
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -79,4 +79,4 @@ export const VerticalButtons = memo(() => {
       </Toolbar>
     </div>
   )
-})
+}

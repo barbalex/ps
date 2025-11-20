@@ -1,4 +1,4 @@
-import { useState, memo, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 import { pipe } from 'remeda'
 
@@ -22,96 +22,91 @@ const inputStyle = {
   // fieldSizing: 'content',
 }
 
-export const Inputs = memo(
-  ({ coordinates: coordsIn, projectMapPresentationCrs }) => {
-    const map = useMap()
+export const Inputs = ({
+  coordinates: coordsIn,
+  projectMapPresentationCrs,
+}) => {
+  const map = useMap()
 
-    const [coordinates, setCoordinates] = useState(coordsIn)
-    // update coordinates when coordsIn changes
-    useEffect(() => {
-      setCoordinates(coordsIn)
-    }, [coordsIn])
+  const [coordinates, setCoordinates] = useState(coordsIn)
+  // update coordinates when coordsIn changes
+  useEffect(() => {
+    setCoordinates(coordsIn)
+  }, [coordsIn])
 
-    const onChange = useCallback(
-      (e) => {
-        const name = e.target.name
-        const value = parseFloat(e.target.value)
-        const newCoordinates = { ...coordinates, [name]: value }
-        setCoordinates(newCoordinates)
-      },
-      [coordinates],
-    )
+  const onChange = (e) => {
+    const name = e.target.name
+    const value = parseFloat(e.target.value)
+    const newCoordinates = { ...coordinates, [name]: value }
+    setCoordinates(newCoordinates)
+  }
 
-    const onBlur = useCallback(() => {
-      const [x, y] = epsgTo4326({
-        x: coordinates.x,
-        y: coordinates.y,
-        projectMapPresentationCrs,
-      })
-      map.setView([x, y])
-    }, [coordinates.x, coordinates.y, map, projectMapPresentationCrs])
+  const onBlur = () => {
+    const [x, y] = epsgTo4326({
+      x: coordinates.x,
+      y: coordinates.y,
+      projectMapPresentationCrs,
+    })
+    map.setView([x, y])
+  }
 
-    const onKeyDown = useCallback(
-      (e) => {
-        if (e.key === 'Enter') {
-          onBlur()
-          // unfocus input
-          e.target.blur()
-        }
-      },
-      [onBlur],
-    )
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onBlur()
+      // unfocus input
+      e.target.blur()
+    }
+  }
 
-    return (
-      <div style={containerStyle}>
-        <input
-          type="text"
-          name="x"
-          value={coordinates?.x ?? '...'}
-          style={pipe(
-            {
-              ...inputStyle,
-              textAlign: 'right',
-            },
-            on('&:focus-visible', {
-              outline: 'none',
-            }),
-            on('@supports not (field-sizing: content)', {
-              width: 63,
-            }),
-            on('@supports (field-sizing: content)', {
-              fieldSizing: 'content',
-            }),
-          )}
-          onBlur={onBlur}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
-        />
-        {`/`}
-        <input
-          type="text"
-          name="y"
-          value={coordinates?.y ?? '...'}
-          style={pipe(
-            {
-              ...inputStyle,
-              textAlign: 'left',
-            },
-            on('&:focus-visible', {
-              outline: 'none',
-            }),
-            on('@supports not (field-sizing: content)', {
-              width: 63,
-            }),
-            on('@supports (field-sizing: content)', {
-              fieldSizing: 'content',
-            }),
-          )}
-          onBlur={onBlur}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
-        />
-      </div>
-    )
-  },
-)
+  return (
+    <div style={containerStyle}>
+      <input
+        type="text"
+        name="x"
+        value={coordinates?.x ?? '...'}
+        style={pipe(
+          {
+            ...inputStyle,
+            textAlign: 'right',
+          },
+          on('&:focus-visible', {
+            outline: 'none',
+          }),
+          on('@supports not (field-sizing: content)', {
+            width: 63,
+          }),
+          on('@supports (field-sizing: content)', {
+            fieldSizing: 'content',
+          }),
+        )}
+        onBlur={onBlur}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+      />
+      {`/`}
+      <input
+        type="text"
+        name="y"
+        value={coordinates?.y ?? '...'}
+        style={pipe(
+          {
+            ...inputStyle,
+            textAlign: 'left',
+          },
+          on('&:focus-visible', {
+            outline: 'none',
+          }),
+          on('@supports not (field-sizing: content)', {
+            width: 63,
+          }),
+          on('@supports (field-sizing: content)', {
+            fieldSizing: 'content',
+          }),
+        )}
+        onBlur={onBlur}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+      />
+    </div>
+  )
+}

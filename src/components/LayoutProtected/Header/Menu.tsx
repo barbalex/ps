@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import {
   Button,
   Toolbar,
@@ -57,7 +56,7 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 
 // TODO:
 // use overflow menu for tabs and app-states
-export const Menu = memo(() => {
+export const Menu = () => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const navigate = useNavigate()
   const canGoBack = useCanGoBack()
@@ -70,40 +69,31 @@ export const Menu = memo(() => {
   const isAppStates = pathname.includes('app-states')
 
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
-  const onChangeTabs = useCallback(
-    (e, { checkedItems }) => setTabs(checkedItems),
-    [setTabs],
-  )
+  const onChangeTabs = (e, { checkedItems }) => setTabs(checkedItems)
 
-  const onClickOptions = useCallback(() => {
+  const onClickOptions = () => {
     if (isAppStates) {
       return canGoBack ? history.go(-1) : navigate({ to: '/data' })
     }
 
     navigate({ to: `/data/app-states` })
-  }, [canGoBack, history, isAppStates, navigate])
+  }
 
-  const onClickLogout = useCallback(() => logout(), [logout])
-  const onClickEnter = useCallback(
-    () => navigate({ to: '/data/projects' }),
-    [navigate],
-  )
+  const onClickLogout = logout
+  const onClickEnter = () => navigate({ to: '/data/projects' })
 
-  const onClickMapView = useCallback(
-    (e) => {
-      // prevent toggling map tab
-      e.stopPropagation()
+  const onClickMapView = (e) => {
+    // prevent toggling map tab
+    e.stopPropagation()
 
-      // if map is not included in app_sate.tabs, add it
-      if (!tabs.includes('map')) {
-        setTabs([...tabs, 'map'])
-      }
+    // if map is not included in app_sate.tabs, add it
+    if (!tabs.includes('map')) {
+      setTabs([...tabs, 'map'])
+    }
 
-      // toggle map maximized
-      setMapIsMaximized(!mapIsMaximized)
-    },
-    [mapIsMaximized, setMapIsMaximized, setTabs, tabs],
-  )
+    // toggle map maximized
+    setMapIsMaximized(!mapIsMaximized)
+  }
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
@@ -215,4 +205,4 @@ export const Menu = memo(() => {
       </Tooltip>
     </div>
   )
-})
+}

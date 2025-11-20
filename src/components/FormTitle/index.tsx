@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 import './style.css'
 
 const containerStyle = {
@@ -31,23 +29,21 @@ const titleStyle = {
   textOverflow: 'ellipsis',
 }
 
-export const FormTitle = memo(
-  ({ title, MenuComponent = null, menuProps = {} }) => {
-    return (
-      <div
-        style={containerStyle}
-        className="form-title-container"
-      >
-        <div style={titleRowStyle}>
-          <div style={titleStyle}>{title}</div>
-          {!!MenuComponent && (
-            <MenuComponent
-              toggleFilterInput={toggleFilterInput}
-              {...menuProps}
-            />
-          )}
-        </div>
+export const FormTitle = ({ title, MenuComponent = null, menuProps = {} }) => {
+  return (
+    <div
+      style={containerStyle}
+      className="form-title-container"
+    >
+      <div style={titleRowStyle}>
+        <div style={titleStyle}>{title}</div>
+        {!!MenuComponent && (
+          <MenuComponent
+            toggleFilterInput={toggleFilterInput}
+            {...menuProps}
+          />
+        )}
       </div>
-    )
-  },
-)
+    </div>
+  )
+}

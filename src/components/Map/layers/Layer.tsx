@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react'
 import { Pane } from 'react-leaflet'
 import {
   useLiveIncrementalQuery,
@@ -9,7 +8,7 @@ import { useParams } from '@tanstack/react-router'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
-import { VectorLayerChooser } from './VectorLayer/index.tsx'
+// import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { mapLayerSortingAtom } from '../../../store.ts'
 
@@ -19,7 +18,7 @@ const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 // layerPresentationId should be uuid for queries. Need to convert
 // TODO: only load layers of active project
 // 99999999-9999-9999-9999-999999999999
-export const Layer = memo(({ layerPresentationId, index }) => {
+export const Layer = ({ layerPresentationId, index }) => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
@@ -39,7 +38,7 @@ export const Layer = memo(({ layerPresentationId, index }) => {
       AND wms_layers.project_id = $2`,
     [layerPresentationId, projectId],
   )
-  const wmsLayer = useMemo(() => resWms?.rows?.[0], [resWms])
+  const wmsLayer = resWms?.rows?.[0]
 
   const resVector = useLiveQuery(
     `
@@ -52,7 +51,7 @@ export const Layer = memo(({ layerPresentationId, index }) => {
       AND vl.project_id = $2`,
     [layerPresentationId, projectId],
   )
-  const vectorLayer = useMemo(() => resVector?.rows?.[0], [resVector])
+  const vectorLayer = resVector?.rows?.[0]
   const isWfsLayer = vectorLayer?.type === 'wfs'
   const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
 
@@ -151,4 +150,4 @@ export const Layer = memo(({ layerPresentationId, index }) => {
   }
 
   return null
-})
+}

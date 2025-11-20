@@ -1,8 +1,7 @@
-import { memo } from 'react'
 import { useMatches } from '@tanstack/react-router'
 import { TransitionGroup } from 'react-transition-group'
 
-import { FetcherImporter } from './FetcherImporter.tsx'
+import { FetcherRouter } from './FetcherRouter.tsx'
 
 const containerStyle = {
   display: 'flex',
@@ -22,14 +21,12 @@ const containerStyle = {
 }
 
 // this component extracts matches
-export const Breadcrumbs = memo(() => {
+export const Breadcrumbs = () => {
   const unfilteredMatches = useMatches()
   const navDataFetchers = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
     .map((match) => match.context.navDataFetcher)
     .reverse()
-
-  // console.log('Breadcrumbs, navDataFetchers', navDataFetchers)
 
   // flex-direction row-reverse combined with reverse order of matches
   // to align bookmarks to the right, but still have them in order
@@ -37,7 +34,7 @@ export const Breadcrumbs = memo(() => {
     <div style={containerStyle}>
       <TransitionGroup component={null}>
         {navDataFetchers.map((fetcherName) => (
-          <FetcherImporter
+          <FetcherRouter
             key={fetcherName}
             fetcherName={fetcherName}
           />
@@ -45,4 +42,4 @@ export const Breadcrumbs = memo(() => {
       </TransitionGroup>
     </div>
   )
-})
+}

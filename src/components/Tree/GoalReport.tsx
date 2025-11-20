@@ -1,4 +1,3 @@
-import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
@@ -9,80 +8,71 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const GoalReportNode = memo(
-  ({ projectId, subprojectId, goalId, nav, level = 8 }) => {
-    const [openNodes] = useAtom(treeOpenNodesAtom)
-    const location = useLocation()
-    const navigate = useNavigate()
+export const GoalReportNode = ({
+  projectId,
+  subprojectId,
+  goalId,
+  nav,
+  level = 8,
+}) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const location = useLocation()
+  const navigate = useNavigate()
 
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const parentArray = useMemo(
-      () => [
-        'data',
-        'projects',
-        projectId,
-        'subprojects',
-        subprojectId,
-        'goals',
-        goalId,
-        'reports',
-      ],
-      [goalId, projectId, subprojectId],
-    )
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(
-      () => [...parentArray, nav.id],
-      [nav.id, parentArray],
-    )
-    const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'subprojects',
+    subprojectId,
+    'goals',
+    goalId,
+    'reports',
+  ]
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, nav.id]
+  const ownUrl = `/${ownArray.join('/')}`
 
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({ node: ownArray })
-        // only navigate if urlPath includes ownArray
-        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({ to: parentUrl })
-        }
-        return
+  const onClickButton = () => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
       }
-      // add to openNodes without navigating
-      addOpenNodes({ nodes: [ownArray] })
-    }, [
-      isInActiveNodeArray,
-      isOpen,
-      navigate,
-      ownArray,
-      parentUrl,
-      urlPath.length,
-    ])
+      return
+    }
+    // add to openNodes without navigating
+    addOpenNodes({ nodes: [ownArray] })
+  }
 
-    return (
-      <>
-        <Node
-          label={nav.label}
-          id={nav.id}
-          level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isInActiveNodeArray}
-          isActive={isActive}
-          childrenCount={10}
-          to={ownUrl}
-          onClickButton={onClickButton}
+  return (
+    <>
+      <Node
+        label={nav.label}
+        id={nav.id}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={10}
+        to={ownUrl}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <GoalReportValuesNode
+          projectId={projectId}
+          subprojectId={subprojectId}
+          goalId={goalId}
+          goalReportId={nav.id}
         />
-        {isOpen && (
-          <GoalReportValuesNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            goalId={goalId}
-            goalReportId={nav.id}
-          />
-        )}
-      </>
-    )
-  },
-)
+      )}
+    </>
+  )
+}

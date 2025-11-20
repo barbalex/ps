@@ -1,4 +1,4 @@
-import { useCallback, useEffect, memo } from 'react'
+import { useEffect } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
 import {
   MdClose as CloseIcon,
@@ -52,7 +52,7 @@ const colorMap = {
   warning: 'orange',
 }
 
-export const Notification = memo(({ notification }) => {
+export const Notification = ({ notification }) => {
   const db = usePGlite()
   const {
     notification_id,
@@ -64,11 +64,11 @@ export const Notification = memo(({ notification }) => {
     progress_percent,
   } = notification
 
-  const onClickClose = useCallback(() => {
+  const onClickClose = () => {
     db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
       notification_id,
     ])
-  }, [db, notification_id])
+  }
 
   useEffect(() => {
     let timeoutId
@@ -97,16 +97,15 @@ export const Notification = memo(({ notification }) => {
     <div style={containerStyle}>
       <div style={titleRowStyle}>
         <div style={iconAndTitleStyle}>
-          {paused === true ? (
+          {paused === true ?
             <Spinner size="small" />
-          ) : (
-            <>
+          : <>
               {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
               {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
             </>
-          )}
+          }
           {!!title && <div style={titleStyle}>{title}</div>}
         </div>
         <Button
@@ -121,4 +120,4 @@ export const Notification = memo(({ notification }) => {
       <div style={messageStyle}>{body}</div>
     </div>
   )
-})
+}

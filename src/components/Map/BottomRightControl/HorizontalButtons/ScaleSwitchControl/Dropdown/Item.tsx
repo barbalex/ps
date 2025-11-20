@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { useMap } from 'react-leaflet'
 import { pipe } from 'remeda'
 
@@ -18,10 +17,10 @@ const itemStyle = {
 const getMapWidthForLanInMeters = (currentLan) =>
   6378137 * 2 * Math.PI * Math.cos((currentLan * Math.PI) / 180)
 
-export const Item = memo(({ scale, close, pixelsInMeterWidth }) => {
+export const Item = ({ scale, close, pixelsInMeterWidth }) => {
   const map = useMap()
 
-  const onClick = useCallback(() => {
+  const onClick = () => {
     const bounds = map.getBounds()
     const centerLat = bounds.getCenter().lat
     const mapWidth = getMapWidthForLanInMeters(centerLat)
@@ -29,7 +28,7 @@ export const Item = memo(({ scale, close, pixelsInMeterWidth }) => {
     const newZoom = map.options.crs.zoom(crsScale)
     map.setZoom(newZoom)
     close()
-  }, [close, map, pixelsInMeterWidth, scale])
+  }
 
   return (
     <div
@@ -39,4 +38,4 @@ export const Item = memo(({ scale, close, pixelsInMeterWidth }) => {
       {`1 : ${formatNumber(scale)}`}
     </div>
   )
-})
+}

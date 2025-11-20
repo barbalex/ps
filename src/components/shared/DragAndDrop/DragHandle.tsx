@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { MdDragIndicator } from 'react-icons/md'
 
 const dragHandleStyle = {
@@ -13,7 +12,7 @@ const dragIndicatorStyle = {
 }
 
 // receives drag handle ref
-export const DragHandle = memo(({ ref }) => (
+export const DragHandle = ({ ref }) => (
   <div
     ref={ref}
     style={dragHandleStyle}
@@ -22,4 +21,4 @@ export const DragHandle = memo(({ ref }) => (
   >
     <MdDragIndicator style={dragIndicatorStyle} />
   </div>
-))
+)

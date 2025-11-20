@@ -1,4 +1,4 @@
-import { useState, memo, useCallback } from 'react'
+import { useState } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
@@ -18,7 +18,7 @@ import {
   placesToAssignOccurrenceToAtom,
 } from '../../../../store.ts'
 
-export const TableLayer = memo(({ data, layerPresentation }) => {
+export const TableLayer = ({ data, layerPresentation }) => {
   const [confirmAssigningToSingleTarget] = useAtom(
     confirmAssigningToSingleTargetAtom,
   )
@@ -39,20 +39,17 @@ export const TableLayer = memo(({ data, layerPresentation }) => {
   const vectorLayerDisplays = layer.vector_layer_displays
   const firstDisplay = vectorLayerDisplays?.[0]
 
-  const displayFromFeature = useCallback(
-    (feature) => {
-      // display_by_property is _not_ under the data property
-      // as passing the data object to feature.properties lead to errors
-      const displayToUse = (vectorLayerDisplays ?? []).find(
-        (vld) =>
-          vld.display_property_value ===
-          feature.properties?.[layer?.display_by_property],
-      )
+  const displayFromFeature = (feature) => {
+    // display_by_property is _not_ under the data property
+    // as passing the data object to feature.properties lead to errors
+    const displayToUse = (vectorLayerDisplays ?? []).find(
+      (vld) =>
+        vld.display_property_value ===
+        feature.properties?.[layer?.display_by_property],
+    )
 
-      return displayToUse ?? firstDisplay
-    },
-    [firstDisplay, layer?.display_by_property, vectorLayerDisplays],
-  )
+    return displayToUse ?? firstDisplay
+  }
 
   const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
@@ -138,8 +135,9 @@ export const TableLayer = memo(({ data, layerPresentation }) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
-          const marker = IconComponent
-            ? L.marker(latlng, {
+          const marker =
+            IconComponent ?
+              L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -212,4 +210,4 @@ export const TableLayer = memo(({ data, layerPresentation }) => {
       />
     </ErrorBoundary>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
@@ -24,7 +23,7 @@ import {
 const openItemsAtom = atom([])
 
 // TODO: this component re-renders indefinitely
-export const VectorLayers = memo(() => {
+export const VectorLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -48,7 +47,7 @@ export const VectorLayers = memo(() => {
   const res = useLiveQuery(sql, [projectId])
   const vectors = res?.rows ?? []
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createVectorLayer({ projectId, type: 'wfs', db })
     const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
@@ -62,29 +61,26 @@ export const VectorLayers = memo(() => {
       db,
     })
     setOpenItems([openItems, vectorLayer.vector_layer_id])
-  }, [db, openItems, projectId, setOpenItems])
+  }
 
-  const onToggleItem = useCallback(
-    (event, { value: vectorLayerId, openItems }) => {
-      // use setTimeout to let the child checkbox set the layers active status
-      setTimeout(async () => {
-        // fetch layerPresentation's active status
-        const res = await db.query(
-          `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
-          [vectorLayerId],
-        )
-        const isActive = res?.rows?.[0]?.active
-        if (isActive) {
-          // if not active, remove this item
-          const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
-          setOpenItems(newOpenItems)
-          return
-        }
-        setOpenItems(openItems)
-      }, 200)
-    },
-    [db, setOpenItems],
-  )
+  const onToggleItem = (event, { value: vectorLayerId, openItems }) => {
+    // use setTimeout to let the child checkbox set the layers active status
+    setTimeout(async () => {
+      // fetch layerPresentation's active status
+      const res = await db.query(
+        `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
+        [vectorLayerId],
+      )
+      const isActive = res?.rows?.[0]?.active
+      if (isActive) {
+        // if not active, remove this item
+        const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
+        setOpenItems(newOpenItems)
+        return
+      }
+      setOpenItems(openItems)
+    }, 200)
+  }
 
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
@@ -135,4 +131,4 @@ export const VectorLayers = memo(() => {
       </section>
     </ErrorBoundary>
   )
-})
+}

@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
@@ -50,7 +50,7 @@ import { on } from '../../../../../css.ts'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
+export const VectorLayer = ({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
@@ -67,7 +67,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
     }
   }, [layer.wfs_service_id, layer.wfs_service_layer_name])
 
-  const onChange = useCallback(async () => {
+  const onChange = async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
       // create the missing layer_presentation
       await createLayerPresentation({
@@ -81,25 +81,16 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
         [layer.layer_presentations?.[0]?.layer_presentation_id],
       )
     }
-  }, [db, layer.layer_presentations, layer.vector_layer_id])
+  }
 
-  const onTabSelect = useCallback(
-    (event, data: SelectTabData) => setTab(data.value),
-    [],
-  )
+  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
 
-  const onClickFeatureDisplays = useCallback(
-    () => setVectorLayerDisplayId(null),
-    [setVectorLayerDisplayId],
-  )
+  const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
-  const onDelete = useCallback(
-    () =>
-      db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
-        layer.vector_layer_id,
-      ]),
-    [db, layer.vector_layer_id],
-  )
+  const onDelete = () =>
+    db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
+      layer.vector_layer_id,
+    ])
 
   return (
     <ErrorBoundary>
@@ -204,4 +195,4 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
       </AccordionItem>
     </ErrorBoundary>
   )
-})
+}

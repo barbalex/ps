@@ -1,9 +1,9 @@
-import { memo, useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Marker, Popup, useMap } from 'react-leaflet'
 import { MdCenterFocusWeak } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
 
-export const CenterMarker = memo(() => {
+export const CenterMarker = () => {
   const map = useMap()
 
   const [center, setCenter] = useState(null)
@@ -50,4 +50,4 @@ export const CenterMarker = memo(() => {
       <Popup>Map Center</Popup>
     </Marker>
   )
-})
+}

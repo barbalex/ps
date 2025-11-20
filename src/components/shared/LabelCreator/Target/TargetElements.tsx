@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
@@ -54,61 +53,64 @@ const elementContainerStyle = {
  * 3. remind user to first define the fields
  */
 
-export const TargetElements = memo(
-  ({ label, onChange, isDraggingOver, provided }) => (
-    <div
-      style={{
-        ...targetContainerStyle,
-        backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
-        transition: 'background-color 0.2s ease',
-      }}
-      ref={provided.innerRef}
-      {...provided.droppableProps}
-    >
-      {label.map((labelElement, index) => (
-        <Draggable
-          key={labelElement.id}
-          draggableId={labelElement.id}
-          index={index}
-        >
-          {(provided, snapshot) => (
-            <div
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              ref={provided.innerRef}
-              style={elementContainerStyle}
-            >
-              {labelElement.type === 'field' ? (
-                <div
-                  style={{
-                    ...fieldElementStyle,
-                    backgroundColor: snapshot.isDragging
-                      ? 'rgba(38, 82, 37, 0.9)'
-                      : 'rgba(103, 216, 101, 0.07)',
-                    color: snapshot.isDragging ? 'white' : 'black',
-                    ...provided.draggableProps.style,
-                  }}
-                >
-                  {labelElement.value}
-                  <BsArrowsMove style={fieldHandleStyle} />
-                </div>
-              ) : (
-                <BetweenCharacters
-                  el={labelElement}
-                  label={label}
-                  onChange={onChange}
-                  index={index}
-                  snapshot={snapshot}
-                  provided={provided}
-                >
-                  <BsArrowsMove style={fieldHandleStyle} />
-                </BetweenCharacters>
-              )}
-            </div>
-          )}
-        </Draggable>
-      ))}
-      {provided.placeholder}
-    </div>
-  ),
+export const TargetElements = ({
+  label,
+  onChange,
+  isDraggingOver,
+  provided,
+}) => (
+  <div
+    style={{
+      ...targetContainerStyle,
+      backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
+      transition: 'background-color 0.2s ease',
+    }}
+    ref={provided.innerRef}
+    {...provided.droppableProps}
+  >
+    {label.map((labelElement, index) => (
+      <Draggable
+        key={labelElement.id}
+        draggableId={labelElement.id}
+        index={index}
+      >
+        {(provided, snapshot) => (
+          <div
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+            style={elementContainerStyle}
+          >
+            {labelElement.type === 'field' ?
+              <div
+                style={{
+                  ...fieldElementStyle,
+                  backgroundColor:
+                    snapshot.isDragging ?
+                      'rgba(38, 82, 37, 0.9)'
+                    : 'rgba(103, 216, 101, 0.07)',
+                  color: snapshot.isDragging ? 'white' : 'black',
+                  ...provided.draggableProps.style,
+                }}
+              >
+                {labelElement.value}
+                <BsArrowsMove style={fieldHandleStyle} />
+              </div>
+            : <BetweenCharacters
+                el={labelElement}
+                label={label}
+                onChange={onChange}
+                index={index}
+                snapshot={snapshot}
+                provided={provided}
+              >
+                <BsArrowsMove style={fieldHandleStyle} />
+              </BetweenCharacters>
+            }
+          </div>
+        )}
+      </Draggable>
+    ))}
+    {provided.placeholder}
+  </div>
 )

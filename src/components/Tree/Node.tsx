@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import {
   MdChevronRight as ClosedWithChildrenIcon,
   MdExpandMore as OpenWithChildrenIcon,
@@ -73,70 +72,68 @@ interface Props {
   sibling?: React.ReactNode
 }
 
-export const Node = memo(
-  ({
-    isInActiveNodeArray = false,
-    isActive,
-    isOpen = false,
-    level,
-    label,
-    // id is used as a backup in case the label trigger did not work
-    id,
-    childrenCount,
-    to,
-    toParams = {},
-    onClickButton,
-    sibling,
-  }: Props) => {
-    // console.log('hello level:', level)
+export const Node = ({
+  isInActiveNodeArray = false,
+  isActive,
+  isOpen = false,
+  level,
+  label,
+  // id is used as a backup in case the label trigger did not work
+  id,
+  childrenCount,
+  to,
+  toParams = {},
+  onClickButton,
+  sibling,
+}: Props) => {
+  // console.log('hello level:', level)
 
-    return (
-      <div
+  return (
+    <div
+      style={{
+        ...containerStyle,
+        fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
+        ...(isActive && { color: 'red' }),
+        gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
+      }}
+    >
+      <div style={spacerStyle} />
+      <Button
+        aria-label="toggle"
+        size="small"
+        icon={
+          !childrenCount ? <NoChildrenIcon style={svgStyle} />
+          : isOpen ?
+            <OpenWithChildrenIcon style={svgStyle} />
+          : <ClosedWithChildrenIcon style={svgStyle} />
+        }
+        onClick={onClickButton}
+        disabled={!childrenCount}
         style={{
-          ...containerStyle,
-          fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
-          ...(isActive && { color: 'red' }),
-          gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
+          ...toggleStyle,
+          ...(!childrenCount && { cursor: 'default' }),
         }}
-      >
-        <div style={spacerStyle} />
-        <Button
-          aria-label="toggle"
-          size="small"
-          icon={
-            !childrenCount ? <NoChildrenIcon style={svgStyle} />
-            : isOpen ?
-              <OpenWithChildrenIcon style={svgStyle} />
-            : <ClosedWithChildrenIcon style={svgStyle} />
-          }
-          onClick={onClickButton}
-          disabled={!childrenCount}
-          style={{
-            ...toggleStyle,
-            ...(!childrenCount && { cursor: 'default' }),
-          }}
-        />
-        <div style={contentStyle}>
-          {isActive ?
-            <span style={contentLabelStyle}>
-              {label ?? id ?? '(missing label)'}
-            </span>
-          : <Link
-              style={pipe(
-                contentLinkStyle,
-                on('&:hover', {
-                  fontWeight: 'bold',
-                }),
-              )}
-              to={to}
-              params={toParams}
-            >
-              {label ?? id ?? '(missing label)'}
-            </Link>
-          }
-          {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}
-        </div>
+      />
+      <div style={contentStyle}>
+        {isActive ?
+          <span style={contentLabelStyle}>
+            {label ?? id ?? '(missing label)'}
+          </span>
+        : <Link
+            style={pipe(
+              contentLinkStyle,
+              on('&:hover', {
+                fontWeight: 'bold',
+              }),
+            )}
+            to={to}
+            params={toParams}
+          >
+            {label ?? id ?? '(missing label)'}
+          </Link>
+        }
+        {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}
       </div>
-    )
-  },
-)
+    </div>
+  )
+}

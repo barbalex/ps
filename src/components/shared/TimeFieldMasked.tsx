@@ -1,11 +1,16 @@
-import { memo } from 'react'
 import { Field } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { IMaskInput } from 'react-imask'
 
-export const TimeFieldMasked = memo((props: InputProps) => {
-  const { label, validationMessage, validationState, autoFocus, onChange } =
-    props
+export const TimeFieldMasked = (props: InputProps) => {
+  const {
+    name,
+    label,
+    validationMessage,
+    validationState,
+    autoFocus,
+    onChange,
+  } = props
 
   return (
     <Field
@@ -23,10 +28,10 @@ export const TimeFieldMasked = memo((props: InputProps) => {
         onAccept={(value) => {
           if (value.includes('_')) return
           console.log('onAccept', { value })
-          onChange({ target: { name.name, value } })
+          onChange({ target: { name, value } })
         }}
         type="text"
       />
     </Field>
   )
-})
+}

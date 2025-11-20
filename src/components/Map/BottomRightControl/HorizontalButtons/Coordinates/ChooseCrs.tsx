@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import {
   Button,
   Menu,
@@ -11,7 +10,7 @@ import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-export const ChooseCrs = memo(() => {
+export const ChooseCrs = () => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
@@ -36,17 +35,14 @@ export const ChooseCrs = memo(() => {
       { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }
 
-  const onChange = useCallback(
-    (e, { name, checkedItems }) => {
-      // set projects.map_presentation_crs
-      db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
-        checkedItems?.[0] ?? null,
-        projectId,
-      ])
-      // TODO: make coordinates update
-    },
-    [db, projectId],
-  )
+  const onChange = (e, { name, checkedItems }) => {
+    // set projects.map_presentation_crs
+    db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
+      checkedItems?.[0] ?? null,
+      projectId,
+    ])
+    // TODO: make coordinates update
+  }
 
   if (projectId === '99999999-9999-9999-9999-999999999999') return null
   // single projectCrs: that will be chosen by default
@@ -83,4 +79,4 @@ export const ChooseCrs = memo(() => {
       </MenuPopover>
     </Menu>
   )
-})
+}

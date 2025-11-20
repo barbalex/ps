@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
@@ -6,11 +6,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import {
-  usePGlite,
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
@@ -39,7 +35,7 @@ const noLayersStyle = {
   paddingBottom: 10,
 }
 
-export const ActiveLayers = memo(() => {
+export const ActiveLayers = () => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
 
@@ -63,10 +59,7 @@ export const ActiveLayers = memo(() => {
     WHERE wms_layers.project_id = $1`,
     [projectId],
   )
-  const activeWmsLayers = useMemo(
-    () => resWmsLayers?.rows ?? [],
-    [resWmsLayers],
-  )
+  const activeWmsLayers = resWmsLayers?.rows ?? []
 
   const resVectorLayers = useLiveQuery(
     `
@@ -82,10 +75,7 @@ export const ActiveLayers = memo(() => {
       WHERE vector_layers.project_id = $1`,
     [projectId],
   )
-  const activeVectorLayers = useMemo(
-    () => resVectorLayers?.rows ?? [],
-    [resVectorLayers],
-  )
+  const activeVectorLayers = resVectorLayers?.rows ?? []
 
   // union queries?
   // + faster querying
@@ -93,18 +83,16 @@ export const ActiveLayers = memo(() => {
   // - need to handle different columns
 
   // sort by mapLayerSorting
-  const activeLayers = useMemo(
-    () =>
-      [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
-        const aIndex = mapLayerSorting.findIndex(
-          (ls) => ls === a.layer_presentation_id,
-        )
-        const bIndex = mapLayerSorting.findIndex(
-          (ls) => ls === b.layer_presentation_id,
-        )
-        return aIndex - bIndex
-      }),
-    [activeWmsLayers, activeVectorLayers, mapLayerSorting],
+  const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(
+    (a, b) => {
+      const aIndex = mapLayerSorting.findIndex(
+        (ls) => ls === a.layer_presentation_id,
+      )
+      const bIndex = mapLayerSorting.findIndex(
+        (ls) => ls === b.layer_presentation_id,
+      )
+      return aIndex - bIndex
+    },
   )
 
   const layerPresentationIds = activeLayers.map((l) => l.layer_presentation_id)
@@ -214,44 +202,36 @@ export const ActiveLayers = memo(() => {
     })
   }, [activeLayers, instanceId, reorderItem])
 
-  const getListLength = useCallback(
-    () => activeLayers.length,
-    [activeLayers.length],
-  )
+  const getListLength = () => activeLayers.length
 
-  const dragAndDropContextValue = useMemo(() => {
-    return {
-      registerItem: registry.register,
-      reorderItem,
-      instanceId,
-      getListLength,
-    }
-  }, [registry.register, reorderItem, instanceId, getListLength])
+  const dragAndDropContextValue = {
+    registerItem: registry.register,
+    reorderItem,
+    instanceId,
+    getListLength,
+  }
 
-  const onToggleItem = useCallback(
-    (event, { value: layerPresentationId, openItems }) => {
-      // use setTimeout to let the child checkbox set the layers active status
-      setTimeout(async () => {
-        // fetch layerPresentation's active status
-        const res = await db.query(
-          `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
-          [layerPresentationId],
+  const onToggleItem = (event, { value: layerPresentationId, openItems }) => {
+    // use setTimeout to let the child checkbox set the layers active status
+    setTimeout(async () => {
+      // fetch layerPresentation's active status
+      const res = await db.query(
+        `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
+        [layerPresentationId],
+      )
+      const layerPresentation = res?.rows?.[0]
+      const isActive = layerPresentation?.active
+      if (!isActive) {
+        // if not active, remove this item
+        const newOpenItems = openItems.filter(
+          (id) => id !== layerPresentationId,
         )
-        const layerPresentation = res?.rows?.[0]
-        const isActive = layerPresentation?.active
-        if (!isActive) {
-          // if not active, remove this item
-          const newOpenItems = openItems.filter(
-            (id) => id !== layerPresentationId,
-          )
-          setOpenItems(newOpenItems)
-          return
-        }
-        setOpenItems(openItems)
-      })
-    },
-    [db, setOpenItems],
-  )
+        setOpenItems(newOpenItems)
+        return
+      }
+      setOpenItems(openItems)
+    })
+  }
 
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
@@ -299,4 +279,4 @@ export const ActiveLayers = memo(() => {
       </DragAndDropContext.Provider>
     </ErrorBoundary>
   )
-})
+}

@@ -1,5 +1,4 @@
-import { useCallback, memo, ReactNode } from 'react'
-import type { InputProps } from '@fluentui/react-components'
+import { ReactNode } from 'react'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
@@ -14,30 +13,30 @@ type Props = {
   children: ReactNode
 }
 
-export const OrFilter = memo(
-  ({ filterName, orFilters, orIndex, children }: Props) => {
-    // when emptying an or filter, row is undefined - catch this
-    const row = orFilters?.[orIndex] ?? {}
+export const OrFilter = ({
+  filterName,
+  orFilters,
+  orIndex,
+  children,
+}: Props) => {
+  // when emptying an or filter, row is undefined - catch this
+  const row = orFilters?.[orIndex] ?? {}
 
-    const onChange = useCallback<InputProps['onChange']>(
-      (e, data) => {
-        const { name, value, targetType } = getValueFromChange(e, data)
-        setNewFilterFromOld({
-          name,
-          value,
-          orFilters,
-          orIndex,
-          filterName,
-          targetType,
-        })
-      },
-      [filterName, orFilters, orIndex],
-    )
+  const onChange = (e, data) => {
+    const { name, value, targetType } = getValueFromChange(e, data)
+    setNewFilterFromOld({
+      name,
+      value,
+      orFilters,
+      orIndex,
+      filterName,
+      targetType,
+    })
+  }
 
-    return (
-      <div className="form-container filter">
-        {children({ row, onChange, orIndex })}
-      </div>
-    )
-  },
-)
+  return (
+    <div className="form-container filter">
+      {children({ row, onChange, orIndex })}
+    </div>
+  )
+}

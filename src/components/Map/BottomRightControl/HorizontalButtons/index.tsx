@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo } from 'react'
+import { useRef, useEffect } from 'react'
 
 import { ScaleSwitchControl } from './ScaleSwitchControl/index.tsx'
 import { ScaleControl } from './ScaleControl.tsx'
@@ -23,7 +23,7 @@ const horizontalbuttonsStyle = {
 }
 
 // TODO: add: ruler, coordinates
-export const HorizontalButtons = memo(() => {
+export const HorizontalButtons = () => {
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
   const ref = useRef()
@@ -33,10 +33,13 @@ export const HorizontalButtons = memo(() => {
   }, [])
 
   return (
-    <div style={horizontalbuttonsStyle} ref={ref}>
+    <div
+      style={horizontalbuttonsStyle}
+      ref={ref}
+    >
       <ScaleControl />
       <ScaleSwitchControl />
       <CoordinatesControl />
     </div>
   )
-})
+}

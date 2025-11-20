@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
@@ -44,7 +44,7 @@ type TabType = 'overall-displays' | 'config'
 //   isOpen: boolean
 // }
 
-export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
+export const WmsLayer = ({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
@@ -56,7 +56,7 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
     }
   }, [layer.wms_service_id, layer.wms_service_layer_name])
 
-  const onChange = useCallback(async () => {
+  const onChange = async () => {
     // 1. check if layer has a presentation
     const res = await db.query(
       `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
@@ -82,20 +82,14 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
         [presentation.layer_presentation_id],
       )
     }
-  }, [db, layer.wms_layer_id])
+  }
 
-  const onTabSelect = useCallback(
-    (event, data: SelectTabData) => setTab(data.value),
-    [],
-  )
+  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
 
-  const onDelete = useCallback(
-    () =>
-      db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
-        layer.wms_layer_id,
-      ]),
-    [db, layer.wms_layer_id],
-  )
+  const onDelete = () =>
+    db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
+      layer.wms_layer_id,
+    ])
 
   return (
     <ErrorBoundary>
@@ -180,4 +174,4 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
       </AccordionItem>
     </ErrorBoundary>
   )
-})
+}

@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react'
+import { useEffect } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useSetAtom } from 'jotai'
 // import { ShapeStream, Shape } from '@electric-sql/client'
@@ -7,7 +7,7 @@ import { useShape } from '@electric-sql/react'
 import { syncingAtom } from '../store.ts'
 
 // TODO: replace with new way
-export const Syncer = memo(() => {
+export const Syncer = () => {
   const setSyncing = useSetAtom(syncingAtom)
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
@@ -285,4 +285,4 @@ export const Syncer = memo(() => {
   }, [authUser?.email])
 
   return null
-})
+}

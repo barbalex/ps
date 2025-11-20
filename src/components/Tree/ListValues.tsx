@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -13,68 +12,59 @@ interface Props {
   level?: number
 }
 
-export const ListValuesNode = memo(
-  ({ projectId, listId, level = 5 }: Props) => {
-    const navigate = useNavigate()
+export const ListValuesNode = ({ projectId, listId, level = 5 }: Props) => {
+  const navigate = useNavigate()
 
-    const { navData } = useListValuesNavData({ projectId, listId })
-    const {
-      label,
-      parentUrl,
-      ownArray,
-      ownUrl,
-      urlPath,
-      isOpen,
-      isInActiveNodeArray,
-      isActive,
-      navs,
-    } = navData
+  const { navData } = useListValuesNavData({ projectId, listId })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({ node: ownArray })
-        // only navigate if urlPath includes ownArray
-        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
-          navigate({ to: parentUrl })
-        }
-        return
+  const onClickButton = () => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
       }
-      // add to openNodes without navigating
-      addOpenNodes({ nodes: [ownArray] })
-    }, [
-      isInActiveNodeArray,
-      isOpen,
-      navigate,
-      ownArray,
-      parentUrl,
-      urlPath.length,
-    ])
+      return
+    }
+    // add to openNodes without navigating
+    addOpenNodes({ nodes: [ownArray] })
+  }
 
-    // only list navs if isOpen AND the first nav has an id
-    const showNavs = isOpen && navs.length > 0 && navs[0].id
+  // only list navs if isOpen AND the first nav has an id
+  const showNavs = isOpen && navs.length > 0 && navs[0].id
 
-    return (
-      <>
-        <Node
-          label={label}
-          level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isInActiveNodeArray}
-          isActive={isActive}
-          childrenCount={navs.length}
-          to={ownUrl}
-          onClickButton={onClickButton}
-        />
-        {showNavs &&
-          navs.map((listValue, i) => (
-            <ListValueNode
-              key={`${listValue.list_value_id}-${i}`}
-              projectId={projectId}
-              listId={listId}
-              listValue={listValue}
-            />
-          ))}
-      </>
-    )
-  },
-)
+  return (
+    <>
+      <Node
+        label={label}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={navs.length}
+        to={ownUrl}
+        onClickButton={onClickButton}
+      />
+      {showNavs &&
+        navs.map((listValue, i) => (
+          <ListValueNode
+            key={`${listValue.list_value_id}-${i}`}
+            projectId={projectId}
+            listId={listId}
+            listValue={listValue}
+          />
+        ))}
+    </>
+  )
+}

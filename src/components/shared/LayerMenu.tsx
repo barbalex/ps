@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
@@ -13,7 +12,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom } from '../../store.ts'
 
-export const LayerMenu = memo(({ table, level, placeNamePlural, from }) => {
+export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { projectId, subprojectId } = useParams({ from })
 
@@ -30,14 +29,14 @@ export const LayerMenu = memo(({ table, level, placeNamePlural, from }) => {
   const layerPresentation = res?.rows?.[0]
 
   const showLayer = layerPresentation?.active ?? false
-  const onClickShowLayer = useCallback(() => {
+  const onClickShowLayer = () => {
     db.query(
       `UPDATE layer_presentations SET active = $1 WHERE layer_presentation_id = $2`,
       [!showLayer, layerPresentation?.layer_presentation_id],
     )
-  }, [db, layerPresentation?.layer_presentation_id, showLayer])
+  }
 
-  const onClickZoomToLayer = useCallback(async () => {
+  const onClickZoomToLayer = async () => {
     // get all geometries from layer
     // first get all places with level
     // then get all actions/checks/occurrences with place_id
@@ -91,7 +90,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural, from }) => {
     const newBounds = boundsFromBbox(newBbox)
 
     setMapBounds(newBounds)
-  }, [db, subprojectId, level, table, setMapBounds])
+  }
 
   // TODO: implement onClickMapSettings
   // They should get their own url
@@ -129,4 +128,4 @@ export const LayerMenu = memo(({ table, level, placeNamePlural, from }) => {
       /> */}
     </>
   )
-})
+}

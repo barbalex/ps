@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Textarea, Field } from '@fluentui/react-components'
 import type { TextareaProps } from '@fluentui/react-components'
 
@@ -20,7 +20,7 @@ const fieldStyle = {
   width: '100%',
 }
 
-export const TextArea = memo((props: Partial<TextareaProps>) => {
+export const TextArea = (props: Partial<TextareaProps>) => {
   const {
     label,
     name,
@@ -36,19 +36,17 @@ export const TextArea = memo((props: Partial<TextareaProps>) => {
   const [stateValue, setStateValue] = useState(
     value || value === 0 ? value : '',
   )
-  const onChange = useCallback((event) => setStateValue(event.target.value), [])
   useEffect(() => {
     setStateValue(value || value === 0 ? value : '')
   }, [value])
 
-  const onKeyPress = useCallback(
-    (event) => {
-      if (event.key === 'Enter') {
-        onChangeIn(event)
-      }
-    },
-    [onChangeIn],
-  )
+  const onChange = (event) => setStateValue(event.target.value)
+
+  const onKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      onChangeIn(event)
+    }
+  }
 
   return (
     <Field
@@ -75,4 +73,4 @@ export const TextArea = memo((props: Partial<TextareaProps>) => {
       </div>
     </Field>
   )
-})
+}
