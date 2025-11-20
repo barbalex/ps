@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 import {
   ToggleButton,
   AccordionHeader,
@@ -35,7 +35,7 @@ import { on } from '../../../../../css.ts'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
+export const OwnLayer = ({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
@@ -44,7 +44,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
   const [tab, setTab] = useState<TabType>('overall-displays')
   const { pathname } = useLocation()
 
-  const onChange = useCallback(async () => {
+  const onChange = async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
       // create the missing layer_presentation
       await createLayerPresentation({
@@ -58,17 +58,11 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
         [layer.layer_presentations?.[0]?.layer_presentation_id],
       )
     }
-  }, [db, layer.layer_presentations, layer.vector_layer_id])
+  }
 
-  const onTabSelect = useCallback(
-    (event, data: SelectTabData) => setTab(data.value),
-    [],
-  )
+  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
 
-  const onClickFeatureDisplays = useCallback(
-    () => setVectorLayerDisplayId(null),
-    [setVectorLayerDisplayId],
-  )
+  const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
   return (
     <ErrorBoundary>
@@ -155,4 +149,4 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
       </AccordionItem>
     </ErrorBoundary>
   )
-})
+}

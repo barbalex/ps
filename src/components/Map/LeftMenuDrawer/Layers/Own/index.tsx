@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Accordion } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
@@ -12,7 +11,7 @@ import { layerListStyle, titleStyle, noneStyle } from '../styles.ts'
 // needs to be controlled to prevent opening when layer is deactivated
 const openItemsAtom = atom([])
 
-export const OwnLayers = memo(() => {
+export const OwnLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -41,28 +40,25 @@ export const OwnLayers = memo(() => {
   )
   const ownVectorLayers = res?.rows ?? []
 
-  const onToggleItem = useCallback(
-    (event, { value: vectorLayerId, openItems }) => {
-      // use setTimeout to let the child checkbox set the layers active status
-      setTimeout(async () => {
-        // fetch layerPresentation's active status
-        const res = await db.query(
-          `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
-          [vectorLayerId],
-        )
-        const layerPresentation = res?.rows?.[0]
-        const isActive = layerPresentation?.active
-        if (isActive) {
-          // if not active, remove this item
-          const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
-          setOpenItems(newOpenItems)
-          return
-        }
-        setOpenItems(openItems)
-      }, 200)
-    },
-    [db, setOpenItems],
-  )
+  const onToggleItem = (event, { value: vectorLayerId, openItems }) => {
+    // use setTimeout to let the child checkbox set the layers active status
+    setTimeout(async () => {
+      // fetch layerPresentation's active status
+      const res = await db.query(
+        `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
+        [vectorLayerId],
+      )
+      const layerPresentation = res?.rows?.[0]
+      const isActive = layerPresentation?.active
+      if (isActive) {
+        // if not active, remove this item
+        const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
+        setOpenItems(newOpenItems)
+        return
+      }
+      setOpenItems(openItems)
+    }, 200)
+  }
 
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
@@ -101,4 +97,4 @@ export const OwnLayers = memo(() => {
       </section>
     </ErrorBoundary>
   )
-})
+}
