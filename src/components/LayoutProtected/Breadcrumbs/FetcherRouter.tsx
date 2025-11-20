@@ -4,6 +4,8 @@ import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
+import { UsersFetcher } from './UsersFetcher.tsx'
+import { UserFetcher } from './UserFetcher.tsx'
 import { AccountsFetcher } from './AccountsFetcher.tsx'
 import { AccountFetcher } from './AccountFetcher.tsx'
 import { MessagesFetcher } from './MessagesFetcher.tsx'
@@ -36,6 +38,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useSubprojectsNavData': {
       return (
         <SubprojectsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useUsersNavData': {
+      return (
+        <UsersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useUserNavData': {
+      return (
+        <UserFetcher
           params={params}
           {...other}
         />
