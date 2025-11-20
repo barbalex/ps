@@ -93,7 +93,16 @@ export const useProjectsNavData = (params) => {
 
   const navData = getNavData({ res, isOpen, loading, isFiltered })
 
-  console.log('useProjectsNavData', { res, navData })
+  console.log('useProjectsNavData', {
+    res,
+    navData,
+    params,
+    loading,
+    sql,
+    withNavs,
+    forBreadcrumb,
+    isOpen,
+  })
 
   return { loading, navData, isFiltered }
 }
