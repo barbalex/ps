@@ -1,9 +1,8 @@
-import { memo } from 'react'
 import { Field, Slider, Label, Input } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
 
-export const SliderFieldWithInput = memo((props: InputProps) => {
+export const SliderFieldWithInput = (props: InputProps) => {
   const {
     label,
     name,
@@ -63,20 +62,15 @@ export const SliderFieldWithInput = memo((props: InputProps) => {
           ref={ref}
           style={{
             width:
-              max > 10000000
-                ? '9em'
-                : max > 100000
-                ? '8em'
-                : max > 10000
-                ? '7em'
-                : max > 1000
-                ? '6em'
-                : max > 100
-                ? '6em'
-                : '5em',
+              max > 10000000 ? '9em'
+              : max > 100000 ? '8em'
+              : max > 10000 ? '7em'
+              : max > 1000 ? '6em'
+              : max > 100 ? '6em'
+              : '5em',
           }}
         />
       </div>
     </Field>
   )
-})
+}
