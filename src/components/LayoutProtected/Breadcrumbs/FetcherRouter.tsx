@@ -16,6 +16,8 @@ import { VectorLayerDisplaysFetcher } from './VectorLayerDisplaysFetcher.tsx'
 import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
+import { PlaceLevelsFetcher } from './PlaceLevelsFetcher.tsx'
+import { PlaceLevelFetcher } from './PlaceLevelFetcher.tsx'
 import { UsersFetcher } from './UsersFetcher.tsx'
 import { UserFetcher } from './UserFetcher.tsx'
 import { AccountsFetcher } from './AccountsFetcher.tsx'
@@ -151,6 +153,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useVectorLayerDisplayNavData': {
       return (
         <VectorLayerDisplayFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceLevelsNavData': {
+      return (
+        <PlaceLevelsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceLevelNavData': {
+      return (
+        <PlaceLevelFetcher
           params={params}
           {...other}
         />
