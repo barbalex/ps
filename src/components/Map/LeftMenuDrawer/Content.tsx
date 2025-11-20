@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext } from 'react'
+import { useContext } from 'react'
 import {
   Tab,
   TabList,
@@ -27,16 +27,13 @@ const formStyle = {
   width: '100%',
 }
 
-export const Content = memo(() => {
+export const Content = () => {
   const navigate = useNavigate()
   const isNarrow = useContext(IsNarrowContext)
   // TODO: test
   const { leftMapDrawerTab: tab = 'layers' } = useSearch({ strict: false })
-  const onTabSelect = useCallback(
-    (event: SelectTabEvent, data: SelectTabData) =>
-      navigate({ search: { leftMapDrawerTab: data.value } }),
-    [navigate],
-  )
+  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) =>
+    navigate({ search: { leftMapDrawerTab: data.value } })
 
   return (
     <ErrorBoundary>
@@ -60,4 +57,4 @@ export const Content = memo(() => {
       </div>
     </ErrorBoundary>
   )
-})
+}

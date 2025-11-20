@@ -1,4 +1,4 @@
-import { useCallback, useRef, memo, useState, useEffect, useMemo } from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { InlineDrawer, Button } from '@fluentui/react-components'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
@@ -26,7 +26,7 @@ const innerContainerStyle = {
   backgroundColor: 'white',
 }
 
-export const LeftMenuDrawer = memo(({ containerRef }) => {
+export const LeftMenuDrawer = ({ containerRef }) => {
   const [mapHideUi] = useAtom(mapHideUiAtom)
 
   const { width: containerWidth } = useResizeDetector({
@@ -55,18 +55,15 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
     }
   }, [isNarrow, ownHeight, ownWidth])
 
-  const isOpen = useMemo(() => size > 40, [size])
-  const toggleOpen = useCallback(
-    (e) => {
-      e.stopPropagation()
-      const newValue =
-        isOpen ? 5
-        : isNarrow ? 500
-        : 380
-      setSize(newValue)
-    },
-    [isNarrow, isOpen],
-  )
+  const isOpen = size > 40
+  const toggleOpen = (e) => {
+    e.stopPropagation()
+    const newValue =
+      isOpen ? 5
+      : isNarrow ? 500
+      : 380
+    setSize(newValue)
+  }
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
@@ -75,10 +72,10 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
   // why do we need wasResizing?
   // without it, after resizing the drawer, the animation will run
   const wasResizing = useRef(false)
-  const startResizing = useCallback(() => {
+  const startResizing = () => {
     setIsResizing(true)
     wasResizing.current = true
-  }, [])
+  }
   const stopResizing = useCallback(() => {
     setIsResizing(false)
     setTimeout(() => (wasResizing.current = false), 500)
@@ -239,4 +236,4 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
       </div>
     </IsNarrowContext.Provider>
   )
-})
+}
