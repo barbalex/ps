@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -13,101 +12,91 @@ const ddStyle = {
   flexGrow: 1,
 }
 
-export const DropdownField = memo(
-  ({
-    name,
-    label,
-    labelField = 'label',
-    table,
-    idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
-    where,
-    orderBy = 'label asc',
-    value,
-    onChange,
-    autoFocus,
-    validationMessage: validationMessageIn,
-    validationState: validationStateIn = 'none',
-    button,
-    noDataMessage = 'No data found',
-    hideWhenNoData = false,
-    ref,
-  }) => {
-    const res = useLiveQuery(
-      `SELECT * FROM ${table}${
-        where ? ` WHERE ${where}` : ''
-      } order by ${orderBy}`,
-    )
-    const rows = res?.rows ?? []
-    const options = rows.map((o) => ({
-      text: o[labelField],
-      value: o[idField ?? name],
-    }))
-    const selectedOptions = useMemo(
-      () => options.filter(({ value: v }) => v === value),
-      [options, value],
-    )
+export const DropdownField = ({
+  name,
+  label,
+  labelField = 'label',
+  table,
+  idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
+  where,
+  orderBy = 'label asc',
+  value,
+  onChange,
+  autoFocus,
+  validationMessage: validationMessageIn,
+  validationState: validationStateIn = 'none',
+  button,
+  noDataMessage = 'No data found',
+  hideWhenNoData = false,
+  ref,
+}) => {
+  const res = useLiveQuery(
+    `SELECT * FROM ${table}${
+      where ? ` WHERE ${where}` : ''
+    } order by ${orderBy}`,
+  )
+  const rows = res?.rows ?? []
+  const options = rows.map((o) => ({
+    text: o[labelField],
+    value: o[idField ?? name],
+  }))
+  const selectedOptions = options.filter(({ value: v }) => v === value)
 
-    const validationState = useMemo(
-      () =>
-        validationStateIn
-          ? validationStateIn
-          : !options?.length //&& !!value
-          ? 'warning'
-          : 'none',
-      [options?.length, validationStateIn],
-    )
-    const validationMessage = useMemo(
-      () =>
-        validationMessageIn
-          ? validationMessageIn
-          : !options?.length //&& !!value
-          ? `No ${table} found. Please add one first.`
-          : undefined,
-      [options?.length, table, validationMessageIn],
-    )
+  const validationState =
+    validationStateIn ? validationStateIn
+    : (
+      !options?.length //&& !!value
+    ) ?
+      'warning'
+    : 'none'
 
-    if (hideWhenNoData && !options?.length) return null
+  const validationMessage =
+    validationMessageIn ? validationMessageIn
+    : (
+      !options?.length //&& !!value
+    ) ?
+      `No ${table} found. Please add one first.`
+    : undefined
 
-    return (
-      <Field
-        label={label ?? '(no label provided)'}
-        validationMessage={validationMessage}
-        validationState={validationState}
-      >
-        <div style={rowStyle}>
-          <Dropdown
-            name={name}
-            value={selectedOptions?.[0]?.text ?? ''}
-            selectedOptions={selectedOptions}
-            onOptionSelect={(e, data) =>
-              onChange({ target: { name, value: data.optionValue } })
-            }
-            appearance="underline"
-            autoFocus={autoFocus}
-            ref={ref}
-            style={ddStyle}
-            clearable
-          >
-            {options.length ? (
-              options.map((params) => {
-                const { text, value } = params
+  if (hideWhenNoData && !options?.length) return null
 
-                return (
-                  <Option
-                    key={value}
-                    value={value}
-                  >
-                    {text}
-                  </Option>
-                )
-              })
-            ) : (
-              <Option value={''}>{noDataMessage}</Option>
-            )}
-          </Dropdown>
-          {!!button && button}
-        </div>
-      </Field>
-    )
-  },
-)
+  return (
+    <Field
+      label={label ?? '(no label provided)'}
+      validationMessage={validationMessage}
+      validationState={validationState}
+    >
+      <div style={rowStyle}>
+        <Dropdown
+          name={name}
+          value={selectedOptions?.[0]?.text ?? ''}
+          selectedOptions={selectedOptions}
+          onOptionSelect={(e, data) =>
+            onChange({ target: { name, value: data.optionValue } })
+          }
+          appearance="underline"
+          autoFocus={autoFocus}
+          ref={ref}
+          style={ddStyle}
+          clearable
+        >
+          {options.length ?
+            options.map((params) => {
+              const { text, value } = params
+
+              return (
+                <Option
+                  key={value}
+                  value={value}
+                >
+                  {text}
+                </Option>
+              )
+            })
+          : <Option value={''}>{noDataMessage}</Option>}
+        </Dropdown>
+        {!!button && button}
+      </div>
+    </Field>
+  )
+}
