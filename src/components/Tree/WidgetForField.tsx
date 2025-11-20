@@ -1,17 +1,13 @@
-import { memo, useMemo } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const WidgetForFieldNode = memo(({ nav, level = 2 }) => {
+export const WidgetForFieldNode = ({ nav, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = useMemo(
-    () => ['data', 'widgets-for-fields', nav.id],
-    [nav.id],
-  )
+  const ownArray = ['data', 'widgets-for-fields', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -28,4 +24,4 @@ export const WidgetForFieldNode = memo(({ nav, level = 2 }) => {
       to={ownUrl}
     />
   )
-})
+}
