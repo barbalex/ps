@@ -20,6 +20,8 @@ import { UsersFetcher } from './UsersFetcher.tsx'
 import { UserFetcher } from './UserFetcher.tsx'
 import { AccountsFetcher } from './AccountsFetcher.tsx'
 import { AccountFetcher } from './AccountFetcher.tsx'
+import { FilesFetcher } from './FilesFetcher.tsx'
+import { FileFetcher } from './FileFetcher.tsx'
 import { MessagesFetcher } from './MessagesFetcher.tsx'
 import { MessageFetcher } from './MessageFetcher.tsx'
 
@@ -171,6 +173,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useAccountNavData': {
       return (
         <AccountFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useFilesNavData': {
+      return (
+        <FilesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useFileNavData': {
+      return (
+        <FileFetcher
           params={params}
           {...other}
         />
