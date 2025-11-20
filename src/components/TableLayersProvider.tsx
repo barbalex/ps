@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react'
+import { useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -14,7 +14,7 @@ import { syncingAtom } from '../store.ts'
 // How to know if data was synced with the server?
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as SQLite does not have functions to create uuid's, we need to do it here
-export const TableLayersProvider = memo(() => {
+export const TableLayersProvider = () => {
   const [syncing] = useAtom(syncingAtom)
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -558,4 +558,4 @@ export const TableLayersProvider = memo(() => {
   }, [projects.length, occurrenceCount])
 
   return null
-})
+}

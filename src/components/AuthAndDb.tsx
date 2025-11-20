@@ -1,4 +1,4 @@
-import { memo, Suspense } from 'react'
+import { Suspense } from 'react'
 import { CorbadoProvider } from '@corbado/react'
 
 import { SqlInitializer } from './SqlInitializer/index.tsx'
@@ -10,7 +10,7 @@ import { Layout } from './LayoutProtected/index.tsx'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
-export const AuthAndDb = memo(() => {
+export const AuthAndDb = () => {
   // console.log('AuthAndDb rendering')
   return (
     <CorbadoProvider
@@ -25,4 +25,4 @@ export const AuthAndDb = memo(() => {
       <Layout />
     </CorbadoProvider>
   )
-})
+}

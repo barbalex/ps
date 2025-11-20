@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 import { FormMenu } from './FormMenu/index.tsx'
 
 interface Props {
@@ -11,18 +9,22 @@ interface Props {
 }
 
 // this is the version of ListViewHeader that is used with used...NavData hooks
-export const ListHeader = memo(
-  ({ label, nameSingular, addRow, menus, info }: Props) => (
-    <>
-      <div className="list-view-header">
-        <h1>{label}</h1>
-        <FormMenu
-          addRow={addRow}
-          nameSingular={nameSingular}
-          siblings={menus}
-        />
-      </div>
-      {info && info}
-    </>
-  ),
+export const ListHeader = ({
+  label,
+  nameSingular,
+  addRow,
+  menus,
+  info,
+}: Props) => (
+  <>
+    <div className="list-view-header">
+      <h1>{label}</h1>
+      <FormMenu
+        addRow={addRow}
+        nameSingular={nameSingular}
+        siblings={menus}
+      />
+    </div>
+    {info && info}
+  </>
 )
