@@ -1,4 +1,4 @@
-import { useCallback, useRef, memo, useState, useEffect } from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { InlineDrawer } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -19,7 +19,7 @@ const containerStyle = {
   backgroundColor: 'white',
 }
 
-export const RightMenuDrawer = memo(({ containerRef }) => {
+export const RightMenuDrawer = ({ containerRef }) => {
   const [mapInfo] = useAtom(mapInfoAtom)
 
   const animationFrame = useRef<number>(0)
@@ -44,8 +44,9 @@ export const RightMenuDrawer = memo(({ containerRef }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 
-      const newSidebarSize = isNarrow
-        ? window.innerHeight - clientY
+      const newSidebarSize =
+        isNarrow ?
+          window.innerHeight - clientY
         : sidebarRef.current.getBoundingClientRect().right - clientX
 
       animationFrame.current = requestAnimationFrame(() =>
@@ -118,4 +119,4 @@ export const RightMenuDrawer = memo(({ containerRef }) => {
       </InlineDrawer>
     </div>
   )
-})
+}

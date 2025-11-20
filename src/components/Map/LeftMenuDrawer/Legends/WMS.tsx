@@ -1,7 +1,6 @@
-import { memo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-export const WmsLegend = memo(({ layer }) => {
+export const WmsLegend = ({ layer }) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
   const res = useLiveIncrementalQuery(
     `SELECT * FROM wms_service_layers WHERE name = $1`,
@@ -24,4 +23,4 @@ export const WmsLegend = memo(({ layer }) => {
   }
 
   return 'No legend available'
-})
+}

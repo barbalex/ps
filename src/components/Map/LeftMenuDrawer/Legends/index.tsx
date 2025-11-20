@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
@@ -15,7 +14,7 @@ const noLayersStyle = {
   paddingBottom: 10,
 }
 
-export const Legends = memo(() => {
+export const Legends = () => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { projectId } = useParams({ strict: false })
 
@@ -36,10 +35,7 @@ export const Legends = memo(() => {
     undefined,
     'wms_layer_id',
   )
-  const activeWmsLayers = useMemo(
-    () => resWmsLayers?.rows ?? [],
-    [resWmsLayers],
-  )
+  const activeWmsLayers = resWmsLayers?.rows ?? []
 
   // same for vector layers
   const resVectorLayers = useLiveIncrementalQuery(
@@ -59,24 +55,19 @@ export const Legends = memo(() => {
     undefined,
     'vector_layer_id',
   )
-  const activeVectorLayers = useMemo(
-    () => resVectorLayers?.rows ?? [],
-    [resVectorLayers],
-  )
+  const activeVectorLayers = resVectorLayers?.rows ?? []
 
   // sort by mapLayerSorting
-  const activeLayers = useMemo(
-    () =>
-      [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
-        const aIndex = mapLayerSorting.findIndex(
-          (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
-        )
-        const bIndex = mapLayerSorting.findIndex(
-          (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
-        )
-        return aIndex - bIndex
-      }),
-    [activeVectorLayers, activeWmsLayers, mapLayerSorting],
+  const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(
+    (a, b) => {
+      const aIndex = mapLayerSorting.findIndex(
+        (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
+      )
+      const bIndex = mapLayerSorting.findIndex(
+        (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
+      )
+      return aIndex - bIndex
+    },
   )
 
   return activeLayers.length ?
@@ -97,4 +88,4 @@ export const Legends = memo(() => {
         )
       })
     : <p style={noLayersStyle}>No active layers</p>
-})
+}
