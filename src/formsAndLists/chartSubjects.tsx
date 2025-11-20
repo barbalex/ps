@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -13,7 +12,7 @@ import '../form.css'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/'
 
-export const ChartSubjects = memo(() => {
+export const ChartSubjects = () => {
   const { projectId, subprojectId, chartId } = useParams({
     from,
   })
@@ -27,7 +26,7 @@ export const ChartSubjects = memo(() => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createChartSubject({ chartId, db })
     const data = res?.rows?.[0]
     navigate({
@@ -35,7 +34,7 @@ export const ChartSubjects = memo(() => {
       params: (prev) => ({ ...prev, chartSubjectId: data.chart_subject_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [chartId, db, navigate])
+  }
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite
@@ -62,4 +61,4 @@ export const ChartSubjects = memo(() => {
       </div>
     </div>
   )
-})
+}

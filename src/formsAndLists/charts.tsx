@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -9,10 +8,9 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/'
+const from = '/data/projects/$projectId_/subprojects/$subprojectId_/charts/'
 
-export const Charts = memo(() => {
+export const Charts = () => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
 
@@ -24,7 +22,7 @@ export const Charts = memo(() => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const idToAdd =
       placeId2 ? { placeId: placeId2 }
       : placeId ? { placeId }
@@ -37,7 +35,7 @@ export const Charts = memo(() => {
       to: data.chart_id,
       params: (prev) => ({ ...prev, chartId: data.chart_id }),
     })
-  }, [navigate, placeId, placeId2, projectId, subprojectId])
+  }
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite
@@ -64,4 +62,4 @@ export const Charts = memo(() => {
       </div>
     </div>
   )
-})
+}
