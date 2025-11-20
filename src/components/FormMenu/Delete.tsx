@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { FaMinus } from 'react-icons/fa'
 import {
   Button,
@@ -12,7 +11,7 @@ import {
   Tooltip,
 } from '@fluentui/react-components'
 
-export const Delete = memo(({ deleteRow, tableName }) => (
+export const Delete = ({ deleteRow, tableName }) => (
   <Menu openOnHover={false}>
     <MenuTrigger>
       <Tooltip content={`Delete ${tableName}`}>
@@ -32,4 +31,4 @@ export const Delete = memo(({ deleteRow, tableName }) => (
       </MenuList>
     </MenuPopover>
   </Menu>
-))
+)
