@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { ListsFetcher } from './ListsFetcher.tsx'
+import { ListFetcher } from './ListFetcher.tsx'
 import { TaxonomiesFetcher } from './TaxonomiesFetcher.tsx'
 import { TaxonomyFetcher } from './TaxonomyFetcher.tsx'
 import { UnitsFetcher } from './UnitsFetcher.tsx'
@@ -166,6 +168,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useListsNavData': {
+      return (
+        <ListsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useListNavData': {
+      return (
+        <ListFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useTaxonomiesNavData': {
       return (
         <TaxonomiesFetcher
