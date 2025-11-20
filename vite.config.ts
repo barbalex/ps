@@ -7,11 +7,10 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 export default defineConfig({
   plugins: [
     TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
-    }),
+    // TODO: the compiler provokes: "Error: Rendered fewer hooks than expected"
+    // WHEN breadcrumbs are rendered
+    react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
+    // react(),
     svgr(),
   ],
   envPrefix: 'ELECTRIC_',
