@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -56,12 +55,16 @@ export const useProjectsNavData = (params) => {
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const withNavs = !forBreadcrumb || isOpen
 
-  console.log('useProjectsNavData', { withNavs, isFiltered, filterString })
+  // console.log('useProjectsNavData', {
+  //   withNavs,
+  //   isFiltered,
+  //   filterString,
+  //   isOpen,
+  // })
 
-  const sql = useMemo(
-    () =>
-      withNavs ?
-        `
+  const sql =
+    withNavs ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),
         count_filtered AS (SELECT count(*) FROM projects${isFiltered ? ` WHERE ${filterString}` : ''})
@@ -74,7 +77,7 @@ export const useProjectsNavData = (params) => {
       ${isFiltered ? ` WHERE ${filterString}` : ''}
       ORDER BY label
     `
-      : `
+    : `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),
         count_filtered AS (SELECT count(*) FROM projects ${isFiltered ? ` WHERE ${filterString}` : ''})
@@ -82,16 +85,15 @@ export const useProjectsNavData = (params) => {
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered
-    `,
-    [withNavs, isFiltered, filterString],
-  )
+    `
+  // TODO: this only returns once - never with the answer of the query!!!!
   const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
   const navData = getNavData({ res, isOpen, loading, isFiltered })
 
-  console.log('useProjectsNavData, res:', res)
+  console.log('useProjectsNavData', { res, navData })
 
   return { loading, navData, isFiltered }
 }

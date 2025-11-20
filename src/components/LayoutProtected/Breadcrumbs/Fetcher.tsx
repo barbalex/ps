@@ -8,10 +8,9 @@ export const Fetcher = ({ fetcherModule, params, ...other }) => {
   // need to pass in params
   // If not: When navigating up the tree while transitioning out lower levels,
   // those bookmark components will not have their params anymore and error
-  const { navData, error, loading } = fetcherModule(params)
+  const { navData, error } = fetcherModule(params)
 
   console.log('Breadcrumbs.Fetcher', {
-    loading,
     navData,
     error,
   })
