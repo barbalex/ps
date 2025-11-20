@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useAtom } from 'jotai'
 
 import { ProjectsNode } from './Projects.tsx'
@@ -23,7 +22,7 @@ const containerStyle = {
 }
 
 // so query it here once and pass it down
-export const Tree = memo(() => {
+export const Tree = () => {
   const [designing] = useAtom(designingAtom)
 
   return (
@@ -44,4 +43,4 @@ export const Tree = memo(() => {
       <MessagesNode />
     </div>
   )
-})
+}
