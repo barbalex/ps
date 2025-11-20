@@ -1,11 +1,7 @@
-import { memo, useMemo } from 'react'
 import { Dropdown, Option } from '@fluentui/react-components'
 
-export const DropdownField = memo(({ options, value, onChange }) => {
-  const selectedOptions = useMemo(
-    () => options.filter((option) => option.value === value),
-    [options, value],
-  )
+export const DropdownField = ({ options, value, onChange }) => {
+  const selectedOptions = options.filter((option) => option.value === value)
 
   return (
     <Dropdown
@@ -17,10 +13,13 @@ export const DropdownField = memo(({ options, value, onChange }) => {
       clearable
     >
       {options.map((option) => (
-        <Option key={option.value} value={option.value}>
+        <Option
+          key={option.value}
+          value={option.value}
+        >
           {option.label}
         </Option>
       ))}
     </Dropdown>
   )
-})
+}

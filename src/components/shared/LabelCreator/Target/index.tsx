@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import { Button, Spinner } from '@fluentui/react-components'
 
@@ -71,56 +71,55 @@ interface Props {
   saveToDb: () => void
 }
 
-export const Target = memo(
-  ({ label, labelChanged, onChange, saveToDb }) => {
-    // TODO: on apply changes: set loading until labelChanged is false
-    const [changing, setChanging] = useState(false)
-    const onClick = useCallback(() => {
-      setChanging(true)
-      saveToDb()
-    }, [saveToDb])
-    useEffect(() => {
-      if (changing && !labelChanged) setChanging(false)
-    }, [changing, labelChanged])
+export const Target = ({ label, labelChanged, onChange, saveToDb }) => {
+  // TODO: on apply changes: set loading until labelChanged is false
+  const [changing, setChanging] = useState(false)
+  const onClick = () => {
+    setChanging(true)
+    saveToDb()
+  }
 
-    return (
-      <div style={containerStyle}>
-        <Droppable
-          droppableId="target"
-          direction="horizontal"
-          style={droppableStyle}
-        >
-          {(provided, snapshot) => (
-            <div style={innerContainerStyle}>
-              <div style={titleContainerStyle}>
-                <h4 style={titleStyle}>Label Creator</h4>
-                <p style={explainerStyle}>Build your own label.</p>
-                <p style={explainerStyle}>
-                  Pull fields here. A field's value will be used in the label.
-                </p>
-                <p style={explainerStyle}>Combine multiple fields.</p>
-                <p style={explainerStyle}>
-                  Place separating text using the separator tool.
-                </p>
-              </div>
-              <TargetElements
-                label={label}
-                onChange={onChange}
-                isDraggingOver={snapshot.isDraggingOver}
-                provided={provided}
-              />
-              <Button
-                onClick={onClick}
-                style={buttonStyle}
-                disabled={!labelChanged}
-                icon={changing ? <Spinner size="tiny" /> : undefined}
-              >
-                {changing ? 'Applying changes' : 'Apply changes'}
-              </Button>
+  useEffect(() => {
+    if (changing && !labelChanged) setChanging(false)
+  }, [changing, labelChanged])
+
+  return (
+    <div style={containerStyle}>
+      <Droppable
+        droppableId="target"
+        direction="horizontal"
+        style={droppableStyle}
+      >
+        {(provided, snapshot) => (
+          <div style={innerContainerStyle}>
+            <div style={titleContainerStyle}>
+              <h4 style={titleStyle}>Label Creator</h4>
+              <p style={explainerStyle}>Build your own label.</p>
+              <p style={explainerStyle}>
+                Pull fields here. A field's value will be used in the label.
+              </p>
+              <p style={explainerStyle}>Combine multiple fields.</p>
+              <p style={explainerStyle}>
+                Place separating text using the separator tool.
+              </p>
             </div>
-          )}
-        </Droppable>
-      </div>
-    )
-  },
-)
+            <TargetElements
+              label={label}
+              onChange={onChange}
+              isDraggingOver={snapshot.isDraggingOver}
+              provided={provided}
+            />
+            <Button
+              onClick={onClick}
+              style={buttonStyle}
+              disabled={!labelChanged}
+              icon={changing ? <Spinner size="tiny" /> : undefined}
+            >
+              {changing ? 'Applying changes' : 'Apply changes'}
+            </Button>
+          </div>
+        )}
+      </Droppable>
+    </div>
+  )
+}

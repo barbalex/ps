@@ -23,7 +23,6 @@ export const Fetcher = ({ fetcherModule, params, ...other }) => {
     <Suspense fallback={<Loading />}>
       <Crumb
         key={`${navData?.id ?? navData?.ownUrl}`}
-        // key={JSON.stringify(navData)}
         navData={navData}
         {...other}
       />
