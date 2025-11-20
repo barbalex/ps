@@ -4,7 +4,10 @@ import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
+import { SubprojectFetcher } from './SubprojectFetcher.tsx'
 
+import { ProjectReportsFetcher } from './ProjectReportsFetcher.tsx'
+import { ProjectReportFetcher } from './ProjectReportFetcher.tsx'
 import { PersonsFetcher } from './PersonsFetcher.tsx'
 import { PersonFetcher } from './PersonFetcher.tsx'
 import { WmsLayersFetcher } from './WmsLayersFetcher.tsx'
@@ -47,6 +50,31 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useSubprojectsNavData': {
       return (
         <SubprojectsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useSubprojectNavData': {
+      return (
+        <SubprojectFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+
+    case 'useProjectReportsNavData': {
+      return (
+        <ProjectReportsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useProjectReportNavData': {
+      return (
+        <ProjectReportFetcher
           params={params}
           {...other}
         />
