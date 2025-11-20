@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { OccurrencesNotToAssignFetcher } from './OccurrencesNotToAssignFetcher.tsx'
+import { OccurrenceNotToAssignFetcher } from './OccurrenceNotToAssignFetcher.tsx'
 import { SubprojectTaxaFetcher } from './SubprojectTaxaFetcher.tsx'
 import { SubprojectTaxonFetcher } from './SubprojectTaxonFetcher.tsx'
 import { SubprojectUsersFetcher } from './SubprojectUsersFetcher.tsx'
@@ -99,6 +101,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useOccurrencesNotToAssignNavData': {
+      return (
+        <OccurrencesNotToAssignFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useOccurrenceNotToAssignNavData': {
+      return (
+        <OccurrenceNotToAssignFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useSubprojectTaxaNavData': {
       return (
         <SubprojectTaxaFetcher
