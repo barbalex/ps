@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
@@ -15,7 +14,7 @@ import '../../form.css'
 
 const from = '/data/accounts/$accountId'
 
-export const Account = memo(() => {
+export const Account = () => {
   const { accountId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -28,21 +27,18 @@ export const Account = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      const sql = `UPDATE accounts SET ${name} = $1 WHERE account_id = $2`
-      try {
-        await db.query(sql, [value, accountId])
-      } catch (error) {
-        console.error('error changing account:', error)
-      }
-    },
-    [row, db, accountId],
-  )
+    const sql = `UPDATE accounts SET ${name} = $1 WHERE account_id = $2`
+    try {
+      await db.query(sql, [value, accountId])
+    } catch (error) {
+      console.error('error changing account:', error)
+    }
+  }
 
   if (!res) return <Loading />
 
@@ -90,4 +86,4 @@ export const Account = memo(() => {
       </div>
     </div>
   )
-})
+}

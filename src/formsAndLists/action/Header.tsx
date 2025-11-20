@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
@@ -13,7 +12,7 @@ import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/action' ||
@@ -26,7 +25,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createAction({
       db,
       projectId,
@@ -41,14 +40,14 @@ export const Header = memo(({ autoFocusRef, from }) => {
       params: (prev) => ({ ...prev, actionId: data.action_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, isForm, navigate, placeId, placeId2, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = async () => {
     db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
     navigate({ to: isForm ? `../..` : `..` })
-  }, [actionId, db, isForm, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
       [placeId2 ?? placeId],
@@ -61,9 +60,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
       to: isForm ? `../../${next.action_id}/action` : `../${next.action_id}`,
       params: (prev) => ({ ...prev, actionId: next.action_id }),
     })
-  }, [actionId, db, isForm, navigate, placeId, placeId2])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
       [placeId2 ?? placeId],
@@ -79,18 +78,18 @@ export const Header = memo(({ autoFocusRef, from }) => {
         : `../${previous.action_id}`,
       params: (prev) => ({ ...prev, actionId: previous.action_id }),
     })
-  }, [actionId, db, isForm, navigate, placeId, placeId2])
+  }
 
-  const alertNoGeometry = useCallback(() => {
+  const alertNoGeometry = () => {
     createNotification({
       title: 'No geometry',
       body: `To zoom to an action, create it's geometry first`,
       intent: 'error',
       db,
     })
-  }, [db])
+  }
 
-  const onClickZoomTo = useCallback(async () => {
+  const onClickZoomTo = async () => {
     const res = await db.query(
       'SELECT geometry FROM actions WHERE action_id = $1',
       [actionId],
@@ -110,7 +109,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [actionId, alertNoGeometry, db, setMapBounds, setTabs, tabs])
+  }
 
   return (
     <FormHeader
@@ -130,4 +129,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       }
     />
   )
-})
+}
