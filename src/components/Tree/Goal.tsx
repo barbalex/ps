@@ -1,4 +1,3 @@
-import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
@@ -9,21 +8,22 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const GoalNode = memo(({ projectId, subprojectId, nav, level = 6 }) => {
+export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => ['data', 'projects', projectId, 'subprojects', subprojectId, 'goals'],
-    [projectId, subprojectId],
-  )
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'subprojects',
+    subprojectId,
+    'goals',
+  ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(
-    () => [...parentArray, nav.id],
-    [nav.id, parentArray],
-  )
+  const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
@@ -31,7 +31,7 @@ export const GoalNode = memo(({ projectId, subprojectId, nav, level = 6 }) => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
@@ -42,14 +42,7 @@ export const GoalNode = memo(({ projectId, subprojectId, nav, level = 6 }) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   return (
     <>
@@ -73,4 +66,4 @@ export const GoalNode = memo(({ projectId, subprojectId, nav, level = 6 }) => {
       )}
     </>
   )
-})
+}

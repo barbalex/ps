@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -6,7 +5,7 @@ import { FieldTypeNode } from './FieldType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { useFieldTypesNavData } from '../../modules/useFieldTypesNavData.ts'
-export const FieldTypesNode = memo(() => {
+export const FieldTypesNode = () => {
   const navigate = useNavigate()
 
   const { navData } = useFieldTypesNavData()
@@ -23,7 +22,7 @@ export const FieldTypesNode = memo(() => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
@@ -37,14 +36,7 @@ export const FieldTypesNode = memo(() => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-    navigate,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -70,4 +62,4 @@ export const FieldTypesNode = memo(() => {
         ))}
     </>
   )
-})
+}
