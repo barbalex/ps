@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,7 +9,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useFieldsNavData } from '../modules/useFieldsNavData.ts'
 import '../form.css'
 
-export const Fields = memo(({ from }) => {
+export const Fields = ({ from }) => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -19,7 +18,7 @@ export const Fields = memo(({ from }) => {
   const { loading, navData, isFiltered } = useFieldsNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createField({ projectId, db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -27,7 +26,7 @@ export const Fields = memo(({ from }) => {
       to: data.field_id,
       params: (prev) => ({ ...prev, fieldId: data.field_id }),
     })
-  }, [db, navigate, projectId])
+  }
 
   return (
     <div className="list-view">
@@ -53,4 +52,4 @@ export const Fields = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
