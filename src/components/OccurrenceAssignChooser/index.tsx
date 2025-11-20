@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import {
   Dialog,
   DialogSurface,
@@ -37,7 +36,7 @@ const actionsStyle = {
   alignSelf: 'flex-end',
 }
 
-export const OccurrenceAssignChooser = memo(() => {
+export const OccurrenceAssignChooser = () => {
   const [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget] =
     useAtom(confirmAssigningToSingleTargetAtom)
   const [placesToAssignOccurrenceTo, setPlacesToAssignOccurrenceTo] = useAtom(
@@ -46,15 +45,10 @@ export const OccurrenceAssignChooser = memo(() => {
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
-  const onClickCancel = useCallback(
-    () => setPlacesToAssignOccurrenceTo(null),
-    [setPlacesToAssignOccurrenceTo],
-  )
+  const onClickCancel = () => setPlacesToAssignOccurrenceTo(null)
 
-  const onClickSingleTarget = useCallback(
-    () => setConfirmAssigningToSingleTarget(!confirmAssigningToSingleTarget),
-    [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget],
-  )
+  const onClickSingleTarget = () =>
+    setConfirmAssigningToSingleTarget(!confirmAssigningToSingleTarget)
 
   if (!placesToAssignOccurrenceTo) return null
 
@@ -96,4 +90,4 @@ export const OccurrenceAssignChooser = memo(() => {
       </DialogSurface>
     </Dialog>
   )
-})
+}

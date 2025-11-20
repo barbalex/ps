@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -18,7 +17,7 @@ const buttonStyle = {
   marginLeft: 5,
 }
 
-export const Notifications: React.FC = memo(() => {
+export const Notifications: React.FC = () => {
   const db = usePGlite()
   // get the oldest four notification first
   const res = useLiveIncrementalQuery(
@@ -28,9 +27,7 @@ export const Notifications: React.FC = memo(() => {
   )
   const notifications = res?.rows ?? []
 
-  const onClickClose = useCallback(() => {
-    db.query(`DELETE FROM notifications`)
-  }, [db])
+  const onClickClose = () => db.query(`DELETE FROM notifications`)
 
   return (
     <>
@@ -68,4 +65,4 @@ export const Notifications: React.FC = memo(() => {
       </Button> */}
     </>
   )
-})
+}
