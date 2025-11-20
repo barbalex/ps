@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { useRef } from 'react'
 
 import { Map } from './Map.tsx'
 import { RightMenuDrawer } from './RightMenuDrawer/index.tsx'
@@ -12,7 +12,7 @@ const containerStyle = {
   containerType: 'inline-size',
 }
 
-export const MapContainer = memo(() => {
+export const MapContainer = () => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   return (
@@ -25,4 +25,4 @@ export const MapContainer = memo(() => {
       <RightMenuDrawer containerRef={containerRef} />
     </div>
   )
-})
+}

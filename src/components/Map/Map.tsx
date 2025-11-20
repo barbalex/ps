@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect, memo } from 'react'
+import { useRef, useEffect } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -33,17 +33,14 @@ const mapContainerStyle = {
   height: '100%',
 }
 
-export const Map = memo(() => {
+export const Map = () => {
   const [mapShowCenter] = useAtom(mapShowCenterAtom)
   const [mapIsLocating] = useAtom(mapLocateAtom)
   const [mapInfo] = useAtom(mapInfoAtom)
 
   const mapRef = useRef()
 
-  const redrawMap = useCallback(
-    () => mapRef.current?.invalidateSize(),
-    [mapRef],
-  )
+  const redrawMap = () => mapRef.current?.invalidateSize()
 
   const resizeRef = useRef<HTMLDivElement>(null)
   useResizeDetector({
@@ -109,4 +106,4 @@ export const Map = memo(() => {
       </div>
     </ErrorBoundary>
   )
-})
+}

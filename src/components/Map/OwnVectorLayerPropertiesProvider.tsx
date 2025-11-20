@@ -1,11 +1,11 @@
-import { memo, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
-export const OwnVectorLayerPropertiesProvider = memo(() => {
+export const OwnVectorLayerPropertiesProvider = () => {
   // const project_id = 'TODO:'
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
     from: '/data',
@@ -311,4 +311,4 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   ])
 
   return null
-})
+}
