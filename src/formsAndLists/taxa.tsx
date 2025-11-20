@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -9,10 +8,9 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/'
+const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/'
 
-export const Taxa = memo(() => {
+export const Taxa = () => {
   const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -23,7 +21,7 @@ export const Taxa = memo(() => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createTaxon({ taxonomyId, db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -31,7 +29,7 @@ export const Taxa = memo(() => {
       to: data.taxon_id,
       params: (prev) => ({ ...prev, taxonId: data.taxon_id }),
     })
-  }, [db, navigate, taxonomyId])
+  }
 
   return (
     <div className="list-view">
@@ -56,4 +54,4 @@ export const Taxa = memo(() => {
       </div>
     </div>
   )
-})
+}

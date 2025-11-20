@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -9,10 +8,9 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/users/'
+const from = '/data/projects/$projectId_/subprojects/$subprojectId_/users/'
 
-export const SubprojectUsers = memo(() => {
+export const SubprojectUsers = () => {
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -23,12 +21,12 @@ export const SubprojectUsers = memo(() => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createSubprojectUser({ subprojectId, db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({ to: data.subproject_user_id })
-  }, [db, navigate, subprojectId])
+  }
 
   return (
     <div className="list-view">
@@ -53,4 +51,4 @@ export const SubprojectUsers = memo(() => {
       </div>
     </div>
   )
-})
+}
