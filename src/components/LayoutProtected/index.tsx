@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useAtom } from 'jotai'
 import { useSearch } from '@tanstack/react-router'
 
@@ -16,14 +15,14 @@ import { mapMaximizedAtom } from '../../store.ts'
 const from = '/data'
 
 // memoizing this component creates error
-export const Layout = memo(() => {
+export const Layout = () => {
   const [mapIsMaximized] = useAtom(mapMaximizedAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   const { onlyForm } = useSearch({ from })
 
-  // Breadcrumbs and Navs are not protected because:
+  // Breadcrumbs are not protected because:
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
   // TODO: reenable below
@@ -49,4 +48,4 @@ export const Layout = memo(() => {
       </ProtectedRoute>
     </>
   )
-})
+}

@@ -13,6 +13,36 @@ const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'projects']
 const ownUrl = `/${ownArray.join('/')}`
 
+const getNavData = ({ res, isOpen, loading, isFiltered }) => {
+  const navs = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
+
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
+
+  return {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 1,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label: buildNavLabel({
+      loading,
+      isFiltered,
+      countFiltered,
+      countUnfiltered,
+      namePlural: 'Projects',
+    }),
+    nameSingular: 'Project',
+    navs,
+  }
+}
+
 export const useProjectsNavData = (params) => {
   const forBreadcrumb = params?.forBreadcrumb ?? false
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -23,15 +53,15 @@ export const useProjectsNavData = (params) => {
   const isFiltered = !!filterString
 
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = useMemo(
-    () => openNodes.some((array) => isEqual(array, ownArray)),
-    [openNodes],
-  )
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const withNavs = !forBreadcrumb || isOpen
 
-  const sql =
-    withNavs ?
-      `
+  console.log('useProjectsNavData', { withNavs, isFiltered, filterString })
+
+  const sql = useMemo(
+    () =>
+      withNavs ?
+        `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),
         count_filtered AS (SELECT count(*) FROM projects${isFiltered ? ` WHERE ${filterString}` : ''})
@@ -44,7 +74,7 @@ export const useProjectsNavData = (params) => {
       ${isFiltered ? ` WHERE ${filterString}` : ''}
       ORDER BY label
     `
-    : `
+      : `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),
         count_filtered AS (SELECT count(*) FROM projects ${isFiltered ? ` WHERE ${filterString}` : ''})
@@ -52,40 +82,16 @@ export const useProjectsNavData = (params) => {
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered
-    `
+    `,
+    [withNavs, isFiltered, filterString],
+  )
   const res = useLiveQuery(sql)
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-    const countFiltered = navs[0]?.count_filtered ?? 0
+  const navData = getNavData({ res, isOpen, loading, isFiltered })
 
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
-
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 1,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label: buildNavLabel({
-        loading,
-        isFiltered,
-        countFiltered,
-        countUnfiltered,
-        namePlural: 'Projects',
-      }),
-      nameSingular: 'Project',
-      navs,
-    }
-  }, [isFiltered, isOpen, loading, location.pathname, res?.rows])
+  console.log('useProjectsNavData, res:', res)
 
   return { loading, navData, isFiltered }
 }

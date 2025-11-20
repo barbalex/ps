@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useMatches } from '@tanstack/react-router'
 import { TransitionGroup } from 'react-transition-group'
 
@@ -22,7 +21,7 @@ const containerStyle = {
 }
 
 // this component extracts matches
-export const Breadcrumbs = memo(() => {
+export const Breadcrumbs = () => {
   const unfilteredMatches = useMatches()
   const navDataFetchers = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
@@ -45,4 +44,4 @@ export const Breadcrumbs = memo(() => {
       </TransitionGroup>
     </div>
   )
-})
+}

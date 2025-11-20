@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { Outlet, useSearch } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
 import { useAtom } from 'jotai'
@@ -17,7 +16,7 @@ const containerStyle = {
 
 const from = '/data'
 
-export const Main = memo(() => {
+export const Main = () => {
   const [mapMaximized] = useAtom(mapMaximizedAtom)
   const [tabs] = useAtom(tabsAtom)
 
@@ -40,4 +39,4 @@ export const Main = memo(() => {
       </Allotment>
     </div>
   )
-})
+}
