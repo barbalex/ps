@@ -66,25 +66,41 @@ const getFilterStrings = ({
   return { whereUnfilteredString, whereFilteredString }
 }
 
+const getTitle = ({ tableName, placeNamePlural }) => {
+  // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
+  const tableNameForTitle =
+    tableName === 'places' ? placeNamePlural : (
+      tableName
+        .split('_')
+        .map((w) => w[0].toUpperCase() + w.slice(1))
+        .join(' ')
+    )
+
+  const title = `${tableNameForTitle} Filters`
+  return title
+}
+
+const getTableName = (urlPath) => {
+  // reading these values from the url path
+  // if this fails in some situations, we can pass these as props
+  let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+  // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
+  if (tableName === 'reports') {
+    // reports can be of multiple types: action, place, goal, subproject, project
+    // need to specify the type of report
+    const grandParent = urlPath[urlPath.length - 4]
+    // the prefix to the tableName is the grandParent without its last character (s)
+    tableName = `${grandParent.slice(0, -1)}_${tableName}`
+  }
+  return tableName
+}
+
 export const Filter = ({ level, from, children }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
-  const tableName = useMemo(() => {
-    // reading these values from the url path
-    // if this fails in some situations, we can pass these as props
-    let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
-    // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
-    if (tableName === 'reports') {
-      // reports can be of multiple types: action, place, goal, subproject, project
-      // need to specify the type of report
-      const grandParent = urlPath[urlPath.length - 4]
-      // the prefix to the tableName is the grandParent without its last character (s)
-      tableName = `${grandParent.slice(0, -1)}_${tableName}`
-    }
-    return tableName
-  }, [urlPath])
+  const tableName = getTableName(urlPath)
 
   const resPlaceLevel = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
@@ -95,19 +111,7 @@ export const Filter = ({ level, from, children }) => {
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
-  const title = useMemo(() => {
-    // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
-    const tableNameForTitle =
-      tableName === 'places' ? placeNamePlural : (
-        tableName
-          .split('_')
-          .map((w) => w[0].toUpperCase() + w.slice(1))
-          .join(' ')
-      )
-
-    const title = `${tableNameForTitle} Filters`
-    return title
-  }, [tableName, placeNamePlural])
+  const title = getTitle({ tableName, placeNamePlural })
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
