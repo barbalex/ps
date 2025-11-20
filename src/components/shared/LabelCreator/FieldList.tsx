@@ -1,8 +1,7 @@
-import { memo } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import { LabelElement } from './index.tsx'
+// import { LabelElement } from './index.tsx'
 
 const containerStyle = {
   margin: 0,
@@ -64,14 +63,14 @@ const titleSpanStyle = {
   fontWeight: 'normal',
 }
 
-interface Props {
-  fields: string[]
-  label: LabelElement[]
-}
+// interface Props {
+//   fields: string[]
+//   label: LabelElement[]
+// }
 
 // only show fields not yet added to label
 // TODO: build labelElements from fields
-export const FieldList = memo(({ fieldLabels }) => (
+export const FieldList = ({ fieldLabels }) => (
   <div style={containerStyle}>
     <Droppable droppableId="fieldList">
       {(provided) => (
@@ -98,8 +97,9 @@ export const FieldList = memo(({ fieldLabels }) => (
                       ref={provided.innerRef}
                       style={{
                         ...fieldContainerStyle,
-                        backgroundColor: snapshot.isDragging
-                          ? 'rgba(38, 82, 37, 0.9)'
+                        backgroundColor:
+                          snapshot.isDragging ?
+                            'rgba(38, 82, 37, 0.9)'
                           : 'rgba(103, 216, 101, 0.07)',
                         color: snapshot.isDragging ? 'white' : 'black',
                         // BEWARE: without this, onDragEnd doesn't fire and the dragged item does not move
@@ -127,9 +127,8 @@ export const FieldList = memo(({ fieldLabels }) => (
                   ref={provided.innerRef}
                   style={{
                     ...dividerContainerStyle,
-                    backgroundColor: snapshot.isDragging
-                      ? 'rgba(38, 82, 37, 0.9)'
-                      : 'white',
+                    backgroundColor:
+                      snapshot.isDragging ? 'rgba(38, 82, 37, 0.9)' : 'white',
                     color: snapshot.isDragging ? 'white' : 'black',
                     // BEWARE: without this, onDragEnd doesn't fire and the dragged item does not move
                     ...provided.draggableProps.style,
@@ -146,4 +145,4 @@ export const FieldList = memo(({ fieldLabels }) => (
       )}
     </Droppable>
   </div>
-))
+)
