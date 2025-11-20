@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -7,7 +6,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useMessagesNavData } from '../../modules/useMessagesNavData.ts'
 
-export const MessagesNode = memo(() => {
+export const MessagesNode = () => {
   const navigate = useNavigate()
 
   const { navData } = useMessagesNavData()
@@ -25,7 +24,7 @@ export const MessagesNode = memo(() => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({
         node: parentArray,
@@ -39,15 +38,7 @@ export const MessagesNode = memo(() => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -73,4 +64,4 @@ export const MessagesNode = memo(() => {
         ))}
     </>
   )
-})
+}

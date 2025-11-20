@@ -1,14 +1,13 @@
-import { memo, useMemo } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const MessageNode = memo(({ nav, level = 2 }) => {
+export const MessageNode = ({ nav, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = useMemo(() => ['data', 'messages', nav.id], [nav.id])
+  const ownArray = ['data', 'messages', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -25,4 +24,4 @@ export const MessageNode = memo(({ nav, level = 2 }) => {
       to={ownUrl}
     />
   )
-})
+}
