@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -12,7 +11,7 @@ import '../form.css'
 
 const from = '/data/projects/$projectId_/reports/'
 
-export const ProjectReports = memo(() => {
+export const ProjectReports = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -22,7 +21,7 @@ export const ProjectReports = memo(() => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createProjectReport({ db, projectId })
     const data = res?.rows?.[0]
     if (!data) return
@@ -30,7 +29,7 @@ export const ProjectReports = memo(() => {
       to: data.project_report_id,
       params: (prev) => ({ ...prev, projectReportId: data.project_report_id }),
     })
-  }, [db, navigate, projectId])
+  }
 
   return (
     <div className="list-view">
@@ -56,4 +55,4 @@ export const ProjectReports = memo(() => {
       </div>
     </div>
   )
-})
+}

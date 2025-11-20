@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,7 +9,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { usePlaceReportsNavData } from '../modules/usePlaceReportsNavData.ts'
 import '../form.css'
 
-export const PlaceReports = memo(({ from }) => {
+export const PlaceReports = ({ from }) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -23,7 +22,7 @@ export const PlaceReports = memo(({ from }) => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createPlaceReport({
       db,
       projectId,
@@ -35,7 +34,7 @@ export const PlaceReports = memo(({ from }) => {
       to: data.place_report_id,
       params: (prev) => ({ ...prev, placeReportId: data.place_report_id }),
     })
-  }, [db, navigate, placeId, placeId2, projectId])
+  }
 
   return (
     <div className="list-view">
@@ -61,4 +60,4 @@ export const PlaceReports = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
