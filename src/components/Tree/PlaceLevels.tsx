@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -12,7 +11,7 @@ interface Props {
   level?: number
 }
 
-export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
+export const PlaceLevelsNode = ({ projectId, level = 3 }: Props) => {
   const navigate = useNavigate()
 
   const { navData } = usePlaceLevelsNavData({ projectId })
@@ -28,7 +27,7 @@ export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
@@ -39,14 +38,7 @@ export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -73,4 +65,4 @@ export const PlaceLevelsNode = memo(({ projectId, level = 3 }: Props) => {
         ))}
     </>
   )
-})
+}
