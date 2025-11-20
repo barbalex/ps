@@ -16,13 +16,13 @@ export const Fetcher = ({ fetcherModule, params, ...other }) => {
   })
 
   // TODO: loading remains true and result never arrives
-  if (!navData.label) return null
+  if (!navData?.label) return null
 
   // TODO: navData.id does not exist
   return (
     <Suspense fallback={<Loading />}>
       <Crumb
-        key={`${navData.id ?? navData.ownUrl}`}
+        key={`${navData?.id ?? navData?.ownUrl}`}
         // key={JSON.stringify(navData)}
         navData={navData}
         {...other}
