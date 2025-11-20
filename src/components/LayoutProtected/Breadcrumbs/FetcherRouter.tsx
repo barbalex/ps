@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { ProjectUsersFetcher } from './ProjectUsersFetcher.tsx'
+import { ProjectUserFetcher } from './ProjectUserFetcher.tsx'
 import { ListValuesFetcher } from './ListValuesFetcher.tsx'
 import { ListValueFetcher } from './ListValueFetcher.tsx'
 import { ListsFetcher } from './ListsFetcher.tsx'
@@ -170,6 +172,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useProjectUsersNavData': {
+      return (
+        <ProjectUsersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useProjectUserNavData': {
+      return (
+        <ProjectUserFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useListValuesNavData': {
       return (
         <ListValuesFetcher
