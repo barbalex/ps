@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { Field, Slider, Label } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
@@ -12,7 +11,7 @@ const sliderStyle = {
   flexGrow: 1,
 }
 
-export const SliderField = memo((props: InputProps) => {
+export const SliderField = (props: InputProps) => {
   const {
     label,
     name,
@@ -51,4 +50,4 @@ export const SliderField = memo((props: InputProps) => {
       </div>
     </Field>
   )
-})
+}
