@@ -16,6 +16,9 @@ import { VectorLayerDisplaysFetcher } from './VectorLayerDisplaysFetcher.tsx'
 import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
+
+import { UnitsFetcher } from './UnitsFetcher.tsx'
+import { UnitFetcher } from './UnitFetcher.tsx'
 import { ProjectCrssFetcher } from './ProjectCrssFetcher.tsx'
 import { ProjectCrsFetcher } from './ProjectCrsFetcher.tsx'
 import { PlaceLevelsFetcher } from './PlaceLevelsFetcher.tsx'
@@ -155,6 +158,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useVectorLayerDisplayNavData': {
       return (
         <VectorLayerDisplayFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useUnitsNavData': {
+      return (
+        <UnitsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useUnitNavData': {
+      return (
+        <UnitFetcher
           params={params}
           {...other}
         />
