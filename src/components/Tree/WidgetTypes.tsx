@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -6,7 +5,7 @@ import { WidgetTypeNode } from './WidgetType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { useWidgetTypesNavData } from '../../modules/useWidgetTypesNavData.ts'
-export const WidgetTypesNode = memo(() => {
+export const WidgetTypesNode = () => {
   const navigate = useNavigate()
 
   const { navData } = useWidgetTypesNavData()
@@ -23,7 +22,7 @@ export const WidgetTypesNode = memo(() => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
@@ -37,14 +36,7 @@ export const WidgetTypesNode = memo(() => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -70,4 +62,4 @@ export const WidgetTypesNode = memo(() => {
         ))}
     </>
   )
-})
+}
