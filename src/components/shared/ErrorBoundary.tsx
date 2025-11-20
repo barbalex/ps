@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { Button } from '@fluentui/react-components'
 import { pipe } from 'remeda'
@@ -74,11 +73,11 @@ const ErrorFallback = ({
   </div>
 )
 
-export const ErrorBoundary = memo(({ children }) => (
+export const ErrorBoundary = ({ children }) => (
   <ErrorBoundaryComponent
     FallbackComponent={ErrorFallback}
     onReset={onReload}
   >
     {children}
   </ErrorBoundaryComponent>
-))
+)

@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { MdEditOff } from 'react-icons/md'
 import { FaMinus } from 'react-icons/fa'
 import {
@@ -42,18 +41,17 @@ const menuStyle = {
   columnGap: 5,
 }
 
-export const FieldFormInForm = memo(({ field }) => {
+export const FieldFormInForm = ({ field }) => {
   const navigate = useNavigate()
   const db = usePGlite()
 
-  const onClickDelete = useCallback(async () => {
+  const onClickDelete = () => {
     db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])
     navigate({ search: { editingField: undefined } })
-  }, [db, field.field_id, navigate])
+  }
 
-  const onClickStopEditing = useCallback(async () => {
+  const onClickStopEditing = () =>
     navigate({ search: { editingField: undefined } })
-  }, [navigate])
 
   const fieldLabel = field.field_label ?? field.name ?? ''
 
@@ -95,4 +93,4 @@ export const FieldFormInForm = memo(({ field }) => {
       />
     </div>
   )
-})
+}
