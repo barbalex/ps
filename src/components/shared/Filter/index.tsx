@@ -25,7 +25,48 @@ const tabStyle = {
   minWidth: 60,
 }
 
-export const Filter = memo(({ level, from, children }) => {
+const getFilterStrings = ({
+  filter,
+  placeId,
+  placeId2,
+  projectId,
+  tableName,
+}) => {
+  let whereUnfiltered
+  // add parent_id for all filterable tables below subprojects
+  if (tableName === 'places') {
+    const parentFilter = { parent_id: placeId ?? null }
+    for (const orFilter of filter) {
+      Object.assign(orFilter, parentFilter)
+    }
+    if (!filter.length) filter.push(parentFilter)
+    whereUnfiltered = parentFilter
+  }
+  if (['actions', 'checks', 'place_reports'].includes(tableName)) {
+    const placeFilter = { place_id: placeId2 ?? placeId }
+    for (const orFilter of filter) {
+      Object.assign(orFilter, placeFilter)
+    }
+    if (!filter.length) filter.push(placeFilter)
+    whereUnfiltered = placeFilter
+  }
+  // tables that need to be filtered by project_id
+  if (['fields'].includes(tableName)) {
+    const projectFilter = { project_id: projectId ?? null }
+    for (const orFilter of filter) {
+      Object.assign(orFilter, projectFilter)
+    }
+    if (!filter.length) filter.push(projectFilter)
+    whereUnfiltered = projectFilter
+  }
+  const whereFilteredString = filterStringFromFilter(filter)
+  const whereUnfilteredString =
+    whereUnfiltered ? orFilterToSql(whereUnfiltered) : ''
+
+  return { whereUnfilteredString, whereFilteredString }
+}
+
+export const Filter = ({ level, from, children }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -70,7 +111,7 @@ export const Filter = memo(({ level, from, children }) => {
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
-  const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
+  const onTabSelect = (e, data) => setActiveTab(data.value)
   const filterAtomName = filterAtomNameFromTableAndLevel({
     table: tableName,
     level,
@@ -80,40 +121,13 @@ export const Filter = memo(({ level, from, children }) => {
   const [filter] = useAtom(filterAtom)
   console.log('Filter', { filterAtomName, filter })
 
-  const { whereUnfilteredString, whereFilteredString } = useMemo(() => {
-    let whereUnfiltered
-    // add parent_id for all filterable tables below subprojects
-    if (tableName === 'places') {
-      const parentFilter = { parent_id: placeId ?? null }
-      for (const orFilter of filter) {
-        Object.assign(orFilter, parentFilter)
-      }
-      if (!filter.length) filter.push(parentFilter)
-      whereUnfiltered = parentFilter
-    }
-    if (['actions', 'checks', 'place_reports'].includes(tableName)) {
-      const placeFilter = { place_id: placeId2 ?? placeId }
-      for (const orFilter of filter) {
-        Object.assign(orFilter, placeFilter)
-      }
-      if (!filter.length) filter.push(placeFilter)
-      whereUnfiltered = placeFilter
-    }
-    // tables that need to be filtered by project_id
-    if (['fields'].includes(tableName)) {
-      const projectFilter = { project_id: projectId ?? null }
-      for (const orFilter of filter) {
-        Object.assign(orFilter, projectFilter)
-      }
-      if (!filter.length) filter.push(projectFilter)
-      whereUnfiltered = projectFilter
-    }
-    const whereFilteredString = filterStringFromFilter(filter)
-    const whereUnfilteredString =
-      whereUnfiltered ? orFilterToSql(whereUnfiltered) : ''
-
-    return { whereUnfilteredString, whereFilteredString }
-  }, [filter, placeId, placeId2, projectId, tableName])
+  const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
+    filter,
+    placeId,
+    placeId2,
+    projectId,
+    tableName,
+  })
 
   // console.log('Filter 3', {
   //   tableName,
@@ -194,4 +208,4 @@ export const Filter = memo(({ level, from, children }) => {
       />
     </div>
   )
-})
+}

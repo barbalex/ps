@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
@@ -11,15 +10,15 @@ type Props = {
   filterAtom: unknown
 }
 
-export const FilterHeader = memo(({ title = 'Filter', filterAtom }: Props) => {
+export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
   const navigate = useNavigate()
   // ensure atom exists - got errors when it didn't
   const [filter, setFilter] = useAtom(filterAtom)
   const isFiltered = filter.length > 0
 
-  const onClickBack = useCallback(() => navigate({ to: '..' }), [navigate])
+  const onClickBack = () => navigate({ to: '..' })
 
-  const onClickClearFilter = useCallback(() => setFilter([]), [setFilter])
+  const onClickClearFilter = () => setFilter([])
 
   return (
     <div className="form-header filter">
@@ -45,4 +44,4 @@ export const FilterHeader = memo(({ title = 'Filter', filterAtom }: Props) => {
       </div>
     </div>
   )
-})
+}
