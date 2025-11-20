@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useParams } from '@tanstack/react-router'
 
-import { Fetcher } from './Fetcher.tsx'
+import { AnyFetcher } from './AnyFetcher.tsx'
 
 // pass on TransitionGroup's props
-export const FetcherImporter = ({ fetcherName, ...other }) => {
+export const AnyFetcherImporter = ({ fetcherName, params, ...other }) => {
   const [fetcherModule, setFetcherModule] = useState(null)
-
-  // need to get params here and pass as props otherwise
-  // causes the compiler to: "Error: Rendered fewer hooks than expected"
-  const params = useParams({ strict: false })
 
   useEffect(() => {
     if (fetcherModule || !fetcherName) return
@@ -23,7 +18,7 @@ export const FetcherImporter = ({ fetcherName, ...other }) => {
   if (!fetcherModule || !fetcherName) return null
 
   return (
-    <Fetcher
+    <AnyFetcher
       params={params}
       fetcherModule={fetcherModule[fetcherName]}
       {...other}
