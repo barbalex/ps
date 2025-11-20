@@ -2,7 +2,10 @@ import { useParams } from '@tanstack/react-router'
 
 import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
+import { ProjectFetcher } from './ProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
+import { MessagesFetcher } from './MessagesFetcher.tsx'
+import { MessageFetcher } from './MessageFetcher.tsx'
 
 export const FetcherRouter = ({ fetcherName, ...other }) => {
   console.log('FetcherRouter, name:', fetcherName)
@@ -20,9 +23,33 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
+    case 'useProjectNavData': {
+      return (
+        <ProjectFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useSubprojectsNavData': {
       return (
         <SubprojectsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useMessagesNavData': {
+      return (
+        <MessagesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useMessageNavData': {
+      return (
+        <MessageFetcher
           params={params}
           {...other}
         />
