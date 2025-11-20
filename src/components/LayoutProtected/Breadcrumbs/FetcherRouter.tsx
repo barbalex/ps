@@ -20,6 +20,8 @@ import { UsersFetcher } from './UsersFetcher.tsx'
 import { UserFetcher } from './UserFetcher.tsx'
 import { AccountsFetcher } from './AccountsFetcher.tsx'
 import { AccountFetcher } from './AccountFetcher.tsx'
+import { WidgetsForFieldsFetcher } from './WidgetsForFieldsFetcher.tsx'
+import { WidgetForFieldFetcher } from './WidgetForFieldFetcher.tsx'
 import { FieldsFetcher } from './FieldsFetcher.tsx'
 import { FieldFetcher } from './FieldFetcher.tsx'
 import { CrssFetcher } from './CrssFetcher.tsx'
@@ -177,6 +179,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useAccountNavData': {
       return (
         <AccountFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWidgetsForFieldsNavData': {
+      return (
+        <WidgetsForFieldsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWidgetForFieldNavData': {
+      return (
+        <WidgetForFieldFetcher
           params={params}
           {...other}
         />
