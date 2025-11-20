@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -13,19 +12,19 @@ import '../form.css'
 
 const from = '/data/widgets-for-fields'
 
-export const WidgetsForFields = memo(() => {
+export const WidgetsForFields = () => {
   const navigate = useNavigate({ from })
   const db = usePGlite()
 
   const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createWidgetForField({ db })
     const data = res?.rows?.[0]
     if (!data) return
     navigate({ to: data.widget_for_field_id })
-  }, [db, navigate])
+  }
 
   return (
     <div className="list-view">
@@ -51,4 +50,4 @@ export const WidgetsForFields = memo(() => {
       </div>
     </div>
   )
-})
+}

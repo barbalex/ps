@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -16,7 +15,7 @@ import '../form.css'
 
 const from = '/data/projects/$projectId_/vector-layers/'
 
-export const VectorLayers = memo(() => {
+export const VectorLayers = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -24,7 +23,7 @@ export const VectorLayers = memo(() => {
   const { loading, navData, isFiltered } = useVectorLayersNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createVectorLayer({
       projectId,
       type: 'wfs',
@@ -46,7 +45,7 @@ export const VectorLayers = memo(() => {
       to: data.vector_layer_id,
       params: (prev) => ({ ...prev, vectorLayerId: data.vector_layer_id }),
     })
-  }, [db, navigate, projectId])
+  }
 
   return (
     <div className="list-view">
@@ -72,4 +71,4 @@ export const VectorLayers = memo(() => {
       </div>
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -15,7 +14,7 @@ import '../form.css'
 
 const from = '/data/projects/$projectId_/wms-layers/'
 
-export const WmsLayers = memo(() => {
+export const WmsLayers = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -23,7 +22,7 @@ export const WmsLayers = memo(() => {
   const { loading, navData, isFiltered } = useWmsLayersNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createWmsLayer({ projectId, db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -36,7 +35,7 @@ export const WmsLayers = memo(() => {
       to: data.wms_layer_id,
       params: (prev) => ({ ...prev, wmsLayerId: data.wms_layer_id }),
     })
-  }, [db, navigate, projectId])
+  }
 
   return (
     <div className="list-view">
@@ -62,4 +61,4 @@ export const WmsLayers = memo(() => {
       </div>
     </div>
   )
-})
+}
