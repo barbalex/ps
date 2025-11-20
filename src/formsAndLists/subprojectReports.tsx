@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,7 +9,7 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const SubprojectReports = memo(({ from }) => {
+export const SubprojectReports = ({ from }) => {
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
   const db = usePGlite()
@@ -21,7 +20,7 @@ export const SubprojectReports = memo(({ from }) => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createSubprojectReport({ db, projectId, subprojectId })
     const data = res?.rows?.[0]
     if (!data) return
@@ -32,7 +31,7 @@ export const SubprojectReports = memo(({ from }) => {
         subprojectReportId: data.subproject_report_id,
       }),
     })
-  }, [db, navigate, projectId, subprojectId])
+  }
 
   return (
     <div className="list-view">
@@ -58,4 +57,4 @@ export const SubprojectReports = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -11,14 +10,14 @@ import { useProjectsNavData } from '../modules/useProjectsNavData.ts'
 
 import '../form.css'
 
-export const Projects = memo(() => {
+export const Projects = () => {
   const navigate = useNavigate()
   const db = usePGlite()
 
   const { loading, navData, isFiltered } = useProjectsNavData()
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createProject({ db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -26,7 +25,7 @@ export const Projects = memo(() => {
       to: `/data/projects/$project_id`,
       params: { project_id: data.project_id },
     })
-  }, [db, navigate])
+  }
 
   return (
     <div className="list-view">
@@ -52,4 +51,4 @@ export const Projects = memo(() => {
       </div>
     </div>
   )
-})
+}
