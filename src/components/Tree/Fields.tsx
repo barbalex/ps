@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Node } from './Node.tsx'
@@ -11,7 +10,7 @@ interface Props {
   projectId?: string
 }
 
-export const FieldsNode = memo(({ projectId }: Props) => {
+export const FieldsNode = ({ projectId }: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useFieldsNavData({ projectId })
@@ -27,7 +26,7 @@ export const FieldsNode = memo(({ projectId }: Props) => {
     navs,
   } = navData
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
@@ -41,14 +40,7 @@ export const FieldsNode = memo(({ projectId }: Props) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-    navigate,
-  ])
+  }
 
   // only list navs if isOpen AND the first nav has an id
   const showNavs = isOpen && navs.length > 0 && navs[0].id
@@ -75,4 +67,4 @@ export const FieldsNode = memo(({ projectId }: Props) => {
         ))}
     </>
   )
-})
+}
