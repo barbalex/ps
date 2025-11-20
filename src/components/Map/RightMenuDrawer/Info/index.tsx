@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { Button, DrawerBody, DrawerHeader } from '@fluentui/react-components'
 import { MdClose } from 'react-icons/md'
 import { useAtom } from 'jotai'
@@ -23,16 +22,13 @@ const noDataStyle = {
   margin: 0,
 }
 
-export const Info = memo(({ isNarrow }) => {
+export const Info = ({ isNarrow }) => {
   const [mapInfo, setMapInfo] = useAtom(mapInfoAtom)
 
-  const close = useCallback(
-    (e) => {
-      e.preventDefault()
-      setMapInfo(null)
-    },
-    [setMapInfo],
-  )
+  const close = (e) => {
+    e.preventDefault()
+    setMapInfo(null)
+  }
 
   const layersExist = mapInfo?.layers?.length > 0
 
@@ -62,18 +58,16 @@ export const Info = memo(({ isNarrow }) => {
         </DrawerHeader>
         <DrawerBody style={bodyStyle}>
           <Location mapInfo={mapInfo} />
-          {layersExist ? (
+          {layersExist ?
             (mapInfo?.layers ?? []).map((layer, i) => (
               <Layer
                 key={`${i}/${layer.label}`}
                 layerData={layer}
               />
             ))
-          ) : (
-            <p style={noDataStyle}>No Data found at this location</p>
-          )}
+          : <p style={noDataStyle}>No Data found at this location</p>}
         </DrawerBody>
       </div>
     </ErrorBoundary>
   )
-})
+}

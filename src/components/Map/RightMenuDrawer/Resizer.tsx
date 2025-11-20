@@ -1,8 +1,6 @@
-import { memo } from 'react'
-
 import './resizer.css'
 
-export const Resizer = memo(({ startResizing, isResizing }) => (
+export const Resizer = ({ startResizing, isResizing }) => (
   <div
     className="map-info-resizer"
     onMouseDown={startResizing}
@@ -11,4 +9,4 @@ export const Resizer = memo(({ startResizing, isResizing }) => (
       ...(isResizing ? { backgroundColor: 'rgba(38, 82, 37, 0.9)' } : {}),
     }}
   />
-))
+)

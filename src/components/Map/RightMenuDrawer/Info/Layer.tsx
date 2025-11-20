@@ -1,4 +1,4 @@
-import { memo, Fragment } from 'react'
+import { Fragment } from 'react'
 import Linkify from 'react-linkify'
 
 const containerStyle = {
@@ -37,7 +37,7 @@ const labelStyle = {
   paddingRight: 5,
 }
 
-export const Layer = memo(({ layerData }) => {
+export const Layer = ({ layerData }) => {
   const { label, properties = [], html, json, text } = layerData
   // console.log('Map Info Drawer Layer', { label, properties, html, json, text })
 
@@ -99,4 +99,4 @@ export const Layer = memo(({ layerData }) => {
       </div>
     </div>
   )
-})
+}
