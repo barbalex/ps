@@ -4,6 +4,9 @@ import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
+
+import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
+import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 import { UsersFetcher } from './UsersFetcher.tsx'
 import { UserFetcher } from './UserFetcher.tsx'
 import { AccountsFetcher } from './AccountsFetcher.tsx'
@@ -38,6 +41,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useSubprojectsNavData': {
       return (
         <SubprojectsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useVectorLayersNavData': {
+      return (
+        <VectorLayersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useVectorLayerNavData': {
+      return (
+        <VectorLayerFetcher
           params={params}
           {...other}
         />
