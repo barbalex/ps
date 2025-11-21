@@ -22,6 +22,9 @@ import { PlaceFetcher } from './PlaceFetcher.tsx'
 
 import { ActionsFetcher } from './ActionsFetcher.tsx'
 import { ActionFetcher } from './ActionFetcher.tsx'
+
+import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
+import { ActionReportFetcher } from './ActionReportFetcher.tsx'
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
 import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { PlaceReportValuesFetcher } from './PlaceReportValuesFetcher.tsx'
@@ -139,6 +142,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
+
     case 'useActionsNavData': {
       return (
         <ActionsFetcher
@@ -155,7 +159,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
-
+    case 'useActionReportsNavData': {
+      return (
+        <ActionReportsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useActionReportNavData': {
+      return (
+        <ActionReportFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'usePlaceReportsNavData': {
       return (
         <PlaceReportsFetcher
