@@ -1,5 +1,3 @@
-import { useCallback, memo } from 'react'
-import type { InputProps } from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -15,8 +13,8 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-// seperate from the route because it is also used inside other forms
-export const Form = memo(({ autoFocusRef, from }: Props) => {
+// separate from the route because it is also used inside other forms
+export const Form = ({ autoFocusRef, from }: Props) => {
   const { chartId } = useParams({ from })
 
   const db = usePGlite()
@@ -27,22 +25,21 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
-        value,
-        chartId,
-      ])
-      // if one of the years settings is changed, prevent conflicts
-      switch (name) {
-        case 'years_current': {
-          if (value) {
-            await db.query(
-              `
+    await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
+      value,
+      chartId,
+    ])
+    // if one of the years settings is changed, prevent conflicts
+    switch (name) {
+      case 'years_current': {
+        if (value) {
+          await db.query(
+            `
                 UPDATE charts set 
                   years_previous = $1, 
                   years_specific = $2, 
@@ -52,15 +49,15 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, null, null, null, null, chartId],
-            )
-          }
-          break
+            [false, null, null, null, null, chartId],
+          )
         }
-        case 'years_previous': {
-          if (value) {
-            await db.query(
-              `
+        break
+      }
+      case 'years_previous': {
+        if (value) {
+          await db.query(
+            `
                 UPDATE charts set 
                   years_current = $1, 
                   years_specific = $2, 
@@ -70,15 +67,15 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, null, null, null, null, chartId],
-            )
-          }
-          break
+            [false, null, null, null, null, chartId],
+          )
         }
-        case 'years_specific': {
-          if (value) {
-            await db.query(
-              `
+        break
+      }
+      case 'years_specific': {
+        if (value) {
+          await db.query(
+            `
                 UPDATE charts set 
                   years_current = $1, 
                   years_previous = $2, 
@@ -88,15 +85,15 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chartId],
-            )
-          }
-          break
+            [false, false, null, null, null, chartId],
+          )
         }
-        case 'years_last_x': {
-          if (value) {
-            await db.query(
-              `
+        break
+      }
+      case 'years_last_x': {
+        if (value) {
+          await db.query(
+            `
                 UPDATE charts set 
                   years_current = $1, 
                   years_previous = $2, 
@@ -106,15 +103,15 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chartId],
-            )
-          }
-          break
+            [false, false, null, null, null, chartId],
+          )
         }
-        case 'years_since': {
-          if (value) {
-            await db.query(
-              `
+        break
+      }
+      case 'years_since': {
+        if (value) {
+          await db.query(
+            `
                 UPDATE charts set 
                   years_current = $1, 
                   years_previous = $2, 
@@ -124,15 +121,15 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chartId],
-            )
-          }
-          break
+            [false, false, null, null, null, chartId],
+          )
         }
-        case 'years_until': {
-          if (value) {
-            await db.query(
-              `
+        break
+      }
+      case 'years_until': {
+        if (value) {
+          await db.query(
+            `
                 UPDATE charts set 
                   years_current = $1, 
                   years_previous = $2, 
@@ -142,15 +139,13 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
                 WHERE 
                   chart_id = $6
               `,
-              [false, false, null, null, null, chartId],
-            )
-          }
-          break
+            [false, false, null, null, null, chartId],
+          )
         }
+        break
       }
-    },
-    [row, db, chartId],
-  )
+    }
+  }
 
   if (!res) return <Loading />
 
@@ -253,4 +248,4 @@ export const Form = memo(({ autoFocusRef, from }: Props) => {
       </Section>
     </div>
   )
-})
+}

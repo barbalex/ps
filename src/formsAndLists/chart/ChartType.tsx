@@ -1,10 +1,9 @@
-import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const ChartType = memo(({ onChange, row, ref }) => {
+export const ChartType = ({ onChange, row, ref }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT chart_type FROM chart_types order by sort, chart_type`,
@@ -25,4 +24,4 @@ export const ChartType = memo(({ onChange, row, ref }) => {
       ref={ref}
     />
   )
-})
+}

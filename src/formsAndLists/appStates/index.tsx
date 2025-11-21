@@ -1,4 +1,3 @@
-import { memo, useCallback } from 'react'
 import { useAtom } from 'jotai'
 
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -12,29 +11,21 @@ import {
 
 import '../../form.css'
 
-export const AppStates = memo(() => {
-
+export const AppStates = () => {
   const [enforceMobileNavigation, setEnforceMobileNavigation] = useAtom(
     enforceMobileNavigationAtom,
   )
-  const toggleEnforceMobileNavigation = useCallback(
-    () => setEnforceMobileNavigation(!enforceMobileNavigation),
-    [enforceMobileNavigation, setEnforceMobileNavigation],
-  )
+  const toggleEnforceMobileNavigation = () =>
+    setEnforceMobileNavigation(!enforceMobileNavigation)
 
   const [enforceDesktopNavigation, setEnforceDesktopNavigation] = useAtom(
     enforceDesktopNavigationAtom,
   )
-  const toggleEnforceDesktopNavigation = useCallback(
-    () => setEnforceDesktopNavigation(!enforceDesktopNavigation),
-    [enforceDesktopNavigation, setEnforceDesktopNavigation],
-  )
+  const toggleEnforceDesktopNavigation = () =>
+    setEnforceDesktopNavigation(!enforceDesktopNavigation)
 
   const [alwaysShowTree, setAlwaysShowTree] = useAtom(alwaysShowTreeAtom)
-  const toggleAlwaysShowTree = useCallback(
-    () => setAlwaysShowTree(!alwaysShowTree),
-    [alwaysShowTree, setAlwaysShowTree],
-  )
+  const toggleAlwaysShowTree = () => setAlwaysShowTree(!alwaysShowTree)
 
   return (
     <div className="form-outer-container">
@@ -62,4 +53,4 @@ export const AppStates = memo(() => {
       </div>
     </div>
   )
-})
+}
