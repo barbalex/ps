@@ -1,17 +1,16 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createActionReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const { actionReportId, actionReportValueId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createActionReportValue({ db, actionReportId })
     const actionReportValue = res?.rows?.[0]
     navigate({
@@ -22,17 +21,17 @@ export const Header = memo(({ autoFocusRef, from }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [actionReportId, autoFocusRef, db, navigate])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(
       `DELETE FROM action_report_values WHERE action_report_value_id = $1`,
       [actionReportValueId],
     )
     navigate({ to: '..' })
-  }, [actionReportValueId, db, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
       [actionReportId],
@@ -50,9 +49,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
         actionReportValueId: next.action_report_value_id,
       }),
     })
-  }, [actionReportId, actionReportValueId, db, navigate])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
       [actionReportId],
@@ -70,7 +69,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         actionReportValueId: previous.action_report_value_id,
       }),
     })
-  }, [actionReportId, actionReportValueId, db, navigate])
+  }
 
   return (
     <FormHeader
@@ -82,4 +81,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="goal report value"
     />
   )
-})
+}

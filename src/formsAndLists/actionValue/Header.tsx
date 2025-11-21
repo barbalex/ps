@@ -1,17 +1,16 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createActionValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const { actionId, actionValueId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createActionValue({ db, actionId })
     const actionValue = res?.rows?.[0]
     navigate({
@@ -22,16 +21,16 @@ export const Header = memo(({ autoFocusRef, from }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [actionId, autoFocusRef, db, navigate])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query('DELETE FROM action_values WHERE action_value_id = $1', [
       actionValueId,
     ])
     navigate({ to: '..' })
-  }, [actionValueId, db, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       'SELECT action_value_id FROM action_values WHERE action_id = $1 ORDER BY label',
       [actionId],
@@ -49,9 +48,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
         actionValueId: next.action_value_id,
       }),
     })
-  }, [actionId, actionValueId, db, navigate])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       'SELECT action_value_id FROM action_values WHERE action_id = $1 ORDER BY label',
       [actionId],
@@ -69,7 +68,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         actionValueId: previous.action_value_id,
       }),
     })
-  }, [actionId, actionValueId, db, navigate])
+  }
 
   return (
     <FormHeader
@@ -81,4 +80,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="action value"
     />
   )
-})
+}

@@ -1,19 +1,19 @@
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
 import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
 import { usePGlite } from '@electric-sql/pglite-react'
 import fileDownload from 'js-file-download'
 
-export const DbDump = memo(() => {
+export const DbDump = () => {
   const db = usePGlite()
 
   const [dumping, setDumping] = useState(false)
-  const downloadDump = useCallback(async () => {
+  const downloadDump = async () => {
     setDumping(true)
     const dump = await pgDump({ pg: db })
     fileDownload(dump, `promoting-species.sql`)
     setDumping(false)
-  }, [db])
+  }
 
   return (
     <Button
@@ -24,4 +24,4 @@ export const DbDump = memo(() => {
       <div>{`${dumping ? 'Downloading' : 'Download'} Database Dump`}</div>
     </Button>
   )
-})
+}
