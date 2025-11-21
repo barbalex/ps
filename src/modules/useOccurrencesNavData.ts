@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -40,67 +39,54 @@ export const useOccurrencesNavData = ({
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const parentArray = [
-      'data',
-      'projects',
-      projectId,
-      'subprojects',
-      subprojectId,
-      ...(placeId ? ['places', placeId] : []),
-      ...(placeId2 ? ['places', placeId2] : []),
-    ]
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [
-      ...parentArray,
-      ...(isToAssess ? ['occurrences-to-assess']
-      : isNotToAssign ? ['occurrences-not-to-assign']
-      : ['occurrences']),
-    ]
-    const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
-    const namePlural =
-      isToAssess ? ' Occurrences To Assess'
-      : isNotToAssign ? 'Occurrences Not To Assign'
-      : 'Occurrences Assigned'
-    const nameSingular =
-      isToAssess ? ' Occurrence to assess'
-      : isNotToAssign ? 'Occurrence not to assign'
-      : 'Occurrence assigned'
-
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label: buildNavLabel({
-        countFiltered: navs.length,
-        namePlural,
-        loading,
-      }),
-      nameSingular,
-      navs,
-    }
-  }, [
-    isNotToAssign,
-    isToAssess,
-    loading,
-    location.pathname,
-    openNodes,
-    placeId,
-    placeId2,
+  const navs = res?.rows ?? []
+  const parentArray = [
+    'data',
+    'projects',
     projectId,
-    res?.rows,
+    'subprojects',
     subprojectId,
-  ])
+    ...(placeId ? ['places', placeId] : []),
+    ...(placeId2 ? ['places', placeId2] : []),
+  ]
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [
+    ...parentArray,
+    ...(isToAssess ? ['occurrences-to-assess']
+    : isNotToAssign ? ['occurrences-not-to-assign']
+    : ['occurrences']),
+  ]
+  const ownUrl = `/${ownArray.join('/')}`
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
+  const namePlural =
+    isToAssess ? ' Occurrences To Assess'
+    : isNotToAssign ? 'Occurrences Not To Assign'
+    : 'Occurrences Assigned'
+  const nameSingular =
+    isToAssess ? ' Occurrence to assess'
+    : isNotToAssign ? 'Occurrence not to assign'
+    : 'Occurrence assigned'
+
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label: buildNavLabel({
+      countFiltered: navs.length,
+      namePlural,
+      loading,
+    }),
+    nameSingular,
+    navs,
+  }
 
   return { loading, navData }
 }
