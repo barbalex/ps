@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
@@ -29,7 +29,7 @@ const imageStyle = {
 }
 const textStyle = { alignSelf: 'center', paddingTop: '2em' }
 
-export const FilePreview = memo(({ from }) => {
+export const FilePreview = ({ from }) => {
   const { fileId } = useParams({ from })
   const previewRef = useRef<HTMLDivElement>(null)
 
@@ -146,4 +146,4 @@ export const FilePreview = memo(({ from }) => {
       </div>
     </>
   )
-})
+}

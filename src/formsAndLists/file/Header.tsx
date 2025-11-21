@@ -1,4 +1,4 @@
-import { useMemo, useContext } from 'react'
+import { useContext } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
@@ -44,22 +44,23 @@ export const Header = ({ row, previewRef, from }) => {
     navigate({ to: '..' })
   }
 
-  const { hFilterField, hFilterValue } = useMemo(() => {
-    if (actionId) {
-      return { hFilterField: 'action_id', hFilterValue: actionId }
-    } else if (checkId) {
-      return { hFilterField: 'check_id', hFilterValue: checkId }
-    } else if (placeId2) {
-      return { hFilterField: 'place_id', hFilterValue: placeId2 }
-    } else if (placeId) {
-      return { hFilterField: 'place_id', hFilterValue: placeId }
-    } else if (subprojectId) {
-      return { hFilterField: 'subproject_id', hFilterValue: subprojectId }
-    } else if (projectId) {
-      return { hFilterField: 'project_id', hFilterValue: projectId }
-    }
-    return { hFilterField: undefined, hFilterValue: undefined }
-  }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
+  const hFilterField =
+    actionId ? 'action_id'
+    : checkId ? 'check_id'
+    : placeId2 ? 'place_id'
+    : placeId ? 'place_id'
+    : subprojectId ? 'subproject_id'
+    : projectId ? 'project_id'
+    : undefined
+
+  const hFilterValue =
+    actionId ??
+    checkId ??
+    placeId2 ??
+    placeId ??
+    subprojectId ??
+    projectId ??
+    undefined
 
   const toNext = async () => {
     const res = await db.query(

@@ -1,6 +1,4 @@
-import { useCallback, memo } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -15,7 +13,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const File = memo(({ from }) => {
+export const File = ({ from }) => {
   const { fileId } = useParams({ from })
   const db = usePGlite()
 
@@ -28,43 +26,40 @@ export const File = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, dataIn) => {
-      const { name, value } = getValueFromChange(e, dataIn)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, dataIn) => {
+    const { name, value } = getValueFromChange(e, dataIn)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      const data = { [name]: value }
-      // if higher level is changed, lower levels need to be removed
-      if (name === 'project_id') {
-        data.subproject_id = null
-        data.place_id = null
-        data.action_id = null
-        data.check_id = null
-      }
-      if (name === 'subproject_id') {
-        data.place_id = null
-        data.action_id = null
-        data.check_id = null
-      }
-      if (name === 'place_id') {
-        data.action_id = null
-        data.check_id = null
-      }
-      let setsString = ''
-      Object.keys(data).map(
-        (key, i) =>
-          (setsString += `${key} = $${i + 2}${
-            i === Object.keys(data).length - 1 ? '' : ', '
-          }`),
-      )
-      db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
-        fileId,
-        ...Object.values(data),
-      ])
-    },
-    [db, fileId, row],
-  )
+    const data = { [name]: value }
+    // if higher level is changed, lower levels need to be removed
+    if (name === 'project_id') {
+      data.subproject_id = null
+      data.place_id = null
+      data.action_id = null
+      data.check_id = null
+    }
+    if (name === 'subproject_id') {
+      data.place_id = null
+      data.action_id = null
+      data.check_id = null
+    }
+    if (name === 'place_id') {
+      data.action_id = null
+      data.check_id = null
+    }
+    let setsString = ''
+    Object.keys(data).map(
+      (key, i) =>
+        (setsString += `${key} = $${i + 2}${
+          i === Object.keys(data).length - 1 ? '' : ', '
+        }`),
+    )
+    db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
+      fileId,
+      ...Object.values(data),
+    ])
+  }
 
   const { width, ref } = useResizeDetector({
     handleHeight: false,
@@ -177,4 +172,4 @@ export const File = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
