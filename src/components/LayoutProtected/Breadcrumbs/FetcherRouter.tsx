@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { PlacesFetcher } from './PlacesFetcher.tsx'
+import { PlaceFetcher } from './PlaceFetcher.tsx'
 import { SubprojectReportsFetcher } from './SubprojectReportsFetcher.tsx'
 import { SubprojectReportFetcher } from './SubprojectReportFetcher.tsx'
 import { GoalsFetcher } from './GoalsFetcher.tsx'
@@ -111,6 +113,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'usePlacesNavData': {
+      return (
+        <PlacesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceNavData': {
+      return (
+        <PlaceFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useSubprojectReportsNavData': {
       return (
         <SubprojectReportsFetcher
