@@ -824,6 +824,8 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
+    // when using default the query only returns once, not the result
+    // so not great
     default: {
       return (
         <AnyFetcherImporter
