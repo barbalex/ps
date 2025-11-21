@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -21,25 +20,19 @@ export const usePlaceReportsNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const parentArray = useMemo(
-    () => [
-      'data',
-      'projects',
-      projectId,
-      'subprojects',
-      subprojectId,
-      'places',
-      placeId,
-      ...(placeId2 ? ['places', placeId2] : []),
-    ],
-    [placeId, placeId2, projectId, subprojectId],
-  )
-  const ownArray = useMemo(() => [...parentArray, 'reports'], [parentArray])
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'subprojects',
+    subprojectId,
+    'places',
+    placeId,
+    ...(placeId2 ? ['places', placeId2] : []),
+  ]
+  const ownArray = [...parentArray, 'reports']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = useMemo(
-    () => openNodes.some((array) => isEqual(array, ownArray)),
-    [openNodes, ownArray],
-  )
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const [filter] = useAtom(
     placeId2 ? placeReports2FilterAtom : placeReports1FilterAtom,
@@ -77,44 +70,34 @@ export const usePlaceReportsNavData = ({
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-    const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
 
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownUrl = `/${ownArray.join('/')}`
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label: buildNavLabel({
-        loading,
-        isFiltered,
-        countFiltered,
-        countUnfiltered,
-        namePlural: 'Reports',
-      }),
-      nameSingular: 'Report',
-      navs,
-    }
-  }, [
-    isFiltered,
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
     isOpen,
-    loading,
-    location.pathname,
+    parentUrl,
     ownArray,
-    parentArray,
-    res?.rows,
-  ])
+    urlPath,
+    ownUrl,
+    label: buildNavLabel({
+      loading,
+      isFiltered,
+      countFiltered,
+      countUnfiltered,
+      namePlural: 'Reports',
+    }),
+    nameSingular: 'Report',
+    navs,
+  }
 
   return { loading, navData, isFiltered }
 }

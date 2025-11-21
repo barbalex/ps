@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -109,131 +108,116 @@ export const usePlaceNavData = ({
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const nav = res?.rows?.[0]
-    const nameSingular = nav?.name_singular ?? 'Place'
-    const childNamePlural = nav?.child_name_plural ?? 'Places'
+  const nav = res?.rows?.[0]
+  const nameSingular = nav?.name_singular ?? 'Place'
+  const childNamePlural = nav?.child_name_plural ?? 'Places'
 
-    const parentArray = [
-      'data',
-      'projects',
-      projectId,
-      'subprojects',
-      subprojectId,
-      ...(placeId && placeId2 ? ['places', placeId] : []),
-      'places',
-    ]
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, nav?.id]
-    const ownUrl = `/${ownArray.join('/')}`
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
-
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
-
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 2,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label,
-      notFound,
-      nameSingular,
-      navs: [
-        { id: 'place', label: nameSingular },
-        ...(!placeId2 ?
-          [
-            {
-              id: 'places',
-              label: buildNavLabel({
-                loading,
-                isFiltered: placesIsFiltered,
-                countFiltered: nav?.places_count_filtered ?? 0,
-                countUnfiltered: nav?.places_count_unfiltered ?? 0,
-                namePlural: childNamePlural,
-              }),
-            },
-          ]
-        : []),
-        {
-          id: 'checks',
-          label: buildNavLabel({
-            loading,
-            isFiltered: checksIsFiltered,
-            countFiltered: nav?.checks_count_filtered ?? 0,
-            countUnfiltered: nav?.checks_count_unfiltered ?? 0,
-            namePlural: 'Checks',
-          }),
-        },
-        {
-          id: 'actions',
-          label: buildNavLabel({
-            loading,
-            isFiltered: actionsIsFiltered,
-            countFiltered: nav?.actions_count_filtered ?? 0,
-            countUnfiltered: nav?.actions_count_unfiltered ?? 0,
-            namePlural: 'Actions',
-          }),
-        },
-        {
-          id: 'reports',
-          label: buildNavLabel({
-            loading,
-            isFiltered: placeReportsIsFiltered,
-            countFiltered: nav?.place_reports_count_filtered ?? 0,
-            countUnfiltered: nav?.place_reports_count_unfiltered ?? 0,
-            namePlural: 'Reports',
-          }),
-        },
-        {
-          id: 'occurrences',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.occurrences_count ?? 0,
-            namePlural: 'Occurrences Assigned',
-          }),
-        },
-        {
-          id: 'users',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.place_users_count ?? 0,
-            namePlural: 'Users',
-          }),
-        },
-        {
-          id: 'files',
-          label: buildNavLabel({
-            loading,
-            isFiltered: filesIsFiltered,
-            countFiltered: nav?.files_count_filtered ?? 0,
-            countUnfiltered: nav?.files_count_unfiltered ?? 0,
-            namePlural: 'Files',
-          }),
-        },
-      ],
-    }
-  }, [
-    res,
+  const parentArray = [
+    'data',
+    'projects',
     projectId,
+    'subprojects',
     subprojectId,
-    placeId,
-    placeId2,
-    openNodes,
-    loading,
-    placesIsFiltered,
-    checksIsFiltered,
-    actionsIsFiltered,
-    placeReportsIsFiltered,
-    filesIsFiltered,
-  ])
+    ...(placeId && placeId2 ? ['places', placeId] : []),
+    'places',
+  ]
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, nav?.id]
+  const ownUrl = `/${ownArray.join('/')}`
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
+
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 2,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label,
+    notFound,
+    nameSingular,
+    navs: [
+      { id: 'place', label: nameSingular },
+      ...(!placeId2 ?
+        [
+          {
+            id: 'places',
+            label: buildNavLabel({
+              loading,
+              isFiltered: placesIsFiltered,
+              countFiltered: nav?.places_count_filtered ?? 0,
+              countUnfiltered: nav?.places_count_unfiltered ?? 0,
+              namePlural: childNamePlural,
+            }),
+          },
+        ]
+      : []),
+      {
+        id: 'checks',
+        label: buildNavLabel({
+          loading,
+          isFiltered: checksIsFiltered,
+          countFiltered: nav?.checks_count_filtered ?? 0,
+          countUnfiltered: nav?.checks_count_unfiltered ?? 0,
+          namePlural: 'Checks',
+        }),
+      },
+      {
+        id: 'actions',
+        label: buildNavLabel({
+          loading,
+          isFiltered: actionsIsFiltered,
+          countFiltered: nav?.actions_count_filtered ?? 0,
+          countUnfiltered: nav?.actions_count_unfiltered ?? 0,
+          namePlural: 'Actions',
+        }),
+      },
+      {
+        id: 'reports',
+        label: buildNavLabel({
+          loading,
+          isFiltered: placeReportsIsFiltered,
+          countFiltered: nav?.place_reports_count_filtered ?? 0,
+          countUnfiltered: nav?.place_reports_count_unfiltered ?? 0,
+          namePlural: 'Reports',
+        }),
+      },
+      {
+        id: 'occurrences',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.occurrences_count ?? 0,
+          namePlural: 'Occurrences Assigned',
+        }),
+      },
+      {
+        id: 'users',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.place_users_count ?? 0,
+          namePlural: 'Users',
+        }),
+      },
+      {
+        id: 'files',
+        label: buildNavLabel({
+          loading,
+          isFiltered: filesIsFiltered,
+          countFiltered: nav?.files_count_filtered ?? 0,
+          countUnfiltered: nav?.files_count_unfiltered ?? 0,
+          namePlural: 'Files',
+        }),
+      },
+    ],
+  }
 
   return { navData, loading }
 }
