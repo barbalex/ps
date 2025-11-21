@@ -5,6 +5,7 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: { port: 5176 },
   plugins: [
     TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
     react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
