@@ -1,6 +1,6 @@
-import { useCallback, useRef, useMemo, useState, memo } from 'react'
+import { useRef, useState } from 'react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
-import { Tab, TabList, InputProps } from '@fluentui/react-components'
+import { Tab, TabList } from '@fluentui/react-components'
 import {
   usePGlite,
   useLiveQuery,
@@ -35,7 +35,7 @@ const tabNumberStyle = {
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
 
-export const OccurrenceImport = memo(() => {
+export const OccurrenceImport = () => {
   const { occurrenceImportId } = useParams({ from })
   const navigate = useNavigate()
   const { occurrenceImportTab: tab } = useSearch({ from })
@@ -58,7 +58,7 @@ export const OccurrenceImport = memo(() => {
     [occurrenceImportId],
     'occurrence_id',
   )
-  const occurrences = useMemo(() => oResult?.rows ?? [], [oResult])
+  const occurrences = oResult?.rows ?? []
 
   const occurrencesWithoutGeometryCountResult = useLiveQuery(
     `SELECT count(*) FROM occurrences WHERE occurrence_import_id = $1 AND geometry is null`,
@@ -69,77 +69,59 @@ export const OccurrenceImport = memo(() => {
 
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (occurrenceImport[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (occurrenceImport[name] === value) return
 
-      db.query(
-        `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
-        [value, occurrenceImportId],
-      )
-    },
-    [db, occurrenceImport, occurrenceImportId],
-  )
+    db.query(
+      `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
+      [value, occurrenceImportId],
+    )
+  }
 
-  const onTabSelect = useCallback(
-    (e, data) => navigate({ search: { occurrenceImportTab: data.value } }),
-    [navigate],
-  )
+  const onTabSelect = (e, data) =>
+    navigate({ search: { occurrenceImportTab: data.value } })
 
-  const tab1Style = useMemo(
-    () => ({
-      ...tabNumberStyle,
-      backgroundColor:
-        occurrenceImport?.name && occurrences.length ?
-          'var(--colorCompoundBrandStrokeHover)'
-        : tab === 1 ? 'black'
-        : 'grey',
-    }),
-    [occurrenceImport?.name, occurrences, tab],
-  )
+  const tab1Style = {
+    ...tabNumberStyle,
+    backgroundColor:
+      occurrenceImport?.name && occurrences.length ?
+        'var(--colorCompoundBrandStrokeHover)'
+      : tab === 1 ? 'black'
+      : 'grey',
+  }
 
-  const tab2Style = useMemo(
-    () => ({
-      ...tabNumberStyle,
-      backgroundColor:
-        // green if all occurrences have geometry
-        occurrences.length && !occurrencesWithoutGeometryCount ?
-          'var(--colorCompoundBrandStrokeHover)'
-          // black if is current
-        : tab === 2 ? 'black'
-          // grey if no occurrences or not current
-        : 'grey',
-    }),
-    [occurrences, occurrencesWithoutGeometryCount, tab],
-  )
+  const tab2Style = {
+    ...tabNumberStyle,
+    backgroundColor:
+      // green if all occurrences have geometry
+      occurrences.length && !occurrencesWithoutGeometryCount ?
+        'var(--colorCompoundBrandStrokeHover)'
+        // black if is current
+      : tab === 2 ? 'black'
+        // grey if no occurrences or not current
+      : 'grey',
+  }
 
-  const tab3Style = useMemo(
-    () => ({
-      ...tabNumberStyle,
-      backgroundColor:
-        // green if label_creation exists
-        occurrenceImport?.label_creation ?
-          'var(--colorCompoundBrandStrokeHover)'
-          // black if is current
-        : tab === 3 ? 'black'
-          // grey if no occurrences or not current
-        : 'grey',
-    }),
-    [occurrenceImport?.label_creation, tab],
-  )
+  const tab3Style = {
+    ...tabNumberStyle,
+    backgroundColor:
+      // green if label_creation exists
+      occurrenceImport?.label_creation ? 'var(--colorCompoundBrandStrokeHover)'
+        // black if is current
+      : tab === 3 ? 'black'
+        // grey if no occurrences or not current
+      : 'grey',
+  }
 
-  const tab4Style = useMemo(
-    () => ({
-      ...tabNumberStyle,
-      backgroundColor:
-        occurrenceImport?.id_field ? 'var(--colorCompoundBrandStrokeHover)'
-        : tab === 4 ? 'black'
-        : 'grey',
-    }),
-    [occurrenceImport?.id_field, tab],
-  )
+  const tab4Style = {
+    ...tabNumberStyle,
+    backgroundColor:
+      occurrenceImport?.id_field ? 'var(--colorCompoundBrandStrokeHover)'
+      : tab === 4 ? 'black'
+      : 'grey',
+  }
 
   // TODO:
   // show stepper-like tabs on new import:
@@ -250,4 +232,4 @@ export const OccurrenceImport = memo(() => {
       </div>
     </div>
   )
-})
+}

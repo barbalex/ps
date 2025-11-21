@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 const emptyContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -47,7 +45,7 @@ const bocyCellStyle = {
   overflowWrap: 'anywhere',
 }
 
-export const Preview = memo(({ occurrences, occurrenceFields }) => {
+export const Preview = ({ occurrences, occurrenceFields }) => {
   if (!occurrences) {
     return <div style={emptyContainerStyle}>loading preview...</div>
   }
@@ -102,4 +100,4 @@ export const Preview = memo(({ occurrences, occurrenceFields }) => {
       </table>
     </div>
   )
-})
+}
