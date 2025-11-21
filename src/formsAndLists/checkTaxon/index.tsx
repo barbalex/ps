@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -12,7 +11,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const CheckTaxon = memo(({ from }) => {
+export const CheckTaxon = ({ from }) => {
   const { checkTaxonId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -27,19 +26,16 @@ export const CheckTaxon = memo(({ from }) => {
 
   // console.log('CheckTaxon', { row, results })
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
-        value,
-        checkTaxonId,
-      ])
-    },
-    [row, db, checkTaxonId],
-  )
+    db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
+      value,
+      checkTaxonId,
+    ])
+  }
 
   if (!res) return <Loading />
 
@@ -88,4 +84,4 @@ export const CheckTaxon = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

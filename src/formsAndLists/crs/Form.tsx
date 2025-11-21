@@ -1,6 +1,4 @@
-import { memo, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -13,7 +11,7 @@ import '../../form.css'
 const from = '/data/crs/$crsId'
 
 // this form is rendered from a parent or outlet
-export const Component = memo(() => {
+export const Component = () => {
   const { crsId } = useParams({ from })
 
   const db = usePGlite()
@@ -24,16 +22,13 @@ export const Component = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE crs SET ${name} = $1 WHERE crs_id = $2`, [value, crsId])
-    },
-    [row, db, crsId],
-  )
+    db.query(`UPDATE crs SET ${name} = $1 WHERE crs_id = $2`, [value, crsId])
+  }
 
   if (!res) return <Loading />
 
@@ -71,4 +66,4 @@ export const Component = memo(() => {
       />
     </>
   )
-})
+}
