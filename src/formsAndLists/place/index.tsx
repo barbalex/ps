@@ -1,4 +1,4 @@
-import { useRef, useCallback, memo } from 'react'
+import { useRef } from 'react'
 import { useParams, useSearch } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -12,7 +12,7 @@ import '../../form.css'
 
 const fieldsStyle = { padding: 10 }
 
-export const Place = memo(({ from }) => {
+export const Place = ({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const { onlyForm } = useSearch({ from })
 
@@ -46,19 +46,16 @@ export const Place = memo(({ from }) => {
   const nameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
   const namePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
-        value,
-        placeId,
-      ])
-    },
-    [db, placeId, row],
-  )
+    db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
+      value,
+      placeId,
+    ])
+  }
 
   if (!res) return <Loading />
 
@@ -97,4 +94,4 @@ export const Place = memo(({ from }) => {
       />
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
@@ -23,7 +22,12 @@ interface Props {
   from: string
 }
 
-export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Props) => {
+export const Header = ({
+  autoFocusRef,
+  from,
+  nameSingular,
+  namePlural,
+}: Props) => {
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
@@ -36,7 +40,7 @@ export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Pr
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const resPlace = await createPlace({
       db,
       projectId,
@@ -84,24 +88,14 @@ export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Pr
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [
-    db,
-    projectId,
-    subprojectId,
-    placeId2,
-    placeId,
-    namePlural,
-    navigate,
-    isForm,
-    autoFocusRef,
-  ])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM places WHERE place_id = $1`, [placeId2 ?? placeId])
     navigate({ to: isForm ? `../..` : `..` })
-  }, [db, isForm, navigate, placeId, placeId2])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `
       SELECT place_id 
@@ -125,9 +119,9 @@ export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Pr
         [idName]: next.place_id,
       }),
     })
-  }, [db, isForm, navigate, placeId, placeId2, subprojectId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `
       SELECT place_id 
@@ -152,18 +146,17 @@ export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Pr
         [idName]: previous.place_id,
       }),
     })
-  }, [db, isForm, navigate, placeId, placeId2, subprojectId])
+  }
 
-  const alertNoGeometry = useCallback(() => {
+  const alertNoGeometry = () =>
     createNotification({
       title: 'No geometry',
       body: `To zoom to a place, create it's geometry first`,
       intent: 'error',
       db,
     })
-  }, [db])
 
-  const onClickZoomTo = useCallback(async () => {
+  const onClickZoomTo = async () => {
     const res = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
       placeId2 ?? placeId,
     ])
@@ -184,7 +177,7 @@ export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Pr
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [db, placeId2, placeId, tabs, alertNoGeometry, setMapBounds, setTabs])
+  }
 
   return (
     <FormHeader
@@ -204,4 +197,4 @@ export const Header = memo(({ autoFocusRef, from, nameSingular, namePlural }: Pr
       }
     />
   )
-})
+}

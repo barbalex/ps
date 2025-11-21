@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -9,16 +8,15 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-const from =
-  '/data/projects/$projectId_/place-levels/$placeLevelId/'
+const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
-export const Header = memo(({ autoFocusRef }: Props) => {
+export const Header = ({ autoFocusRef }: Props) => {
   const { projectId, placeLevelId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createPlaceLevel({ db, project_id: projectId })
     const placeLevel = res?.rows?.[0]
     navigate({
@@ -26,16 +24,16 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       params: (prev) => ({ ...prev, placeLevelId: placeLevel.place_level_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM place_levels WHERE place_level_id = $1`, [
       placeLevelId,
     ])
     navigate({ to: '..' })
-  }, [db, navigate, placeLevelId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -50,9 +48,9 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       to: `../${next.place_level_id}`,
       params: (prev) => ({ ...prev, placeLevelId: next.place_level_id }),
     })
-  }, [db, navigate, placeLevelId, projectId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -67,7 +65,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       to: `../${previous.place_level_id}`,
       params: (prev) => ({ ...prev, placeLevelId: previous.place_level_id }),
     })
-  }, [db, navigate, placeLevelId, projectId])
+  }
 
   return (
     <FormHeader
@@ -79,4 +77,4 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       tableName="place level"
     />
   )
-})
+}

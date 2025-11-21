@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -16,7 +15,7 @@ import '../../form.css'
 
 const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
-export const PlaceLevel = memo(() => {
+export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -29,37 +28,34 @@ export const PlaceLevel = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE place_levels SET ${name} = $1 WHERE place_level_id = $2`,
-        [value, placeLevelId],
-      )
-      // if name_plural was changed, need to update the label of corresponding vector layers
-      if (
-        row &&
-        [
-          'name_plural',
-          'name_singular',
-          'actions',
-          'checks',
-          'occurrences',
-        ].includes(name) &&
-        row.level &&
-        row.project_id
-      ) {
-        await updateTableVectorLayerLabels({
-          db,
-          project_id: row.project_id,
-        })
-      }
-    },
-    [db, placeLevelId, row],
-  )
+    db.query(`UPDATE place_levels SET ${name} = $1 WHERE place_level_id = $2`, [
+      value,
+      placeLevelId,
+    ])
+    // if name_plural was changed, need to update the label of corresponding vector layers
+    if (
+      row &&
+      [
+        'name_plural',
+        'name_singular',
+        'actions',
+        'checks',
+        'occurrences',
+      ].includes(name) &&
+      row.level &&
+      row.project_id
+    ) {
+      await updateTableVectorLayerLabels({
+        db,
+        project_id: row.project_id,
+      })
+    }
+  }
 
   if (!res) return <Loading />
 
@@ -162,4 +158,4 @@ export const PlaceLevel = memo(() => {
       </div>
     </div>
   )
-})
+}

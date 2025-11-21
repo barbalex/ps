@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { usePlaceNavData } from '../../modules/usePlaceNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const PlaceList = memo(({ from }) => {
+export const PlaceList = ({ from }) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const { loading, navData } = usePlaceNavData({
     projectId,
@@ -45,4 +44,4 @@ export const PlaceList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
