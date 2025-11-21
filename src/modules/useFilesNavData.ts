@@ -32,22 +32,31 @@ export const useFilesNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const { hKey, hValue } = useMemo(() => {
+  const { hKey } = useMemo(() => {
     if (actionId) {
-      return { hKey: 'action_id', hValue: actionId }
+      return { hKey: 'action_id' }
     } else if (checkId) {
-      return { hKey: 'check_id', hValue: checkId }
+      return { hKey: 'check_id' }
     } else if (placeId2) {
-      return { hKey: 'place_id', hValue: placeId2 }
+      return { hKey: 'place_id' }
     } else if (placeId) {
-      return { hKey: 'place_id', hValue: placeId }
+      return { hKey: 'place_id' }
     } else if (subprojectId) {
-      return { hKey: 'subproject_id', hValue: subprojectId }
+      return { hKey: 'subproject_id' }
     } else if (projectId) {
-      return { hKey: 'project_id', hValue: projectId }
+      return { hKey: 'project_id' }
     }
-    return { hKey: undefined, hValue: undefined }
+    return { hKey: undefined }
   }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
+
+  const hValue =
+    actionId ??
+    checkId ??
+    placeId2 ??
+    placeId ??
+    subprojectId ??
+    projectId ??
+    undefined
 
   const [filter] = useAtom(filesFilterAtom)
   const filterString = filterStringFromFilter(filter)
