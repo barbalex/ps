@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -26,34 +25,31 @@ export const useAccountNavData = ({ accountId }) => {
   )
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const nav = res?.rows?.[0]
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const ownArray = [...parentArray, nav?.id]
-    const ownUrl = `/${ownArray.join('/')}`
+  const nav = res?.rows?.[0]
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const ownArray = [...parentArray, nav?.id]
+  const ownUrl = `/${ownArray.join('/')}`
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
-
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 1,
-      parentUrl,
-      ownArray,
-      ownUrl,
-      urlPath,
-      label,
-      notFound,
-      nameSingular: 'Account',
-    }
-  }, [location.pathname, openNodes, res])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 1,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    label,
+    notFound,
+    nameSingular: 'Account',
+  }
 
   return { loading, navData }
 }

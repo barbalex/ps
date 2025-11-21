@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import * as icons from 'react-icons/md'
 import type { InputProps } from '@fluentui/react-components'
 
@@ -22,14 +21,10 @@ interface Props {
 }
 
 export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
-  const wantedIconKeys = useMemo(
-    () =>
-      Object.keys(icons)
-        .filter((key) => !key.endsWith('Mp'))
-        .filter((key) => !key.endsWith('K'))
-        .filter((key) => !key.endsWith('KPlus')),
-    [],
-  )
+  const wantedIconKeys = Object.keys(icons)
+    .filter((key) => !key.endsWith('Mp'))
+    .filter((key) => !key.endsWith('K'))
+    .filter((key) => !key.endsWith('KPlus'))
 
   // TODO: use fluent ui Label?
   return (
