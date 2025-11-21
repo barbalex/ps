@@ -1,11 +1,10 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const { projectId, subprojectId, subprojectReportId } = useParams({
     from,
   })
@@ -13,7 +12,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createSubprojectReport({ db, projectId, subprojectId })
     const data = res?.rows?.[0]
     navigate({
@@ -24,16 +23,16 @@ export const Header = memo(({ autoFocusRef, from }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId, subprojectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM subproject_reports WHERE subproject_report_id = $1`, [
       subprojectReportId,
     ])
     navigate({ to: `..` })
-  }, [db, navigate, subprojectReportId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT subproject_report_id FROM subproject_reports WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -51,9 +50,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
         subprojectReportId: next.subproject_report_id,
       }),
     })
-  }, [db, navigate, projectId, subprojectReportId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT subproject_report_id FROM subproject_reports WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -71,7 +70,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         subprojectReportId: previous.subproject_report_id,
       }),
     })
-  }, [db, navigate, projectId, subprojectReportId])
+  }
 
   return (
     <FormHeader
@@ -83,4 +82,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="subproject report"
     />
   )
-})
+}

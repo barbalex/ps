@@ -1,4 +1,4 @@
-import { useRef, memo, useCallback } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -10,7 +10,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const Subproject = memo(({ from }) => {
+export const Subproject = ({ from }) => {
   const { subprojectId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -29,19 +29,16 @@ export const Subproject = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE subprojects SET ${name} = $1 WHERE subproject_id = $2`, [
-        value,
-        subprojectId,
-      ])
-    },
-    [db, row, subprojectId],
-  )
+    db.query(`UPDATE subprojects SET ${name} = $1 WHERE subproject_id = $2`, [
+      value,
+      subprojectId,
+    ])
+  }
 
   if (!res) return <Loading />
 
@@ -75,4 +72,4 @@ export const Subproject = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

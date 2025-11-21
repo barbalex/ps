@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useSubprojectNavData } from '../../modules/useSubprojectNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const SubprojectList = memo(({ from }) => {
+export const SubprojectList = ({ from }) => {
   const { projectId, subprojectId } = useParams({ from })
   const { loading, navData } = useSubprojectNavData({
     projectId,
@@ -43,4 +42,4 @@ export const SubprojectList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
