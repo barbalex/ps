@@ -20,6 +20,8 @@ import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 import { PlacesFetcher } from './PlacesFetcher.tsx'
 import { PlaceFetcher } from './PlaceFetcher.tsx'
 
+import { ActionsFetcher } from './ActionsFetcher.tsx'
+import { ActionFetcher } from './ActionFetcher.tsx'
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
 import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { PlaceReportValuesFetcher } from './PlaceReportValuesFetcher.tsx'
@@ -121,7 +123,6 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
-
     case 'usePlacesNavData': {
       return (
         <PlacesFetcher
@@ -138,6 +139,23 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
+    case 'useActionsNavData': {
+      return (
+        <ActionsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useActionNavData': {
+      return (
+        <ActionFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+
     case 'usePlaceReportsNavData': {
       return (
         <PlaceReportsFetcher
