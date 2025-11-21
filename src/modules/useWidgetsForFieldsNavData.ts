@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -18,10 +17,7 @@ export const useWidgetsForFieldsNavData = () => {
   const location = useLocation()
 
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = useMemo(
-    () => openNodes.some((array) => isEqual(array, ownArray)),
-    [openNodes],
-  )
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const [filter] = useAtom(widgetsForFieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
@@ -55,35 +51,33 @@ export const useWidgetsForFieldsNavData = () => {
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-    const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
 
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 1,
-      parentUrl,
-      ownArray,
-      ownUrl,
-      urlPath,
-      label: buildNavLabel({
-        loading,
-        isFiltered,
-        countFiltered,
-        countUnfiltered,
-        namePlural: 'Widgets For Fields',
-      }),
-      nameSingular: 'Widget For Field',
-      navs,
-    }
-  }, [isFiltered, isOpen, loading, location.pathname, res?.rows])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 1,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    label: buildNavLabel({
+      loading,
+      isFiltered,
+      countFiltered,
+      countUnfiltered,
+      namePlural: 'Widgets For Fields',
+    }),
+    nameSingular: 'Widget For Field',
+    navs,
+  }
 
   return { loading, navData, isFiltered }
 }
