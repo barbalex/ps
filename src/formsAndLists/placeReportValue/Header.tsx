@@ -1,17 +1,16 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const { placeReportId, placeReportValueId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createPlaceReportValue({ db, placeReportId })
     const placeReportValue = res?.rows?.[0]
     console.log('PlaceReportValue, addRow, placeReportValue:', placeReportValue)
@@ -23,17 +22,17 @@ export const Header = memo(({ autoFocusRef, from }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, placeReportId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(
       `DELETE FROM place_report_values WHERE place_report_value_id = $1`,
       [placeReportValueId],
     )
     navigate({ to: '..' })
-  }, [db, navigate, placeReportValueId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT place_report_value_id FROM place_report_values WHERE place_report_id = $1 ORDER BY label`,
       [placeReportId],
@@ -51,9 +50,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
         placeReportValueId: next.place_report_value_id,
       }),
     })
-  }, [db, navigate, placeReportId, placeReportValueId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT place_report_value_id FROM place_report_values WHERE place_report_id = $1 ORDER BY label`,
       [placeReportId],
@@ -71,7 +70,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         placeReportValueId: previous.place_report_value_id,
       }),
     })
-  }, [db, navigate, placeReportId, placeReportValueId])
+  }
 
   return (
     <FormHeader
@@ -83,4 +82,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="place report value"
     />
   )
-})
+}
