@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -24,35 +23,33 @@ export const useUnitNavData = ({ projectId, unitId }) => {
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const nav = res?.rows?.[0]
+  const nav = res?.rows?.[0]
 
-    const parentArray = ['data', 'projects', projectId, 'units']
-    const ownArray = [...parentArray, unitId]
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownUrl = `/${ownArray.join('/')}`
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentArray = ['data', 'projects', projectId, 'units']
+  const ownArray = [...parentArray, unitId]
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label,
-      notFound,
-      nameSingular: 'Unit',
-    }
-  }, [location.pathname, openNodes, projectId, res, unitId])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label,
+    notFound,
+    nameSingular: 'Unit',
+  }
 
   return { loading, navData }
 }
