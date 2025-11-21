@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import {
   AreaChart,
   Area,
@@ -21,7 +20,7 @@ const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 //   return toPercent(ratio, 2)
 // }
 
-export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
+export const SingleChart = ({ chart, subjects, data, synchronized }) => {
   const res = useLiveIncrementalQuery(
     `SELECT * FROM units WHERE unit_id = $1`,
     [subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999'],
@@ -123,4 +122,4 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
       </AreaChart>
     </ResponsiveContainer>
   )
-})
+}

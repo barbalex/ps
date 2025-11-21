@@ -1,11 +1,11 @@
-import { useRef, memo } from 'react'
+import { useRef } from 'react'
 
 import { Header } from './Header.tsx'
 import { ChartSubjectForm } from './Form.tsx'
 
 import '../../form.css'
 
-export const ChartSubject = memo(() => {
+export const ChartSubject = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   // TODO:
@@ -17,4 +17,4 @@ export const ChartSubject = memo(() => {
       <ChartSubjectForm autoFocusRef={autoFocusRef} />
     </div>
   )
-})
+}

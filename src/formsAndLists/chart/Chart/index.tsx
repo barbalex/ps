@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -14,7 +14,7 @@ const titleRowStyle = {
   fontWeight: 'bold',
 }
 
-export const Chart = memo(({ from }) => {
+export const Chart = ({ from }) => {
   const { projectId, subprojectId, chartId } = useParams({ from })
 
   const db = usePGlite()
@@ -85,4 +85,4 @@ export const Chart = memo(({ from }) => {
       }
     </>
   )
-})
+}

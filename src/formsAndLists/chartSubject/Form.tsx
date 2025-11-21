@@ -1,5 +1,3 @@
-import { useCallback, memo } from 'react'
-import type { InputProps } from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -21,7 +19,7 @@ const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
 
 // separate from the route because it is also used inside other forms
-export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
+export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   const { chartSubjectId } = useParams({ from })
 
   const db = usePGlite()
@@ -32,19 +30,16 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
-        [value, chartSubjectId],
-      )
-    },
-    [row, db, chartSubjectId],
-  )
+    db.query(
+      `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
+      [value, chartSubjectId],
+    )
+  }
 
   if (!res) return <Loading />
 
@@ -147,4 +142,4 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
       </Section>
     </div>
   )
-})
+}
