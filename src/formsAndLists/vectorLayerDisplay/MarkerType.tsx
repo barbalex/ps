@@ -1,10 +1,9 @@
-import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const MarkerType = memo(({ onChange, row }) => {
+export const MarkerType = ({ onChange, row }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT marker_type FROM vector_layer_marker_types order by sort, marker_type`,
@@ -22,4 +21,4 @@ export const MarkerType = memo(({ onChange, row }) => {
       onChange={onChange}
     />
   )
-})
+}
