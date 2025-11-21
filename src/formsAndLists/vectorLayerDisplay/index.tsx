@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 // import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -46,19 +46,16 @@ export const VectorLayerDisplay = ({
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e: React.ChangeEvent<HTMLInputElement>, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
-        [value, vectorLayerDisplayId],
-      )
-    },
-    [db, row, vectorLayerDisplayId],
-  )
+    db.query(
+      `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
+      [value, vectorLayerDisplayId],
+    )
+  }
 
   if (!res) return <Loading />
 

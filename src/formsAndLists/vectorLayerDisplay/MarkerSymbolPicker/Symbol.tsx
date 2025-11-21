@@ -1,4 +1,4 @@
-import { useCallback, ReactElement } from 'react'
+import { ReactElement } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { pipe } from 'remeda'
 
@@ -23,18 +23,15 @@ const activeStyle = {
 }
 
 export const Symbol = ({ Component, name, onChange, active }: Props) => {
-  const onClick = useCallback(() => {
+  const onClick = () =>
     onChange({
       target: {
         name: 'marker_symbol',
         value: name,
       },
     })
-  }, [name, onChange])
 
-  if (active) {
-    return <Component style={activeStyle} />
-  }
+  if (active) return <Component style={activeStyle} />
 
   return (
     <Component

@@ -94,9 +94,9 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
 
   // TODO: implement onClickMapSettings
   // They should get their own url
-  // const onClickMapSettings = useCallback(() => {
+  // const onClickMapSettings = () => {
   //   console.log('onClickMapSettings')
-  // }, [])
+  // }
 
   return (
     <>
