@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
@@ -27,7 +26,7 @@ import {
 
 // type props
 
-export const Header = memo(({ autoFocusRef, row, from }) => {
+export const Header = ({ autoFocusRef, row, from }) => {
   const isForm =
     from ===
     '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
@@ -45,7 +44,7 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
   const layerNameForState = row.label?.replace?.(/ /g, '-')?.toLowerCase?.()
   const isDraggable = draggableLayers.includes(layerNameForState)
 
-  const onClickToggleAssign = useCallback(() => {
+  const onClickToggleAssign = () => {
     let newDraggableLayers = []
     // 1. if isDraggable, remove from draggableLayers
     if (isDraggable) {
@@ -58,16 +57,16 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
       newDraggableLayers = [...draggableLayers, layerNameForState]
     }
     setDraggableLayers(newDraggableLayers)
-  }, [draggableLayers, isDraggable, layerNameForState, setDraggableLayers])
+  }
 
-  const onClickAssignToPlaces = useCallback(() => {
+  const onClickAssignToPlaces = async () => {
     if (isDraggable) return
     // map needs to be visible
     if (!tabs.includes('map')) {
       setTabs([...tabs, 'map'])
     }
     // this layer needs to be active
-    const res = db.query(
+    const res = await db.query(
       `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
       [row.vector_layer_id],
     )
@@ -78,21 +77,21 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
         [layerPresentation.layer_presentation_id],
       )
     }
-  }, [db, isDraggable, row.vector_layer_id, setTabs, tabs])
+  }
 
-  const onClickAssignToPlaces1 = useCallback(() => {
+  const onClickAssignToPlaces1 = () => {
     setDroppableLayer('places1')
     onClickToggleAssign()
     onClickAssignToPlaces()
-  }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
+  }
 
-  const onClickAssignToPlaces2 = useCallback(() => {
+  const onClickAssignToPlaces2 = () => {
     setDroppableLayer('places2')
     onClickToggleAssign()
     onClickAssignToPlaces()
-  }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
+  }
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createVectorLayer({
       projectId,
       type: 'wfs',
@@ -120,16 +119,16 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, isForm, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
+  const deleteRow = () => {
+    db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
       vectorLayerId,
     ])
     navigate({ to: isForm ? `../..` : `..` })
-  }, [db, vectorLayerId, navigate, isForm])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
       [projectId],
@@ -148,9 +147,9 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
         vectorLayerId: next.vector_layer_id,
       }),
     })
-  }, [db, projectId, navigate, isForm, vectorLayerId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
       [projectId],
@@ -169,7 +168,7 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
         vectorLayerId: previous.vector_layer_id,
       }),
     })
-  }, [db, projectId, navigate, isForm, vectorLayerId])
+  }
 
   return (
     <FormHeader
@@ -205,4 +204,4 @@ export const Header = memo(({ autoFocusRef, row, from }) => {
       }
     />
   )
-})
+}

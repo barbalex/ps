@@ -1,4 +1,4 @@
-import { useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useAtom } from 'jotai'
 
 import { Header } from './Header.tsx'
@@ -10,7 +10,7 @@ import '../../form.css'
 
 // if editing, show form
 // if not editing, show chart
-export const Chart = memo(({ from }) => {
+export const Chart = ({ from }) => {
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -29,4 +29,4 @@ export const Chart = memo(({ from }) => {
       : <ChartComponent from={from} />}
     </div>
   )
-})
+}
