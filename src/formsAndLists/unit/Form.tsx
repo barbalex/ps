@@ -1,12 +1,10 @@
-import { memo } from 'react'
-
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const UnitForm = memo(({ onChange, row, autoFocusRef }) => (
+export const UnitForm = ({ onChange, row, autoFocusRef }) => (
   <>
     <TextField
       label="Name"
@@ -78,4 +76,4 @@ export const UnitForm = memo(({ onChange, row, autoFocusRef }) => (
       onChange={onChange}
     />
   </>
-))
+)

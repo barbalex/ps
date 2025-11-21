@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -11,7 +10,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const List = memo(({ from }) => {
+export const List = ({ from }) => {
   const { listId } = useParams({ from })
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
@@ -23,19 +22,16 @@ export const List = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
-        value,
-        listId,
-      ])
-    },
-    [db, listId, row],
-  )
+    db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
+      value,
+      listId,
+    ])
+  }
 
   if (!res) return <Loading />
 
@@ -63,4 +59,4 @@ export const List = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

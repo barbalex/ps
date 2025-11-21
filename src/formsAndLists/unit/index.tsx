@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -13,7 +12,7 @@ import '../../form.css'
 
 const from = '/data/projects/$projectId_/units/$unitId/'
 
-export const Unit = memo(() => {
+export const Unit = () => {
   const { unitId } = useParams({ from })
   const db = usePGlite()
 
@@ -26,19 +25,16 @@ export const Unit = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE units SET ${name} = $1 WHERE unit_id = $2`, [
-        value,
-        unitId,
-      ])
-    },
-    [db, row, unitId],
-  )
+    db.query(`UPDATE units SET ${name} = $1 WHERE unit_id = $2`, [
+      value,
+      unitId,
+    ])
+  }
 
   if (!res) return <Loading />
 
@@ -63,4 +59,4 @@ export const Unit = memo(() => {
       </div>
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -7,13 +6,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from = '/data/projects/$projectId_/units/$unitId/'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { projectId, unitId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createUnit({ db, projectId })
     const unit = res?.rows?.[0]
     navigate({
@@ -21,14 +20,14 @@ export const Header = memo(({ autoFocusRef }) => {
       params: (prev) => ({ ...prev, unitId: unit.unit_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM units WHERE unit_id = $1`, [unitId])
     navigate({ to: '..' })
-  }, [db, navigate, unitId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -41,9 +40,9 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${next.unit_id}`,
       params: (prev) => ({ ...prev, unitId: next.unit_id }),
     })
-  }, [db, navigate, projectId, unitId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -56,7 +55,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${previous.unit_id}`,
       params: (prev) => ({ ...prev, unitId: previous.unit_id }),
     })
-  }, [db, navigate, projectId, unitId])
+  }
 
   return (
     <FormHeader
@@ -68,4 +67,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="unit"
     />
   )
-})
+}
