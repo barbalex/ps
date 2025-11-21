@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 import { useDataNavData } from '../../modules/useDataNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const RootList = memo(() => {
+export const RootList = () => {
   const { loading, navData } = useDataNavData()
   const { navs, label } = navData
 
@@ -28,4 +26,4 @@ export const RootList = memo(() => {
       </div>
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -7,13 +6,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from = '/data/projects/$projectId_/users/$projectUserId/'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { projectId, projectUserId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const projectUser = await createProjectUser({ projectId, db })
     navigate({
       to: `../${projectUser.project_user_id}`,
@@ -23,16 +22,16 @@ export const Header = memo(({ autoFocusRef }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM project_users WHERE project_user_id = $1`, [
       projectUserId,
     ])
     navigate({ to: '..' })
-  }, [db, navigate, projectUserId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT project_user_id FROM project_users WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -50,9 +49,9 @@ export const Header = memo(({ autoFocusRef }) => {
         projectUserId: next.project_user_id,
       }),
     })
-  }, [db, navigate, projectId, projectUserId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT project_user_id FROM project_users WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -70,7 +69,7 @@ export const Header = memo(({ autoFocusRef }) => {
         projectUserId: previous.project_user_id,
       }),
     })
-  }, [db, navigate, projectId, projectUserId])
+  }
 
   return (
     <FormHeader
@@ -82,4 +81,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="project user"
     />
   )
-})
+}

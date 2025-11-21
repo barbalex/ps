@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
@@ -16,7 +15,7 @@ import '../../form.css'
 
 const from = '/data/projects/$projectId_/users/$projectUserId/'
 
-export const ProjectUser = memo(() => {
+export const ProjectUser = () => {
   const { projectUserId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -29,19 +28,16 @@ export const ProjectUser = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE project_users SET ${name} = $1 WHERE project_user_id = $2`,
-        [value, projectUserId],
-      )
-    },
-    [db, projectUserId, row],
-  )
+    db.query(
+      `UPDATE project_users SET ${name} = $1 WHERE project_user_id = $2`,
+      [value, projectUserId],
+    )
+  }
 
   if (!res) return <Loading />
 
@@ -77,4 +73,4 @@ export const ProjectUser = memo(() => {
       </div>
     </div>
   )
-})
+}
