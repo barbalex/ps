@@ -1,20 +1,18 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxonomy } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const isForm =
-    from ===
-    '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
+    from === '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
   const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createTaxonomy({ db, projectId })
     const taxonomy = res?.rows?.[0]
     navigate({
@@ -25,14 +23,14 @@ export const Header = memo(({ autoFocusRef, from }) => {
       params: (prev) => ({ ...prev, taxonomyId: taxonomy.taxonomy_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, isForm, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [taxonomyId])
     navigate({ to: isForm ? `../..` : `..` })
-  }, [db, isForm, navigate, taxonomyId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -48,9 +46,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
         : `../${next.taxonomy_id}`,
       params: (prev) => ({ ...prev, taxonomyId: next.taxonomy_id }),
     })
-  }, [db, projectId, navigate, isForm, taxonomyId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -66,7 +64,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         : `../${previous.taxonomy_id}`,
       params: (prev) => ({ ...prev, taxonomyId: previous.taxonomy_id }),
     })
-  }, [db, isForm, navigate, projectId, taxonomyId])
+  }
 
   return (
     <FormHeader
@@ -78,4 +76,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="taxonomy"
     />
   )
-})
+}
