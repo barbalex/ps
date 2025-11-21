@@ -22,9 +22,10 @@ import { PlaceFetcher } from './PlaceFetcher.tsx'
 
 import { ChecksFetcher } from './ChecksFetcher.tsx'
 import { CheckFetcher } from './CheckFetcher.tsx'
+import { CheckValuesFetcher } from './CheckValuesFetcher.tsx'
+import { CheckValueFetcher } from './CheckValueFetcher.tsx'
 import { CheckTaxaFetcher } from './CheckTaxaFetcher.tsx'
 import { CheckTaxonFetcher } from './CheckTaxonFetcher.tsx'
-
 import { ActionsFetcher } from './ActionsFetcher.tsx'
 import { ActionFetcher } from './ActionFetcher.tsx'
 import { ActionValuesFetcher } from './ActionValuesFetcher.tsx'
@@ -166,7 +167,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
-
+    case 'useCheckValuesNavData': {
+      return (
+        <CheckValuesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useCheckValueNavData': {
+      return (
+        <CheckValueFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useCheckTaxaNavData': {
       return (
         <CheckTaxaFetcher
