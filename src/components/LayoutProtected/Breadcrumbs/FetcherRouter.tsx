@@ -17,6 +17,8 @@ import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
+import { SubprojectReportsFetcher } from './SubprojectReportsFetcher.tsx'
+import { SubprojectReportFetcher } from './SubprojectReportFetcher.tsx'
 import { GoalsFetcher } from './GoalsFetcher.tsx'
 import { GoalFetcher } from './GoalFetcher.tsx'
 import { GoalReportsFetcher } from './GoalReportsFetcher.tsx'
@@ -109,6 +111,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
 
+    case 'useSubprojectReportsNavData': {
+      return (
+        <SubprojectReportsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useSubprojectReportNavData': {
+      return (
+        <SubprojectReportFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
     case 'useGoalsNavData': {
       return (
         <GoalsFetcher
