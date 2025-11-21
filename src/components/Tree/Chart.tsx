@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
@@ -22,22 +21,16 @@ export const ChartNode = ({
   const navigate = useNavigate()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => [
-      'data',
-      ...(projectId ? ['projects', projectId] : []),
-      ...(subprojectId ? ['subprojects', subprojectId] : []),
-      ...(placeId ? ['places', placeId] : []),
-      ...(placeId2 ? ['places', placeId2] : []),
-      'charts',
-    ],
-    [placeId, placeId2, projectId, subprojectId],
-  )
+  const parentArray = [
+    'data',
+    ...(projectId ? ['projects', projectId] : []),
+    ...(subprojectId ? ['subprojects', subprojectId] : []),
+    ...(placeId ? ['places', placeId] : []),
+    ...(placeId2 ? ['places', placeId2] : []),
+    'charts',
+  ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(
-    () => [...parentArray, nav.id],
-    [nav.id, parentArray],
-  )
+  const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
@@ -45,7 +38,7 @@ export const ChartNode = ({
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const onClickButton = useCallback(() => {
+  const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
@@ -56,14 +49,7 @@ export const ChartNode = ({
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
-  }, [
-    isInActiveNodeArray,
-    isOpen,
-    navigate,
-    ownArray,
-    parentUrl,
-    urlPath.length,
-  ])
+  }
 
   return (
     <>
