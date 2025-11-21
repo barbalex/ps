@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useCheckNavData } from '../../modules/useCheckNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const CheckList = memo(({ from }) => {
+export const CheckList = ({ from }) => {
   const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({
     from,
   })
@@ -48,4 +47,4 @@ export const CheckList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

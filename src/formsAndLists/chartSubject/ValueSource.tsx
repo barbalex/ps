@@ -1,10 +1,9 @@
-import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const ValueSource = memo(({ onChange, row }) => {
+export const ValueSource = ({ onChange, row }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT value_source FROM chart_subject_value_sources order by sort, value_source`,
@@ -24,4 +23,4 @@ export const ValueSource = memo(({ onChange, row }) => {
       validationMessage="How to extract the subject's data from the table"
     />
   )
-})
+}
