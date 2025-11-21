@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useListNavData } from '../../modules/useListNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const ListList = memo(({ from }) => {
+export const ListList = ({ from }) => {
   const { projectId, listId } = useParams({ from })
   const { loading, navData } = useListNavData({ projectId, listId })
   const { navs, label, notFound } = navData
@@ -43,4 +42,4 @@ export const ListList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

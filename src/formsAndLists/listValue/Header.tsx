@@ -1,20 +1,18 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createListValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from =
-  '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
+const from = '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { listId, listValueId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createListValue({ db, listId })
     const listValue = res?.rows?.[0]
     navigate({
@@ -22,15 +20,14 @@ export const Header = memo(({ autoFocusRef }) => {
       params: (prev) => ({ ...prev, listValueId: listValue.list_value_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, listId, navigate])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM list_values WHERE list_value_id = $1`, [listValueId])
     navigate({ to: '..' })
-  }, [db, listValueId, navigate])
+  }
 
-  const toNext = useCallback(async () => {
-    console.log('ListValue.Header.toNext')
+  const toNext = async () => {
     const res = await db.query(
       `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
       [listId],
@@ -50,10 +47,9 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${next.list_value_id}`,
       params: (prev) => ({ ...prev, listValueId: next.list_value_id }),
     })
-  }, [db, listId, listValueId, navigate])
+  }
 
-  const toPrevious = useCallback(async () => {
-    console.log('ListValue.Header.toPrevious')
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
       [listId],
@@ -73,7 +69,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${previous.list_value_id}`,
       params: (prev) => ({ ...prev, listValueId: previous.list_value_id }),
     })
-  }, [db, listId, listValueId, navigate])
+  }
 
   return (
     <FormHeader
@@ -85,4 +81,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="list value"
     />
   )
-})
+}
