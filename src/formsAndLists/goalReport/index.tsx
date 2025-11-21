@@ -1,4 +1,4 @@
-import { useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
@@ -9,7 +9,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const GoalReport = memo(({ from }) => {
+export const GoalReport = ({ from }) => {
   const { goalReportId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -51,4 +51,4 @@ export const GoalReport = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

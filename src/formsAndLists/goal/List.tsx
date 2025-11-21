@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useGoalNavData } from '../../modules/useGoalNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const GoalList = memo(({ from }) => {
+export const GoalList = ({ from }) => {
   const { projectId, subprojectId, goalId } = useParams({ from })
   const { loading, navData } = useGoalNavData({
     projectId,
@@ -44,4 +43,4 @@ export const GoalList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

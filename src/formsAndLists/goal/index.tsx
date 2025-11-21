@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -11,7 +10,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const Goal = memo(({ from }) => {
+export const Goal = ({ from }) => {
   const { goalId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -24,19 +23,16 @@ export const Goal = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(`UPDATE goals SET ${name} = $1 WHERE goal_id = $2`, [
-        value,
-        goalId,
-      ])
-    },
-    [db, goalId, row],
-  )
+    db.query(`UPDATE goals SET ${name} = $1 WHERE goal_id = $2`, [
+      value,
+      goalId,
+    ])
+  }
 
   if (!res) return <Loading />
 
@@ -65,4 +61,4 @@ export const Goal = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
