@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -13,7 +12,7 @@ import '../../form.css'
 
 const from = '/data/field-types/$fieldTypeId'
 
-export const FieldType = memo(() => {
+export const FieldType = () => {
   const { fieldTypeId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -26,17 +25,14 @@ export const FieldType = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
-      db.query(sql, [value, fieldTypeId])
-    },
-    [db, fieldTypeId, row],
-  )
+    const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
+    db.query(sql, [value, fieldTypeId])
+  }
 
   if (!res) return <Loading />
 
@@ -61,4 +57,4 @@ export const FieldType = memo(() => {
       </div>
     </div>
   )
-})
+}

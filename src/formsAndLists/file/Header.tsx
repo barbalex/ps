@@ -1,4 +1,4 @@
-import { useCallback, memo, useMemo, useContext } from 'react'
+import { useMemo, useContext } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
@@ -8,7 +8,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 
-export const Header = memo(({ row, previewRef, from }) => {
+export const Header = ({ row, previewRef, from }) => {
   const {
     projectId,
     subprojectId,
@@ -22,13 +22,13 @@ export const Header = memo(({ row, previewRef, from }) => {
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
 
-  const onClickPreview = useCallback(() => {
+  const onClickPreview = () => {
     if (isPreview) {
       navigate({ to: pathname.replace('/preview', '') })
     } else {
       navigate({ to: `${pathname}/preview` })
     }
-  }, [isPreview, navigate, pathname])
+  }
 
   const db = usePGlite()
 
@@ -37,12 +37,12 @@ export const Header = memo(({ row, previewRef, from }) => {
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
 
-  const addRow = useCallback(async () => api.initFlow(), [api])
+  const addRow = () => api.initFlow()
 
-  const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
+  const deleteRow = () => {
+    db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
     navigate({ to: '..' })
-  }, [db, fileId, navigate])
+  }
 
   const { hFilterField, hFilterValue } = useMemo(() => {
     if (actionId) {
@@ -61,7 +61,7 @@ export const Header = memo(({ row, previewRef, from }) => {
     return { hFilterField: undefined, hFilterValue: undefined }
   }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `
       SELECT file_id 
@@ -79,9 +79,9 @@ export const Header = memo(({ row, previewRef, from }) => {
       }`,
       params: (prev) => ({ ...prev, fileId: next.file_id }),
     })
-  }, [db, hFilterField, hFilterValue, navigate, isPreview, fileId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `
       SELECT file_id 
@@ -99,7 +99,7 @@ export const Header = memo(({ row, previewRef, from }) => {
       }`,
       params: (prev) => ({ ...prev, fileId: previous.file_id }),
     })
-  }, [db, hFilterField, hFilterValue, navigate, isPreview, fileId])
+  }
 
   return (
     <FormHeader
@@ -121,4 +121,4 @@ export const Header = memo(({ row, previewRef, from }) => {
       }
     />
   )
-})
+}

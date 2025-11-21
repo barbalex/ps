@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, memo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FaExpandArrowsAlt, FaCompressArrowsAlt } from 'react-icons/fa'
 import screenfull from 'screenfull'
 import { Button } from '@fluentui/react-components'
@@ -6,7 +6,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createNotification } from '../../modules/createRows.ts'
 
-export const FullscreenControl = memo(({ previewRef }) => {
+export const FullscreenControl = ({ previewRef }) => {
   const db = usePGlite()
 
   if (!screenfull.isEnabled) {
@@ -21,24 +21,23 @@ export const FullscreenControl = memo(({ previewRef }) => {
   }
 
   return <FullscreenController previewRef={previewRef} />
-})
+}
 
-const FullscreenController = memo(({ previewRef }) => {
+const FullscreenController = ({ previewRef }) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const onFullscreenChange = useCallback(
     () => setIsFullscreen(screenfull.isFullscreen),
     [],
   )
+
   useEffect(() => {
     screenfull.on('change', onFullscreenChange)
     return () => screenfull.off('change', onFullscreenChange)
   }, [onFullscreenChange])
 
-  const onClick = useCallback(() => {
-    if (screenfull.isEnabled) {
-      screenfull.toggle(previewRef.current)
-    }
-  }, [previewRef])
+  const onClick = () => {
+    screenfull.isEnabled && screenfull.toggle(previewRef.current)
+  }
 
   return (
     <Button
@@ -47,4 +46,4 @@ const FullscreenController = memo(({ previewRef }) => {
       icon={isFullscreen ? <FaCompressArrowsAlt /> : <FaExpandArrowsAlt />}
     />
   )
-})
+}
