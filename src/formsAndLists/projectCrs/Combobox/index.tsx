@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
@@ -8,7 +8,7 @@ import { Options } from './options.tsx'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
-export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
+export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
   const db = usePGlite()
   const { projectCrsId } = useParams({ from })
 
@@ -35,26 +35,23 @@ export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
     fetchDataDebounced()
   }, [fetchDataDebounced, filter])
 
-  const onInput = useCallback((event) => setFilter(event.target.value), [])
+  const onInput = (event) => setFilter(event.target.value)
 
-  const onOptionSelect = useCallback(
-    async (e, data) => {
-      if (data.optionValue === 0) return setFilter('') // No options found
-      // find the option in the crsData
-      const selectedOption = crs.find((o) => o.code === data.optionValue)
-      db.query(
-        `UPDATE project_crs SET code = $1, name = $2, proj4 = $3 WHERE project_crs_id = $4`,
-        [
-          selectedOption?.code ?? null,
-          selectedOption?.name ?? null,
-          selectedOption?.proj4 ?? null,
-          projectCrsId,
-        ],
-      )
-      setFilter('')
-    },
-    [crs, db, projectCrsId],
-  )
+  const onOptionSelect = async (e, data) => {
+    if (data.optionValue === 0) return setFilter('') // No options found
+    // find the option in the crsData
+    const selectedOption = crs.find((o) => o.code === data.optionValue)
+    db.query(
+      `UPDATE project_crs SET code = $1, name = $2, proj4 = $3 WHERE project_crs_id = $4`,
+      [
+        selectedOption?.code ?? null,
+        selectedOption?.name ?? null,
+        selectedOption?.proj4 ?? null,
+        projectCrsId,
+      ],
+    )
+    setFilter('')
+  }
 
   return (
     <Field
@@ -79,4 +76,4 @@ export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
       </Combobox>
     </Field>
   )
-})
+}

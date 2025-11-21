@@ -1,11 +1,11 @@
-import { useRef, memo } from 'react'
+import { useRef } from 'react'
 
 import { Header } from './Header.tsx'
 import { ProjectCrsForm as Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const ProjectCrs = memo(() => {
+export const ProjectCrs = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -16,4 +16,4 @@ export const ProjectCrs = memo(() => {
       </div>
     </div>
   )
-})
+}

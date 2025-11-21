@@ -1,6 +1,4 @@
-import { memo, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -16,7 +14,7 @@ import '../../form.css'
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 // this form is rendered from a parent or outlet
-export const ProjectCrsForm = memo(({ autoFocusRef }) => {
+export const ProjectCrsForm = ({ autoFocusRef }) => {
   const { projectCrsId, projectId } = useParams({ from })
 
   const db = usePGlite()
@@ -27,19 +25,16 @@ export const ProjectCrsForm = memo(({ autoFocusRef }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`,
-        [value, projectCrsId],
-      )
-    },
-    [db, projectCrsId, row],
-  )
+    db.query(`UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`, [
+      value,
+      projectCrsId,
+    ])
+  }
 
   const resProject = useLiveIncrementalQuery(
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
@@ -47,15 +42,12 @@ export const ProjectCrsForm = memo(({ autoFocusRef }) => {
     'project_id',
   )
   const project = resProject?.rows?.[0]
-  const onChangeMapPresentation = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      db.query(
-        `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
-        [data?.checked ? row?.code : null, projectId],
-      )
-    },
-    [db, projectId, row?.code],
-  )
+  const onChangeMapPresentation = (e, data) => {
+    db.query(
+      `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
+      [data?.checked ? row?.code : null, projectId],
+    )
+  }
 
   if (!res) return <Loading />
 
@@ -103,4 +95,4 @@ export const ProjectCrsForm = memo(({ autoFocusRef }) => {
       />
     </>
   )
-})
+}

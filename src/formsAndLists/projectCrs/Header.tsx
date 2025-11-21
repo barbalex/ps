@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -7,13 +6,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { projectId, projectCrsId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createProjectCrs({ projectId, db })
     const projectCrs = res?.rows?.[0]
     navigate({
@@ -21,16 +20,16 @@ export const Header = memo(({ autoFocusRef }) => {
       params: (prev) => ({ ...prev, projectCrsId: projectCrs.project_crs_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM project_crs WHERE project_crs_id = $1`, [
       projectCrsId,
     ])
     navigate({ to: '..' })
-  }, [db, navigate, projectCrsId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT project_crs_id FROM project_crs WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -43,9 +42,9 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${next.project_crs_id}`,
       params: (prev) => ({ ...prev, projectCrsId: next.project_crs_id }),
     })
-  }, [db, navigate, projectCrsId, projectId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT project_crs_id FROM project_crs WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -58,7 +57,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${previous.project_crs_id}`,
       params: (prev) => ({ ...prev, projectCrsId: previous.project_crs_id }),
     })
-  }, [db, navigate, projectCrsId, projectId])
+  }
 
   return (
     <FormHeader
@@ -70,4 +69,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="project_crs"
     />
   )
-})
+}
