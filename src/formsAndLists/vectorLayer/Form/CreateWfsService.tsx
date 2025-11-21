@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
@@ -14,9 +14,9 @@ const rowStyle = {
 const hintPStyle = { margin: 0 }
 const fieldStyle = { flexGrow: 1 }
 
-export const CreateWfsService = memo(({ vectorLayer }) => {
+export const CreateWfsService = ({ vectorLayer }) => {
   const [url, setUrl] = useState('')
-  const onChange = useCallback((e) => setUrl(e.target.value), [])
+  const onChange = (e) => setUrl(e.target.value)
 
   const [fetching, setFetching] = useState(false)
   // TODO: when fetching ends, set focus to LayerDropdown
@@ -36,18 +36,16 @@ export const CreateWfsService = memo(({ vectorLayer }) => {
           validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
           validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
-            urlIsInvalid ? (
-              ''
-            ) : url ? (
+            urlIsInvalid ? ''
+            : url ?
               'The base url of the WFS'
-            ) : (
-              <>
+            : <>
                 <p style={hintPStyle}>Enter the base url of the WFS.</p>
                 <p style={hintPStyle}>
                   Then capabilities can be loaded and a layer selected.
                 </p>
               </>
-            )
+
           }
           style={fieldStyle}
         >
@@ -67,4 +65,4 @@ export const CreateWfsService = memo(({ vectorLayer }) => {
       </div>
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useVectorLayerNavData } from '../../modules/useVectorLayerNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const VectorLayerList = memo(({ from }) => {
+export const VectorLayerList = ({ from }) => {
   const { projectId, vectorLayerId } = useParams({ from })
   const { loading, navData } = useVectorLayerNavData({
     projectId,
@@ -46,4 +45,4 @@ export const VectorLayerList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

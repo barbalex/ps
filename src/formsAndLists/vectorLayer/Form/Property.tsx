@@ -1,4 +1,3 @@
-import { useCallback, useMemo, memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -7,7 +6,7 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisplaysForVectorLayer.ts'
 
-export const Property = memo(({ vectorLayer, from }) => {
+export const Property = ({ vectorLayer, from }) => {
   const { projectId, vectorLayerId } = useParams({ from })
 
   const table = vectorLayer?.own_table
@@ -30,27 +29,24 @@ export const Property = memo(({ vectorLayer, from }) => {
     [table, level, projectId],
     'field_id',
   )
-  const options = useMemo(
-    () => (res?.rows ?? []).map(({ label, value }) => ({ label, value })),
-    [res?.rows],
-  )
+  const options = (res?.rows ?? []).map(({ label, value }) => ({
+    label,
+    value,
+  }))
 
   // TODO: get fields of wfs
-  const onChange = useCallback(
-    async (e, data) => {
-      const { value } = getValueFromChange(e, data)
-      await db.query(
-        `UPDATE vector_layers SET display_by_property = $1 WHERE vector_layer_id = $2`,
-        [value, vectorLayerId],
-      )
-      // set vector_layer_displays
-      upsertVectorLayerDisplaysForVectorLayer({
-        db,
-        vectorLayerId: vectorLayerId,
-      })
-    },
-    [db, vectorLayerId],
-  )
+  const onChange = async (e, data) => {
+    const { value } = getValueFromChange(e, data)
+    await db.query(
+      `UPDATE vector_layers SET display_by_property = $1 WHERE vector_layer_id = $2`,
+      [value, vectorLayerId],
+    )
+    // set vector_layer_displays
+    upsertVectorLayerDisplaysForVectorLayer({
+      db,
+      vectorLayerId: vectorLayerId,
+    })
+  }
 
   // console.log('VectorLayerForm.PropertyField, fields:', fields)
 
@@ -75,4 +71,4 @@ export const Property = memo(({ vectorLayer, from }) => {
       validationMessage="For every unique value of this field, a map display will be generated"
     />
   )
-})
+}
