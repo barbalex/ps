@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -15,7 +14,7 @@ import '../../form.css'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/$goalReportValueId/'
 
-export const GoalReportValue = memo(() => {
+export const GoalReportValue = () => {
   const { goalReportValueId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -30,19 +29,16 @@ export const GoalReportValue = memo(() => {
 
   // console.log('GoalReportValue', { row, results })
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE goal_report_values SET ${name} = $1 WHERE goal_report_value_id = $2`,
-        [value, goalReportValueId],
-      )
-    },
-    [db, goalReportValueId, row],
-  )
+    db.query(
+      `UPDATE goal_report_values SET ${name} = $1 WHERE goal_report_value_id = $2`,
+      [value, goalReportValueId],
+    )
+  }
 
   if (!res) return <Loading />
 
@@ -93,4 +89,4 @@ export const GoalReportValue = memo(() => {
       </div>
     </div>
   )
-})
+}

@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -8,13 +7,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/values/$goalReportValueId/'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { goalReportId, goalReportValueId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createGoalReportValue({ db, goalReportId })
     const goalReportValue = res?.rows?.[0]
     navigate({
@@ -25,16 +24,16 @@ export const Header = memo(({ autoFocusRef }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, goalReportId, navigate])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query('delete from goal_report_values where goal_report_value_id = $1', [
       goalReportValueId,
     ])
     navigate({ to: '..' })
-  }, [db, goalReportValueId, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       'select goal_report_value_id from goal_report_values where goal_report_id = $1 order by label',
       [goalReportId],
@@ -52,9 +51,9 @@ export const Header = memo(({ autoFocusRef }) => {
         goalReportValueId: next.goal_report_value_id,
       }),
     })
-  }, [db, goalReportId, goalReportValueId, navigate])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       'select goal_report_value_id from goal_report_values where goal_report_id = $1 order by label',
       [goalReportId],
@@ -72,7 +71,7 @@ export const Header = memo(({ autoFocusRef }) => {
         goalReportValueId: previous.goal_report_value_id,
       }),
     })
-  }, [db, goalReportId, goalReportValueId, navigate])
+  }
 
   return (
     <FormHeader
@@ -84,4 +83,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="goal report value"
     />
   )
-})
+}
