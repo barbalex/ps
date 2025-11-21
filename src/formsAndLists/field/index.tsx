@@ -1,4 +1,4 @@
-import { useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { Header } from './Header.tsx'
@@ -6,14 +6,17 @@ import { FieldFormFetchingOwnData } from './FormFetchingOwnData.tsx'
 
 import '../../form.css'
 
-export const Field = memo(({ from }) => {
+export const Field = ({ from }) => {
   const { fieldId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <FieldFormFetchingOwnData
         fieldId={fieldId}
         from={from}
@@ -21,4 +24,4 @@ export const Field = memo(({ from }) => {
       />
     </div>
   )
-})
+}

@@ -1,17 +1,16 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const { projectId, fieldId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createField({ projectId, db })
     const data = res?.rows?.[0]
     navigate({
@@ -19,21 +18,19 @@ export const Header = memo(({ autoFocusRef, from }) => {
       params: (prev) => ({ ...prev, fieldId: data.field_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
+  const deleteRow = () => {
+    db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
     navigate({ to: '/data/fields' })
-  }, [db, fieldId, navigate])
+  }
 
-  const toNext = useCallback(async () => {
-    const res = await db.query(
-      `
+  const toNext = async () => {
+    const res = await db.query(`
       SELECT field_id 
       FROM fields 
       WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'} 
-      ORDER BY label`,
-    )
+      ORDER BY label`)
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.field_id === fieldId)
@@ -42,9 +39,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
       to: `/data/fields/${next.field_id}`,
       params: (prev) => ({ ...prev, fieldId: next.field_id }),
     })
-  }, [db, projectId, navigate, fieldId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `
       SELECT field_id 
@@ -60,7 +57,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
       to: `/data/fields/${previous.field_id}`,
       params: (prev) => ({ ...prev, fieldId: previous.field_id }),
     })
-  }, [db, projectId, navigate, fieldId])
+  }
 
   return (
     <FormHeader
@@ -72,4 +69,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="field"
     />
   )
-})
+}

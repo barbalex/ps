@@ -1,10 +1,8 @@
-import { memo } from 'react'
-
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
 
-export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
+export const WidgetType = ({ onChange, field_type_id = '', value }) => {
   const widgetWhere = `
     widget_type_id in (
       SELECT widget_type_id
@@ -25,4 +23,4 @@ export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
       validationState={'none'}
     />
   )
-})
+}
