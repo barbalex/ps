@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
 import './index.css'
@@ -11,7 +10,7 @@ const containerStyle = {
   height: '100%',
 }
 
-const Index = memo(() => (
+const Index = () => (
   <div style={containerStyle}>
     <picture>
       <source
@@ -130,4 +129,4 @@ const Index = memo(() => (
       </div>
     </div>
   </div>
-))
+)

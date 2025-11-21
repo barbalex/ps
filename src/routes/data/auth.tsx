@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { CorbadoAuth } from '@corbado/react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
@@ -6,7 +5,7 @@ export const Route = createFileRoute('/data/auth')({
   component: Component,
 })
 
-const Component = memo(() => {
+const Component = () => {
   const navigate = useNavigate()
 
   const onLoggedIn = () => {
@@ -19,4 +18,4 @@ const Component = memo(() => {
       customerSupportEmail="alex@gabriel-software.ch"
     />
   )
-})
+}

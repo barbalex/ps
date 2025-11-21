@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWmsCapabilities } from './FetchWmsCapabilities.tsx'
@@ -13,9 +13,9 @@ const rowStyle = {
 }
 const hintPStyle = { margin: 0 }
 
-export const CreateWmsService = memo(({ wmsLayer }) => {
+export const CreateWmsService = ({ wmsLayer }) => {
   const [url, setUrl] = useState('')
-  const onChange = useCallback((e) => setUrl(e.target.value), [])
+  const onChange = (e) => setUrl(e.target.value)
 
   const [fetching, setFetching] = useState(false)
   // TODO: when fetching ends, set focus to DropdownFieldFromWmsServiceLayers
@@ -35,18 +35,16 @@ export const CreateWmsService = memo(({ wmsLayer }) => {
           validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
           validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
-            urlIsInvalid ? (
-              ''
-            ) : url ? (
+            urlIsInvalid ? ''
+            : url ?
               'The base url of the WMS'
-            ) : (
-              <>
+            : <>
                 <p style={hintPStyle}>Enter the base url of the WMS.</p>
                 <p style={hintPStyle}>
                   Then capabilities can be loaded and a layer selected.
                 </p>
               </>
-            )
+
           }
           style={{ flexGrow: 1 }}
         >
@@ -66,4 +64,4 @@ export const CreateWmsService = memo(({ wmsLayer }) => {
       </div>
     </div>
   )
-})
+}
