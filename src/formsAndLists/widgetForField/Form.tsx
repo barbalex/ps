@@ -1,10 +1,8 @@
-import { memo } from 'react'
-
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
 
-export const WidgetForFieldForm = memo(({ onChange, row, autoFocusRef }) => (
+export const WidgetForFieldForm = ({ onChange, row, autoFocusRef }) => (
   <>
     <DropdownField
       label="Field type"
@@ -23,4 +21,4 @@ export const WidgetForFieldForm = memo(({ onChange, row, autoFocusRef }) => (
       onChange={onChange}
     />
   </>
-))
+)
