@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton, Tooltip } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -8,15 +7,12 @@ import { useParams } from '@tanstack/react-router'
 
 import { designingAtom } from '../../store.ts'
 
-export const DesigningButton = memo(({ from }) => {
+export const DesigningButton = ({ from }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const { projectId } = useParams({ from })
   const { user } = useCorbado()
 
-  const onClickDesigning = useCallback(
-    () => setDesigning(!designing),
-    [designing, setDesigning],
-  )
+  const onClickDesigning = () => setDesigning(!designing)
 
   // TODO: check if this works as intended (also: Tree.Project.Editing.tsx)
   const resultProject = useLiveIncrementalQuery(
@@ -58,4 +54,4 @@ export const DesigningButton = memo(({ from }) => {
       />
     </Tooltip>
   )
-})
+}
