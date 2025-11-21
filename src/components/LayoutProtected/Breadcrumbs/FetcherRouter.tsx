@@ -20,11 +20,12 @@ import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 import { PlacesFetcher } from './PlacesFetcher.tsx'
 import { PlaceFetcher } from './PlaceFetcher.tsx'
 
+import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
+import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { OccurrencesAssignedFetcher } from './OccurrencesAssignedFetcher.tsx'
 import { OccurrenceAssignedFetcher } from './OccurrenceAssignedFetcher.tsx'
 import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
 import { PlaceUserFetcher } from './PlaceUserFetcher.tsx'
-
 import { SubprojectReportsFetcher } from './SubprojectReportsFetcher.tsx'
 import { SubprojectReportFetcher } from './SubprojectReportFetcher.tsx'
 import { GoalsFetcher } from './GoalsFetcher.tsx'
@@ -130,6 +131,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'usePlaceNavData': {
       return (
         <PlaceFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceReportsNavData': {
+      return (
+        <PlaceReportsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceReportNavData': {
+      return (
+        <PlaceReportFetcher
           params={params}
           {...other}
         />
