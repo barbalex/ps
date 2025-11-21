@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -11,13 +10,13 @@ interface Props {
 
 const from = '/data/projects/$projectId_/persons/$personId/'
 
-export const Header = memo(({ autoFocusRef }: Props) => {
+export const Header = ({ autoFocusRef }: Props) => {
   const { projectId, personId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createPerson({ db, projectId })
     const data = res?.rows?.[0]
     navigate({
@@ -25,14 +24,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       params: (prev) => ({ ...prev, personId: data.person_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM persons WHERE person_id = $1`, [personId])
+  const deleteRow = () => {
+    db.query(`DELETE FROM persons WHERE person_id = $1`, [personId])
     navigate({ to: '..' })
-  }, [db, navigate, personId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT person_id FROM persons WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -45,9 +44,9 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       to: `../${next.person_id}`,
       params: (prev) => ({ ...prev, personId: next.person_id }),
     })
-  }, [db, navigate, personId, projectId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT person_id FROM persons WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -60,7 +59,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       to: `../${previous.person_id}`,
       params: (prev) => ({ ...prev, personId: previous.person_id }),
     })
-  }, [db, navigate, personId, projectId])
+  }
 
   return (
     <FormHeader
@@ -72,4 +71,4 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       tableName="person"
     />
   )
-})
+}
