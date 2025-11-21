@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -38,69 +37,67 @@ export const useCheckNavData = ({
   const loading = res === undefined
   const nav = res?.rows?.[0]
 
-  const navData = useMemo(() => {
-    const parentArray = [
-      'data',
-      'projects',
-      projectId,
-      'subprojects',
-      subprojectId,
-      'places',
-      placeId,
-      ...(placeId2 ? ['places', placeId2] : []),
-      'checks',
-    ]
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, nav?.id]
-    const ownUrl = `/${ownArray.join('/')}`
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'subprojects',
+    subprojectId,
+    'places',
+    placeId,
+    ...(placeId2 ? ['places', placeId2] : []),
+    'checks',
+  ]
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, nav?.id]
+  const ownUrl = `/${ownArray.join('/')}`
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 2,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label,
-      notFound,
-      navs: [
-        { id: 'check', label: 'check' },
-        {
-          id: 'values',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.check_values_count ?? 0,
-            namePlural: 'Values',
-          }),
-        },
-        {
-          id: 'taxa',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.check_taxa_count ?? 0,
-            namePlural: 'Taxa',
-          }),
-        },
-        {
-          id: 'files',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.files_count ?? 0,
-            namePlural: 'Files',
-          }),
-        },
-      ],
-    }
-  }, [projectId, subprojectId, placeId, placeId2, nav, openNodes, res, loading])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 2,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label,
+    notFound,
+    navs: [
+      { id: 'check', label: 'check' },
+      {
+        id: 'values',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.check_values_count ?? 0,
+          namePlural: 'Values',
+        }),
+      },
+      {
+        id: 'taxa',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.check_taxa_count ?? 0,
+          namePlural: 'Taxa',
+        }),
+      },
+      {
+        id: 'files',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.files_count ?? 0,
+          namePlural: 'Files',
+        }),
+      },
+    ],
+  }
 
   return { navData, loading }
 }
