@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -159,169 +158,152 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
   const loading = res === undefined
   const nav = res?.rows?.[0]
 
-  const navData = useMemo(() => {
-    const parentArray = ['data', 'projects']
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, nav?.id]
-    const ownUrl = `/${ownArray.join('/')}`
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentArray = ['data', 'projects']
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, nav?.id]
+  const ownUrl = `/${ownArray.join('/')}`
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 2,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label,
-      notFound,
-      navs:
-        forBreadcrumb ?
-          []
-        : [
-            { id: 'project', label: 'Project' },
-            {
-              id: 'subprojects',
-              label: buildNavLabel({
-                loading,
-                isFiltered: subprojectIsFiltered,
-                countFiltered: nav?.subprojects_count_filtered ?? 0,
-                countUnfiltered: nav?.subprojects_count_unfiltered ?? 0,
-                namePlural: nav?.subprojects_name_plural ?? 'Subprojects',
-              }),
-            },
-            {
-              id: 'reports',
-              label: buildNavLabel({
-                loading,
-                isFiltered: projectReportsIsFiltered,
-                countFiltered: nav?.project_reports_count_filtered ?? 0,
-                countUnfiltered: nav?.project_reports_count_unfiltered ?? 0,
-                namePlural: 'Reports',
-              }),
-            },
-            {
-              id: 'persons',
-              label: buildNavLabel({
-                loading,
-                isFiltered: personsIsFiltered,
-                countFiltered: nav?.persons_count_filtered ?? 0,
-                countUnfiltered: nav?.persons_count_unfiltered ?? 0,
-                namePlural: 'Persons',
-              }),
-            },
-            {
-              id: 'wms-layers',
-              label: buildNavLabel({
-                loading,
-                isFiltered: wmsLayersIsFiltered,
-                countFiltered: nav?.wms_layers_count_filtered ?? 0,
-                countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
-                namePlural: 'WMS Layers',
-              }),
-            },
-            {
-              id: 'vector-layers',
-              label: buildNavLabel({
-                loading,
-                isFiltered: vectorLayersIsFiltered,
-                countFiltered: nav?.vector_layers_count_filtered ?? 0,
-                countUnfiltered: nav?.vector_layers_count_unfiltered ?? 0,
-                namePlural: 'Vector Layers',
-              }),
-            },
-            ...(designing ?
-              [
-                {
-                  id: 'users',
-                  label: buildNavLabel({
-                    loading,
-                    countFiltered: nav?.project_users_count_unfiltered ?? 0,
-                    namePlural: 'Users',
-                  }),
-                },
-                {
-                  id: 'lists',
-                  label: buildNavLabel({
-                    loading,
-                    isFiltered: listsIsFiltered,
-                    countFiltered: nav?.lists_count_filtered ?? 0,
-                    countUnfiltered: nav?.lists_count_unfiltered ?? 0,
-                    namePlural: 'Lists',
-                  }),
-                },
-                {
-                  id: 'taxonomies',
-                  label: buildNavLabel({
-                    loading,
-                    countFiltered: nav?.taxonomies_count_unfiltered ?? 0,
-                    namePlural: 'Taxonomies',
-                  }),
-                },
-                {
-                  id: 'units',
-                  label: buildNavLabel({
-                    loading,
-                    isFiltered: unitsIsFiltered,
-                    countFiltered: nav?.units_count_filtered ?? 0,
-                    countUnfiltered: nav?.units_count_unfiltered ?? 0,
-                    namePlural: 'Units',
-                  }),
-                },
-                {
-                  id: 'crs',
-                  label: buildNavLabel({
-                    loading,
-                    countFiltered: nav?.project_crs_count_unfiltered ?? 0,
-                    namePlural: 'CRS',
-                  }),
-                },
-                {
-                  id: 'place-levels',
-                  label: buildNavLabel({
-                    loading,
-                    countFiltered: nav?.place_levels_count_unfiltered ?? 0,
-                    namePlural: 'Place Levels',
-                  }),
-                },
-                {
-                  id: 'fields',
-                  label: buildNavLabel({
-                    loading,
-                    isFiltered: fieldsIsFiltered,
-                    countFiltered: nav?.fields_count_filtered ?? 0,
-                    countUnfiltered: nav?.fields_count_unfiltered ?? 0,
-                    namePlural: 'Fields',
-                  }),
-                },
-              ]
-            : []),
-          ],
-    }
-  }, [
-    designing,
-    fieldsIsFiltered,
-    forBreadcrumb,
-    listsIsFiltered,
-    loading,
-    openNodes,
-    personsIsFiltered,
-    projectReportsIsFiltered,
-    res,
-    nav,
-    subprojectIsFiltered,
-    unitsIsFiltered,
-    vectorLayersIsFiltered,
-    wmsLayersIsFiltered,
-  ])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 2,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label,
+    notFound,
+    navs:
+      forBreadcrumb ?
+        []
+      : [
+          { id: 'project', label: 'Project' },
+          {
+            id: 'subprojects',
+            label: buildNavLabel({
+              loading,
+              isFiltered: subprojectIsFiltered,
+              countFiltered: nav?.subprojects_count_filtered ?? 0,
+              countUnfiltered: nav?.subprojects_count_unfiltered ?? 0,
+              namePlural: nav?.subprojects_name_plural ?? 'Subprojects',
+            }),
+          },
+          {
+            id: 'reports',
+            label: buildNavLabel({
+              loading,
+              isFiltered: projectReportsIsFiltered,
+              countFiltered: nav?.project_reports_count_filtered ?? 0,
+              countUnfiltered: nav?.project_reports_count_unfiltered ?? 0,
+              namePlural: 'Reports',
+            }),
+          },
+          {
+            id: 'persons',
+            label: buildNavLabel({
+              loading,
+              isFiltered: personsIsFiltered,
+              countFiltered: nav?.persons_count_filtered ?? 0,
+              countUnfiltered: nav?.persons_count_unfiltered ?? 0,
+              namePlural: 'Persons',
+            }),
+          },
+          {
+            id: 'wms-layers',
+            label: buildNavLabel({
+              loading,
+              isFiltered: wmsLayersIsFiltered,
+              countFiltered: nav?.wms_layers_count_filtered ?? 0,
+              countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
+              namePlural: 'WMS Layers',
+            }),
+          },
+          {
+            id: 'vector-layers',
+            label: buildNavLabel({
+              loading,
+              isFiltered: vectorLayersIsFiltered,
+              countFiltered: nav?.vector_layers_count_filtered ?? 0,
+              countUnfiltered: nav?.vector_layers_count_unfiltered ?? 0,
+              namePlural: 'Vector Layers',
+            }),
+          },
+          ...(designing ?
+            [
+              {
+                id: 'users',
+                label: buildNavLabel({
+                  loading,
+                  countFiltered: nav?.project_users_count_unfiltered ?? 0,
+                  namePlural: 'Users',
+                }),
+              },
+              {
+                id: 'lists',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: listsIsFiltered,
+                  countFiltered: nav?.lists_count_filtered ?? 0,
+                  countUnfiltered: nav?.lists_count_unfiltered ?? 0,
+                  namePlural: 'Lists',
+                }),
+              },
+              {
+                id: 'taxonomies',
+                label: buildNavLabel({
+                  loading,
+                  countFiltered: nav?.taxonomies_count_unfiltered ?? 0,
+                  namePlural: 'Taxonomies',
+                }),
+              },
+              {
+                id: 'units',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: unitsIsFiltered,
+                  countFiltered: nav?.units_count_filtered ?? 0,
+                  countUnfiltered: nav?.units_count_unfiltered ?? 0,
+                  namePlural: 'Units',
+                }),
+              },
+              {
+                id: 'crs',
+                label: buildNavLabel({
+                  loading,
+                  countFiltered: nav?.project_crs_count_unfiltered ?? 0,
+                  namePlural: 'CRS',
+                }),
+              },
+              {
+                id: 'place-levels',
+                label: buildNavLabel({
+                  loading,
+                  countFiltered: nav?.place_levels_count_unfiltered ?? 0,
+                  namePlural: 'Place Levels',
+                }),
+              },
+              {
+                id: 'fields',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: fieldsIsFiltered,
+                  countFiltered: nav?.fields_count_filtered ?? 0,
+                  countUnfiltered: nav?.fields_count_unfiltered ?? 0,
+                  namePlural: 'Fields',
+                }),
+              },
+            ]
+          : []),
+        ],
+  }
 
   return { navData, loading }
 }

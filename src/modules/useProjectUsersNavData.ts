@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -24,35 +23,33 @@ export const useProjectUsersNavData = ({ projectId }) => {
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const parentArray = ['data', 'projects', projectId]
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, 'users']
-    const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const navs = res?.rows ?? []
+  const parentArray = ['data', 'projects', projectId]
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, 'users']
+  const ownUrl = `/${ownArray.join('/')}`
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label: buildNavLabel({
-        countFiltered: navs.length,
-        namePlural: 'Users',
-        loading,
-      }),
-      nameSingular: 'Project User',
-      navs,
-    }
-  }, [loading, location.pathname, openNodes, projectId, res?.rows])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label: buildNavLabel({
+      countFiltered: navs.length,
+      namePlural: 'Users',
+      loading,
+    }),
+    nameSingular: 'Project User',
+    navs,
+  }
 
   return { loading, navData }
 }
