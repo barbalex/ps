@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -25,7 +25,7 @@ const explainerStyle = {
   fontStyle: 'italic',
 }
 
-export const OccurenceData = memo(({ from }) => {
+export const OccurenceData = ({ from }) => {
   const [occurrenceFieldsSorted, setOccurrenceFieldsSorted] = useAtom(
     occurrenceFieldsSortedAtom,
   )
@@ -33,27 +33,24 @@ export const OccurenceData = memo(({ from }) => {
 
   const sortedBeobFields = occurrenceFieldsSorted.slice()
 
-  const sortFn = useCallback(
-    (a, b) => {
-      const keyA = a[0]
-      const keyB = b[0]
-      const indexOfA = sortedBeobFields.indexOf(keyA)
-      const indexOfB = sortedBeobFields.indexOf(keyB)
-      const sortByA = indexOfA > -1
-      const sortByB = indexOfB > -1
+  const sortFn = (a, b) => {
+    const keyA = a[0]
+    const keyB = b[0]
+    const indexOfA = sortedBeobFields.indexOf(keyA)
+    const indexOfB = sortedBeobFields.indexOf(keyB)
+    const sortByA = indexOfA > -1
+    const sortByB = indexOfB > -1
 
-      if (sortByA && sortByB) {
-        return sortedBeobFields.indexOf(keyA) - sortedBeobFields.indexOf(keyB)
-      }
-      // if (sortByA || sortByB) {
-      //   return 1
-      // }
-      if (keyA?.toLowerCase?.() > keyB?.toLowerCase?.()) return 1
-      if (keyA?.toLowerCase?.() < keyB?.toLowerCase?.()) return -1
-      return 0
-    },
-    [sortedBeobFields],
-  )
+    if (sortByA && sortByB) {
+      return sortedBeobFields.indexOf(keyA) - sortedBeobFields.indexOf(keyB)
+    }
+    // if (sortByA || sortByB) {
+    //   return 1
+    // }
+    if (keyA?.toLowerCase?.() > keyB?.toLowerCase?.()) return 1
+    if (keyA?.toLowerCase?.() < keyB?.toLowerCase?.()) return -1
+    return 0
+  }
 
   const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
@@ -87,37 +84,32 @@ export const OccurenceData = memo(({ from }) => {
     setSortedBeobFields([...sortedBeobFields, ...additionalKeys])
   }, [keys, setSortedBeobFields, sortedBeobFields])
 
-  const moveField = useCallback(
-    (dragIndex, hoverIndex) => {
-      // get item from keys
-      const itemBeingDragged = keys[dragIndex]
-      const itemBeingHovered = keys[hoverIndex]
-      // move from dragIndex to hoverIndex
-      // in sortedBeobFields
-      const fromIndex = sortedBeobFields.indexOf(itemBeingDragged)
-      const toIndex = sortedBeobFields.indexOf(itemBeingHovered)
-      // catch some edge cases
-      if (fromIndex === toIndex) return
-      if (fromIndex === -1) return
-      if (toIndex === -1) return
+  const moveField = (dragIndex, hoverIndex) => {
+    // get item from keys
+    const itemBeingDragged = keys[dragIndex]
+    const itemBeingHovered = keys[hoverIndex]
+    // move from dragIndex to hoverIndex
+    // in sortedBeobFields
+    const fromIndex = sortedBeobFields.indexOf(itemBeingDragged)
+    const toIndex = sortedBeobFields.indexOf(itemBeingHovered)
+    // catch some edge cases
+    if (fromIndex === toIndex) return
+    if (fromIndex === -1) return
+    if (toIndex === -1) return
 
-      // move
-      const newArray = arrayMoveImmutable(sortedBeobFields, fromIndex, toIndex)
-      setSortedBeobFields(newArray)
-    },
-    [keys, setSortedBeobFields, sortedBeobFields],
-  )
-  const renderField = useCallback(
-    (field, index) => (
-      <Field
-        key={field[0]}
-        label={field[0]}
-        value={field[1]}
-        index={index}
-        moveField={moveField}
-      />
-    ),
-    [moveField],
+    // move
+    const newArray = arrayMoveImmutable(sortedBeobFields, fromIndex, toIndex)
+    setSortedBeobFields(newArray)
+  }
+
+  const renderField = (field, index) => (
+    <Field
+      key={field[0]}
+      label={field[0]}
+      value={field[1]}
+      index={index}
+      moveField={moveField}
+    />
   )
 
   if (!occurrence) return <Loading />
@@ -145,4 +137,4 @@ export const OccurenceData = memo(({ from }) => {
       </div>
     </ErrorBoundary>
   )
-})
+}
