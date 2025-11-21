@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -96,149 +95,121 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
 
   const subprojectNameSingular = nav?.name_singular ?? 'Subproject'
 
-  const navData = useMemo(() => {
-    const parentArray = ['data', 'projects', projectId, 'subprojects']
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, nav?.id]
-    const ownUrl = `/${ownArray.join('/')}`
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentArray = ['data', 'projects', projectId, 'subprojects']
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, nav?.id]
+  const ownUrl = `/${ownArray.join('/')}`
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 2,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label,
-      notFound,
-      navs: [
-        { id: 'subproject', label: subprojectNameSingular },
-        {
-          id: 'places',
-          label: buildNavLabel({
-            loading,
-            isFiltered: placesIsFiltered,
-            countFiltered: nav?.places_count_filtered ?? 0,
-            countUnfiltered: nav?.places_count_unfiltered ?? 0,
-            namePlural: nav?.place_name_plural ?? 'Places',
-          }),
-        },
-        {
-          id: 'reports',
-          label: buildNavLabel({
-            loading,
-            isFiltered: subprojectReportsIsFiltered,
-            countFiltered: nav?.subproject_reports_count_filtered ?? 0,
-            countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
-            namePlural: 'Reports',
-          }),
-        },
-        {
-          id: 'goals',
-          label: buildNavLabel({
-            loading,
-            isFiltered: goalsIsFiltered,
-            countFiltered: nav?.goals_count_filtered ?? 0,
-            countUnfiltered: nav?.goals_count_unfiltered ?? 0,
-            namePlural: 'Goals',
-          }),
-        },
-        {
-          id: 'occurrence-imports',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.occurrence_imports_count ?? 0,
-            namePlural: 'Occurrence Imports',
-          }),
-        },
-        {
-          id: 'occurrences-to-assess',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.occurrences_to_assess_count ?? 0,
-            namePlural: 'Occurrences To Assess',
-          }),
-        },
-        {
-          id: 'occurrences-not-to-assign',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.occurrences_not_to_assign_count ?? 0,
-            namePlural: 'Occurrences Not To Assign',
-          }),
-        },
-        {
-          id: 'taxa',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.subproject_taxa_count ?? 0,
-            namePlural: 'Taxa',
-          }),
-        },
-        {
-          id: 'users',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.subproject_users_count ?? 0,
-            namePlural: 'Users',
-          }),
-        },
-        {
-          id: 'files',
-          label: buildNavLabel({
-            loading,
-            isFiltered: filesIsFiltered,
-            countFiltered: nav?.files_count_filtered ?? 0,
-            countUnfiltered: nav?.files_count_unfiltered ?? 0,
-            namePlural: 'Files',
-          }),
-        },
-        {
-          id: 'charts',
-          label: buildNavLabel({
-            loading,
-            countFiltered: nav?.charts_count ?? 0,
-            namePlural: 'Charts',
-          }),
-        },
-      ],
-    }
-  }, [
-    projectId,
-    nav?.id,
-    nav?.label,
-    nav?.places_count_filtered,
-    nav?.places_count_unfiltered,
-    nav?.place_name_plural,
-    nav?.subproject_reports_count_filtered,
-    nav?.subproject_reports_count_unfiltered,
-    nav?.goals_count_filtered,
-    nav?.goals_count_unfiltered,
-    nav?.occurrence_imports_count,
-    nav?.occurrences_to_assess_count,
-    nav?.occurrences_not_to_assign_count,
-    nav?.subproject_taxa_count,
-    nav?.subproject_users_count,
-    nav?.files_count_filtered,
-    nav?.files_count_unfiltered,
-    nav?.charts_count,
-    openNodes,
-    subprojectNameSingular,
-    loading,
-    placesIsFiltered,
-    subprojectReportsIsFiltered,
-    goalsIsFiltered,
-    filesIsFiltered,
-  ])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 2,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label,
+    notFound,
+    navs: [
+      { id: 'subproject', label: subprojectNameSingular },
+      {
+        id: 'places',
+        label: buildNavLabel({
+          loading,
+          isFiltered: placesIsFiltered,
+          countFiltered: nav?.places_count_filtered ?? 0,
+          countUnfiltered: nav?.places_count_unfiltered ?? 0,
+          namePlural: nav?.place_name_plural ?? 'Places',
+        }),
+      },
+      {
+        id: 'reports',
+        label: buildNavLabel({
+          loading,
+          isFiltered: subprojectReportsIsFiltered,
+          countFiltered: nav?.subproject_reports_count_filtered ?? 0,
+          countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
+          namePlural: 'Reports',
+        }),
+      },
+      {
+        id: 'goals',
+        label: buildNavLabel({
+          loading,
+          isFiltered: goalsIsFiltered,
+          countFiltered: nav?.goals_count_filtered ?? 0,
+          countUnfiltered: nav?.goals_count_unfiltered ?? 0,
+          namePlural: 'Goals',
+        }),
+      },
+      {
+        id: 'occurrence-imports',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.occurrence_imports_count ?? 0,
+          namePlural: 'Occurrence Imports',
+        }),
+      },
+      {
+        id: 'occurrences-to-assess',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.occurrences_to_assess_count ?? 0,
+          namePlural: 'Occurrences To Assess',
+        }),
+      },
+      {
+        id: 'occurrences-not-to-assign',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.occurrences_not_to_assign_count ?? 0,
+          namePlural: 'Occurrences Not To Assign',
+        }),
+      },
+      {
+        id: 'taxa',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.subproject_taxa_count ?? 0,
+          namePlural: 'Taxa',
+        }),
+      },
+      {
+        id: 'users',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.subproject_users_count ?? 0,
+          namePlural: 'Users',
+        }),
+      },
+      {
+        id: 'files',
+        label: buildNavLabel({
+          loading,
+          isFiltered: filesIsFiltered,
+          countFiltered: nav?.files_count_filtered ?? 0,
+          countUnfiltered: nav?.files_count_unfiltered ?? 0,
+          namePlural: 'Files',
+        }),
+      },
+      {
+        id: 'charts',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.charts_count ?? 0,
+          namePlural: 'Charts',
+        }),
+      },
+    ],
+  }
 
   return { navData, loading }
 }

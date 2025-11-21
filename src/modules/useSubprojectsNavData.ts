@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -12,16 +11,10 @@ export const useSubprojectsNavData = ({ projectId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const parentArray = useMemo(
-    () => ['data', 'projects', projectId],
-    [projectId],
-  )
-  const ownArray = useMemo(() => [...parentArray, 'subprojects'], [parentArray])
+  const parentArray = ['data', 'projects', projectId]
+  const ownArray = [...parentArray, 'subprojects']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = useMemo(
-    () => openNodes.some((array) => isEqual(array, ownArray)),
-    [openNodes, ownArray],
-  )
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const [filter] = useAtom(subprojectsFilterAtom)
   const filterString = filterStringFromFilter(filter)
@@ -64,47 +57,37 @@ export const useSubprojectsNavData = ({ projectId }) => {
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownUrl = `/${ownArray.join('/')}`
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const navs = res?.rows ?? []
-    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-    const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
 
-    const namePlural = navs[0]?.name_plural ?? 'Subprojects'
-    const nameSingular = navs[0]?.name_singular ?? 'Subproject'
+  const namePlural = navs[0]?.name_plural ?? 'Subprojects'
+  const nameSingular = navs[0]?.name_singular ?? 'Subproject'
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label: buildNavLabel({
-        loading,
-        isFiltered,
-        countFiltered,
-        countUnfiltered,
-        namePlural,
-      }),
-      nameSingular,
-      navs,
-    }
-  }, [
-    isFiltered,
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
     isOpen,
-    loading,
-    location.pathname,
+    parentUrl,
     ownArray,
-    parentArray,
-    res?.rows,
-  ])
+    urlPath,
+    ownUrl,
+    label: buildNavLabel({
+      loading,
+      isFiltered,
+      countFiltered,
+      countUnfiltered,
+      namePlural,
+    }),
+    nameSingular,
+    navs,
+  }
 
   return { loading, navData, isFiltered }
 }
