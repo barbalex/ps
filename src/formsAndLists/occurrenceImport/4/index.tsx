@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
@@ -9,7 +8,7 @@ import { PreviousImportOperation } from './PreviousImportOperation.tsx'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
 
-export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
+export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrenceImportId, subprojectId } = useParams({ from })
 
   const res = useLiveIncrementalQuery(
@@ -25,7 +24,7 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
     [occurrenceImportId, subprojectId],
     'occurrence_import_id',
   )
-  const occurrenceImportOptions = useMemo(() => res?.rows ?? [], [res])
+  const occurrenceImportOptions = res?.rows ?? []
 
   // TODO: move previous import operation to a separate component
   return (
@@ -62,4 +61,4 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
       )}
     </>
   )
-})
+}

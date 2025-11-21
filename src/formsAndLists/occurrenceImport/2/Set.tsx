@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
 import { MdDone } from 'react-icons/md'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
@@ -20,7 +20,7 @@ const doneIconStyle = {
   verticalAlign: 'text-bottom',
 }
 
-export const Set = memo(({ occurrenceImport }) => {
+export const Set = ({ occurrenceImport }) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
 
@@ -36,10 +36,10 @@ export const Set = memo(({ occurrenceImport }) => {
 
   const toSetCount = occurrencesWithoutGeometry?.length ?? 0
 
-  const onClick = useCallback(async () => {
+  const onClick = () => {
     setSettingGeometries(true)
     setGeometries({ occurrenceImport, db, setNotification })
-  }, [db, occurrenceImport])
+  }
 
   if (!occurrences.length) return null
 
@@ -67,4 +67,4 @@ export const Set = memo(({ occurrenceImport }) => {
       </>
     </Button>
   )
-})
+}

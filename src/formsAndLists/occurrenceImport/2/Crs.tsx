@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 import axios from 'redaxios'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -7,18 +7,15 @@ const notificationStyle = {
   color: 'red',
 }
 
-export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
+export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
   const [notification, setNotification] = useState()
 
-  const onChange: TextField['props']['onChange'] = useCallback(
-    (e, data) => {
-      onChangePassed(e, data)
-      setNotification(undefined)
-    },
-    [onChangePassed],
-  )
+  const onChange: TextField['props']['onChange'] = (e, data) => {
+    onChangePassed(e, data)
+    setNotification(undefined)
+  }
 
-  const onBlurCrs = useCallback(async () => {
+  const onBlurCrs = async () => {
     if (!occurrenceImport?.crs) return
 
     // extract system and number from crs
@@ -50,7 +47,7 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
     if (!occurrencesWithoutGeometry.length) {
       return setNotification('All occurrences have a geometry')
     }
-  }, [occurrenceImport.crs, occurrenceImport?.occurrences])
+  }
 
   return (
     <>
@@ -64,11 +61,17 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
           <>
             <div>
               See{' '}
-              <a href="https://epsg.org/home.html" target="_blank">
+              <a
+                href="https://epsg.org/home.html"
+                target="_blank"
+              >
                 https://epsg.org
               </a>{' '}
               or{' '}
-              <a href="https://spatialreference.org" target="_blank">
+              <a
+                href="https://spatialreference.org"
+                target="_blank"
+              >
                 https://spatialreference.org
               </a>{' '}
               for a list of EPSG codes and their descriptions.
@@ -91,4 +94,4 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
       />
     </>
   )
-})
+}
