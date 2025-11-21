@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -8,13 +7,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { subprojectId, subprojectUserId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createSubprojectUser({ subprojectId, db })
     const row = res?.rows?.[0]
     console.log('SubprojectUser.Header.addRow', { res, row })
@@ -26,16 +25,16 @@ export const Header = memo(({ autoFocusRef }) => {
       }),
     })
     autoFocusRef?.current?.focus()
-  }, [subprojectId, db, navigate, autoFocusRef])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM subproject_users WHERE subproject_user_id = $1`, [
       subprojectUserId,
     ])
     navigate({ to: '..' })
-  }, [db, subprojectUserId, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT subproject_user_id FROM subproject_users WHERE subproject_id = $1 ORDER BY label`,
       [subprojectId],
@@ -53,9 +52,9 @@ export const Header = memo(({ autoFocusRef }) => {
         subprojectUserId: next.subproject_user_id,
       }),
     })
-  }, [db, subprojectId, navigate, subprojectUserId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT subproject_user_id FROM subproject_users WHERE subproject_id = $1 ORDER BY label`,
       [subprojectId],
@@ -73,7 +72,7 @@ export const Header = memo(({ autoFocusRef }) => {
         subprojectUserId: previous.subproject_user_id,
       }),
     })
-  }, [db, subprojectId, navigate, subprojectUserId])
+  }
 
   return (
     <FormHeader
@@ -85,4 +84,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="subproject user"
     />
   )
-})
+}

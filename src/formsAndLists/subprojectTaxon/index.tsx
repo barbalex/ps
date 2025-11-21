@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
@@ -14,7 +13,7 @@ import '../../form.css'
 // TODO: what was this for?
 const taxaInclude = { taxonomies: true }
 
-export const SubprojectTaxon = memo(({ from }) => {
+export const SubprojectTaxon = ({ from }) => {
   const { subprojectTaxonId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -28,19 +27,16 @@ export const SubprojectTaxon = memo(({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      db.query(
-        `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
-        [value, subprojectTaxonId],
-      )
-    },
-    [db, row, subprojectTaxonId],
-  )
+    db.query(
+      `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
+      [value, subprojectTaxonId],
+    )
+  }
 
   if (!res) return <Loading />
 
@@ -70,4 +66,4 @@ export const SubprojectTaxon = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}
