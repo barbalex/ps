@@ -19,6 +19,12 @@ import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 
 import { PlacesFetcher } from './PlacesFetcher.tsx'
 import { PlaceFetcher } from './PlaceFetcher.tsx'
+
+import { OccurrencesAssignedFetcher } from './OccurrencesAssignedFetcher.tsx'
+import { OccurrenceAssignedFetcher } from './OccurrenceAssignedFetcher.tsx'
+import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
+import { PlaceUserFetcher } from './PlaceUserFetcher.tsx'
+
 import { SubprojectReportsFetcher } from './SubprojectReportsFetcher.tsx'
 import { SubprojectReportFetcher } from './SubprojectReportFetcher.tsx'
 import { GoalsFetcher } from './GoalsFetcher.tsx'
@@ -129,6 +135,39 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
+    case 'useOccurrencesAssignedNavData': {
+      return (
+        <OccurrencesAssignedFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useOccurrenceAssignedNavData': {
+      return (
+        <OccurrenceAssignedFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceUsersNavData': {
+      return (
+        <PlaceUsersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceUserNavData': {
+      return (
+        <PlaceUserFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+
     case 'useSubprojectReportsNavData': {
       return (
         <SubprojectReportsFetcher
