@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useActionReportNavData } from '../../modules/useActionReportNavData.ts'
@@ -7,7 +6,7 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const ActionReportList = memo(({ from }) => {
+export const ActionReportList = ({ from }) => {
   const {
     projectId,
     subprojectId,
@@ -56,4 +55,4 @@ export const ActionReportList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

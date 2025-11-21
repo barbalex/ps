@@ -1,11 +1,10 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createActionReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/reports/$actionReportId_/report' ||
@@ -16,7 +15,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createActionReport({ db, projectId, actionId })
     const data = res?.rows?.[0]
     navigate({
@@ -27,16 +26,16 @@ export const Header = memo(({ autoFocusRef, from }) => {
       params: (prev) => ({ ...prev, actionReportId: data.action_report_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [actionId, autoFocusRef, db, isForm, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM action_reports WHERE action_report_id = $1`, [
       actionReportId,
     ])
     navigate({ to: isForm ? `../..` : `..` })
-  }, [actionReportId, db, isForm, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT action_report_id FROM action_reports WHERE action_id = $1 ORDER BY label`,
       [actionId],
@@ -54,9 +53,9 @@ export const Header = memo(({ autoFocusRef, from }) => {
         : `../${next.action_report_id}`,
       params: (prev) => ({ ...prev, actionReportId: next.action_report_id }),
     })
-  }, [actionId, actionReportId, db, isForm, navigate])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT action_report_id FROM action_reports WHERE action_id = $1 ORDER BY label`,
       [actionId],
@@ -77,7 +76,7 @@ export const Header = memo(({ autoFocusRef, from }) => {
         actionReportId: previous.action_report_id,
       }),
     })
-  }, [actionId, actionReportId, db, isForm, navigate])
+  }
 
   return (
     <FormHeader
@@ -89,4 +88,4 @@ export const Header = memo(({ autoFocusRef, from }) => {
       tableName="goal report value"
     />
   )
-})
+}
