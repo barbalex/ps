@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 import './info.css'
 
 const containerStyle = {
@@ -7,7 +5,7 @@ const containerStyle = {
   backgroundColor: 'rgba(103, 216, 101, 0.07)',
 }
 
-export const Info = memo(() => (
+export const Info = () => (
   <div
     style={containerStyle}
     tabIndex={-1}
@@ -15,4 +13,4 @@ export const Info = memo(() => (
     <p>This is a (hopefully) complete list of Coordinate Reference Systems.</p>
     <p>They can be added to projects.</p>
   </div>
-))
+)

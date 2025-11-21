@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -7,13 +6,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from = '/data/crs/$crsId'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { crsId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createCrs({ db })
     const data = res?.rows?.[0]
     navigate({
@@ -21,14 +20,14 @@ export const Header = memo(({ autoFocusRef }) => {
       params: (prev) => ({ ...prev, crsId: data.crs_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate])
+  }
 
-  const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM crs WHERE crs_id = $1`, [crsId])
+  const deleteRow = () => {
+    db.query(`DELETE FROM crs WHERE crs_id = $1`, [crsId])
     navigate({ to: '/data/crs' })
-  }, [db, crsId, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(`SELECT crs_id FROM crs order by label`)
     const rows = res?.rows
     const len = rows.length
@@ -38,9 +37,9 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `/data/crs/${next.crs_id}`,
       params: (prev) => ({ ...prev, crsId: next.crs_id }),
     })
-  }, [db, navigate, crsId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(`SELECT crs_id FROM crs order by label`)
     const rows = res?.rows
     const len = rows.length
@@ -50,7 +49,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `/data/crs/${previous.crs_id}`,
       params: (prev) => ({ ...prev, crsId: previous.crs_id }),
     })
-  }, [db, navigate, crsId])
+  }
 
   return (
     <FormHeader
@@ -62,4 +61,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="crs"
     />
   )
-})
+}

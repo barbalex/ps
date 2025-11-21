@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,14 +9,14 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
 
-export const CRSS = memo(() => {
+export const CRSS = () => {
   const navigate = useNavigate()
   const db = usePGlite()
 
   const { loading, navData } = useCrssNavData()
   const { navs, label, nameSingular } = navData
 
-  const add = useCallback(async () => {
+  const add = async () => {
     const res = await createCrs({ db })
     const data = res?.rows?.[0]
     if (!data) return
@@ -25,7 +24,7 @@ export const CRSS = memo(() => {
       to: `/data/crs/${data.crs_id}`,
       params: (prev) => ({ ...prev, crsId: data.crs_id }),
     })
-  }, [db, navigate])
+  }
 
   return (
     <div className="list-view">
@@ -51,4 +50,4 @@ export const CRSS = memo(() => {
       </div>
     </div>
   )
-})
+}
