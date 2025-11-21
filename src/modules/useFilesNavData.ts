@@ -19,24 +19,18 @@ export const useFilesNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const parentArray = useMemo(
-    () => [
-      'data',
-      ...(projectId ? ['projects', projectId] : []),
-      ...(subprojectId ? ['subprojects', subprojectId] : []),
-      ...(placeId ? ['places', placeId] : []),
-      ...(placeId2 ? ['places', placeId2] : []),
-      ...(actionId ? ['actions', actionId] : []),
-      ...(checkId ? ['checks', checkId] : []),
-    ],
-    [actionId, checkId, placeId, placeId2, projectId, subprojectId],
-  )
-  const ownArray = useMemo(() => [...parentArray, 'files'], [parentArray])
+  const parentArray = [
+    'data',
+    ...(projectId ? ['projects', projectId] : []),
+    ...(subprojectId ? ['subprojects', subprojectId] : []),
+    ...(placeId ? ['places', placeId] : []),
+    ...(placeId2 ? ['places', placeId2] : []),
+    ...(actionId ? ['actions', actionId] : []),
+    ...(checkId ? ['checks', checkId] : []),
+  ]
+  const ownArray = [...parentArray, 'files']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = useMemo(
-    () => openNodes.some((array) => isEqual(array, ownArray)),
-    [openNodes, ownArray],
-  )
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const { hKey, hValue } = useMemo(() => {
     if (actionId) {
@@ -90,44 +84,34 @@ export const useFilesNavData = ({
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const navs = res?.rows ?? []
-    const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-    const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
 
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownUrl = `/${ownArray.join('/')}`
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label: buildNavLabel({
-        loading,
-        isFiltered,
-        countFiltered,
-        countUnfiltered,
-        namePlural: 'Files',
-      }),
-      nameSingular: 'File',
-      navs,
-    }
-  }, [
-    isFiltered,
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
     isOpen,
-    loading,
-    location.pathname,
+    parentUrl,
     ownArray,
-    parentArray,
-    res?.rows,
-  ])
+    urlPath,
+    ownUrl,
+    label: buildNavLabel({
+      loading,
+      isFiltered,
+      countFiltered,
+      countUnfiltered,
+      namePlural: 'Files',
+    }),
+    nameSingular: 'File',
+    navs,
+  }
 
   return { loading, navData }
 }
