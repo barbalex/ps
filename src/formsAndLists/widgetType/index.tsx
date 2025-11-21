@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -13,7 +12,7 @@ import '../../form.css'
 
 const from = '/data/widget-types/$widgetTypeId'
 
-export const WidgetType = memo(() => {
+export const WidgetType = () => {
   const { widgetTypeId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -26,17 +25,14 @@ export const WidgetType = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      const sql = `UPDATE widget_types SET ${name} = $1 WHERE widget_type_id = $2`
-      db.query(sql, [value, widgetTypeId])
-    },
-    [db, row, widgetTypeId],
-  )
+    const sql = `UPDATE widget_types SET ${name} = $1 WHERE widget_type_id = $2`
+    db.query(sql, [value, widgetTypeId])
+  }
 
   if (!res) return <Loading />
 
@@ -61,4 +57,4 @@ export const WidgetType = memo(() => {
       </div>
     </div>
   )
-})
+}

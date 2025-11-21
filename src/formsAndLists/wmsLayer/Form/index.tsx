@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
@@ -10,7 +8,7 @@ import { CreateWmsService } from './CreateWmsService/index.tsx'
 import '../../../form.css'
 
 // this form is rendered from a parent or outlet
-export const WmsLayerForm = memo(({ onChange, row, isFilter }) => {
+export const WmsLayerForm = ({ onChange, row, isFilter }) => {
   // TODO: implement later
   const isOffline = false
 
@@ -99,4 +97,4 @@ export const WmsLayerForm = memo(({ onChange, row, isFilter }) => {
       )}
     </>
   )
-})
+}

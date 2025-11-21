@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,13 +9,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }) => {
   const { projectId, wmsLayerId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createWmsLayer({ projectId, db })
     const wmsLayer = res?.rows?.[0]
     // also add layer_presentation
@@ -29,16 +28,14 @@ export const Header = memo(({ autoFocusRef }) => {
       params: (prev) => ({ ...prev, wmsLayerId: wmsLayer.wms_layer_id }),
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, navigate, projectId])
+  }
 
-  const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
-      wmsLayerId,
-    ])
+  const deleteRow = () => {
+    db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [wmsLayerId])
     navigate({ to: '..' })
-  }, [db, wmsLayerId, navigate])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(
       `SELECT wms_layer_id FROM wms_layers WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -51,9 +48,9 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${next.wms_layer_id}`,
       params: (prev) => ({ ...prev, wmsLayerId: next.wms_layer_id }),
     })
-  }, [db, projectId, navigate, wmsLayerId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(
       `SELECT wms_layer_id FROM wms_layers WHERE project_id = $1 ORDER BY label`,
       [projectId],
@@ -66,7 +63,7 @@ export const Header = memo(({ autoFocusRef }) => {
       to: `../${previous.wms_layer_id}`,
       params: (prev) => ({ ...prev, wmsLayerId: previous.wms_layer_id }),
     })
-  }, [db, projectId, navigate, wmsLayerId])
+  }
 
   return (
     <FormHeader
@@ -78,4 +75,4 @@ export const Header = memo(({ autoFocusRef }) => {
       tableName="wms layer"
     />
   )
-})
+}

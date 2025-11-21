@@ -1,6 +1,5 @@
-import { useCallback, useRef, memo } from 'react'
+import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -13,7 +12,7 @@ import '../../form.css'
 
 const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
 
-export const WmsLayer = memo(() => {
+export const WmsLayer = () => {
   const { wmsLayerId } = useParams({ from })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -27,27 +26,24 @@ export const WmsLayer = memo(() => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = useCallback<InputProps['onChange']>(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      try {
-        await db.query(
-          `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
-          [value, wmsLayerId],
-        )
-      } catch (error) {
-        console.log('hello WmsLayer, onChange, error:', error)
-      }
-      // TODO:
-      // 1. if name is wms_layer, need to set queryable, legend_url, more?
-      // 2. use wms_layers.queryable in the click listener for the info drawer
-      return
-    },
-    [db, row, wmsLayerId],
-  )
+    try {
+      await db.query(
+        `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
+        [value, wmsLayerId],
+      )
+    } catch (error) {
+      console.log('hello WmsLayer, onChange, error:', error)
+    }
+    // TODO:
+    // 1. if name is wms_layer, need to set queryable, legend_url, more?
+    // 2. use wms_layers.queryable in the click listener for the info drawer
+    return
+  }
 
   // console.log('WmsLayer, row:', wmsLayer)
 
@@ -76,4 +72,4 @@ export const WmsLayer = memo(() => {
       </div>
     </div>
   )
-})
+}
