@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -22,36 +21,34 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }) => {
 
   const loading = res === undefined
 
-  const navData = useMemo(() => {
-    const nav = res?.rows?.[0]
+  const nav = res?.rows?.[0]
 
-    const parentArray = ['data', 'projects', projectId, 'crs']
-    const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = [...parentArray, projectCrsId]
-    const ownUrl = `/${ownArray.join('/')}`
-    // needs to work not only works for urlPath, for all opened paths!
-    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-    const isActive = isEqual(urlPath, ownArray)
+  const parentArray = ['data', 'projects', projectId, 'crs']
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = [...parentArray, projectCrsId]
+  const ownUrl = `/${ownArray.join('/')}`
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
-    const notFound = !!res && !nav
-    const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const notFound = !!res && !nav
+  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-    return {
-      isInActiveNodeArray,
-      isActive,
-      isOpen,
-      level: 1,
-      parentUrl,
-      ownArray,
-      urlPath,
-      ownUrl,
-      label,
-      notFound,
-      nameSingular: 'CRS',
-    }
-  }, [location.pathname, openNodes, projectCrsId, projectId, res])
+  const navData = {
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level: 1,
+    parentUrl,
+    ownArray,
+    urlPath,
+    ownUrl,
+    label,
+    notFound,
+    nameSingular: 'CRS',
+  }
 
   return { loading, navData }
 }
