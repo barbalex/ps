@@ -22,6 +22,8 @@ import { PlaceFetcher } from './PlaceFetcher.tsx'
 
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
 import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
+import { PlaceReportValuesFetcher } from './PlaceReportValuesFetcher.tsx'
+import { PlaceReportValueFetcher } from './PlaceReportValueFetcher.tsx'
 import { OccurrencesAssignedFetcher } from './OccurrencesAssignedFetcher.tsx'
 import { OccurrenceAssignedFetcher } from './OccurrenceAssignedFetcher.tsx'
 import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
@@ -147,6 +149,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'usePlaceReportNavData': {
       return (
         <PlaceReportFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceReportValuesNavData': {
+      return (
+        <PlaceReportValuesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'usePlaceReportValueNavData': {
+      return (
+        <PlaceReportValueFetcher
           params={params}
           {...other}
         />
