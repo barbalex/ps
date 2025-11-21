@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -32,22 +31,14 @@ export const useFilesNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const { hKey } = useMemo(() => {
-    if (actionId) {
-      return { hKey: 'action_id' }
-    } else if (checkId) {
-      return { hKey: 'check_id' }
-    } else if (placeId2) {
-      return { hKey: 'place_id' }
-    } else if (placeId) {
-      return { hKey: 'place_id' }
-    } else if (subprojectId) {
-      return { hKey: 'subproject_id' }
-    } else if (projectId) {
-      return { hKey: 'project_id' }
-    }
-    return { hKey: undefined }
-  }, [actionId, checkId, placeId, placeId2, projectId, subprojectId])
+  const hKey =
+    actionId ? 'action_id'
+    : checkId ? 'check_id'
+    : placeId2 ? 'place_id'
+    : placeId ? 'place_id'
+    : subprojectId ? 'subproject_id'
+    : projectId ? 'project_id'
+    : undefined
 
   const hValue =
     actionId ??
