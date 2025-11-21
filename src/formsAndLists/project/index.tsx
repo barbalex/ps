@@ -1,4 +1,4 @@
-import { useRef, useCallback, memo } from 'react'
+import { useRef } from 'react'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -15,7 +15,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
-export const Project = memo(({ from }) => {
+export const Project = ({ from }) => {
   const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
@@ -29,30 +29,23 @@ export const Project = memo(({ from }) => {
   ])
   const row = res?.rows?.[0]
 
-  const onTabSelect = useCallback(
-    (event: SelectTabEvent, data: SelectTabData) => {
-      navigate({ search: { projectTab: data.value } })
-    },
-    [navigate],
-  )
+  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) =>
+    navigate({ search: { projectTab: data.value } })
 
-  const onChange = useCallback<InputProps['onChange']>(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      // only change if value has changed: maybe only focus entered and left
-      if (row[name] === value) return
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
 
-      try {
-        await db.query(
-          `UPDATE projects SET ${name} = $1 WHERE project_id = $2`,
-          [value, projectId],
-        )
-      } catch (error) {
-        console.error('error updating project', error)
-      }
-    },
-    [db, projectId, row],
-  )
+    try {
+      await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
+        value,
+        projectId,
+      ])
+    } catch (error) {
+      console.error('error updating project', error)
+    }
+  }
 
   if (!res) return <Loading />
 
@@ -112,4 +105,4 @@ export const Project = memo(({ from }) => {
       )}
     </div>
   )
-})
+}

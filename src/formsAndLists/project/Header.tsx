@@ -1,4 +1,3 @@
-import { useCallback, memo } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 
@@ -12,14 +11,14 @@ interface Props {
 
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
-export const Header = memo(({ autoFocusRef, from, label }: Props) => {
+export const Header = ({ autoFocusRef, from, label }: Props) => {
   const isForm = from === '/data/projects/$projectId_/project/'
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
 
-  const addRow = useCallback(async () => {
+  const addRow = async () => {
     const res = await createProject({ db })
     const data = res?.rows?.[0]
 
@@ -33,14 +32,14 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
       params: { projectId: data.project_id },
     })
     autoFocusRef?.current?.focus()
-  }, [autoFocusRef, db, isForm, navigate])
+  }
 
-  const deleteRow = useCallback(async () => {
+  const deleteRow = () => {
     db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
     navigate({ to: isForm ? `../..` : `..` })
-  }, [db, isForm, navigate, projectId])
+  }
 
-  const toNext = useCallback(async () => {
+  const toNext = async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
     const rows = res?.rows
     const len = rows.length
@@ -50,9 +49,9 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
       to: isForm ? `../../${next.project_id}/project` : `../${next.project_id}`,
       params: { projectId: next.project_id },
     })
-  }, [db, isForm, navigate, projectId])
+  }
 
-  const toPrevious = useCallback(async () => {
+  const toPrevious = async () => {
     const res = await db.query(`SELECT project_id FROM projects order by label`)
     const rows = res?.rows
     const len = rows.length
@@ -65,7 +64,7 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
         : `../${previous.project_id}`,
       params: { projectId: previous.project_id },
     })
-  }, [db, isForm, navigate, projectId])
+  }
 
   return (
     <FormHeader
@@ -78,4 +77,4 @@ export const Header = memo(({ autoFocusRef, from, label }: Props) => {
       siblings={<DesigningButton from={from} />}
     />
   )
-})
+}

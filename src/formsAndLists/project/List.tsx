@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 
 import { useProjectNavData } from '../../modules/useProjectNavData.ts'
@@ -9,7 +8,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 // const from = '/data/projects/$projectId/'
 
-export const ProjectList = memo(({ from }) => {
+export const ProjectList = ({ from }) => {
   const { projectId } = useParams({ from })
   const { loading, navData } = useProjectNavData({ projectId })
   const { navs, label, notFound } = navData
@@ -45,4 +44,4 @@ export const ProjectList = memo(({ from }) => {
       </div>
     </div>
   )
-})
+}

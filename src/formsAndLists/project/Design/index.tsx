@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Label, Divider } from '@fluentui/react-components'
 
@@ -17,7 +16,7 @@ const labelStyle = {
   fontWeight: 700,
 }
 
-export const Design = memo(({ onChange, row, from }) => {
+export const Design = ({ onChange, row, from }) => {
   const { projectId } = useParams({ from })
 
   return (
@@ -148,4 +147,4 @@ export const Design = memo(({ onChange, row, from }) => {
       </div>
     </div>
   )
-})
+}
