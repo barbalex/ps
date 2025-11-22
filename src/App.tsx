@@ -1,4 +1,4 @@
-import { createRef } from 'react'
+import { createRef, lazy } from 'react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
@@ -20,7 +20,16 @@ import { UploaderContext } from './UploaderContext.ts'
 import { store } from './store.ts'
 
 import { routeTree } from './routeTree.gen'
-const router = createRouter({ routeTree })
+const RouterErrorBoundary = lazy(async () => ({
+  default: (await import('./components/shared/RouterErrorBoundary.tsx'))
+    .RouterErrorBoundary,
+}))
+// TODO: add defaultErrorComponent
+// https://tanstack.com/start/latest/docs/framework/react/guide/error-boundaries
+const router = createRouter({
+  routeTree,
+  defaultErrorComponent: ({ error }) => <RouterErrorBoundary error={error} />,
+})
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
