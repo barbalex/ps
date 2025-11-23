@@ -1,11 +1,11 @@
-import { read, utils } from 'xlsx'
+import { read, utils } from '@e965/xlsx'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createOccurrence } from '../../modules/createRows.ts'
 
 export const processData = async ({ file, additionalData, db }) => {
   if (!file) return
 
-  console.log('processData', { file, additionalData, db })
+  // console.log('processData', { file, additionalData, db })
   // TODO:
   // this function is passed to the UploadButton component
   // it should process the content of the file
@@ -33,7 +33,7 @@ export const processData = async ({ file, additionalData, db }) => {
       }),
     )
     // test the data
-    console.log('processData, occurrences:', occurrences)
+    // console.log('processData, occurrences:', occurrences)
     // TODO:
     // - create chunks of 500 rows
     const chunked = chunkArrayWithMinSize(occurrences, 500)
