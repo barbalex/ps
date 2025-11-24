@@ -1,6 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 
-import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
+// import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
@@ -94,6 +94,7 @@ import { FilesFetcher } from './FilesFetcher.tsx'
 import { FileFetcher } from './FileFetcher.tsx'
 import { MessagesFetcher } from './MessagesFetcher.tsx'
 import { MessageFetcher } from './MessageFetcher.tsx'
+import { DataFetcher } from './DataFetcher.tsx'
 
 export const FetcherRouter = ({ fetcherName, ...other }) => {
   // need to get params here and pass as props otherwise
@@ -101,6 +102,9 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
   const params = useParams({ strict: false })
 
   switch (fetcherName) {
+    case 'useDataBreadcrumbData': {
+      return <DataFetcher {...other} />
+    }
     case 'useProjectsNavData': {
       return (
         <ProjectsFetcher
@@ -825,13 +829,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     // when using default the query only returns once, not the result
     // so not great
     default: {
-      return (
-        <AnyFetcherImporter
-          fetcherName={fetcherName}
-          params={params}
-          {...other}
-        />
-      )
+      throw new Error(`Für ${fetcherName} wurde kein "Fetcher" gefunden`)
+      // return (
+      //   <AnyFetcherImporter
+      //     fetcherName={fetcherName}
+      //     params={params}
+      //     {...other}
+      //   />
+      // )
     }
   }
 }
