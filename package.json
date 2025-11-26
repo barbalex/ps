@@ -46,7 +46,7 @@
     "@turf/points-within-polygon": "7.3.0",
     "@turf/polygon-to-line": "7.3.0",
     "@uidotdev/usehooks": "2.4.1",
-    "@uploadcare/file-uploader": "1.24.3",
+    "@uploadcare/file-uploader": "1.24.4",
     "@uploadcare/react-uploader": "1.11.0",
     "allotment": "1.20.4",
     "arktype": "2.1.27",
@@ -89,7 +89,7 @@
     "@eslint/compat": "2.0.0",
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.39.1",
-    "@tanstack/eslint-plugin-router": "1.133.19",
+    "@tanstack/eslint-plugin-router": "1.139.0",
     "@types/leaflet": "1.9.21",
     "@types/leaflet-draw": "1.0.13",
     "@types/proj4": "2.19.0",
@@ -106,7 +106,7 @@
     "eslint-plugin-react-refresh": "0.4.24",
     "globals": "16.5.0",
     "typescript": "5.9.3",
-    "vite": "7.1.9",
+    "vite": "7.2.4",
     "vite-plugin-svgr": "4.5.0"
   },
   "devRemarks": {
