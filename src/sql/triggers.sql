@@ -118,26 +118,43 @@ FOR EACH ROW
 EXECUTE PROCEDURE action_report_values_label_trigger();
 
 -- action_values
+-- TODO: does not work
 CREATE OR REPLACE FUNCTION action_values_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE action_values
     SET label = (
       CASE 
-        WHEN units.name is null then NEW.action_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        WHEN unit.name is null then NEW.action_value_id::text 
+        ELSE unit.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text, '(no value)')
       END
     )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
+  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS unit
   WHERE action_values.action_value_id = NEW.action_value_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER action_values_label_trigger
-AFTER UPDATE OR INSERT ON action_values
+AFTER UPDATE ON action_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_values_label_trigger();
+
+-- only insert because unit can't yet be looked up
+-- works
+CREATE OR REPLACE FUNCTION action_values_label_trigger_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE action_values
+    SET label = NEW.action_value_id::text
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER action_values_label_trigger_insert
+AFTER INSERT ON action_values
+FOR EACH ROW
+EXECUTE PROCEDURE action_values_label_trigger_insert();
 
 -- check_taxa
 CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
