@@ -33,8 +33,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
   const filesFilterString = filterStringFromFilter(filesFilter)
   const filesIsFiltered = !!filesFilterString
 
-  const res = useLiveQuery(
-    `
+  const sql = `
       WITH 
         places_count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL),
         places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL ${placesIsFiltered ? ` AND ${placesFilterString}` : ''} ),
@@ -88,8 +87,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
         files_count_unfiltered,
         files_count_filtered,
         charts_count
-      WHERE sp.subproject_id = '${subprojectId}'`,
-  )
+      WHERE sp.subproject_id = '${subprojectId}'`
+
+  const res = useLiveQuery(sql)
   const loading = res === undefined
   const nav = res?.rows?.[0]
 
@@ -104,8 +104,17 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const notFound = !!res && !nav
+  const notFound = !loading && !nav
   const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+
+  console.log('useSubprojectNavData', {
+    projectId,
+    subprojectId,
+    nav,
+    res,
+    loading,
+    sql,
+  })
 
   const navData = {
     isInActiveNodeArray,
