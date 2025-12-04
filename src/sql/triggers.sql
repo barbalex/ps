@@ -146,7 +146,7 @@ CREATE OR REPLACE FUNCTION action_values_label_trigger_insert()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE action_values
-    SET label = NEW.action_value_id::text
+    SET label = NEW.action_value_id::text;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
