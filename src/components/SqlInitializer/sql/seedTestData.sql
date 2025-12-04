@@ -45,3 +45,35 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 ('018ca1ab-9db6-7ddd-9d5c-c1b4ea8e808d', '018ca19f-787d-78f6-ac72-01f1e7f53d4f', '018ca1a2-058b-78b3-a078-0558dcef75cb'),
 ('018ca1ab-b0ae-732b-a9f2-50589d2e0508', '018ca19f-8b79-7194-b59b-7075bb5b550a', '018ca1a2-1a76-7218-8289-44688fd14101'),
 ('018ca1ab-c323-7d01-995b-9759ae9a3eb8', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a2-2e2a-7fd6-8c57-92654c3201a5');
+-- TODO: crs
+INSERT INTO crs(crs_id, code, name, proj4) values ${crsValuesString};
+-- projects
+INSERT INTO 
+projects(project_id, account_id, name, label, places_label_by) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'Demo Project', 'name');
+-- fields
+INSERT INTO fields(account_id, project_id, field_id, table_name, level, name, field_label, field_type_id, widget_type_id) values
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-46ac-7f14-80f8-57b2b361fd2c', 'places', 1, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-674e-7ebd-b6cc-e47ec256ac72', 'places', 2, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553');
+-- projectUsers
+INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
+('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');
+-- subprojects
+INSERT INTO subprojects(subproject_id, project_id, name) values 
+('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');
+-- subprojctUsers
+INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
+('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');
+-- seed places twice so we don't have to set null values in parent_id
+-- reason: got unique constraint violation
+-- places 1
+INSERT INTO places(account_id, place_id, subproject_id, level, since, data, geometry) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"001 first"}', '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[8.578262,47.558992],[8.504105,47.515888],[8.572769,47.516816],[8.578262,47.558992]]]},"properties":{}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[8.622894,47.519134],[8.604355,47.472749]]},"properties":{}}]}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"002 second"}', '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[8.615341,47.541394],[8.54805,47.526562],[8.54805,47.503842],[8.598862,47.519608],[8.615341,47.541394]]]},"properties":{}}]}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"003 third"}', '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[8.596802,47.544638]},"properties":{}}]}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-74cb-793a-9eb3-0f8da9ab9c85', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"004 fourth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"005 fifth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"006 sixth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"007 seventh"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 eighth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 nineth"}', null);
