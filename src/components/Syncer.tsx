@@ -405,6 +405,23 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'goal_report_values',
         primaryKey: ['goal_report_value_id'],
       },
+      subproject_reports: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'subproject_reports',
+            columns: [
+              'subproject_report_id',
+              'account_id',
+              'subproject_id',
+              'year',
+              'data',
+            ],
+          },
+        },
+        table: 'subproject_reports',
+        primaryKey: ['subproject_report_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
