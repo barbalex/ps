@@ -3,6 +3,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
 import { PGlite } from '@electric-sql/pglite'
+import { electricSync } from '@electric-sql/pglite-sync'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 
@@ -37,7 +38,7 @@ declare module '@tanstack/react-router' {
 }
 
 const db = await PGlite.create('idb://ps', {
-  extensions: { live },
+  extensions: { live, electric: electricSync() },
   relaxedDurability: true,
   // debug: true,
 })

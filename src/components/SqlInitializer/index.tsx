@@ -49,7 +49,7 @@ export const SqlInitializer = () => {
       } catch (error) {
         console.error('SqlInitializer, error creating triggers:', error)
       }
-      await seedTestData(db)
+      // await seedTestData(db)
     }
 
     run()

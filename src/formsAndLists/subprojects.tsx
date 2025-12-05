@@ -29,6 +29,8 @@ export const Subprojects = () => {
     })
   }
 
+  console.log('Subprojects, navs:', navs)
+
   return (
     <div className="list-view">
       <ListHeader
