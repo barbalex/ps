@@ -1,5 +1,5 @@
 # TODO: use gbif, electric and postgresql in the same docker-compose file
-# name: ps
+name: "ps"
 services:
   db:
     # specify container name to make it easier to run commands
@@ -15,7 +15,7 @@ services:
     ports:
       - 54321:5432
       # make the Postgres database accessible from outside the Docker container on port 5432
-      - "5432:5432"
+      - 5432:5432
     expose:
       - 5432
     tmpfs:
@@ -30,6 +30,11 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks:
       - network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   electric:
     container_name: ps_electric
     image: electricsql/electric
@@ -41,7 +46,8 @@ services:
       - "3000:3000"
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   # gbif:
   #   container_name: ps-gbif-1
   #   build:
