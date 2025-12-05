@@ -755,6 +755,28 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'vector_layer_displays',
         primaryKey: ['vector_layer_display_id'],
       },
+      layer_presentations: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'layer_presentations',
+            columns: [
+              'layer_presentation_id',
+              'account_id',
+              'wms_layer_id',
+              'vector_layer_id',
+              'active',
+              'opacity_percent',
+              'transparent',
+              'grayscale',
+              'max_zoom',
+              'min_zoom',
+            ],
+          },
+        },
+        table: 'layer_presentations',
+        primaryKey: ['layer_presentation_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
