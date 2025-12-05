@@ -684,6 +684,46 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'vector_layer_geoms',
         primaryKey: ['vector_layer_geom_id'],
       },
+      vector_layer_marker_types: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_marker_types',
+          },
+        },
+        table: 'vector_layer_marker_types',
+        primaryKey: ['marker_type'],
+      },
+      vector_layer_line_caps: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_line_caps',
+          },
+        },
+        table: 'vector_layer_line_caps',
+        primaryKey: ['line_cap'],
+      },
+      vector_layer_line_joins: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_line_joins',
+          },
+        },
+        table: 'vector_layer_line_joins',
+        primaryKey: ['line_join'],
+      },
+      vector_layer_fill_rules: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_fill_rules',
+          },
+        },
+        table: 'vector_layer_fill_rules',
+        primaryKey: ['fill_rule'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
