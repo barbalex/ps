@@ -825,6 +825,26 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'charts',
         primaryKey: ['chart_id'],
       },
+      chart_subject_table_names: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'chart_subject_table_names',
+          },
+        },
+        table: 'chart_subject_table_names',
+        primaryKey: ['table_name'],
+      },
+      chart_subject_table_levels: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'chart_subject_table_levels',
+          },
+        },
+        table: 'chart_subject_table_levels',
+        primaryKey: ['level'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
