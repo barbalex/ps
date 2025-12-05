@@ -89,6 +89,22 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'subprojects',
         primaryKey: ['subproject_id'],
       },
+      project_users: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: { table: 'project_users' },
+        },
+        table: 'project_users',
+        primaryKey: ['project_user_id'],
+      },
+      subproject_users: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: { table: 'subproject_users' },
+        },
+        table: 'subproject_users',
+        primaryKey: ['subproject_user_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
