@@ -105,6 +105,26 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'subproject_users',
         primaryKey: ['subproject_user_id'],
       },
+      taxonomies: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'taxonomies',
+            columns: [
+              'taxonomy_id',
+              'account_id',
+              'project_id',
+              'type',
+              'name',
+              'url',
+              'obsolete',
+              'data',
+            ],
+          },
+        },
+        table: 'taxonomies',
+        primaryKey: ['taxonomy_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
