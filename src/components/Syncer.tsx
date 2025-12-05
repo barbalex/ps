@@ -357,6 +357,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'user_messages',
         primaryKey: ['user_message_id'],
       },
+      place_users: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'place_users',
+          },
+        },
+        table: 'place_users',
+        primaryKey: ['place_user_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
