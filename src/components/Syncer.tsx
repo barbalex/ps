@@ -787,6 +787,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'notification_intents',
         primaryKey: ['intent'],
       },
+      chart_types: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'chart_types',
+          },
+        },
+        table: 'chart_types',
+        primaryKey: ['chart_type'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
