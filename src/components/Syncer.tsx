@@ -674,6 +674,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'vector_layers',
         primaryKey: ['vector_layer_id'],
       },
+      vector_layer_geoms: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_geoms',
+          },
+        },
+        table: 'vector_layer_geoms',
+        primaryKey: ['vector_layer_geom_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
