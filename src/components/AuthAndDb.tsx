@@ -20,7 +20,7 @@ export const AuthAndDb = () => {
       <Suspense fallback="loading...">
         <SqlInitializer />
       </Suspense>
-      {/* <Syncer /> */}
+      <Syncer />
       <TreeOpenNodesSetter />
       <Layout />
     </CorbadoProvider>
