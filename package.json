@@ -24,6 +24,7 @@
     "@electric-sql/client": "1.2.0",
     "@electric-sql/pglite": "0.3.14",
     "@electric-sql/pglite-react": "0.2.32",
+    "@electric-sql/pglite-sync": "^0.4.0",
     "@electric-sql/pglite-tools": "0.2.19",
     "@electric-sql/react": "1.0.21",
     "@fluentui/react-components": "9.72.7",
