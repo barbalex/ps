@@ -644,6 +644,36 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'wfs_service_layers',
         primaryKey: ['wfs_service_layer_id'],
       },
+      vector_layer_types: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_types',
+          },
+        },
+        table: 'vector_layer_types',
+        primaryKey: ['type'],
+      },
+      vector_layer_own_tables: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layer_own_tables',
+          },
+        },
+        table: 'vector_layer_own_tables',
+        primaryKey: ['own_table'],
+      },
+      vector_layers: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'vector_layers',
+          },
+        },
+        table: 'vector_layers',
+        primaryKey: ['vector_layer_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
