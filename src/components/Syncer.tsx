@@ -290,6 +290,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'checks',
         primaryKey: ['check_id'],
       },
+      check_values: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'check_values',
+          },
+        },
+        table: 'check_values',
+        primaryKey: ['check_value_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
