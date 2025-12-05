@@ -125,6 +125,40 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'taxonomies',
         primaryKey: ['taxonomy_id'],
       },
+      taxa: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: { table: 'taxa' },
+        },
+        table: 'taxa',
+        primaryKey: ['taxon_id'],
+      },
+      subproject_taxa: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: { table: 'subproject_taxa' },
+        },
+        table: 'subproject_taxa',
+        primaryKey: ['subproject_taxon_id'],
+      },
+      lists: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'lists',
+            columns: [
+              'list_id',
+              'account_id',
+              'project_id',
+              'name',
+              'data',
+              'obsolete',
+            ],
+          },
+        },
+        table: 'lists',
+        primaryKey: ['list_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
