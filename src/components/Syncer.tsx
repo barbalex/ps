@@ -584,6 +584,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'occurrence_imports',
         primaryKey: ['occurrence_import_id'],
       },
+      occurrences: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'occurrences',
+          },
+        },
+        table: 'occurrences',
+        primaryKey: ['occurrence_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
