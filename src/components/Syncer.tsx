@@ -777,6 +777,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'layer_presentations',
         primaryKey: ['layer_presentation_id'],
       },
+      notification_intents: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'notification_intents',
+          },
+        },
+        table: 'notification_intents',
+        primaryKey: ['intent'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
