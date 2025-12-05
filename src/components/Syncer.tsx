@@ -634,6 +634,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'wfs_services',
         primaryKey: ['wfs_service_id'],
       },
+      wfs_service_layers: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'wfs_service_layers',
+          },
+        },
+        table: 'wfs_service_layers',
+        primaryKey: ['wfs_service_layer_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
