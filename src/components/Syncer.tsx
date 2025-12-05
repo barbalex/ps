@@ -337,6 +337,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'place_report_values',
         primaryKey: ['place_report_value_id'],
       },
+      messages: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'messages',
+          },
+        },
+        table: 'messages',
+        primaryKey: ['message_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
@@ -369,6 +379,7 @@ export const Syncer = () => {
     return () => {
       unsubscribe()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser?.email, db, setSyncing, setSync])
   // authUser?.email
 
