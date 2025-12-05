@@ -16,6 +16,7 @@ const labelStyle = {
 
 export const Row = ({ label, to, onClick, imgSrc, lastHasImages = false }) => {
   const navigate = useNavigate()
+  console.log('Row, to:', to)
 
   const onClickLabel = () => {
     // when used in map drawer, we don't want to navigate

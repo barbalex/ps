@@ -12,6 +12,7 @@ import '../../form.css'
 
 export const Subproject = ({ from }) => {
   const { subprojectId } = useParams({ from })
+  console.log('Subproject, id:', subprojectId)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -50,6 +51,8 @@ export const Subproject = ({ from }) => {
       />
     )
   }
+
+  console.log('Subproject, row:', row)
 
   return (
     <div className="form-outer-container">

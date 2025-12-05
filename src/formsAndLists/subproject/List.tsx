@@ -14,6 +14,8 @@ export const SubprojectList = ({ from }) => {
   })
   const { navs, notFound } = navData
 
+  console.log('SubprojectList', { navs, notFound })
+
   if (notFound) {
     return (
       <NotFound
