@@ -614,6 +614,16 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'wms_service_layers',
         primaryKey: ['wms_service_layer_id'],
       },
+      wms_layers: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'wms_layers',
+          },
+        },
+        table: 'wms_layers',
+        primaryKey: ['wms_layer_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
