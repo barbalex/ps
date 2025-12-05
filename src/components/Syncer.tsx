@@ -480,6 +480,17 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
         table: 'persons',
         primaryKey: ['person_id'],
       },
+      field_types: {
+        shape: {
+          url: 'http://localhost:3000/v1/shape',
+          params: {
+            table: 'field_types',
+            columns: ['field_type_id', 'name', 'sort', 'comment'],
+          },
+        },
+        table: 'field_types',
+        primaryKey: ['field_type_id'],
+      },
     },
     key: 'ps-sync',
     onInitialSync: () => setSyncing(false),
