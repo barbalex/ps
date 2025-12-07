@@ -638,6 +638,28 @@ const doSync = async ({ db, setSyncing, setSync }) => {
         table: 'field_sorts',
         primaryKey: ['field_sort_id'],
       },
+      occurrence_import_previous_operations: {
+        shape: {
+          url,
+          params: {
+            table: 'occurrence_import_previous_operations',
+          },
+        },
+        liveSse: true,
+        table: 'occurrence_import_previous_operations',
+        primaryKey: ['previous_import_operation'],
+      },
+      occurrence_imports_geometry_methods: {
+        shape: {
+          url,
+          params: {
+            table: 'occurrence_imports_geometry_methods',
+          },
+        },
+        liveSse: true,
+        table: 'occurrence_imports_geometry_methods',
+        primaryKey: ['geometry_method'],
+      },
       occurrence_imports: {
         shape: {
           url,
