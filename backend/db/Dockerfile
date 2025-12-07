@@ -1,14 +1,15 @@
 FROM postgis/postgis:17-3.5
+# FROM postgres:16-alpine
 
 # mount SQL files directly into the Postgres containers’ initialization directory
 COPY ./init/ /docker-entrypoint-initdb.d/
 
 # Install some helpful stuff
-RUN apt-get -qq update
+# RUN apt-get -qq update
 # log less: https://askubuntu.com/a/668859
 # RUN apt-get install -y -qq curl
-RUN apt-get install -y -qq bash
-RUN apt-get install -y -qq nano
+# RUN apt-get install -y -qq bash
+# RUN apt-get install -y -qq nano
 # RUN apt-get install -y -qq rclone
 # RUN apt-get install -y -qq dos2unix
 
