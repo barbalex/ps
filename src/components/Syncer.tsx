@@ -974,7 +974,10 @@ const startSyncing = async ({ db, setSyncing, setSync }) => {
     },
     key: 'ps-sync',
     initialInsertMethod: 'csv',
-    onInitialSync: () => setSyncing(false),
+    onInitialSync: () => {
+      setSyncing(false)
+      console.log('Syncer.startSyncing.onInitialSync: initial sync done')
+    },
     onError: (error) => console.error('Syncer', error),
   })
   setSync(sync)
