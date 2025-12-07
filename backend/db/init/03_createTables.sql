@@ -18,7 +18,6 @@ COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 --------------------------------------------------------------
 -- accounts
 --
--- DROP TABLE IF EXISTS accounts CASCADE;
 CREATE TABLE IF NOT EXISTS accounts(
   account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action,
@@ -1397,8 +1396,6 @@ COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys.
 -- INSERT INTO occurrence_imports(occurrence_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 -- TODO: need to add place_id. Either here or separate table place_occurrences
-DROP TABLE IF EXISTS occurrences CASCADE;
-
 CREATE TABLE IF NOT EXISTS occurrences(
   occurrence_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1441,7 +1438,6 @@ COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in 
 --------------------------------------------------------------
 -- wms_services
 --
--- DROP TABLE IF EXISTS wms_services CASCADE;
 CREATE TABLE IF NOT EXISTS wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1464,7 +1460,6 @@ CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url)
 --------------------------------------------------------------
 -- wms_service_layers
 --
--- DROP TABLE IF EXISTS wms_service_layers CASCADE;
 CREATE TABLE IF NOT EXISTS wms_service_layers(
   wms_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1481,7 +1476,6 @@ CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_
 --------------------------------------------------------------
 -- wms_layers
 --
--- DROP TABLE IF EXISTS wms_layers CASCADE;
 -- TODO: create table for wmts
 -- wmts_url_template text DEFAULT NULL,
 -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
@@ -1513,7 +1507,6 @@ COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their siz
 --------------------------------------------------------------
 -- wfs_services
 --
--- DROP TABLE IF EXISTS wfs_services CASCADE;
 CREATE TABLE IF NOT EXISTS wfs_services(
   wfs_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1538,7 +1531,6 @@ COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbo
 --------------------------------------------------------------
 -- wfs_service_layers
 --
--- DROP TABLE IF EXISTS wfs_service_layers CASCADE;
 CREATE TABLE IF NOT EXISTS wfs_service_layers(
   wfs_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1611,8 +1603,6 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 --------------------------------------------------------------
 -- vector_layer_geoms
 --
--- DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
---
 -- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
 CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1680,7 +1670,6 @@ create table if not exists vector_layer_fill_rules (
 CREATE INDEX IF NOT EXISTS vector_layer_fill_rules_sort_idx ON vector_layer_fill_rules USING btree(sort);
 insert into vector_layer_fill_rules (fill_rule, sort) values ('nonzero', 1), ('evenodd', 2);
 
--- DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1788,7 +1777,6 @@ create table if not exists notification_intents (
 );
 insert into notification_intents values ('success'), ('error'), ('warning'), ('info');
 
--- DROP TABLE IF EXISTS notifications;
 CREATE TABLE IF NOT EXISTS notifications(
   notification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- user_id not needed as this table is not synced
