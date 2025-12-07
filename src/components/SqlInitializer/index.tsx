@@ -22,7 +22,7 @@ export const SqlInitializer = () => {
 
       if (projectsTableExists) return
 
-      // insert needed functions, create tables, add triggers
+      // create functions, tables and triggers
 
       const immutableDateSql = (await import(`../../sql/immutableDate.sql?raw`))
         .default
