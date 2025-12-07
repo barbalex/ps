@@ -1,4 +1,28 @@
 export const startSyncing = async ({ db, setSyncing, setSync }) => {
+  const projectsTableExistsQuery = await db.query(
+    `
+          SELECT EXISTS (
+            SELECT FROM pg_tables
+            WHERE  schemaname = 'public'
+            AND    tablename  = 'projects'
+          )
+        `,
+  )
+
+  const projectsTableExists = projectsTableExistsQuery?.rows?.[0]?.exists
+
+  if (!projectsTableExists) {
+    console.log(
+      'Syncer.startSyncing: projects table does not yet exist. Will sync later',
+    )
+    return setTimeout(() => startSyncing({ db, setSyncing, setSync }), 2000)
+  }
+
+  doSync({ db, setSyncing, setSync })
+}
+
+const doSync = async ({ db, setSyncing, setSync }) => {
+  console.log('Syncer.startSyncing: syncing')
   const sync = await db.electric.syncShapesToTables({
     shapes: {
       users: {
@@ -967,7 +991,7 @@ export const startSyncing = async ({ db, setSyncing, setSync }) => {
     initialInsertMethod: 'csv',
     onInitialSync: () => {
       setSyncing(false)
-      console.log('Syncer.startSyncing.onInitialSync: initial sync done')
+      console.log('Syncer.startSyncing: initial sync done')
       setTimeout(() => window.location.reload(true), 1000)
     },
     onError: (error) => console.error('Syncer', error),
