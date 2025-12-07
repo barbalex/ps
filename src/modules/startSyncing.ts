@@ -21,13 +21,16 @@ export const startSyncing = async ({ db, setSyncing, setSync }) => {
   doSync({ db, setSyncing, setSync })
 }
 
+const url = 'http://localhost:3000/v1/shape'
+
 const doSync = async ({ db, setSyncing, setSync }) => {
   console.log('Syncer.startSyncing: syncing')
+
   const sync = await db.electric.syncShapesToTables({
     shapes: {
       users: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'users', columns: ['user_id', 'email'] },
         },
         liveSse: true,
@@ -36,7 +39,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       accounts: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'accounts' },
         },
         liveSse: true,
@@ -45,7 +48,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       project_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'project_types' },
         },
         liveSse: true,
@@ -54,7 +57,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       projects: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'projects' },
         },
         liveSse: true,
@@ -63,7 +66,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       place_levels: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'place_levels',
             columns: [
@@ -92,7 +95,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       subprojects: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'subprojects',
             columns: [
@@ -110,9 +113,18 @@ const doSync = async ({ db, setSyncing, setSync }) => {
         table: 'subprojects',
         primaryKey: ['subproject_id'],
       },
+      user_roles: {
+        shape: {
+          url,
+          params: { table: 'user_roles' },
+        },
+        liveSse: true,
+        table: 'user_roles',
+        primaryKey: ['role'],
+      },
       project_users: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'project_users' },
         },
         liveSse: true,
@@ -121,16 +133,25 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       subproject_users: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'subproject_users' },
         },
         liveSse: true,
         table: 'subproject_users',
         primaryKey: ['subproject_user_id'],
       },
+      taxonomy_types: {
+        shape: {
+          url,
+          params: { table: 'taxonomy_types' },
+        },
+        liveSse: true,
+        table: 'taxonomy_types',
+        primaryKey: ['type'],
+      },
       taxonomies: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'taxonomies',
             columns: [
@@ -151,7 +172,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       taxa: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'taxa' },
         },
         liveSse: true,
@@ -160,7 +181,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       subproject_taxa: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: { table: 'subproject_taxa' },
         },
         liveSse: true,
@@ -169,7 +190,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       lists: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'lists',
             columns: [
@@ -188,7 +209,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       list_values: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'list_values',
             columns: [
@@ -206,7 +227,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       units: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'units',
             columns: [
@@ -234,7 +255,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       places: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'places',
           },
@@ -245,7 +266,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       actions: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'actions',
             columns: [
@@ -266,7 +287,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       action_values: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'action_values',
           },
@@ -277,7 +298,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       action_reports: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'action_reports',
             columns: [
@@ -295,7 +316,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       action_report_values: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'action_report_values',
           },
@@ -306,7 +327,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       checks: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'checks',
             columns: [
@@ -327,7 +348,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       check_values: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'check_values',
           },
@@ -338,7 +359,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       check_taxa: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'check_taxa',
           },
@@ -349,7 +370,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       place_reports: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'place_reports',
             columns: [
@@ -367,7 +388,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       place_report_values: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'place_report_values',
           },
@@ -378,7 +399,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       messages: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'messages',
           },
@@ -389,7 +410,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       user_messages: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'user_messages',
           },
@@ -400,7 +421,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       place_users: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'place_users',
           },
@@ -411,7 +432,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       goals: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'goals',
             columns: [
@@ -430,7 +451,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       goal_reports: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'goal_reports',
           },
@@ -441,7 +462,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       goal_report_values: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'goal_report_values',
           },
@@ -452,7 +473,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       subproject_reports: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'subproject_reports',
             columns: [
@@ -470,7 +491,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       project_reports: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'project_reports',
             columns: [
@@ -488,7 +509,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       files: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'files',
             columns: [
@@ -519,7 +540,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       persons: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'persons',
             columns: ['person_id', 'project_id', 'account_id', 'email', 'data'],
@@ -531,7 +552,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       field_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'field_types',
             columns: ['field_type_id', 'name', 'sort', 'comment'],
@@ -543,7 +564,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       widget_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'widget_types',
             columns: [
@@ -561,7 +582,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       widgets_for_fields: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'widgets_for_fields',
           },
@@ -572,7 +593,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       fields: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'fields',
             columns: [
@@ -597,7 +618,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       field_sorts: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'field_sorts',
           },
@@ -608,7 +629,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       occurrence_imports: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'occurrence_imports',
             columns: [
@@ -641,7 +662,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       occurrences: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'occurrences',
           },
@@ -652,7 +673,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       wms_services: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'wms_services',
           },
@@ -663,7 +684,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       wms_service_layers: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'wms_service_layers',
           },
@@ -674,7 +695,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       wms_layers: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'wms_layers',
           },
@@ -685,7 +706,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       wfs_services: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'wfs_services',
           },
@@ -696,7 +717,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       wfs_service_layers: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'wfs_service_layers',
           },
@@ -707,7 +728,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_types',
           },
@@ -718,7 +739,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_own_tables: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_own_tables',
           },
@@ -729,7 +750,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layers: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layers',
           },
@@ -740,7 +761,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_geoms: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_geoms',
           },
@@ -751,7 +772,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_marker_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_marker_types',
           },
@@ -762,7 +783,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_line_caps: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_line_caps',
           },
@@ -773,7 +794,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_line_joins: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_line_joins',
           },
@@ -784,7 +805,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_fill_rules: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_fill_rules',
           },
@@ -795,7 +816,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       vector_layer_displays: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'vector_layer_displays',
             columns: [
@@ -827,7 +848,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       layer_presentations: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'layer_presentations',
             columns: [
@@ -850,7 +871,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       notification_intents: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'notification_intents',
           },
@@ -861,7 +882,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       chart_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'chart_types',
           },
@@ -872,7 +893,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       charts: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'charts',
             columns: [
@@ -901,7 +922,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       chart_subject_table_names: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'chart_subject_table_names',
           },
@@ -912,7 +933,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       chart_subject_table_levels: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'chart_subject_table_levels',
           },
@@ -923,7 +944,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       chart_subject_value_sources: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'chart_subject_value_sources',
           },
@@ -934,7 +955,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       chart_subject_types: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'chart_subject_types',
           },
@@ -945,7 +966,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       chart_subjects: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'chart_subjects',
           },
@@ -956,7 +977,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       crs: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'crs',
             columns: ['crs_id', 'account_id', 'code', 'name', 'proj4'],
@@ -968,7 +989,7 @@ const doSync = async ({ db, setSyncing, setSync }) => {
       },
       project_crs: {
         shape: {
-          url: 'http://localhost:3000/v1/shape',
+          url,
           params: {
             table: 'project_crs',
             columns: [
