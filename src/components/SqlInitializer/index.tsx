@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { seedTestData } from './seedTestData.ts'
+// import { seedTestData } from './seedTestData.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
