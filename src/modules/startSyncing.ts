@@ -968,7 +968,7 @@ export const startSyncing = async ({ db, setSyncing, setSync }) => {
     onInitialSync: () => {
       setSyncing(false)
       console.log('Syncer.startSyncing.onInitialSync: initial sync done')
-      // window.location.reload(true)
+      setTimeout(() => window.location.reload(true), 1000)
     },
     onError: (error) => console.error('Syncer', error),
   })
