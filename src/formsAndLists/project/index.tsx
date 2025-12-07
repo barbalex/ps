@@ -43,8 +43,11 @@ export const Project = ({ from }) => {
         projectId,
       ])
     } catch (error) {
-      console.error('error updating project', error)
+      return console.error('error updating project', error)
     }
+    // TODO: create task to update server
+    // task = same sql plus rollback, where previous value is set if update errors
+    // https://tanstack.com/db/latest/docs/collections/electric-collection? 
   }
 
   if (!res) return <Loading />
