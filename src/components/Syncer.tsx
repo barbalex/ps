@@ -7,7 +7,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { syncingAtom } from '../store.ts'
 
 const startSyncing = async ({ db, setSyncing, setSync }) => {
-  console.log('AuthAndDb.Syncer.startSyncing', { db, setSyncing, setSync })
   const sync = await db.electric.syncShapesToTables({
     shapes: {
       users: {
@@ -1000,14 +999,15 @@ export const Syncer = () => {
     if (!setSync) return
     if (!unsubscribe) return
 
+    console.log('AuthAndDb.Syncer starting sync')
     startSyncing({ db, setSyncing, setSync })
 
     return () => {
+      console.log('AuthAndDb.Syncer unsubscribing sync')
       unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser?.email, db, setSyncing, setSync])
-  // authUser?.email
 
   return null
 }
