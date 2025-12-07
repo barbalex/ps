@@ -913,6 +913,17 @@ const doSync = async ({ db, setSyncing, setSync }) => {
         table: 'notification_intents',
         primaryKey: ['intent'],
       },
+      notifications: {
+        shape: {
+          url,
+          params: {
+            table: 'notifications',
+          },
+        },
+        liveSse: true,
+        table: 'notifications',
+        primaryKey: ['notification_id'],
+      },
       chart_types: {
         shape: {
           url,
