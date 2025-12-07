@@ -24,7 +24,6 @@ export const Syncer = () => {
     if (!setSync) return
     if (!unsubscribe) return
 
-    console.log('AuthAndDb.Syncer starting sync')
     startSyncing({ db, setSyncing, setSync })
 
     return () => {
