@@ -1,4 +1,4 @@
-import { createRef, lazy } from 'react'
+import { createRef, lazy, useEffect } from 'react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
@@ -19,6 +19,7 @@ import { lightTheme } from './modules/theme.ts'
 // import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store } from './store.ts'
+import { observeOperations } from './modules/observeOperations.ts'
 
 import { routeTree } from './routeTree.gen'
 const RouterErrorBoundary = lazy(async () => ({
@@ -50,8 +51,15 @@ const routerContainerStyle = {
 }
 
 export const App = () => {
-  // console.log('App, theme:', customLightTheme)
   const uploaderRef = createRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    const unobserve = observeOperations(store)
+
+    return () => {
+      unobserve()
+    }
+  }, [])
 
   return (
     <PGliteProvider db={db}>
