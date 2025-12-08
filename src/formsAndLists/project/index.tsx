@@ -10,13 +10,14 @@ import { ProjectForm as Form } from './Form.tsx'
 import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { designingAtom } from '../../store.ts'
+import { designingAtom, postgrestClientAtom } from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
 export const Project = ({ from }) => {
   const [designing] = useAtom(designingAtom)
+  const [postgrestClient] = useAtom(postgrestClientAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
   const { projectTab } = useSearch({ from })
@@ -49,6 +50,11 @@ export const Project = ({ from }) => {
     // task = same sql plus rollback, where previous value is set if update errors
     // https://tanstack.com/db/latest/docs/collections/electric-collection?
     // PostgRest with https://supabase.com/docs/reference/javascript?
+    const { data: pgClientData, error } = await postgrestClient
+      .from('projects')
+      .update({ [name]: value })
+      .eq('project_id', projectId)
+    console.log('Project.onChange', { pgClientData, error })
   }
 
   if (!res) return <Loading />
