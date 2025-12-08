@@ -33,6 +33,7 @@
     "@kripod/uuidv7": "0.3.4",
     "@react-leaflet/core": "3.0.0",
     "@shopify/react-web-worker": "5.1.6",
+    "@supabase/supabase-js": "2.87.0",
     "@tanstack/react-router": "1.132.47",
     "@tanstack/react-router-devtools": "1.132.51",
     "@tanstack/router-plugin": "1.132.51",

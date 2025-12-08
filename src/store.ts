@@ -275,3 +275,6 @@ export const filterAtoms = {
   placeReports2: placeReports2FilterAtom,
   files: filesFilterAtom,
 }
+
+// postgrestClient
+export const postgrestClientAtom = atom('postgrestClient', null)

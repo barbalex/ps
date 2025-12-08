@@ -5,6 +5,7 @@ import { SqlInitializer } from './SqlInitializer/index.tsx'
 // TODO: sync with db IF user has an account
 import { Syncer } from './Syncer.tsx'
 import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
+import { PostgrestClientInitator } from './PostgrestClientInitator.tsx'
 
 import { Layout } from './LayoutProtected/index.tsx'
 
@@ -20,6 +21,7 @@ export const AuthAndDb = () => {
       <Suspense fallback="loading...">
         <SqlInitializer />
       </Suspense>
+      <PostgrestClientInitator />
       <Syncer />
       <TreeOpenNodesSetter />
       <Layout />
