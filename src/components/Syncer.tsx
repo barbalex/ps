@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useSetAtom } from 'jotai'
-// import { ShapeStream, Shape } from '@electric-sql/client'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { syncingAtom } from '../store.ts'

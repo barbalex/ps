@@ -21,7 +21,6 @@
     "@css-hooks/react": "3.0.4",
     "@cyntler/react-doc-viewer": "1.17.1",
     "@e965/xlsx": "0.20.3",
-    "@electric-sql/client": "1.2.0",
     "@electric-sql/pglite": "0.3.14",
     "@electric-sql/pglite-react": "0.2.32",
     "@electric-sql/pglite-sync": "0.4.0",
