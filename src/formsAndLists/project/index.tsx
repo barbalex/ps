@@ -47,7 +47,8 @@ export const Project = ({ from }) => {
     }
     // TODO: create task to update server
     // task = same sql plus rollback, where previous value is set if update errors
-    // https://tanstack.com/db/latest/docs/collections/electric-collection? 
+    // https://tanstack.com/db/latest/docs/collections/electric-collection?
+    // PostgRest with https://supabase.com/docs/reference/javascript?
   }
 
   if (!res) return <Loading />
