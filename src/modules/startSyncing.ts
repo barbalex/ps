@@ -15,6 +15,7 @@ export const startSyncing = async ({ db, setSyncing, setSync }) => {
     console.log(
       'Syncer.startSyncing: projects table does not yet exist. Will sync later',
     )
+    // on first load, need to wait for all the sql initialization scripts to have run
     return setTimeout(() => startSyncing({ db, setSyncing, setSync }), 2000)
   }
 
