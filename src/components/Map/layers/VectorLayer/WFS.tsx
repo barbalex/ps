@@ -25,6 +25,7 @@ import {
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
+import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -125,6 +126,7 @@ export const WFS = ({ layer, layerPresentation }) => {
           params,
         })
       } catch (error) {
+        setShortTermOnlineFromFetchError(error)
         await db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
           notif.notification_id,
         ])
@@ -246,8 +248,8 @@ export const WFS = ({ layer, layerPresentation }) => {
 
           const IconComponent = icons[display?.marker_symbol]
 
-          return IconComponent
-            ? L.marker(latlng, {
+          return IconComponent ?
+              L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
