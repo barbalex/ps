@@ -2,6 +2,7 @@ import { useState } from 'react'
 import axios from 'redaxios'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
+import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 
 const notificationStyle = {
   color: 'red',
@@ -27,6 +28,7 @@ export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
     try {
       resp = await axios.get(proj4Url)
     } catch (error) {
+      setShortTermOnlineFromFetchError(error)
       console.error('occurrenceImport 2, onBlurCrs, resp error:', error)
       if (error.status === 404) {
         // Tell user that the crs is not found
