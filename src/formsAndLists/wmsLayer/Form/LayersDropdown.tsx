@@ -2,6 +2,8 @@ import { Dropdown, Field, Option } from '@fluentui/react-components'
 import axios from 'redaxios'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
+import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+
 export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
   const db = usePGlite()
 
@@ -72,6 +74,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
         responseType: 'blob',
       })
     } catch (error) {
+      setShortTermOnlineFromFetchError(error)
       // error can also be caused by timeout
       console.error(
         `hello error fetching legend for layer '${data.optionText}':`,
