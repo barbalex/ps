@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-// import { seedTestData } from './seedTestData.ts'
+import { seedTestData } from './seedTestData.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
@@ -49,7 +49,7 @@ export const SqlInitializer = () => {
       } catch (error) {
         console.error('SqlInitializer, error creating triggers:', error)
       }
-      // await seedTestData(db)
+      await seedTestData(db)
     }
 
     run()
