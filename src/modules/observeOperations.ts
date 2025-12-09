@@ -1,6 +1,7 @@
 import { observe } from 'jotai-effect'
 
 import { operationsQueueAtom, shortTermOnlineAtom } from '../store.ts'
+import { executeOperation } from './executeOperation.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
@@ -20,10 +21,17 @@ export const observeOperations = (store) =>
     const operations = get(operationsQueueAtom)
     // loops operations
     // runs operation
-    // if successful: return remove operation by id
-    // if error:
-    // if auth error: get new auth token
-    // catch uniqueness violations: revert and inform user
-    // if network error: return, setting shortTermOnline false
-    // else: Move this operation to the end of the queue to prevent it from blocking others, inform user
+    const firstOperation = operations.at(0)
+    if (!firstOperation) return
+    try {
+      executeOperation(firstOperation)
+    } catch (error) {
+      // if error:
+      // if auth error: get new auth token
+      // catch uniqueness violations: revert and inform user
+      // if network error: return, setting shortTermOnline false
+      // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
+    }
+    // if successful: return remove first operation
+    set(operationsQueueAtom, operationsQueueAtom.shift(0))
   }, store)
