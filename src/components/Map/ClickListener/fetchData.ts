@@ -1,6 +1,7 @@
 import axios from 'redaxios'
 
 import { createNotification } from '../../../modules/createRows.ts'
+import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 
 export const fetchData = async ({ db, url, params }) => {
   let res
@@ -44,6 +45,7 @@ export const fetchData = async ({ db, url, params }) => {
         db,
       })
     }
+    setShortTermOnlineFromFetchError(error)
   }
   if (!failedToFetch && res?.data) {
     return res.data
