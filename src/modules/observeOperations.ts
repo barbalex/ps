@@ -2,6 +2,8 @@ import { observe } from 'jotai-effect'
 
 import { operationsQueueAtom, shortTermOnlineAtom } from '../store.ts'
 import { executeOperation } from './executeOperation.ts'
+import { revertOperation } from './revertOperation.ts'
+import { removeOperation } from './removeOperation.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
@@ -26,8 +28,18 @@ export const observeOperations = (store) =>
     try {
       executeOperation(firstOperation)
     } catch (error) {
-      // if error:
+      const lcMessage = error.message?.toLowerCase?.()
       // if auth error: get new auth token
+      // TODO: ensure if clause is correct
+      if (lcMessage.includes('jwt')) {
+        // TODO: get new auth token
+        return console.log('observeOperations, need to get new auth token')
+      } else if (lcMessage.includes('uniqueness violation')) {
+        console.log(
+          'There is a conflict with exact same changes - ingoring the error thrown',
+        )
+        revertOperation(firstOperation)
+      }
       // catch uniqueness violations: revert and inform user
       // if network error: return, setting shortTermOnline false
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
