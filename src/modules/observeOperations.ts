@@ -1,6 +1,6 @@
 import { observe } from 'jotai-effect'
 
-import { operationsQueueAtom } from '../store.ts'
+import { operationsQueueAtom, shortTermOnlineAtom } from '../store.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
@@ -13,6 +13,11 @@ export const observeOperations = (store) =>
     )
     // TODO: write function that:
     // if offline: returns
+    if (!get(shortTermOnlineAtom)) {
+      return console.log(
+        'operationsQueueAtom returning due to not being online',
+      )
+    }
     // loops operations
     // runs operation
     // if successful: return remove operation by id
