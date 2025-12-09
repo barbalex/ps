@@ -2,6 +2,8 @@ import axios from 'redaxios'
 import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
+import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+
 export const setGeometries = async ({
   occurrenceImport,
   db,
@@ -15,6 +17,7 @@ export const setGeometries = async ({
   try {
     resp = await axios.get(proj4Url)
   } catch (error) {
+    setShortTermOnlineFromFetchError(error)
     console.error('occurrenceImport 2, onBlurCrs, resp error:', error)
     if (error.status === 404) {
       // Tell user that the crs is not found
