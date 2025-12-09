@@ -3,6 +3,7 @@ import axios from 'redaxios'
 
 import { xmlToJson } from './xmlToJson.ts'
 import { createNotification } from './createRows.ts'
+import { setShortTermOnlineFromFetchError } from './setShortTermOnlineFromFetchError.ts'
 
 export const getCapabilities = async ({
   url,
@@ -16,6 +17,7 @@ export const getCapabilities = async ({
     // How to catch this error? res is undefined...
     res = await axios.get(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
+    setShortTermOnlineFromFetchError(error)
     createNotification({
       title: `Error loading capabilities for ${url}`,
       body: error?.message ?? error,
