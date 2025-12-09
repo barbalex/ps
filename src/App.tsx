@@ -57,6 +57,7 @@ export const App = () => {
     const unobserve = observeOperations(store)
 
     return () => {
+      console.log('App.useEffect unobserving operations')
       unobserve()
     }
   }, [])
