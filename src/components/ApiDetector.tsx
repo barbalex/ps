@@ -14,7 +14,6 @@ export const ApiDetector = () => {
     let isActive = true
     const pollingId = setInterval(() => {
       isOnline().then((nowOnline) => {
-        console.log('ApiDetector.useEffect', { nowOnline, online, isActive })
         if (!isActive) return
 
         if (online !== nowOnline) {

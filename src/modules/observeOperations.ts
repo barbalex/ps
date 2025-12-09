@@ -8,9 +8,7 @@ import { operationsQueueAtom, shortTermOnlineAtom } from '../store.ts'
 // TODO: ensure function is run all 30 seconds
 export const observeOperations = (store) =>
   observe((get, set) => {
-    console.log(
-      `operationsQueueAtom changed: ${JSON.stringify(get(operationsQueueAtom))}`,
-    )
+    console.log(`operationsQueueAtom changed`, get(operationsQueueAtom))
     // TODO: write function that:
     // if offline: returns
     if (!get(shortTermOnlineAtom)) {
@@ -18,6 +16,8 @@ export const observeOperations = (store) =>
         'operationsQueueAtom returning due to not being online',
       )
     }
+
+    const operations = get(operationsQueueAtom)
     // loops operations
     // runs operation
     // if successful: return remove operation by id
