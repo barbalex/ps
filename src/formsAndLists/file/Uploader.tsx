@@ -12,6 +12,7 @@ import './uploader.css'
 
 import { createFile } from '../../modules/createRows.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
+import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
 
 import '../../form.css'
 
@@ -101,6 +102,7 @@ export const Uploader = ({ from }) => {
       })
     } catch (error) {
       console.error('Uploader, error when creating thumbnails:', error)
+      setShortTermOnlineFromFetchError(error)
     }
     // works for:
     // - csv > pdf > ?
