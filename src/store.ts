@@ -278,5 +278,7 @@ export const filterAtoms = {
 
 // postgrestClient
 export const postgrestClientAtom = atom('postgrestClient', null)
-// an array of objects with keys: id, time, name(?), table, rowId, operation (update, insert, delete), variables, column, newValue,   
+// an array of objects with keys: id, time, name(?), table, rowId, operation (update, insert, delete), variables, column, newValue,
 export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
+export const online = atom('online', true)
+export const shortTermOnline = atom('shortTermOnline', true)
