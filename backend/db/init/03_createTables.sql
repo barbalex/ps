@@ -4,7 +4,10 @@
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   email text UNIQUE DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(email, user_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(email, user_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
@@ -25,7 +28,10 @@ CREATE TABLE IF NOT EXISTS accounts(
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
   projects_label_by text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 -- how to query if date is in range:
@@ -51,7 +57,10 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 --
 create table if not exists project_types (
   type text primary key default null,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 create index if not exists project_types_sort_idx on project_types using btree(sort);
@@ -86,7 +95,10 @@ CREATE TABLE IF NOT EXISTS projects(
   files_active_places boolean DEFAULT TRUE,
   files_active_actions boolean DEFAULT TRUE,
   files_active_checks boolean DEFAULT TRUE,
-  map_presentation_crs text DEFAULT NULL
+  map_presentation_crs text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS projects_account_id_idx ON projects USING btree(account_id);
@@ -156,7 +168,10 @@ CREATE TABLE IF NOT EXISTS place_levels(
       WHEN name_short IS NULL THEN level::text || '.' || name_plural
       ELSE level::text || '.' || name_plural
     END
-  ) STORED
+  ) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
@@ -211,7 +226,10 @@ CREATE TABLE IF NOT EXISTS subprojects(
   start_year integer DEFAULT NULL,
   end_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS subprojects_account_id_idx ON subprojects USING btree(account_id);
@@ -241,9 +259,12 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 -- project_users
 --
 create table if not exists user_roles (
-  "role" text primary key default null
+  "role" text primary key default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
-insert into user_roles ("role") values ('manager'), ('editor'), ('reader');
+insert into user_roles ("role", updated_by) values ('manager', 'admin'), ('editor', 'admin'), ('reader', 'admin');
 
 CREATE TABLE IF NOT EXISTS project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -251,7 +272,10 @@ CREATE TABLE IF NOT EXISTS project_users(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   "role" text DEFAULT NULL references user_roles("role") on delete no action on update cascade,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS project_users_account_id_idx ON project_users USING btree(account_id);
@@ -277,7 +301,10 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   "role" text DEFAULT NULL references user_roles("role") on delete no action on update cascade,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS subproject_users_account_id_idx ON subproject_users USING btree(account_id);
@@ -299,12 +326,15 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 --
 create table if not exists taxonomy_types (
   type text primary key default null,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 create index if not exists taxonomy_types_sort_idx on taxonomy_types using btree(sort);
 
-insert into taxonomy_types (type, sort) values ('species', 1), ('biotope', 2);
+insert into taxonomy_types (type, sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin');
 
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -322,7 +352,10 @@ CREATE TABLE IF NOT EXISTS taxonomies(
       when name IS NULL THEN taxonomy_id::text 
       else name || ' (' || type || ')'
     END
-  ) STORED
+  ) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
@@ -364,7 +397,10 @@ CREATE TABLE IF NOT EXISTS taxa(
   id_in_source text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   url text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS taxa_account_id_idx ON taxa USING btree(account_id);
@@ -393,7 +429,10 @@ CREATE TABLE IF NOT EXISTS subproject_taxa(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS subproject_taxa_account_id_idx ON subproject_taxa USING btree(account_id);
@@ -420,7 +459,10 @@ CREATE TABLE IF NOT EXISTS lists(
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(name, list_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(name, list_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS lists_account_id_idx ON lists USING btree(account_id);
@@ -452,7 +494,10 @@ CREATE TABLE IF NOT EXISTS list_values(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
   value text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(value, list_value_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(value, list_value_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS list_values_account_id_idx ON list_values USING btree(account_id);
@@ -476,10 +521,13 @@ COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data 
 --
 create table if not exists unit_types (
   type text primary key default null,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS unit_types_sort_idx ON unit_types USING btree(sort);
-insert into unit_types (type, sort) values ('integer', 1), ('numeric', 2), ('text', 3);
+insert into unit_types (type, sort, updated_by) values ('integer', 1, 'admin'), ('numeric', 2, 'admin'), ('text', 3, 'admin');
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -497,7 +545,10 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type text DEFAULT null references unit_types(type) on delete no action on update cascade, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
-  label text GENERATED ALWAYS AS (coalesce(name, unit_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(name, unit_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS units_account_id_idx ON units USING btree(account_id);
@@ -552,7 +603,10 @@ CREATE TABLE IF NOT EXISTS places(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL,
-  files_active_places boolean DEFAULT TRUE
+  files_active_places boolean DEFAULT TRUE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS places_account_id_idx ON places USING btree(account_id);
@@ -606,7 +660,10 @@ CREATE TABLE IF NOT EXISTS actions(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  label text GENERATED ALWAYS AS (coalesce(immutabledate(date), action_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(immutabledate(date), action_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS actions_account_id_idx ON actions USING btree(account_id);
@@ -644,7 +701,10 @@ CREATE TABLE IF NOT EXISTS action_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS action_values_account_id_idx ON action_values USING btree(account_id);
@@ -680,7 +740,10 @@ CREATE TABLE IF NOT EXISTS action_reports(
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year::text, action_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, action_report_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS action_reports_account_id_idx ON action_reports USING btree(account_id);
@@ -710,7 +773,10 @@ CREATE TABLE IF NOT EXISTS action_report_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS action_report_values_account_id_idx ON action_report_values USING btree(account_id);
@@ -752,7 +818,10 @@ CREATE TABLE IF NOT EXISTS checks(
   relevant_for_reports boolean DEFAULT TRUE,
   -- label text DEFAULT NULL
   -- label text GENERATED ALWAYS AS (immutabledate(date)) STORED
-  label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS checks_account_id_idx ON checks USING btree(account_id);
@@ -787,7 +856,10 @@ CREATE TABLE IF NOT EXISTS check_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS check_values_account_id_idx ON check_values USING btree(account_id);
@@ -826,7 +898,10 @@ CREATE TABLE IF NOT EXISTS check_taxa(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS check_taxa_account_id_idx ON check_taxa USING btree(account_id);
@@ -856,7 +931,10 @@ CREATE TABLE IF NOT EXISTS place_reports(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year::text, place_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, place_report_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_reports_account_id_idx ON place_reports USING btree(account_id);
@@ -886,7 +964,10 @@ CREATE TABLE IF NOT EXISTS place_report_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_report_values_account_id_idx ON place_report_values USING btree(account_id);
@@ -919,7 +1000,10 @@ COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
 CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
-  message text DEFAULT NULL
+  message text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS messages_date_idx ON messages USING btree(date);
@@ -935,7 +1019,10 @@ CREATE TABLE IF NOT EXISTS user_messages(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  read boolean DEFAULT FALSE
+  read boolean DEFAULT FALSE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS user_messages_user_id_idx ON user_messages USING btree(user_id);
@@ -951,7 +1038,10 @@ CREATE TABLE IF NOT EXISTS place_users(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   "role" text DEFAULT 'reader' references user_roles("role") on delete no action on update cascade,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_users_account_id_idx ON place_users USING btree(account_id);
@@ -986,7 +1076,10 @@ CREATE TABLE IF NOT EXISTS goals(
       WHEN name is null then goal_id::text 
       else year || ': ' || name 
     END
-  ) STORED
+  ) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS goals_account_id_idx ON goals USING btree(account_id);
@@ -1009,7 +1102,10 @@ CREATE TABLE IF NOT EXISTS goal_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS goal_reports_account_id_idx ON goal_reports USING btree(account_id);
@@ -1035,7 +1131,10 @@ CREATE TABLE IF NOT EXISTS goal_report_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS goal_report_values_account_id_idx ON goal_report_values USING btree(account_id);
@@ -1071,7 +1170,10 @@ CREATE TABLE IF NOT EXISTS subproject_reports(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year::text, subproject_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, subproject_report_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS subproject_reports_account_id_idx ON subproject_reports USING btree(account_id);
@@ -1099,7 +1201,10 @@ CREATE TABLE IF NOT EXISTS project_reports(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year::text, project_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, project_report_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS project_reports_account_id_idx ON project_reports USING btree(account_id);
@@ -1141,7 +1246,10 @@ CREATE TABLE IF NOT EXISTS files(
   preview bytea DEFAULT NULL,
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
-  preview_uuid uuid DEFAULT NULL -- https://uploadcare.com/docs/transformations/document-conversion/
+  preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS files_account_id_idx ON files USING btree(account_id);
@@ -1181,7 +1289,10 @@ CREATE TABLE IF NOT EXISTS persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(email, person_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(email, person_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS persons_account_id_idx ON persons USING btree(account_id);
@@ -1207,7 +1318,10 @@ CREATE TABLE IF NOT EXISTS field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  label text GENERATED ALWAYS AS (coalesce(name, field_type_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(name, field_type_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name);
@@ -1226,7 +1340,10 @@ CREATE TABLE IF NOT EXISTS widget_types(
   needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  label text GENERATED ALWAYS AS (coalesce(name, widget_type_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(name, widget_type_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS widget_types_name_idx ON widget_types USING btree(name);
@@ -1242,7 +1359,10 @@ CREATE TABLE IF NOT EXISTS widgets_for_fields(
   widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS widgets_for_fields_field_type_id_idx ON widgets_for_fields(field_type_id);
@@ -1274,7 +1394,10 @@ CREATE TABLE IF NOT EXISTS fields(
       WHEN level is null then table_name || '.' || name
       ELSE table_name || '.' || name || ' ' || level
     END
-  ) STORED
+  ) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS fields_project_id_idx ON fields USING btree(project_id);
@@ -1320,6 +1443,9 @@ CREATE TABLE IF NOT EXISTS field_sorts(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   table_name text DEFAULT NULL,
   sorted_field_ids uuid[] DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
   UNIQUE(project_id, table_name)
 );
 
@@ -1338,17 +1464,23 @@ COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name'
 --
 create table if not exists occurrence_import_previous_operations (
   previous_import_operation text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS occurrence_import_previous_operations_sort_idx ON occurrence_import_previous_operations USING btree(sort);
-insert into occurrence_import_previous_operations (previous_import_operation, sort) values ('update_and_extend', 1), ('replace', 2);
+insert into occurrence_import_previous_operations (previous_import_operation, sort, updated_by) values ('update_and_extend', 1, 'admin'), ('replace', 2, 'admin');
 
 create table if not exists occurrence_imports_geometry_methods (
   geometry_method text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS occurrence_imports_geometry_methods_sort_idx ON occurrence_imports_geometry_methods USING btree(sort);
-insert into occurrence_imports_geometry_methods (geometry_method, sort) values ('coordinates', 1), ('geojson', 2);
+insert into occurrence_imports_geometry_methods (geometry_method, sort, updated_by) values ('coordinates', 1, 'admin'), ('geojson', 2, 'admin');
 
 CREATE TABLE IF NOT EXISTS occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1371,7 +1503,10 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS occurrence_imports_account_id_idx ON occurrence_imports USING btree(account_id);
@@ -1407,7 +1542,10 @@ CREATE TABLE IF NOT EXISTS occurrences(
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
   geometry jsonb DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS occurrences_account_id_idx ON occurrences USING btree(account_id);
@@ -1448,7 +1586,10 @@ CREATE TABLE IF NOT EXISTS wms_services(
   version text DEFAULT NULL,
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
   info_format text DEFAULT NULL, -- preferred info format
-  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+  default_crs text DEFAULT NULL, -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS wms_services_account_id_idx ON wms_services USING btree(account_id);
@@ -1468,7 +1609,10 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
   label text DEFAULT NULL,
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL,
-  legend_image bytea DEFAULT NULL
+  legend_image bytea DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_layers USING btree(wms_service_id);
@@ -1487,7 +1631,10 @@ CREATE TABLE IF NOT EXISTS wms_layers(
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
   label text DEFAULT NULL,
   local_data_size integer DEFAULT NULL,
-  local_data_bounds jsonb DEFAULT NULL
+  local_data_bounds jsonb DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS wms_layers_account_id_idx ON wms_layers USING btree(account_id);
@@ -1515,7 +1662,10 @@ CREATE TABLE IF NOT EXISTS wfs_services(
   version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
   info_format text DEFAULT NULL, -- preferred info format
-  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+  default_crs text DEFAULT NULL, -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS wfs_services_account_id_idx ON wfs_services USING btree(account_id);
@@ -1536,7 +1686,10 @@ CREATE TABLE IF NOT EXISTS wfs_service_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
   -- TODO: add list of fields? How to enable displaying by field values?
 );
 
@@ -1546,14 +1699,20 @@ CREATE INDEX IF NOT EXISTS wfs_service_layers_wfs_service_id_idx ON wfs_service_
 -- vector_layers
 --
 create table if not exists vector_layer_types (
-  type text primary key
+  type text primary key,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
-insert into vector_layer_types values ('wfs'), ('upload'), ('own'), ('places1'), ('places2'), ('actions1'), ('actions2'), ('checks1'), ('checks2'), ('occurrences_assigned1'), ('occurrences_assigned_lines1'), ('occurrences_assigned2'), ('occurrences_assigned_lines2'), ('occurrences_to_assess'), ('occurrences_not_to_assign');
+insert into vector_layer_types (type, updated_by) values ('wfs', 'admin'), ('upload', 'admin'), ('own', 'admin'), ('places1', 'admin'), ('places2', 'admin'), ('actions1', 'admin'), ('actions2', 'admin'), ('checks1', 'admin'), ('checks2', 'admin'), ('occurrences_assigned1', 'admin'), ('occurrences_assigned_lines1', 'admin'), ('occurrences_assigned2', 'admin'), ('occurrences_assigned_lines2', 'admin'), ('occurrences_to_assess', 'admin'), ('occurrences_not_to_assign', 'admin');
 
 create table if not exists vector_layer_own_tables (
-  own_table text primary key
+  own_table text primary key,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
-insert into vector_layer_own_tables values ('places'), ('actions'), ('checks'), ('occurrences_assigned'), ('occurrences_assigned_lines'), ('occurrences_to_assess'), ('occurrences_not_to_assign');
+insert into vector_layer_own_tables (own_table, updated_by) values ('places', 'admin'), ('actions', 'admin'), ('checks', 'admin'), ('occurrences_assigned', 'admin'), ('occurrences_assigned_lines', 'admin'), ('occurrences_to_assess', 'admin'), ('occurrences_not_to_assign', 'admin');
 
 CREATE TABLE IF NOT EXISTS vector_layers(
   vector_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1571,7 +1730,10 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
-  polygon_count integer DEFAULT NULL
+  polygon_count integer DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS vector_layers_account_id_idx ON vector_layers USING btree(account_id);
@@ -1615,7 +1777,10 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   bbox_sw_lng real DEFAULT NULL,
   bbox_sw_lat real DEFAULT NULL,
   bbox_ne_lng real DEFAULT NULL,
-  bbox_ne_lat real DEFAULT NULL
+  bbox_ne_lat real DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_account_id_idx ON vector_layer_geoms USING btree(account_id);
@@ -1644,31 +1809,43 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set c
 --
 create table if not exists vector_layer_marker_types (
   marker_type text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_marker_types_sort_idx ON vector_layer_marker_types USING btree(sort);
-insert into vector_layer_marker_types (marker_type, sort) values ('circle', 1), ('marker', 2);
+insert into vector_layer_marker_types (marker_type, sort, updated_at) values ('circle', 1, 'admin'), ('marker', 2, 'admin');
 
 create table if not exists vector_layer_line_caps (
   line_cap text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_line_caps_sort_idx ON vector_layer_line_caps USING btree(sort);
-insert into vector_layer_line_caps (line_cap, sort) values ('butt', 1), ('round', 2), ('square', 3);
+insert into vector_layer_line_caps (line_cap, sort, updated_at) values ('butt', 1, 'admin'), ('round', 2, 'admin'), ('square', 3, 'admin');
 
 create table if not exists vector_layer_line_joins (
   line_join text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_line_joins_sort_idx ON vector_layer_line_joins USING btree(sort);
-insert into vector_layer_line_joins (line_join, sort) values ('arcs', 1), ('bevel', 2), ('miter', 3), ('miter-clip', 4), ('round', 5);
+insert into vector_layer_line_joins (line_join, sort, updated_at) values ('arcs', 1, 'admin'), ('bevel', 2, 'admin'), ('miter', 3, 'admin'), ('miter-clip', 4, 'admin'), ('round', 5, 'admin');
 
 create table if not exists vector_layer_fill_rules (
   fill_rule text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_fill_rules_sort_idx ON vector_layer_fill_rules USING btree(sort);
-insert into vector_layer_fill_rules (fill_rule, sort) values ('nonzero', 1), ('evenodd', 2);
+insert into vector_layer_fill_rules (fill_rule, sort, updated_at) values ('nonzero', 1, 'admin'), ('evenodd', 2, 'admin');
 
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
@@ -1691,8 +1868,10 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
   fill_rule text DEFAULT 'evenodd' REFERENCES vector_layer_fill_rules(fill_rule) ON DELETE NO action ON UPDATE CASCADE,
-  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display')) STORED
-  -- label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display')) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS vector_layer_displays_account_id_idx ON vector_layer_displays USING btree(account_id);
@@ -1748,7 +1927,10 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   grayscale boolean DEFAULT FALSE,
   max_zoom integer DEFAULT 19,
   min_zoom integer DEFAULT 0,
-  label text GENERATED ALWAYS AS (layer_presentation_id::text) STORED -- TODO: not needed?
+  label text GENERATED ALWAYS AS (layer_presentation_id::text) STORED, -- TODO: not needed?
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS layer_presentations_account_id_idx ON layer_presentations USING btree(account_id);
@@ -1773,9 +1955,12 @@ COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supp
 -- notifications
 --
 create table if not exists notification_intents (
-  intent text primary key
+  intent text primary key,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
-insert into notification_intents values ('success'), ('error'), ('warning'), ('info');
+insert into notification_intents (intent, updated_by) values ('success', 'admin'), ('error', 'admin'), ('warning', 'admin'), ('info', 'admin');
 
 CREATE TABLE IF NOT EXISTS notifications(
   notification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1786,7 +1971,10 @@ CREATE TABLE IF NOT EXISTS notifications(
   intent text DEFAULT 'info' REFERENCES notification_intents(intent) ON DELETE NO action ON UPDATE CASCADE,
   timeout integer DEFAULT NULL,
   paused boolean DEFAULT NULL,
-  progress_percent integer DEFAULT NULL
+  progress_percent integer DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 COMMENT ON TABLE notifications IS 'Goal: Show notifications to the user. Notifications are either shown according to the timeout or, if paused, until they are dismissed i.e. paused = false.';
@@ -1802,10 +1990,13 @@ COMMENT ON COLUMN notifications.progress_percent IS 'Progress of a long running 
 --
 create table if not exists chart_types (
   chart_type text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_types_sort_idx ON chart_types USING btree(sort);
-insert into chart_types (chart_type, sort) values ('Pie', 1), ('Radar', 2), ('Area', 3);
+insert into chart_types (chart_type, sort, updated_by) values ('Pie', 1, 'admin'), ('Radar', 2, 'admin'), ('Area', 3, 'admin');
 
 CREATE TABLE IF NOT EXISTS charts(
   chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1830,7 +2021,10 @@ CREATE TABLE IF NOT EXISTS charts(
       WHEN (title = '') IS NOT FALSE THEN chart_id::text 
       ELSE title
     END
-  ) STORED
+  ) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
@@ -1866,29 +2060,41 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 --
 create table if not exists chart_subject_table_names (
   table_name text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_subject_table_names_sort_idx ON chart_subject_table_names USING btree(sort);
-insert into chart_subject_table_names (table_name, sort) values ('subprojects', 1), ('places', 2), ('checks', 3), ('check_values', 4), ('actions', 5), ('action_values', 6);
+insert into chart_subject_table_names (table_name, sort, updated_at) values ('subprojects', 1, 'admin'), ('places', 2, 'admin'), ('checks', 3, 'admin'), ('check_values', 4, 'admin'), ('actions', 5, 'admin'), ('action_values', 6, 'admin');
 
 create table if not exists chart_subject_table_levels (
-  level integer primary key
+  level integer primary key,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
-insert into chart_subject_table_levels values (1), (2);
+insert into chart_subject_table_levels (level, updated_at) values (1, 'admin'), (2, 'admin');
 
 create table if not exists chart_subject_value_sources (
   value_source text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_subject_value_sources_sort_idx ON chart_subject_value_sources USING btree(sort);
-insert into chart_subject_value_sources (value_source, sort) values ('count_rows', 1), ('count_rows_by_distinct_field_values', 2), ('sum_values_of_field', 3);
+insert into chart_subject_value_sources (value_source, sort, updated_at) values ('count_rows', 1, 'admin'), ('count_rows_by_distinct_field_values', 2, 'admin'), ('sum_values_of_field', 3, 'admin');
 
 create table if not exists chart_subject_types (
   type text primary key,
-  sort integer default null
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_subject_types_sort_idx ON chart_subject_types USING btree(sort);
-insert into chart_subject_types (type, sort) values ('linear', 1), ('monotone', 2);
+insert into chart_subject_types (type, sort, updated_at) values ('linear', 1, 'admin'), ('monotone', 2, 'admin');
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1907,7 +2113,10 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   fill text DEFAULT NULL,
   fill_graded boolean DEFAULT TRUE,
   connect_nulls boolean DEFAULT TRUE,
-  sort integer DEFAULT 0
+  sort integer DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS chart_subjects_chart_subject_id_idx ON chart_subjects USING btree(chart_subject_id);
@@ -1956,7 +2165,10 @@ CREATE TABLE IF NOT EXISTS crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(code, crs_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(code, crs_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS crs_account_id_idx ON crs USING btree(account_id);
@@ -1982,7 +2194,10 @@ CREATE TABLE IF NOT EXISTS project_crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(code, project_crs_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(code, project_crs_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS project_crs_account_id_idx ON project_crs USING btree(account_id);
