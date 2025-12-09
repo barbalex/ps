@@ -3,6 +3,7 @@ import axios from 'redaxios'
 
 import { xmlToJson } from '../../../../modules/xmlToJson.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
+import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
 
 export const onTileError = async (db, map, layer, ignore) => {
   console.log('hello onTileError', { ignore, map, layer, db })
@@ -23,6 +24,7 @@ export const onTileError = async (db, map, layer, ignore) => {
       bbox,
     },
   })
+  setShortTermOnlineFromFetchError(res.error)
   // console.log(`onTileError res.data:`, res.data)
   const isXML = res.data.includes('<ServiceException>')
   // console.log(`onTileError isXML:`, isXML)
