@@ -6,6 +6,7 @@ import { SqlInitializer } from './SqlInitializer/index.tsx'
 import { Syncer } from './Syncer.tsx'
 import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
 import { PostgrestClientInitator } from './PostgrestClientInitator.tsx'
+import { ApiDetector } from './ApiDetector.tsx'
 
 import { Layout } from './LayoutProtected/index.tsx'
 
@@ -22,6 +23,7 @@ export const AuthAndDb = () => {
         <SqlInitializer />
       </Suspense>
       <PostgrestClientInitator />
+      <ApiDetector />
       <Syncer />
       <TreeOpenNodesSetter />
       <Layout />
