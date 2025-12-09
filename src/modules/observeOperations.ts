@@ -11,20 +11,20 @@ import { removeOperation } from './removeOperation.ts'
 // TODO: ensure function is run all 30 seconds
 export const observeOperations = (store) =>
   observe((get, set) => {
-    console.log(`operationsQueueAtom changed`, get(operationsQueueAtom))
+    const online = get(shortTermOnlineAtom)
+    const operations = get(operationsQueueAtom)
+    console.log(`operationsQueueAtom changed`, operations)
     // TODO: write function that:
     // if offline: returns
-    if (!get(shortTermOnlineAtom)) {
-      return console.log(
-        'operationsQueueAtom returning due to not being online',
-      )
+    if (!online) {
+      return console.log('operationsQueueAtom returning due to being offline')
     }
 
-    const operations = get(operationsQueueAtom)
     // loops operations
     // runs operation
     const firstOperation = operations.at(0)
     if (!firstOperation) return
+    
     try {
       executeOperation(firstOperation)
     } catch (error) {
@@ -44,6 +44,6 @@ export const observeOperations = (store) =>
       // if network error: return, setting shortTermOnline false
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
     }
-    // if successful: return remove first operation
-    set(operationsQueueAtom, operationsQueueAtom.shift(0))
+    // if successful: return remove operation
+    return removeOperation({ set, operation: firstOperation })
   }, store)
