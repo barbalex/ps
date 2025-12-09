@@ -1815,7 +1815,7 @@ create table if not exists vector_layer_marker_types (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_marker_types_sort_idx ON vector_layer_marker_types USING btree(sort);
-insert into vector_layer_marker_types (marker_type, sort, updated_at) values ('circle', 1, 'admin'), ('marker', 2, 'admin');
+insert into vector_layer_marker_types (marker_type, sort, updated_by) values ('circle', 1, 'admin'), ('marker', 2, 'admin');
 
 create table if not exists vector_layer_line_caps (
   line_cap text primary key,
@@ -1825,7 +1825,7 @@ create table if not exists vector_layer_line_caps (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_line_caps_sort_idx ON vector_layer_line_caps USING btree(sort);
-insert into vector_layer_line_caps (line_cap, sort, updated_at) values ('butt', 1, 'admin'), ('round', 2, 'admin'), ('square', 3, 'admin');
+insert into vector_layer_line_caps (line_cap, sort, updated_by) values ('butt', 1, 'admin'), ('round', 2, 'admin'), ('square', 3, 'admin');
 
 create table if not exists vector_layer_line_joins (
   line_join text primary key,
@@ -1835,7 +1835,7 @@ create table if not exists vector_layer_line_joins (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_line_joins_sort_idx ON vector_layer_line_joins USING btree(sort);
-insert into vector_layer_line_joins (line_join, sort, updated_at) values ('arcs', 1, 'admin'), ('bevel', 2, 'admin'), ('miter', 3, 'admin'), ('miter-clip', 4, 'admin'), ('round', 5, 'admin');
+insert into vector_layer_line_joins (line_join, sort, updated_by) values ('arcs', 1, 'admin'), ('bevel', 2, 'admin'), ('miter', 3, 'admin'), ('miter-clip', 4, 'admin'), ('round', 5, 'admin');
 
 create table if not exists vector_layer_fill_rules (
   fill_rule text primary key,
@@ -1845,7 +1845,7 @@ create table if not exists vector_layer_fill_rules (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS vector_layer_fill_rules_sort_idx ON vector_layer_fill_rules USING btree(sort);
-insert into vector_layer_fill_rules (fill_rule, sort, updated_at) values ('nonzero', 1, 'admin'), ('evenodd', 2, 'admin');
+insert into vector_layer_fill_rules (fill_rule, sort, updated_by) values ('nonzero', 1, 'admin'), ('evenodd', 2, 'admin');
 
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
@@ -2066,7 +2066,7 @@ create table if not exists chart_subject_table_names (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_subject_table_names_sort_idx ON chart_subject_table_names USING btree(sort);
-insert into chart_subject_table_names (table_name, sort, updated_at) values ('subprojects', 1, 'admin'), ('places', 2, 'admin'), ('checks', 3, 'admin'), ('check_values', 4, 'admin'), ('actions', 5, 'admin'), ('action_values', 6, 'admin');
+insert into chart_subject_table_names (table_name, sort, updated_by) values ('subprojects', 1, 'admin'), ('places', 2, 'admin'), ('checks', 3, 'admin'), ('check_values', 4, 'admin'), ('actions', 5, 'admin'), ('action_values', 6, 'admin');
 
 create table if not exists chart_subject_table_levels (
   level integer primary key,
@@ -2074,7 +2074,7 @@ create table if not exists chart_subject_table_levels (
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
-insert into chart_subject_table_levels (level, updated_at) values (1, 'admin'), (2, 'admin');
+insert into chart_subject_table_levels (level, updated_by) values (1, 'admin'), (2, 'admin');
 
 create table if not exists chart_subject_value_sources (
   value_source text primary key,
@@ -2084,7 +2084,7 @@ create table if not exists chart_subject_value_sources (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_subject_value_sources_sort_idx ON chart_subject_value_sources USING btree(sort);
-insert into chart_subject_value_sources (value_source, sort, updated_at) values ('count_rows', 1, 'admin'), ('count_rows_by_distinct_field_values', 2, 'admin'), ('sum_values_of_field', 3, 'admin');
+insert into chart_subject_value_sources (value_source, sort, updated_by) values ('count_rows', 1, 'admin'), ('count_rows_by_distinct_field_values', 2, 'admin'), ('sum_values_of_field', 3, 'admin');
 
 create table if not exists chart_subject_types (
   type text primary key,
@@ -2094,7 +2094,7 @@ create table if not exists chart_subject_types (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS chart_subject_types_sort_idx ON chart_subject_types USING btree(sort);
-insert into chart_subject_types (type, sort, updated_at) values ('linear', 1, 'admin'), ('monotone', 2, 'admin');
+insert into chart_subject_types (type, sort, updated_by) values ('linear', 1, 'admin'), ('monotone', 2, 'admin');
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
