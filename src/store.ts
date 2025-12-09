@@ -1,6 +1,7 @@
 import { createStore, atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { constants } from './modules/constants.ts'
+import { uuidv7 } from '@kripod/uuidv7'
 // import { atom } from 'jotai'
 
 export const store = createStore()
@@ -278,7 +279,21 @@ export const filterAtoms = {
 
 // postgrestClient
 export const postgrestClientAtom = atom(null)
-// an array of objects with keys: id, time, name(?), table, rowIdName, rowId, operation (update, insert, delete), variables, column, newValue,
+// an array of objects with keys: id, time, name(?), table, rowIdName, rowId, operation (update, insert, delete), variables, column, newValue, oldValue,
 export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
+export const addOperationAtom = atom(
+  (get) => get(operationsQueueAtom),
+  (get, set, opDraft) => {
+    const opQueue = get(operationsQueueAtom)
+    const operation = {
+      id: uuidv7(),
+      time: new Date().toISOString(),
+      ...opDraft,
+    }
+    console.log('store.addOperationAtom, operation:', operation)
+    set(operationsQueueAtom, [operation, ...opQueue])
+  },
+)
+
 export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
