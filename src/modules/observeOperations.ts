@@ -10,7 +10,7 @@ import { removeOperation } from './removeOperation.ts'
 // TODO: make this dependent on store.shortTermOnline
 // TODO: ensure function is run all 30 seconds
 export const observeOperations = (store) =>
-  observe((get, set) => {
+  observe(async (get, set) => {
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
     console.log(`operationsQueueAtom changed`, operations)
@@ -24,9 +24,9 @@ export const observeOperations = (store) =>
     // runs operation
     const firstOperation = operations.at(0)
     if (!firstOperation) return
-    
+
     try {
-      executeOperation(firstOperation)
+      await executeOperation(firstOperation)
     } catch (error) {
       const lcMessage = error.message?.toLowerCase?.()
       // if auth error: get new auth token
@@ -45,5 +45,5 @@ export const observeOperations = (store) =>
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
     }
     // if successful: return remove operation
-    return removeOperation({ set, operation: firstOperation })
+    return removeOperation({ get, set, operation: firstOperation })
   }, store)

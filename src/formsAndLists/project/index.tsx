@@ -66,10 +66,6 @@ export const Project = ({ from }) => {
       postgrestClient,
     }
     addOperation(operation)
-    // await postgrestClient
-    //   .from('projects')
-    //   .update({ [name]: value })
-    //   .eq('project_id', projectId)
   }
 
   if (!res) return <Loading />

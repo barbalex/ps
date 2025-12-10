@@ -4,6 +4,7 @@
     "epsg",
     "inimage",
     "navs",
+    "postgrest",
     "subproject",
     "subprojects",
     "swisstopo"
