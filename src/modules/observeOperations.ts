@@ -13,7 +13,7 @@ export const observeOperations = (store) =>
   observe(async (get, set) => {
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
-    console.log(`operationsQueueAtom changed`, operations)
+    console.log(`observeOperations, operations queue:`, operations)
     // TODO: write function that:
     // if offline: returns
     if (!online) {

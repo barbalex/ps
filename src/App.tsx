@@ -18,7 +18,7 @@ import './style.css'
 import { lightTheme } from './modules/theme.ts'
 // import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
-import { store } from './store.ts'
+import { store, pgliteDbAtom } from './store.ts'
 import { observeOperations } from './modules/observeOperations.ts'
 
 import { routeTree } from './routeTree.gen'
@@ -43,6 +43,7 @@ const db = await PGlite.create('idb://ps', {
   relaxedDurability: true,
   // debug: true,
 })
+store.set(pgliteDbAtom, db)
 
 const routerContainerStyle = {
   display: 'flex',

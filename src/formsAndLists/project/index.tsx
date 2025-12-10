@@ -60,7 +60,6 @@ export const Project = ({ from }) => {
       prevValue: row[name],
       prevUpdatedAt: row.updated_at,
       prevUpdatedBy: row.updated_by,
-      pgliteDb: db,
     })
   }
 

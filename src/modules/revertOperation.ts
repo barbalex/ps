@@ -1,4 +1,5 @@
 import { removeOperation } from './removeOperation.ts'
+import { store, pgliteDbAtom, postgrestClientAtom } from '../store.ts'
 
 // reverts an optimistic operation (change in PGlite) after writing to the server fails
 export const revertOperation = async (o) => {
@@ -18,9 +19,10 @@ export const revertOperation = async (o) => {
     prevValue,
     prevUpdatedAt,
     prevUpdatedBy,
-    postgrestClient,
-    pgliteDb,
   } = o
+
+  const postgrestClient = store.get(postgrestClientAtom)
+  const pgliteDb = store.get(pgliteDbAtom)
 
   // syncing re-introduces the deleted row
   if (operation === 'delete') return

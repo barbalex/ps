@@ -297,3 +297,5 @@ export const addOperationAtom = atom(
 
 export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
+
+export const pgliteDbAtom = atom(null)

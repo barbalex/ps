@@ -26,7 +26,6 @@ export const executeOperation = async (o) => {
   //   operation,
   //   column,
   //   newValue,
-  //   postgrestClientAtom,
   // })
 
   if (operation === 'update') {
