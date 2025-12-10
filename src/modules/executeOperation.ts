@@ -1,10 +1,10 @@
 import { store, postgrestClientAtom } from '../store.ts'
-// const postgrestClient = store.get(postgrestClientAtom)
 
 export const executeOperation = async (o) => {
   if (!o) return
 
-  const username = 'TODO: extract from auth'
+  const username = 'TODO: extract username from auth'
+  const postgrestClient = store.get(postgrestClientAtom)
 
   const {
     id,
@@ -15,7 +15,6 @@ export const executeOperation = async (o) => {
     operation,
     column,
     newValue,
-    postgrestClient,
   } = o
 
   // console.log('executeOperation', {
@@ -27,7 +26,6 @@ export const executeOperation = async (o) => {
   //   operation,
   //   column,
   //   newValue,
-  //   postgrestClient,
   //   postgrestClientAtom,
   // })
 
@@ -61,5 +59,6 @@ export const executeOperation = async (o) => {
 
     if (error) throw error
   }
+
   return
 }

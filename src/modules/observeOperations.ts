@@ -38,12 +38,12 @@ export const observeOperations = (store) =>
         console.log(
           'There is a conflict with exact same changes - ingoring the error thrown',
         )
-        revertOperation(firstOperation)
+        return revertOperation(firstOperation)
       }
       // catch uniqueness violations: revert and inform user
       // if network error: return, setting shortTermOnline false
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
     }
     // if successful: return remove operation
-    return removeOperation({ get, set, operation: firstOperation })
+    return removeOperation(firstOperation)
   }, store)

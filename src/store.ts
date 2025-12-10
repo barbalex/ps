@@ -290,7 +290,7 @@ export const addOperationAtom = atom(
       time: new Date().toISOString(),
       ...opDraft,
     }
-    console.log('store.addOperationAtom, operation:', operation)
+    // console.log('store.addOperationAtom, operation:', operation)
     set(operationsQueueAtom, [operation, ...opQueue])
   },
 )

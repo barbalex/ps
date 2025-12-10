@@ -1,8 +1,8 @@
-import { operationsQueueAtom } from '../store.ts'
+import { operationsQueueAtom, store } from '../store.ts'
 
-export const removeOperation = ({ get, set, operation }) => {
-  const operations = get(operationsQueueAtom)
+export const removeOperation = (operation) => {
+  const operations = store.get(operationsQueueAtom)
   const newOperations = operations.filter((o) => o.id !== operation.id)
 
-  set(operationsQueueAtom, newOperations)
+  store.set(operationsQueueAtom, newOperations)
 }
