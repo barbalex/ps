@@ -313,4 +313,44 @@ export const pgliteDbAtom = atom(null)
 // - actionLabel?
 // - actionName?
 // - actionArgument?
-export const notificationsAtom = atomWithStorage('notificationsAtom', [])
+export const notificationsAtom = atomWithStorage('notificationsAtom', new Map())
+export const removeNotificationByIdAtom = atom(
+  (get) => get(notificationsAtom),
+  (get, set, id) => {
+    // TODO:
+    const notifications = get(notificationsAtom)
+    notifications.delete(id)
+    set(notificationsAtom, notifications)
+  },
+)
+export const addNotificationAtom = atom(
+  (get) => get(notificationsAtom),
+  (get, set, draft) => {
+    const notifications = get(notificationsAtom)
+    const removeNotificationById = get(removeNotificationByIdAtom)
+    // do not stack same messages
+    const notificationsWithSameMessage = Array.from(
+      notifications.values(),
+    ).filter((n) => n.message === draft.message)
+    if (notificationsWithSameMessage.length > 0) return
+
+    const notification = {
+      // set default values
+      id: uuidv7(),
+      time: Date.now(),
+      duration: 10000, // standard value: 10000
+      dismissable: true,
+      allDismissable: true,
+      type: 'error',
+      // overwrite with passed in ones:
+      ...draft,
+    }
+    notifications.set(notification.id, notification)
+    set(notificationsAtom, notifications)
+    // remove after duration
+    setTimeout(() => {
+      set(removeNotificationByIdAtom, removeNotificationById(notification.id))
+    }, notification.duration)
+    return notification.id
+  },
+)
