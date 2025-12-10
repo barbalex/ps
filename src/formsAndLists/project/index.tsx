@@ -62,8 +62,11 @@ export const Project = ({ from }) => {
       operation: 'update',
       column: name,
       newValue: value,
-      oldValue: row[name],
+      prevValue: row[name],
+      prevUpdatedAt: row.updated_at,
+      prevUpdatedBy: row.updated_by,
       postgrestClient,
+      pgliteDb: db,
     }
     addOperation(operation)
   }
