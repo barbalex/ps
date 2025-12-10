@@ -36,6 +36,7 @@ export const revertOperation = async (o) => {
         [rowId],
       )
     } catch (error) {
+      // TODO: surface
       return console.error(
         `revertOperation: error deleting row ${rowId} from ${table}:`,
         error,
@@ -55,6 +56,7 @@ export const revertOperation = async (o) => {
       [prevValue, projectId, time, username],
     )
   } catch (error) {
+    // TODO: surface
     return console.error(
       `revertOperation: error reverting row ${rowId} in ${table}:`,
       error,

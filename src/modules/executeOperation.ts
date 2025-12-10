@@ -6,16 +6,7 @@ export const executeOperation = async (o) => {
   const username = 'TODO: extract username from auth'
   const postgrestClient = store.get(postgrestClientAtom)
 
-  const {
-    id,
-    time,
-    table,
-    rowIdName,
-    rowId,
-    operation,
-    column,
-    newValue,
-  } = o
+  const { id, time, table, rowIdName, rowId, operation, column, newValue } = o
 
   // console.log('executeOperation', {
   //   id,

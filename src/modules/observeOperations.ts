@@ -28,6 +28,7 @@ export const observeOperations = (store) =>
     try {
       await executeOperation(firstOperation)
     } catch (error) {
+      // TODO: surface
       const lcMessage = error.message?.toLowerCase?.()
       // if auth error: get new auth token
       // TODO: ensure if clause is correct
