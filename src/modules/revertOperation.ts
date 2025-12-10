@@ -23,7 +23,7 @@ export const revertOperation = async (o) => {
   // syncing re-introduces the deleted row
   if (operation === 'delete') return
 
-  if (operation === insert) {
+  if (operation === 'insert') {
     // TODO: delete
   }
 
