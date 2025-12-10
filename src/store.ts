@@ -299,3 +299,18 @@ export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
 
 export const pgliteDbAtom = atom(null)
+
+// an array of objects with keys:
+// - id
+// - time
+// - title
+// - message
+// - info
+// - type ('success', 'warning', 'info', 'error')
+// - duration
+// - dismissible?
+// - allDismissible?
+// - actionLabel?
+// - actionName?
+// - actionArgument?
+export const notificationsAtom = atomWithStorage('notificationsAtom', [])
