@@ -46,10 +46,8 @@ export const Project = ({ from }) => {
     } catch (error) {
       return console.error('error updating project', error)
     }
-    // TODO: create task to update server
-    // task = same sql plus rollback, where previous value is set if update errors
+    // add task to update server and rollback PGlite in case of error
     // https://tanstack.com/db/latest/docs/collections/electric-collection?
-    // PostgRest with https://supabase.com/docs/reference/javascript?
     addOperation({
       table: 'projects',
       rowIdName: 'project_id',
