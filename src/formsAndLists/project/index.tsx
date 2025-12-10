@@ -48,6 +48,7 @@ export const Project = ({ from }) => {
     }
     // add task to update server and rollback PGlite in case of error
     // https://tanstack.com/db/latest/docs/collections/electric-collection?
+    // TODO: use this everywhere
     addOperation({
       table: 'projects',
       rowIdName: 'project_id',
