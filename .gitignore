@@ -8,3 +8,5 @@ src/generated
 dropbox_uploader.conf
 .vercel
 .electric_migrations_tmp*
+
+.DS_Store
