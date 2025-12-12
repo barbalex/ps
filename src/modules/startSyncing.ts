@@ -1,6 +1,7 @@
 import { store, syncingAtom } from '../store.ts'
+import { constants } from './constants.ts'
 
-const url = 'http://localhost:3000/v1/shape'
+const url = constants.getElectricUri()
 
 export const startSyncing = async (db) => {
   console.log('Sync from server to PGlite initiated')
