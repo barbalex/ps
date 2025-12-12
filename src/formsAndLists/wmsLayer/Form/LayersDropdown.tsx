@@ -1,13 +1,13 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import axios from 'redaxios'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 
 export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `
     SELECT 
       wms_service_layer_id, 
@@ -20,7 +20,6 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
     ORDER BY 
       label`,
     [wmsLayer.wms_service_id],
-    'wms_service_layer_id',
   )
   const wmsServiceLayers = res?.rows ?? []
 
