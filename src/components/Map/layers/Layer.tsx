@@ -1,8 +1,5 @@
 import { Pane } from 'react-leaflet'
-import {
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useParams } from '@tanstack/react-router'
 
@@ -55,10 +52,9 @@ export const Layer = ({ layerPresentationId, index }) => {
   const isWfsLayer = vectorLayer?.type === 'wfs'
   const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
 
-  const resLP = useLiveIncrementalQuery(
+  const resLP = useLiveQuery(
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
     [layerPresentationId],
-    'layer_presentation_id',
   )
   const layerPresentation = resLP?.rows?.[0]
 

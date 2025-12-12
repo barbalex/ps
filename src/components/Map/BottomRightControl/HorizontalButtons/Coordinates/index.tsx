@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from '@tanstack/react-router'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 import { ChooseCrs } from './ChooseCrs.tsx'
@@ -46,18 +46,16 @@ export const CoordinatesControl = () => {
     strict: false,
   })
 
-  const resProject = useLiveIncrementalQuery(
+  const resProject = useLiveQuery(
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
     [projectId],
-    'project_id',
   )
   const project = resProject?.rows?.[0]
   const projectMapPresentationCrs = project?.map_presentation_crs
 
-  const resProjectCrs = useLiveIncrementalQuery(
+  const resProjectCrs = useLiveQuery(
     `SELECT project_crs_id,code FROM project_crs WHERE project_id = $1`,
     [projectId],
-    'project_crs_id',
   )
   const projectCrs = resProjectCrs?.rows ?? []
 
