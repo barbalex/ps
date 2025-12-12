@@ -157,6 +157,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [places1Properties, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: places1Properties,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -174,6 +185,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [places2Properties, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: places2Properties,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -191,6 +213,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [actions1Properties, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: actions1Properties,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -208,6 +241,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [actions2Properties, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: actions2Properties,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -225,6 +269,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [checks1Properties, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: checks1Properties,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -242,6 +297,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [checks2Properties, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: checks2Properties,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -256,6 +322,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [occurrencesAssignedFields, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: occurrencesAssignedFields,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -270,6 +347,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [occurrencesToAssessFields, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: occurrencesToAssessFields,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -284,6 +372,17 @@ export const OwnVectorLayerPropertiesProvider = () => {
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [occurrencesNotToAssignFields, vectorLayer.vector_layer_id],
           )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            column: properties,
+            newValue: occurrencesNotToAssignFields,
+            prevValue: vectorLayer.properties,
+            prevUpdatedAt: vectorLayer.updated_at,
+            prevUpdatedBy: vectorLayer.updated_by,
+          })
         }
       }
     }
@@ -300,6 +399,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
     places2Properties,
     project_id,
     vectorLayers,
+    addOperation,
   ])
 
   return null
