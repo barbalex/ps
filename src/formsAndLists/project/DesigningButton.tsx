@@ -1,7 +1,7 @@
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton, Tooltip } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from '@tanstack/react-router'
 
@@ -15,7 +15,7 @@ export const DesigningButton = ({ from }) => {
   const onClickDesigning = () => setDesigning(!designing)
 
   // TODO: check if this works as intended (also: Tree.Project.Editing.tsx)
-  const resultProject = useLiveIncrementalQuery(
+  const resultProject = useLiveQuery(
     `
       SELECT
         p.project_id,
@@ -29,7 +29,6 @@ export const DesigningButton = ({ from }) => {
         p.project_id = $1
     `,
     [projectId, user?.email],
-    'project_id',
   )
   const project = resultProject?.rows?.[0]
   const userIsOwner = project?.account_user_email === user?.email
