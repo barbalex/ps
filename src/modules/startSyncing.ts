@@ -3,7 +3,7 @@ import { store, syncingAtom } from '../store.ts'
 const url = 'http://localhost:3000/v1/shape'
 
 export const startSyncing = async (db) => {
-  console.log('Syncing between server and PGlite initiated')
+  console.log('Sync from server to PGlite initiated')
 
   const sync = await db.electric.syncShapesToTables({
     shapes: {
