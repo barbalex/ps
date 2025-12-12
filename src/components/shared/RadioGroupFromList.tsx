@@ -1,5 +1,5 @@
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Loading } from './Loading.tsx'
 
@@ -22,11 +22,9 @@ export const RadioGroupFromList = ({
   ref,
   button,
 }) => {
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM list_values WHERE list_id = $1`,
-    [list_id],
-    'list_value_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
+    list_id,
+  ])
   const listValues = res?.rows ?? []
 
   const onClick = (e) => {

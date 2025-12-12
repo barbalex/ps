@@ -1,5 +1,5 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 const rowStyle = {
   display: 'flex',
@@ -38,10 +38,9 @@ export const DropdownFieldFromList = ({
   validationState,
   button,
 }: Props) => {
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT list_value_id, value FROM list_values WHERE list_id = $1`,
     [list_id],
-    'list_value_id',
   )
   const options = (res?.rows ?? []).map(({ value }) => value)
   const selectedOptions = options.filter((option) => option === value)
