@@ -1,5 +1,5 @@
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -18,17 +18,16 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
   const { projectCrsId, projectId } = useParams({ from })
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM project_crs WHERE project_crs_id = $1`,
     [projectCrsId],
-    'project_crs_id',
   )
   const row = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name] === value) return
 
     db.query(`UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`, [
       value,
@@ -36,10 +35,9 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
     ])
   }
 
-  const resProject = useLiveIncrementalQuery(
+  const resProject = useLiveQuery(
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
     [projectId],
-    'project_id',
   )
   const project = resProject?.rows?.[0]
   const onChangeMapPresentation = (e, data) => {
