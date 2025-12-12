@@ -1,5 +1,5 @@
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -23,10 +23,9 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   const { chartSubjectId } = useParams({ from })
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
     [chartSubjectId],
-    'chart_subject_id',
   )
   const row = res?.rows?.[0]
 

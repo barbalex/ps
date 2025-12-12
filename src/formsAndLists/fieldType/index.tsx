@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -18,10 +18,9 @@ export const FieldType = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM field_types WHERE field_type_id = $1`,
     [fieldTypeId],
-    'field_type_id',
   )
   const row = res?.rows?.[0]
 
