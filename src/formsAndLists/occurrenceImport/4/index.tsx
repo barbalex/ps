@@ -1,5 +1,5 @@
 import { useParams } from '@tanstack/react-router'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
@@ -11,7 +11,7 @@ const from =
 export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrenceImportId, subprojectId } = useParams({ from })
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT 
         occurrence_import_id,
         label, 
@@ -22,7 +22,6 @@ export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
         AND subproject_id = $2 
       ORDER BY label`,
     [occurrenceImportId, subprojectId],
-    'occurrence_import_id',
   )
   const occurrenceImportOptions = res?.rows ?? []
 

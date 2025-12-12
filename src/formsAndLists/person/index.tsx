@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -19,11 +19,9 @@ export const Person = () => {
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM persons WHERE person_id = $1`,
-    [personId],
-    'person_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM persons WHERE person_id = $1`, [
+    personId,
+  ])
   const row = res?.rows?.[0]
 
   const onChange = (e, data) => {
