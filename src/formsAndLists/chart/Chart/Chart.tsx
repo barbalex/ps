@@ -8,7 +8,7 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { formatNumber } from '../../../modules/formatNumber.ts'
 
@@ -21,11 +21,9 @@ const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 // }
 
 export const SingleChart = ({ chart, subjects, data, synchronized }) => {
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM units WHERE unit_id = $1`,
-    [subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999'],
-    'unit_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
+    subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
+  ])
   const firstSubjectsUnit = res?.rows?.[0]
   if (!chart || !subjects) return null
 
