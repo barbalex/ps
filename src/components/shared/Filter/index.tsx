@@ -1,8 +1,5 @@
 import { useState } from 'react'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery, useLiveQuery } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
@@ -102,10 +99,9 @@ export const Filter = ({ level, from, children }) => {
 
   const tableName = getTableName(urlPath)
 
-  const resPlaceLevel = useLiveIncrementalQuery(
+  const resPlaceLevel = useLiveQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [projectId, placeId ? 2 : 1],
-    'place_level_id',
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
