@@ -12,7 +12,6 @@ import * as UC from '@uploadcare/file-uploader'
 UC.defineComponents(UC)
 
 import { styleSheet } from './css.ts'
-import 'allotment/dist/style.css'
 import './style.css'
 
 import { lightTheme } from './modules/theme.ts'

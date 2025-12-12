@@ -1,6 +1,7 @@
 import { Outlet, useSearch } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
 import { useAtom } from 'jotai'
+import 'allotment/dist/style.css'
 
 import { Tree } from '../Tree/index.tsx'
 import { MapContainer } from '../Map/index.tsx'
