@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
@@ -13,18 +13,16 @@ export const OwnVectorLayerPropertiesProvider = () => {
   const db = usePGlite()
 
   // get vector_layers
-  const resVL = useLiveIncrementalQuery(
+  const resVL = useLiveQuery(
     `SELECT * FROM vector_layers WHERE project_id = $1 and type = 'own'`,
     [project_id],
-    'vector_layer_id',
   )
   const vectorLayers = useMemo(() => resVL?.rows ?? [], [resVL])
 
   // places level 1
-  const resPlaces1Fields = useLiveIncrementalQuery(
+  const resPlaces1Fields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
     [project_id],
-    'field_id',
   )
   const places1Properties = useMemo(
     () => resPlaces1Fields?.rows?.map((field) => field.name) ?? [],
@@ -32,10 +30,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // places level 2
-  const resPlaces2Fields = useLiveIncrementalQuery(
+  const resPlaces2Fields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
     [project_id],
-    'field_id',
   )
   const places2Properties = useMemo(
     () => resPlaces2Fields?.rows?.map((field) => field.name) ?? [],
@@ -43,10 +40,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // actions level 1
-  const resActions1Fields = useLiveIncrementalQuery(
+  const resActions1Fields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
     [project_id],
-    'field_id',
   )
   const actions1Properties = useMemo(
     () => resActions1Fields?.rows?.map((field) => field.name) ?? [],
@@ -54,10 +50,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // actions level 2
-  const resActions2Fields = useLiveIncrementalQuery(
+  const resActions2Fields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
     [project_id],
-    'field_id',
   )
   const actions2Properties = useMemo(
     () => resActions2Fields?.rows?.map((field) => field.name) ?? [],
@@ -65,10 +60,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // checks level 1
-  const resChecks1Fields = useLiveIncrementalQuery(
+  const resChecks1Fields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = $1`,
     [project_id],
-    'field_id',
   )
   const checks1Properties = useMemo(
     () => resChecks1Fields?.rows?.map((field) => field.name) ?? [],
@@ -76,10 +70,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // checks level 2
-  const resChecks2Fields = useLiveIncrementalQuery(
+  const resChecks2Fields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = $1`,
     [project_id],
-    'field_id',
   )
   const checks2Properties = useMemo(
     () => resChecks2Fields?.rows?.map((field) => field.name) ?? [],
@@ -89,10 +82,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   // occurrences-assigned
   // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on occurrences, not fields...
   // TODO: level 1/2 i.e. query where place_id has level 1/2
-  const resOccurrencesAssignedFields = useLiveIncrementalQuery(
+  const resOccurrencesAssignedFields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NOT NULL`,
     [project_id],
-    'field_id',
   )
   const occurrencesAssignedFields = useMemo(
     () => resOccurrencesAssignedFields?.rows?.map((field) => field.name) ?? [],
@@ -100,10 +92,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // occurrences-to-assess
-  const resOccurrencesToAssessFields = useLiveIncrementalQuery(
+  const resOccurrencesToAssessFields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
     [project_id],
-    'field_id',
   )
   const occurrencesToAssessFields = useMemo(
     () => resOccurrencesToAssessFields?.rows?.map((field) => field.name) ?? [],
@@ -111,10 +102,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // occurrences-not-to-assign
-  const resOccurrencesNotToAssignFields = useLiveIncrementalQuery(
+  const resOccurrencesNotToAssignFields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
     [project_id],
-    'field_id',
   )
   const occurrencesNotToAssignFields = useMemo(
     () =>

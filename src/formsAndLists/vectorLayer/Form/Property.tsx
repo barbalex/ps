@@ -1,5 +1,5 @@
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -14,7 +14,7 @@ export const Property = ({ vectorLayer, from }) => {
 
   const db = usePGlite()
   // get fields of table
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `
     SELECT 
       field_id, 
@@ -27,7 +27,6 @@ export const Property = ({ vectorLayer, from }) => {
       AND project_id = $3 
     ORDER BY table_name, name, level`,
     [table, level, projectId],
-    'field_id',
   )
   const options = (res?.rows ?? []).map(({ label, value }) => ({
     label,
