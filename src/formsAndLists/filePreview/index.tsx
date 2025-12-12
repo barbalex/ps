@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
@@ -33,11 +33,7 @@ export const FilePreview = ({ from }) => {
   const { fileId } = useParams({ from })
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM files WHERE file_id = $1`,
-    [fileId],
-    'file_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [fileId])
   const row = res?.rows?.[0]
 
   const { width, height, ref } = useResizeDetector({
