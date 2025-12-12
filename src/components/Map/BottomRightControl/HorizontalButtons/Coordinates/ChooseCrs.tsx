@@ -43,6 +43,18 @@ export const ChooseCrs = () => {
       checkedItems?.[0] ?? null,
       projectId,
     ])
+    // TODO: how to get prev values?
+    // addOperation({
+    //   table: 'projects',
+    //   rowIdName: 'project_id',
+    //   rowId: projectId,
+    //   operation: 'update',
+    //   column: name,
+    //   newValue: checkedItems?.[0] ?? null,
+    //   prevValue: row[name],
+    //   prevUpdatedAt: row.updated_at,
+    //   prevUpdatedBy: row.updated_by,
+    // })
     // TODO: make coordinates update
   }
 
