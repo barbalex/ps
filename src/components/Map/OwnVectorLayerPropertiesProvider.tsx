@@ -2,15 +2,17 @@ import { useEffect, useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
+import { addOperationAtom } from '../../store.ts'
 
 export const OwnVectorLayerPropertiesProvider = () => {
-  // const project_id = 'TODO:'
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
     from: '/data',
   })
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   // get vector_layers
   const resVL = useLiveQuery(

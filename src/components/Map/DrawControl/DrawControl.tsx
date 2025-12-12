@@ -5,6 +5,9 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
+
+import { addOperationAtom } from '../../../store.ts'
 
 L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
 L.drawLocal.draw.toolbar.buttons.rectangle =
@@ -49,23 +52,20 @@ export const DrawControlComponent = ({
   const map = useMap()
 
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const onEdit = useCallback(
     async (featureCollection) => {
       const activeId = editingPlace ?? editingCheck ?? editingAction
-      const activeIdName = editingPlace
-        ? 'place_id'
-        : editingCheck
-        ? 'check_id'
-        : editingAction
-        ? 'action_id'
+      const activeIdName =
+        editingPlace ? 'place_id'
+        : editingCheck ? 'check_id'
+        : editingAction ? 'action_id'
         : null
-      const tableName = editingPlace
-        ? 'places'
-        : editingCheck
-        ? 'checks'
-        : editingAction
-        ? 'actions'
+      const tableName =
+        editingPlace ? 'places'
+        : editingCheck ? 'checks'
+        : editingAction ? 'actions'
         : null
 
       const bbox = getBbox(featureCollection)

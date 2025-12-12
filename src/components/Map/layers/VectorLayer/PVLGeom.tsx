@@ -4,17 +4,20 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
+import { addOperationAtom } from '../../../../store.ts'
 
 // const bboxBuffer = 0.01
 
 export const PVLGeom = ({ layer, display }) => {
   const db = usePGlite()
   const layerPresentation = layer.layer_presentations?.[0]
+  const addOperation = useSetAtom(addOperationAtom)
 
   const [data, setData] = useState()
 
@@ -31,10 +34,6 @@ export const PVLGeom = ({ layer, display }) => {
   const map = useMap()
 
   const [zoom, setZoom] = useState<number>(map.getZoom())
-
-  useMapEvent('dragend zoomend ', () => {
-    fetchDataDebounced({ bounds: map.getBounds() })
-  })
 
   const fetchData = useCallback(
     async ({ bounds }) => {
@@ -95,6 +94,10 @@ export const PVLGeom = ({ layer, display }) => {
     ],
   )
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
+
+  useMapEvent('dragend zoomend ', () => {
+    fetchDataDebounced({ bounds: map.getBounds() })
+  })
 
   useEffect(() => {
     fetchDataDebounced({ bounds: map.getBounds() })
@@ -200,9 +203,8 @@ export const PVLGeom = ({ layer, display }) => {
                 />,
               ),
             }),
-            opacity: display.opacity_percent
-              ? display.opacity_percent / 100
-              : 0,
+            opacity:
+              display.opacity_percent ? display.opacity_percent / 100 : 0,
           })
         }}
       />

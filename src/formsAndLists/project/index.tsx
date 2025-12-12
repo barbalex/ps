@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 
@@ -17,7 +17,7 @@ import '../../form.css'
 
 export const Project = ({ from }) => {
   const [designing] = useAtom(designingAtom)
-  const [, addOperation] = useAtom(addOperationAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
   const { projectTab } = useSearch({ from })

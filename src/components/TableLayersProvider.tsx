@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
@@ -8,7 +8,7 @@ import {
   createLayerPresentation,
 } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
-import { syncingAtom, sqlInitializingAtom } from '../store.ts'
+import { syncingAtom, sqlInitializingAtom, addOperationAtom } from '../store.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
 // How to know if data was synced with the server?
@@ -17,6 +17,8 @@ import { syncingAtom, sqlInitializingAtom } from '../store.ts'
 export const TableLayersProvider = () => {
   const [syncing] = useAtom(syncingAtom)
   const [sqlInitializing] = useAtom(sqlInitializingAtom)
+  const addOperation = useSetAtom(addOperationAtom)
+  
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query

@@ -7,6 +7,7 @@ import { buffer } from '@turf/buffer'
 import { point, points } from '@turf/helpers'
 
 import { createNotification } from '../../../../modules/createRows.ts'
+import { addOperationAtom, store } from '../../../../store.ts'
 
 export const assignToNearestDroppable = async ({
   db,

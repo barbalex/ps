@@ -9,6 +9,9 @@ import {
 import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
+
+import { addOperationAtom } from '../../../../../store.ts'
 
 export const ChooseCrs = () => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -16,6 +19,7 @@ export const ChooseCrs = () => {
   })
 
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const resProjectCrs = useLiveQuery(
     `SELECT * FROM project_crs WHERE project_id = $1`,

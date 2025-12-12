@@ -11,12 +11,14 @@ import {
   mapInfoAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
+  addOperationAtom,
 } from '../../../store.ts'
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
   const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
   const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
+  const addOperation = useSetAtom(addOperationAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
