@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
@@ -22,10 +22,9 @@ export const Header = ({
 
   const db = usePGlite()
   // fetch the vector_layer_id from the db as params is not available in the map drawer
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT vector_layer_display_id, vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
-    'vector_layer_display_id',
   )
   const vectorLayerDisplays = res?.rows ?? []
   const vectorLayerId = vectorLayerDisplays?.[0]?.vector_layer_id

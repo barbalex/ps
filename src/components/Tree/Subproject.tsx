@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlacesNode } from './Places.tsx'
@@ -24,11 +24,9 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const navigate = useNavigate()
 
   // need project to know whether to show files
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM projects WHERE project_id = $1`,
-    [projectId],
-    'project_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
+    projectId,
+  ])
   const project = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
 
