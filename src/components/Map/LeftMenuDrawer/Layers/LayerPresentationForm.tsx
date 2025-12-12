@@ -1,4 +1,4 @@
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
@@ -15,7 +15,7 @@ const containerStyle = {
 export const LayerPresentationForm = ({ layer }) => {
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
     [layer.layer_presentation_id],
   )
