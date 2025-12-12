@@ -1,4 +1,4 @@
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
@@ -18,7 +18,7 @@ export const Legends = () => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { projectId } = useParams({ strict: false })
 
-  const resWmsLayers = useLiveIncrementalQuery(
+  const resWmsLayers = useLiveQuery(
     `
     SELECT * 
     FROM wms_layers 
@@ -32,13 +32,11 @@ export const Legends = () => {
       )
       ${projectId ? `AND wms_layers.project_id = '${projectId}'` : ''}
   `,
-    undefined,
-    'wms_layer_id',
   )
   const activeWmsLayers = resWmsLayers?.rows ?? []
 
   // same for vector layers
-  const resVectorLayers = useLiveIncrementalQuery(
+  const resVectorLayers = useLiveQuery(
     `
     SELECT *
     FROM vector_layers
@@ -52,8 +50,6 @@ export const Legends = () => {
       )
       ${projectId ? `AND project_id = '${projectId}'` : ''}
   `,
-    undefined,
-    'vector_layer_id',
   )
   const activeVectorLayers = resVectorLayers?.rows ?? []
 

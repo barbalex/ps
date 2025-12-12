@@ -1,6 +1,6 @@
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 // import { uuidv7 } from '@kripod/uuidv7'
 
 import { Notification as NotificationComponent } from './Notification.tsx'
@@ -20,10 +20,8 @@ const buttonStyle = {
 export const Notifications: React.FC = () => {
   const db = usePGlite()
   // get the oldest four notification first
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM notifications ORDER BY notification_id DESC LIMIT 4`,
-    undefined,
-    'notification_id',
   )
   const notifications = res?.rows ?? []
 
