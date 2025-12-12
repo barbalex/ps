@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -19,11 +19,9 @@ export const Taxonomy = ({ from }) => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
-    [taxonomyId],
-    'taxonomy_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM taxonomies WHERE taxonomy_id = $1`, [
+    taxonomyId,
+  ])
   const row = res?.rows?.[0]
 
   const onChange = (e, data) => {

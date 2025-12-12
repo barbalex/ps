@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -18,11 +18,7 @@ export const Unit = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM units WHERE unit_id = $1`,
-    [unitId],
-    'unit_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [unitId])
   const row = res?.rows?.[0]
 
   const onChange = (e, data) => {
