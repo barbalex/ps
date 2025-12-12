@@ -19,7 +19,13 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(
-    `SELECT * FROM project_crs WHERE project_crs_id = $1`,
+    `
+      SELECT 
+        project_crs.*,
+        projects.map_presentation_crs as project_map_presentation_crs
+      FROM project_crs 
+        inner join projects on projects.project_id = project_crs.project_id
+      WHERE project_crs_id = $1`,
     [projectCrsId],
   )
   const row = res?.rows?.[0]
@@ -35,17 +41,14 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
     ])
   }
 
-  const resProject = useLiveQuery(
-    `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const project = resProject?.rows?.[0]
   const onChangeMapPresentation = (e, data) => {
     db.query(
       `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
       [data?.checked ? row?.code : null, projectId],
     )
   }
+
+  // console.log('ProjectCrsForm, row:', row)
 
   if (!res) return <Loading />
 
@@ -88,7 +91,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       <CheckboxField
         label="Set as Map Presentation CRS"
         name="map_presentation_crs"
-        value={project?.map_presentation_crs === row.code}
+        value={row.project_map_presentation_crs === row.code}
         onChange={onChangeMapPresentation}
       />
     </>
