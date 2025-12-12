@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 // import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
@@ -39,10 +39,9 @@ export const VectorLayerDisplay = ({
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
-    'vector_layer_display_id',
   )
   const row = res?.rows?.[0]
 
