@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -18,10 +18,9 @@ export const ListValue = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM list_values WHERE list_value_id = $1`,
     [listValueId],
-    'list_value_id',
   )
   const row = res?.rows?.[0]
 

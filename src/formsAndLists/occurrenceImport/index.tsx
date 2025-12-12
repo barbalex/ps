@@ -46,10 +46,9 @@ export const OccurrenceImport = () => {
 
   const db = usePGlite()
 
-  const oIResult = useLiveIncrementalQuery(
+  const oIResult = useLiveQuery(
     `SELECT * FROM occurrence_imports WHERE occurrence_import_id = $1`,
     [occurrenceImportId],
-    'occurrence_import_id',
   )
   const occurrenceImport = oIResult?.rows?.[0]
 

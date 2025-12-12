@@ -1,5 +1,5 @@
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
@@ -16,11 +16,9 @@ export const Message = () => {
   const { messageId } = useParams({ from })
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM messages WHERE message_id = $1`,
-    [messageId],
-    'message_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM messages WHERE message_id = $1`, [
+    messageId,
+  ])
   const row = res?.rows?.[0]
 
   const onChange = (e, data) => {
