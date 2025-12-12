@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
@@ -20,11 +20,9 @@ export const Account = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM accounts WHERE account_id = $1`,
-    [accountId],
-    'account_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM accounts WHERE account_id = $1`, [
+    accountId,
+  ])
   const row = res?.rows?.[0]
 
   const onChange = async (e, data) => {
