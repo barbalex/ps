@@ -4,7 +4,7 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -50,7 +50,7 @@ export const Jsonb = ({
         ${!isAccountTable ? ` and level = $2` : ''} 
       ORDER BY t.ord`
   const params = isAccountTable ? [table] : [table, placeId2 ? 2 : 1]
-  const res = useLiveIncrementalQuery(sql, params, 'field_id')
+  const res = useLiveQuery(sql, params)
   const fields = res?.rows ?? []
 
   const onChange = async (e, dataReturned) => {
