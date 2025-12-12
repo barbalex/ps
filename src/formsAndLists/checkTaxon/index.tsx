@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
@@ -17,10 +17,9 @@ export const CheckTaxon = ({ from }) => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM check_taxa WHERE check_taxon_id = $1`,
     [checkTaxonId],
-    'check_taxon_id',
   )
   const row = res?.rows?.[0]
 

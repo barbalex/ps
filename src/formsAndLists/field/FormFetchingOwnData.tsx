@@ -1,4 +1,4 @@
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -13,11 +13,9 @@ export const FieldFormFetchingOwnData = ({
   from,
 }) => {
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM fields WHERE field_id = $1`,
-    [fieldId],
-    'field_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
+    fieldId,
+  ])
   const row = res?.rows?.[0]
 
   const onChange = (e, data) => {
