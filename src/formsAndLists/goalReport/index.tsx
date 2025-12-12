@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -14,10 +14,9 @@ export const GoalReport = ({ from }) => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
     [goalReportId],
-    'goal_report_id',
   )
   const row = res?.rows?.[0]
 

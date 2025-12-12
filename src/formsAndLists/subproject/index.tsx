@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { SubprojectForm as Form } from './Form.tsx'
@@ -17,7 +17,7 @@ export const Subproject = ({ from }) => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT 
       subprojects.*, 
       projects.subproject_name_singular 
@@ -26,7 +26,6 @@ export const Subproject = ({ from }) => {
         inner join projects on projects.project_id = subprojects.project_id 
     WHERE subproject_id = $1`,
     [subprojectId],
-    'subproject_id',
   )
   const row = res?.rows?.[0]
 

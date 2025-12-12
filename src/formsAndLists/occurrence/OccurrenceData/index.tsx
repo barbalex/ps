@@ -3,7 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { exists } from '../../../modules/exists.ts'
@@ -52,10 +52,9 @@ export const OccurenceData = ({ from }) => {
     return 0
   }
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrenceId],
-    'occurrence_id',
   )
   const occurrence = res?.rows?.[0]
 
