@@ -1,10 +1,10 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `
     SELECT 
       wfs_service_layer_id, 
@@ -14,7 +14,6 @@ export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
     WHERE wfs_service_id = $1 
     ORDER BY label`,
     [vectorLayer.wfs_service_id],
-    'wfs_service_layer_id',
   )
   const options = (res?.rows ?? []).map(({ name, label }) => ({
     value: name,

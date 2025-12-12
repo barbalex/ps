@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -23,10 +23,9 @@ export const SubprojectUser = () => {
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
     [subprojectUserId],
-    'subproject_user_id',
   )
   const row = res?.rows?.[0]
 
