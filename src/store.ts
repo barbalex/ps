@@ -115,7 +115,7 @@ export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
 // export const tabsAtom = atom(['tree', 'data'])
-export const syncingAtom = atomWithStorage('syncingAtom', false)
+export const syncingAtom = atom(false)
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
 // map of id (layer.id, key) and show boolean
@@ -354,3 +354,6 @@ export const addNotificationAtom = atom(
     return notification.id
   },
 )
+
+// begins true, is set to false after initialization (or it's not needed)
+export const sqlInitializingAtom = atom(true)

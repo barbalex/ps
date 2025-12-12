@@ -8,7 +8,7 @@ import {
   createLayerPresentation,
 } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
-import { syncingAtom } from '../store.ts'
+import { syncingAtom, sqlInitializingAtom } from '../store.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
 // How to know if data was synced with the server?
@@ -16,6 +16,7 @@ import { syncingAtom } from '../store.ts'
 // but as SQLite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = () => {
   const [syncing] = useAtom(syncingAtom)
+  const [sqlInitializing] = useAtom(sqlInitializingAtom)
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
@@ -34,6 +35,7 @@ export const TableLayersProvider = () => {
     if (firstRender) return
     // only run after syncing is done
     if (syncing) return
+    if (sqlInitializing) return
 
     const run = async () => {
       for (const projectId of projectIds) {
@@ -555,7 +557,7 @@ export const TableLayersProvider = () => {
     run()
     // use projects.length as dependency to run this effect only when projects change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects.length, occurrenceCount])
+  }, [projects.length, occurrenceCount, syncing, sqlInitializing, firstRender])
 
   return null
 }

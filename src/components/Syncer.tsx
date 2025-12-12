@@ -1,36 +1,31 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useCorbado } from '@corbado/react'
-import { useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { syncingAtom } from '../store.ts'
+import { sqlInitializingAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
 
 export const Syncer = () => {
   const db = usePGlite()
   const [sync, setSync] = useState(null)
-
-  const setSyncing = useSetAtom(syncingAtom)
-  setSyncing(true)
+  const [sqlInitializing] = useAtom(sqlInitializingAtom)
 
   const { user: authUser } = useCorbado()
 
-  const unsubscribe = useCallback(() => sync?.unsubscribe?.(), [sync])
+  // TODO: ensure syncing resumes after user has changed
 
   useEffect(() => {
     if (!db) return
-    if (!setSyncing) return
-    if (!setSync) return
-    if (!unsubscribe) return
+    if (sqlInitializing) return
 
-    startSyncing({ db, setSyncing, setSync })
+    if (!sync) startSyncing(db).then((sync) => setSync(sync))
 
     return () => {
-      console.log('AuthAndDb.Syncer unsubscribing sync')
-      unsubscribe()
+      !!sync && console.log('AuthAndDb.Syncer unsubscribing sync')
+      sync?.unsubscribe?.()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authUser?.email, db, setSyncing, setSync])
+  }, [authUser?.email, db, sync, sqlInitializing])
 
   return null
 }

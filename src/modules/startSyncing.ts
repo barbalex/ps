@@ -1,31 +1,9 @@
-export const startSyncing = async ({ db, setSyncing, setSync }) => {
-  const projectsTableExistsQuery = await db.query(
-    `
-          SELECT EXISTS (
-            SELECT FROM pg_tables
-            WHERE  schemaname = 'public'
-            AND    tablename  = 'projects'
-          )
-        `,
-  )
-
-  const projectsTableExists = projectsTableExistsQuery?.rows?.[0]?.exists
-
-  if (!projectsTableExists) {
-    console.log(
-      'Syncer.startSyncing: projects table does not yet exist. Will sync later',
-    )
-    // on first load, need to wait for all the sql initialization scripts to have run
-    return setTimeout(() => startSyncing({ db, setSyncing, setSync }), 2000)
-  }
-
-  doSync({ db, setSyncing, setSync })
-}
+import { store, syncingAtom } from '../store.ts'
 
 const url = 'http://localhost:3000/v1/shape'
 
-const doSync = async ({ db, setSyncing, setSync }) => {
-  console.log('Syncer.startSyncing: syncing')
+export const startSyncing = async (db) => {
+  console.log('Syncing between server and PGlite initiated')
 
   const sync = await db.electric.syncShapesToTables({
     shapes: {
@@ -1154,11 +1132,12 @@ const doSync = async ({ db, setSyncing, setSync }) => {
     key: 'ps-sync',
     initialInsertMethod: 'csv',
     onInitialSync: () => {
-      setSyncing(false)
+      store.set(syncingAtom, false)
       console.log('Syncer.startSyncing: initial sync done')
       // setTimeout(() => window.location.reload(true), 1000)
     },
     onError: (error) => console.error('Syncer', error),
   })
-  setSync(sync)
+
+  return sync
 }

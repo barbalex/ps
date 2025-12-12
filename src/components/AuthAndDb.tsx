@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import { CorbadoProvider } from '@corbado/react'
 
 import { SqlInitializer } from './SqlInitializer/index.tsx'
@@ -19,9 +18,7 @@ export const AuthAndDb = () => {
       projectId={CORBADO_PROJECT_ID}
       theme="corbado-theme"
     >
-      <Suspense fallback="loading...">
-        <SqlInitializer />
-      </Suspense>
+      <SqlInitializer />
       <PostgrestClientInitator />
       <ApiDetector />
       <Syncer />
