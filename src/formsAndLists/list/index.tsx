@@ -30,6 +30,14 @@ export const List = ({ from }) => {
       value,
       listId,
     ])
+    addOperation({
+      table: 'lists',
+      rowIdName: 'list_id',
+      rowId: listId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
