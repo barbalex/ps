@@ -34,6 +34,14 @@ export const FieldType = () => {
 
     const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
     db.query(sql, [value, fieldTypeId])
+    addOperation({
+      table: 'field_types',
+      rowIdName: 'field_type_id',
+      rowId: fieldTypeId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
