@@ -1,17 +1,20 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { ActionReportForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
 export const ActionReport = ({ from }) => {
   const { actionReportId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -33,6 +36,14 @@ export const ActionReport = ({ from }) => {
       `UPDATE action_reports SET ${name} = $1 WHERE action_report_id = $2`,
       [value, actionReportId],
     )
+    addOperation({
+      table: 'action_reports',
+      rowIdName: 'action_report_id',
+      rowId: actionReportId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />

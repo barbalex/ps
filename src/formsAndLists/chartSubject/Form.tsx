@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -10,6 +11,7 @@ import { Table } from './Table.tsx'
 import { Level } from './Level.tsx'
 import { ValueSource } from './ValueSource.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -21,6 +23,7 @@ const from =
 // separate from the route because it is also used inside other forms
 export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   const { chartSubjectId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const res = useLiveQuery(

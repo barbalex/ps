@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -8,6 +9,7 @@ import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { ChartType } from './ChartType.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -16,6 +18,7 @@ interface Props {
 // separate from the route because it is also used inside other forms
 export const Form = ({ autoFocusRef, from }: Props) => {
   const { chartId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [

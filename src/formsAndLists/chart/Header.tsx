@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { designingAtom } from '../../store.ts'
+import { designingAtom, addOperationAtom } from '../../store.ts'
 
 const getFilter = ({ placeId, placeId2, projectId, subprojectId }) => {
   let filterField
@@ -30,6 +30,7 @@ export const Header = ({ autoFocusRef, from }) => {
     from ===
     '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
   const [designing] = useAtom(designingAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
     from,
   })

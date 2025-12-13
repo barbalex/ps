@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { designingAtom } from '../../store.ts'
+import { designingAtom, addOperationAtom } from '../../store.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
@@ -12,6 +12,8 @@ const from =
 // TODO: if not editing, hide add and remove buttons
 export const Header = ({ autoFocusRef }) => {
   const [designing] = useAtom(designingAtom)
+  const addOperation = useSetAtom(addOperationAtom)
+
   const { chartId, chartSubjectId } = useParams({ from })
   const navigate = useNavigate()
 
