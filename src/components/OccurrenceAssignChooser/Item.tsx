@@ -29,6 +29,19 @@ export const Item = ({ place, occurrenceId }: Props) => {
       `UPDATE occurrences SET place_id = $1, not_to_assign = NULL WHERE occurrence_id = $2`,
       [place.place_id, occurrenceId],
     )
+    const occurrenceRes = await db.query(
+      `SELECT * FROM occurrences WHERE occurrence_id = $1`,
+      [occurrenceId],
+    )
+    const prev = occurrenceRes?.rows?.[0] ?? {}
+    addOperation({
+      table: 'occurrences',
+      rowIdName: 'occurrence_id',
+      rowId: occurrenceId,
+      operation: 'update',
+      draft: { place_id: place.place_id, not_to_assign: null },
+      prev,
+    })
     // reset state
     setPlacesToAssignOccurrenceTo(null)
   }
