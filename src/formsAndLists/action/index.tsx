@@ -33,6 +33,14 @@ export const Action = ({ from }) => {
       value,
       actionId,
     ])
+    addOperation({
+      table: 'actions',
+      rowIdName: 'action_id',
+      rowId: actionId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
