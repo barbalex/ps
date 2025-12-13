@@ -1,8 +1,10 @@
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { WmsLayerForm } from '../../../../../formsAndLists/wmsLayer/Form/index.tsx'
+import { addOperationAtom } from '../../../../../store.ts'
 
 // inset form and give it green shadow
 const formContainerStyle = {
@@ -11,6 +13,7 @@ const formContainerStyle = {
 
 export const WmsLayerEditing = ({ layer: row }) => {
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -25,6 +28,15 @@ export const WmsLayerEditing = ({ layer: row }) => {
     } catch (error) {
       console.log('hello WmsLayer, onChange, error:', error)
     }
+    // add task to update server and rollback PGlite in case of error
+    addOperation({
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: row.wms_layer_id,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   return (
