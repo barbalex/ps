@@ -17,7 +17,7 @@ import {
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -27,6 +27,7 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
+  addOperationAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import {
@@ -52,6 +53,7 @@ type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
 export const VectorLayer = ({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
@@ -80,6 +82,15 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
         `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
         [layer.layer_presentations?.[0]?.layer_presentation_id],
       )
+      // add task to update server and rollback PGlite in case of error
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: layer.layer_presentations?.[0]?.layer_presentation_id,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...layer.layer_presentations?.[0] },
+      })
     }
   }
 
@@ -87,10 +98,20 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
 
   const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
-  const onDelete = () =>
+  const onDelete = () => {
     db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
       layer.vector_layer_id,
     ])
+    // add task to update server and rollback PGlite in case of error
+    addOperation({
+      table: 'vector_layers',
+      rowIdName: 'vector_layer_id',
+      rowId: layer.vector_layer_id,
+      operation: 'delete',
+      draft: {},
+      prev: { ...layer },
+    })
+  }
 
   return (
     <ErrorBoundary>
