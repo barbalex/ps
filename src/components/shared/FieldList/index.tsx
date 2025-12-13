@@ -45,11 +45,29 @@ export const FieldList = ({
 
   const removeItem = (e, { value }) => {
     const idField = idFieldFromTable(table)
+    const data = valueArray.filter((v) => v !== value)
     // TODO: test
     db.query(
       `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
-      [valueArray.filter((v) => v !== value), id],
+      [data, id],
     )
+    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
+      id,
+    ])
+    const prev = prevRes?.rows?.[0] || {}
+    addOperation({
+      table,
+      rowIdName: idField,
+      rowId: id,
+      operation: 'update',
+      draft: {
+        data: {
+          ...(prev.data || {}),
+          [name]: valueArray.filter((v) => v !== value),
+        },
+      },
+      prev,
+    })
   }
 
   const onChange = ({ value, previousValue }) => {
@@ -71,6 +89,23 @@ export const FieldList = ({
       `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
       [val, id],
     )
+    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
+      id,
+    ])
+    const prev = prevRes?.rows?.[0] || {}
+    addOperation({
+      table,
+      rowIdName: idField,
+      rowId: id,
+      operation: 'update',
+      draft: {
+        data: {
+          ...(prev.data || {}),
+          [name]: val,
+        },
+      },
+      prev,
+    })
   }
 
   return (
