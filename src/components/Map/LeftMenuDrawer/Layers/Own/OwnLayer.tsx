@@ -9,7 +9,7 @@ import {
   SelectTabData,
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -19,6 +19,7 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
+  addOperationAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
@@ -37,6 +38,7 @@ type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
 export const OwnLayer = ({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
@@ -57,6 +59,15 @@ export const OwnLayer = ({ layer, isLast, isOpen }) => {
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
         [layer.layer_presentations?.[0]?.layer_presentation_id],
       )
+      // add task to update server and rollback PGlite in case of error
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: layer.layer_presentations?.[0]?.layer_presentation_id,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...layer.layer_presentations?.[0] },
+      })
     }
   }
 
