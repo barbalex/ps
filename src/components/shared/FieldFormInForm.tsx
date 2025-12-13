@@ -50,6 +50,13 @@ export const FieldFormInForm = ({ field }) => {
 
   const onClickDelete = () => {
     db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])
+    addOperation({
+      table: 'fields',
+      rowIdName: 'field_id',
+      rowId: field.field_id,
+      operation: 'delete',
+      prev: { ...field },
+    })
     navigate({ search: { editingField: undefined } })
   }
 
