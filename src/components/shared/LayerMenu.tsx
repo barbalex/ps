@@ -35,6 +35,14 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
       `UPDATE layer_presentations SET active = $1 WHERE layer_presentation_id = $2`,
       [!showLayer, layerPresentation?.layer_presentation_id],
     )
+    addOperation({
+      table: 'layer_presentations',
+      rowIdName: 'layer_presentation_id',
+      rowId: layerPresentation?.layer_presentation_id,
+      operation: 'update',
+      draft: { active: !showLayer },
+      prev: { ...layerPresentation },
+    })
   }
 
   const onClickZoomToLayer = async () => {
