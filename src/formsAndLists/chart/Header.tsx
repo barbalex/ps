@@ -54,7 +54,18 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
+    const prevRes = await db.query(`SELECT * FROM charts WHERE chart_id = $1`, [
+      chartId,
+    ])
+    const prev = prevRes?.rows?.[0] ?? {}
     await db.query(`delete from charts where chart_id = $1`, [chartId])
+    addOperation({
+      table: 'charts',
+      rowIdName: 'chart_id',
+      rowId: chartId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: isForm ? `../..` : `..` })
   }
 
