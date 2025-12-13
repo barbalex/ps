@@ -1,9 +1,11 @@
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
+import { addOperationAtom } from '../../../store.ts'
 
 interface Props {
   name: string
@@ -25,6 +27,8 @@ export const FieldList = ({
   from,
 }: Props) => {
   const { projectId } = useParams({ from })
+
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const res = useLiveQuery(

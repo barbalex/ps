@@ -6,6 +6,7 @@
 // 4. build input depending on field properties
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -13,7 +14,7 @@ import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
-import * as stores from '../../../store.ts'
+import { addOperationAtom, store } from '../../../store.ts'
 
 // and focus the name field on first render?
 export const Jsonb = ({
@@ -31,6 +32,8 @@ export const Jsonb = ({
   const { projectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const db = usePGlite()
+
+  const addOperation = useSetAtom(addOperationAtom)
 
   const useProjectId = projectId && table !== 'projects'
   const sql = `
@@ -84,11 +87,12 @@ export const Jsonb = ({
         table,
         level,
       })
-      const activeFilter = stores.store.get(filterAtom)
+      const activeFilter = store.get(filterAtom)
       const newFilter = `${
         activeFilter.length ? `${activeFilter} AND ` : ''
       }${jsonFieldName}->>'${name}' = '${val[name]}'`
-      stores.store.set(filterAtom, newFilter)
+      store.set(filterAtom, newFilter)
+
       return
     }
     const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`

@@ -7,6 +7,9 @@ import {
   MdWarning as WarningIcon,
 } from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
+
+import { addOperationAtom } from '../../store.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -53,6 +56,8 @@ const colorMap = {
 }
 
 export const Notification = ({ notification }) => {
+  const addOperation = useSetAtom(addOperationAtom)
+
   const db = usePGlite()
   const {
     notification_id,

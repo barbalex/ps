@@ -2,7 +2,10 @@ import { MenuItem } from '@fluentui/react-components'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { placesToAssignOccurrenceToAtom } from '../../store.ts'
+import {
+  placesToAssignOccurrenceToAtom,
+  addOperationAtom,
+} from '../../store.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 
 interface Props {
@@ -14,6 +17,8 @@ export const Item = ({ place, occurrenceId }: Props) => {
   const setPlacesToAssignOccurrenceTo = useSetAtom(
     placesToAssignOccurrenceToAtom,
   )
+  const addOperation = useSetAtom(addOperationAtom)
+
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign

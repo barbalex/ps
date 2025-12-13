@@ -10,10 +10,12 @@ import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { mapBoundsAtom } from '../../store.ts'
+import { mapBoundsAtom, addOperationAtom } from '../../store.ts'
 
 export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
+  const addOperation = useSetAtom(addOperationAtom)
+
   const { projectId, subprojectId } = useParams({ from })
 
   const db = usePGlite()

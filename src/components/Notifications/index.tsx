@@ -1,9 +1,11 @@
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 // import { uuidv7 } from '@kripod/uuidv7'
 
 import { Notification as NotificationComponent } from './Notification.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 // z-index needs to cover map, thus so hight
 const containerStyle = {
@@ -19,6 +21,8 @@ const buttonStyle = {
 
 export const Notifications: React.FC = () => {
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
+
   // get the oldest four notification first
   const res = useLiveQuery(
     `SELECT * FROM notifications ORDER BY notification_id DESC LIMIT 4`,

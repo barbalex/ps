@@ -11,8 +11,10 @@ import {
 } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useNavigate } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
 
 import { FieldFormFetchingOwnData } from '../../formsAndLists/field/FormFetchingOwnData.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 const containerStyle = {
   padding: '0px -10px',
@@ -44,6 +46,7 @@ const menuStyle = {
 export const FieldFormInForm = ({ field }) => {
   const navigate = useNavigate()
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const onClickDelete = () => {
     db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])

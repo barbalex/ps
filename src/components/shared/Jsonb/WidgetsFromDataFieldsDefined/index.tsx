@@ -5,6 +5,7 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
@@ -13,6 +14,7 @@ import {
   ReorderItemProps,
   isItemData,
 } from '../../../shared/DragAndDrop/index.tsx'
+import { addOperationAtom } from '../../../../store.ts'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = ({
@@ -27,6 +29,8 @@ export const WidgetsFromDataFieldsDefined = ({
   ref,
   from,
 }) => {
+  const addOperation = useSetAtom(addOperationAtom)
+
   const db = usePGlite()
   const { projectId } = useParams({ from })
   // TODO: drag and drop to order
