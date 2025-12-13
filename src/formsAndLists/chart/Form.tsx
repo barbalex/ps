@@ -35,6 +35,15 @@ export const Form = ({ autoFocusRef, from }: Props) => {
       value,
       chartId,
     ])
+    const draft = { [name]: value }
+    addOperation({
+      table: 'charts',
+      rowIdName: 'chart_id',
+      rowId: chartId,
+      operation: 'update',
+      draft,
+      prev: { ...row },
+    })
     // if one of the years settings is changed, prevent conflicts
     switch (name) {
       case 'years_current': {
@@ -52,6 +61,20 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               `,
             [false, null, null, null, null, chartId],
           )
+          addOperation({
+            table: 'charts',
+            rowIdName: 'chart_id',
+            rowId: chartId,
+            operation: 'update',
+            draft: {
+              years_previous: false,
+              years_specific: null,
+              years_last_x: null,
+              years_since: null,
+              years_until: null,
+            },
+            prev: { ...row, ...draft },
+          })
         }
         break
       }
@@ -70,6 +93,20 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               `,
             [false, null, null, null, null, chartId],
           )
+          addOperation({
+            table: 'charts',
+            rowIdName: 'chart_id',
+            rowId: chartId,
+            operation: 'update',
+            draft: {
+              years_current: false,
+              years_specific: null,
+              years_last_x: null,
+              years_since: null,
+              years_until: null,
+            },
+            prev: { ...row, ...draft },
+          })
         }
         break
       }
@@ -88,6 +125,20 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               `,
             [false, false, null, null, null, chartId],
           )
+          addOperation({
+            table: 'charts',
+            rowIdName: 'chart_id',
+            rowId: chartId,
+            operation: 'update',
+            draft: {
+              years_current: false,
+              years_previous: false,
+              years_last_x: null,
+              years_since: null,
+              years_until: null,
+            },
+            prev: { ...row, ...draft },
+          })
         }
         break
       }
@@ -106,6 +157,20 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               `,
             [false, false, null, null, null, chartId],
           )
+          addOperation({
+            table: 'charts',
+            rowIdName: 'chart_id',
+            rowId: chartId,
+            operation: 'update',
+            draft: {
+              years_current: false,
+              years_previous: false,
+              years_specific: null,
+              years_since: null,
+              years_until: null,
+            },
+            prev: { ...row, ...draft },
+          })
         }
         break
       }
@@ -124,6 +189,20 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               `,
             [false, false, null, null, null, chartId],
           )
+          addOperation({
+            table: 'charts',
+            rowIdName: 'chart_id',
+            rowId: chartId,
+            operation: 'update',
+            draft: {
+              years_current: false,
+              years_previous: false,
+              years_specific: null,
+              years_last_x: null,
+              years_until: null,
+            },
+            prev: { ...row, ...draft },
+          })
         }
         break
       }
@@ -142,6 +221,20 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               `,
             [false, false, null, null, null, chartId],
           )
+          addOperation({
+            table: 'charts',
+            rowIdName: 'chart_id',
+            rowId: chartId,
+            operation: 'update',
+            draft: {
+              years_current: false,
+              years_previous: false,
+              years_specific: null,
+              years_last_x: null,
+              years_since: null,
+            },
+            prev: { ...row, ...draft },
+          })
         }
         break
       }
