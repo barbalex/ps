@@ -31,6 +31,14 @@ export const Component = () => {
     if (row[name] === value) return
 
     db.query(`UPDATE crs SET ${name} = $1 WHERE crs_id = $2`, [value, crsId])
+    addOperation({
+      table: 'crs',
+      rowIdName: 'crs_id',
+      rowId: crsId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
