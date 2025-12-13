@@ -29,7 +29,13 @@ export const Notifications: React.FC = () => {
   )
   const notifications = res?.rows ?? []
 
-  const onClickClose = () => db.query(`DELETE FROM notifications`)
+  const onClickClose = () => {
+    db.query(`DELETE FROM notifications`)
+    addOperation({
+      table: 'notifications',
+      operation: 'deleteAll',
+    })
+  }
 
   return (
     <>
