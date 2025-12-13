@@ -41,6 +41,14 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
       `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
       [value, chartSubjectId],
     )
+    addOperation({
+      table: 'chart_subjects',
+      rowIdName: 'chart_subject_id',
+      rowId: chartSubjectId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
