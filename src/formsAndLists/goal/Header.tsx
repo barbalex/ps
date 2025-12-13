@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { createGoal } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -10,6 +12,7 @@ export const Header = ({ autoFocusRef, from }) => {
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal'
   const { projectId, subprojectId, goalId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 

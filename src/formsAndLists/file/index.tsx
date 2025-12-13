@@ -1,6 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -10,12 +11,14 @@ import { Header } from './Header.tsx'
 import { Uploader } from './Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
 export const File = ({ from }) => {
   const { fileId } = useParams({ from })
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(
     `

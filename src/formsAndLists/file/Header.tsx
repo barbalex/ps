@@ -3,10 +3,12 @@ import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ row, previewRef, from }) => {
   const {
@@ -21,6 +23,7 @@ export const Header = ({ row, previewRef, from }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
+  const addOperation = useSetAtom(addOperationAtom)
 
   const onClickPreview = () => {
     if (isPreview) {

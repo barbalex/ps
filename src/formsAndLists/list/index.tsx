@@ -1,12 +1,14 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { ListForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -14,6 +16,7 @@ export const List = ({ from }) => {
   const { listId } = useParams({ from })
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(`SELECT * FROM lists WHERE list_id = $1`, [listId])
   const row = res?.rows?.[0]
