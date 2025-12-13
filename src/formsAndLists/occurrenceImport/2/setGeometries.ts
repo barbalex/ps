@@ -3,12 +3,15 @@ import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+import { addOperationAtom, store } from '../../../store.ts'
 
 export const setGeometries = async ({
   occurrenceImport,
   db,
   setNotification,
 }) => {
+  const addOperation = store.get(addOperationAtom)
+
   const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
   const number = occurrenceImport.crs?.split?.(':')?.[1]
   // get proj4 definition from https://spatialreference.org/ref/${system}/${number}/proj4.txt

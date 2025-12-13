@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { createOccurrenceImport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -21,6 +23,7 @@ export const Header = ({
 }: Props) => {
   const { subprojectId, occurrenceImportId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 

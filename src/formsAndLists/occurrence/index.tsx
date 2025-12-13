@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
@@ -9,12 +10,14 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { OccurenceData } from './OccurrenceData/index.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
 export const Occurrence = ({ from }) => {
   const { projectId, subprojectId, occurrenceId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

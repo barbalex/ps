@@ -6,6 +6,7 @@ import {
   useLiveQuery,
   useLiveIncrementalQuery,
 } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -16,6 +17,7 @@ import { Four } from './4/index.tsx'
 import { Preview } from './Preview.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -39,6 +41,7 @@ export const OccurrenceImport = () => {
   const { occurrenceImportId } = useParams({ from })
   const navigate = useNavigate()
   const { occurrenceImportTab: tab } = useSearch({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const [showPreview, setShowPreview] = useState(true)
 

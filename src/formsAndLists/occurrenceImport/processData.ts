@@ -1,9 +1,12 @@
 import { read, utils } from '@e965/xlsx'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createOccurrence } from '../../modules/createRows.ts'
+import { addOperationAtom, store } from '../../store.ts'
 
 export const processData = async ({ file, additionalData, db }) => {
   if (!file) return
+
+  const addOperation = store.get(addOperationAtom)
 
   // console.log('processData', { file, additionalData, db })
   // TODO:

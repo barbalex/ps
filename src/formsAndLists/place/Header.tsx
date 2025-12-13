@@ -15,7 +15,7 @@ import {
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { tabsAtom, mapBoundsAtom } from '../../store.ts'
+import { tabsAtom, mapBoundsAtom, addOperationAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -35,6 +35,7 @@ export const Header = ({
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/place/'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
