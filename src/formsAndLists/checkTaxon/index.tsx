@@ -37,6 +37,14 @@ export const CheckTaxon = ({ from }) => {
       value,
       checkTaxonId,
     ])
+    addOperation({
+      table: 'check_taxa',
+      rowIdName: 'check_taxon_id',
+      rowId: checkTaxonId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
