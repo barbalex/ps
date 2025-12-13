@@ -73,6 +73,14 @@ export const Notification = ({ notification }) => {
     db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
       notification_id,
     ])
+    addOperation({
+      table: 'notifications',
+      rowIdName: 'notification_id',
+      rowId: notification_id,
+      operation: 'delete',
+      draft: null,
+      prev: { ...notification },
+    })
   }
 
   useEffect(() => {
@@ -82,6 +90,14 @@ export const Notification = ({ notification }) => {
         db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
           notification_id,
         ])
+        addOperation({
+          table: 'notifications',
+          rowIdName: 'notification_id',
+          rowId: notification_id,
+          operation: 'delete',
+          draft: null,
+          prev: { ...notification },
+        })
       }, 500)
       return () => clearTimeout(timeoutId)
     } else if (timeout && paused === null) {
@@ -89,12 +105,28 @@ export const Notification = ({ notification }) => {
         db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
           notification_id,
         ])
+        addOperation({
+          table: 'notifications',
+          rowIdName: 'notification_id',
+          rowId: notification_id,
+          operation: 'delete',
+          draft: null,
+          prev: { ...notification },
+        })
       }, timeout)
     } else if (paused === true) {
       // do nothing - will do when notification is updated to paused === false
     }
     return () => timeoutId && clearTimeout(timeoutId)
-  }, [db, notification_id, paused, progress_percent, timeout])
+  }, [
+    db,
+    notification_id,
+    paused,
+    progress_percent,
+    timeout,
+    addOperation,
+    notification,
+  ])
 
   // TODO: add progress bar
   // https://react.fluentui.dev/?path=/docs/components-progressbar--default
