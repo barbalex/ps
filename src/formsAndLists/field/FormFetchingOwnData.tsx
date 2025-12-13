@@ -30,6 +30,14 @@ export const FieldFormFetchingOwnData = ({
       value,
       fieldId,
     ])
+    addOperation({
+      table: 'fields',
+      rowIdName: 'field_id',
+      rowId: fieldId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
