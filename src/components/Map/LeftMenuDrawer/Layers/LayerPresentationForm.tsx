@@ -1,4 +1,5 @@
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
@@ -7,6 +8,7 @@ import { SwitchField } from '../../../shared/SwitchField.tsx'
 import { TextField } from '../../../shared/TextField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Loading } from '../../../shared/Loading.tsx'
+import { addOperationAtom } from '../../../../store.ts'
 
 const containerStyle = {
   padding: '1rem',
@@ -14,6 +16,7 @@ const containerStyle = {
 
 export const LayerPresentationForm = ({ layer }) => {
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
@@ -39,6 +42,15 @@ export const LayerPresentationForm = ({ layer }) => {
       `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
       [value, row?.layer_presentation_id],
     )
+    // add task to update server and rollback PGlite in case of error
+    addOperation({
+      table: 'layer_presentations',
+      rowIdName: 'layer_presentation_id',
+      rowId: row?.layer_presentation_id,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!row) return <Loading />
