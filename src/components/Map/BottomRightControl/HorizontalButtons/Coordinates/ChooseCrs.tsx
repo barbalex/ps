@@ -48,11 +48,8 @@ export const ChooseCrs = () => {
       rowIdName: 'project_id',
       rowId: projectId,
       operation: 'update',
-      column: 'map_presentation_crs',
-      newValue: checkedItems?.[0] ?? null,
-      prevValue: project.map_presentation_crs,
-      prevUpdatedAt: project.updated_at,
-      prevUpdatedBy: project.updated_by,
+      draft: { map_presentation_crs: checkedItems?.[0] ?? null },
+      prev: { ...project },
     })
     // TODO: make coordinates update
   }

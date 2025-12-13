@@ -54,11 +54,8 @@ export const Project = ({ from }) => {
       rowIdName: 'project_id',
       rowId: projectId,
       operation: 'update',
-      column: name,
-      newValue: value,
-      prevValue: row[name],
-      prevUpdatedAt: row.updated_at,
-      prevUpdatedBy: row.updated_by,
+      draft: { [name]: value },
+      prev: { ...row },
     })
   }
 

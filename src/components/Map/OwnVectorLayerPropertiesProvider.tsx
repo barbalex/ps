@@ -162,11 +162,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: places1Properties,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: places1Properties },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -190,11 +187,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: places2Properties,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: places2Properties },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -218,11 +212,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: actions1Properties,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: actions1Properties },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -246,11 +237,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: actions2Properties,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: actions2Properties },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -274,11 +262,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: checks1Properties,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: checks1Properties },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -302,11 +287,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: checks2Properties,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: checks2Properties },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -327,11 +309,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: occurrencesAssignedFields,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: occurrencesAssignedFields },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -352,11 +331,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: occurrencesToAssessFields,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: occurrencesToAssessFields },
+            prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
@@ -377,11 +353,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            column: properties,
-            newValue: occurrencesNotToAssignFields,
-            prevValue: vectorLayer.properties,
-            prevUpdatedAt: vectorLayer.updated_at,
-            prevUpdatedBy: vectorLayer.updated_by,
+            draft: { properties: occurrencesNotToAssignFields },
+            prev: { ...vectorLayer },
           })
         }
       }

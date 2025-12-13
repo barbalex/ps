@@ -74,8 +74,16 @@ export const DrawControlComponent = ({
         `UPDATE ${tableName} SET geometry = $1, bbox = $2 WHERE ${activeIdName} = $3`,
         [featureCollection, bbox, activeId],
       )
+      addOperation({
+        table: tableName,
+        rowIdName: 'project_id',
+        rowId: projectId,
+        operation: 'update',
+        draft: { geometry: featureCollection, bbox },
+        prev: { ...row },
+      })
     },
-    [db, editingAction, editingCheck, editingPlace],
+    [addOperation, db, editingAction, editingCheck, editingPlace],
   )
 
   useEffect(() => {

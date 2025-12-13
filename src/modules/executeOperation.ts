@@ -6,7 +6,7 @@ export const executeOperation = async (o) => {
   const username = 'TODO: extract username from auth'
   const postgrestClient = store.get(postgrestClientAtom)
 
-  const { id, time, table, rowIdName, rowId, operation, column, newValue } = o
+  const { id, time, table, rowIdName, rowId, operation, draft = {}, column, newValue } = o
 
   // console.log('executeOperation', {
   //   id,
@@ -24,6 +24,7 @@ export const executeOperation = async (o) => {
       .from(table)
       .update({
         [column]: newValue,
+        ...draft,
         updated_at: time,
         updated_by: username,
       })
@@ -34,6 +35,7 @@ export const executeOperation = async (o) => {
   if (operation === 'insert') {
     const { error } = await postgrestClient.from(table).insert({
       [rowIdName]: rowId,
+      ...draft,
       created_at: time,
       updated_at: time,
       updated_by: username,

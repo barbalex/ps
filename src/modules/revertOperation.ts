@@ -14,9 +14,9 @@ export const revertOperation = async (o) => {
     rowIdName,
     rowId,
     operation,
+    draft,
+    prev,
     column,
-    newValue,
-    prevValue,
     prevUpdatedAt,
     prevUpdatedBy,
   } = o
@@ -46,14 +46,26 @@ export const revertOperation = async (o) => {
   }
 
   try {
+    let valuesSql = ``
+    Object.keys(draft).forEach((key, index) => {
+      valueSql += `${key} = $${index + 1},`
+    })
+    const args = [
+      ...Object.keys(draft).map((key) => prev[key]),
+      prev.updated_at,
+      prev.updated_by,
+      rowId,
+    ]
+    const draftKeysLength = Object.keys(draft).length
     await pgliteDb.query(
-      `UPDATE ${table} 
+      `
+      UPDATE ${table} 
       SET 
-        ${column} = $1, 
-        updated_at = $3,
-        updated_by: $4 
-      WHERE ${rowIdName} = $2`,
-      [prevValue, projectId, time, username],
+        ${valuesSql} 
+        updated_at = $${draftKeysLength + 1},
+        updated_by: $${draftKeysLength + 2} 
+      WHERE ${rowIdName} = $${draftKeysLength + 3}`,
+      args,
     )
   } catch (error) {
     // TODO: surface
