@@ -42,10 +42,16 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const occurrencesRes = await db.query(
+      `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
+      [occurrenceImportId],
+    )
+    const occurrences = occurrencesRes?.rows
     db.query(`DELETE FROM occurrences WHERE occurrence_import_id = $1`, [
       occurrenceImportId,
     ])
+    // TODO: version where array of ids is passed?
     navigate({ to: '..' })
   }
 
