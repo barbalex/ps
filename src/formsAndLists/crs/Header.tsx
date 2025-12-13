@@ -25,8 +25,19 @@ export const Header = ({ autoFocusRef }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(`SELECT * FROM crs WHERE crs_id = $1`, [
+      crsId,
+    ])
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(`DELETE FROM crs WHERE crs_id = $1`, [crsId])
+    addOperation({
+      table: 'crs',
+      rowIdName: 'crs_id',
+      rowId: crsId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: '/data/crs' })
   }
 
