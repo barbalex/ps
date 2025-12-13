@@ -28,7 +28,7 @@ export const ChooseCrs = () => {
   const projectCrs = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
   const resProject = useLiveQuery(
-    `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
+    `SELECT project_id, map_presentation_crs, updated_at, updated_by FROM projects WHERE project_id = $1`,
     [projectId],
   )
   const project = resProject?.rows?.[0]
@@ -37,24 +37,23 @@ export const ChooseCrs = () => {
       { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }
 
-  const onChange = (e, { name, checkedItems }) => {
+  const onChange = (e, { checkedItems }) => {
     // set projects.map_presentation_crs
-    db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
-      checkedItems?.[0] ?? null,
-      projectId,
-    ])
-    // TODO: how to get prev values?
-    // addOperation({
-    //   table: 'projects',
-    //   rowIdName: 'project_id',
-    //   rowId: projectId,
-    //   operation: 'update',
-    //   column: name,
-    //   newValue: checkedItems?.[0] ?? null,
-    //   prevValue: row[name],
-    //   prevUpdatedAt: row.updated_at,
-    //   prevUpdatedBy: row.updated_by,
-    // })
+    db.query(
+      `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
+      [checkedItems?.[0] ?? null, projectId],
+    )
+    addOperation({
+      table: 'projects',
+      rowIdName: 'project_id',
+      rowId: projectId,
+      operation: 'update',
+      column: 'map_presentation_crs',
+      newValue: checkedItems?.[0] ?? null,
+      prevValue: project.map_presentation_crs,
+      prevUpdatedAt: project.updated_at,
+      prevUpdatedBy: project.updated_by,
+    })
     // TODO: make coordinates update
   }
 
