@@ -71,17 +71,20 @@ export const Widget = ({
         targetType: field.field_type,
       })
     }
-    const sql = `update ${table} set ${jsonFieldName} = $1 where ${idField} = $2`
-    try {
-      await db.query(sql, [val, id])
-    } catch (error) {
-      console.log(`Jsonb, error updating table '${table}':`, error)
-    }
+
     const prevRes = await db.query(
       `select * from ${table} where ${idField} = $1`,
       [id],
     )
     const prev = prevRes?.rows?.[0] ?? {}
+    try {
+      await db.query(
+        `update ${table} set ${jsonFieldName} = $1 where ${idField} = $2`,
+        [val, id],
+      )
+    } catch (error) {
+      console.log(`Jsonb, error updating table '${table}':`, error)
+    }
     addOperation({
       table,
       rowIdName: idField,

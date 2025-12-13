@@ -50,7 +50,6 @@ export const executeOperation = async (o) => {
       updated_at: time,
       updated_by: username,
     })
-    // .select()
 
     if (error) throw error
   }

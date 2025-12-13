@@ -43,18 +43,19 @@ export const FieldList = ({
   const options = fields.map(({ name }) => name)
   const unusedOptions = options.filter((o) => !valueArray.includes(o))
 
-  const removeItem = (e, { value }) => {
+  const removeItem = async (e, { value }) => {
     const idField = idFieldFromTable(table)
     const data = valueArray.filter((v) => v !== value)
     // TODO: test
+    const prevRes = await db.query(
+      `SELECT * FROM ${table} WHERE ${idField} = $1`,
+      [id],
+    )
+    const prev = prevRes?.rows?.[0] || {}
     db.query(
       `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
       [data, id],
     )
-    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
-      id,
-    ])
-    const prev = prevRes?.rows?.[0] || {}
     addOperation({
       table,
       rowIdName: idField,
@@ -85,14 +86,15 @@ export const FieldList = ({
       }
     }
     const idField = idFieldFromTable(table)
+    const prevRes = await db.query(
+      `SELECT * FROM ${table} WHERE ${idField} = $1`,
+      [id],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(
       `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
       [val, id],
     )
-    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
-      id,
-    ])
-    const prev = prevRes?.rows?.[0] || {}
     addOperation({
       table,
       rowIdName: idField,

@@ -10,7 +10,7 @@ import { createAction } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
-import { tabsAtom, mapBoundsAtom } from '../../store.ts'
+import { tabsAtom, mapBoundsAtom, addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -20,6 +20,8 @@ export const Header = ({ autoFocusRef, from }) => {
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/action'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
+  const addOperation = useSetAtom(addOperationAtom)
+
   const { projectId, placeId, placeId2, actionId } = useParams({ from })
   const navigate = useNavigate()
 

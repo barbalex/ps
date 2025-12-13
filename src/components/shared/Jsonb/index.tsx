@@ -95,24 +95,26 @@ export const Jsonb = ({
 
       return
     }
-    const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
-    try {
-      await db.query(sql, [val, id])
-    } catch (error) {
-      console.log(`Jsonb, error updating table '${table}':`, error)
-    }
     const prevRes = await db.query(
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prevRow = prevRes?.rows?.[0] ?? {}
+    const prev = prevRes?.rows?.[0] ?? {}
+    try {
+      await db.query(
+        `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`,
+        [val, id],
+      )
+    } catch (error) {
+      console.log(`Jsonb, error updating table '${table}':`, error)
+    }
     addOperation({
       table,
       rowIdName: idField,
       rowId: id,
       operation: 'update',
       draft: { [jsonFieldName]: val },
-      prev: { ...prevRow },
+      prev,
     })
   }
 

@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
@@ -9,6 +10,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -16,6 +18,7 @@ const from = '/data/accounts/$accountId'
 
 export const Account = () => {
   const { accountId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

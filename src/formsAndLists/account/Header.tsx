@@ -1,14 +1,18 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { createAccount } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { addOperationAtom } from '../../store.ts'
+import { add } from 'proj4/dist/lib/projections'
 
 const from = '/data/accounts/$accountId'
 
 export const Header = ({ autoFocusRef }) => {
   const { accountId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 
@@ -20,8 +24,19 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const sql = `DELETE FROM accounts WHERE account_id = $1`
-    await db.query(sql, [accountId])
+    const prevRes = await db.query(
+      `SELECT * FROM accounts WHERE account_id = $1`,
+      [accountId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
+    db.query(`DELETE FROM accounts WHERE account_id = $1`, [accountId])
+    addOperation({
+      table: 'accounts',
+      rowIdName: 'account_id',
+      rowId: accountId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: `..` })
   }
 

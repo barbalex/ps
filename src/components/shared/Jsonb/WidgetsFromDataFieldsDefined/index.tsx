@@ -66,6 +66,12 @@ export const WidgetsFromDataFieldsDefined = ({
         startIndex,
         finishIndex,
       })
+      // fetch field_sorts with same project_id and table_name
+      const prevRes = await db.query(
+        `SELECT * FROM field_sorts WHERE project_id = $1 AND table_name = $2`,
+        [projectId, table],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
       try {
         db.query(
           `
@@ -81,12 +87,6 @@ export const WidgetsFromDataFieldsDefined = ({
       } catch (error) {
         console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
       }
-      // fetch field_sorts with same project_id and table_name
-      const prevRes = await db.query(
-        `SELECT * FROM field_sorts WHERE project_id = $1 AND table_name = $2`,
-        [projectId, table],
-      )
-      const prev = prevRes.rows[0] || {}
       addOperation({
         table: 'field_sorts',
         rowIdName: 'field_sort_id',

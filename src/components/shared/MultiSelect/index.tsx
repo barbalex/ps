@@ -26,17 +26,18 @@ export const MultiSelect = ({
     (o) => !valueArrayValues.includes(o.value),
   )
 
-  const removeItem = (e, { value }) => {
+  const removeItem = async (e, { value }) => {
     const idField = idFieldFromTable(table)
     // TODO: test if this works
+    const prevRes = await db.query(
+      `SELECT * FROM ${table} WHERE ${idField} = $1`,
+      [id],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(`UPDATE ${table} SET ${name} = $1 WHERE ${idField} = $2`, [
       valueArray.filter((v) => v.value !== value),
       id,
     ])
-    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
-      id,
-    ])
-    const prev = prevRes?.rows?.[0]
     addOperation({
       table,
       rowIdName: idField,
@@ -49,7 +50,7 @@ export const MultiSelect = ({
     })
   }
 
-  const onChange = ({ value, previousValue }) => {
+  const onChange = async ({ value, previousValue }) => {
     const option = options.find((o) => o.value === value)
     let val = [...valueArray]
     if (!value) {
@@ -65,14 +66,15 @@ export const MultiSelect = ({
       }
     }
     const idField = idFieldFromTable(table)
-    db.query(`UPDATE ${table} SET ${name} = $1 WHERE ${idField} = $2`, [
+    const prevRes = await db.query(
+      `SELECT * FROM ${table} WHERE ${idField} = $1`,
+      [id],
+    )
+    const prev = prevRes?.rows?.[0]
+    await db.query(`UPDATE ${table} SET ${name} = $1 WHERE ${idField} = $2`, [
       val,
       id,
     ])
-    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
-      id,
-    ])
-    const prev = prevRes?.rows?.[0]
     addOperation({
       table,
       rowIdName: idField,
