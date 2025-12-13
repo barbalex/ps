@@ -82,7 +82,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     layer.wms_service_layer_name,
   ])
 
-  const onChangeActive = () => {
+  const onChangeActive = async () => {
     if (!layer.layer_presentation_id) {
       // if no presentation exists, create notification
       return createNotification({
