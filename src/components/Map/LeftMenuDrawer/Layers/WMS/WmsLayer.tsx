@@ -17,13 +17,13 @@ import {
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { designingAtom } from '../../../../../store.ts'
+import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import {
@@ -46,6 +46,8 @@ type TabType = 'overall-displays' | 'config'
 
 export const WmsLayer = ({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
+  const addOperation = useSetAtom(addOperationAtom)
+
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
@@ -81,15 +83,33 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
       `,
         [presentation.layer_presentation_id],
       )
+      // add task to update server and rollback PGlite in case of error
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: presentation.layer_presentation_id,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...presentation },
+      })
     }
   }
 
   const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
 
-  const onDelete = () =>
+  const onDelete = () => {
     db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
       layer.wms_layer_id,
     ])
+    // add task to update server and rollback PGlite in case of error
+    addOperation({
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: layer.wms_layer_id,
+      operation: 'delete',
+      prev: { ...layer },
+    })
+  }
 
   return (
     <ErrorBoundary>
