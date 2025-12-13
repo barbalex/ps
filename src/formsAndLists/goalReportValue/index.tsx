@@ -40,6 +40,14 @@ export const GoalReportValue = () => {
       `UPDATE goal_report_values SET ${name} = $1 WHERE goal_report_value_id = $2`,
       [value, goalReportValueId],
     )
+    addOperation({
+      table: 'goal_report_values',
+      rowIdName: 'goal_report_value_id',
+      rowId: goalReportValueId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
