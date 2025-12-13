@@ -62,6 +62,14 @@ export const File = ({ from }) => {
       fileId,
       ...Object.values(data),
     ])
+    addOperation({
+      table: 'files',
+      rowIdName: 'file_id',
+      rowId: fileId,
+      type: 'update',
+      draft: { ...data },
+      prev: { ...row },
+    })
   }
 
   const { width, ref } = useResizeDetector({
