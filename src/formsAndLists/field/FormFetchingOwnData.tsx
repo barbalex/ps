@@ -1,9 +1,11 @@
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { FieldForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = ({
@@ -13,6 +15,7 @@ export const FieldFormFetchingOwnData = ({
   from,
 }) => {
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
   const res = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
     fieldId,
   ])

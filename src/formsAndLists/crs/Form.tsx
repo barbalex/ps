@@ -1,10 +1,12 @@
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -13,6 +15,7 @@ const from = '/data/crs/$crsId'
 // this form is rendered from a parent or outlet
 export const Component = () => {
   const { crsId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const res = useLiveIncrementalQuery(
