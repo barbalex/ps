@@ -1,5 +1,6 @@
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams, useLocation } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../../TextField.tsx'
 import { CheckboxField } from '../../../CheckboxField.tsx'
@@ -14,6 +15,7 @@ import { DateTimeField } from '../../../DateTimeField.tsx'
 import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import * as stores from '../../../../../store.ts'
+import { addOperationAtom, store } from '../../../../../store.ts'
 import { filterAtomNameFromTableAndLevel } from '../../../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { setNewFilterFromOld } from '../../../../../modules/setNewFilterFromOld.ts'
 
@@ -34,6 +36,7 @@ export const Widget = ({
   const { placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const onChange = async (e, dataReturned) => {
     const { name, value } = getValueFromChange(e, dataReturned)
@@ -58,7 +61,7 @@ export const Widget = ({
         : 1
       const filterName = filterAtomNameFromTableAndLevel({ table, level })
       const filterAtom = stores[filterName]
-      const orFilters = stores.store.get(filterAtom)
+      const orFilters = store.get(filterAtom)
       return setNewFilterFromOld({
         name: `data.${name}`,
         value: val[name],
@@ -74,6 +77,20 @@ export const Widget = ({
     } catch (error) {
       console.log(`Jsonb, error updating table '${table}':`, error)
     }
+    const prevRes = await db.query(
+      `select * from ${table} where ${idField} = $1`,
+      [id],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
+    addOperation({
+      table,
+      rowIdName: idField,
+      rowId: id,
+      operation: 'update',
+      draft: { [jsonFieldName]: val },
+      prev,
+    })
+
     return
   }
 
