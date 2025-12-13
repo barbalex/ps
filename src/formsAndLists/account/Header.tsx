@@ -5,7 +5,6 @@ import { useSetAtom } from 'jotai'
 import { createAccount } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
-import { add } from 'proj4/dist/lib/projections'
 
 const from = '/data/accounts/$accountId'
 
