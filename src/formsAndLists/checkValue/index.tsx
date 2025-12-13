@@ -37,6 +37,14 @@ export const CheckValue = ({ from }) => {
       value,
       checkValueId,
     ])
+    addOperation({
+      table: 'check_values',
+      rowIdName: 'check_value_id',
+      rowId: checkValueId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
