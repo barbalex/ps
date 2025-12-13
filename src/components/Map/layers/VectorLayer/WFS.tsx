@@ -12,6 +12,7 @@ import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
 import reproject from 'reproject'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import {
   Dialog,
@@ -26,6 +27,7 @@ import {
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
+import { addOperationAtom } from '../../../../store.ts'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -61,6 +63,8 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
 }
 
 export const WFS = ({ layer, layerPresentation }) => {
+  const addOperation = useSetAtom(addOperationAtom)
+
   const db = usePGlite()
   const [error, setError] = useState()
   const notificationIds = useRef([])
@@ -73,8 +77,19 @@ export const WFS = ({ layer, layerPresentation }) => {
       `DELETE FROM notifications WHERE notification_id = ANY($1)`,
       [notificationIds.current],
     )
+    // remove notifications from db
+    for (const id of notificationIds.current) {
+      await addOperation({
+        table: 'notifications',
+        rowIdName: 'notification_id',
+        rowId: id,
+        operation: 'delete',
+        draft: null,
+        prev: null,
+      })
+    }
     notificationIds.current = []
-  }, [db])
+  }, [db, addOperation])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
@@ -130,6 +145,15 @@ export const WFS = ({ layer, layerPresentation }) => {
         await db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
           notif.notification_id,
         ])
+        // remove notification from db
+        addOperation({
+          table: 'notifications',
+          rowIdName: 'notification_id',
+          rowId: notif.notification_id,
+          operation: 'delete',
+          draft: null,
+          prev: null,
+        })
         console.error('VectorLayerWFS, error:', {
           url: error?.url,
           error,
