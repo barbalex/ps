@@ -101,6 +101,19 @@ export const Jsonb = ({
     } catch (error) {
       console.log(`Jsonb, error updating table '${table}':`, error)
     }
+    const prevRes = await db.query(
+      `SELECT * FROM ${table} WHERE ${idField} = $1`,
+      [id],
+    )
+    const prevRow = prevRes?.rows?.[0] ?? {}
+    addOperation({
+      table,
+      rowIdName: idField,
+      rowId: id,
+      operation: 'update',
+      draft: { [jsonFieldName]: val },
+      prev: { ...prevRow },
+    })
   }
 
   // What if data contains keys not existing in fields? > show but warn
