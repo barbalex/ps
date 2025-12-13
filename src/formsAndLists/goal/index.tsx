@@ -31,6 +31,14 @@ export const Goal = ({ from }) => {
       value,
       goalId,
     ])
+    addOperation({
+      table: 'goals',
+      rowIdName: 'goal_id',
+      rowId: goalId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
