@@ -24,12 +24,22 @@ export const PVLGeom = ({ layer, display }) => {
   const notificationIds = useRef([])
 
   const removeNotifs = useCallback(async () => {
-    await db.query(
-      `DELETE FROM notifications WHERE notification_id = ANY($1)`,
-      [notificationIds.current],
-    )
+    db.query(`DELETE FROM notifications WHERE notification_id = ANY($1)`, [
+      notificationIds.current,
+    ])
+    // loop over notificationIds and remove from db
+    for (const notificationId of notificationIds.current) {
+      await addOperation({
+        table: 'notifications',
+        rowIdName: 'notification_id',
+        rowId: notificationId,
+        operation: 'delete',
+        draft: null,
+        prev: null,
+      })
+    }
     notificationIds.current = []
-  }, [db])
+  }, [db, addOperation])
 
   const map = useMap()
 
