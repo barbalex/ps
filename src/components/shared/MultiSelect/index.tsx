@@ -1,8 +1,10 @@
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
+import { addOperationAtom } from '../../../store.ts'
 
 const tabGroupStyle = { flexWrap: 'wrap', rowGap: 5 }
 
@@ -16,6 +18,7 @@ export const MultiSelect = ({
   validationMessage,
   afterChange,
 }) => {
+  const addOperation = useSetAtom(addOperationAtom)
   const optionValues = options.map((o) => o.value)
   const valueArrayValues = valueArray.map((v) => v.value)
   const db = usePGlite()
@@ -30,6 +33,20 @@ export const MultiSelect = ({
       valueArray.filter((v) => v.value !== value),
       id,
     ])
+    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
+      id,
+    ])
+    const prev = prevRes?.rows?.[0]
+    addOperation({
+      table,
+      rowIdName: idField,
+      rowId: id,
+      operation: 'update',
+      draft: {
+        [name]: valueArray.filter((v) => v.value !== value),
+      },
+      prev,
+    })
   }
 
   const onChange = ({ value, previousValue }) => {
@@ -52,6 +69,21 @@ export const MultiSelect = ({
       val,
       id,
     ])
+    const prevRes = db.query(`SELECT * FROM ${table} WHERE ${idField} = $1`, [
+      id,
+    ])
+    const prev = prevRes?.rows?.[0]
+    addOperation({
+      table,
+      rowIdName: idField,
+      rowId: id,
+      operation: 'update',
+      draft: {
+        [name]: val,
+      },
+      prev,
+    })
+
     if (afterChange) {
       afterChange(val)
     }
