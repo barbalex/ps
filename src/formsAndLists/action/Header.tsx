@@ -45,7 +45,19 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
+    const prevRes = await db.query(
+      'SELECT * FROM actions WHERE action_id = $1',
+      [actionId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
+    addOperation({
+      table: 'actions',
+      rowIdName: 'action_id',
+      rowId: actionId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: isForm ? `../..` : `..` })
   }
 
