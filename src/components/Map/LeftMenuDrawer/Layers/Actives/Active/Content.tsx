@@ -16,7 +16,7 @@ import {
 } from '@fluentui/react-components'
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -38,6 +38,7 @@ import { VectorLayerDisplay } from '../../../../../../formsAndLists/vectorLayerD
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
+  addOperationAtom,
 } from '../../../../../../store.ts'
 import { on } from '../../../../../../css.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
@@ -51,6 +52,8 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
+  const addOperation = useSetAtom(addOperationAtom)
+
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
   const { pathname } = useLocation()
@@ -92,6 +95,21 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
       [layer.layer_presentation_id],
     )
+    // get layer_presentation for prev value
+    const lpRes = await db.query(
+      `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
+      [layer.layer_presentation_id],
+    )
+    const prev = lpRes?.rows?.[0] ?? {}
+    // add operation to store on server db
+    addOperation({
+      table: 'layer_presentations',
+      rowIdName: 'layer_presentation_id',
+      rowId: layer.layer_presentation_id,
+      operation: 'update',
+      draft: { active: false },
+      prev,
+    })
   }
 
   const canDrag = layerCount > 1
@@ -105,10 +123,28 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
         layer.vector_layer_id,
       ])
+      // task to delete from server db and rollback PGlite in case of error
+      addOperation({
+        table: 'vector_layers',
+        rowIdName: 'vector_layer_id',
+        rowId: layer.vector_layer_id,
+        operation: 'delete',
+        draft: {},
+        prev: { ...layer },
+      })
     } else {
       db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
         layer.wms_layer_id,
       ])
+      // task to delete from server db and rollback PGlite in case of error
+      addOperation({
+        table: 'wms_layers',
+        rowIdName: 'wms_layer_id',
+        rowId: layer.wms_layer_id,
+        operation: 'delete',
+        draft: {},
+        prev: { ...layer },
+      })
     }
   }
 
