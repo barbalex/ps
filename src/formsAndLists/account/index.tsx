@@ -33,12 +33,22 @@ export const Account = () => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    const sql = `UPDATE accounts SET ${name} = $1 WHERE account_id = $2`
     try {
-      await db.query(sql, [value, accountId])
+      await db.query(`UPDATE accounts SET ${name} = $1 WHERE account_id = $2`, [
+        value,
+        accountId,
+      ])
     } catch (error) {
       console.error('error changing account:', error)
     }
+    addOperation({
+      table: 'accounts',
+      rowIdName: 'account_id',
+      rowId: accountId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
