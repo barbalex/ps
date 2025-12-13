@@ -71,7 +71,7 @@ export const FieldList = ({
     })
   }
 
-  const onChange = ({ value, previousValue }) => {
+  const onChange = async ({ value, previousValue }) => {
     let val = [...valueArray]
     if (!value) {
       // need to remove the key from the json object
