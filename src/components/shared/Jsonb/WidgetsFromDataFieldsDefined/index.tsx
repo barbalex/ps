@@ -6,6 +6,7 @@ import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hi
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
@@ -80,8 +81,26 @@ export const WidgetsFromDataFieldsDefined = ({
       } catch (error) {
         console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
       }
+      // fetch field_sorts with same project_id and table_name
+      const prevRes = await db.query(
+        `SELECT * FROM field_sorts WHERE project_id = $1 AND table_name = $2`,
+        [projectId, table],
+      )
+      const prev = prevRes.rows[0] || {}
+      addOperation({
+        table: 'field_sorts',
+        rowIdName: 'field_sort_id',
+        rowId: prev?.field_sort_id ?? uuidv7(),
+        operation: 'upsert',
+        draft: {
+          project_id: projectId,
+          table_name: table,
+          sorted_field_ids: newSorting,
+        },
+        prev,
+      })
     },
-    [db, fieldIds, projectId, table],
+    [db, fieldIds, projectId, table, addOperation],
   )
 
   useEffect(() => {

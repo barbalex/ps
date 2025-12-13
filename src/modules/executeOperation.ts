@@ -42,6 +42,18 @@ export const executeOperation = async (o) => {
 
     if (error) throw error
   }
+  if (operation === 'upsert') {
+    const { error } = await postgrestClient.from(table).upsert({
+      [rowIdName]: rowId,
+      [column]: newValue,
+      ...draft,
+      updated_at: time,
+      updated_by: username,
+    })
+    // .select()
+
+    if (error) throw error
+  }
   if (operation === 'insert') {
     const { error } = await postgrestClient.from(table).insert({
       [rowIdName]: rowId,
