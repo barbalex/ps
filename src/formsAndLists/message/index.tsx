@@ -33,6 +33,14 @@ export const Message = () => {
       value,
       messageId,
     ])
+    addOperation({
+      table: 'messages',
+      rowIdName: 'message_id',
+      rowId: messageId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
