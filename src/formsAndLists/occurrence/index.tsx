@@ -61,6 +61,14 @@ export const Occurrence = ({ from }) => {
     const vals = Object.values(data)
     const sql = `UPDATE occurrences SET ${sets} WHERE occurrence_id = $1`
     db.query(sql, [occurrenceId, ...vals])
+    addOperation({
+      table: 'occurrences',
+      rowIdName: 'occurrence_id',
+      rowId: occurrenceId,
+      operation: 'update',
+      draft: { ...data },
+      prev: { ...row },
+    })
     // ensure that the combinations of not-to-assign and place_id make sense
     if (name === 'not_to_assign' && value) {
       navigate(
