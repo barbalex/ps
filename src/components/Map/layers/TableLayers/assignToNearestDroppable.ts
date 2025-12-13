@@ -177,6 +177,21 @@ export const assignToNearestDroppable = async ({
       `UPDATE occurrences SET place_id = $1, not_to_assign = $2 WHERE occurrence_id = $3`,
       [place_id, null, occurrenceId],
     )
+    // query occurrence to pass it as prev value
+    const occurrenceRes = await db.query(
+      `SELECT * FROM occurrences WHERE occurrence_id = $1`,
+      [occurrenceId],
+    )
+    const prev = occurrenceRes?.rows?.[0] ?? {}
+    addOperation({
+      table: 'occurrences',
+      rowIdName: 'occurrence_id',
+      rowId: occurrenceId,
+      operation: 'update',
+      draft: { place_id, not_to_assign: null },
+      prev,
+    })
+
     return
   }
 
