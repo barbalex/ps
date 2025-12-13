@@ -36,6 +36,14 @@ export const ListValue = () => {
       value,
       listValueId,
     ])
+    addOperation({
+      table: 'list_values',
+      rowIdName: 'list_value_id',
+      rowId: listValueId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
