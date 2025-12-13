@@ -42,8 +42,19 @@ export const Header = ({ row, previewRef, from }) => {
 
   const addRow = () => api.initFlow()
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(`SELECT * FROM files WHERE file_id = $1`, [
+      fileId,
+    ])
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
+    addOperation({
+      table: 'file',
+      rowIdName: 'file_id',
+      rowId: fileId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: '..' })
   }
 
