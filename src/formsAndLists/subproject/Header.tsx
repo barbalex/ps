@@ -33,8 +33,20 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(
+      `SELECT * FROM subprojects WHERE subproject_id = $1`,
+      [subprojectId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [subprojectId])
+    addOperation({
+      table: 'subprojects',
+      rowIdName: 'subproject_id',
+      rowId: subprojectId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: isForm ? `../..` : `..` })
   }
 
