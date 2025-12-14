@@ -80,6 +80,20 @@ export const executeOperation = async (o) => {
 
     if (error) throw error
   }
+  if (operation === 'insertMany') {
+    const { error } = await postgrestClient
+      .from(table)
+      .insert(
+        draft.map((d) => ({
+          ...d,
+          created_at: time,
+          updated_at: time,
+          updated_by: username,
+        })),
+      )
+
+    if (error) throw error
+  }
   if (operation === 'delete') {
     // build base query
     const baseQueryFunction = postgrestClient.from(table).delete()

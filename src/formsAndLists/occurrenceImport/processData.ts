@@ -53,6 +53,14 @@ export const processData = async ({ file, additionalData, db }) => {
         `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_id, data) VALUES ${values}`,
       )
     }
+    // same for server
+    for (const chunk of chunked) {
+      addOperation({
+        table: 'occurrences',
+        operation: 'insertMany',
+        draft: chunk
+    })
+
     // - insert data into occurrences table
     // - set occurrence_imports.created_time
     // - set occurrence_imports.inserted_count
