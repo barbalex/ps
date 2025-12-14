@@ -78,6 +78,14 @@ export const Header = ({ autoFocusRef, row, from }) => {
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
         [layerPresentation.layer_presentation_id],
       )
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: layerPresentation.layer_presentation_id,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...layerPresentation },
+      })
     }
   }
 
