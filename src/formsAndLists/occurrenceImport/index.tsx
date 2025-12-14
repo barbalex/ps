@@ -80,6 +80,14 @@ export const OccurrenceImport = () => {
       `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
       [value, occurrenceImportId],
     )
+    addOperation({
+      table: 'occurrence_imports',
+      rowIdName: 'occurrence_import_id',
+      rowId: occurrenceImportId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...occurrenceImport },
+    })
   }
 
   const onTabSelect = (e, data) =>
