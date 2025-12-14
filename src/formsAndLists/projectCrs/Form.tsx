@@ -42,13 +42,36 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       value,
       projectCrsId,
     ])
+    addOperation({
+      table: 'project_crs',
+      rowIdName: 'project_crs_id',
+      rowId: projectCrsId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
-  const onChangeMapPresentation = (e, data) => {
-    db.query(
+  const onChangeMapPresentation = async (e, data) => {
+    const prevRes = await db.query(
+      `SELECT * FROM projects WHERE project_id = $1`,
+      [projectId],
+    )
+    const prev = prevRes.rows?.[0] ?? {}
+    await db.query(
       `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
       [data?.checked ? row?.code : null, projectId],
     )
+    addOperation({
+      table: 'projects',
+      rowIdName: 'project_id',
+      rowId: projectId,
+      operation: 'update',
+      draft: {
+        map_presentation_crs: data?.checked ? row?.code : null,
+      },
+      prev,
+    })
   }
 
   // console.log('ProjectCrsForm, row:', row)
