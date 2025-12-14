@@ -5,6 +5,7 @@ export const executeOperation = async (o) => {
 
   const username = 'TODO: extract username from auth'
   const postgrestClient = store.get(postgrestClientAtom)
+  let queryFunction
 
   const {
     id,
@@ -30,15 +31,19 @@ export const executeOperation = async (o) => {
   // })
 
   if (operation === 'update') {
-    const { error } = await postgrestClient
-      .from(table)
-      .update({
-        [column]: newValue,
-        ...draft,
-        updated_at: time,
-        updated_by: username,
-      })
-      .eq(rowIdName, rowId)
+    // build base query
+    const baseQueryFunction = postgrestClient.from(table).update({
+      [column]: newValue,
+      ...draft,
+      updated_at: time,
+      updated_by: username,
+    })
+    // add filtering
+    const queryFunction =
+      rowIdName && rowId ?
+        baseQueryFunction.eq(rowIdName, rowId)
+      : baseQueryFunction
+    const { error } = await queryFunction
 
     if (error) throw error
   }
@@ -65,10 +70,14 @@ export const executeOperation = async (o) => {
     if (error) throw error
   }
   if (operation === 'delete') {
-    const { error } = await postgrestClient
-      .from(table)
-      .delete()
-      .eq(rowIdName, rowId)
+    // build base query
+    const baseQueryFunction = postgrestClient.from(table).delete()
+    // add filtering
+    const queryFunction =
+      rowIdName && rowId ?
+        baseQueryFunction.eq(rowIdName, rowId)
+      : baseQueryFunction
+    const { error } = await queryFunction
 
     if (error) throw error
   }

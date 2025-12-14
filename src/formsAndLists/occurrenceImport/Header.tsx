@@ -49,7 +49,11 @@ export const Header = ({
     addOperation({
       table: 'occurrences',
       // TODO: enable in executeOperation
-      filter: { occurrence_import_id: occurrenceImportId },
+      filter: {
+        function: 'eq',
+        column: 'occurrence_import_id',
+        value: occurrenceImportId,
+      },
       operation: 'delete',
     })
     // TODO: version where array of ids is passed?
