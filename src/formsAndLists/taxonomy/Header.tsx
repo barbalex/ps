@@ -28,8 +28,22 @@ export const Header = ({ autoFocusRef, from }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
-    db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [taxonomyId])
+  const deleteRow = async () => {
+    const prevRes = await db.query(
+      `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
+      [taxonomyId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
+    await db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [
+      taxonomyId,
+    ])
+    addOperation({
+      table: 'taxonomies',
+      rowIdName: 'taxonomy_id',
+      rowId: taxonomyId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: isForm ? `../..` : `..` })
   }
 
