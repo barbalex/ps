@@ -24,12 +24,20 @@ export const User = () => {
   const res = useLiveQuery(`SELECT * FROM users WHERE user_id = $1`, [userId])
   const row = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
     const sql = `UPDATE users SET ${name} = $1 WHERE user_id = $2`
-    db.query(sql, [value, userId])
+    await db.query(sql, [value, userId])
+    addOperation({
+      table: 'users',
+      rowIdName: 'user_id',
+      rowId: userId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
