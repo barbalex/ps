@@ -31,6 +31,13 @@ export const executeOperation = async (o) => {
   //   newValue,
   // })
 
+  // filter example:
+  // filter: {
+  //   function: 'eq',
+  //   column: 'project_id',
+  //   value: projectId,
+  // }
+
   if (operation === 'update') {
     // build base query
     const baseQueryFunction = postgrestClient.from(table).update({
