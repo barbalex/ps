@@ -34,6 +34,14 @@ export const PlaceReport = ({ from }) => {
       `UPDATE place_reports SET ${name} = $1 WHERE place_report_id = $2`,
       [value, placeReportId],
     )
+    addOperation({
+      table: 'place_reports',
+      rowIdName: 'place_report_id',
+      rowId: placeReportId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
