@@ -1,12 +1,14 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -14,6 +16,7 @@ const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
 export const Taxon = () => {
   const { taxonId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

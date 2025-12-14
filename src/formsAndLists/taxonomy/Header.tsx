@@ -1,14 +1,17 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { createTaxonomy } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
     from === '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
   const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 

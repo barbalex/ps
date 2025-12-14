@@ -22,6 +22,7 @@ import {
   tabsAtom,
   draggableLayersAtom,
   droppableLayerAtom,
+  addOperationAtom,
 } from '../../store.ts'
 
 // type props
@@ -33,6 +34,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const { projectId, vectorLayerId } = useParams({ from })
   const navigate = useNavigate()
 

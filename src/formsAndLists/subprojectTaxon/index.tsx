@@ -1,12 +1,14 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -15,6 +17,7 @@ const taxaInclude = { taxonomies: true }
 
 export const SubprojectTaxon = ({ from }) => {
   const { subprojectTaxonId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

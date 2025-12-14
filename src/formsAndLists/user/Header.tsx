@@ -4,7 +4,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { userIdAtom } from '../../store.ts'
+import { userIdAtom, addOperationAtom } from '../../store.ts'
 
 const from = '/data/users/$userId'
 
@@ -12,6 +12,7 @@ export const Header = ({ autoFocusRef }) => {
   const setUserId = useSetAtom(userIdAtom)
   const { userId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 
