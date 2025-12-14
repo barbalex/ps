@@ -28,10 +28,21 @@ export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
   )
 
   const onOptionSelect = async (e, data) => {
-    db.query(
+    await db.query(
       `UPDATE vector_layers SET wfs_service_layer_name = $1, label = $2 WHERE vector_layer_id = $3`,
       [data.optionValue, data.optionText, vectorLayer.vector_layer_id],
     )
+    addOperation({
+      table: 'vector_layers',
+      rowIdName: 'vector_layer_id',
+      rowId: vectorLayer.vector_layer_id,
+      operation: 'update',
+      draft: {
+        wfs_service_layer_name: data.optionValue,
+        label: data.optionText,
+      },
+      prev: { ...vectorLayer },
+    })
   }
 
   const labelWithCount = options?.length ? `Layer (${options.length})` : 'Layer'
