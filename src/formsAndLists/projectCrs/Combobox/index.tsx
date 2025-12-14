@@ -3,14 +3,17 @@ import { Combobox, Field } from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { Options } from './options.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
   const db = usePGlite()
   const { projectCrsId } = useParams({ from })
+    const addOperation = useSetAtom(addOperationAtom)
 
   const [filter, setFilter] = useState('')
   const [crs, setCrs] = useState([])

@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -8,6 +9,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 const userRoles = ['manager', 'editor', 'reader']
 
@@ -17,6 +19,7 @@ const from = '/data/projects/$projectId_/users/$projectUserId/'
 
 export const ProjectUser = () => {
   const { projectUserId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

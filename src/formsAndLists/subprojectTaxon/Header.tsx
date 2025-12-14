@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { createSubprojectTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
@@ -10,6 +12,7 @@ const from =
 export const Header = ({ autoFocusRef }) => {
   const { subprojectId, subprojectTaxonId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 
