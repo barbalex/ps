@@ -13,6 +13,7 @@ export const executeOperation = async (o) => {
     table,
     rowIdName,
     rowId,
+    filter,
     operation,
     draft = {},
     column,
@@ -40,8 +41,11 @@ export const executeOperation = async (o) => {
     })
     // add filtering
     const queryFunction =
-      rowIdName && rowId ?
-        baseQueryFunction.eq(rowIdName, rowId)
+      rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
+      : filter.function === 'eq' ?
+        baseQueryFunction.eq(filter.column, filter.value)
+      : filter.function === 'in' ?
+        baseQueryFunction.in(filter.column, filter.value)
       : baseQueryFunction
     const { error } = await queryFunction
 
@@ -74,8 +78,11 @@ export const executeOperation = async (o) => {
     const baseQueryFunction = postgrestClient.from(table).delete()
     // add filtering
     const queryFunction =
-      rowIdName && rowId ?
-        baseQueryFunction.eq(rowIdName, rowId)
+      rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
+      : filter.function === 'eq' ?
+        baseQueryFunction.eq(filter.column, filter.value)
+      : filter.function === 'in' ?
+        baseQueryFunction.in(filter.column, filter.value)
       : baseQueryFunction
     const { error } = await queryFunction
 

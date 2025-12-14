@@ -48,13 +48,12 @@ export const Header = ({
     ])
     addOperation({
       table: 'occurrences',
-      // TODO: enable in executeOperation
+      operation: 'delete',
       filter: {
         function: 'eq',
         column: 'occurrence_import_id',
         value: occurrenceImportId,
       },
-      operation: 'delete',
     })
     // TODO: version where array of ids is passed?
     navigate({ to: '..' })
