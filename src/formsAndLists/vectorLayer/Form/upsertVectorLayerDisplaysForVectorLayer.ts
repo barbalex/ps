@@ -3,18 +3,13 @@ import { addOperationAtom, store } from '../../../store.ts'
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
-  vectorLayerId,
+  vectorLayer,
 }) => {
-  const resVL = await db.query(
-    `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
-    [vectorLayerId],
-  )
-  const vectorLayer = resVL.rows?.[0]
   if (!vectorLayer) {
-    throw new Error(`vector_layer_id ${vectorLayerId} not found`)
+    throw new Error(`vector_layer_id ${vectorLayer.vector_layer_id} not found`)
   }
   if (!vectorLayer.type) {
-    throw new Error(`vector_layer_id ${vectorLayerId} has no type`)
+    throw new Error(`vector_layer_id ${vectorLayer.vector_layer_id} has no type`)
   }
   // TODO: add this for wfs and upload
   if (vectorLayer.type !== 'own') {
@@ -39,7 +34,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
   const existingVLDRes = await db.query(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
-    [vectorLayerId],
+    [vectorLayer.vector_layer_id],
   )
   const existingVectorLayerDisplays = existingVLDRes?.rows ?? []
 
@@ -49,7 +44,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     if (!firstExistingVectorLayerDisplay) {
       // create single display, then return
       return await createVectorLayerDisplay({
-        vectorLayerId,
+        vectorLayerId:vectorLayer.vector_layer_id,
         db,
       })
     }
@@ -59,6 +54,15 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `DELETE FROM vector_layer_displays WHERE vector_layer_display_id != $1`,
       [firstExistingVectorLayerDisplay.vector_layer_display_id],
     )
+    store.set(addOperationAtom, {
+      table: 'vector_layer_displays',
+      operation: 'delete',
+      filter: {
+        function: 'neq',
+        column: 'vector_layer_display_id',
+        value: firstExistingVectorLayerDisplay.vector_layer_display_id,
+      }
+    })
   }
 
   if (
@@ -68,8 +72,17 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // remove all displays before creating new ones
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1`,
-      [vectorLayerId],
+      [vectorLayer.vector_layer_id],
     )
+    store.set(addOperationAtom, {
+      table: 'vector_layer_displays',
+      operation: 'delete',
+      filter: {
+        function: 'eq',
+        column: 'vector_layer_id',
+        value: vectorLayer.vector_layer_id,
+      }
+    })
   }
 
   // TODO: do this for wfs and upload
@@ -106,30 +119,47 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       throw new Error(`list_id ${field.list_id} has no values`)
     }
     // remove all displays not in list
+    const toDeleteRes = await db.query(
+      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
+        .map((v) => v.value)
+        .map((v, i) => `$${i + 2}`)
+        .join(', ')})`,
+      [vectorLayer.vector_layer_id, ...listValues.map((v) => v.value)],
+    )
+    const toDeleteVectorLayerDisplayIds = toDeleteRes?.rows ?? []
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
         .map((v) => v.value)
         .map((v, i) => `$${i + 2}`)
         .join(', ')})`,
-      [vectorLayerId, ...listValues.map((v) => v.value)],
+      [vectorLayer.vector_layer_id, ...listValues.map((v) => v.value)],
     )
+    store.set(addOperationAtom, {
+      table: 'vector_layer_displays',
+      operation: 'delete',
+      filter: {
+        function: 'in',
+        column: 'vector_layer_display_id',
+        value: toDeleteVectorLayerDisplayIds.map((v => v.vector_layer_display_id)),
+      }
+    })
     // above does not remove null values...
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
-      [vectorLayerId],
+      [vectorLayer.vector_layer_id],
     )
     // upsert displays in list
     for (const listValue of listValues) {
       const res = await db.query(
         `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
-        [vectorLayerId, listValue.value],
+        [vectorLayer.vector_layer_id, listValue.value],
       )
       const existingVectorLayerDisplay = res?.rows?.[0]
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
       await createVectorLayerDisplay({
-        vectorLayerId,
+        vectorLayerId: vectorLayer.vector_layer_id,
         displayPropertyValue: listValue.value,
         db,
       })
@@ -223,14 +253,14 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   for (const value of distinctValues) {
     const res = await db.query(
       `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
-      [vectorLayerId, value ?? null],
+      [vectorLayer.vector_layer_id, value ?? null],
     )
     const existingVectorLayerDisplay = res?.rows?.[0]
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 
     await createVectorLayerDisplay({
-      vectorLayerId,
+      vectorLayerId: vectorLayer.vector_layer_id  ,
       displayPropertyValue: value,
       db,
     })
