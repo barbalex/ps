@@ -78,6 +78,13 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
       }`,
       [...Object.values(serviceData), service.wfs_service_id],
     )
+    store.set(addOperationAtom, {
+      table: 'wfs_services',
+      rowIdName: 'wfs_service_id',
+      rowId: service.wfs_service_id,
+      operation: 'update',
+      draft: serviceData,
+    })
   }
 
   const acceptableLayers = layers
@@ -107,6 +114,16 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
       `UPDATE vector_layers SET wfs_service_layer_name = $1, label = $2 WHERE vector_layer_id = $3`,
       [layers[0].Name, layers[0].Title, vectorLayer.vector_layer_id],
     )
+    store.set(addOperationAtom, {
+      table: 'vector_layers',
+      rowIdName: 'vector_layer_id',
+      rowId: vectorLayer.vector_layer_id,
+      operation: 'update',
+      draft: {
+        wfs_service_layer_name: layers[0].Name,
+        label: layers[0].Title,
+      },
+    })
   }
 
   return
