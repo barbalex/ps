@@ -39,14 +39,29 @@ export const Property = ({ vectorLayer, from }) => {
   // TODO: get fields of wfs
   const onChange = async (e, data) => {
     const { value } = getValueFromChange(e, data)
+    const prevRes = await db.query(
+      `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
+      [vectorLayerId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     await db.query(
       `UPDATE vector_layers SET display_by_property = $1 WHERE vector_layer_id = $2`,
       [value, vectorLayerId],
     )
+    addOperation({
+      table: 'vector_layers',
+      rowIdName: 'vector_layer_id',
+      rowId: vectorLayerId,
+      operation: 'update',
+      draft: {
+        display_by_property: value,
+      },
+      prev,
+    })
     // set vector_layer_displays
     upsertVectorLayerDisplaysForVectorLayer({
       db,
-      vectorLayerId: vectorLayerId,
+      vectorLayer: prev,
     })
   }
 
