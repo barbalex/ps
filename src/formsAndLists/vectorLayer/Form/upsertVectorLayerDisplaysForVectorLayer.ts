@@ -9,7 +9,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     throw new Error(`vector_layer_id ${vectorLayer.vector_layer_id} not found`)
   }
   if (!vectorLayer.type) {
-    throw new Error(`vector_layer_id ${vectorLayer.vector_layer_id} has no type`)
+    throw new Error(
+      `vector_layer_id ${vectorLayer.vector_layer_id} has no type`,
+    )
   }
   // TODO: add this for wfs and upload
   if (vectorLayer.type !== 'own') {
@@ -44,7 +46,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     if (!firstExistingVectorLayerDisplay) {
       // create single display, then return
       return await createVectorLayerDisplay({
-        vectorLayerId:vectorLayer.vector_layer_id,
+        vectorLayerId: vectorLayer.vector_layer_id,
         db,
       })
     }
@@ -61,7 +63,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
         function: 'neq',
         column: 'vector_layer_display_id',
         value: firstExistingVectorLayerDisplay.vector_layer_display_id,
-      }
+      },
     })
   }
 
@@ -81,7 +83,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
         function: 'eq',
         column: 'vector_layer_id',
         value: vectorLayer.vector_layer_id,
-      }
+      },
     })
   }
 
@@ -140,14 +142,32 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       filter: {
         function: 'in',
         column: 'vector_layer_display_id',
-        value: toDeleteVectorLayerDisplayIds.map((v => v.vector_layer_display_id)),
-      }
+        value: toDeleteVectorLayerDisplayIds.map(
+          (v) => v.vector_layer_display_id,
+        ),
+      },
     })
     // above does not remove null values...
+    const toDeleteNullRes = await db.query(
+      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
+      [vectorLayer.vector_layer_id],
+    )
+    const toDeleteNullVectorLayerDisplayIds = toDeleteNullRes?.rows ?? []
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
       [vectorLayer.vector_layer_id],
     )
+    store.set(addOperationAtom, {
+      table: 'vector_layer_displays',
+      operation: 'delete',
+      filter: {
+        function: 'in',
+        column: 'vector_layer_display_id',
+        value: toDeleteNullVectorLayerDisplayIds.map(
+          (v) => v.vector_layer_display_id,
+        ),
+      },
+    })
     // upsert displays in list
     for (const listValue of listValues) {
       const res = await db.query(
@@ -260,7 +280,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     if (existingVectorLayerDisplay) continue
 
     await createVectorLayerDisplay({
-      vectorLayerId: vectorLayer.vector_layer_id  ,
+      vectorLayerId: vectorLayer.vector_layer_id,
       displayPropertyValue: value,
       db,
     })
