@@ -39,6 +39,14 @@ export const SubprojectTaxon = ({ from }) => {
       `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
       [value, subprojectTaxonId],
     )
+    addOperation({
+      table: 'subproject_taxa',
+      rowIdName: 'subproject_taxon_id',
+      rowId: subprojectTaxonId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
