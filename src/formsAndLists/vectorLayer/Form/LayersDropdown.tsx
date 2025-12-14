@@ -1,8 +1,12 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
+
+import { addOperationAtom } from '../../../store.ts'
 
 export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(
     `

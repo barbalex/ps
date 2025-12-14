@@ -1,5 +1,6 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
+import { addOperationAtom, store } from '../../../store.ts'
 
 export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
   if (!vectorLayer) throw new Error('vector layer is required')

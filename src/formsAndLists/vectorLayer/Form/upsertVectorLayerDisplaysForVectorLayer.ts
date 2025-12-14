@@ -1,4 +1,5 @@
 import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
+import { addOperationAtom, store } from '../../../store.ts'
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,

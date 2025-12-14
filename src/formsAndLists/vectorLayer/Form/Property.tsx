@@ -1,13 +1,16 @@
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisplaysForVectorLayer.ts'
+import { addOperationAtom } from '../../../store.ts'
 
 export const Property = ({ vectorLayer, from }) => {
   const { projectId, vectorLayerId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const table = vectorLayer?.own_table
   const level = vectorLayer?.own_table_level

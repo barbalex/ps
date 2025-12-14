@@ -1,17 +1,20 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
 
 export const Header = ({ autoFocusRef }) => {
   const { projectId, wmsLayerId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 

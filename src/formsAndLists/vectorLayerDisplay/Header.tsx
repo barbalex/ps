@@ -4,13 +4,17 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
-import { mapDrawerVectorLayerDisplayAtom } from '../../store.ts'
+import {
+  mapDrawerVectorLayerDisplayAtom,
+  addOperationAtom,
+} from '../../store.ts'
 
 export const Header = ({
   vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
   autoFocusRef,
   from,
 }) => {
+  const addOperation = useSetAtom(addOperationAtom)
   const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
