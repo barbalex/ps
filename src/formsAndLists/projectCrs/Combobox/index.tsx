@@ -13,7 +13,7 @@ const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
   const db = usePGlite()
   const { projectCrsId } = useParams({ from })
-    const addOperation = useSetAtom(addOperationAtom)
+  const addOperation = useSetAtom(addOperationAtom)
 
   const [filter, setFilter] = useState('')
   const [crs, setCrs] = useState([])
@@ -44,7 +44,7 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
     if (data.optionValue === 0) return setFilter('') // No options found
     // find the option in the crsData
     const selectedOption = crs.find((o) => o.code === data.optionValue)
-    db.query(
+    await db.query(
       `UPDATE project_crs SET code = $1, name = $2, proj4 = $3 WHERE project_crs_id = $4`,
       [
         selectedOption?.code ?? null,
@@ -54,6 +54,18 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
       ],
     )
     setFilter('')
+    addOperation({
+      table: 'project_crs',
+      rowIdName: 'project_crs_id',
+      rowId: projectCrsId,
+      operation: 'update',
+      draft: {
+        code: selectedOption?.code ?? null,
+        name: selectedOption?.name ?? null,
+        proj4: selectedOption?.proj4 ?? null,
+      },
+      prev: { ...selectedOption },
+    })
   }
 
   return (
