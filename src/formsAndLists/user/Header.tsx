@@ -24,9 +24,20 @@ export const Header = ({ autoFocusRef }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(`SELECT * FROM users WHERE user_id = $1`, [
+      userId,
+    ])
+    const prev = prevRes?.rows?.[0] ?? {}
     const sql = `DELETE FROM users WHERE user_id = $1`
-    db.query(sql, [userId])
+    await db.query(sql, [userId])
+    addOperation({
+      table: 'users',
+      rowIdName: 'user_id',
+      rowId: userId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: `..` })
   }
 
