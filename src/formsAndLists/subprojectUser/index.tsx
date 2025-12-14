@@ -32,15 +32,23 @@ export const SubprojectUser = () => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(
+    await db.query(
       `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
       [value, subprojectUserId],
     )
+    addOperation({
+      table: 'subproject_users',
+      rowIdName: 'subproject_user_id',
+      rowId: subprojectUserId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
