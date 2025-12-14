@@ -57,6 +57,14 @@ export const VectorLayerDisplay = ({
       `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
       [value, vectorLayerDisplayId],
     )
+    addOperation({
+      table: 'vector_layer_displays',
+      rowIdName: 'vector_layer_display_id',
+      rowId: vectorLayerDisplayId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
