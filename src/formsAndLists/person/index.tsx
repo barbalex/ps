@@ -36,6 +36,14 @@ export const Person = () => {
       value,
       personId,
     ])
+    addOperation({
+      table: 'persons',
+      rowIdName: 'person_id',
+      rowId: personId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
