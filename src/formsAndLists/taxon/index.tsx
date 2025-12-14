@@ -28,15 +28,23 @@ export const Taxon = () => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
+    await db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
       value,
       taxonId,
     ])
+    addOperation({
+      table: 'taxa',
+      rowIdName: 'taxon_id',
+      rowId: taxonId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
