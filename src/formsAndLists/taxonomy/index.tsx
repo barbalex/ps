@@ -27,15 +27,23 @@ export const Taxonomy = ({ from }) => {
   ])
   const row = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`, [
-      value,
-      taxonomyId,
-    ])
+    await db.query(
+      `UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`,
+      [value, taxonomyId],
+    )
+    addOperation({
+      table: 'taxonomies',
+      rowIdName: 'taxonomy_id',
+      rowId: taxonomyId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
