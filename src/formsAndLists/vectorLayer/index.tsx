@@ -26,21 +26,38 @@ export const VectorLayer = ({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(
+    await db.query(
       `UPDATE vector_layers SET ${name} = $1 WHERE vector_layer_id = $2`,
       [value, vectorLayerId],
     )
+    addOperation({
+      table: 'vector_layers',
+      rowIdName: 'vector_layer_id',
+      rowId: vectorLayerId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
+
     const newLabel = value?.label
     if (!newLabel) return
-    db.query(`UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`, [
-      newLabel,
-      vectorLayerId,
-    ])
+    await db.query(
+      `UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`,
+      [newLabel, vectorLayerId],
+    )
+    addOperation({
+      table: 'vector_layers',
+      rowIdName: 'vector_layer_id',
+      rowId: vectorLayerId,
+      operation: 'update',
+      draft: { label: newLabel },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
