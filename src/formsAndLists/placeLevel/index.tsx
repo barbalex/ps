@@ -39,6 +39,14 @@ export const PlaceLevel = () => {
       value,
       placeLevelId,
     ])
+    addOperation({
+      table: 'place_levels',
+      rowIdName: 'place_level_id',
+      rowId: placeLevelId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
     // if name_plural was changed, need to update the label of corresponding vector layers
     if (
       row &&
