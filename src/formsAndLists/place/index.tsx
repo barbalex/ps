@@ -1,12 +1,14 @@
 import { useRef } from 'react'
 import { useParams, useSearch } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { Header } from './Header.tsx'
 import { PlaceForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -15,6 +17,7 @@ const fieldsStyle = { padding: 10 }
 export const Place = ({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const { onlyForm } = useSearch({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

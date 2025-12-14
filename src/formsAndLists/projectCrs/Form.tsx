@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -8,6 +9,7 @@ import { ComboboxFilteringOptions } from './Combobox/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -16,6 +18,7 @@ const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 // this form is rendered from a parent or outlet
 export const ProjectCrsForm = ({ autoFocusRef }) => {
   const { projectCrsId, projectId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const res = useLiveQuery(

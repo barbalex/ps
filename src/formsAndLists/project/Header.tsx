@@ -1,9 +1,11 @@
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams, useNavigate } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { DesigningButton } from './DesigningButton.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -15,6 +17,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const isForm = from === '/data/projects/$projectId_/project/'
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 

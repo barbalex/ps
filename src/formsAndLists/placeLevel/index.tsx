@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -10,6 +11,7 @@ import { Header } from './Header.tsx'
 import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
@@ -17,6 +19,7 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
 export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
