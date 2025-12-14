@@ -58,6 +58,14 @@ export const Place = ({ from }) => {
       value,
       placeId,
     ])
+    addOperation({
+      table: 'places',
+      rowIdName: 'place_id',
+      rowId: placeId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
