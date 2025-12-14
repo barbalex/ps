@@ -37,8 +37,20 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(
+      `SELECT * FROM projects WHERE project_id = $1`,
+      [projectId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
+    addOperation({
+      table: 'projects',
+      rowIdName: 'project_id',
+      rowId: projectId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: isForm ? `../..` : `..` })
   }
 
