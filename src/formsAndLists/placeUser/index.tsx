@@ -28,15 +28,23 @@ export const PlaceUser = ({ from }) => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE place_users SET ${name} = $1 WHERE place_user_id = $2`, [
-      value,
-      placeUserId,
-    ])
+    await db.query(
+      `UPDATE place_users SET ${name} = $1 WHERE place_user_id = $2`,
+      [value, placeUserId],
+    )
+    addOperation({
+      table: 'place_users',
+      rowIdName: 'place_user_id',
+      rowId: placeUserId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
