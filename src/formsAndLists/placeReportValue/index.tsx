@@ -28,15 +28,23 @@ export const PlaceReportValue = ({ from }) => {
 
   // console.log('PlaceReportValue, row:', row)
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(
+    await db.query(
       `UPDATE place_report_values SET ${name} = $1 WHERE place_report_value_id = $2`,
       [value, placeReportValueId],
     )
+    addOperation({
+      table: 'place_report_values',
+      rowIdName: 'place_report_value_id',
+      rowId: placeReportValueId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
