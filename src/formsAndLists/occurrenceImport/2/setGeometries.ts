@@ -57,5 +57,13 @@ export const setGeometries = async ({
       geometry,
       o.occurrence_id,
     ])
+    addOperation({
+      table: 'occurrences',
+      rowIdName: 'occurrence_id',
+      rowId: o.occurrence_id,
+      operation: 'update',
+      draft: { geometry },
+      prev: { ...o },
+    })
   }
 }
