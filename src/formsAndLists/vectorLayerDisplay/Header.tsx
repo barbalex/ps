@@ -52,11 +52,23 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(
+      `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+      [vectorLayerDisplayId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
       [vectorLayerDisplayId],
     )
+    addOperation({
+      table: 'vector_layer_displays',
+      rowIdName: 'vector_layer_display_id',
+      rowId: vectorLayerDisplayId,
+      operation: 'delete',
+      prev,
+    })
     if (vectorLayerDisplayIdFromProps) {
       setMapLayerDrawerVectorLayerDisplayId(null)
       return
