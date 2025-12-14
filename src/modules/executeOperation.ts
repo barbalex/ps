@@ -51,6 +51,8 @@ export const executeOperation = async (o) => {
       rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
       : filter.function === 'eq' ?
         baseQueryFunction.eq(filter.column, filter.value)
+      : filter.function === 'neq' ?
+        baseQueryFunction.neq(filter.column, filter.value)
       : filter.function === 'in' ?
         baseQueryFunction.in(filter.column, filter.value)
       : baseQueryFunction
@@ -81,16 +83,14 @@ export const executeOperation = async (o) => {
     if (error) throw error
   }
   if (operation === 'insertMany') {
-    const { error } = await postgrestClient
-      .from(table)
-      .insert(
-        draft.map((d) => ({
-          ...d,
-          created_at: time,
-          updated_at: time,
-          updated_by: username,
-        })),
-      )
+    const { error } = await postgrestClient.from(table).insert(
+      draft.map((d) => ({
+        ...d,
+        created_at: time,
+        updated_at: time,
+        updated_by: username,
+      })),
+    )
 
     if (error) throw error
   }
@@ -102,6 +102,8 @@ export const executeOperation = async (o) => {
       rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
       : filter.function === 'eq' ?
         baseQueryFunction.eq(filter.column, filter.value)
+      : filter.function === 'neq' ?
+        baseQueryFunction.neq(filter.column, filter.value)
       : filter.function === 'in' ?
         baseQueryFunction.in(filter.column, filter.value)
       : baseQueryFunction
