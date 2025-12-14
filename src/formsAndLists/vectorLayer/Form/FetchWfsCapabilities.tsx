@@ -51,11 +51,24 @@ export const FetchWfsCapabilities = ({
         `DELETE FROM wfs_service_layers WHERE wfs_service_id = $1`,
         [service.wfs_service_id],
       )
+      addOperation({
+        table: 'wfs_service_layers',
+        filter: { wfs_service_id: service.wfs_service_id },
+        operation: 'delete',
+      })
+
       // ensure vectorLayer.wfs_service_id is set
       await db.query(
         `UPDATE vector_layers SET wfs_service_id = $1 WHERE vector_layer_id = $2`,
         [service.wfs_service_id, vectorLayer.vector_layer_id],
       )
+      addOperation({
+        table: 'vector_layers',
+        rowIdName: 'vector_layer_id',
+        rowId: vectorLayer.vector_layer_id,
+        operation: 'update',
+        draft: { wfs_service_id: service.wfs_service_id },
+      })
     } else {
       // 3. if not, create service, then update that
       const res = await createWfsService({
@@ -72,6 +85,14 @@ export const FetchWfsCapabilities = ({
       } catch (error) {
         console.error('FetchCapabilities.onFetchCapabilities 3', error)
       }
+      addOperation({
+        table: 'vector_layers',
+        rowIdName: 'vector_layer_id',
+        rowId: vectorLayer.vector_layer_id,
+        operation: 'update',
+        draft: { wfs_service_id: serviceData.wfs_service_id },
+      })
+      service = { ...serviceData }
     }
 
     // show loading indicator
@@ -110,6 +131,13 @@ export const FetchWfsCapabilities = ({
       `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
       [notifData.notification_id],
     )
+    addOperation({
+      table: 'notifications',
+      rowIdName: 'notification_id',
+      rowId: notifData.notification_id,
+      operation: 'update',
+      draft: { paused: false, timeout: 500 },
+    })
   }
 
   return (
