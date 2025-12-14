@@ -35,6 +35,14 @@ export const ProjectReport = () => {
       `UPDATE project_reports SET ${name} = $1 WHERE project_report_id = $2`,
       [value, projectReportId],
     )
+    addOperation({
+      table: 'project_reports',
+      rowIdName: 'project_report_id',
+      rowId: projectReportId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
