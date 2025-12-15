@@ -19,8 +19,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createWmsLayer({ projectId, db })
-    const wmsLayer = res?.rows?.[0]
+    const wmsLayer = await createWmsLayer({ projectId, db })
     // also add layer_presentation
     await createLayerPresentation({
       wmsLayerId: wmsLayer.wms_layer_id,

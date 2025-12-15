@@ -1061,12 +1061,12 @@ export const createMessage = async ({ db }) => {
 
 export const createWmsLayer = async ({ projectId, db }) => {
   const wms_layer_id = uuidv7()
-  await db.query(
+  const res = await db.query(
     `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2)`,
     [wms_layer_id, projectId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'wms_layers',
     operation: 'insert',
     draft: {
@@ -1074,6 +1074,8 @@ export const createWmsLayer = async ({ projectId, db }) => {
       project_id: projectId,
     },
   })
+
+  return res.rows[0]
 }
 
 export const createVectorLayer = async ({

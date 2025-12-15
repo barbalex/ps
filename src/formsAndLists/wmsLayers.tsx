@@ -23,17 +23,16 @@ export const WmsLayers = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createWmsLayer({ projectId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const wmsLayer = await createWmsLayer({ projectId, db })
+    if (!wmsLayer) return
     // also add layer_presentation
     await createLayerPresentation({
-      wmsLayerId: data.wms_layer_id,
+      wmsLayerId: wmsLayer.wms_layer_id,
       db,
     })
     navigate({
-      to: data.wms_layer_id,
-      params: (prev) => ({ ...prev, wmsLayerId: data.wms_layer_id }),
+      to: wmsLayer.wms_layer_id,
+      params: (prev) => ({ ...prev, wmsLayerId: wmsLayer.wms_layer_id }),
     })
   }
 
