@@ -13,10 +13,8 @@ export const Checks1 = ({ layerPresentation }) => {
       geometry IS NOT NULL
       AND places.parent_id IS NULL
   `,
-    undefined,
   )
   const checks = res?.rows ?? []
-  // console.log('hello Checks1, checks:', checks)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
