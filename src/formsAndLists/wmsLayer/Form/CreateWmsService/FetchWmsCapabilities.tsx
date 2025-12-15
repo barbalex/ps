@@ -52,11 +52,27 @@ export const FetchWmsCapabilities = ({
         `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
         [service.wms_service_id],
       )
+      addOperation({
+        table: 'wms_service_layers',
+        filter: {
+          function: 'eq',
+          column: 'wms_service_id',
+          value: service.wms_service_id,
+        },
+        operation: 'delete',
+      })
       // ensure wmsLayer.wms_service_id is set
       await db.query(
         `UPDATE wms_layers SET wms_service_id = $1 WHERE wms_layer_id = $2`,
         [service.wms_service_id, wmsLayer.wms_layer_id],
       )
+      addOperation({
+        table: 'wms_layers',
+        rowIdName: 'wms_layer_id',
+        rowId: wmsLayer.wms_layer_id,
+        operation: 'update',
+        draft: { wms_service_id: service.wms_service_id },
+      })
     } else {
       // 3. if not, create service, then update that
       const serviceData = await createWmsService({
@@ -73,6 +89,13 @@ export const FetchWmsCapabilities = ({
       } catch (error) {
         console.error('FetchCapabilities.onFetchCapabilities 3', error)
       }
+      addOperation({
+        table: 'wms_layers',
+        rowIdName: 'wms_layer_id',
+        rowId: wmsLayer.wms_layer_id,
+        operation: 'update',
+        draft: { wms_service_id: serviceData.wms_service_id },
+      })
     }
 
     // show loading indicator
@@ -111,6 +134,13 @@ export const FetchWmsCapabilities = ({
       `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
       [data.notification_id],
     )
+    addOperation({
+      table: 'notifications',
+      rowIdName: 'notification_id',
+      rowId: data.notification_id,
+      operation: 'update',
+      draft: { paused: false, timeout: 500 },
+    })
   }
 
   return (
