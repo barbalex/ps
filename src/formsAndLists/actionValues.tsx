@@ -25,12 +25,11 @@ export const ActionValues = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createActionValue({ db, actionId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createActionValue({ db, actionId })
+    if (!id) return
     navigate({
-      to: data.action_value_id,
-      params: (prev) => ({ ...prev, actionValueId: data.action_value_id }),
+      to: id,
+      params: (prev) => ({ ...prev, actionValueId: id }),
     })
   }
 
