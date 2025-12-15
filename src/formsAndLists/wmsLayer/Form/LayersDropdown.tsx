@@ -50,6 +50,17 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
         error,
       )
     }
+    addOperation({
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: wmsLayer.wms_layer_id,
+      operation: 'update',
+      draft: {
+        wms_service_layer_name: data.optionValue,
+        label: data.optionText,
+      },
+      prev: { ...wmsLayer },
+    })
     // return if no value was chosen
     if (!data.optionValue) {
       return
@@ -100,6 +111,16 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
       } catch (error) {
         console.log('LayersDropdown.onOptionSelect, error:', error)
       }
+      addOperation({
+        table: 'wms_service_layers',
+        rowIdName: 'wms_service_layer_id',
+        rowId: wmsServiceLayer.wms_service_layer_id,
+        operation: 'update',
+        draft: {
+          legend_image: byteArray,
+        },
+        prev: { ...wmsServiceLayer },
+      })
     }
   }
 
