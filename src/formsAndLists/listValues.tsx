@@ -19,12 +19,11 @@ export const ListValues = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createListValue({ db, listId })
-    const list_value_id = res?.rows?.[0]?.list_value_id
-    if (!list_value_id) return
+    const id = await createListValue({ db, listId })
+    if (!id) return
     navigate({
-      to: list_value_id,
-      params: (prev) => ({ ...prev, listValueId: list_value_id }),
+      to: id,
+      params: (prev) => ({ ...prev, listValueId: id }),
     })
   }
 

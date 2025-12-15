@@ -574,11 +574,13 @@ export const createTaxon = async ({ taxonomyId, db }) => {
     taxonomyId,
   ])
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'taxa',
     operation: 'insert',
     draft: { taxon_id, taxonomy_id: taxonomyId },
   })
+
+  return taxon_id
 }
 
 export const createListValue = async ({ listId, db }) => {
@@ -590,7 +592,7 @@ export const createListValue = async ({ listId, db }) => {
     [list_value_id, '018cf958-27e2-7000-90d3-59f024d467be', listId, false],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'list_values',
     operation: 'insert',
     draft: {
@@ -600,6 +602,8 @@ export const createListValue = async ({ listId, db }) => {
       obsolete: false,
     },
   })
+
+  return list_value_id
 }
 
 export const createGoal = async ({ db, projectId, subprojectId }) => {
