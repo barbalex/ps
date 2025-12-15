@@ -71,12 +71,11 @@ export const FetchWfsCapabilities = ({
       })
     } else {
       // 3. if not, create service, then update that
-      const res = await createWfsService({
+      const serviceData = await createWfsService({
         url: urlTrimmed,
         projectId: vectorLayer.project_id,
         db,
       })
-      const serviceData = res?.rows?.[0]
       try {
         await db.query(
           `UPDATE vector_layers SET wfs_service_id = $1 WHERE vector_layer_id = $2`,

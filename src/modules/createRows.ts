@@ -1078,7 +1078,6 @@ export const createWmsLayer = async ({ projectId, db }) => {
   return res?.rows?.[0]
 }
 
-// TODO: return ids or rows as needed by depending code
 export const createVectorLayer = async ({
   projectId,
   type = null,
@@ -1129,8 +1128,8 @@ export const createWfsService = async ({
   db,
 }) => {
   const wfs_service_id = uuidv7()
-  await db.query(
-    `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7)`,
+  const res = await db.query(
+    `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7) returning *`,
     [
       wfs_service_id,
       projectId,
@@ -1142,7 +1141,7 @@ export const createWfsService = async ({
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'wfs_services',
     operation: 'insert',
     draft: {
@@ -1155,6 +1154,8 @@ export const createWfsService = async ({
       default_crs,
     },
   })
+
+  return res?.rows?.[0]
 }
 
 export const createWfsServiceLayer = async ({
