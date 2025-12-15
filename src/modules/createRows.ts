@@ -985,7 +985,7 @@ export const createWmsLayer = async ({ projectId, db }) => {
   })
 }
 
-export const createVectorLayer = ({
+export const createVectorLayer = async ({
   projectId,
   type = null,
   ownTable = null,
@@ -1146,16 +1146,16 @@ export const createLayerPresentation = async ({
   active = false,
   transparent = false,
   db,
-}) =>
-  db.query(
+}) => {
+  const layer_presentation_id = uuidv7()
+  await db.query(
     `
     INSERT INTO layer_presentations
     (layer_presentation_id, account_id, vector_layer_id, wms_layer_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    RETURNING layer_presentation_id
   `,
     [
-      uuidv7(),
+      layer_presentation_id,
       accountId,
       vectorLayerId,
       wmsLayerId,
@@ -1168,6 +1168,24 @@ export const createLayerPresentation = async ({
     ],
   )
 
+  return store.set(addOperationAtom, {
+    table: 'layer_presentations',
+    operation: 'insert',
+    draft: {
+      layer_presentation_id,
+      account_id: accountId,
+      vector_layer_id: vectorLayerId,
+      wms_layer_id: wmsLayerId,
+      active,
+      opacity_percent: 100,
+      grayscale: false,
+      transparent,
+      max_zoom: 19,
+      min_zoom: 0,
+    },
+  })
+}
+
 export const createWmsService = async ({
   projectId = null,
   url = null,
@@ -1178,11 +1196,12 @@ export const createWmsService = async ({
   info_format = null,
   default_crs = null,
   db,
-}) =>
-  db.query(
-    `INSERT INTO wms_services (wms_service_id, project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *`,
+}) => {
+  const wms_service_id = uuidv7()
+  await db.query(
+    `INSERT INTO wms_services (wms_service_id, project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
     [
-      uuidv7(),
+      wms_service_id,
       projectId,
       version,
       url,
@@ -1194,6 +1213,23 @@ export const createWmsService = async ({
     ],
   )
 
+  return store.set(addOperationAtom, {
+    table: 'wms_services',
+    operation: 'insert',
+    draft: {
+      wms_service_id,
+      project_id: projectId,
+      version,
+      url,
+      image_formats,
+      image_format,
+      info_formats,
+      info_format,
+      default_crs,
+    },
+  })
+}
+
 // not in use - multiple insert used instead
 export const createWmsServiceLayer = async ({
   wmsServiceId,
@@ -1203,11 +1239,35 @@ export const createWmsServiceLayer = async ({
   legend_url = null,
   legend_image = null,
   db,
-}) =>
-  db.query(
-    `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, legend_image) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *`,
-    [uuidv7(), wmsServiceId, name, label, queryable, legend_url, legend_image],
+}) => {
+  const wms_service_layer_id = uuidv7()
+  await db.query(
+    `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, legend_image) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [
+      wms_service_layer_id,
+      wmsServiceId,
+      name,
+      label,
+      queryable,
+      legend_url,
+      legend_image,
+    ],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'wms_service_layers',
+    operation: 'insert',
+    draft: {
+      wms_service_layer_id,
+      wms_service_id: wmsServiceId,
+      name,
+      label,
+      queryable,
+      legend_url,
+      legend_image,
+    },
+  })
+}
 
 export const createChart = async ({
   projectId = null,
