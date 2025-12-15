@@ -1,11 +1,13 @@
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import {
   createNotification,
   createWmsService,
 } from '../../../../modules/createRows.ts'
+import { addOperationAtom } from '../../../../store.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getWmsCapabilitiesData.ts'),
@@ -23,6 +25,7 @@ export const FetchWmsCapabilities = ({
 }) => {
   const db = usePGlite()
   const worker = useWorker(createWorker)
+  const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(
     `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,

@@ -1,6 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
+import { addOperationAtom, store } from '../../../../store.ts'
 
 export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
   if (!service?.url) {
@@ -93,9 +94,9 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
         l.Name ? `'${l.Name}'` : 'NULL',
         l.Title ? `'${l.Title}'` : 'NULL',
         l.queryable === true,
-        l.Style?.[0]?.LegendURL?.[0]?.OnlineResource
-          ? `'${l.Style?.[0]?.LegendURL?.[0]?.OnlineResource}'`
-          : 'NULL',
+        l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?
+          `'${l.Style?.[0]?.LegendURL?.[0]?.OnlineResource}'`
+        : 'NULL',
       ].join(',')})`,
   )
   const sql = `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url) VALUES ${values.join(

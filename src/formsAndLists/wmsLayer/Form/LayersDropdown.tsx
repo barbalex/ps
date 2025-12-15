@@ -1,11 +1,14 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import axios from 'redaxios'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+import { addOperationAtom } from '../../../store.ts'
 
 export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
   const db = usePGlite()
+  const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(
     `

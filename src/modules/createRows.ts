@@ -1,5 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
+import { addOperationAtom, store } from '../../../../store.ts'
+
 // TODO: run insert query?
 const getPresetData = async ({ db, projectId = null, table }) => {
   const fieldsWithPresetsResult = await db.query(

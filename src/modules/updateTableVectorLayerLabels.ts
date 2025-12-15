@@ -1,3 +1,5 @@
+import { addOperationAtom, store } from '../store.ts'
+
 export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const plRes = await db.query(
     `SELECT * FROM place_levels WHERE project_id = $1`,
