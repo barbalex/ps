@@ -1116,7 +1116,7 @@ export const createVectorLayer = async ({
     },
   })
 
-  return vector_layer_id
+  return res?.rows?.[0]
 }
 
 export const createWfsService = async ({

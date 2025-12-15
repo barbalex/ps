@@ -24,12 +24,11 @@ export const VectorLayers = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createVectorLayer({
+    const data = await createVectorLayer({
       projectId,
       type: 'wfs',
       db,
     })
-    const data = res?.rows?.[0]
     if (!data) return
     // also add vector_layer_display
     await createVectorLayerDisplay({

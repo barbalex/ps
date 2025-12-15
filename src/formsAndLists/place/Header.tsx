@@ -52,7 +52,7 @@ export const Header = ({
     const place = resPlace.rows?.[0]
 
     // need to create a corresponding vector layer and vector layer display
-    const resVL = await createVectorLayer({
+    const newVectorLayer = await createVectorLayer({
       projectId,
       type: 'own',
       ownTable: 'places',
@@ -60,7 +60,6 @@ export const Header = ({
       label: namePlural,
       db,
     })
-    const newVectorLayer = resVL.rows?.[0]
     // console.log('Place.Header.addRow', {
     //   newVectorLayer,
     //   resVL,

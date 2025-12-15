@@ -73,7 +73,7 @@ export const TableLayersProvider = () => {
             vl.own_table_level === 1,
         )
         if (!places1VectorLayer) {
-          const res = await createVectorLayer({
+          places1VectorLayer = await createVectorLayer({
             projectId,
             type: 'own',
             ownTable: 'places',
@@ -81,7 +81,6 @@ export const TableLayersProvider = () => {
             label: placeLevel1?.name_plural ?? 'Places',
             db,
           })
-          places1VectorLayer = res?.rows?.[0]
           console.warn(
             'hello TableLayersProvider, new places 1 vector layer:',
             places1VectorLayer,
@@ -122,7 +121,7 @@ export const TableLayersProvider = () => {
             vl.own_table_level === 1,
         )
         if (!actions1VectorLayer) {
-          const res = await createVectorLayer({
+          actions1VectorLayer = await createVectorLayer({
             projectId,
             type: 'own',
             ownTable: 'actions',
@@ -133,7 +132,6 @@ export const TableLayersProvider = () => {
               : 'Actions',
             db,
           })
-          actions1VectorLayer = res?.rows?.[0]
         }
 
         // 2.2 actions1VectorLayerDisplay: always needed
@@ -170,7 +168,7 @@ export const TableLayersProvider = () => {
             vl.own_table_level === 1,
         )
         if (!checks1VectorLayer) {
-          const res = await createVectorLayer({
+          checks1VectorLayer = await createVectorLayer({
             projectId,
             type: 'own',
             ownTable: 'checks',
@@ -181,7 +179,6 @@ export const TableLayersProvider = () => {
               : 'Checks',
             db,
           })
-          checks1VectorLayer = res?.rows?.[0]
         }
 
         // 3.2 checks1VectorLayerDisplay: always needed
@@ -220,7 +217,7 @@ export const TableLayersProvider = () => {
               vl.own_table_level === 1,
           )
           if (!occurrencesAssigned1VectorLayer) {
-            const res = await createVectorLayer({
+            occurrencesAssigned1VectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_assigned',
@@ -231,7 +228,6 @@ export const TableLayersProvider = () => {
                 : 'Occurrences Assigned',
               db,
             })
-            occurrencesAssigned1VectorLayer = res?.rows?.[0]
           }
 
           // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
@@ -270,14 +266,13 @@ export const TableLayersProvider = () => {
               vl.type === 'own' && vl.own_table === 'occurrences_to_assess',
           )
           if (!occurrencesToAssessVectorLayer) {
-            const res = await createVectorLayer({
+            occurrencesToAssessVectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_to_assess',
               label: 'Occurrences To Assess',
               db,
             })
-            occurrencesToAssessVectorLayer = res?.rows?.[0]
           }
 
           // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
@@ -316,14 +311,13 @@ export const TableLayersProvider = () => {
               vl.type === 'own' && vl.own_table === 'occurrences_not_to_assign',
           )
           if (!occurrencesNotToAssignVectorLayer) {
-            const res = await createVectorLayer({
+            occurrencesNotToAssignVectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_not_to_assign',
               label: 'Occurrences Not To Assign',
               db,
             })
-            occurrencesNotToAssignVectorLayer = res?.rows?.[0]
           }
 
           // 6.2 occurrencesNotToAssignVectorLayerDisplay: always needed
@@ -364,7 +358,7 @@ export const TableLayersProvider = () => {
               vl.own_table_level === 2,
           )
           if (!places2VectorLayer) {
-            const res = await createVectorLayer({
+            places2VectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'places',
@@ -372,7 +366,6 @@ export const TableLayersProvider = () => {
               label: placeLevel2?.name_plural ?? 'Places',
               db,
             })
-            places2VectorLayer = res?.rows?.[0]
           }
 
           // 7.2 places2VectorLayerDisplay: always needed
@@ -411,7 +404,7 @@ export const TableLayersProvider = () => {
               vl.own_table_level === 2,
           )
           if (!actions2VectorLayer) {
-            const res = await createVectorLayer({
+            actions2VectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'actions',
@@ -422,7 +415,6 @@ export const TableLayersProvider = () => {
                 : 'Actions',
               db,
             })
-            actions2VectorLayer = res?.rows?.[0]
           }
 
           // 8.2 actions2VectorLayerDisplay: always needed
@@ -461,7 +453,7 @@ export const TableLayersProvider = () => {
               vl.own_table_level === 2,
           )
           if (!checks2VectorLayer) {
-            const res = await createVectorLayer({
+            checks2VectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'checks',
@@ -472,7 +464,6 @@ export const TableLayersProvider = () => {
                 : 'Checks',
               db,
             })
-            checks2VectorLayer = res?.rows?.[0]
           }
 
           // 9.2 checks2VectorLayerDisplay: always needed
@@ -511,7 +502,7 @@ export const TableLayersProvider = () => {
               vl.own_table_level === 2,
           )
           if (!occurrencesAssigned2VectorLayer) {
-            const res = await createVectorLayer({
+            occurrencesAssigned2VectorLayer = await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_assigned',
@@ -522,7 +513,6 @@ export const TableLayersProvider = () => {
                 : 'Occurrences Assigned',
               db,
             })
-            occurrencesAssigned2VectorLayer = res?.rows?.[0]
           }
 
           // 10.2 occurrences_assigned2VectorLayerDisplay: always needed

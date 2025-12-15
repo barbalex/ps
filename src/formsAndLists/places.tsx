@@ -42,7 +42,7 @@ export const Places = ({ from }) => {
     // TODO:
     // 1. only if not yet exists
     // 2. better via trigger so it also works on import / project creation
-    const resVL = await createVectorLayer({
+    const newVectorLayer = await createVectorLayer({
       projectId,
       type: 'own',
       ownTable: 'places',
@@ -50,7 +50,6 @@ export const Places = ({ from }) => {
       label: namePlural,
       db,
     })
-    const newVectorLayer = resVL?.rows?.[0]
 
     createVectorLayerDisplay({
       vectorLayerId: newVectorLayer.vector_layer_id,
