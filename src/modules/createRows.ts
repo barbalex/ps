@@ -1089,7 +1089,7 @@ export const createVectorLayer = async ({
 }) => {
   const vector_layer_id = uuidv7()
   const res = await db.query(
-    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7)`,
+    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7) returning *`,
     [
       vector_layer_id,
       projectId,
