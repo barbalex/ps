@@ -993,11 +993,35 @@ export const createVectorLayer = ({
   label = null,
   maxFeatures = 1000,
   db,
-}) =>
-  db.query(
-    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7) returning vector_layer_id`,
-    [uuidv7(), projectId, label, type, ownTable, ownTableLevel, maxFeatures],
+}) => {
+  const vector_layer_id = uuidv7()
+  await db.query(
+    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7)`,
+    [
+      vector_layer_id,
+      projectId,
+      label,
+      type,
+      ownTable,
+      ownTableLevel,
+      maxFeatures,
+    ],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'vector_layers',
+    operation: 'insert',
+    draft: {
+      vector_layer_id,
+      project_id: projectId,
+      label,
+      type,
+      own_table: ownTable,
+      own_table_level: ownTableLevel,
+      max_features: maxFeatures,
+    },
+  })
+}
 
 export const createWfsService = async ({
   projectId = null,
@@ -1007,37 +1031,74 @@ export const createWfsService = async ({
   info_format = null,
   default_crs = null,
   db,
-}) =>
-  db.query(
-    `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7) returning wfs_service_id`,
-    [uuidv7(), projectId, version, url, info_formats, info_format, default_crs],
+}) => {
+  const wfs_service_id = uuidv7()
+  await db.query(
+    `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7)`,
+    [
+      wfs_service_id,
+      projectId,
+      version,
+      url,
+      info_formats,
+      info_format,
+      default_crs,
+    ],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'wfs_services',
+    operation: 'insert',
+    draft: {
+      wfs_service_id,
+      project_id: projectId,
+      version,
+      url,
+      info_formats,
+      info_format,
+      default_crs,
+    },
+  })
+}
 
 export const createWfsServiceLayer = async ({
   wfsServiceId,
   name = null,
   label = null,
   db,
-}) =>
-  db.query(
-    `insert into wfs_service_layers (wfs_service_layer_id, wfs_service_id, name, label) values ($1, $2, $3, $4) returning wfs_service_layer_id`,
-    [uuidv7(), wfsServiceId, name, label],
+}) => {
+  const wfs_service_layer_id = uuidv7()
+  await db.query(
+    `insert into wfs_service_layers (wfs_service_layer_id, wfs_service_id, name, label) values ($1, $2, $3, $4)`,
+    [wfs_service_layer_id, wfsServiceId, name, label],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'wfs_service_layers',
+    operation: 'insert',
+    draft: {
+      wfs_service_layer_id,
+      wfs_service_id: wfsServiceId,
+      name,
+      label,
+    },
+  })
+}
 
 export const createVectorLayerDisplay = async ({
   vectorLayerId = null,
   displayPropertyValue = null,
   db,
-}) =>
-  db.query(
+}) => {
+  const vector_layer_display_id = uuidv7()
+  await db.query(
     `
     insert into vector_layer_displays 
     (vector_layer_display_id, vector_layer_id, display_property_value, marker_type, circle_marker_radius, marker_size, stroke, color, weight, line_cap, line_join, fill, fill_color, fill_opacity_percent, fill_rule)
     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-    returning vector_layer_display_id
   `,
     [
-      uuidv7(),
+      vector_layer_display_id,
       vectorLayerId,
       displayPropertyValue,
       'circle',
@@ -1054,6 +1115,29 @@ export const createVectorLayerDisplay = async ({
       'evenodd',
     ],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'vector_layer_displays',
+    operation: 'insert',
+    draft: {
+      vector_layer_display_id,
+      vector_layer_id: vectorLayerId,
+      display_property_value: displayPropertyValue,
+      marker_type: 'circle',
+      circle_marker_radius: 8,
+      marker_size: 16,
+      stroke: true,
+      color: '#ff0000',
+      weight: 3,
+      line_cap: 'round',
+      line_join: 'round',
+      fill: true,
+      fill_color: '#ff0000',
+      fill_opacity_percent: 20,
+      fill_rule: 'evenodd',
+    },
+  })
+}
 
 export const createLayerPresentation = async ({
   vectorLayerId = null,
