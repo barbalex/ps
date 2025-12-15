@@ -58,15 +58,15 @@ export const processData = async ({ file, additionalData, db }) => {
       addOperation({
         table: 'occurrences',
         operation: 'insertMany',
-        draft: chunk
-    })
-
+        draft: chunk,
+      })
+    }
     // - insert data into occurrences table
     // - set occurrence_imports.created_time
     // - set occurrence_imports.inserted_count
     // - show user data rows
+    reader.onabort = () => console.log('file reading was aborted')
+    reader.onerror = () => console.log('file reading has failed')
+    reader.readAsBinaryString(file)
   }
-  reader.onabort = () => console.log('file reading was aborted')
-  reader.onerror = () => console.log('file reading has failed')
-  reader.readAsBinaryString(file)
 }
