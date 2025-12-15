@@ -20,12 +20,11 @@ export const Lists = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createList({ db, projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createList({ db, projectId })
+    if (!id) return
     navigate({
-      to: data.list_id,
-      params: (prev) => ({ ...prev, listId: data.list_id }),
+      to: id,
+      params: (prev) => ({ ...prev, listId: id }),
     })
   }
 

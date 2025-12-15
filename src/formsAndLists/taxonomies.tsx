@@ -19,12 +19,11 @@ export const Taxonomies = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createTaxonomy({ db, projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createTaxonomy({ db, projectId })
+    if (!id) return
     navigate({
-      to: data.taxonomy_id,
-      params: (prev) => ({ ...prev, taxonomyId: data.taxonomy_id }),
+      to: id,
+      params: (prev) => ({ ...prev, taxonomyId: id }),
     })
   }
 

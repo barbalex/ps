@@ -395,7 +395,7 @@ export const createUnit = async ({ projectId, db }) => {
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'units',
     operation: 'insert',
     draft: {
@@ -413,14 +413,17 @@ export const createUnit = async ({ projectId, db }) => {
       type: 'integer',
     },
   })
+
+  return unit_id
 }
 
 export const createList = async ({ db, projectId, name = null }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, projectId, table: 'lists' })
 
+  const list_id = uuidv7()
   const data = {
-    list_id: uuidv7(),
+    list_id,
     project_id: projectId,
     name,
     obsolete: false,
@@ -437,11 +440,13 @@ export const createList = async ({ db, projectId, name = null }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'lists',
     operation: 'insert',
     draft: data,
   })
+
+  return list_id
 }
 
 export const createTaxonomy = async ({ db, projectId }) => {
@@ -452,8 +457,9 @@ export const createTaxonomy = async ({ db, projectId }) => {
     table: 'taxonomies',
   })
 
+  const taxonomy_id = uuidv7()
   const data = {
-    taxonomy_id: uuidv7(),
+    taxonomy_id,
     project_id: projectId,
     obsolete: false,
 
@@ -469,11 +475,13 @@ export const createTaxonomy = async ({ db, projectId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'taxonomies',
     operation: 'insert',
     draft: data,
   })
+
+  return taxonomy_id
 }
 
 export const createProjectUser = async ({ projectId, db }) => {

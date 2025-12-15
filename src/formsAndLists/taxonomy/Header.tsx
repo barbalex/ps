@@ -16,14 +16,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createTaxonomy({ db, projectId })
-    const taxonomy = res?.rows?.[0]
+    const id = await createTaxonomy({ db, projectId })
+    if (!id) return
     navigate({
-      to:
-        isForm ?
-          `../../${taxonomy.taxonomy_id}/taxonomy`
-        : `../${taxonomy.taxonomy_id}/taxonomy`,
-      params: (prev) => ({ ...prev, taxonomyId: taxonomy.taxonomy_id }),
+      to: isForm ? `../../${id}/taxonomy` : `../${id}/taxonomy`,
+      params: (prev) => ({ ...prev, taxonomyId: id }),
     })
     autoFocusRef?.current?.focus()
   }

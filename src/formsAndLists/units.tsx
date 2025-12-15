@@ -20,12 +20,11 @@ export const Units = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createUnit({ db, projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createUnit({ db, projectId })
+    if (!id) return
     navigate({
-      to: data.unit_id,
-      params: (prev) => ({ ...prev, unitId: data.unit_id }),
+      to: id,
+      params: (prev) => ({ ...prev, unitId: id }),
     })
   }
 
