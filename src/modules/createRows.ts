@@ -696,7 +696,7 @@ export const createGoalReportValue = async ({ db, goalReportId }) => {
     [goal_report_value_id, goalReportId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'goal_report_values',
     operation: 'insert',
     draft: {
@@ -704,6 +704,8 @@ export const createGoalReportValue = async ({ db, goalReportId }) => {
       goal_report_id: goalReportId,
     },
   })
+
+  return goal_report_value_id
 }
 
 export const createSubprojectUser = async ({ db, subprojectId }) => {

@@ -25,17 +25,16 @@ export const GoalReportValues = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createGoalReportValue({
+    const id = await createGoalReportValue({
       db,
       goalReportId,
     })
-    const data = res?.rows?.[0]
-    if (!data) return
+    if (!id) return
     navigate({
-      to: data.goal_report_value_id,
+      to: id,
       params: (prev) => ({
         ...prev,
-        goalReportValueId: data.goal_report_value_id,
+        goalReportValueId: id,
       }),
     })
   }
