@@ -179,40 +179,56 @@ export const createPlace = async ({
 }
 
 export const createWidgetForField = async ({ db }) => {
+  const widget_for_field_id = uuidv7()
   await db.query(
     `insert into widgets_for_fields (widget_for_field_id) values ($1) returning widget_for_field_id`,
-    [uuidv7()],
+    [widget_for_field_id],
   )
   return store.set(addOperationAtom, {
     table: 'widgets_for_fields',
     operation: 'insert',
-    draft: { widget_for_field_id: uuidv7() },
+    draft: { widget_for_field_id },
   })
 }
 
 export const createWidgetType = async ({ db }) => {
+  const widget_type_id = uuidv7()
   await db.query(
     `insert into widget_types (widget_type_id, needs_list, sort) values ($1, $2, $3) returning widget_type_id`,
-    [uuidv7(), false, 0],
+    [widget_type_id, false, 0],
   )
   return store.set(addOperationAtom, {
     table: 'widget_types',
     operation: 'insert',
-    draft: { widget_type_id: uuidv7(), needs_list: false, sort: 0 },
+    draft: { widget_type_id, needs_list: false, sort: 0 },
   })
 }
 
-export const createFieldType = async ({ db }) =>
-  db.query(
+export const createFieldType = async ({ db }) => {
+  const field_type_id = uuidv7()
+  await db.query(
     `insert into field_types (field_type_id, sort) values ($1, $2) returning field_type_id`,
-    [uuidv7(), 0],
+    [field_type_id, 0],
   )
+  return store.set(addOperationAtom, {
+    table: 'field_types',
+    operation: 'insert',
+    draft: { field_type_id, sort: 0 },
+  })
+}
 
-export const createAccount = async ({ db }) =>
-  db.query(
+export const createAccount = async ({ db }) => {
+  const account_id = uuidv7()
+  await db.query(
     `insert into accounts (account_id, type) values ($1, $2) returning account_id`,
-    [uuidv7(), 'free'],
+    [account_id, 'free'],
   )
+  return store.set(addOperationAtom, {
+    table: 'accounts',
+    operation: 'insert',
+    draft: { account_id, type: 'free' },
+  })
+}
 
 // users creates the db row to ensure creating the app_state too
 export const createUser = async ({ db, setUserId }) => {
@@ -221,9 +237,14 @@ export const createUser = async ({ db, setUserId }) => {
   // TODO: why setUserId?
   setUserId(user_id)
 
-  return db.query(`INSERT INTO users (user_id) VALUES ($1) returning user_id`, [
+  await db.query(`INSERT INTO users (user_id) VALUES ($1) returning user_id`, [
     user_id,
   ])
+  return store.set(addOperationAtom, {
+    table: 'users',
+    operation: 'insert',
+    draft: { user_id },
+  })
 }
 
 export const createPerson = async ({ db, projectId }) => {
@@ -246,10 +267,15 @@ export const createPerson = async ({ db, projectId }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
+  await db.query(
     `insert into persons (${columns}) values (${values}) returning person_id`,
     Object.values(data),
   )
+  return store.set(addOperationAtom, {
+    table: 'persons',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createCrs = async ({ db }) =>
