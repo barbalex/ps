@@ -20,12 +20,11 @@ export const Persons = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createPerson({ db, projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createPerson({ db, projectId })
+    if (!id) return
     navigate({
-      to: data.person_id,
-      params: (prev) => ({ ...prev, personId: data.person_id }),
+      to: id,
+      params: (prev) => ({ ...prev, personId: id }),
     })
   }
 

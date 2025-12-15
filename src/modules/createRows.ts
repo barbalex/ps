@@ -285,8 +285,9 @@ export const createPerson = async ({ db, projectId }) => {
     table: 'persons',
   })
 
+  const person_id = uuidv7()
   const data = {
-    person_id: uuidv7(),
+    person_id,
     project_id: projectId,
 
     ...presetData,
@@ -302,11 +303,13 @@ export const createPerson = async ({ db, projectId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'persons',
     operation: 'insert',
     draft: data,
   })
+
+  return person_id
 }
 
 export const createCrs = async ({ db }) => {
