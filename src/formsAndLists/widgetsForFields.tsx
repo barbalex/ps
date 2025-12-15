@@ -20,10 +20,9 @@ export const WidgetsForFields = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createWidgetForField({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
-    navigate({ to: data.widget_for_field_id })
+    const widgetForFieldId = await createWidgetForField({ db })
+    if (!widgetForFieldId) return
+    navigate({ to: widgetForFieldId })
   }
 
   return (

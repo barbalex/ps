@@ -29,15 +29,15 @@ export const Places = ({ from }) => {
   const { navs, label, nameSingular, namePlural } = navData
 
   const add = async () => {
-    const res = await createPlace({
+    const placeIdNew = await createPlace({
       db,
       projectId,
       subprojectId,
       parentId: placeId ?? null,
       level: placeId ? 2 : 1,
     })
-    const place = res?.rows?.[0]
-    if (!place) return
+    if (!placeIdNew) return
+
     // need to create a corresponding vector layer and vector layer display
     // TODO:
     // 1. only if not yet exists
@@ -63,8 +63,8 @@ export const Places = ({ from }) => {
     })
 
     navigate({
-      to: place.place_id,
-      params: (prev) => ({ ...prev, placeId: place.place_id }),
+      to: placeIdNew,
+      params: (prev) => ({ ...prev, placeId: placeIdNew }),
     })
   }
 

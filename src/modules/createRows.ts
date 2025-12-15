@@ -166,8 +166,9 @@ export const createPlace = async ({
     table: 'places',
   })
 
+  const place_id = uuidv7()
   const data = {
-    place_id: uuidv7(),
+    place_id,
     subproject_id: subprojectId,
     parent_id: parentId,
     level,
@@ -185,11 +186,13 @@ export const createPlace = async ({
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'places',
     operation: 'insert',
     draft: data,
   })
+
+  return place_id
 }
 
 export const createWidgetForField = async ({ db }) => {
@@ -199,11 +202,13 @@ export const createWidgetForField = async ({ db }) => {
     [widget_for_field_id],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'widgets_for_fields',
     operation: 'insert',
     draft: { widget_for_field_id },
   })
+
+  return widget_for_field_id
 }
 
 export const createWidgetType = async ({ db }) => {

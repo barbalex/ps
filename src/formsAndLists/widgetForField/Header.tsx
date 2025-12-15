@@ -16,9 +16,8 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createWidgetForField({ db })
-    const data = res?.rows?.[0]
-    navigate({ to: `/data/widgets-for-fields/${data.widget_for_field_id}` })
+    const widgetForFieldId = await createWidgetForField({ db })
+    navigate({ to: `/data/widgets-for-fields/${widgetForFieldId}` })
     autoFocusRef?.current?.focus()
   }
 
