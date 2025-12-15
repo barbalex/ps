@@ -47,9 +47,10 @@ export const createProject = async ({ db }) => {
     .join(',')
 
   await db.query(
-    `insert into projects (${columns}) values (${values}) returning project_id`,
+    `insert into projects (${columns}) values (${values})`,
     Object.values(data),
   )
+
   return store.set(addOperationAtom, {
     table: 'projects',
     operation: 'insert',
@@ -77,9 +78,10 @@ export const createSubproject = async ({ db, projectId }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
   await db.query(
-    `insert into subprojects (${columns}) values (${values}) returning subproject_id`,
+    `insert into subprojects (${columns}) values (${values})`,
     Object.values(data),
   )
+
   return store.set(addOperationAtom, {
     table: 'subprojects',
     operation: 'insert',
@@ -129,9 +131,10 @@ export const createFile = async ({
     .join(',')
 
   await db.query(
-    `insert into files (${columns}) values (${values}) returning file_id`,
+    `insert into files (${columns}) values (${values})`,
     Object.values(data),
   )
+
   return store.set(addOperationAtom, {
     table: 'files',
     operation: 'insert',
@@ -168,9 +171,10 @@ export const createPlace = async ({
     .join(',')
 
   await db.query(
-    `insert into places (${columns}) values (${values}) returning place_id`,
+    `insert into places (${columns}) values (${values})`,
     Object.values(data),
   )
+
   return store.set(addOperationAtom, {
     table: 'places',
     operation: 'insert',
@@ -181,9 +185,10 @@ export const createPlace = async ({
 export const createWidgetForField = async ({ db }) => {
   const widget_for_field_id = uuidv7()
   await db.query(
-    `insert into widgets_for_fields (widget_for_field_id) values ($1) returning widget_for_field_id`,
+    `insert into widgets_for_fields (widget_for_field_id) values ($1)`,
     [widget_for_field_id],
   )
+
   return store.set(addOperationAtom, {
     table: 'widgets_for_fields',
     operation: 'insert',
@@ -194,9 +199,10 @@ export const createWidgetForField = async ({ db }) => {
 export const createWidgetType = async ({ db }) => {
   const widget_type_id = uuidv7()
   await db.query(
-    `insert into widget_types (widget_type_id, needs_list, sort) values ($1, $2, $3) returning widget_type_id`,
+    `insert into widget_types (widget_type_id, needs_list, sort) values ($1, $2, $3)`,
     [widget_type_id, false, 0],
   )
+
   return store.set(addOperationAtom, {
     table: 'widget_types',
     operation: 'insert',
@@ -219,10 +225,11 @@ export const createFieldType = async ({ db }) => {
 
 export const createAccount = async ({ db }) => {
   const account_id = uuidv7()
-  await db.query(
-    `insert into accounts (account_id, type) values ($1, $2) returning account_id`,
-    [account_id, 'free'],
-  )
+  await db.query(`insert into accounts (account_id, type) values ($1, $2)`, [
+    account_id,
+    'free',
+  ])
+
   return store.set(addOperationAtom, {
     table: 'accounts',
     operation: 'insert',
@@ -237,9 +244,8 @@ export const createUser = async ({ db, setUserId }) => {
   // TODO: why setUserId?
   setUserId(user_id)
 
-  await db.query(`INSERT INTO users (user_id) VALUES ($1) returning user_id`, [
-    user_id,
-  ])
+  await db.query(`INSERT INTO users (user_id) VALUES ($1)`, [user_id])
+
   return store.set(addOperationAtom, {
     table: 'users',
     operation: 'insert',
@@ -268,9 +274,10 @@ export const createPerson = async ({ db, projectId }) => {
     .join(',')
 
   await db.query(
-    `insert into persons (${columns}) values (${values}) returning person_id`,
+    `insert into persons (${columns}) values (${values})`,
     Object.values(data),
   )
+
   return store.set(addOperationAtom, {
     table: 'persons',
     operation: 'insert',
@@ -281,22 +288,31 @@ export const createPerson = async ({ db, projectId }) => {
 export const createCrs = async ({ db }) =>
   db.query(`insert into crs (crs_id) values ($1) returning crs_id`, [uuidv7()])
 
-export const createProjectCrs = async ({ projectId, db }) =>
-  db.query(
-    `insert into project_crs (project_crs_id, project_id) values ($1, $2) returning project_crs_id`,
-    [uuidv7(), projectId],
+export const createProjectCrs = async ({ projectId, db }) => {
+  const project_crs_id = uuidv7()
+  await db.query(
+    `insert into project_crs (project_crs_id, project_id) values ($1, $2)`,
+    [project_crs_id, projectId],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'project_crs',
+    operation: 'insert',
+    draft: { project_crs_id, project_id: projectId },
+  })
+}
 
 export const createField = async ({
   projectId = null,
   table_name = null,
   level = null,
   db,
-}) =>
-  db.query(
-    `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6) returning field_id`,
+}) => {
+  const field_id = uuidv7()
+  await db.query(
+    `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6)`,
     [
-      uuidv7(),
+      field_id,
       projectId,
       table_name,
       level,
@@ -305,11 +321,26 @@ export const createField = async ({
     ],
   )
 
-export const createUnit = async ({ projectId, db }) =>
-  db.query(
-    `INSERT INTO units (unit_id, project_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa, summable, sort, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning unit_id`,
+  return store.set(addOperationAtom, {
+    table: 'fields',
+    operation: 'insert',
+    draft: {
+      field_id,
+      project_id: projectId,
+      table_name,
+      level,
+      field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',
+      widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',
+    },
+  })
+}
+
+export const createUnit = async ({ projectId, db }) => {
+  const unit_id = uuidv7()
+  await db.query(
+    `INSERT INTO units (unit_id, project_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa, summable, sort, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
     [
-      uuidv7(),
+      unit_id,
       projectId,
       true,
       true,
@@ -323,6 +354,26 @@ export const createUnit = async ({ projectId, db }) =>
       'integer',
     ],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'units',
+    operation: 'insert',
+    draft: {
+      unit_id,
+      project_id: projectId,
+      use_for_action_values: true,
+      use_for_action_report_values: true,
+      use_for_check_values: true,
+      use_for_place_report_values: true,
+      use_for_goal_report_values: true,
+      use_for_subproject_taxa: true,
+      use_for_check_taxa: true,
+      summable: false,
+      sort: 0,
+      type: 'integer',
+    },
+  })
+}
 
 export const createList = async ({ db, projectId, name = null }) => {
   // find fields with preset values on the data column
@@ -341,10 +392,16 @@ export const createList = async ({ db, projectId, name = null }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into lists (${columns}) values (${values}) returning list_id`,
+  await db.query(
+    `insert into lists (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'lists',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createTaxonomy = async ({ db, projectId }) => {
