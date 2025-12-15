@@ -16,9 +16,8 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createFieldType({ db })
-    const fieldType = res?.rows?.[0]
-    navigate({ to: `../${fieldType.field_type_id}` })
+    const id = await createFieldType({ db })
+    navigate({ to: `../${id}` })
     autoFocusRef?.current?.focus()
   }
 

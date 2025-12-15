@@ -20,10 +20,9 @@ export const FieldTypes = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createFieldType({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
-    navigate({ to: data.field_type_id })
+    const id = await createFieldType({ db })
+    if (!id) return
+    navigate({ to: id })
   }
 
   return (

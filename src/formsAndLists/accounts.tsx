@@ -18,10 +18,9 @@ export const Accounts = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createAccount({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
-    navigate({ to: data.id })
+    const id = await createAccount({ db })
+    if (!id) return
+    navigate({ to: id })
   }
 
   return (

@@ -233,11 +233,14 @@ export const createFieldType = async ({ db }) => {
     `insert into field_types (field_type_id, sort) values ($1, $2) returning field_type_id`,
     [field_type_id, 0],
   )
-  return store.set(addOperationAtom, {
+
+  store.set(addOperationAtom, {
     table: 'field_types',
     operation: 'insert',
     draft: { field_type_id, sort: 0 },
   })
+
+  return field_type_id
 }
 
 export const createAccount = async ({ db }) => {
@@ -247,11 +250,13 @@ export const createAccount = async ({ db }) => {
     'free',
   ])
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'accounts',
     operation: 'insert',
     draft: { account_id, type: 'free' },
   })
+
+  return account_id
 }
 
 // users creates the db row to ensure creating the app_state too
