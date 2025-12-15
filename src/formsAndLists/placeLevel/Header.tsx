@@ -20,11 +20,11 @@ export const Header = ({ autoFocusRef }: Props) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createPlaceLevel({ db, project_id: projectId })
-    const placeLevel = res?.rows?.[0]
+    const id = await createPlaceLevel({ db, project_id: projectId })
+    if (!id) return
     navigate({
-      to: `../${placeLevel.place_level_id}`,
-      params: (prev) => ({ ...prev, placeLevelId: placeLevel.place_level_id }),
+      to: `../${id}`,
+      params: (prev) => ({ ...prev, placeLevelId: id }),
     })
     autoFocusRef?.current?.focus()
   }

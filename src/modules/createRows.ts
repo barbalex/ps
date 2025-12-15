@@ -546,7 +546,7 @@ export const createPlaceLevel = async ({ db }) => {
     [place_level_id, 1, true, true, true, true, true, true, true, true, true],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'place_levels',
     operation: 'insert',
     draft: {
@@ -563,6 +563,8 @@ export const createPlaceLevel = async ({ db }) => {
       occurrences: true,
     },
   })
+
+  return place_level_id
 }
 
 export const createTaxon = async ({ taxonomyId, db }) => {

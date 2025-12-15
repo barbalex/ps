@@ -19,12 +19,11 @@ export const PlaceLevels = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createPlaceLevel({ db, project_id: projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createPlaceLevel({ db, project_id: projectId })
+    if (!id) return
     navigate({
-      to: `/data/project/${projectId}/place-levels/${data.place_level_id}`,
-      params: (prev) => ({ ...prev, placeLevelId: data.place_level_id }),
+      to: `/data/project/${projectId}/place-levels/${id}`,
+      params: (prev) => ({ ...prev, placeLevelId: id }),
     })
   }
 
