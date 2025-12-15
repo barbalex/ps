@@ -61,9 +61,10 @@ export const executeOperation = async (o) => {
     if (error) throw error
   }
   if (operation === 'upsert') {
+    // enable passing rowId and column as part of draft
     const { error } = await postgrestClient.from(table).upsert({
-      [rowIdName]: rowId,
-      [column]: newValue,
+      ...(rowIdName && rowId ? { [rowIdName]: rowId } : {}),
+      ...(column ? { [column]: newValue } : {}),
       ...draft,
       updated_at: time,
       updated_by: username,
@@ -72,8 +73,9 @@ export const executeOperation = async (o) => {
     if (error) throw error
   }
   if (operation === 'insert') {
+    // enable passing rowId as part of draft
     const { error } = await postgrestClient.from(table).insert({
-      [rowIdName]: rowId,
+      ...(rowIdName && rowId ? { [rowIdName]: rowId } : {}),
       ...draft,
       created_at: time,
       updated_at: time,
