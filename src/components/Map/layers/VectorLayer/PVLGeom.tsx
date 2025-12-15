@@ -48,17 +48,13 @@ export const PVLGeom = ({ layer, display }) => {
   const fetchData = useCallback(
     async ({ bounds }) => {
       removeNotifs()
-      const res = await createNotification({
+      const notificationId = await createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
         db,
       })
-      const notificationData = res?.rows?.[0]
-      notificationIds.current = [
-        notificationData.notification_id,
-        ...notificationIds.current,
-      ]
+      notificationIds.current = [notificationId, ...notificationIds.current]
 
       const resVectorLayerGeoms = await db.query(
         `

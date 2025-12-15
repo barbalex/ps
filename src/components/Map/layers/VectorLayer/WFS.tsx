@@ -110,17 +110,13 @@ export const WFS = ({ layer, layerPresentation }) => {
       const defaultCrs = resCrs?.rows?.[0]
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
-      const notifRes = await createNotification({
+      const notificationId = await createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
         db,
       })
-      const notif = notifRes?.rows?.[0]
-      notificationIds.current = [
-        notif.notification_id,
-        ...notificationIds.current,
-      ]
+      notificationIds.current = [notificationId, ...notificationIds.current]
       let res
       const params = {
         service: 'WFS',
@@ -143,13 +139,13 @@ export const WFS = ({ layer, layerPresentation }) => {
       } catch (error) {
         setShortTermOnlineFromFetchError(error)
         await db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
-          notif.notification_id,
+          notificationId,
         ])
         // remove notification from db
         addOperation({
           table: 'notifications',
           rowIdName: 'notification_id',
-          rowId: notif.notification_id,
+          rowId: notificationId,
           operation: 'delete',
           draft: null,
           prev: null,

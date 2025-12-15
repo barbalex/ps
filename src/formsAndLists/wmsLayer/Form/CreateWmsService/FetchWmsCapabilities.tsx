@@ -99,13 +99,12 @@ export const FetchWmsCapabilities = ({
 
     // show loading indicator
     setFetching(true)
-    const res = await createNotification({
+    const notificationId = await createNotification({
       title: `Loading capabilities for ${urlTrimmed}`,
       intent: 'info',
       paused: true,
       db,
     })
-    const data = res?.rows?.[0]
 
     // fetch capabilities
     try {
@@ -131,12 +130,12 @@ export const FetchWmsCapabilities = ({
     setFetching(false)
     await db.query(
       `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
-      [data.notification_id],
+      [notificationId],
     )
     addOperation({
       table: 'notifications',
       rowIdName: 'notification_id',
-      rowId: data.notification_id,
+      rowId: notificationId,
       operation: 'update',
       draft: { paused: false, timeout: 500 },
     })

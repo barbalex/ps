@@ -96,13 +96,12 @@ export const FetchWfsCapabilities = ({
 
     // show loading indicator
     setFetching(true)
-    const res = await createNotification({
+    const notificationId = await createNotification({
       title: `Loading capabilities for ${urlTrimmed}`,
       intent: 'info',
       paused: true,
       db,
     })
-    const notifData = res?.rows?.[0]
 
     // fetch capabilities
     try {
@@ -128,12 +127,12 @@ export const FetchWfsCapabilities = ({
     setFetching(false)
     await db.query(
       `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
-      [notifData.notification_id],
+      [notificationId],
     )
     addOperation({
       table: 'notifications',
       rowIdName: 'notification_id',
-      rowId: notifData.notification_id,
+      rowId: notificationId,
       operation: 'update',
       draft: { paused: false, timeout: 500 },
     })
