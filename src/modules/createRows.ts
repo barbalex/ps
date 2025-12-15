@@ -481,32 +481,78 @@ export const createProjectReport = async ({ db, projectId }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into project_reports (${columns}) values (${values}) returning project_report_id`,
+  await db.query(
+    `insert into project_reports (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'project_reports',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createPlaceLevel = async ({ db }) =>
-  db.query(
-    `insert into place_levels (place_level_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning place_level_id`,
-    [uuidv7(), 1, true, true, true, true, true, true, true, true, true],
+export const createPlaceLevel = async ({ db }) => {
+  const place_level_id = uuidv7()
+  await db.query(
+    `insert into place_levels (place_level_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+    [place_level_id, 1, true, true, true, true, true, true, true, true, true],
   )
 
-export const createTaxon = async ({ taxonomyId, db }) =>
-  db.query(
-    `insert into taxa (taxon_id, taxonomy_id) values ($1, $2) returning taxon_id`,
-    [uuidv7(), taxonomyId],
-  )
+  return store.set(addOperationAtom, {
+    table: 'place_levels',
+    operation: 'insert',
+    draft: {
+      place_level_id,
+      level: 1,
+      reports: true,
+      report_values: true,
+      actions: true,
+      action_values: true,
+      action_reports: true,
+      checks: true,
+      check_values: true,
+      check_taxa: true,
+      occurrences: true,
+    },
+  })
+}
 
-export const createListValue = async ({ listId, db }) =>
-  db.query(
+export const createTaxon = async ({ taxonomyId, db }) => {
+  const taxon_id = uuidv7()
+  await db.query(`insert into taxa (taxon_id, taxonomy_id) values ($1, $2)`, [
+    taxon_id,
+    taxonomyId,
+  ])
+
+  return store.set(addOperationAtom, {
+    table: 'taxa',
+    operation: 'insert',
+    draft: { taxon_id, taxonomy_id: taxonomyId },
+  })
+}
+
+export const createListValue = async ({ listId, db }) => {
+  const list_value_id = uuidv7()
+  await db.query(
     `
     insert into list_values (list_value_id, account_id, list_id, obsolete) 
-    values ($1, $2, $3, $4) 
-    returning list_value_id`,
-    [uuidv7(), '018cf958-27e2-7000-90d3-59f024d467be', listId, false],
+    values ($1, $2, $3, $4)`,
+    [list_value_id, '018cf958-27e2-7000-90d3-59f024d467be', listId, false],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'list_values',
+    operation: 'insert',
+    draft: {
+      list_value_id,
+      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      list_id: listId,
+      obsolete: false,
+    },
+  })
+}
 
 export const createGoal = async ({ db, projectId, subprojectId }) => {
   // find fields with preset values on the data column
