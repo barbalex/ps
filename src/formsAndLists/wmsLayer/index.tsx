@@ -40,6 +40,14 @@ export const WmsLayer = () => {
     } catch (error) {
       console.log('hello WmsLayer, onChange, error:', error)
     }
+    addOperation({
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: wmsLayerId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
     // TODO:
     // 1. if name is wms_layer, need to set queryable, legend_url, more?
     // 2. use wms_layers.queryable in the click listener for the info drawer
