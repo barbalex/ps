@@ -22,9 +22,21 @@ export const Header = ({ autoFocusRef }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
+  const deleteRow = async () => {
+    const prevRes = await db.query(
+      `SELECT * FROM widget_types WHERE widget_type_id = $1`,
+      [widgetTypeId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
     const sql = `DELETE FROM widget_types WHERE widget_type_id = $1`
-    db.query(sql, [widgetTypeId])
+    await db.query(sql, [widgetTypeId])
+    addOperation({
+      table: 'widget_types',
+      rowIdName: 'widget_type_id',
+      rowId: widgetTypeId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: `..` })
   }
 
