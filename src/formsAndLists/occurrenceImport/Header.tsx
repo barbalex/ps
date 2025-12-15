@@ -30,13 +30,13 @@ export const Header = ({
   const onClickPreview = () => setShowPreview(!showPreview)
 
   const addRow = async () => {
-    const res = await createOccurrenceImport({ subprojectId, db })
-    const data = res?.rows?.[0]
+    const id = await createOccurrenceImport({ subprojectId, db })
+    if (!id) return
     navigate({
-      to: `../${data.occurrence_import_id}`,
+      to: `../${id}`,
       params: (prev) => ({
         ...prev,
-        occurrenceImportId: data.occurrence_import_id,
+        occurrenceImportId: id,
       }),
     })
     autoFocusRef?.current?.focus()

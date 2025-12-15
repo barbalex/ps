@@ -24,14 +24,13 @@ export const OccurrenceImports = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createOccurrenceImport({ subprojectId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createOccurrenceImport({ subprojectId, db })
+    if (!id) return
     navigate({
-      to: data.occurrence_import_id,
+      to: id,
       params: (prev) => ({
         ...prev,
-        occurrenceImportId: data.occurrence_import_id,
+        occurrenceImportId: id,
       }),
     })
   }
