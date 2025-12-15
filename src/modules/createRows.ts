@@ -46,10 +46,15 @@ export const createProject = async ({ db }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
+  await db.query(
     `insert into projects (${columns}) values (${values}) returning project_id`,
     Object.values(data),
   )
+  return store.set(addOperationAtom, {
+    table: 'projects',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createSubproject = async ({ db, projectId }) => {
@@ -71,10 +76,15 @@ export const createSubproject = async ({ db, projectId }) => {
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
-  return db.query(
+  await db.query(
     `insert into subprojects (${columns}) values (${values}) returning subproject_id`,
     Object.values(data),
   )
+  return store.set(addOperationAtom, {
+    table: 'subprojects',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createFile = async ({
@@ -118,10 +128,15 @@ export const createFile = async ({
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
+  await db.query(
     `insert into files (${columns}) values (${values}) returning file_id`,
     Object.values(data),
   )
+  return store.set(addOperationAtom, {
+    table: 'files',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createPlace = async ({
@@ -152,23 +167,40 @@ export const createPlace = async ({
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
+  await db.query(
     `insert into places (${columns}) values (${values}) returning place_id`,
     Object.values(data),
   )
+  return store.set(addOperationAtom, {
+    table: 'places',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createWidgetForField = async ({ db }) =>
-  db.query(
+export const createWidgetForField = async ({ db }) => {
+  await db.query(
     `insert into widgets_for_fields (widget_for_field_id) values ($1) returning widget_for_field_id`,
     [uuidv7()],
   )
+  return store.set(addOperationAtom, {
+    table: 'widgets_for_fields',
+    operation: 'insert',
+    draft: { widget_for_field_id: uuidv7() },
+  })
+}
 
-export const createWidgetType = async ({ db }) =>
-  db.query(
+export const createWidgetType = async ({ db }) => {
+  await db.query(
     `insert into widget_types (widget_type_id, needs_list, sort) values ($1, $2, $3) returning widget_type_id`,
     [uuidv7(), false, 0],
   )
+  return store.set(addOperationAtom, {
+    table: 'widget_types',
+    operation: 'insert',
+    draft: { widget_type_id: uuidv7(), needs_list: false, sort: 0 },
+  })
+}
 
 export const createFieldType = async ({ db }) =>
   db.query(
