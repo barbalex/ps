@@ -79,6 +79,13 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
       }`,
       [...Object.values(newServiceData), service.wms_service_id],
     )
+    store.set(addOperationAtom, {
+      table: 'wms_services',
+      rowIdName: 'wms_service_id',
+      rowId: service.wms_service_id,
+      operation: 'update',
+      draft: newServiceData,
+    })
   }
   // let user choose from layers
   // only layers with crs EPSG:4326
@@ -109,13 +116,35 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
   } catch (error) {
     console.error('getWmsCapabilitiesData inserting wms_service_layers', error)
   }
+  store.set(addOperationAtom, {
+    table: 'wms_service_layers',
+    operation: 'insertMany',
+    draft: layers.map((l) => ({
+      wms_service_layer_id: uuidv7(),
+      wms_service_id: service.wms_service_id,
+      name: l.Name ?? null,
+      label: l.Title ?? null,
+      queryable: l.queryable === true,
+      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?? null,
+    })),
+  })
 
   // single layer? update wmsLayer
   if (!wmsLayer?.wms_service_layer_name && layers?.length === 1) {
-    db.query(
+    await db.query(
       `UPDATE wms_layers SET wms_service_layer_name = $1, label = $2 WHERE wms_layer_id = $3`,
       [layers[0].Name, layers[0].Title, wmsLayer.wms_layer_id],
     )
+    store.set(addOperationAtom, {
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: wmsLayer.wms_layer_id,
+      operation: 'update',
+      draft: {
+        wms_service_layer_name: layers[0].Name,
+        label: layers[0].Title,
+      },
+    })
   }
 
   return false
