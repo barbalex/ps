@@ -32,10 +32,9 @@ export const AddField = ({ tableName, level, from }) => {
     const isAccountTable = accountTables.includes(tableName)
     const newFieldParams = { table_name: tableName, level, db }
     if (!isAccountTable) newFieldParams.projectId = projectId
-    const res = await createField(newFieldParams)
-    const newField = res?.rows?.[0]
+    const id = await createField(newFieldParams)
     // TODO:
-    navigate({ search: { editingField: newField.field_id } })
+    navigate({ search: { editingField: id } })
   }
 
   if (!designing) return null

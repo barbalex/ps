@@ -17,12 +17,11 @@ export const CRSS = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createCrs({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createCrs({ db })
+    if (!id) return
     navigate({
-      to: `/data/crs/${data.crs_id}`,
-      params: (prev) => ({ ...prev, crsId: data.crs_id }),
+      to: `/data/crs/${id}`,
+      params: (prev) => ({ ...prev, crsId: id }),
     })
   }
 

@@ -315,11 +315,13 @@ export const createPerson = async ({ db, projectId }) => {
 export const createCrs = async ({ db }) => {
   const crs_id = uuidv7()
   await db.query(`insert into crs (crs_id) values ($1)`, [crs_id])
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'crs',
     operation: 'insert',
     draft: { crs_id },
   })
+
+  return crs_id
 }
 
 export const createProjectCrs = async ({ projectId, db }) => {
@@ -329,11 +331,13 @@ export const createProjectCrs = async ({ projectId, db }) => {
     [project_crs_id, projectId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'project_crs',
     operation: 'insert',
     draft: { project_crs_id, project_id: projectId },
   })
+
+  return project_crs_id
 }
 
 export const createField = async ({
@@ -355,7 +359,7 @@ export const createField = async ({
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'fields',
     operation: 'insert',
     draft: {
@@ -367,6 +371,8 @@ export const createField = async ({
       widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',
     },
   })
+
+  return field_id
 }
 
 export const createUnit = async ({ projectId, db }) => {

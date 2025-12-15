@@ -19,12 +19,11 @@ export const Fields = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createField({ projectId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createField({ projectId, db })
+    if (!id) return
     navigate({
-      to: data.field_id,
-      params: (prev) => ({ ...prev, fieldId: data.field_id }),
+      to: id,
+      params: (prev) => ({ ...prev, fieldId: id }),
     })
   }
 
