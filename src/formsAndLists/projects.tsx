@@ -18,12 +18,11 @@ export const Projects = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createProject({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const project_id = await createProject({ db })
+    if (!project_id) return
     navigate({
       to: `/data/projects/$project_id`,
-      params: { project_id: data.project_id },
+      params: { project_id },
     })
   }
 

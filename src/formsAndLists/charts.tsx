@@ -28,12 +28,12 @@ export const Charts = () => {
       : placeId ? { placeId }
       : subprojectId ? { subprojectId }
       : { projectId }
-    const res = await createChart({ ...idToAdd, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const chart_id = await createChart({ ...idToAdd, db })
+    if (!chart_id) return
+
     navigate({
-      to: data.chart_id,
-      params: (prev) => ({ ...prev, chartId: data.chart_id }),
+      to: chart_id,
+      params: (prev) => ({ ...prev, chartId: chart_id }),
     })
   }
 

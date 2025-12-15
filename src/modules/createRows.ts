@@ -23,8 +23,10 @@ export const createProject = async ({ db }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, table: 'projects' })
 
+  const project_id = uuidv7()
+
   const data = {
-    project_id: uuidv7(),
+    project_id,
     account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
     type: 'species',
     subproject_name_singular: 'Art',
@@ -51,11 +53,13 @@ export const createProject = async ({ db }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'projects',
     operation: 'insert',
     draft: data,
   })
+
+  return project_id
 }
 
 export const createSubproject = async ({ db, projectId }) => {
@@ -66,8 +70,9 @@ export const createSubproject = async ({ db, projectId }) => {
     table: 'subprojects',
   })
 
+  const subproject_id = uuidv7()
   const data = {
-    subproject_id: uuidv7(),
+    subproject_id,
     project_id: projectId,
 
     ...presetData,
@@ -82,11 +87,13 @@ export const createSubproject = async ({ db, projectId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'subprojects',
     operation: 'insert',
     draft: data,
   })
+  
+  return subproject_id
 }
 
 export const createFile = async ({
@@ -1274,11 +1281,12 @@ export const createChart = async ({
   subprojectId = null,
   placeId = null,
   db,
-}) =>
-  db.query(
-    `INSERT INTO charts (chart_id, account_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4, $5) returning chart_id`,
+}) => {
+  const chart_id = uuidv7()
+  await db.query(
+    `INSERT INTO charts (chart_id, account_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4, $5)`,
     [
-      uuidv7(),
+      chart_id,
       '018cf958-27e2-7000-90d3-59f024d467be',
       projectId,
       subprojectId,
@@ -1286,11 +1294,27 @@ export const createChart = async ({
     ],
   )
 
-export const createChartSubject = async ({ chartId, db }) =>
-  db.query(
-    `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning chart_subject_id`,
+  store.set(addOperationAtom, {
+    table: 'charts',
+    operation: 'insert',
+    draft: {
+      chart_id,
+      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      project_id: projectId,
+      subproject_id: subprojectId,
+      place_id: placeId,
+    },
+  })
+
+  return chart_id
+}
+
+export const createChartSubject = async ({ chartId, db }) => {
+  const chart_subject_id = uuidv7()
+  await db.query(
+    `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
     [
-      uuidv7(),
+      chart_subject_id,
       '018cf958-27e2-7000-90d3-59f024d467be',
       chartId,
       'monotone',
@@ -1301,19 +1325,57 @@ export const createChartSubject = async ({ chartId, db }) =>
     ],
   )
 
-export const createOccurrenceImport = async ({ subprojectId, db }) =>
-  db.query(
-    `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) returning occurrence_import_id`,
+  store.set(addOperationAtom, {
+    table: 'chart_subjects',
+    operation: 'insert',
+    draft: {
+      chart_subject_id,
+      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      chart_id: chartId,
+      type: 'monotone',
+      stroke: '#FF0000',
+      fill: '#ffffff',
+      fill_graded: true,
+      connect_nulls: true,
+    },
+  })
+
+  return chart_subject_id
+}
+
+export const createOccurrenceImport = async ({ subprojectId, db }) => {
+  const occurrence_import_id = uuidv7()
+  const date = new Date()
+
+  await db.query(
+    `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
     [
-      uuidv7(),
+      occurrence_import_id,
       '018cf958-27e2-7000-90d3-59f024d467be',
       subprojectId,
       'coordinates',
       'EPSG:4326',
-      Date.now(),
+      date,
       false,
     ],
   )
+
+  store.set(addOperationAtom, {
+    table: 'occurrence_imports',
+    operation: 'insert',
+    draft: {
+      occurrence_import_id,
+      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      subproject_id: subprojectId,
+      geometry_method: 'coordinates',
+      crs: 'EPSG:4326',
+      created_time: date,
+      download_from_gbif: false,
+    },
+  })
+
+  return occurrence_import_id
+}
 
 // no insert as this data is inserted in bulk
 export const createOccurrence = ({ occurrenceImportId, data = null }) => ({
@@ -1331,8 +1393,25 @@ export const createNotification = async ({
   timeout = 10000,
   paused = null,
   db,
-}) =>
-  db.query(
+}) => {
+  const notification_id = uuidv7()
+  await db.query(
     `INSERT INTO notifications (notification_id, title, body, intent, timeout, paused) VALUES ($1, $2, $3, $4, $5, $6) returning notification_id`,
-    [uuidv7(), title, body, intent, timeout, paused],
+    [notification_id, title, body, intent, timeout, paused],
   )
+
+  store.set(addOperationAtom, {
+    table: 'notifications',
+    operation: 'insert',
+    draft: {
+      notification_id,
+      title,
+      body,
+      intent,
+      timeout,
+      paused,
+    },
+  })
+
+  return notification_id
+}

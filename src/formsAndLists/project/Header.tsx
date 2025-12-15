@@ -22,17 +22,13 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createProject({ db })
-    const data = res?.rows?.[0]
+    const project_id = await createProject({ db })
 
     // TODO: add place_levels?
     // now navigate to the new project
     navigate({
-      to:
-        isForm ?
-          `../../${data.project_id}/project`
-        : `../${data.project_id}/project`,
-      params: { projectId: data.project_id },
+      to: isForm ? `../../${project_id}/project` : `../${project_id}/project`,
+      params: { projectId: project_id },
     })
     autoFocusRef?.current?.focus()
   }

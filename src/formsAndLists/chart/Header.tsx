@@ -44,11 +44,10 @@ export const Header = ({ autoFocusRef, from }) => {
       : placeId ? { placeId }
       : subprojectId ? { subprojectId }
       : { projectId }
-    const res = await createChart({ ...idToAdd, db })
-    const data = res?.rows?.[0]
+    const chart_id = await createChart({ ...idToAdd, db })
     navigate({
-      to: isForm ? `../../${data.chart_id}/chart` : `../${data.chart_id}/chart`,
-      params: (prev) => ({ ...prev, chartId: data.chart_id }),
+      to: isForm ? `../../${chart_id}/chart` : `../${chart_id}/chart`,
+      params: (prev) => ({ ...prev, chartId: chart_id }),
     })
     autoFocusRef?.current?.focus()
   }
