@@ -19,12 +19,11 @@ export const ProjectUsers = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createProjectUser({ db, projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createProjectUser({ db, projectId })
+    if (!id) return
     navigate({
-      to: data.project_user_id,
-      params: (prev) => ({ ...prev, projectUserId: data.project_user_id }),
+      to: id,
+      params: (prev) => ({ ...prev, projectUserId: id }),
     })
   }
 
