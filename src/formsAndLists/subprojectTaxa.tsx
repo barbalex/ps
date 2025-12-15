@@ -20,14 +20,13 @@ export const SubprojectTaxa = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createSubprojectTaxon({ subprojectId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createSubprojectTaxon({ subprojectId, db })
+    if (!id) return
     navigate({
-      to: data.subproject_taxon_id,
+      to: id,
       params: (prev) => ({
         ...prev,
-        subprojectTaxonId: data.subproject_taxon_id,
+        subprojectTaxonId: id,
       }),
     })
   }

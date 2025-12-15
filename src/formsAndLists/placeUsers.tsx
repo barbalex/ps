@@ -22,12 +22,11 @@ export const PlaceUsers = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = createPlaceUser({ placeId: placeId2 ?? placeId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createPlaceUser({ placeId: placeId2 ?? placeId, db })
+    if (!id) return
     navigate({
-      to: data.place_user_id,
-      params: (prev) => ({ ...prev, placeUserId: data.place_user_id }),
+      to: id,
+      params: (prev) => ({ ...prev, placeUserId: id }),
     })
   }
 

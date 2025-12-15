@@ -14,11 +14,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = createPlaceUser({ placeId: placeId2 ?? placeId, db })
-    const row = res?.rows?.[0]
+    const id = await createPlaceUser({ placeId: placeId2 ?? placeId, db })
+    if (!id) return
     navigate({
-      to: `../${row.place_user_id}`,
-      params: (prev) => ({ ...prev, placeUserId: row.place_user_id }),
+      to: `../${id}`,
+      params: (prev) => ({ ...prev, placeUserId: id }),
     })
     autoFocusRef?.current?.focus()
   }

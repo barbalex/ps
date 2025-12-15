@@ -17,13 +17,13 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createSubprojectTaxon({ db, subprojectId })
-    const subprojectTaxon = res?.rows?.[0]
+    const id = await createSubprojectTaxon({ db, subprojectId })
+    if (!id) return
     navigate({
-      to: `../${subprojectTaxon.subproject_taxon_id}`,
+      to: `../${id}`,
       params: (prev) => ({
         ...prev,
-        subprojectTaxonId: subprojectTaxon.subproject_taxon_id,
+        subprojectTaxonId: id,
       }),
     })
     autoFocusRef?.current?.focus()

@@ -735,7 +735,7 @@ export const createPlaceUser = async ({ placeId, db }) => {
     [place_user_id, placeId, 'reader'],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'place_users',
     operation: 'insert',
     draft: {
@@ -744,6 +744,8 @@ export const createPlaceUser = async ({ placeId, db }) => {
       role: 'reader',
     },
   })
+
+  return place_user_id
 }
 
 export const createSubprojectTaxon = async ({ db, subprojectId }) => {
@@ -753,7 +755,7 @@ export const createSubprojectTaxon = async ({ db, subprojectId }) => {
     [subproject_taxon_id, subprojectId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'subproject_taxa',
     operation: 'insert',
     draft: {
@@ -761,6 +763,8 @@ export const createSubprojectTaxon = async ({ db, subprojectId }) => {
       subproject_id: subprojectId,
     },
   })
+
+  return subproject_taxon_id
 }
 
 export const createSubprojectReport = async ({
