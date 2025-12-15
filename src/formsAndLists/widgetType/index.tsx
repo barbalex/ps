@@ -34,6 +34,14 @@ export const WidgetType = () => {
 
     const sql = `UPDATE widget_types SET ${name} = $1 WHERE widget_type_id = $2`
     db.query(sql, [value, widgetTypeId])
+    addOperation({
+      table: 'widget_types',
+      rowIdName: 'widget_type_id',
+      rowId: widgetTypeId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
   }
 
   if (!res) return <Loading />
