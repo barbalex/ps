@@ -992,8 +992,9 @@ export const createPlaceReport = async ({ db, projectId, placeId }) => {
     table: 'place_reports',
   })
 
+  const place_report_id = uuidv7()
   const data = {
-    place_report_id: uuidv7(),
+    place_report_id,
     place_id: placeId,
     year: new Date().getFullYear(),
     ...presetData,
@@ -1009,11 +1010,13 @@ export const createPlaceReport = async ({ db, projectId, placeId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'place_reports',
     operation: 'insert',
     draft: data,
   })
+
+  return place_report_id
 }
 
 export const createPlaceReportValue = async ({ placeReportId, db }) => {

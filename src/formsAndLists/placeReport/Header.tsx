@@ -21,20 +21,17 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createPlaceReport({
+    const id = await createPlaceReport({
       db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
-    const placeReport = res?.rows?.[0]
+    if (!id) return
     navigate({
-      to:
-        isForm ?
-          `../../${placeReport.place_report_id}/report`
-        : `../${placeReport.place_report_id}/report`,
+      to: isForm ? `../../${id}/report` : `../${id}/report`,
       params: (prev) => ({
         ...prev,
-        placeReportId: placeReport.place_report_id,
+        placeReportId: id,
       }),
     })
     autoFocusRef?.current?.focus()

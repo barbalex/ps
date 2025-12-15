@@ -23,16 +23,15 @@ export const PlaceReports = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createPlaceReport({
+    const id = await createPlaceReport({
       db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
-    const data = res?.rows?.[0]
-    if (!data) return
+    if (!id) return
     navigate({
-      to: data.place_report_id,
-      params: (prev) => ({ ...prev, placeReportId: data.place_report_id }),
+      to: id,
+      params: (prev) => ({ ...prev, placeReportId: id }),
     })
   }
 
