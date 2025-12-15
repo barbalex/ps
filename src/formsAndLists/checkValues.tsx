@@ -25,12 +25,11 @@ export const CheckValues = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createCheckValue({ checkId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createCheckValue({ checkId, db })
+    if (!id) return
     navigate({
-      to: data.check_value_id,
-      params: (prev) => ({ ...prev, checkValueId: data.check_value_id }),
+      to: id,
+      params: (prev) => ({ ...prev, checkValueId: id }),
     })
   }
 

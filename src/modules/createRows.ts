@@ -848,7 +848,7 @@ export const createCheckValue = async ({ db, checkId }) => {
     [check_value_id, checkId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'check_values',
     operation: 'insert',
     draft: {
@@ -856,6 +856,8 @@ export const createCheckValue = async ({ db, checkId }) => {
       check_id: checkId,
     },
   })
+
+  return check_value_id
 }
 
 export const createCheckTaxon = async ({ db, checkId }) => {
