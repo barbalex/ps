@@ -36,10 +36,23 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
       }
       // if label is different, update it
       if (label && label !== vl.label) {
+        const vlPrevRes = await db.query(
+          `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
+          [vl.vector_layer_id],
+        )
+        const prev = vlPrevRes?.rows?.[0]
         await db.query(
           `UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`,
           [label, vl.vector_layer_id],
         )
+        store.set(addOperationAtom, {
+          table: 'vector_layers',
+          rowIdName: 'vector_layer_id',
+          rowId: vl.vector_layer_id,
+          operation: 'update',
+          draft: { label },
+          prev,
+        })
       }
     }
   }
