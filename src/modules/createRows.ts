@@ -1026,7 +1026,7 @@ export const createPlaceReportValue = async ({ placeReportId, db }) => {
     [place_report_value_id, placeReportId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'place_report_values',
     operation: 'insert',
     draft: {
@@ -1034,6 +1034,8 @@ export const createPlaceReportValue = async ({ placeReportId, db }) => {
       place_report_id: placeReportId,
     },
   })
+
+  return place_report_value_id
 }
 
 export const createMessage = async ({ db }) => {
