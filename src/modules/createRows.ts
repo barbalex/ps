@@ -92,7 +92,7 @@ export const createSubproject = async ({ db, projectId }) => {
     operation: 'insert',
     draft: data,
   })
-  
+
   return subproject_id
 }
 
@@ -114,8 +114,9 @@ export const createFile = async ({
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, table: 'files' })
 
+  const file_id = uuidv7()
   const data = {
-    file_id: uuidv7(),
+    file_id,
     project_id: projectId,
     subproject_id: subprojectId,
     place_id: placeId,
@@ -142,11 +143,13 @@ export const createFile = async ({
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'files',
     operation: 'insert',
     draft: data,
   })
+
+  return file_id
 }
 
 export const createPlace = async ({

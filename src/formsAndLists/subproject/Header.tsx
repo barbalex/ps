@@ -18,16 +18,15 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   const nameSingularLower = nameSingular?.toLowerCase?.()
 
   const addRow = async () => {
-    const res = await createSubproject({ db, projectId })
-    const data = res?.rows?.[0]
+    const subprojectId = await createSubproject({ db, projectId })
     navigate({
       to:
         isForm ?
-          `../../${data.subproject_id}/subproject`
-        : `../${data.subproject_id}/subproject`,
+          `../../${subprojectId}/subproject`
+        : `../${subprojectId}/subproject`,
       params: (prev) => ({
         ...prev,
-        subprojectId: data.subproject_id,
+        subprojectId,
       }),
     })
     autoFocusRef?.current?.focus()

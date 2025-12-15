@@ -20,16 +20,13 @@ export const Subprojects = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createSubproject({ db, projectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const subprojectId = await createSubproject({ db, projectId })
+    if (!subprojectId) return
     navigate({
-      to: data.subproject_id,
-      params: (prev) => ({ ...prev, subprojectId: data.subproject_id }),
+      to: subprojectId,
+      params: (prev) => ({ ...prev, subprojectId }),
     })
   }
-
-  console.log('Subprojects, navs:', navs)
 
   return (
     <div className="list-view">

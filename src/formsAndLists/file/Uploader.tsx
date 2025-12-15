@@ -63,13 +63,10 @@ export const Uploader = ({ from }) => {
     } else if (projectId) {
       fileInput.projectId = projectId
     }
-    const res1 = await createFile(fileInput)
-    const data = res1?.rows?.[0]
+    const fileId = await createFile(fileInput)
     navigate({
-      to: `${!isFileList ? '.' : ''}./${data.file_id}${
-        isPreview ? '/preview' : ''
-      }`,
-      params: (prev) => ({ ...prev, fileId: data.file_id }),
+      to: `${!isFileList ? '.' : ''}./${fileId}${isPreview ? '/preview' : ''}`,
+      params: (prev) => ({ ...prev, fileId }),
     })
     // close the uploader or it will be open when navigating to the list
     api?.doneFlow?.()
