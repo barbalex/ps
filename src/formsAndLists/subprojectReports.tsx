@@ -21,14 +21,13 @@ export const SubprojectReports = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createSubprojectReport({ db, projectId, subprojectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createSubprojectReport({ db, projectId, subprojectId })
+    if (!id) return
     navigate({
-      to: data.subproject_report_id,
+      to: id,
       params: (prev) => ({
         ...prev,
-        subprojectReportId: data.subproject_report_id,
+        subprojectReportId: id,
       }),
     })
   }

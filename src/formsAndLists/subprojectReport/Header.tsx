@@ -16,13 +16,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createSubprojectReport({ db, projectId, subprojectId })
-    const data = res?.rows?.[0]
+    const id = await createSubprojectReport({ db, projectId, subprojectId })
+    if (!id) return
     navigate({
-      to: `../${data.subproject_report_id}`,
+      to: `../${id}`,
       params: (prev) => ({
         ...prev,
-        subprojectReportId: data.subproject_report_id,
+        subprojectReportId: id,
       }),
     })
     autoFocusRef?.current?.focus()
