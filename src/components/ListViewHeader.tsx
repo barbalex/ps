@@ -1,3 +1,4 @@
+// seems not in use
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FormMenu } from './FormMenu/index.tsx'
@@ -26,8 +27,9 @@ export const ListViewHeader = ({
   info,
 }: Props) => {
   // querying countUnfiltered here to reduce rerenders of parent
-  const countSql = `SELECT count(*) FROM ${tableName}`
-  const countUnfilteredResult = useLiveQuery(countSql)
+  const countUnfilteredResult = useLiveQuery(
+    `SELECT count(*) FROM ${tableName}`,
+  )
   const countUnfiltered = countUnfilteredResult?.rows?.[0]?.count ?? 0
   const title = `${namePlural} (${
     isLoading ? '...'
