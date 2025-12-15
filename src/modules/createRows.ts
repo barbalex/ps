@@ -268,11 +268,13 @@ export const createUser = async ({ db, setUserId }) => {
 
   await db.query(`INSERT INTO users (user_id) VALUES ($1)`, [user_id])
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'users',
     operation: 'insert',
     draft: { user_id },
   })
+
+  return user_id
 }
 
 export const createPerson = async ({ db, projectId }) => {
