@@ -27,11 +27,11 @@ export const ChartSubjects = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createChartSubject({ chartId, db })
-    const data = res?.rows?.[0]
+    const id = await createChartSubject({ chartId, db })
+    if (!id) return
     navigate({
-      to: data.chart_subject_id,
-      params: (prev) => ({ ...prev, chartSubjectId: data.chart_subject_id }),
+      to: id,
+      params: (prev) => ({ ...prev, chartSubjectId: id }),
     })
     autoFocusRef?.current?.focus()
   }

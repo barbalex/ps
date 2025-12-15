@@ -1316,7 +1316,7 @@ export const createWmsService = async ({
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'wms_services',
     operation: 'insert',
     draft: {
@@ -1331,6 +1331,8 @@ export const createWmsService = async ({
       default_crs,
     },
   })
+
+  return wms_service_id
 }
 
 // not in use - multiple insert used instead
@@ -1357,7 +1359,7 @@ export const createWmsServiceLayer = async ({
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'wms_service_layers',
     operation: 'insert',
     draft: {
@@ -1370,6 +1372,8 @@ export const createWmsServiceLayer = async ({
       legend_image,
     },
   })
+
+  return wms_service_layer_id
 }
 
 export const createChart = async ({

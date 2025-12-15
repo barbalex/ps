@@ -75,16 +75,15 @@ export const FetchWmsCapabilities = ({
       })
     } else {
       // 3. if not, create service, then update that
-      const serviceData = await createWmsService({
+      const wms_service_id = await createWmsService({
         url: urlTrimmed,
         projectId: wmsLayer.project_id,
         db,
       })
-      service = serviceData.rows[0]
       try {
         await db.query(
           `UPDATE wms_layers SET wms_service_id = $1 WHERE wms_layer_id = $2`,
-          [serviceData.wms_service_id, wmsLayer.wms_layer_id],
+          [wms_service_id, wmsLayer.wms_layer_id],
         )
       } catch (error) {
         console.error('FetchCapabilities.onFetchCapabilities 3', error)
@@ -94,7 +93,7 @@ export const FetchWmsCapabilities = ({
         rowIdName: 'wms_layer_id',
         rowId: wmsLayer.wms_layer_id,
         operation: 'update',
-        draft: { wms_service_id: serviceData.wms_service_id },
+        draft: { wms_service_id },
       })
     }
 
