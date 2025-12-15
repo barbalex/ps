@@ -20,10 +20,9 @@ export const WidgetTypes = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createWidgetType({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
-    navigate({ to: data.widget_type_id })
+    const widgetTypeId = await createWidgetType({ db })
+    if (!widgetTypeId) return
+    navigate({ to: widgetTypeId })
   }
 
   return (

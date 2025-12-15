@@ -218,11 +218,13 @@ export const createWidgetType = async ({ db }) => {
     [widget_type_id, false, 0],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'widget_types',
     operation: 'insert',
     draft: { widget_type_id, needs_list: false, sort: 0 },
   })
+
+  return widget_type_id
 }
 
 export const createFieldType = async ({ db }) => {
