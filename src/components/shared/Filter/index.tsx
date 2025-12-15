@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLiveQuery, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
