@@ -1170,7 +1170,7 @@ export const createWfsServiceLayer = async ({
     [wfs_service_layer_id, wfsServiceId, name, label],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'wfs_service_layers',
     operation: 'insert',
     draft: {
@@ -1180,6 +1180,8 @@ export const createWfsServiceLayer = async ({
       label,
     },
   })
+
+  return wfs_service_layer_id
 }
 
 export const createVectorLayerDisplay = async ({
@@ -1213,7 +1215,7 @@ export const createVectorLayerDisplay = async ({
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'vector_layer_displays',
     operation: 'insert',
     draft: {
@@ -1234,6 +1236,8 @@ export const createVectorLayerDisplay = async ({
       fill_rule: 'evenodd',
     },
   })
+
+  return vector_layer_display_id
 }
 
 export const createLayerPresentation = async ({
@@ -1265,7 +1269,7 @@ export const createLayerPresentation = async ({
     ],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'layer_presentations',
     operation: 'insert',
     draft: {
@@ -1281,6 +1285,8 @@ export const createLayerPresentation = async ({
       min_zoom: 0,
     },
   })
+
+  return layer_presentation_id
 }
 
 export const createWmsService = async ({

@@ -36,17 +36,17 @@ export const Header = ({
   const navigate = useNavigate()
 
   const addRow = async () => {
-    const res = await createVectorLayerDisplay({ vectorLayerId, db })
-    const row = res?.rows?.[0]
+    const id = await createVectorLayerDisplay({ vectorLayerId, db })
+    if (!id) return
     if (vectorLayerDisplayIdFromProps) {
-      setMapLayerDrawerVectorLayerDisplayId(row.vector_layer_display_id)
+      setMapLayerDrawerVectorLayerDisplayId(id)
       return
     }
     navigate({
-      to: `../${row.vector_layer_display_id}`,
+      to: `../${id}`,
       params: (prev) => ({
         ...prev,
-        vectorLayerDisplayId: row.vector_layer_display_id,
+        vectorLayerDisplayId: id,
       }),
     })
     autoFocusRef?.current?.focus()

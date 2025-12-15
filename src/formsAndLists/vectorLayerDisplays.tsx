@@ -33,20 +33,19 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createVectorLayerDisplay({ vectorLayerId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createVectorLayerDisplay({ vectorLayerId, db })
+    if (!id) return
     if (vectorLayerId) {
       // we are in the map drawer
-      setVectorLayerDisplayId(data.vector_layer_display_id)
+      setVectorLayerDisplayId(id)
       return
     }
     // we are in normal routing
     navigate({
-      to: data.vector_layer_display_id,
+      to: id,
       params: (prev) => ({
         ...prev,
-        vectorLayerDisplayId: data.vector_layer_display_id,
+        vectorLayerDisplayId: id,
       }),
     })
   }
