@@ -867,7 +867,7 @@ export const createCheckTaxon = async ({ db, checkId }) => {
     [check_taxon_id, checkId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'check_taxa',
     operation: 'insert',
     draft: {
@@ -875,6 +875,8 @@ export const createCheckTaxon = async ({ db, checkId }) => {
       check_id: checkId,
     },
   })
+
+  return check_taxon_id
 }
 
 export const createAction = async ({ db, projectId, placeId }) => {

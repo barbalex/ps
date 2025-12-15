@@ -25,12 +25,11 @@ export const CheckTaxa = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createCheckTaxon({ db, checkId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createCheckTaxon({ db, checkId })
+    if (!id) return
     navigate({
-      to: data.check_taxon_id,
-      params: (prev) => ({ ...prev, checkTaxonId: data.check_taxon_id }),
+      to: id,
+      params: (prev) => ({ ...prev, checkTaxonId: id }),
     })
   }
 

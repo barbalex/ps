@@ -14,11 +14,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createCheckTaxon({ db, checkId })
-    const checkTaxon = res?.rows?.[0]
+    const id = await createCheckTaxon({ db, checkId })
+    if (!id) return
     navigate({
-      to: `../${checkTaxon.check_taxon_id}`,
-      params: (prev) => ({ ...prev, checkTaxonId: checkTaxon.check_taxon_id }),
+      to: `../${id}`,
+      params: (prev) => ({ ...prev, checkTaxonId: id }),
     })
     autoFocusRef?.current?.focus()
   }
