@@ -285,8 +285,15 @@ export const createPerson = async ({ db, projectId }) => {
   })
 }
 
-export const createCrs = async ({ db }) =>
-  db.query(`insert into crs (crs_id) values ($1) returning crs_id`, [uuidv7()])
+export const createCrs = async ({ db }) => {
+  const crs_id = uuidv7()
+  await db.query(`insert into crs (crs_id) values ($1)`, [crs_id])
+  return store.set(addOperationAtom, {
+    table: 'crs',
+    operation: 'insert',
+    draft: { crs_id },
+  })
+}
 
 export const createProjectCrs = async ({ projectId, db }) => {
   const project_crs_id = uuidv7()
@@ -424,17 +431,35 @@ export const createTaxonomy = async ({ db, projectId }) => {
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
-  return db.query(
-    `insert into taxonomies (${columns}) values (${values}) returning taxonomy_id`,
+  await db.query(
+    `insert into taxonomies (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'taxonomies',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createProjectUser = async ({ projectId, db }) =>
-  db.query(
-    `insert into project_users (project_user_id, project_id, role) values ($1, $2, $3) returning project_user_id`,
-    [uuidv7(), projectId, 'reader'],
+export const createProjectUser = async ({ projectId, db }) => {
+  const project_user_id = uuidv7()
+  await db.query(
+    `insert into project_users (project_user_id, project_id, role) values ($1, $2, $3)`,
+    [project_user_id, projectId, 'reader'],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'project_users',
+    operation: 'insert',
+    draft: {
+      project_user_id,
+      project_id: projectId,
+      role: 'reader',
+    },
+  })
+}
 
 export const createProjectReport = async ({ db, projectId }) => {
   // find fields with preset values on the data column
