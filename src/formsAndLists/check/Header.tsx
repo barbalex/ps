@@ -26,15 +26,15 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createCheck({
+    const id = await createCheck({
       db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
-    const data = res?.rows?.[0]
+    if (!id) return
     navigate({
-      to: isForm ? `../../${data.check_id}/check` : `../${data.check_id}/check`,
-      params: (prev) => ({ ...prev, checkId: data.check_id }),
+      to: isForm ? `../../${id}/check` : `../${id}/check`,
+      params: (prev) => ({ ...prev, checkId: id }),
     })
     autoFocusRef?.current?.focus()
   }

@@ -814,8 +814,9 @@ export const createCheck = async ({ db, projectId, placeId }) => {
     table: 'checks',
   })
 
+  const check_id = uuidv7()
   const data = {
-    check_id: uuidv7(),
+    check_id,
     place_id: placeId,
     date: new Date(),
     relevant_for_reports: true,
@@ -831,11 +832,13 @@ export const createCheck = async ({ db, projectId, placeId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'checks',
     operation: 'insert',
     draft: data,
   })
+
+  return check_id
 }
 
 export const createCheckValue = async ({ db, checkId }) => {
