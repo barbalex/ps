@@ -822,17 +822,34 @@ export const createAction = async ({ db, projectId, placeId }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into actions (${columns}) values (${values}) returning action_id`,
+  await db.query(
+    `insert into actions (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'actions',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createActionValue = async ({ db, actionId }) =>
-  db.query(
-    `insert into action_values (action_value_id, action_id) values ($1, $2) returning action_value_id`,
-    [uuidv7(), actionId],
+export const createActionValue = async ({ db, actionId }) => {
+  const action_value_id = uuidv7()
+  await db.query(
+    `insert into action_values (action_value_id, action_id) values ($1, $2)`,
+    [action_value_id, actionId],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'action_values',
+    operation: 'insert',
+    draft: {
+      action_value_id,
+      action_id: actionId,
+    },
+  })
+}
 
 export const createActionReport = async ({ db, projectId, actionId }) => {
   // find fields with preset values on the data column
@@ -848,22 +865,40 @@ export const createActionReport = async ({ db, projectId, actionId }) => {
     year: new Date().getFullYear(),
     ...presetData,
   }
+
   const columns = Object.keys(data).join(',')
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into action_reports (${columns}) values (${values}) returning action_report_id`,
+  await db.query(
+    `insert into action_reports (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'action_reports',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createActionReportValue = async ({ db, actionReportId }) =>
-  db.query(
-    `insert into action_report_values (action_report_value_id, action_report_id) values ($1, $2) returning action_report_value_id`,
-    [uuidv7(), actionReportId],
+export const createActionReportValue = async ({ db, actionReportId }) => {
+  const action_report_value_id = uuidv7()
+  await db.query(
+    `insert into action_report_values (action_report_value_id, action_report_id) values ($1, $2)`,
+    [action_report_value_id, actionReportId],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'action_report_values',
+    operation: 'insert',
+    draft: {
+      action_report_value_id,
+      action_report_id: actionReportId,
+    },
+  })
+}
 
 export const createPlaceReport = async ({ db, projectId, placeId }) => {
   // find fields with preset values on the data column
@@ -879,34 +914,76 @@ export const createPlaceReport = async ({ db, projectId, placeId }) => {
     year: new Date().getFullYear(),
     ...presetData,
   }
+
   const columns = Object.keys(data).join(',')
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into place_reports (${columns}) values (${values}) returning place_report_id`,
+  await db.query(
+    `insert into place_reports (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'place_reports',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createPlaceReportValue = async ({ placeReportId, db }) =>
-  db.query(
-    `insert into place_report_values (place_report_value_id, place_report_id) values ($1, $2) returning place_report_value_id`,
-    [uuidv7(), placeReportId],
+export const createPlaceReportValue = async ({ placeReportId, db }) => {
+  const place_report_value_id = uuidv7()
+  await db.query(
+    `insert into place_report_values (place_report_value_id, place_report_id) values ($1, $2)`,
+    [place_report_value_id, placeReportId],
   )
 
-export const createMessage = async ({ db }) =>
-  db.query(
-    `insert into messages (message_id, date) values ($1, $2) returning message_id`,
-    [uuidv7(), new Date()],
+  return store.set(addOperationAtom, {
+    table: 'place_report_values',
+    operation: 'insert',
+    draft: {
+      place_report_value_id,
+      place_report_id: placeReportId,
+    },
+  })
+}
+
+export const createMessage = async ({ db }) => {
+  const message_id = uuidv7()
+  const date = new Date()
+
+  await db.query(`insert into messages (message_id, date) values ($1, $2)`, [
+    message_id,
+    date,
+  ])
+
+  return store.set(addOperationAtom, {
+    table: 'messages',
+    operation: 'insert',
+    draft: {
+      message_id,
+      date,
+    },
+  })
+}
+
+export const createWmsLayer = async ({ projectId, db }) => {
+  const wms_layer_id = uuidv7()
+  await db.query(
+    `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2)`,
+    [wms_layer_id, projectId],
   )
 
-export const createWmsLayer = async ({ projectId, db }) =>
-  db.query(
-    `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2) returning wms_layer_id`,
-    [uuidv7(), projectId],
-  )
+  return store.set(addOperationAtom, {
+    table: 'wms_layers',
+    operation: 'insert',
+    draft: {
+      wms_layer_id,
+      project_id: projectId,
+    },
+  })
+}
 
 export const createVectorLayer = ({
   projectId,
