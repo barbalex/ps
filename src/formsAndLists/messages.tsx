@@ -17,12 +17,11 @@ export const Messages = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createMessage({ db })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createMessage({ db })
+    if (!id) return
     navigate({
-      to: `/data/messages/${data.message_id}`,
-      params: (prev) => ({ ...prev, messageId: data.message_id }),
+      to: `/data/messages/${id}`,
+      params: (prev) => ({ ...prev, messageId: id }),
     })
   }
 

@@ -1047,7 +1047,7 @@ export const createMessage = async ({ db }) => {
     date,
   ])
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'messages',
     operation: 'insert',
     draft: {
@@ -1055,6 +1055,8 @@ export const createMessage = async ({ db }) => {
       date,
     },
   })
+
+  return message_id
 }
 
 export const createWmsLayer = async ({ projectId, db }) => {
