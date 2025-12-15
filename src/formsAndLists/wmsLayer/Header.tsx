@@ -33,8 +33,22 @@ export const Header = ({ autoFocusRef }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
-    db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [wmsLayerId])
+  const deleteRow = async () => {
+    const prevRes = await db.query(
+      `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
+      [wmsLayerId],
+    )
+    const prev = prevRes?.rows?.[0] ?? {}
+    await db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
+      wmsLayerId,
+    ])
+    addOperation({
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: wmsLayerId,
+      operation: 'delete',
+      prev,
+    })
     navigate({ to: '..' })
   }
 
