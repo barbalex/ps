@@ -1,6 +1,6 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { addOperationAtom, store } from '../../../../store.ts'
+import { addOperationAtom, store } from '../store.ts'
 
 // TODO: run insert query?
 const getPresetData = async ({ db, projectId = null, table }) => {
@@ -574,10 +574,16 @@ export const createGoal = async ({ db, projectId, subprojectId }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into goals (${columns}) values (${values}) returning goal_id`,
+  await db.query(
+    `insert into goals (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'goals',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createGoalReport = async ({ db, projectId, goalId }) => {
@@ -588,11 +594,13 @@ export const createGoalReport = async ({ db, projectId, goalId }) => {
     table: 'goal_reports',
   })
 
+  const goal_report_id = uuidv7()
   const data = {
-    goal_report_id: uuidv7(),
+    goal_report_id,
     goal_id: goalId,
     ...presetData,
   }
+
   const columns = Object.keys(data).join(',')
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
@@ -617,15 +625,31 @@ export const createGoalReport = async ({ db, projectId, goalId }) => {
     // TODO: createGoalReport error: invalid input syntax for type json
     console.log('createGoalReport', error)
   }
+  store.set(addOperationAtom, {
+    table: 'goal_reports',
+    operation: 'insert',
+    draft: data,
+  })
 
-  return res
+  return goal_report_id
 }
 
-export const createGoalReportValue = async ({ db, goalReportId }) =>
-  db.query(
+export const createGoalReportValue = async ({ db, goalReportId }) => {
+  const goal_report_value_id = uuidv7()
+  await db.query(
     `insert into goal_report_values (goal_report_value_id, goal_report_id) values ($1, $2) returning goal_report_value_id`,
-    [uuidv7(), goalReportId],
+    [goal_report_value_id, goalReportId],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'goal_report_values',
+    operation: 'insert',
+    draft: {
+      goal_report_value_id,
+      goal_report_id: goalReportId,
+    },
+  })
+}
 
 export const createSubprojectUser = async ({ db, subprojectId }) =>
   db.query(
