@@ -25,16 +25,15 @@ export const Actions = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createAction({
+    const id = await createAction({
       db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
-    const data = res?.rows?.[0]
-    if (!data) return
+    if (!id) return
     navigate({
-      to: data.action_id,
-      params: (prev) => ({ ...prev, actionId: data.action_id }),
+      to: id,
+      params: (prev) => ({ ...prev, actionId: id }),
     })
   }
 

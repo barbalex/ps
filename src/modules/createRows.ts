@@ -883,8 +883,9 @@ export const createAction = async ({ db, projectId, placeId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, projectId, table: 'actions' })
 
+  const action_id = uuidv7()
   const data = {
-    action_id: uuidv7(),
+    action_id,
     place_id: placeId,
     date: new Date(),
     relevant_for_reports: true,
@@ -901,11 +902,13 @@ export const createAction = async ({ db, projectId, placeId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'actions',
     operation: 'insert',
     draft: data,
   })
+
+  return action_id
 }
 
 export const createActionValue = async ({ db, actionId }) => {
