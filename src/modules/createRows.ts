@@ -605,7 +605,7 @@ export const createGoalReport = async ({ db, projectId, goalId }) => {
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
-  const sql = `insert into goal_reports (${columns}) values (${values}) returning goal_report_id`
+  const sql = `insert into goal_reports (${columns}) values (${values})`
 
   console.log('createGoalReport', {
     sql,
@@ -618,9 +618,8 @@ export const createGoalReport = async ({ db, projectId, goalId }) => {
   })
 
   // TODO: invalid input syntax for type json
-  let res
   try {
-    res = await db.query(sql, Object.values(data))
+    await db.query(sql, Object.values(data))
   } catch (error) {
     // TODO: createGoalReport error: invalid input syntax for type json
     console.log('createGoalReport', error)
@@ -637,7 +636,7 @@ export const createGoalReport = async ({ db, projectId, goalId }) => {
 export const createGoalReportValue = async ({ db, goalReportId }) => {
   const goal_report_value_id = uuidv7()
   await db.query(
-    `insert into goal_report_values (goal_report_value_id, goal_report_id) values ($1, $2) returning goal_report_value_id`,
+    `insert into goal_report_values (goal_report_value_id, goal_report_id) values ($1, $2)`,
     [goal_report_value_id, goalReportId],
   )
 
@@ -651,23 +650,58 @@ export const createGoalReportValue = async ({ db, goalReportId }) => {
   })
 }
 
-export const createSubprojectUser = async ({ db, subprojectId }) =>
-  db.query(
-    `insert into subproject_users (subproject_user_id, subproject_id, role) values ($1, $2, $3) returning subproject_user_id`,
-    [uuidv7(), subprojectId, 'reader'],
+export const createSubprojectUser = async ({ db, subprojectId }) => {
+  const subproject_user_id = uuidv7()
+  await db.query(
+    `insert into subproject_users (subproject_user_id, subproject_id, role) values ($1, $2, $3)`,
+    [subproject_user_id, subprojectId, 'reader'],
   )
 
-export const createPlaceUser = async ({ placeId, db }) =>
-  db.query(
-    `insert into place_users (place_user_id, place_id, role) values ($1, $2, $3) returning place_user_id`,
-    [uuidv7(), placeId, 'reader'],
+  return store.set(addOperationAtom, {
+    table: 'subproject_users',
+    operation: 'insert',
+    draft: {
+      subproject_user_id,
+      subproject_id: subprojectId,
+      role: 'reader',
+    },
+  })
+}
+
+export const createPlaceUser = async ({ placeId, db }) => {
+  const place_user_id = uuidv7()
+  await db.query(
+    `insert into place_users (place_user_id, place_id, role) values ($1, $2, $3)`,
+    [place_user_id, placeId, 'reader'],
   )
 
-export const createSubprojectTaxon = async ({ db, subprojectId }) =>
-  db.query(
-    `insert into subproject_taxa (subproject_taxon_id, subproject_id) values ($1, $2) returning subproject_taxon_id`,
-    [uuidv7(), subprojectId],
+  return store.set(addOperationAtom, {
+    table: 'place_users',
+    operation: 'insert',
+    draft: {
+      place_user_id,
+      place_id: placeId,
+      role: 'reader',
+    },
+  })
+}
+
+export const createSubprojectTaxon = async ({ db, subprojectId }) => {
+  const subproject_taxon_id = uuidv7()
+  await db.query(
+    `insert into subproject_taxa (subproject_taxon_id, subproject_id) values ($1, $2)`,
+    [subproject_taxon_id, subprojectId],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'subproject_taxa',
+    operation: 'insert',
+    draft: {
+      subproject_taxon_id,
+      subproject_id: subprojectId,
+    },
+  })
+}
 
 export const createSubprojectReport = async ({
   db,
@@ -693,10 +727,16 @@ export const createSubprojectReport = async ({
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into subproject_reports (${columns}) values (${values}) returning subproject_report_id`,
+  await db.query(
+    `insert into subproject_reports (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'subproject_reports',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
 export const createCheck = async ({ db, projectId, placeId }) => {
@@ -719,23 +759,51 @@ export const createCheck = async ({ db, projectId, placeId }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
 
-  return db.query(
-    `insert into checks (${columns}) values (${values}) returning check_id`,
+  await db.query(
+    `insert into checks (${columns}) values (${values})`,
     Object.values(data),
   )
+
+  return store.set(addOperationAtom, {
+    table: 'checks',
+    operation: 'insert',
+    draft: data,
+  })
 }
 
-export const createCheckValue = async ({ db, checkId }) =>
-  db.query(
-    `insert into check_values (check_value_id, check_id) values ($1, $2) returning check_value_id`,
-    [uuidv7(), checkId],
+export const createCheckValue = async ({ db, checkId }) => {
+  const check_value_id = uuidv7()
+  await db.query(
+    `insert into check_values (check_value_id, check_id) values ($1, $2)`,
+    [check_value_id, checkId],
   )
 
-export const createCheckTaxon = async ({ db, checkId }) =>
-  db.query(
-    `insert into check_taxa (check_taxon_id, check_id) values ($1, $2) returning check_taxon_id`,
-    [uuidv7(), checkId],
+  return store.set(addOperationAtom, {
+    table: 'check_values',
+    operation: 'insert',
+    draft: {
+      check_value_id,
+      check_id: checkId,
+    },
+  })
+}
+
+export const createCheckTaxon = async ({ db, checkId }) => {
+  const check_taxon_id = uuidv7()
+  await db.query(
+    `insert into check_taxa (check_taxon_id, check_id) values ($1, $2)`,
+    [check_taxon_id, checkId],
   )
+
+  return store.set(addOperationAtom, {
+    table: 'check_taxa',
+    operation: 'insert',
+    draft: {
+      check_taxon_id,
+      check_id: checkId,
+    },
+  })
+}
 
 export const createAction = async ({ db, projectId, placeId }) => {
   // find fields with preset values on the data column
