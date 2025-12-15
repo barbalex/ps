@@ -31,14 +31,13 @@ export const ActionReportValues = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createActionReportValue({ db, actionReportId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createActionReportValue({ db, actionReportId })
+    if (!id) return
     navigate({
-      to: data.action_report_value_id,
+      to: id,
       params: (prev) => ({
         ...prev,
-        actionReportValueId: data.action_report_value_id,
+        actionReportValueId: id,
       }),
     })
   }

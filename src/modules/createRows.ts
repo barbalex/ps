@@ -972,7 +972,7 @@ export const createActionReportValue = async ({ db, actionReportId }) => {
     [action_report_value_id, actionReportId],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'action_report_values',
     operation: 'insert',
     draft: {
@@ -980,6 +980,8 @@ export const createActionReportValue = async ({ db, actionReportId }) => {
       action_report_id: actionReportId,
     },
   })
+
+  return action_report_value_id
 }
 
 export const createPlaceReport = async ({ db, projectId, placeId }) => {
