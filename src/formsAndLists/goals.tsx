@@ -23,12 +23,11 @@ export const Goals = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createGoal({ db, projectId, subprojectId })
-    const data = res?.rows?.[0]
-    if (!data) return
+    const id = await createGoal({ db, projectId, subprojectId })
+    if (!id) return
     navigate({
-      to: data.goal_id,
-      params: (prev) => ({ ...prev, goalId: data.goal_id }),
+      to: id,
+      params: (prev) => ({ ...prev, goalId: id }),
     })
   }
 

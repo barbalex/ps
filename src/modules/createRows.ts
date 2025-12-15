@@ -614,13 +614,15 @@ export const createGoal = async ({ db, projectId, subprojectId }) => {
     table: 'goals',
   })
 
+  const goal_id = uuidv7()
   const data = {
-    goal_id: uuidv7(),
+    goal_id,
     subproject_id: subprojectId,
     year: new Date().getFullYear(),
 
     ...presetData,
   }
+
   const columns = Object.keys(data).join(',')
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
@@ -631,11 +633,13 @@ export const createGoal = async ({ db, projectId, subprojectId }) => {
     Object.values(data),
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'goals',
     operation: 'insert',
     draft: data,
   })
+
+  return goal_id
 }
 
 export const createGoalReport = async ({ db, projectId, goalId }) => {
