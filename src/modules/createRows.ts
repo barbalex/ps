@@ -715,7 +715,7 @@ export const createSubprojectUser = async ({ db, subprojectId }) => {
     [subproject_user_id, subprojectId, 'reader'],
   )
 
-  return store.set(addOperationAtom, {
+  store.set(addOperationAtom, {
     table: 'subproject_users',
     operation: 'insert',
     draft: {
@@ -724,6 +724,8 @@ export const createSubprojectUser = async ({ db, subprojectId }) => {
       role: 'reader',
     },
   })
+
+  return subproject_user_id
 }
 
 export const createPlaceUser = async ({ placeId, db }) => {

@@ -22,10 +22,9 @@ export const SubprojectUsers = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const res = await createSubprojectUser({ subprojectId, db })
-    const data = res?.rows?.[0]
-    if (!data) return
-    navigate({ to: data.subproject_user_id })
+    const id = await createSubprojectUser({ subprojectId, db })
+    if (!id) return
+    navigate({ to: id })
   }
 
   return (
