@@ -56,7 +56,7 @@ const colorMap = {
 
 export const Notification = ({ notification }) => {
   const {
-    notification_id,
+    id,
     title,
     body,
     intent,
@@ -66,27 +66,20 @@ export const Notification = ({ notification }) => {
   } = notification
   const removeNotification = useSetAtom(removeNotificationAtom)
 
-  const onClickClose = () => removeNotification(notification_id)
+  const onClickClose = () => removeNotification(id)
 
   useEffect(() => {
     let timeoutId
     if (progress_percent === 100 || paused === false) {
-      timeoutId = setTimeout(() => removeNotification(notification_id), 500)
+      timeoutId = setTimeout(() => removeNotification(id), 500)
       return () => clearTimeout(timeoutId)
     } else if (timeout && paused === null) {
-      timeoutId = setTimeout(() => removeNotification(notification_id), timeout)
+      timeoutId = setTimeout(() => removeNotification(id), timeout)
     } else if (paused === true) {
       // do nothing - will do when notification is updated to paused === false
     }
     return () => timeoutId && clearTimeout(timeoutId)
-  }, [
-    notification_id,
-    paused,
-    progress_percent,
-    timeout,
-    notification,
-    removeNotification,
-  ])
+  }, [id, paused, progress_percent, timeout, notification, removeNotification])
 
   // TODO: add progress bar
   // https://react.fluentui.dev/?path=/docs/components-progressbar--default

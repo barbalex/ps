@@ -29,9 +29,9 @@ export const Notifications: React.FC = () => {
     .sort((a, b) => b.time - a.time)
     .slice(0, 4)
 
-  const onClickClose = () => {
+  const onClickCloseAll = () => {
     for (const n of notifications) {
-      removeNotification(n.notification_id)
+      removeNotification(n.id)
     }
   }
 
@@ -41,7 +41,7 @@ export const Notifications: React.FC = () => {
         <div style={containerStyle}>
           {notifications.map((n) => (
             <NotificationComponent
-              key={n.notification_id}
+              key={n.id}
               notification={n}
             />
           ))}
@@ -49,7 +49,7 @@ export const Notifications: React.FC = () => {
             <Button
               aria-label="Close"
               color="secondary"
-              onClick={onClickClose}
+              onClick={onClickCloseAll}
               title="Close all"
               size="small"
               edge="start"
@@ -62,7 +62,7 @@ export const Notifications: React.FC = () => {
       {/* <Button
         onClick={() => {
           db.query(
-            `INSERT INTO notifications (notification_id, title, intent, timeout) VALUES ('${uuidv7()}', 'Test', 'success', 3000)`,
+            `INSERT INTO notifications (id, title, intent, timeout) VALUES ('${uuidv7()}', 'Test', 'success', 3000)`,
           )
         }}
         size="small"

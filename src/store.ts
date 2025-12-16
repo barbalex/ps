@@ -317,7 +317,6 @@ export const notificationsAtom = atomWithStorage('notificationsAtom', [])
 export const updateNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, { id, draft }) => {
-    console.log('store.updateNotificationAtom', { id, draft })
     const notifications = get(notificationsAtom)
     const notification = notifications.splice(
       notifications.findIndex((n) => n.id === id),
@@ -335,7 +334,6 @@ export const updateNotificationAtom = atom(
 export const removeNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, id) => {
-    console.log('store.removeNotificationAtom, id:', id)
     const notifications = get(notificationsAtom)
     set(
       notificationsAtom,
@@ -346,7 +344,6 @@ export const removeNotificationAtom = atom(
 export const addNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, draft) => {
-    console.log('store.addNotificationAtom, draft:', draft)
     const notifications = get(notificationsAtom)
     const removeNotification = get(removeNotificationAtom)
     // do not stack same messages
@@ -373,12 +370,7 @@ export const addNotificationAtom = atom(
       // overwrite with passed in ones:
       ...draft,
     }
-    console.log('store.addNotificationAtom, notification:', notification)
     notifications.push(notification)
-    console.log(
-      'store.addNotificationAtom, setting notifications to:',
-      notifications,
-    )
     set(notificationsAtom, notifications)
     // remove after duration
     setTimeout(() => {

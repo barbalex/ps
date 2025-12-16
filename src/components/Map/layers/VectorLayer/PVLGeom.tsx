@@ -140,7 +140,7 @@ export const PVLGeom = ({ layer, display }) => {
   //   })
   //   const notificationData = res?.rows?.[0]
   //   notificationIds.current = [
-  //     notificationData.notification_id,
+  //     notificationData.id,
   //     ...notificationIds.current,
   //   ]
   // }

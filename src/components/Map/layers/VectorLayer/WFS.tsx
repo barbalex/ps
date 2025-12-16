@@ -215,7 +215,7 @@ export const WFS = ({ layer, layerPresentation }) => {
   //   })
   //   const notif2 = notif2Res?.rows?.[0]
   //   notificationIds.current = [
-  //     notif2.notification_id,
+  //     notif2.id,
   //     ...notificationIds.current,
   //   ]
   // }
