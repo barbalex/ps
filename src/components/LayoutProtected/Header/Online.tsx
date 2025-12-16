@@ -22,16 +22,23 @@ export const Online = () => {
     : `Sie sind offline`
 
   return (
-    <>
+    <div className={styles.container}>
       <Tooltip content={title}>
         <Button
           size="medium"
           icon={online ? <NetworkOn /> : <NetworkOff />}
           onClick={() => console.log('Online status clicked')}
           className={styles.button}
-        />
+        >
+          <CounterBadge
+            appearance="outline"
+            size="extra-small"
+            className={styles.badge}
+          >
+            10
+          </CounterBadge>
+        </Button>
       </Tooltip>
-      <CounterBadge>{operationsQueue.length}</CounterBadge>
-    </>
+    </div>
   )
 }
