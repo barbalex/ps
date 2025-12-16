@@ -965,28 +965,6 @@ export const startSyncing = async (db) => {
         table: 'layer_presentations',
         primaryKey: ['layer_presentation_id'],
       },
-      notification_intents: {
-        shape: {
-          url,
-          params: {
-            table: 'notification_intents',
-          },
-        },
-        liveSse: true,
-        table: 'notification_intents',
-        primaryKey: ['intent'],
-      },
-      notifications: {
-        shape: {
-          url,
-          params: {
-            table: 'notifications',
-          },
-        },
-        liveSse: true,
-        table: 'notifications',
-        primaryKey: ['notification_id'],
-      },
       chart_types: {
         shape: {
           url,

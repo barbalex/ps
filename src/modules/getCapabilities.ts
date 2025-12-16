@@ -3,7 +3,6 @@ import axios from 'redaxios'
 import { useSetAtom } from 'jotai'
 
 import { xmlToJson } from './xmlToJson.ts'
-import { createNotification } from './createRows.ts'
 import { setShortTermOnlineFromFetchError } from './setShortTermOnlineFromFetchError.ts'
 import { addNotificationAtom, updateNotificationAtom, store } from '../store.ts'
 

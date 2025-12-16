@@ -1484,22 +1484,3 @@ export const createOccurrence = ({ occurrenceImportId, data = null }) => ({
   occurrence_import_id: occurrenceImportId,
   data,
 })
-
-export const createNotification = async ({
-  title = null,
-  body = null,
-  // 'success' | 'error' | 'warning' | 'info'
-  intent = 'info',
-  timeout = 10000,
-  paused = null,
-  db,
-}) => {
-  const notification_id = uuidv7()
-  await db.query(
-    `INSERT INTO notifications (notification_id, title, body, intent, timeout, paused) VALUES ($1, $2, $3, $4, $5, $6) returning notification_id`,
-    [notification_id, title, body, intent, timeout, paused],
-  )
-
-
-  return notification_id
-}
