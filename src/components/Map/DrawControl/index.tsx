@@ -1,5 +1,5 @@
 import { useLocation } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { DrawControlComponent } from './DrawControl.tsx'
 import {
@@ -15,9 +15,9 @@ import {
 // - the active table is actions AND editingActionGeometry is the id of the active action
 // - maybe later more cases
 export const DrawControl = () => {
-  const [editingPlaceGeometry] = useAtom(editingPlaceGeometryAtom)
-  const [editingCheckGeometry] = useAtom(editingCheckGeometryAtom)
-  const [editingActionGeometry] = useAtom(editingActionGeometryAtom)
+  const editingPlaceGeometry = useAtomValue(editingPlaceGeometryAtom)
+  const editingCheckGeometry = useAtomValue(editingCheckGeometryAtom)
+  const editingActionGeometry = useAtomValue(editingActionGeometryAtom)
 
   const pathArray = useLocation()
     .pathname.split('/')
