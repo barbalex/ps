@@ -2,13 +2,12 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
-import { createNotification } from '../../../../modules/createRows.ts'
 import { SliderField } from '../../../shared/SliderField.tsx'
 import { SwitchField } from '../../../shared/SwitchField.tsx'
 import { TextField } from '../../../shared/TextField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Loading } from '../../../shared/Loading.tsx'
-import { addOperationAtom } from '../../../../store.ts'
+import { addOperationAtom, addNotificationAtom } from '../../../../store.ts'
 
 const containerStyle = {
   padding: '1rem',
@@ -17,6 +16,7 @@ const containerStyle = {
 export const LayerPresentationForm = ({ layer }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
 
   const res = useLiveQuery(
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
@@ -28,10 +28,9 @@ export const LayerPresentationForm = ({ layer }) => {
   const onChange = (e, data) => {
     if (!row?.layer_presentation_id) {
       // if no presentation exists, create notification
-      createNotification({
+      addNotification({
         title: 'Layer presentation not found',
         type: 'warning',
-        db,
       })
     }
     const { name, value } = getValueFromChange(e, data)
@@ -59,10 +58,7 @@ export const LayerPresentationForm = ({ layer }) => {
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
-      <div
-        style={containerStyle}
-        className="form-container-embedded"
-      >
+      <div style={containerStyle} className="form-container-embedded">
         <SliderField
           label="Opacity (%)"
           name="opacity_percent"
