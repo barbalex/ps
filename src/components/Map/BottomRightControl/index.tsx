@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { UiButton } from './UiButton.tsx'
 import { VerticalButtons } from './VerticalButtons/index.tsx'
@@ -22,7 +22,7 @@ const containerStyle = {
 }
 
 export const BottomRightControl = () => {
-  const [hideMapUi] = useAtom(mapHideUiAtom)
+  const hideMapUi = useAtomValue(mapHideUiAtom)
 
   return (
     <div style={containerStyle}>
