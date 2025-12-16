@@ -9,7 +9,6 @@ import { useSetAtom } from 'jotai'
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
-import { createNotification } from '../../../../modules/createRows.ts'
 import {
   addNotificationAtom,
   removeNotificationByIdAtom,
