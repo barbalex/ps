@@ -9,8 +9,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createCheck } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { createNotification } from '../../modules/createRows.ts'
-import { tabsAtom, mapBoundsAtom } from '../../store.ts'
+import { tabsAtom, mapBoundsAtom, addNotificationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -20,6 +19,7 @@ export const Header = ({ autoFocusRef, from }) => {
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
   const { projectId, placeId, placeId2, checkId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -87,11 +87,10 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const alertNoGeometry = () =>
-    createNotification({
+    addNotification({
       title: 'No geometry',
       body: `To zoom to a check, create it's geometry first`,
       intent: 'error',
-      db,
     })
 
   const onClickZoomTo = async () => {
