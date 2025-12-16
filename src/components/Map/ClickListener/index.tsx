@@ -1,7 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
-import { useSetAtom, useAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
@@ -15,8 +15,8 @@ import {
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
-  const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
-  const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
+  const wmsLayersFilter = useAtomValue(wmsLayersFilterAtom)
+  const vectorLayersFilter = useAtomValue(vectorLayersFilterAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
