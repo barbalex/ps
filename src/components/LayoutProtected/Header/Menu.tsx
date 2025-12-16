@@ -20,6 +20,7 @@ import { pipe } from 'remeda'
 import { controls } from '../../../styles.ts'
 import { on } from '../../../css.ts'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
+import { Online } from './Online.tsx'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -181,6 +182,7 @@ export const Menu = () => {
           />
         </Tooltip>
       )}
+      <Online />
       <Tooltip
         content={
           !isAuthenticated ? 'Login'

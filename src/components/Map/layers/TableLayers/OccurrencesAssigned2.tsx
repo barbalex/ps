@@ -1,12 +1,12 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'
 import { draggableLayersAtom } from '../../../../store.ts'
 
 export const OccurrencesAssigned2 = ({ layerPresentation }) => {
-  const [draggableLayers] = useAtom(draggableLayersAtom)
+  const draggableLayers = useAtomValue(draggableLayersAtom)
   const { subprojectId } = useParams({ strict: false })
   const res = useLiveQuery(
     `

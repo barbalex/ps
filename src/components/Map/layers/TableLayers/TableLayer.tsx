@@ -3,7 +3,7 @@ import { GeoJSON, useMapEvent } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
@@ -19,11 +19,11 @@ import {
 } from '../../../../store.ts'
 
 export const TableLayer = ({ data, layerPresentation }) => {
-  const [confirmAssigningToSingleTarget] = useAtom(
+  const confirmAssigningToSingleTarget = useAtomValue(
     confirmAssigningToSingleTargetAtom,
   )
-  const [droppableLayer] = useAtom(droppableLayerAtom)
-  const [draggableLayers] = useAtom(draggableLayersAtom)
+  const droppableLayer = useAtomValue(droppableLayerAtom)
+  const draggableLayers = useAtomValue(draggableLayersAtom)
   const setPlacesToAssignOccurrenceTo = useSetAtom(
     placesToAssignOccurrenceToAtom,
   )

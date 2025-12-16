@@ -3,7 +3,7 @@ import { useResizeDetector } from 'react-resize-detector'
 import { InlineDrawer, Button } from '@fluentui/react-components'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { useAnimate } from 'framer-motion'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
@@ -27,7 +27,7 @@ const innerContainerStyle = {
 }
 
 export const LeftMenuDrawer = ({ containerRef }) => {
-  const [mapHideUi] = useAtom(mapHideUiAtom)
+  const mapHideUi = useAtomValue(mapHideUiAtom)
 
   const { width: containerWidth } = useResizeDetector({
     targetRef: containerRef,

@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { WMS } from './WMS.tsx'
 // import { WMTSOffline } from './WMTSOffline'
@@ -6,7 +6,7 @@ import { LocalMap } from './LocalMap.tsx'
 import { showLocalMapAtom } from '../../../../store.ts'
 
 export const WmsLayerComponent = ({ layerPresentation, layer }) => {
-  const [showLocalMap] = useAtom(showLocalMapAtom)
+  const showLocalMap = useAtomValue(showLocalMapAtom)
 
   if (layer.type === 'wmts') {
     return (
