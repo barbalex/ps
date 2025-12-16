@@ -6,7 +6,7 @@ import { Notification as NotificationComponent } from './Notification.tsx'
 import {
   notificationsAtom,
   removeNotificationAtom,
-  addNotificationAtom,
+  // addNotificationAtom,
 } from '../../store.ts'
 
 // z-index needs to cover map, thus so hight
@@ -24,7 +24,7 @@ const buttonStyle = {
 export const Notifications: React.FC = () => {
   const notifications = useAtomValue(notificationsAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
+  // const addNotification = useSetAtom(addNotificationAtom)
 
   // sort by time descending
   // get the first four
@@ -64,7 +64,7 @@ export const Notifications: React.FC = () => {
           )}
         </div>
       )}
-      <Button
+      {/* <Button
         onClick={() =>
           addNotification({
             title: 'Test notification',
@@ -75,7 +75,7 @@ export const Notifications: React.FC = () => {
         size="small"
       >
         Make a notification
-      </Button>
+      </Button> */}
     </>
   )
 }
