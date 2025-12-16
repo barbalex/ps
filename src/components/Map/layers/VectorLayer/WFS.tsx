@@ -25,9 +25,11 @@ import {
 } from '@fluentui/react-components'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
-import { createNotification } from '../../../../modules/createRows.ts'
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
-import { addOperationAtom } from '../../../../store.ts'
+import {
+  addNotificationAtom,
+  removeNotificationByIdAtom,
+} from '../../../../store.ts'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -63,7 +65,8 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
 }
 
 export const WFS = ({ layer, layerPresentation }) => {
-  const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
+  const removeNotificationById = useSetAtom(removeNotificationByIdAtom)
 
   const db = usePGlite()
   const [error, setError] = useState()
@@ -72,24 +75,12 @@ export const WFS = ({ layer, layerPresentation }) => {
   const display = layer.vector_layer_displays?.[0]
   const wfsService = layer.wfs_services
 
-  const removeNotifs = useCallback(async () => {
-    await db.query(
-      `DELETE FROM notifications WHERE notification_id = ANY($1)`,
-      [notificationIds.current],
-    )
-    // remove notifications from db
+  const removeNotifs = useCallback(() => {
     for (const id of notificationIds.current) {
-      await addOperation({
-        table: 'notifications',
-        rowIdName: 'notification_id',
-        rowId: id,
-        operation: 'delete',
-        draft: null,
-        prev: null,
-      })
+      removeNotificationById(id)
     }
     notificationIds.current = []
-  }, [db, addOperation])
+  }, [removeNotificationById])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
@@ -110,11 +101,10 @@ export const WFS = ({ layer, layerPresentation }) => {
       const defaultCrs = resCrs?.rows?.[0]
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
-      const notificationId = await createNotification({
+      const notificationId = await addNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
-        db,
       })
       notificationIds.current = [notificationId, ...notificationIds.current]
       let res
@@ -138,18 +128,7 @@ export const WFS = ({ layer, layerPresentation }) => {
         })
       } catch (error) {
         setShortTermOnlineFromFetchError(error)
-        await db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
-          notificationId,
-        ])
-        // remove notification from db
-        addOperation({
-          table: 'notifications',
-          rowIdName: 'notification_id',
-          rowId: notificationId,
-          operation: 'delete',
-          draft: null,
-          prev: null,
-        })
+        removeNotificationById(notificationId)
         console.error('VectorLayerWFS, error:', {
           url: error?.url,
           error,
@@ -159,11 +138,10 @@ export const WFS = ({ layer, layerPresentation }) => {
           type: error?.type,
         })
         setError(error.data)
-        return await createNotification({
+        return addNotification({
           title: `Fehler beim Laden der Geometrien für ${layer.label}`,
           body: error.message,
           intent: 'error',
-          db,
         })
       }
       removeNotifs()
@@ -268,8 +246,8 @@ export const WFS = ({ layer, layerPresentation }) => {
 
           const IconComponent = icons[display?.marker_symbol]
 
-          return IconComponent ?
-              L.marker(latlng, {
+          return IconComponent
+            ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -284,19 +262,12 @@ export const WFS = ({ layer, layerPresentation }) => {
             : L.marker(latlng)
         }}
       />
-      <Dialog
-        onOpenChange={() => setError(null)}
-        open={!!error}
-      >
+      <Dialog onOpenChange={() => setError(null)} open={!!error}>
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent style={dialogContentStyle}>
-              <XMLViewer
-                style={xmlViewerStyle}
-                xml={error}
-                theme={xmlTheme}
-              />
+              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
             </DialogContent>
             <DialogActions>
               <Button
