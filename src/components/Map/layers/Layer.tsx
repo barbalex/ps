@@ -1,6 +1,6 @@
 import { Pane } from 'react-leaflet'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useParams } from '@tanstack/react-router'
 
 import { OsmColor } from './OsmColor.tsx'
@@ -19,7 +19,7 @@ export const Layer = ({ layerPresentationId, index }) => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
-  const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const mapLayerSorting = useAtomValue(mapLayerSortingAtom)
   const resWms = useLiveQuery(
     `
     SELECT 
