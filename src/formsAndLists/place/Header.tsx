@@ -10,16 +10,22 @@ import {
   createPlace,
   createVectorLayer,
   createVectorLayerDisplay,
-  createNotification,
   createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { tabsAtom, mapBoundsAtom, addOperationAtom } from '../../store.ts'
+import {
+  tabsAtom,
+  mapBoundsAtom,
+  addOperationAtom,
+  addNotificationAtom,
+} from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
   from: string
+  nameSingular: string
+  namePlural: string
 }
 
 export const Header = ({
@@ -36,6 +42,7 @@ export const Header = ({
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
@@ -162,11 +169,10 @@ export const Header = ({
   }
 
   const alertNoGeometry = () =>
-    createNotification({
+    addNotification({
       title: 'No geometry',
       body: `To zoom to a place, create it's geometry first`,
       intent: 'error',
-      db,
     })
 
   const onClickZoomTo = async () => {
