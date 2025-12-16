@@ -4,7 +4,7 @@ import 'proj4'
 import 'proj4leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -34,9 +34,9 @@ const mapContainerStyle = {
 }
 
 export const Map = () => {
-  const [mapShowCenter] = useAtom(mapShowCenterAtom)
-  const [mapIsLocating] = useAtom(mapLocateAtom)
-  const [mapInfo] = useAtom(mapInfoAtom)
+  const mapShowCenter = useAtomValue(mapShowCenterAtom)
+  const mapIsLocating = useAtomValue(mapLocateAtom)
+  const mapInfo = useAtomValue(mapInfoAtom)
 
   const mapRef = useRef()
 
