@@ -9,8 +9,12 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createAction } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { createNotification } from '../../modules/createRows.ts'
-import { tabsAtom, mapBoundsAtom, addOperationAtom } from '../../store.ts'
+import {
+  tabsAtom,
+  mapBoundsAtom,
+  addOperationAtom,
+  addNotificationAtom,
+} from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -21,6 +25,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
 
   const { projectId, placeId, placeId2, actionId } = useParams({ from })
   const navigate = useNavigate()
@@ -83,22 +88,19 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = actions.findIndex((p) => p.action_id === actionId)
     const previous = actions[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.action_id}/action`
+      to: isForm
+        ? `../../${previous.action_id}/action`
         : `../${previous.action_id}`,
       params: (prev) => ({ ...prev, actionId: previous.action_id }),
     })
   }
 
-  const alertNoGeometry = () => {
-    createNotification({
+  const alertNoGeometry = () =>
+    addNotification({
       title: 'No geometry',
       body: `To zoom to an action, create it's geometry first`,
       intent: 'error',
-      db,
     })
-  }
 
   const onClickZoomTo = async () => {
     const res = await db.query(
