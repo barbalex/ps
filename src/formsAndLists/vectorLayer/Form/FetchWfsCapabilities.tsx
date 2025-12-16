@@ -3,11 +3,12 @@ import { Button, Spinner } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
+import { createWfsService } from '../../../modules/createRows.ts'
 import {
-  createNotification,
-  createWfsService,
-} from '../../../modules/createRows.ts'
-import { addOperationAtom } from '../../../store.ts'
+  addOperationAtom,
+  addNotificationAtom,
+  updateNotificationAtom,
+} from '../../../store.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getWfsCapabilitiesData.ts'),
@@ -26,6 +27,8 @@ export const FetchWfsCapabilities = ({
   const db = usePGlite()
   const worker = useWorker(createWorker)
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
+  const updateNotification = useSetAtom(updateNotificationAtom)
 
   const res = useLiveQuery(
     `SELECT count(*) FROM wfs_service_layers WHERE wfs_service_id = $1`,
@@ -96,11 +99,10 @@ export const FetchWfsCapabilities = ({
 
     // show loading indicator
     setFetching(true)
-    const notificationId = await createNotification({
+    const notificationId = await addNotification({
       title: `Loading capabilities for ${urlTrimmed}`,
       intent: 'info',
       paused: true,
-      db,
     })
 
     // fetch capabilities
@@ -116,25 +118,19 @@ export const FetchWfsCapabilities = ({
         error?.message ?? error,
       )
       // surface error to user
-      await createNotification({
+      await addNotification({
         title: `Error loading capabilities for ${urlTrimmed}`,
         body: error?.message ?? error,
         intent: 'error',
         paused: false,
-        db,
       })
     }
     setFetching(false)
-    await db.query(
-      `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
-      [notificationId],
-    )
-    addOperation({
-      table: 'notifications',
-      rowIdName: 'notification_id',
-      rowId: notificationId,
-      operation: 'update',
-      draft: { paused: false, timeout: 500 },
+    updateNotification(notificationId, {
+      title: `Loaded capabilities for ${urlTrimmed}`,
+      intent: 'success',
+      paused: false,
+      timeout: 500,
     })
   }
 

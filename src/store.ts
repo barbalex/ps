@@ -314,6 +314,20 @@ export const pgliteDbAtom = atom(null)
 // - actionName?
 // - actionArgument?
 export const notificationsAtom = atomWithStorage('notificationsAtom', new Map())
+export const updateNotificationAtom = atom(
+  (get) => get(notificationsAtom),
+  (get, set, { id, draft }) => {
+    const notifications = get(notificationsAtom)
+    const notification = notifications.get(id)
+    if (!notification) return
+    const updatedNotification = {
+      ...notification,
+      ...draft,
+    }
+    notifications.set(id, updatedNotification)
+    set(notificationsAtom, notifications)
+  },
+)
 export const removeNotificationByIdAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, id) => {
@@ -344,6 +358,10 @@ export const addNotificationAtom = atom(
       allDismissable: true,
       title: undefined,
       body: undefined,
+      // paused: If true, the notification is not dismissed according to timeout. Instead, it is dismissed when pause is updated to false. A spinner is shown.
+      paused: false,
+      // Progress of a long running task in %. Only passed, if progress can be measured. A progress bar is shown.
+      progress: undefined,
       // overwrite with passed in ones:
       ...draft,
     }
