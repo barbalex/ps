@@ -4,12 +4,16 @@ import { useMap } from 'react-leaflet'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { createNotification } from '../../../../modules/createRows.ts'
-import { showLocalMapAtom, localMapValuesAtom } from '../../../../store.ts'
+import {
+  showLocalMapAtom,
+  localMapValuesAtom,
+  addNotificationAtom,
+} from '../../../../store.ts'
 
 export const WMTSOffline = ({ layer }) => {
   const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)
   const setLocalMapValues = useSetAtom(localMapValuesAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
   const map = useMap()
   const layerPresentation = layer.layer_presentations?.[0]
 
@@ -38,11 +42,10 @@ export const WMTSOffline = ({ layer }) => {
       try {
         control.saveMap({ layer, map })
       } catch (error) {
-        createNotification({
+        addNotification({
           title: `Fehler beim Speichern der Karten für ${layer.label}`,
           body: error.message,
           intent: 'error',
-          db,
         })
       }
     }

@@ -1500,18 +1500,6 @@ export const createNotification = async ({
     [notification_id, title, body, intent, timeout, paused],
   )
 
-  store.set(addOperationAtom, {
-    table: 'notifications',
-    operation: 'insert',
-    draft: {
-      notification_id,
-      title,
-      body,
-      intent,
-      timeout,
-      paused,
-    },
-  })
 
   return notification_id
 }
