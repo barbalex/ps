@@ -22,7 +22,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
-import { createNotification } from '../../../../../../modules/createRows.ts'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
 import {
   panelStyle,
@@ -39,6 +38,7 @@ import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
   addOperationAtom,
+  addNotificationAtom,
 } from '../../../../../../store.ts'
 import { on } from '../../../../../../css.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
@@ -53,6 +53,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     mapDrawerVectorLayerDisplayAtom,
   )
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
 
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
@@ -85,10 +86,9 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const onChangeActive = async () => {
     if (!layer.layer_presentation_id) {
       // if no presentation exists, create notification
-      return createNotification({
+      return addNotification({
         title: 'Layer presentation not found',
         type: 'warning',
-        db,
       })
     }
     db.query(
@@ -157,11 +157,11 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         size="extra-large"
         expandIcon={designing ? undefined : null}
         style={
-          isOpen ?
-            {
-              backgroundColor: 'rgba(103, 216, 101, 0.1)',
-            }
-          : {}
+          isOpen
+            ? {
+                backgroundColor: 'rgba(103, 216, 101, 0.1)',
+              }
+            : {}
         }
       >
         {canDrag && <DragHandle ref={dragHandleRef} />}
@@ -197,10 +197,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         >
           <Tab value="overall-displays">Overall Display</Tab>
           {isVectorLayer && (
-            <Tab
-              value="feature-displays"
-              onClick={onClickFeatureDisplays}
-            >
+            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
               Feature Displays
             </Tab>
           )}
@@ -225,22 +222,25 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           </Menu>
         </TabList>
         {tab === 'config' &&
-          (isVectorLayer ?
+          (isVectorLayer ? (
             <VectorLayerEditing layer={layer} />
-          : <WmsLayerEditing layer={layer} />)}
+          ) : (
+            <WmsLayerEditing layer={layer} />
+          ))}
         {tab === 'overall-displays' && <LayerPresentationForm layer={layer} />}
         {tab === 'feature-displays' && isVectorLayer && (
           <>
-            {vectorLayerDisplayId ?
+            {vectorLayerDisplayId ? (
               <VectorLayerDisplay
                 vectorLayerDisplayId={vectorLayerDisplayId}
                 from={pathname}
               />
-            : <VectorLayerDisplays
+            ) : (
+              <VectorLayerDisplays
                 vectorLayerId={layer.vector_layer_id}
                 from={pathname}
               />
-            }
+            )}
           </>
         )}
       </AccordionPanel>
