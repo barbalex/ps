@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useSearch } from '@tanstack/react-router'
 
 import { Main } from './Main.tsx'
@@ -16,7 +16,7 @@ const from = '/data'
 
 // memoizing this component creates error
 export const Layout = () => {
-  const [mapIsMaximized] = useAtom(mapMaximizedAtom)
+  const mapIsMaximized = useAtomValue(mapMaximizedAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
