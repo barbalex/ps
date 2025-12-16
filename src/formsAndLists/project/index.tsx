@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 
@@ -10,19 +10,14 @@ import { ProjectForm as Form } from './Form.tsx'
 import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import {
-  designingAtom,
-  addOperationAtom,
-  notificationsAtom,
-} from '../../store.ts'
+import { designingAtom, addOperationAtom } from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
 
 export const Project = ({ from }) => {
-  const [designing] = useAtom(designingAtom)
+  const designing = useAtomValue(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const [notifications] = useAtom(notificationsAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
   const { projectTab } = useSearch({ from })
@@ -63,14 +58,6 @@ export const Project = ({ from }) => {
       prev: { ...row },
     })
   }
-
-  console.log('Project, notifications:', notifications)
-  // addNotification({
-  //   title: 'Project component rendered',
-  //   body: `Project ID: ${projectId}`,
-  //   intent: 'info',
-  //   timeout: 3000,
-  // })
 
   if (!res) return <Loading />
 
