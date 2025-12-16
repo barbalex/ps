@@ -1,15 +1,13 @@
 import { useMap, WMSTileLayer } from 'react-leaflet'
 import { useDebouncedCallback } from 'use-debounce'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { onTileError } from './onTileError.ts'
 
 export const WMS = ({ layerPresentation, layer }) => {
   const map = useMap()
-  const db = usePGlite()
 
   const onTileErrorDebounced = useDebouncedCallback(
-    onTileError.bind(this, db, map, layer),
+    onTileError.bind(this, map, layer),
     600,
   )
 
