@@ -313,44 +313,52 @@ export const pgliteDbAtom = atom(null)
 // - actionLabel?
 // - actionName?
 // - actionArgument?
-export const notificationsAtom = atomWithStorage('notificationsAtom', new Map())
+export const notificationsAtom = atomWithStorage('notificationsAtom', [])
 export const updateNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, { id, draft }) => {
+    console.log('store.updateNotificationAtom', { id, draft })
     const notifications = get(notificationsAtom)
-    const notification = notifications.get(id)
+    const notification = notifications.splice(
+      notifications.findIndex((n) => n.id === id),
+      1,
+    )[0]
     if (!notification) return
     const updatedNotification = {
       ...notification,
       ...draft,
     }
-    notifications.set(id, updatedNotification)
+    notifications.push(updatedNotification)
     set(notificationsAtom, notifications)
   },
 )
 export const removeNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, id) => {
-    // TODO:
+    console.log('store.removeNotificationAtom, id:', id)
     const notifications = get(notificationsAtom)
-    notifications.delete(id)
-    set(notificationsAtom, notifications)
+    set(
+      notificationsAtom,
+      notifications.filter((n) => n.id !== id),
+    )
   },
 )
 export const addNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, draft) => {
+    console.log('store.addNotificationAtom, draft:', draft)
     const notifications = get(notificationsAtom)
-    const removeNotificationById = get(removeNotificationAtom)
+    const removeNotification = get(removeNotificationAtom)
     // do not stack same messages
-    const notificationsWithSameMessage = Array.from(
-      notifications.values(),
-    ).filter((n) => n.message === draft.message)
+    const notificationsWithSameMessage = notifications.filter(
+      (n) => n.body === draft.body,
+    )
     if (notificationsWithSameMessage.length > 0) return
 
+    const id = draft.id ?? uuidv7()
     const notification = {
       // set default values
-      id: uuidv7(),
+      id,
       time: Date.now(),
       duration: 10000, // standard value: 10000
       intent: 'info', // 'success' | 'error' | 'warning' | 'info'
@@ -365,11 +373,16 @@ export const addNotificationAtom = atom(
       // overwrite with passed in ones:
       ...draft,
     }
-    notifications.set(notification.id, notification)
+    console.log('store.addNotificationAtom, notification:', notification)
+    notifications.push(notification)
+    console.log(
+      'store.addNotificationAtom, setting notifications to:',
+      notifications,
+    )
     set(notificationsAtom, notifications)
     // remove after duration
     setTimeout(() => {
-      set(removeNotificationAtom, removeNotificationById(notification.id))
+      set(removeNotificationAtom, notification.id)
     }, notification.duration)
     return notification.id
   },

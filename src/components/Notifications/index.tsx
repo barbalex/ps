@@ -1,11 +1,10 @@
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 // import { uuidv7 } from '@kripod/uuidv7'
 
 import { Notification as NotificationComponent } from './Notification.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { notificationsAtom, removeNotificationAtom } from '../../store.ts'
 
 // z-index needs to cover map, thus so hight
 const containerStyle = {
@@ -20,21 +19,20 @@ const buttonStyle = {
 }
 
 export const Notifications: React.FC = () => {
-  const db = usePGlite()
-  const addOperation = useSetAtom(addOperationAtom)
+  const [allNotifications] = useAtom(notificationsAtom)
+  const removeNotification = useSetAtom(removeNotificationAtom)
+  console.log('Notifications, allNotifications:', allNotifications)
 
-  // get the oldest four notification first
-  const res = useLiveQuery(
-    `SELECT * FROM notifications ORDER BY notification_id DESC LIMIT 4`,
-  )
-  const notifications = res?.rows ?? []
+  // sort by time descending
+  // get the first four
+  const notifications = allNotifications
+    .sort((a, b) => b.time - a.time)
+    .slice(0, 4)
 
   const onClickClose = () => {
-    db.query(`DELETE FROM notifications`)
-    addOperation({
-      table: 'notifications',
-      operation: 'deleteAll',
-    })
+    for (const n of notifications) {
+      removeNotification(n.notification_id)
+    }
   }
 
   return (

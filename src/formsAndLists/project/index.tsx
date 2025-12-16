@@ -10,7 +10,12 @@ import { ProjectForm as Form } from './Form.tsx'
 import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { designingAtom, addOperationAtom } from '../../store.ts'
+import {
+  designingAtom,
+  addOperationAtom,
+  addNotificationAtom,
+  notificationsAtom,
+} from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
@@ -18,6 +23,8 @@ import '../../form.css'
 export const Project = ({ from }) => {
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const [notifications] = useAtom(notificationsAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
   const { projectTab } = useSearch({ from })
@@ -58,6 +65,14 @@ export const Project = ({ from }) => {
       prev: { ...row },
     })
   }
+
+  console.log('Project, notifications:', notifications)
+  addNotification({
+    title: 'Project component rendered',
+    body: `Project ID: ${projectId}`,
+    intent: 'info',
+    timeout: 3000,
+  })
 
   if (!res) return <Loading />
 
