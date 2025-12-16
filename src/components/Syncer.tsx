@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useCorbado } from '@corbado/react'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { sqlInitializingAtom } from '../store.ts'
@@ -9,7 +9,7 @@ import { startSyncing } from '../modules/startSyncing.ts'
 export const Syncer = () => {
   const db = usePGlite()
   const [sync, setSync] = useState(null)
-  const [sqlInitializing] = useAtom(sqlInitializingAtom)
+  const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   const { user: authUser } = useCorbado()
 
