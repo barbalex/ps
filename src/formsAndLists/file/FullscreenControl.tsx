@@ -2,19 +2,18 @@ import { useCallback, useEffect, useState } from 'react'
 import { FaExpandArrowsAlt, FaCompressArrowsAlt } from 'react-icons/fa'
 import screenfull from 'screenfull'
 import { Button } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 
-import { createNotification } from '../../modules/createRows.ts'
+import { addNotificationAtom } from '../../store.ts'
 
 export const FullscreenControl = ({ previewRef }) => {
-  const db = usePGlite()
+  const addNotification = useSetAtom(addNotificationAtom)
 
   if (!screenfull.isEnabled) {
-    createNotification({
+    addNotification({
       title: 'Fullscreen not supported',
       body: `Your browser or device does not support fullscreen mode (iPhones generally don't)`,
       intent: 'warning',
-      db,
     })
 
     return null
