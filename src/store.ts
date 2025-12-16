@@ -339,9 +339,11 @@ export const addNotificationAtom = atom(
       id: uuidv7(),
       time: Date.now(),
       duration: 10000, // standard value: 10000
+      intent: 'info', // 'success' | 'error' | 'warning' | 'info'
       dismissable: true,
       allDismissable: true,
-      type: 'error',
+      title: undefined,
+      body: undefined,
       // overwrite with passed in ones:
       ...draft,
     }

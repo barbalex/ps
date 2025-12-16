@@ -10,36 +10,29 @@ import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerD
 import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
-import { addOperationAtom } from '../../../../store.ts'
+import {
+  addNotificationAtom,
+  removeNotificationByIdAtom,
+} from '../../../../store.ts'
 
 // const bboxBuffer = 0.01
 
 export const PVLGeom = ({ layer, display }) => {
   const db = usePGlite()
   const layerPresentation = layer.layer_presentations?.[0]
-  const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
+  const removeNotificationById = useSetAtom(removeNotificationByIdAtom)
 
   const [data, setData] = useState()
 
   const notificationIds = useRef([])
 
   const removeNotifs = useCallback(async () => {
-    db.query(`DELETE FROM notifications WHERE notification_id = ANY($1)`, [
-      notificationIds.current,
-    ])
-    // loop over notificationIds and remove from db
     for (const notificationId of notificationIds.current) {
-      await addOperation({
-        table: 'notifications',
-        rowIdName: 'notification_id',
-        rowId: notificationId,
-        operation: 'delete',
-        draft: null,
-        prev: null,
-      })
+      removeNotificationById(notificationId)
     }
     notificationIds.current = []
-  }, [db, addOperation])
+  }, [removeNotificationById])
 
   const map = useMap()
 
@@ -48,11 +41,9 @@ export const PVLGeom = ({ layer, display }) => {
   const fetchData = useCallback(
     async ({ bounds }) => {
       removeNotifs()
-      const notificationId = await createNotification({
+      const notificationId = addNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
-        timeout: 100000,
-        db,
       })
       notificationIds.current = [notificationId, ...notificationIds.current]
 
@@ -92,6 +83,7 @@ export const PVLGeom = ({ layer, display }) => {
     },
     [
       removeNotifs,
+      addNotification,
       layer.label,
       layer.vector_layer_id,
       layer.max_features,
@@ -181,10 +173,7 @@ export const PVLGeom = ({ layer, display }) => {
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
-            <Popup
-              layersData={layersData}
-              mapSize={mapSize}
-            />,
+            <Popup layersData={layersData} mapSize={mapSize} />,
           )
           _layer.bindPopup(popupContent)
         }}
@@ -209,8 +198,9 @@ export const PVLGeom = ({ layer, display }) => {
                 />,
               ),
             }),
-            opacity:
-              display.opacity_percent ? display.opacity_percent / 100 : 0,
+            opacity: display.opacity_percent
+              ? display.opacity_percent / 100
+              : 0,
           })
         }}
       />
