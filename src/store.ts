@@ -328,7 +328,7 @@ export const updateNotificationAtom = atom(
     set(notificationsAtom, notifications)
   },
 )
-export const removeNotificationByIdAtom = atom(
+export const removeNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, id) => {
     // TODO:
@@ -341,7 +341,7 @@ export const addNotificationAtom = atom(
   (get) => get(notificationsAtom),
   (get, set, draft) => {
     const notifications = get(notificationsAtom)
-    const removeNotificationById = get(removeNotificationByIdAtom)
+    const removeNotificationById = get(removeNotificationAtom)
     // do not stack same messages
     const notificationsWithSameMessage = Array.from(
       notifications.values(),
@@ -369,7 +369,7 @@ export const addNotificationAtom = atom(
     set(notificationsAtom, notifications)
     // remove after duration
     setTimeout(() => {
-      set(removeNotificationByIdAtom, removeNotificationById(notification.id))
+      set(removeNotificationAtom, removeNotificationById(notification.id))
     }, notification.duration)
     return notification.id
   },

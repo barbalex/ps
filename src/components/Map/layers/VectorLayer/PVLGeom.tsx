@@ -11,7 +11,7 @@ import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import {
   addNotificationAtom,
-  removeNotificationByIdAtom,
+  removeNotificationAtom,
 } from '../../../../store.ts'
 
 // const bboxBuffer = 0.01
@@ -20,7 +20,7 @@ export const PVLGeom = ({ layer, display }) => {
   const db = usePGlite()
   const layerPresentation = layer.layer_presentations?.[0]
   const addNotification = useSetAtom(addNotificationAtom)
-  const removeNotificationById = useSetAtom(removeNotificationByIdAtom)
+  const removeNotification = useSetAtom(removeNotificationAtom)
 
   const [data, setData] = useState()
 
@@ -28,10 +28,10 @@ export const PVLGeom = ({ layer, display }) => {
 
   const removeNotifs = useCallback(async () => {
     for (const notificationId of notificationIds.current) {
-      removeNotificationById(notificationId)
+      removeNotification(notificationId)
     }
     notificationIds.current = []
-  }, [removeNotificationById])
+  }, [removeNotification])
 
   const map = useMap()
 
@@ -172,7 +172,10 @@ export const PVLGeom = ({ layer, display }) => {
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
-            <Popup layersData={layersData} mapSize={mapSize} />,
+            <Popup
+              layersData={layersData}
+              mapSize={mapSize}
+            />,
           )
           _layer.bindPopup(popupContent)
         }}
@@ -197,9 +200,8 @@ export const PVLGeom = ({ layer, display }) => {
                 />,
               ),
             }),
-            opacity: display.opacity_percent
-              ? display.opacity_percent / 100
-              : 0,
+            opacity:
+              display.opacity_percent ? display.opacity_percent / 100 : 0,
           })
         }}
       />

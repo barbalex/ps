@@ -8,11 +8,7 @@ import {
 } from 'react-icons/md'
 import { useSetAtom } from 'jotai'
 
-import {
-  notificationsAtom,
-  removeNotificationByIdAtom,
-  addNotificationAtom,
-} from '../../store.ts'
+import { removeNotificationAtom } from '../../store.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -68,21 +64,17 @@ export const Notification = ({ notification }) => {
     paused,
     progress_percent,
   } = notification
-  const removeNotificationById = useSetAtom(removeNotificationByIdAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
+  const removeNotification = useSetAtom(removeNotificationAtom)
 
-  const onClickClose = () => removeNotificationById(notification_id)
+  const onClickClose = () => removeNotification(notification_id)
 
   useEffect(() => {
     let timeoutId
     if (progress_percent === 100 || paused === false) {
-      timeoutId = setTimeout(() => removeNotificationById(notification_id), 500)
+      timeoutId = setTimeout(() => removeNotification(notification_id), 500)
       return () => clearTimeout(timeoutId)
     } else if (timeout && paused === null) {
-      timeoutId = setTimeout(
-        () => removeNotificationById(notification_id),
-        timeout,
-      )
+      timeoutId = setTimeout(() => removeNotification(notification_id), timeout)
     } else if (paused === true) {
       // do nothing - will do when notification is updated to paused === false
     }
@@ -93,7 +85,7 @@ export const Notification = ({ notification }) => {
     progress_percent,
     timeout,
     notification,
-    removeNotificationById,
+    removeNotification,
   ])
 
   // TODO: add progress bar
@@ -102,16 +94,15 @@ export const Notification = ({ notification }) => {
     <div style={containerStyle}>
       <div style={titleRowStyle}>
         <div style={iconAndTitleStyle}>
-          {paused === true ? (
+          {paused === true ?
             <Spinner size="small" />
-          ) : (
-            <>
+          : <>
               {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
               {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
             </>
-          )}
+          }
           {!!title && <div style={titleStyle}>{title}</div>}
         </div>
         <Button

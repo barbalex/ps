@@ -28,7 +28,7 @@ import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerD
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
 import {
   addNotificationAtom,
-  removeNotificationByIdAtom,
+  removeNotificationAtom,
 } from '../../../../store.ts'
 
 const xmlViewerStyle = {
@@ -66,7 +66,7 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
 
 export const WFS = ({ layer, layerPresentation }) => {
   const addNotification = useSetAtom(addNotificationAtom)
-  const removeNotificationById = useSetAtom(removeNotificationByIdAtom)
+  const removeNotification = useSetAtom(removeNotificationAtom)
 
   const db = usePGlite()
   const [error, setError] = useState()
@@ -77,10 +77,10 @@ export const WFS = ({ layer, layerPresentation }) => {
 
   const removeNotifs = useCallback(() => {
     for (const id of notificationIds.current) {
-      removeNotificationById(id)
+      removeNotification(id)
     }
     notificationIds.current = []
-  }, [removeNotificationById])
+  }, [removeNotification])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
@@ -128,7 +128,7 @@ export const WFS = ({ layer, layerPresentation }) => {
         })
       } catch (error) {
         setShortTermOnlineFromFetchError(error)
-        removeNotificationById(notificationId)
+        removeNotification(notificationId)
         console.error('VectorLayerWFS, error:', {
           url: error?.url,
           error,
@@ -246,8 +246,8 @@ export const WFS = ({ layer, layerPresentation }) => {
 
           const IconComponent = icons[display?.marker_symbol]
 
-          return IconComponent
-            ? L.marker(latlng, {
+          return IconComponent ?
+              L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -262,12 +262,19 @@ export const WFS = ({ layer, layerPresentation }) => {
             : L.marker(latlng)
         }}
       />
-      <Dialog onOpenChange={() => setError(null)} open={!!error}>
+      <Dialog
+        onOpenChange={() => setError(null)}
+        open={!!error}
+      >
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent style={dialogContentStyle}>
-              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
+              <XMLViewer
+                style={xmlViewerStyle}
+                xml={error}
+                theme={xmlTheme}
+              />
             </DialogContent>
             <DialogActions>
               <Button
