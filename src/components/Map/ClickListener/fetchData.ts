@@ -1,6 +1,7 @@
 import axios from 'redaxios'
 
-import { createNotification } from '../../../modules/createRows.ts'
+import { store, addNotificationAtom } from '../../../store.ts'
+
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 
 export const fetchData = async ({ db, url, params }) => {
@@ -38,11 +39,10 @@ export const fetchData = async ({ db, url, params }) => {
       failedToFetch = true
     }
     if (failedToFetch) {
-      createNotification({
+      store.set(addNotificationAtom, {
         title: `Fehler beim Laden der Informationen für ${layer.label}`,
         body: error.message,
         intent: 'info',
-        db,
       })
     }
     setShortTermOnlineFromFetchError(error)
