@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
@@ -15,8 +15,8 @@ import { syncingAtom, sqlInitializingAtom } from '../store.ts'
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as SQLite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = () => {
-  const [syncing] = useAtom(syncingAtom)
-  const [sqlInitializing] = useAtom(sqlInitializingAtom)
+  const syncing = useAtomValue(syncingAtom)
+  const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
