@@ -313,9 +313,9 @@ export const pgliteDbAtom = atom(null)
 // - actionLabel?
 // - actionName?
 // - actionArgument?
-export const notificationsAtom = atomWithStorage('notificationsAtom', [])
+export const notificationsAtom = atom([])
 export const updateNotificationAtom = atom(
-  (get) => get(notificationsAtom),
+  (get) => null,
   (get, set, { id, draft }) => {
     const notifications = get(notificationsAtom)
     const notification = notifications.splice(
@@ -327,12 +327,11 @@ export const updateNotificationAtom = atom(
       ...notification,
       ...draft,
     }
-    notifications.push(updatedNotification)
-    set(notificationsAtom, notifications)
+    set(notificationsAtom, [updatedNotification, ...notifications])
   },
 )
 export const removeNotificationAtom = atom(
-  (get) => get(notificationsAtom),
+  (get) => null,
   (get, set, id) => {
     const notifications = get(notificationsAtom)
     set(
@@ -342,15 +341,19 @@ export const removeNotificationAtom = atom(
   },
 )
 export const addNotificationAtom = atom(
-  (get) => get(notificationsAtom),
+  (get) => null,
   (get, set, draft) => {
     const notifications = get(notificationsAtom)
     const removeNotification = get(removeNotificationAtom)
     // do not stack same messages
     const notificationsWithSameMessage = notifications.filter(
-      (n) => n.body === draft.body,
+      (n) => n.body !== undefined && n.body === draft.body,
     )
-    if (notificationsWithSameMessage.length > 0) return
+    if (notificationsWithSameMessage.length > 0) {
+      return console.log(
+        'Notification with same body already exists, not adding another.',
+      )
+    }
 
     const id = draft.id ?? uuidv7()
     const notification = {
@@ -364,18 +367,16 @@ export const addNotificationAtom = atom(
       title: undefined,
       body: undefined,
       // paused: If true, the notification is not dismissed according to timeout. Instead, it is dismissed when pause is updated to false. A spinner is shown.
-      paused: false,
+      paused: undefined,
       // Progress of a long running task in %. Only passed, if progress can be measured. A progress bar is shown.
       progress: undefined,
       // overwrite with passed in ones:
       ...draft,
     }
-    notifications.push(notification)
-    set(notificationsAtom, notifications)
+    set(notificationsAtom, [notification, ...notifications])
     // remove after duration
-    setTimeout(() => {
-      set(removeNotificationAtom, notification.id)
-    }, notification.duration)
+    setTimeout(() => set(removeNotificationAtom, id), notification.duration)
+
     return notification.id
   },
 )

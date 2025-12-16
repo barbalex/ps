@@ -1,10 +1,13 @@
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
-import { useSetAtom, useAtom } from 'jotai'
-// import { uuidv7 } from '@kripod/uuidv7'
+import { useSetAtom, useAtomValue } from 'jotai'
 
 import { Notification as NotificationComponent } from './Notification.tsx'
-import { notificationsAtom, removeNotificationAtom } from '../../store.ts'
+import {
+  notificationsAtom,
+  removeNotificationAtom,
+  addNotificationAtom,
+} from '../../store.ts'
 
 // z-index needs to cover map, thus so hight
 const containerStyle = {
@@ -19,33 +22,35 @@ const buttonStyle = {
 }
 
 export const Notifications: React.FC = () => {
-  const [allNotifications] = useAtom(notificationsAtom)
+  const notifications = useAtomValue(notificationsAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
-  console.log('Notifications, allNotifications:', allNotifications)
+  const addNotification = useSetAtom(addNotificationAtom)
 
   // sort by time descending
   // get the first four
-  const notifications = allNotifications
+  const firstFourNotifications = notifications
     .sort((a, b) => b.time - a.time)
     .slice(0, 4)
 
+  // console.log('Notifications', { firstFourNotifications, notifications })
+
   const onClickCloseAll = () => {
-    for (const n of notifications) {
+    for (const n of firstFourNotifications) {
       removeNotification(n.id)
     }
   }
 
   return (
     <>
-      {notifications.length > 0 && (
+      {firstFourNotifications.length > 0 && (
         <div style={containerStyle}>
-          {notifications.map((n) => (
+          {firstFourNotifications.map((n) => (
             <NotificationComponent
               key={n.id}
               notification={n}
             />
           ))}
-          {notifications.length > 1 && (
+          {firstFourNotifications.length > 1 && (
             <Button
               aria-label="Close"
               color="secondary"
@@ -59,16 +64,18 @@ export const Notifications: React.FC = () => {
           )}
         </div>
       )}
-      {/* <Button
-        onClick={() => {
-          db.query(
-            `INSERT INTO notifications (id, title, intent, timeout) VALUES ('${uuidv7()}', 'Test', 'success', 3000)`,
-          )
-        }}
+      <Button
+        onClick={() =>
+          addNotification({
+            title: 'Test notification',
+            intent: 'success',
+            timeout: 2000,
+          })
+        }
         size="small"
       >
         Make a notification
-      </Button> */}
+      </Button>
     </>
   )
 }

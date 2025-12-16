@@ -13,7 +13,6 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import {
   designingAtom,
   addOperationAtom,
-  addNotificationAtom,
   notificationsAtom,
 } from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
@@ -24,7 +23,6 @@ export const Project = ({ from }) => {
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const [notifications] = useAtom(notificationsAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
   const { projectTab } = useSearch({ from })
@@ -67,12 +65,12 @@ export const Project = ({ from }) => {
   }
 
   console.log('Project, notifications:', notifications)
-  addNotification({
-    title: 'Project component rendered',
-    body: `Project ID: ${projectId}`,
-    intent: 'info',
-    timeout: 3000,
-  })
+  // addNotification({
+  //   title: 'Project component rendered',
+  //   body: `Project ID: ${projectId}`,
+  //   intent: 'info',
+  //   timeout: 3000,
+  // })
 
   if (!res) return <Loading />
 
