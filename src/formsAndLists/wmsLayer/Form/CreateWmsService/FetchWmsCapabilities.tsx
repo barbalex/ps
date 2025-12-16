@@ -121,19 +121,25 @@ export const FetchWmsCapabilities = ({
         error?.message ?? error,
       )
       // surface error to user
-      updateNotification(notificationId, {
-        title: `Error loading capabilities for ${urlTrimmed}`,
-        body: error?.message ?? error,
-        intent: 'error',
-        paused: false,
+      updateNotification({
+        id: notificationId,
+        draft: {
+          title: `Error loading capabilities for ${urlTrimmed}`,
+          body: error?.message ?? error,
+          intent: 'error',
+          paused: false,
+        },
       })
     }
     setFetching(false)
-    updateNotification(notificationId, {
-      title: `Loaded capabilities for ${urlTrimmed}`,
-      intent: 'success',
-      paused: false,
-      timeout: 500,
+    updateNotification({
+      id: notificationId,
+      draft: {
+        title: `Loaded capabilities for ${urlTrimmed}`,
+        intent: 'success',
+        paused: false,
+        timeout: 500,
+      },
     })
   }
 

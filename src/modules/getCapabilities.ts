@@ -1,15 +1,18 @@
 import WMSCapabilities from 'wms-capabilities'
 import axios from 'redaxios'
+import { useSetAtom } from 'jotai'
 
 import { xmlToJson } from './xmlToJson.ts'
 import { createNotification } from './createRows.ts'
 import { setShortTermOnlineFromFetchError } from './setShortTermOnlineFromFetchError.ts'
+import { addNotificationAtom, updateNotificationAtom, store } from '../store.ts'
 
 export const getCapabilities = async ({
   url,
   service = 'WFS',
   db,
 }): object | undefined => {
+  let notificationId: string | undefined
   // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res
   try {
@@ -18,11 +21,11 @@ export const getCapabilities = async ({
     res = await axios.get(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
     setShortTermOnlineFromFetchError(error)
-    createNotification({
+    notificationId = store.set(addNotificationAtom, {
       title: `Error loading capabilities for ${url}`,
       body: error?.message ?? error,
       intent: 'error',
-      db,
+      paused: true,
     })
     if (error.response) {
       // The request was made and the server responded with a status code
@@ -55,11 +58,13 @@ export const getCapabilities = async ({
   }
 
   if (!res || !res?.data) {
-    createNotification({
-      title: `Error loading capabilities for ${url}`,
-      body: 'No data returned from server',
-      intent: 'error',
-      db,
+    store.set(updateNotificationAtom, {
+      id: notificationId,
+      draft: {
+        title: `Error loading capabilities for ${url}`,
+        body: 'No data returned from server',
+        intent: 'error',
+      },
     })
     return undefined
   }

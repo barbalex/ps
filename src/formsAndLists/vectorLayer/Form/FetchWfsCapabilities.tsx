@@ -126,11 +126,14 @@ export const FetchWfsCapabilities = ({
       })
     }
     setFetching(false)
-    updateNotification(notificationId, {
-      title: `Loaded capabilities for ${urlTrimmed}`,
-      intent: 'success',
-      paused: false,
-      timeout: 500,
+    updateNotification({
+      id: notificationId,
+      draft: {
+        title: `Loaded capabilities for ${urlTrimmed}`,
+        intent: 'success',
+        paused: false,
+        timeout: 500,
+      },
     })
   }
 
