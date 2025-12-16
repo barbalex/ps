@@ -6,10 +6,13 @@ import {
   MdCheckCircle as SuccessIcon,
   MdWarning as WarningIcon,
 } from 'react-icons/md'
-import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import { addOperationAtom } from '../../store.ts'
+import {
+  notificationsAtom,
+  removeNotificationByIdAtom,
+  addNotificationAtom,
+} from '../../store.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -56,9 +59,6 @@ const colorMap = {
 }
 
 export const Notification = ({ notification }) => {
-  const addOperation = useSetAtom(addOperationAtom)
-
-  const db = usePGlite()
   const {
     notification_id,
     title,
@@ -68,64 +68,32 @@ export const Notification = ({ notification }) => {
     paused,
     progress_percent,
   } = notification
+  const removeNotificationById = useSetAtom(removeNotificationByIdAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
 
-  const onClickClose = () => {
-    db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
-      notification_id,
-    ])
-    addOperation({
-      table: 'notifications',
-      rowIdName: 'notification_id',
-      rowId: notification_id,
-      operation: 'delete',
-      draft: null,
-      prev: { ...notification },
-    })
-  }
+  const onClickClose = () => removeNotificationById(notification_id)
 
   useEffect(() => {
     let timeoutId
     if (progress_percent === 100 || paused === false) {
-      timeoutId = setTimeout(() => {
-        db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
-          notification_id,
-        ])
-        addOperation({
-          table: 'notifications',
-          rowIdName: 'notification_id',
-          rowId: notification_id,
-          operation: 'delete',
-          draft: null,
-          prev: { ...notification },
-        })
-      }, 500)
+      timeoutId = setTimeout(() => removeNotificationById(notification_id), 500)
       return () => clearTimeout(timeoutId)
     } else if (timeout && paused === null) {
-      timeoutId = setTimeout(() => {
-        db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
-          notification_id,
-        ])
-        addOperation({
-          table: 'notifications',
-          rowIdName: 'notification_id',
-          rowId: notification_id,
-          operation: 'delete',
-          draft: null,
-          prev: { ...notification },
-        })
-      }, timeout)
+      timeoutId = setTimeout(
+        () => removeNotificationById(notification_id),
+        timeout,
+      )
     } else if (paused === true) {
       // do nothing - will do when notification is updated to paused === false
     }
     return () => timeoutId && clearTimeout(timeoutId)
   }, [
-    db,
     notification_id,
     paused,
     progress_percent,
     timeout,
-    addOperation,
     notification,
+    removeNotificationById,
   ])
 
   // TODO: add progress bar
@@ -134,15 +102,16 @@ export const Notification = ({ notification }) => {
     <div style={containerStyle}>
       <div style={titleRowStyle}>
         <div style={iconAndTitleStyle}>
-          {paused === true ?
+          {paused === true ? (
             <Spinner size="small" />
-          : <>
+          ) : (
+            <>
               {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
               {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
             </>
-          }
+          )}
           {!!title && <div style={titleStyle}>{title}</div>}
         </div>
         <Button
