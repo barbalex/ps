@@ -6,8 +6,11 @@ import { distance } from '@turf/distance'
 import { buffer } from '@turf/buffer'
 import { point, points } from '@turf/helpers'
 
-import { createNotification } from '../../../../modules/createRows.ts'
-import { addOperationAtom, store } from '../../../../store.ts'
+import {
+  addOperationAtom,
+  addNotificationAtom,
+  store,
+} from '../../../../store.ts'
 
 export const assignToNearestDroppable = async ({
   db,
@@ -156,10 +159,9 @@ export const assignToNearestDroppable = async ({
 
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // tell user no place found to assign to
-    createNotification({
-      message: 'No place found to assign to',
-      type: 'error',
-      db,
+    store.set(addNotificationAtom, {
+      title: 'Kein Ort zum Zuweisen gefunden',
+      intent: 'error',
     })
   }
 
