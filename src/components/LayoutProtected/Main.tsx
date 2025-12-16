@@ -1,6 +1,6 @@
 import { Outlet, useSearch } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import 'allotment/dist/style.css'
 
 import { Tree } from '../Tree/index.tsx'
@@ -18,8 +18,8 @@ const containerStyle = {
 const from = '/data'
 
 export const Main = () => {
-  const [mapMaximized] = useAtom(mapMaximizedAtom)
-  const [tabs] = useAtom(tabsAtom)
+  const mapMaximized = useAtomValue(mapMaximizedAtom)
+  const tabs = useAtomValue(tabsAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
