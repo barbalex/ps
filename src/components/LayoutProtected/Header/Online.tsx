@@ -1,4 +1,4 @@
-import { Button, CounterBadge } from '@fluentui/react-components'
+import { Button, Tooltip, CounterBadge } from '@fluentui/react-components'
 import { useNavigate, useLocation } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import {
@@ -22,11 +22,16 @@ export const Online = () => {
     : `Sie sind offline`
 
   return (
-    <Button
-      size="medium"
-      icon={online ? <NetworkOn /> : <NetworkOff />}
-      onClick={() => console.log('Online status clicked')}
-      className={styles.button}
-    />
+    <>
+      <Tooltip content={title}>
+        <Button
+          size="medium"
+          icon={online ? <NetworkOn /> : <NetworkOff />}
+          onClick={() => console.log('Online status clicked')}
+          className={styles.button}
+        />
+      </Tooltip>
+      <CounterBadge>{operationsQueue.length}</CounterBadge>
+    </>
   )
 }
