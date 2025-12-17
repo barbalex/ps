@@ -5,9 +5,9 @@ import { IoMdInformationCircleOutline } from 'react-icons/io'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
-import { ErrorBoundary } from '../ErrorBoundary/ErrorBoundary.tsx'
+import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
 import { QueuedQuery } from './QueuedQuery.js'
-import { constants } from '../../utils/constants.js'
+import { constants } from '../../modules/constants.ts'
 import { operationsQueueAtom } from '../../store.ts'
 
 import {

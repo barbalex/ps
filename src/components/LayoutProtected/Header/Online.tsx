@@ -18,16 +18,13 @@ export const Online = () => {
   const title =
     online ? 'Sie sind online'
     : operationsQueue.length ?
-      `Sie sind offline. ${operationsQueue.length} wartende Operationen`
+      `Sie sind offline. ${operationsQueue.length} Operationen warten auf Synchronisation`
     : `Sie sind offline`
 
   const onClick = () => {
-    console.log('Online.onClick', { pathname })
-    if (pathname === '/data/queued-operations') {
+    pathname === '/data/queued-operations' ?
       navigate(-1)
-    } else {
-      navigate({ to: '/data/queued-operations' })
-    }
+    : navigate({ to: '/data/queued-operations' })
   }
 
   return (
@@ -45,7 +42,7 @@ export const Online = () => {
                 size="extra-small"
                 className={styles.badge}
               >
-                10
+                {operationsQueue.length}
               </CounterBadge>
             </div>
           }
