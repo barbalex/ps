@@ -1,10 +1,11 @@
 import { useContext } from 'react'
-import { DateTime } from 'luxon'
-import { observer } from 'mobx-react-lite'
+import dayjs from 'dayjs'
 import { FaUndoAlt } from 'react-icons/fa'
 import { Button } from '@fluentui/react-components'
+import { useSetAtom } from 'jotai'
 
 import { MobxStoreContext } from '../../mobxStoreContext.js'
+import { removeOperationAtom } from '../../store.ts'
 
 import { value, icon, revertButton } from './QueuedQuery.module.css'
 
@@ -14,9 +15,9 @@ const valFromValue = (value) => {
   return value ?? '(leer)'
 }
 
-export const QueuedOperation = observer(({ qq, index }) => {
+export const QueuedOperation = ({ qq, index }) => {
+  const removeOperation = useSetAtom(removeOperationAtom)
   const store = useContext(MobxStoreContext)
-  const { removeQueuedQueryById } = store
   const {
     id,
     time,
@@ -44,7 +45,7 @@ export const QueuedOperation = observer(({ qq, index }) => {
         values: JSON.parse(revertValues),
       })
     }
-    removeQueuedQueryById(id)
+    removeOperation(id)
   }
 
   const valueStyle =
@@ -59,7 +60,7 @@ export const QueuedOperation = observer(({ qq, index }) => {
       <div
         className={value}
         style={valueStyle}
-      >{`${DateTime.fromMillis(time).toFormat('yyyy.LL.dd HH.mm.ss')}`}</div>
+      >{`${dayjs(time).format('YYYY.MM.DD HH:mm:ss')}`}</div>
       <div
         className={value}
         style={valueStyle}
@@ -113,4 +114,4 @@ export const QueuedOperation = observer(({ qq, index }) => {
       </div>
     </>
   )
-})
+}

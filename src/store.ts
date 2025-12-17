@@ -279,10 +279,11 @@ export const filterAtoms = {
 
 // postgrestClient
 export const postgrestClientAtom = atom(null)
+
 // an array of objects with keys: id, time, name(?), table, rowIdName, rowId, operation (update, insert, delete), variables, column, newValue, oldValue,
 export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
 export const addOperationAtom = atom(
-  (get) => get(operationsQueueAtom),
+  (get) => null,
   (get, set, opDraft) => {
     const opQueue = get(operationsQueueAtom)
     const operation = {
@@ -292,6 +293,16 @@ export const addOperationAtom = atom(
     }
     // console.log('store.addOperationAtom, operation:', operation)
     set(operationsQueueAtom, [operation, ...opQueue])
+  },
+)
+export const removeOperationAtom = atom(
+  (get) => null,
+  (get, set, id) => {
+    const opQueue = get(operationsQueueAtom)
+    set(
+      operationsQueueAtom,
+      opQueue.filter((op) => op.id !== id),
+    )
   },
 )
 
