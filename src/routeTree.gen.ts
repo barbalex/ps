@@ -19,6 +19,7 @@ import { Route as LayoutDocsRouteImport } from './routes/_layout.docs'
 import { Route as DataWidgetsForFieldsRouteRouteImport } from './routes/data/widgets-for-fields/route'
 import { Route as DataWidgetTypesRouteRouteImport } from './routes/data/widget-types/route'
 import { Route as DataUsersRouteRouteImport } from './routes/data/users/route'
+import { Route as DataQueuedOperationsRouteRouteImport } from './routes/data/queued-operations/route'
 import { Route as DataProjectsRouteRouteImport } from './routes/data/projects/route'
 import { Route as DataMessagesRouteRouteImport } from './routes/data/messages/route'
 import { Route as DataFilesRouteRouteImport } from './routes/data/files/route'
@@ -29,6 +30,7 @@ import { Route as DataAccountsRouteRouteImport } from './routes/data/accounts/ro
 import { Route as DataWidgetsForFieldsIndexRouteImport } from './routes/data/widgets-for-fields/index'
 import { Route as DataWidgetTypesIndexRouteImport } from './routes/data/widget-types/index'
 import { Route as DataUsersIndexRouteImport } from './routes/data/users/index'
+import { Route as DataQueuedOperationsIndexRouteImport } from './routes/data/queued-operations/index'
 import { Route as DataProjectsIndexRouteImport } from './routes/data/projects/index'
 import { Route as DataMessagesIndexRouteImport } from './routes/data/messages/index'
 import { Route as DataFilesIndexRouteImport } from './routes/data/files/index'
@@ -358,6 +360,12 @@ const DataUsersRouteRoute = DataUsersRouteRouteImport.update({
   path: '/users',
   getParentRoute: () => DataRouteRoute,
 } as any)
+const DataQueuedOperationsRouteRoute =
+  DataQueuedOperationsRouteRouteImport.update({
+    id: '/queued-operations',
+    path: '/queued-operations',
+    getParentRoute: () => DataRouteRoute,
+  } as any)
 const DataProjectsRouteRoute = DataProjectsRouteRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -409,6 +417,12 @@ const DataUsersIndexRoute = DataUsersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DataUsersRouteRoute,
 } as any)
+const DataQueuedOperationsIndexRoute =
+  DataQueuedOperationsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataQueuedOperationsRouteRoute,
+  } as any)
 const DataProjectsIndexRoute = DataProjectsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -2606,6 +2620,7 @@ export interface FileRoutesByFullPath {
   '/data/files': typeof DataFilesRouteRouteWithChildren
   '/data/messages': typeof DataMessagesRouteRouteWithChildren
   '/data/projects': typeof DataProjectsRouteRouteWithChildren
+  '/data/queued-operations': typeof DataQueuedOperationsRouteRouteWithChildren
   '/data/users': typeof DataUsersRouteRouteWithChildren
   '/data/widget-types': typeof DataWidgetTypesRouteRouteWithChildren
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
@@ -2636,6 +2651,7 @@ export interface FileRoutesByFullPath {
   '/data/files/': typeof DataFilesIndexRoute
   '/data/messages/': typeof DataMessagesIndexRoute
   '/data/projects/': typeof DataProjectsIndexRoute
+  '/data/queued-operations/': typeof DataQueuedOperationsIndexRoute
   '/data/users/': typeof DataUsersIndexRoute
   '/data/widget-types/': typeof DataWidgetTypesIndexRoute
   '/data/widgets-for-fields/': typeof DataWidgetsForFieldsIndexRoute
@@ -2922,6 +2938,7 @@ export interface FileRoutesByTo {
   '/data/files': typeof DataFilesIndexRoute
   '/data/messages': typeof DataMessagesIndexRoute
   '/data/projects': typeof DataProjectsIndexRoute
+  '/data/queued-operations': typeof DataQueuedOperationsIndexRoute
   '/data/users': typeof DataUsersIndexRoute
   '/data/widget-types': typeof DataWidgetTypesIndexRoute
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsIndexRoute
@@ -3106,6 +3123,7 @@ export interface FileRoutesById {
   '/data/files': typeof DataFilesRouteRouteWithChildren
   '/data/messages': typeof DataMessagesRouteRouteWithChildren
   '/data/projects': typeof DataProjectsRouteRouteWithChildren
+  '/data/queued-operations': typeof DataQueuedOperationsRouteRouteWithChildren
   '/data/users': typeof DataUsersRouteRouteWithChildren
   '/data/widget-types': typeof DataWidgetTypesRouteRouteWithChildren
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
@@ -3136,6 +3154,7 @@ export interface FileRoutesById {
   '/data/files/': typeof DataFilesIndexRoute
   '/data/messages/': typeof DataMessagesIndexRoute
   '/data/projects/': typeof DataProjectsIndexRoute
+  '/data/queued-operations/': typeof DataQueuedOperationsIndexRoute
   '/data/users/': typeof DataUsersIndexRoute
   '/data/widget-types/': typeof DataWidgetTypesIndexRoute
   '/data/widgets-for-fields/': typeof DataWidgetsForFieldsIndexRoute
@@ -3407,6 +3426,7 @@ export interface FileRouteTypes {
     | '/data/files'
     | '/data/messages'
     | '/data/projects'
+    | '/data/queued-operations'
     | '/data/users'
     | '/data/widget-types'
     | '/data/widgets-for-fields'
@@ -3437,6 +3457,7 @@ export interface FileRouteTypes {
     | '/data/files/'
     | '/data/messages/'
     | '/data/projects/'
+    | '/data/queued-operations/'
     | '/data/users/'
     | '/data/widget-types/'
     | '/data/widgets-for-fields/'
@@ -3723,6 +3744,7 @@ export interface FileRouteTypes {
     | '/data/files'
     | '/data/messages'
     | '/data/projects'
+    | '/data/queued-operations'
     | '/data/users'
     | '/data/widget-types'
     | '/data/widgets-for-fields'
@@ -3906,6 +3928,7 @@ export interface FileRouteTypes {
     | '/data/files'
     | '/data/messages'
     | '/data/projects'
+    | '/data/queued-operations'
     | '/data/users'
     | '/data/widget-types'
     | '/data/widgets-for-fields'
@@ -3936,6 +3959,7 @@ export interface FileRouteTypes {
     | '/data/files/'
     | '/data/messages/'
     | '/data/projects/'
+    | '/data/queued-operations/'
     | '/data/users/'
     | '/data/widget-types/'
     | '/data/widgets-for-fields/'
@@ -4274,6 +4298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataUsersRouteRouteImport
       parentRoute: typeof DataRouteRoute
     }
+    '/data/queued-operations': {
+      id: '/data/queued-operations'
+      path: '/queued-operations'
+      fullPath: '/data/queued-operations'
+      preLoaderRoute: typeof DataQueuedOperationsRouteRouteImport
+      parentRoute: typeof DataRouteRoute
+    }
     '/data/projects': {
       id: '/data/projects'
       path: '/projects'
@@ -4343,6 +4374,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/users/'
       preLoaderRoute: typeof DataUsersIndexRouteImport
       parentRoute: typeof DataUsersRouteRoute
+    }
+    '/data/queued-operations/': {
+      id: '/data/queued-operations/'
+      path: '/'
+      fullPath: '/data/queued-operations/'
+      preLoaderRoute: typeof DataQueuedOperationsIndexRouteImport
+      parentRoute: typeof DataQueuedOperationsRouteRoute
     }
     '/data/projects/': {
       id: '/data/projects/'
@@ -8208,6 +8246,20 @@ const DataProjectsRouteRouteChildren: DataProjectsRouteRouteChildren = {
 const DataProjectsRouteRouteWithChildren =
   DataProjectsRouteRoute._addFileChildren(DataProjectsRouteRouteChildren)
 
+interface DataQueuedOperationsRouteRouteChildren {
+  DataQueuedOperationsIndexRoute: typeof DataQueuedOperationsIndexRoute
+}
+
+const DataQueuedOperationsRouteRouteChildren: DataQueuedOperationsRouteRouteChildren =
+  {
+    DataQueuedOperationsIndexRoute: DataQueuedOperationsIndexRoute,
+  }
+
+const DataQueuedOperationsRouteRouteWithChildren =
+  DataQueuedOperationsRouteRoute._addFileChildren(
+    DataQueuedOperationsRouteRouteChildren,
+  )
+
 interface DataUsersRouteRouteChildren {
   DataUsersUserIdRoute: typeof DataUsersUserIdRoute
   DataUsersIndexRoute: typeof DataUsersIndexRoute
@@ -8264,6 +8316,7 @@ interface DataRouteRouteChildren {
   DataFilesRouteRoute: typeof DataFilesRouteRouteWithChildren
   DataMessagesRouteRoute: typeof DataMessagesRouteRouteWithChildren
   DataProjectsRouteRoute: typeof DataProjectsRouteRouteWithChildren
+  DataQueuedOperationsRouteRoute: typeof DataQueuedOperationsRouteRouteWithChildren
   DataUsersRouteRoute: typeof DataUsersRouteRouteWithChildren
   DataWidgetTypesRouteRoute: typeof DataWidgetTypesRouteRouteWithChildren
   DataWidgetsForFieldsRouteRoute: typeof DataWidgetsForFieldsRouteRouteWithChildren
@@ -8280,6 +8333,7 @@ const DataRouteRouteChildren: DataRouteRouteChildren = {
   DataFilesRouteRoute: DataFilesRouteRouteWithChildren,
   DataMessagesRouteRoute: DataMessagesRouteRouteWithChildren,
   DataProjectsRouteRoute: DataProjectsRouteRouteWithChildren,
+  DataQueuedOperationsRouteRoute: DataQueuedOperationsRouteRouteWithChildren,
   DataUsersRouteRoute: DataUsersRouteRouteWithChildren,
   DataWidgetTypesRouteRoute: DataWidgetTypesRouteRouteWithChildren,
   DataWidgetsForFieldsRouteRoute: DataWidgetsForFieldsRouteRouteWithChildren,
