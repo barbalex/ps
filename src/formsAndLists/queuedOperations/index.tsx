@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
-import { QueuedOperation } from './QueuedOperation.js'
+import { QueuedOperation } from './QueuedOperation.tsx'
 import { constants } from '../../modules/constants.ts'
 import { operationsQueueAtom } from '../../store.ts'
 
@@ -96,10 +96,10 @@ export const QueuedQueries = () => {
             <div className={heading}>vorher</div>
             <div className={heading}>nachher</div>
             <div className={revertHeading}>widerrufen</div>
-            {[...operationsQueue].reverse().map((qq, i) => (
+            {[...operationsQueue].reverse().map((qo, i) => (
               <QueuedOperation
-                key={qq.id}
-                qq={qq}
+                key={qo.id}
+                qo={qo}
                 index={i}
               />
             ))}

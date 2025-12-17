@@ -6,6 +6,7 @@ import { useSetAtom } from 'jotai'
 
 import { MobxStoreContext } from '../../mobxStoreContext.js'
 import { removeOperationAtom } from '../../store.ts'
+import { revertOperation } from '../../modules/revertOperation.ts'
 
 import { value, icon, revertButton } from './QueuedQuery.module.css'
 
@@ -15,36 +16,14 @@ const valFromValue = (value) => {
   return value ?? '(leer)'
 }
 
-export const QueuedOperation = ({ qq, index }) => {
+export const QueuedOperation = ({ qo, index }) => {
   const removeOperation = useSetAtom(removeOperationAtom)
   const store = useContext(MobxStoreContext)
-  const {
-    id,
-    time,
-    revertTable,
-    revertId,
-    revertField,
-    revertValue,
-    revertValues,
-    newValue,
-    isInsert,
-  } = qq
+  const { id, time, table, rowIdName, rowId, operation, filter, draft, prev } =
+    qo
 
-  const onClickRevert = () => {
-    if (revertTable && revertId && revertField) {
-      store.updateModelValue({
-        table: revertTable,
-        id: revertId,
-        field: revertField,
-        value: revertValue,
-      })
-    } else if (revertTable && revertId && revertValues) {
-      store.updateModelValues({
-        table: revertTable,
-        id: revertId,
-        values: JSON.parse(revertValues),
-      })
-    }
+  const onClickRevert = async () => {
+    await revertOperation(qo)
     removeOperation(id)
   }
 
