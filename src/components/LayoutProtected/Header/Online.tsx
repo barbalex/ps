@@ -9,21 +9,6 @@ import styles from './Online.module.css'
 
 import { onlineAtom, operationsQueueAtom } from '../../../store.ts'
 
-const Icon = ({ online }) => (
-  <div className={styles.container}>
-    {online ?
-      <NetworkOn className={styles.icon} />
-    : <NetworkOff className={styles.icon} />}
-    <CounterBadge
-      appearance="outline"
-      size="extra-small"
-      className={styles.badge}
-    >
-      10
-    </CounterBadge>
-  </div>
-) // Placeholder for icon component
-
 export const Online = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -41,7 +26,20 @@ export const Online = () => {
       <Tooltip content={title}>
         <Button
           size="medium"
-          icon={<Icon online={online} />}
+          icon={
+            <div className={styles.iconContainer}>
+              {online ?
+                <NetworkOn className={styles.icon} />
+              : <NetworkOff className={styles.icon} />}
+              <CounterBadge
+                appearance="outline"
+                size="extra-small"
+                className={styles.badge}
+              >
+                10
+              </CounterBadge>
+            </div>
+          }
           onClick={() => console.log('Online status clicked')}
           className={styles.button}
         />
