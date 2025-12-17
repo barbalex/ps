@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import { FaTimes } from 'react-icons/fa'
 import { Button } from '@fluentui/react-components'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
@@ -6,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
-import { QueuedQuery } from './QueuedQuery.js'
+import { QueuedOperation } from './QueuedOperation.js'
 import { constants } from '../../modules/constants.ts'
 import { operationsQueueAtom } from '../../store.ts'
 
@@ -98,7 +97,7 @@ export const QueuedQueries = () => {
             <div className={heading}>nachher</div>
             <div className={revertHeading}>widerrufen</div>
             {[...operationsQueue].reverse().map((qq, i) => (
-              <QueuedQuery
+              <QueuedOperation
                 key={qq.id}
                 qq={qq}
                 index={i}

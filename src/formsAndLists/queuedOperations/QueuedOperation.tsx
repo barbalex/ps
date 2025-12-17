@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { DateTime } from 'luxon'
 import { observer } from 'mobx-react-lite'
 import { FaUndoAlt } from 'react-icons/fa'
-import IconButton from '@mui/material/IconButton'
+import { Button } from '@fluentui/react-components'
 
 import { MobxStoreContext } from '../../mobxStoreContext.js'
 
@@ -14,7 +14,7 @@ const valFromValue = (value) => {
   return value ?? '(leer)'
 }
 
-export const QueuedQuery = observer(({ qq, index }) => {
+export const QueuedOperation = observer(({ qq, index }) => {
   const store = useContext(MobxStoreContext)
   const { removeQueuedQueryById } = store
   const {
@@ -102,15 +102,14 @@ export const QueuedQuery = observer(({ qq, index }) => {
         className={icon}
         style={valueStyle}
       >
-        <IconButton
+        <Button
           title="widerrufen"
           aria-label="widerrufen"
           onClick={onClickRevert}
           size="small"
           className={revertButton}
-        >
-          <FaUndoAlt />
-        </IconButton>
+          icon={<FaUndoAlt />}
+        />
       </div>
     </>
   )
