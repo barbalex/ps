@@ -9,6 +9,21 @@ import styles from './Online.module.css'
 
 import { onlineAtom, operationsQueueAtom } from '../../../store.ts'
 
+const Icon = ({ online }) => (
+  <div className={styles.container}>
+    {online ?
+      <NetworkOn className={styles.icon} />
+    : <NetworkOff className={styles.icon} />}
+    <CounterBadge
+      appearance="outline"
+      size="extra-small"
+      className={styles.badge}
+    >
+      10
+    </CounterBadge>
+  </div>
+) // Placeholder for icon component
+
 export const Online = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -22,23 +37,15 @@ export const Online = () => {
     : `Sie sind offline`
 
   return (
-    <div className={styles.container}>
+    <>
       <Tooltip content={title}>
         <Button
           size="medium"
-          icon={online ? <NetworkOn /> : <NetworkOff />}
+          icon={<Icon online={online} />}
           onClick={() => console.log('Online status clicked')}
           className={styles.button}
-        >
-          <CounterBadge
-            appearance="outline"
-            size="extra-small"
-            className={styles.badge}
-          >
-            10
-          </CounterBadge>
-        </Button>
+        />
       </Tooltip>
-    </div>
+    </>
   )
 }

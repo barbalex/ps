@@ -1,8 +1,5 @@
 .container {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 40px;
+  position: relative;
 }
 
 .button {
@@ -16,9 +13,14 @@
   }
 }
 
-.badge {
+.icon {
   position: relative;
-  top: -8px;
-  right: 8px;
+  top: 2px;
+}
+
+.badge {
+  position: absolute;
+  top: -3px;
+  right: -6px;
   color: white;
 }
