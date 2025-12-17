@@ -21,6 +21,15 @@ export const Online = () => {
       `Sie sind offline. ${operationsQueue.length} wartende Operationen`
     : `Sie sind offline`
 
+  const onClick = () => {
+    console.log('Online.onClick', { pathname })
+    if (pathname === '/data/queued-operations') {
+      navigate(-1)
+    } else {
+      navigate({ to: '/data/queued-operations' })
+    }
+  }
+
   return (
     <>
       <Tooltip content={title}>
@@ -40,7 +49,7 @@ export const Online = () => {
               </CounterBadge>
             </div>
           }
-          onClick={() => console.log('Online status clicked')}
+          onClick={onClick}
           className={styles.button}
         />
       </Tooltip>

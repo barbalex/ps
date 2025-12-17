@@ -5,8 +5,7 @@ import { IoMdInformationCircleOutline } from 'react-icons/io'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
-import { ErrorBoundary } from '../shared/ErrorBoundary.jsx'
-import { MobxStoreContext } from '../../mobxStoreContext.js'
+import { ErrorBoundary } from '../ErrorBoundary/ErrorBoundary.tsx'
 import { QueuedQuery } from './QueuedQuery.js'
 import { constants } from '../../utils/constants.js'
 import { operationsQueueAtom } from '../../store.ts'
@@ -24,10 +23,8 @@ import {
 } from './index.module.css'
 
 export const QueuedQueries = () => {
-  const store = useContext(MobxStoreContext)
   const navigate = useNavigate()
   const operationsQueue = useAtomValue(operationsQueueAtom)
-  const { queuedQueries } = store
 
   // ISSUE: cant use navigate(-1) as that can navigate to same url and user has to click twice to go back
   const onClickCloseIcon = () => navigate('/Vermehrung')
