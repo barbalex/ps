@@ -1,7 +1,7 @@
 import { FaTimes } from 'react-icons/fa'
 import { Button } from '@fluentui/react-components'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useCanGoBack, useRouter } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
@@ -21,12 +21,14 @@ import {
   closeIcon,
 } from './index.module.css'
 
-export const QueuedQueries = () => {
+export const QueuedOperations = () => {
   const navigate = useNavigate()
+  const canGoBack = useCanGoBack()
+  const { history } = useRouter()
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
-  // ISSUE: cant use navigate(-1) as that can navigate to same url and user has to click twice to go back
-  const onClickCloseIcon = () => navigate('/Vermehrung')
+  const onClickCloseIcon = () =>
+    canGoBack ? history.go(-1) : navigate({ to: '/data' })
 
   const openDocs = () => {
     const url = `${constants?.getAppUri()}/Dokumentation/offline`
@@ -46,7 +48,6 @@ export const QueuedQueries = () => {
               aria-label={`Dokumentation zu "offline arbeiten" lesen`}
               title={`Dokumentation zu "offline arbeiten" lesen`}
               onClick={openDocs}
-              size="large"
               icon={<IoMdInformationCircleOutline />}
             />
             <Button
@@ -92,7 +93,8 @@ export const QueuedQueries = () => {
             <div className={heading}>Zeit</div>
             <div className={heading}>Tabelle</div>
             <div className={heading}>ID</div>
-            <div className={heading}>Feld / Operation</div>
+            <div className={heading}>Filter</div>
+            <div className={heading}>Operation</div>
             <div className={heading}>vorher</div>
             <div className={heading}>nachher</div>
             <div className={revertHeading}>widerrufen</div>

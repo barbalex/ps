@@ -1,24 +1,16 @@
-import { useContext } from 'react'
 import dayjs from 'dayjs'
 import { FaUndoAlt } from 'react-icons/fa'
 import { Button } from '@fluentui/react-components'
 import { useSetAtom } from 'jotai'
 
-import { MobxStoreContext } from '../../mobxStoreContext.js'
 import { removeOperationAtom } from '../../store.ts'
 import { revertOperation } from '../../modules/revertOperation.ts'
+import { idFieldFromTable } from '../../modules/idFieldFromTable.ts'
 
-import { value, icon, revertButton } from './QueuedQuery.module.css'
-
-const valFromValue = (value) => {
-  if (value === true) return 'wahr'
-  if (value === false) return 'falsch'
-  return value ?? '(leer)'
-}
+import { value, icon, revertButton } from './QueuedOperation.module.css'
 
 export const QueuedOperation = ({ qo, index }) => {
   const removeOperation = useSetAtom(removeOperationAtom)
-  const store = useContext(MobxStoreContext)
   const { id, time, table, rowIdName, rowId, operation, filter, draft, prev } =
     qo
 
@@ -34,6 +26,16 @@ export const QueuedOperation = ({ qo, index }) => {
       }
     : {}
 
+  const prevWithOnlyTheKeysContainedInDraft = {}
+  if (prev && draft) {
+    Object.keys(draft).forEach((key) => {
+      if (key in prev) {
+        prevWithOnlyTheKeysContainedInDraft[key] = prev[key]
+      }
+    })
+  }
+
+  // operation, filter, draft, prev
   return (
     <>
       <div
@@ -44,39 +46,54 @@ export const QueuedOperation = ({ qo, index }) => {
         className={value}
         style={valueStyle}
       >
-        {revertTable}
+        {table}
       </div>
       <div
         className={value}
         style={valueStyle}
       >
-        {revertId}
+        {rowId ??
+          draft?.[rowIdName] ??
+          prev?.[rowIdName] ??
+          draft?.[idFieldFromTable(table)] ??
+          prev?.[idFieldFromTable(table)] ??
+          '(leer)'}
       </div>
       <div
         className={value}
         style={valueStyle}
       >
-        {isInsert ? 'neuer Datensatz' : revertField}
+        <pre>
+          <code>
+            {filter ? JSON.stringify(filter, null, 3) : '(kein Filter)'}
+          </code>
+        </pre>
       </div>
       <div
         className={value}
         style={valueStyle}
       >
-        {isInsert ?
-          ''
-        : revertField ?
-          valFromValue(revertValue)
-        : JSON.parse(revertValues)}
+        {operation}
       </div>
       <div
         className={value}
         style={valueStyle}
       >
-        {isInsert ?
-          ''
-        : revertField ?
-          valFromValue(newValue)
-        : JSON.parse(newValue)}
+        <pre>
+          <code>
+            {prev ?
+              JSON.stringify(prevWithOnlyTheKeysContainedInDraft, null, 3)
+            : '(kein Wert)'}
+          </code>
+        </pre>
+      </div>
+      <div
+        className={value}
+        style={valueStyle}
+      >
+        <pre>
+          <code>{draft ? JSON.stringify(draft, null, 3) : '(kein Wert)'}</code>
+        </pre>
       </div>
       <div
         className={icon}

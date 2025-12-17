@@ -40,6 +40,8 @@ export const Widget = ({
 
   const onChange = async (e, dataReturned) => {
     const { name, value } = getValueFromChange(e, dataReturned)
+    // return if value has not changed
+    if (data[name] === value) return
     const isDate = value instanceof Date
     const val = { ...data }
     if (value === undefined) {

@@ -52,6 +52,14 @@ export const Place = ({ from }) => {
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
+    console.log('Place.onChange', {
+      name,
+      value,
+      oldValue: row[name],
+      row,
+      data,
+      willReturn: row[name] === value,
+    })
     if (row[name] === value) return
 
     db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
