@@ -13,12 +13,14 @@
 
 .container {
   min-height: calc(100dvh - var(--app-bar-height));
-  position: relative;
+  /* position: relative; */
+  display: flex;
+  flex-direction: column;
 }
 
 .outerContainer {
-  height: calc(100dvh - var(--app-bar-height) - 15px - 23px - 23px);
-  overflow-x: hidden;
+  /* height: calc(100dvh - var(--app-bar-height) - 15px - 23px - 23px); */
+  overflow-x: auto;
   overflow-y: auto;
   scrollbar-width: thin;
 }
@@ -36,6 +38,8 @@
 
 .heading {
   font-weight: 700;
+  position: sticky;
+  top: 0;
 }
 
 .revertHeading {

@@ -91,10 +91,12 @@ export const QueuedOperation = ({ qo, index }) => {
         className={value}
         style={valueStyle}
       >
-        {<pre>
-          <code>{draft ? JSON.stringify(draft, null, 3)}</pre>
-      </div> : '(kein Wert)'}</code>
-        
+        {draft ?
+          <pre>
+            <code> {JSON.stringify(draft, null, 3)}</code>
+          </pre>
+        : '(kein Wert)'}
+      </div>
       <div
         className={icon}
         style={valueStyle}
