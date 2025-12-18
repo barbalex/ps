@@ -63,11 +63,11 @@ export const QueuedOperation = ({ qo, index }) => {
         className={value}
         style={valueStyle}
       >
-        <pre>
-          <code>
-            {filter ? JSON.stringify(filter, null, 3) : '(kein Filter)'}
-          </code>
-        </pre>
+        {filter ?
+          <pre>
+            <code>{JSON.stringify(filter, null, 3)}</code>
+          </pre>
+        : '(kein Filter)'}
       </div>
       <div
         className={value}
@@ -79,22 +79,22 @@ export const QueuedOperation = ({ qo, index }) => {
         className={value}
         style={valueStyle}
       >
-        <pre>
-          <code>
-            {prev ?
-              JSON.stringify(prevWithOnlyTheKeysContainedInDraft, null, 3)
-            : '(kein Wert)'}
-          </code>
-        </pre>
+        {prev ?
+          <pre>
+            <code>
+              {JSON.stringify(prevWithOnlyTheKeysContainedInDraft, null, 3)}
+            </code>
+          </pre>
+        : '(kein Wert)'}
       </div>
       <div
         className={value}
         style={valueStyle}
       >
-        <pre>
-          <code>{draft ? JSON.stringify(draft, null, 3) : '(kein Wert)'}</code>
-        </pre>
-      </div>
+        {<pre>
+          <code>{draft ? JSON.stringify(draft, null, 3)}</pre>
+      </div> : '(kein Wert)'}</code>
+        
       <div
         className={icon}
         style={valueStyle}
