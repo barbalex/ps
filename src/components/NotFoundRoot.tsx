@@ -2,41 +2,13 @@ import { Button } from '@fluentui/react-components'
 import { Link } from '@tanstack/react-router'
 
 import { Header } from './Layout/Header/index.tsx'
-
-const homeOutletStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  overflow: 'hidden',
-  position: 'relative',
-}
-const containerStyle = {
-  height: '100%',
-  overflow: 'hidden',
-}
-const contentStyle = {
-  height: '100%',
-  width: '100%',
-  position: 'absolute',
-  top: 0,
-  display: 'flex',
-  flexDirection: 'column',
-  overflowY: 'auto',
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'stable',
-}
-const linkContentStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-}
+import styles from './NotFoundRoot.module.css'
 
 export const NotFoundRoot = () => (
   <>
     <Header />
-    <div style={homeOutletStyle}>
-      <div style={containerStyle}>
+    <div className={styles.homeOutlet}>
+      <div className={styles.container}>
         <picture>
           <source
             srcSet="home_700.avif 700w, home_1000.avif 1000w, home_1400.avif 1400w, home_2000.avif 2000w, home_2500.avif 2500w"
@@ -50,9 +22,9 @@ export const NotFoundRoot = () => (
             className="img"
           />
         </picture>
-        <div style={contentStyle}>
+        <div className={styles.content}>
           <h6 className="page-title">Sorry. This page does not exist</h6>
-          <div style={linkContentStyle}>
+          <div className={styles.linkContent}>
             <Link to="/">
               <Button>Back to Home</Button>
             </Link>
