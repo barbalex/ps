@@ -63,37 +63,35 @@ export const QueuedOperations = () => {
           <h3 className={styles.title}>Ausstehende Operationen</h3>
           <div>
             <Button
-              aria-label="Anleitung öffnen"
               title="Anleitung öffnen"
+              aria-label="Anleitung öffnen"
               onClick={openDocs}
-              size="large"
               icon={<IoMdInformationCircleOutline />}
             />
             <Button
               title="schliessen"
               aria-label="schliessen"
               onClick={onClickCloseIcon}
-              className={styles.closeIcon}
               icon={<FaTimes />}
             />
           </div>
         </div>
-        <div className={styles.outerContainer}>
-            <div className={styles.heading}>Zeit</div>
-            <div className={styles.heading}>Tabelle</div>
-            <div className={styles.heading}>ID</div>
-            <div className={styles.heading}>Filter</div>
-            <div className={styles.heading}>Operation</div>
-            <div className={styles.heading}>vorher</div>
-            <div className={styles.heading}>nachher</div>
-            <div className={styles.revertHeading}>widerrufen</div>
-            {[...operationsQueue].reverse().map((qo, i) => (
-              <QueuedOperation
-                key={qo.id}
-                qo={qo}
-                index={i}
-              />
-            ))}
+        <div className={styles.gridContainer}>
+          <div className={styles.heading}>Zeit</div>
+          <div className={styles.heading}>Tabelle</div>
+          <div className={styles.heading}>ID</div>
+          <div className={styles.heading}>Filter</div>
+          <div className={styles.heading}>Operation</div>
+          <div className={styles.heading}>vorher</div>
+          <div className={styles.heading}>nachher</div>
+          <div className={styles.heading}>widerrufen</div>
+          {[...operationsQueue].reverse().map((qo, i) => (
+            <QueuedOperation
+              key={qo.id}
+              qo={qo}
+              index={i}
+            />
+          ))}
         </div>
       </div>
     </ErrorBoundary>

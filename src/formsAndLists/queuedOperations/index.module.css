@@ -1,10 +1,13 @@
 .titleRow {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
 }
 
 .title {
-  padding: 15px 15px 0 15px;
+  padding: 0;
+  margin: 0;
 }
 
 .noOpsContainer {
@@ -12,13 +15,11 @@
 }
 
 .container {
-  /* min-height: calc(100dvh - var(--app-bar-height)); */
-  /* position: relative; */
-  /* display: flex; */
-  /* flex-direction: column; */
+  display: flex;
+  flex-direction: column;
 }
 
-.outerContainer {
+.gridContainer {
   /* height: calc(100dvh - var(--app-bar-height) - 15px - 23px - 23px); */
   overflow-x: auto;
   overflow-y: auto;
@@ -37,15 +38,4 @@
   font-weight: 700;
   position: sticky;
   top: 0;
-}
-
-.revertHeading {
-  font-weight: 700;
-  justify-self: center;
-  position: sticky;
-  top: 0;
-}
-
-.closeIcon {
-  margin-right: 5px !important;
 }

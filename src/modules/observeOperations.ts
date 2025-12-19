@@ -22,7 +22,7 @@ export const observeOperations = (store) =>
     console.log(`observeOperations, operations queue:`, operations)
     // TODO: reset this return
     // is set to test queued operations processing
-    // return
+    return
     // TODO: write function that:
     // if offline: returns
     if (!online) {
