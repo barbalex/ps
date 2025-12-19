@@ -6,6 +6,7 @@ import { Syncer } from './Syncer.tsx'
 import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
 import { PostgrestClientInitator } from './PostgrestClientInitator.tsx'
 import { ApiDetector } from './ApiDetector.tsx'
+import { OperationsObserver } from './OperationsObserver.tsx'
 
 import { Layout } from './LayoutProtected/index.tsx'
 
@@ -23,6 +24,7 @@ export const AuthAndDb = () => {
       <ApiDetector />
       <Syncer />
       <TreeOpenNodesSetter />
+      <OperationsObserver />
       <Layout />
     </CorbadoProvider>
   )
