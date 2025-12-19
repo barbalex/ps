@@ -1,5 +1,10 @@
 import { Button, Tooltip, CounterBadge } from '@fluentui/react-components'
-import { useNavigate, useLocation } from '@tanstack/react-router'
+import {
+  useNavigate,
+  useLocation,
+  useCanGoBack,
+  useRouter,
+} from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import {
   MdCloudDone as NetworkOn,
@@ -12,6 +17,8 @@ import { onlineAtom, operationsQueueAtom } from '../../../store.ts'
 export const Online = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const canGoBack = useCanGoBack()
+  const { history } = useRouter()
   const online = useAtomValue(onlineAtom)
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
@@ -23,7 +30,8 @@ export const Online = () => {
 
   const onClick = () => {
     pathname === '/data/queued-operations' ?
-      navigate(-1)
+      canGoBack ? history.go(-1)
+      : navigate({ to: '/data/' })
     : navigate({ to: '/data/queued-operations' })
   }
 
