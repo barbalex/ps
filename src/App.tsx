@@ -13,6 +13,7 @@ UC.defineComponents(UC)
 
 import { styleSheet } from './css.ts'
 import './style.css'
+import styles from './App.module.css'
 
 import { lightTheme } from './modules/theme.ts'
 // import { router } from './router/index.tsx'
@@ -43,12 +44,6 @@ const db = await PGlite.create('idb://ps', {
 })
 store.set(pgliteDbAtom, db)
 
-const routerContainerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100dvh',
-}
-
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
 
@@ -71,8 +66,8 @@ export const App = () => {
           ></uc-upload-ctx-provider>
           <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
           <div
-            style={routerContainerStyle}
             id="router-container"
+            className={styles.routerContainer}
           >
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProvider router={router} />
