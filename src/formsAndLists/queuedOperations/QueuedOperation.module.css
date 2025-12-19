@@ -1,11 +1,11 @@
 /* to hover and style row, see: https://stackoverflow.com/a/48109479/712005 */
 .value {
-  padding: 5px 0;
+  /* padding: 5px 0; */
   &:before {
     content: '';
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 2.5px;
+    bottom: -2.5px;
     right: -1000%;
     left: -1000%;
     z-index: 1;
@@ -18,7 +18,7 @@
 
 .icon {
   justify-self: center;
-  padding: 5px 0;
+  /* padding: 5px 0; */
 }
 
 .revertButton {
