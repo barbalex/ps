@@ -1,10 +1,19 @@
-import { store, postgrestClientAtom } from '../store.ts'
+import { store, postgrestClientAtom, addNotificationAtom } from '../store.ts'
 
 export const executeOperation = async (o) => {
   if (!o) return
 
   const username = 'TODO: extract username from auth'
   const postgrestClient = store.get(postgrestClientAtom)
+  if (!postgrestClient) {
+    console.warn('No PostgREST client available')
+    store.set(addNotificationAtom, {
+      intent: 'warning',
+      title: 'No database connection',
+      body: 'Cannot execute queued operation because there is no database connection.',
+    })
+    return
+  }
   let queryFunction
 
   const {
