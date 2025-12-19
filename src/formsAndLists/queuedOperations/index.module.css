@@ -12,10 +12,10 @@
 }
 
 .container {
-  min-height: calc(100dvh - var(--app-bar-height));
+  /* min-height: calc(100dvh - var(--app-bar-height)); */
   /* position: relative; */
-  display: flex;
-  flex-direction: column;
+  /* display: flex; */
+  /* flex-direction: column; */
 }
 
 .outerContainer {
@@ -23,13 +23,10 @@
   overflow-x: auto;
   overflow-y: auto;
   scrollbar-width: thin;
-}
-
-.queriesContainer {
   padding: 0 15px;
   display: grid;
   grid-template-columns: 180px auto auto auto auto auto auto 100px;
-  column-gap: 5px;
+  column-gap: 7px;
   > * {
     position: relative;
   }
@@ -45,6 +42,8 @@
 .revertHeading {
   font-weight: 700;
   justify-self: center;
+  position: sticky;
+  top: 0;
 }
 
 .closeIcon {
