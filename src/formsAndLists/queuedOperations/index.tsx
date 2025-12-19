@@ -77,21 +77,23 @@ export const QueuedOperations = () => {
           </div>
         </div>
         <div className={styles.gridContainer}>
-          <div className={styles.heading}>Zeit</div>
-          <div className={styles.heading}>Tabelle</div>
-          <div className={styles.heading}>ID</div>
-          <div className={styles.heading}>Filter</div>
-          <div className={styles.heading}>Operation</div>
-          <div className={styles.heading}>vorher</div>
-          <div className={styles.heading}>nachher</div>
-          <div className={styles.heading}>widerrufen</div>
-          {[...operationsQueue].reverse().map((qo, i) => (
-            <QueuedOperation
-              key={qo.id}
-              qo={qo}
-              index={i}
-            />
-          ))}
+          <div className={styles.grid}>
+            <div className={styles.heading}>Zeit</div>
+            <div className={styles.heading}>Tabelle</div>
+            <div className={styles.heading}>ID</div>
+            <div className={styles.heading}>Filter</div>
+            <div className={styles.heading}>Operation</div>
+            <div className={styles.heading}>vorher</div>
+            <div className={styles.heading}>nachher</div>
+            <div className={styles.heading}>widerrufen</div>
+            {[...operationsQueue].reverse().map((qo, i) => (
+              <QueuedOperation
+                key={qo.id}
+                qo={qo}
+                index={i}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </ErrorBoundary>

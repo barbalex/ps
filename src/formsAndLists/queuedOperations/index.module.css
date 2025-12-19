@@ -1,8 +1,21 @@
+.noOpsContainer {
+  padding: 0 15px;
+}
+
+.container {
+  height: calc(100vh - var(--layout-header-height) - var(--breadcrumbs-height));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .titleRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 15px;
+  /* prevent growing or shrinking */
+  flex: 0 0 auto;
 }
 
 .title {
@@ -10,20 +23,13 @@
   margin: 0;
 }
 
-.noOpsContainer {
-  padding: 0 15px;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-}
-
 .gridContainer {
-  /* height: calc(100dvh - var(--app-bar-height) - 15px - 23px - 23px); */
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: auto;
   scrollbar-width: thin;
+  flex-grow: 1;
+}
+
+.grid {
   padding: 0 15px;
   display: grid;
   grid-template-columns: 180px auto auto auto auto auto auto 80px;
@@ -31,13 +37,14 @@
   > * {
     position: relative;
   }
-  overflow: hidden;
 }
 
 .heading {
   font-weight: 700;
   position: sticky;
   top: 0;
+  background-color: white;
+  z-index: 2;
   &:before {
     content: '';
     position: absolute;

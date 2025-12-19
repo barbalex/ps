@@ -4,6 +4,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  --layout-header-height: 44px;
+  --breadcrumbs-height: 51px;
 }
 
 #root {
