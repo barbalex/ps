@@ -9,17 +9,7 @@ import { QueuedOperation } from './QueuedOperation.tsx'
 import { constants } from '../../modules/constants.ts'
 import { operationsQueueAtom } from '../../store.ts'
 
-import {
-  titleRow,
-  title,
-  noOpsContainer,
-  container,
-  outerContainer,
-  queriesContainer,
-  heading,
-  revertHeading,
-  closeIcon,
-} from './index.module.css'
+import styles from './index.module.css'
 
 export const QueuedOperations = () => {
   const navigate = useNavigate()
@@ -40,9 +30,9 @@ export const QueuedOperations = () => {
 
   if (!operationsQueue.length) {
     return (
-      <div className={container}>
-        <div className={titleRow}>
-          <h3 className={title}>Ausstehende Operationen</h3>
+      <div className={styles.container}>
+        <div className={styles.titleRow}>
+          <h3 className={styles.title}>Ausstehende Operationen</h3>
           <div>
             <Button
               aria-label={`Dokumentation zu "offline arbeiten" lesen`}
@@ -54,12 +44,12 @@ export const QueuedOperations = () => {
               title="schliessen"
               aria-label="schliessen"
               onClick={onClickCloseIcon}
-              className={closeIcon}
+              className={styles.closeIcon}
               icon={<FaTimes />}
             />
           </div>
         </div>
-        <div className={noOpsContainer}>
+        <div className={styles.noOpsContainer}>
           Es gibt momentan keine pendenten Operationen
         </div>
       </div>
@@ -68,9 +58,9 @@ export const QueuedOperations = () => {
 
   return (
     <ErrorBoundary>
-      <div className={container}>
-        <div className={titleRow}>
-          <h3 className={title}>Ausstehende Operationen</h3>
+      <div className={styles.container}>
+        <div className={styles.titleRow}>
+          <h3 className={styles.title}>Ausstehende Operationen</h3>
           <div>
             <Button
               aria-label="Anleitung öffnen"
@@ -83,21 +73,20 @@ export const QueuedOperations = () => {
               title="schliessen"
               aria-label="schliessen"
               onClick={onClickCloseIcon}
-              className={closeIcon}
+              className={styles.closeIcon}
               icon={<FaTimes />}
             />
           </div>
         </div>
-        <div className={outerContainer}>
-          <div className={queriesContainer}>
-            <div className={heading}>Zeit</div>
-            <div className={heading}>Tabelle</div>
-            <div className={heading}>ID</div>
-            <div className={heading}>Filter</div>
-            <div className={heading}>Operation</div>
-            <div className={heading}>vorher</div>
-            <div className={heading}>nachher</div>
-            <div className={revertHeading}>widerrufen</div>
+        <div className={styles.outerContainer}>
+            <div className={styles.heading}>Zeit</div>
+            <div className={styles.heading}>Tabelle</div>
+            <div className={styles.heading}>ID</div>
+            <div className={styles.heading}>Filter</div>
+            <div className={styles.heading}>Operation</div>
+            <div className={styles.heading}>vorher</div>
+            <div className={styles.heading}>nachher</div>
+            <div className={styles.revertHeading}>widerrufen</div>
             {[...operationsQueue].reverse().map((qo, i) => (
               <QueuedOperation
                 key={qo.id}
@@ -105,7 +94,6 @@ export const QueuedOperations = () => {
                 index={i}
               />
             ))}
-          </div>
         </div>
       </div>
     </ErrorBoundary>
