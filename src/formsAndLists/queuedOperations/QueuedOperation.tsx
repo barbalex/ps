@@ -7,7 +7,7 @@ import { removeOperationAtom } from '../../store.ts'
 import { revertOperation } from '../../modules/revertOperation.ts'
 import { idFieldFromTable } from '../../modules/idFieldFromTable.ts'
 
-import { value, icon, revertButton } from './QueuedOperation.module.css'
+import styles from './QueuedOperation.module.css'
 
 export const QueuedOperation = ({ qo, index }) => {
   const removeOperation = useSetAtom(removeOperationAtom)
@@ -39,17 +39,17 @@ export const QueuedOperation = ({ qo, index }) => {
   return (
     <>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >{`${dayjs(time).format('YYYY.MM.DD HH:mm:ss')}`}</div>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >
         {table}
       </div>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >
         {rowId ??
@@ -60,27 +60,27 @@ export const QueuedOperation = ({ qo, index }) => {
           '(leer)'}
       </div>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >
         {filter ?
-          <pre>
+          <pre className={styles.pre}>
             <code>{JSON.stringify(filter, null, 3)}</code>
           </pre>
         : '(kein Filter)'}
       </div>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >
         {operation}
       </div>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >
         {prev ?
-          <pre>
+          <pre className={styles.pre}>
             <code>
               {JSON.stringify(prevWithOnlyTheKeysContainedInDraft, null, 3)}
             </code>
@@ -88,17 +88,17 @@ export const QueuedOperation = ({ qo, index }) => {
         : '(kein Wert)'}
       </div>
       <div
-        className={value}
+        className={styles.value}
         style={valueStyle}
       >
         {draft ?
-          <pre>
+          <pre className={styles.pre}>
             <code> {JSON.stringify(draft, null, 3)}</code>
           </pre>
         : '(kein Wert)'}
       </div>
       <div
-        className={icon}
+        className={styles.icon}
         style={valueStyle}
       >
         <Button
@@ -106,7 +106,7 @@ export const QueuedOperation = ({ qo, index }) => {
           aria-label="widerrufen"
           onClick={onClickRevert}
           size="small"
-          className={revertButton}
+          className={styles.revertButton}
           icon={<FaUndoAlt />}
         />
       </div>

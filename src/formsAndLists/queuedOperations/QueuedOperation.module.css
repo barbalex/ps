@@ -11,24 +11,6 @@
     z-index: 1;
     border-bottom: 1px solid rgba(74, 20, 140, 0.1);
   }
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: -1px;
-    width: 1px;
-    z-index: 2;
-  }
-  &:nth-child(5n + 5)::after {
-    bottom: -1px;
-    right: 0;
-    left: -1000%;
-    height: 1px;
-    z-index: 3;
-    width: auto;
-    top: auto;
-  }
   &:hover::before {
     background-color: rgba(0, 0, 0, 0.05);
   }
@@ -41,4 +23,8 @@
 
 .revertButton {
   z-index: 4;
+}
+
+.pre {
+  margin: 0;
 }

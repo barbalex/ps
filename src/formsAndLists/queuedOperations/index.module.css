@@ -26,8 +26,8 @@
   scrollbar-width: thin;
   padding: 0 15px;
   display: grid;
-  grid-template-columns: 180px auto auto auto auto auto auto 100px;
-  column-gap: 7px;
+  grid-template-columns: 180px auto auto auto auto auto auto 80px;
+  column-gap: 15px;
   > * {
     position: relative;
   }
@@ -38,4 +38,14 @@
   font-weight: 700;
   position: sticky;
   top: 0;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -1000%;
+    left: -1000%;
+    z-index: 1;
+    border-bottom: 1px solid rgba(74, 20, 140, 0.1);
+  }
 }
