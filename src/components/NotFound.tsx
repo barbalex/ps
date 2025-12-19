@@ -2,18 +2,7 @@ import * as React from 'react'
 import { Button } from '@fluentui/react-components'
 import { Link, useRouter, useCanGoBack } from '@tanstack/react-router'
 
-const linkContentStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: 20,
-}
-const noMarginStyle = {
-  margin: 0,
-}
-const spacerStyle = {
-  height: 20,
-}
+import styles from './NotFound.module.css'
 
 export const NotFound = ({ table, id }) => {
   const router = useRouter()
@@ -23,15 +12,15 @@ export const NotFound = ({ table, id }) => {
   const goBack = () => router.history.back()
 
   return (
-    <div style={linkContentStyle}>
+    <div className={styles.linkContent}>
       {isTableId ?
         <>
-          <p style={noMarginStyle}>Sorry. {table} with ID</p>
+          <p className={styles.noMargin}>Sorry. {table} with ID</p>
           <em>{id}</em>
-          <p style={noMarginStyle}>was not found.</p>
+          <p className={styles.noMargin}>was not found.</p>
         </>
       : <p>Sorry. This page does not exist.</p>}
-      <div style={spacerStyle} />
+      <div className={styles.spacer} />
       {canGoBack ?
         <Button onClick={goBack}>Go Back</Button>
       : <Link to="../">

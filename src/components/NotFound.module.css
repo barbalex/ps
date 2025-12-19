@@ -1,0 +1,14 @@
+.linkContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20;
+}
+
+.noMargin {
+  margin: 0;
+}
+
+.spacer {
+  height: 20;
+}
