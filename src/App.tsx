@@ -53,6 +53,7 @@ const routerContainerStyle = {
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
 
+  // TODO: move this to separate component?
   useEffect(() => {
     const unobserve = observeOperations(store)
 
