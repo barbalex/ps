@@ -28,7 +28,6 @@
   display: grid;
   grid-template-columns: 180px auto auto auto auto auto auto 80px;
   column-gap: 15px;
-  row-gap: 5px;
   > * {
     position: relative;
   }
