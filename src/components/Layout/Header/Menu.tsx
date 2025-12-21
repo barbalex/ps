@@ -1,10 +1,9 @@
 import { Button } from '@fluentui/react-components'
 import { MdLogin } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
-import { pipe } from 'remeda'
 
 import globalStyles from '../../../styles.module.css'
-import { on } from '../../../css.ts'
+import styles from './Menu.module.css'
 
 export const Menu = () => {
   const navigate = useNavigate({ from: '/' })
@@ -18,14 +17,7 @@ export const Menu = () => {
         icon={<MdLogin />}
         onClick={onClickEnter}
         title="Enter"
-        style={pipe(
-          {
-            backgroundColor: 'rgba(38, 82, 37, 0)',
-            border: 'none',
-            color: 'white',
-          },
-          on('&:hover', { filter: 'brightness(85%)' }),
-        )}
+        className={styles.button}
       />
     </div>
   )
