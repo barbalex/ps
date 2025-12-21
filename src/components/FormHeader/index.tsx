@@ -1,8 +1,5 @@
 import { FormMenu } from '../FormMenu/index.tsx'
-
-const titleStyle = {
-  color: 'black',
-}
+import styles from './index.module.css'
 
 export const FormHeader = ({
   title,
@@ -18,10 +15,8 @@ export const FormHeader = ({
   <>
     <div className="form-header">
       <h1
-        style={{
-          ...titleStyle,
-          ...(titleMarginLeft ? { marginLeft: titleMarginLeft } : {}),
-        }}
+        className={styles.title}
+        style={titleMarginLeft ? { marginLeft: titleMarginLeft } : {}}
       >
         {title}
       </h1>
