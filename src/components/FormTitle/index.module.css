@@ -1,0 +1,35 @@
+.container {
+  background-color: rgb(225, 247, 224);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media print {
+  .container {
+    display: none !important;
+  }
+}
+
+.titleRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 42px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+/* TODO: make this a h2 or h3? */
+.title {
+  display: block;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin-top: auto;
+  margin-bottom: auto;
+  color: white;
+  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
