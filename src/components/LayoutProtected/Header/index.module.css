@@ -1,0 +1,42 @@
+.container {
+  padding: 0 20px;
+  height: var(--layout-header-height);
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background-color: rgba(38, 82, 37, 0.9);
+  color: white;
+
+  @media (min-width: 700px) {
+    padding: 0 25px;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 0 30px;
+  }
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: large;
+  user-select: none;
+  min-height: var(--lineHeightBase300);
+}
+
+/* hide the link when it starts causing issues */
+.link {
+  display: none;
+  color: white;
+  text-decoration: none;
+
+  &:hover {
+    filter: brightness(85%);
+    text-decoration: underline;
+  }
+
+  @media (min-width: 600px) {
+    display: block;
+  }
+}
