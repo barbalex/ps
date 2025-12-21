@@ -3,7 +3,7 @@ import { MdLogin } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
 import { pipe } from 'remeda'
 
-import { controls } from '../../../styles.ts'
+import globalStyles from '../../../styles.module.css'
 import { on } from '../../../css.ts'
 
 export const Menu = () => {
@@ -12,7 +12,7 @@ export const Menu = () => {
   const onClickEnter = () => navigate({ to: '/data/projects' })
 
   return (
-    <div style={controls}>
+    <div className={globalStyles.controls}>
       <Button
         size="medium"
         icon={<MdLogin />}

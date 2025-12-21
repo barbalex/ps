@@ -16,7 +16,8 @@ import {
 } from '@fluentui/react-components'
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
-import { controls } from '../../styles.ts'
+
+import globalStyles from '../../styles.module.css'
 
 const buttonHeight = 32
 export const buttonWidth = 32
@@ -225,7 +226,7 @@ export const MenuBar = ({
             Math.abs(outerContainerWidth ?? 0) - (titleComponentWidth ?? 0),
         }}
       >
-        <div style={controls}>{buttons}</div>
+        <div className={globalStyles.controls}>{buttons}</div>
         {!!menus.length && (
           <Menu className="menubar-menu">
             <MenuTrigger>

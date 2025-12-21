@@ -3,7 +3,7 @@ import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
-import { controls } from '../../../styles.ts'
+import globalStyles from '../../../styles.module.css'
 
 type Props = {
   title: string
@@ -23,7 +23,7 @@ export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
   return (
     <div className="form-header filter">
       <h1>{title}</h1>
-      <div style={controls}>
+      <div className={globalStyles.controls}>
         <ToggleButton
           size="medium"
           icon={<MdFilterAlt />}

@@ -17,7 +17,7 @@ import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
 
-import { controls } from '../../../styles.ts'
+import globalStyles from '../../../styles.module.css'
 import { on } from '../../../css.ts'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 import { Online } from './Online.tsx'
@@ -101,7 +101,7 @@ export const Menu = () => {
   const mapIsActive = tabs.includes('map')
 
   return (
-    <div style={controls}>
+    <div className={globalStyles.controls}>
       <Toolbar
         aria-label="active tabs"
         checkedValues={{ tabs }}
