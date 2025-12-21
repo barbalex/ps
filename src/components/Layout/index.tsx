@@ -1,19 +1,12 @@
 import { Outlet } from '@tanstack/react-router'
 
 import { Header } from './Header/index.tsx'
-
-const homeOutletStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  overflow: 'hidden',
-  position: 'relative',
-}
+import styles from './index.module.css'
 
 export const Layout = () => (
   <>
     <Header />
-    <div style={homeOutletStyle}>
+    <div className={styles.outletContainer}>
       <Outlet />
     </div>
   </>
