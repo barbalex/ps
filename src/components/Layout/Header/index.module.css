@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background-color: rgba(38, 82, 37, 0.9);
+  color: white;
+  padding: 0 20px;
+  height: var(--layout-header-height);
+  @media (min-width: 700px) {
+    padding: 0 25px;
+  }
+  @media (min-width: 1200px) {
+    padding: 0 30px;
+  }
+}
+.title {
+  font-size: large;
+  user-select: none;
+}

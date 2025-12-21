@@ -1,20 +1,11 @@
 import { Menu } from './Menu.tsx'
 
-import './header.css'
-
-const containerStyle = {
-  display: 'flex',
-  flexWrap: 'nowrap',
-  justifyContent: 'space-between',
-  backgroundColor: 'rgba(38, 82, 37, 0.9)',
-  color: 'white',
-}
-const titleStyle = { fontSize: 'large', userSelect: 'none' }
+import styles from './index.module.css'
 
 export const Header = () => {
   return (
-    <div className="header" style={containerStyle}>
-      <h1 style={titleStyle}>Promoting Species</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Promoting Species</h1>
       <Menu />
     </div>
   )
