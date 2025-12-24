@@ -1,13 +1,6 @@
 import { useRef, useEffect } from 'react'
 
-const innerDivStyle = {
-  border: 'none !important',
-  boxShadow: 'none !important',
-  // float children right
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
-}
+import styles from './Control.module.css'
 
 // Classes used by Leaflet to position controls
 const POSITION_CLASSES = {
@@ -31,12 +24,11 @@ export const Control = ({ children, position, visible = true }) => {
 
   return (
     <div
-      className="leaflet-control-container first"
+      className={`leaflet-control-container first ${!visible ? styles.hiddenContainer : ''}`}
       ref={ref}
-      style={visible ? {} : { visibility: 'hidden' }}
     >
       <div className={positionClass}>
-        <div style={innerDivStyle} className="leaflet-control leaflet-bar">
+        <div className={`leaflet-control leaflet-bar ${styles.innerDiv}`}>
           {children}
         </div>
       </div>
