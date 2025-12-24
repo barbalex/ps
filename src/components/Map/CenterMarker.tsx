@@ -3,6 +3,8 @@ import { Marker, Popup, useMap } from 'react-leaflet'
 import { MdCenterFocusWeak } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
 
+import styles from './CenterMarker.module.css'
+
 export const CenterMarker = () => {
   const map = useMap()
 
@@ -36,14 +38,7 @@ export const CenterMarker = () => {
       position={center}
       icon={L.divIcon({
         html: ReactDOMServer.renderToString(
-          <MdCenterFocusWeak
-            style={{
-              color: 'yellow',
-              fontSize: '3.5em',
-              transform: 'translate(-0.38em, -0.38em)',
-              filter: 'drop-shadow(0 0 2px rgb(0 0 0 / 1))',
-            }}
-          />,
+          <MdCenterFocusWeak className={styles.icon} />,
         ),
       })}
     >
