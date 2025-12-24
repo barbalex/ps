@@ -6,14 +6,7 @@ import 'allotment/dist/style.css'
 import { Tree } from '../Tree/index.tsx'
 import { MapContainer } from '../Map/index.tsx'
 import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
-
-const containerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  overflow: 'hidden',
-  position: 'relative',
-}
+import styles from './Main.module.css'
 
 const from = '/data'
 
@@ -32,7 +25,7 @@ export const Main = () => {
   if (onlyForm) return <Outlet />
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <Allotment>
         {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />}
         {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
