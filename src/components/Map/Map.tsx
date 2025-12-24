@@ -20,18 +20,7 @@ import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { InfoMarker } from './RightMenuDrawer/Marker.tsx'
 import { CenterMarker } from './CenterMarker.tsx'
 import { mapLocateAtom, mapInfoAtom, mapShowCenterAtom } from '../../store.ts'
-
-const outerContainerStyle = {
-  width: '100%',
-  height: '100%',
-  position: 'relative',
-  display: 'flex',
-  overflow: 'hidden',
-}
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-}
+import styles from './Map.module.css'
 
 export const Map = () => {
   const mapShowCenter = useAtomValue(mapShowCenterAtom)
@@ -75,15 +64,11 @@ export const Map = () => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={outerContainerStyle}
-        ref={resizeRef}
-        id="map"
-      >
+      <div className={styles.outerContainer} ref={resizeRef} id="map">
         <MapContainer
           className="map-container"
           zoomControl={false}
-          style={mapContainerStyle}
+          className={styles.mapContainer}
           // maxZoom={22}
           // minZoom={0}
           // bounds={bounds}
@@ -95,10 +80,7 @@ export const Map = () => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          <BottomRightControl
-            position="bottomright"
-            visible={true}
-          />
+          <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
           {mapShowCenter && <CenterMarker />}
