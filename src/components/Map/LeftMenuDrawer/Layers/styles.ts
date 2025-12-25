@@ -1,7 +1,3 @@
-export const headerContainerStyle = {
-  display: 'flex',
-}
-
 export const headerToggleIconStyle = {
   color: 'rgb(164,164,164)',
 }

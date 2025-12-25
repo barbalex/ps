@@ -27,7 +27,6 @@ import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import {
-  headerContainerStyle,
   headerToggleIconStyle,
   headerLabelStyle,
   deleteButtonStyle,
@@ -136,7 +135,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
               : {}
           }
         >
-          <div style={headerContainerStyle}>
+          <div className={layerStyles.headerContainer}>
             <ToggleButton
               icon={<BsSquare style={headerToggleIconStyle} />}
               checked={false}

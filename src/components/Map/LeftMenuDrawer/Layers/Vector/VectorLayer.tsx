@@ -31,7 +31,6 @@ import {
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import {
-  headerContainerStyle,
   headerToggleIconStyle,
   headerLabelStyle,
   deleteButtonStyle,
@@ -138,7 +137,7 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
               : {}
           }
         >
-          <div style={headerContainerStyle}>
+          <div className={layerStyles.headerContainer}>
             <ToggleButton
               icon={<BsSquare style={headerToggleIconStyle} />}
               checked={false}
