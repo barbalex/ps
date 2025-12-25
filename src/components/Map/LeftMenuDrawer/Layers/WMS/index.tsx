@@ -5,17 +5,13 @@ import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import {
-  layerListStyle,
-  titleStyle,
-  noneStyle,
-  addButtonStyle,
-} from '../styles.ts'
+import { layerListStyle, noneStyle, addButtonStyle } from '../styles.ts'
 import { WmsLayer } from './WmsLayer.tsx'
 import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
+import layerStyles from '../index.module.css'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -91,7 +87,7 @@ export const WmsLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 style={titleStyle}>WMS</h2>
+        <h2 className={layerStyles.title}>WMS</h2>
         <div style={layerListStyle}>
           <div style={layerListStyle}></div>
           <p style={noneStyle}>
@@ -110,14 +106,14 @@ export const WmsLayers = () => {
   return (
     <ErrorBoundary>
       <section>
-        <h2 style={titleStyle}>WMS</h2>
+        <h2 className={layerStyles.title}>WMS</h2>
         <Accordion
           multiple
           collapsible
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {wms.length ?
+          {wms.length ? (
             wms?.map((l, index) => (
               <WmsLayer
                 key={l.wms_layer_id}
@@ -127,7 +123,9 @@ export const WmsLayers = () => {
                 isOpen={openItems.includes(l.wms_layer_id)}
               />
             ))
-          : <p style={noneStyle}>No inactive WMS Layers</p>}
+          ) : (
+            <p style={noneStyle}>No inactive WMS Layers</p>
+          )}
           <Button
             size="small"
             icon={<FaPlus />}

@@ -18,6 +18,7 @@ import {
   ReorderItemProps,
   isItemData,
 } from '../../../../shared/DragAndDrop/index.tsx'
+import layersStyles from '../index.module.css'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -236,7 +237,7 @@ export const ActiveLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 style={titleStyle}>Active</h2>
+        <h2 className={layersStyles.title}>Active</h2>
         <div style={layerListStyle}>
           <p style={noLayersStyle}>
             Active layers are accessible when a project is active
@@ -255,14 +256,14 @@ export const ActiveLayers = () => {
     <ErrorBoundary>
       <DragAndDropContext.Provider value={dragAndDropContextValue}>
         <section>
-          <h2 style={titleStyle}>Active</h2>
+          <h2 className={layersStyles.title}>Active</h2>
           <Accordion
             multiple
             collapsible
             openItems={openItems}
             onToggle={onToggleItem}
           >
-            {activeLayers.length ?
+            {activeLayers.length ? (
               activeLayers?.map((l, index) => (
                 <ActiveLayer
                   key={l.wms_layer_id ?? l.vector_layer_id}
@@ -273,7 +274,9 @@ export const ActiveLayers = () => {
                   isOpen={openItems.includes(l.layer_presentation_id)}
                 />
               ))
-            : <p style={noLayersStyle}>No active layers</p>}
+            ) : (
+              <p style={noLayersStyle}>No active layers</p>
+            )}
           </Accordion>
         </section>
       </DragAndDropContext.Provider>

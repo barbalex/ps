@@ -5,7 +5,8 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
-import { layerListStyle, titleStyle, noneStyle } from '../styles.ts'
+import { layerListStyle, noneStyle } from '../styles.ts'
+import layerStyles from '../index.module.css'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -63,7 +64,7 @@ export const OwnLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 style={titleStyle}>Own</h2>
+        <h2 className={layerStyles.title}>Own</h2>
         <div style={layerListStyle}>
           <p style={noneStyle}>
             Own Layers are accessible when a project is active
@@ -76,14 +77,14 @@ export const OwnLayers = () => {
   return (
     <ErrorBoundary>
       <section>
-        <h2 style={titleStyle}>Own</h2>
+        <h2 className={layerStyles.title}>Own</h2>
         <Accordion
           multiple
           collapsible
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {ownVectorLayers.length ?
+          {ownVectorLayers.length ? (
             ownVectorLayers.map((l, index) => (
               <OwnLayer
                 key={l.vector_layer_id}
@@ -92,7 +93,9 @@ export const OwnLayers = () => {
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
-          : <p style={noneStyle}>No inactive Own Layers</p>}
+          ) : (
+            <p style={noneStyle}>No inactive Own Layers</p>
+          )}
         </Accordion>
       </section>
     </ErrorBoundary>
