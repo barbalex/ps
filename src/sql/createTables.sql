@@ -1,1 +1,1 @@
-/Users/alexandergabriel/ps/backend/db/init/03_createTables.sql
+/home/alex/Documents/GitHub/ps/backend/db/init/03_createTables.sql
