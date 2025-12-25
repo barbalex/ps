@@ -1,29 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
 
+import styles from './ScaleControl.module.css'
+
 const maxWidth = 110
 
 const getRoundNum = (num) => {
   const pow10 = Math.pow(10, `${Math.floor(num)}`.length - 1)
   let d = num / pow10
 
-  d =
-    d >= 10 ? 10
-    : d >= 5 ? 5
-    : d >= 3 ? 3
-    : d >= 2 ? 2
-    : 1
+  d = d >= 10 ? 10 : d >= 5 ? 5 : d >= 3 ? 3 : d >= 2 ? 2 : 1
 
   return pow10 * d
-}
-
-const style = {
-  border: '1px solid black',
-  borderTop: 'none',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '2px 0',
 }
 
 export const ScaleControl = () => {
@@ -57,5 +45,9 @@ export const ScaleControl = () => {
     map.whenReady(update)
   }, [map, update])
 
-  return <div style={{ ...style, width }}>{text}</div>
+  return (
+    <div className={styles.div} style={{ width }}>
+      {text}
+    </div>
+  )
 }
