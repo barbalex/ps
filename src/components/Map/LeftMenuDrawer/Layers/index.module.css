@@ -43,3 +43,12 @@
   padding-left: 0.5rem;
   line-height: var(--lineHeightBase300);
 }
+
+.deleteButton {
+  /* move to the right */
+  margin-left: auto;
+  margin-right: 0.5rem;
+  /* make the button smaller */
+  height: 32px;
+  align-self: center;
+}

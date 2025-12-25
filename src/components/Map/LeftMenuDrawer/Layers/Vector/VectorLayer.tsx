@@ -30,12 +30,11 @@ import {
   addOperationAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import { deleteButtonStyle } from '../styles.ts'
-import layerStyles from '../index.module.css'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
 import { on } from '../../../../../css.ts'
+import layerStyles from '../index.module.css'
 
 // type Props = {
 //   layer: VectorLayer
@@ -172,7 +171,7 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
                   size="medium"
                   icon={<MdDeleteOutline />}
                   title={`Delete Layer '${layer.label}'`}
-                  style={deleteButtonStyle}
+                  className={layerStyles.deleteButton}
                 />
               </MenuTrigger>
 

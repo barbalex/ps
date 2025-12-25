@@ -26,7 +26,6 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
-import { deleteButtonStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
 
@@ -167,7 +166,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
                   size="medium"
                   icon={<MdDeleteOutline />}
                   title={`Delete Layer '${layer.label}'`}
-                  style={deleteButtonStyle}
+                  className={layerStyles.deleteButton}
                 />
               </MenuTrigger>
 

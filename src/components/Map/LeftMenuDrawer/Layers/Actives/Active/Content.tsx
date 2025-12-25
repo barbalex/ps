@@ -23,8 +23,6 @@ import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
-import { deleteButtonStyle } from '../../styles.ts'
-import layerStyles from '../../index.module.css'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
 import { VectorLayerDisplays } from '../../../../../../formsAndLists/vectorLayerDisplays.tsx'
@@ -37,6 +35,7 @@ import {
 } from '../../../../../../store.ts'
 import { on } from '../../../../../../css.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
+import layerStyles from '../../index.module.css'
 
 import './active.css'
 
@@ -203,7 +202,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                 size="medium"
                 icon={<MdDeleteOutline />}
                 title={`Delete Layer '${layer.label}'`}
-                style={deleteButtonStyle}
+                className={layerStyles.deleteButton}
               />
             </MenuTrigger>
 
