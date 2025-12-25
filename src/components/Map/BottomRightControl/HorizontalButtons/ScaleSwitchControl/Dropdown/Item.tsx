@@ -1,17 +1,7 @@
 import { useMap } from 'react-leaflet'
-import { pipe } from 'remeda'
 
-import { on } from '../../../../../../css.ts'
 import { formatNumber } from '../../../../../../modules/formatNumber.ts'
-
-const itemStyle = {
-  cursor: 'pointer',
-  padding: '2px 0',
-  fontSize: '0.9em',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-}
+import styles from './Item.module.css'
 
 // Returns width of map in meters on specified latitude
 const getMapWidthForLanInMeters = (currentLan) =>
@@ -31,10 +21,7 @@ export const Item = ({ scale, close, pixelsInMeterWidth }) => {
   }
 
   return (
-    <div
-      style={pipe(itemStyle, on('&:hover', { backgroundColor: 'lightgray' }))}
-      onClick={onClick}
-    >
+    <div className={styles.item} onClick={onClick}>
       {`1 : ${formatNumber(scale)}`}
     </div>
   )
