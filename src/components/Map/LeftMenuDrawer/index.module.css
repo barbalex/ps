@@ -6,8 +6,7 @@
   /* without this when widening the window the sidebar's bottom will show the map behind it */
   background-color: white;
 
-  /* container-type: inline-size;
-  container-name: drawer; */
+  /* container: drawer / inline-size; */
 
   @container map (width <= 700px) {
     flex-direction: column;
@@ -28,6 +27,8 @@
   display: flex;
   height: 100%;
   background-color: white;
+
+  /* container: drawer / inline-size; */
 }
 
 .drawer {

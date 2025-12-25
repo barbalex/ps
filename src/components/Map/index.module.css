@@ -3,6 +3,5 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  container-type: inline-size;
-  container-name: map;
+  container: map / inline-size;
 }
