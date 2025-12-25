@@ -7,42 +7,44 @@
   background-color: white;
 
   /* container: drawer / inline-size; */
-
-  @container map (width <= 700px) {
-    flex-direction: column;
-    bottom: 0;
-    width: 100%;
-    resize: vertical;
-  }
-
-  @container map (width > 700px) {
-    left: 0;
-    top: 0;
-    height: 100%;
-    resize: horizontal;
-  }
 }
 
 .innerContainer {
   display: flex;
   height: 100%;
   background-color: white;
-
-  /* container: drawer / inline-size; */
 }
 
 .drawer {
   transition-duration: 16.66666ms;
   border: none !important;
   height: 100%;
+}
 
-  @container map (width <= 700px) {
+@container map (width <= 700px) {
+  .container {
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+    resize: vertical;
+  }
+
+  .drawer {
     width: 100% !important;
     transition-property: height;
     will-change: height;
   }
+}
 
-  @container map (width > 700px) {
+@container map (width > 700px) {
+  .container {
+    left: 0;
+    top: 0;
+    height: 100%;
+    resize: horizontal;
+  }
+
+  .drawer {
     transition-property: width;
     will-change: width;
     height: 100% !important;
