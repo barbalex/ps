@@ -1,0 +1,17 @@
+.container{
+  grid-area: horizontalbuttons;
+  z-index: 1000;
+  background-color: white;
+  border-radius: 4px;
+  margin: 0;
+  cursor: auto;
+  position: relative;
+  pointer-events: auto;
+  user-select: none;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 5px;
+  column-gap: 5px;
+}

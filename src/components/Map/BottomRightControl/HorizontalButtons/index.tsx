@@ -3,24 +3,7 @@ import { useRef, useEffect } from 'react'
 import { ScaleSwitchControl } from './ScaleSwitchControl/index.tsx'
 import { ScaleControl } from './ScaleControl.tsx'
 import { CoordinatesControl } from './Coordinates/index.tsx'
-
-const horizontalbuttonsStyle = {
-  gridArea: 'horizontalbuttons',
-  zIndex: 1000,
-  backgroundColor: 'white',
-  borderRadius: 4,
-  margin: 0,
-  cursor: 'auto',
-  position: 'relative',
-  pointerEvents: 'auto',
-  userSelect: 'none',
-  display: 'flex',
-  flexWrap: 'nowrap',
-  flexDirection: 'row',
-  alignItems: 'stretch',
-  padding: 5,
-  columnGap: 5,
-}
+import styles from './index.module.css'
 
 // TODO: add: ruler, coordinates
 export const HorizontalButtons = () => {
@@ -33,10 +16,7 @@ export const HorizontalButtons = () => {
   }, [])
 
   return (
-    <div
-      style={horizontalbuttonsStyle}
-      ref={ref}
-    >
+    <div className={styles.container} ref={ref}>
       <ScaleControl />
       <ScaleSwitchControl />
       <CoordinatesControl />
