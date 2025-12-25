@@ -8,18 +8,7 @@ import { ChooseCrs } from './ChooseCrs.tsx'
 import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
 import { round } from '../../../../../modules/roundCoordinates.ts'
 import { Inputs } from './Inputs.tsx'
-
-const containerStyle = {
-  display: 'flex',
-  flex: '1 1 auto',
-  columnGap: 5,
-  flexWrap: 'nowrap',
-  justifyContent: 'center',
-  alignItems: 'center',
-  border: '1px solid black',
-  padding: '2px 4px',
-  background: 'rgba(255, 255, 255, 0.7)',
-}
+import styles from './index.module.css'
 
 const getCoordinates = ({
   map,
@@ -73,7 +62,7 @@ export const CoordinatesControl = () => {
   useMapEvent('dragend', rerender)
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <Inputs
         coordinates={coordinates}
         projectMapPresentationCrs={projectMapPresentationCrs}
