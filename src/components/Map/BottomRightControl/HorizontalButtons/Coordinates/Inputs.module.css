@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  column-gap: 6px;
+  flex-wrap: nowrap;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.input {
+  border: none;
+  padding: 0;
+  font-size: 0.75rem;
+  /* Need to set manual width for non-supporting browsers */
+  /* only supported on chromium-based browsers, June 2024 */
+  /* only able to detect support in css, so using inputs.css for this */
+  /* fieldSizing: 'content', */
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  @supports not (field-sizing: content) {
+    width: 63px;
+  }
+
+  @supports (field-sizing: content) {
+    field-sizing: content;
+  }
+}

@@ -4,23 +4,7 @@ import { pipe } from 'remeda'
 
 import { on } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
-
-const containerStyle = {
-  display: 'flex',
-  columnGap: 6,
-  flexWrap: 'nowrap',
-  paddingLeft: 7,
-  paddingRight: 7,
-}
-const inputStyle = {
-  border: 'none',
-  padding: 0,
-  fontSize: '0.75rem',
-  // Need to set manual width for non-supporting browsers
-  // only supported on chromium-based browsers, June 2024
-  // only able to detect support in css, so using inputs.css for this
-  // fieldSizing: 'content',
-}
+import styles from './Inputs.module.css'
 
 export const Inputs = ({
   coordinates: coordsIn,
@@ -59,26 +43,13 @@ export const Inputs = ({
   }
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <input
         type="text"
         name="x"
         value={coordinates?.x ?? '...'}
-        style={pipe(
-          {
-            ...inputStyle,
-            textAlign: 'right',
-          },
-          on('&:focus-visible', {
-            outline: 'none',
-          }),
-          on('@supports not (field-sizing: content)', {
-            width: 63,
-          }),
-          on('@supports (field-sizing: content)', {
-            fieldSizing: 'content',
-          }),
-        )}
+        style={{ textAlign: 'right' }}
+        className={styles.input}
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -88,21 +59,8 @@ export const Inputs = ({
         type="text"
         name="y"
         value={coordinates?.y ?? '...'}
-        style={pipe(
-          {
-            ...inputStyle,
-            textAlign: 'left',
-          },
-          on('&:focus-visible', {
-            outline: 'none',
-          }),
-          on('@supports not (field-sizing: content)', {
-            width: 63,
-          }),
-          on('@supports (field-sizing: content)', {
-            fieldSizing: 'content',
-          }),
-        )}
+        style={{ textAlign: 'left' }}
+        className={styles.input}
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}
