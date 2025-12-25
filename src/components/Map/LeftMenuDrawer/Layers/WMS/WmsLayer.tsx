@@ -26,11 +26,7 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
-import {
-  headerToggleIconStyle,
-  headerLabelStyle,
-  deleteButtonStyle,
-} from '../styles.ts'
+import { headerLabelStyle, deleteButtonStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
 
@@ -137,7 +133,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
-              icon={<BsSquare style={headerToggleIconStyle} />}
+              icon={<BsSquare className={layerStyles.headerToggleIcon} />}
               checked={false}
               onClick={onChange}
               style={pipe(

@@ -1,7 +1,3 @@
-export const headerToggleIconStyle = {
-  color: 'rgb(164,164,164)',
-}
-
 export const headerLabelStyle = {
   fontSize: 'var(--fontSizeBase300)',
   color: 'var(--colorNeutralForeground1)',

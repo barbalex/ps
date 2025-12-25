@@ -30,11 +30,7 @@ import {
   addOperationAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import {
-  headerToggleIconStyle,
-  headerLabelStyle,
-  deleteButtonStyle,
-} from '../styles.ts'
+import { headerLabelStyle, deleteButtonStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
@@ -139,7 +135,7 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
-              icon={<BsSquare style={headerToggleIconStyle} />}
+              icon={<BsSquare className={layerStyles.headerToggleIcon} />}
               checked={false}
               onClick={onChange}
               style={pipe(

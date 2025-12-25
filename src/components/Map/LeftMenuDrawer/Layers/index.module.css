@@ -32,3 +32,7 @@
 .headerContainer {
   display: flex;
 }
+
+.headerToggleIcon {
+  color: rgb(164, 164, 164);
+}

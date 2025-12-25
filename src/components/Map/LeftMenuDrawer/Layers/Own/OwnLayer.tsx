@@ -25,7 +25,7 @@ import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
-import { headerToggleIconStyle, headerLabelStyle } from '../styles.ts'
+import { headerLabelStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
 
@@ -98,7 +98,7 @@ export const OwnLayer = ({ layer, isLast, isOpen }) => {
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
-              icon={<BsSquare style={headerToggleIconStyle} />}
+              icon={<BsSquare className={layerStyles.headerToggleIcon} />}
               checked={false}
               onClick={onChange}
               style={pipe(
