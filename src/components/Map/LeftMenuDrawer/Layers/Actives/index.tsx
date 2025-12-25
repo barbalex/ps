@@ -11,7 +11,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
-import { titleStyle } from '../styles.ts'
 import { DragAndDropContext } from './DragAndDropContext.ts'
 import {
   getItemRegistry,

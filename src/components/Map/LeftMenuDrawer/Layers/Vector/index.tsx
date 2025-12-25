@@ -5,7 +5,6 @@ import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { layerListStyle, noneStyle, addButtonStyle } from '../styles.ts'
 import { VectorLayer } from './VectorLayer.tsx'
 import {
   createVectorLayer,
@@ -81,8 +80,8 @@ export const VectorLayers = () => {
     return (
       <section>
         <h2 className={layerStyles.title}>Vectors</h2>
-        <div style={layerListStyle}>
-          <p style={noneStyle}>
+        <div className={layerStyles.layerList}>
+          <p className={layerStyles.none}>
             Vector Layers are accessible when a project is active
           </p>
         </div>
@@ -115,14 +114,14 @@ export const VectorLayers = () => {
               />
             ))
           ) : (
-            <p style={noneStyle}>No inactive Vector Layers</p>
+            <p className={layerStyles.none}>No inactive Vector Layers</p>
           )}
           <Button
             size="small"
             icon={<FaPlus />}
             onClick={addRow}
             title="Add vector layer"
-            style={addButtonStyle}
+            className={layerStyles.addButton}
           />
         </Accordion>
       </section>

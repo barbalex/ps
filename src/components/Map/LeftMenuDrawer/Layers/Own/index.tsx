@@ -5,7 +5,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
-import { layerListStyle, noneStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 
 // what accordion items are open
@@ -65,8 +64,8 @@ export const OwnLayers = () => {
     return (
       <section>
         <h2 className={layerStyles.title}>Own</h2>
-        <div style={layerListStyle}>
-          <p style={noneStyle}>
+        <div className={layerStyles.layerList}>
+          <p className={layerStyles.none}>
             Own Layers are accessible when a project is active
           </p>
         </div>
@@ -94,7 +93,7 @@ export const OwnLayers = () => {
               />
             ))
           ) : (
-            <p style={noneStyle}>No inactive Own Layers</p>
+            <p className={layerStyles.none}>No inactive Own Layers</p>
           )}
         </Accordion>
       </section>

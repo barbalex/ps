@@ -1,24 +1,3 @@
-export const layerListStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-}
-export const titleStyle = {
-  paddingLeft: 10,
-  paddingRight: 10,
-  fontSize: '1.2em',
-}
-export const noneStyle = {
-  margin: 0,
-  paddingLeft: 10,
-}
-
-export const addButtonStyle = {
-  marginLeft: 12,
-  marginTop: 8,
-  color: 'rgb(97, 97, 97)',
-}
-
 export const panelStyle = {
   paddingBottom: 8,
 }

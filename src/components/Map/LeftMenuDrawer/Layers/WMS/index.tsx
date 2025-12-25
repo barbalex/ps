@@ -5,7 +5,6 @@ import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { layerListStyle, noneStyle, addButtonStyle } from '../styles.ts'
 import { WmsLayer } from './WmsLayer.tsx'
 import {
   createWmsLayer,
@@ -88,9 +87,9 @@ export const WmsLayers = () => {
     return (
       <section>
         <h2 className={layerStyles.title}>WMS</h2>
-        <div style={layerListStyle}>
-          <div style={layerListStyle}></div>
-          <p style={noneStyle}>
+        <div className={layerStyles.layerList}>
+          <div className={layerStyles.layerList}></div>
+          <p className={layerStyles.none}>
             WMS Layers are accessible when a project is active
           </p>
         </div>
@@ -124,14 +123,14 @@ export const WmsLayers = () => {
               />
             ))
           ) : (
-            <p style={noneStyle}>No inactive WMS Layers</p>
+            <p className={layerStyles.none}>No inactive WMS Layers</p>
           )}
           <Button
             size="small"
             icon={<FaPlus />}
             onClick={addRow}
             title="Add WMS layer"
-            style={addButtonStyle}
+            className={layerStyles.addButton}
           />
         </Accordion>
       </section>
