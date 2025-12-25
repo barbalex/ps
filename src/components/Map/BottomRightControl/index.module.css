@@ -1,0 +1,14 @@
+.container {
+  position: absolute;
+  right: 5px;
+  bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  grid-template-rows: 1fr 40px;
+  grid-template-areas:
+    '. verticalbuttons'
+    'horizontalbuttons uibutton';
+  gap: 5px;
+  justify-items: stretch;
+  align-items: stretch;
+}
