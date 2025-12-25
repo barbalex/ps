@@ -1,24 +1,6 @@
 import Linkify from 'react-linkify'
-import { pipe } from 'remeda'
 
-import { on } from '../../css.ts'
-
-const rowStyle = {
-  display: 'grid',
-  gridTemplateColumns: '85px 1fr',
-  fontSize: 'x-small !important',
-}
-const titleStyle = {
-  marginTop: 0,
-  marginBottom: 8,
-}
-const labelStyle = {
-  color: 'rgba(0, 0, 0, 0.6)',
-  overflowWrap: 'anywhere',
-}
-const valueStyle = {
-  overflowWrap: 'anywhere',
-}
+import styles from './Popup.module.css'
 
 export const Popup = ({
   layersData,
@@ -48,40 +30,18 @@ export const Popup = ({
     >
       {layersData.map((ld, index) => (
         <div key={`${ld.label}/${index}`}>
-          <div
-            style={pipe(
-              titleStyle,
-              on('&:not(:first-of-type)', {
-                marginTop: 8,
-              }),
-            )}
-          >
-            {ld.label}
-          </div>
+          <div className={styles.title}>{ld.label}</div>
           {ld.properties.map(([key, value], index) => (
-            <div
-              style={pipe(
-                rowStyle,
-                on('&:nth-child(odd)', {
-                  backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                  color: 'black',
-                }),
-              )}
-              key={`${key}/${index}`}
-            >
-              <div style={labelStyle}>{`${key}:`}</div>
+            <div className={styles.row} key={`${key}/${index}`}>
+              <div className={styles.label}>{`${key}:`}</div>
               <Linkify
                 componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a
-                    target="blank"
-                    href={decoratedHref}
-                    key={key}
-                  >
+                  <a target="blank" href={decoratedHref} key={key}>
                     {decoratedText}
                   </a>
                 )}
               >
-                <div style={valueStyle}>{value}</div>
+                <div className={styles.value}>{value}</div>
               </Linkify>
             </div>
           ))}

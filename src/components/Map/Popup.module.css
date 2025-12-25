@@ -1,0 +1,28 @@
+.label {
+  color: rgba(0, 0, 0, 0.6);
+  overflow-wrap: anywhere;
+}
+
+.value {
+  overflow-wrap: anywhere;
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: 8px;
+
+  &:not(:first-of-type) {
+    margin-top: 8px;
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  font-size: x-small !important;
+
+  &:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: black;
+  }
+}
