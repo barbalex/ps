@@ -4,32 +4,7 @@ import { FaMinus, FaPlus } from 'react-icons/fa'
 import { useMap } from 'react-leaflet'
 
 import { LocatingButton } from './LocatingButton.tsx'
-
-const verticalbuttonsStyle = {
-  gridArea: 'verticalbuttons',
-  zIndex: 1000,
-  margin: 0,
-  cursor: 'auto',
-  position: 'relative',
-  pointerEvents: 'auto',
-  userSelect: 'none',
-  display: 'flex',
-  flexWrap: 'nowrap',
-  flexDirection: 'column',
-  justifyItems: 'center',
-  justifyContent: 'center',
-  alignItems: 'center',
-}
-const toolbarStyle = {
-  paddingBottom: 0,
-}
-const toolbarButtonStyle = {
-  backgroundColor: 'white',
-  border: '0.666667px solid rgb(209, 209, 209)',
-  width: 40,
-  minWidth: 40,
-  height: 40,
-}
+import styles from './index.module.css'
 
 export const VerticalButtons = () => {
   const map = useMap()
@@ -48,14 +23,11 @@ export const VerticalButtons = () => {
 
   // TODO: add: zoom to project bounds
   return (
-    <div
-      style={verticalbuttonsStyle}
-      ref={ref}
-    >
+    <div className={styles.container} ref={ref}>
       <Toolbar
         vertical
         aria-label="vertical toolbar"
-        style={toolbarStyle}
+        className={styles.toolbar}
       >
         <LocatingButton />
         <ToolbarButton
@@ -65,7 +37,7 @@ export const VerticalButtons = () => {
           title="Zoom in"
           icon={<FaPlus />}
           size="large"
-          style={toolbarButtonStyle}
+          className={styles.toolbarButton}
         />
         <ToolbarButton
           name="zoom_out"
@@ -74,7 +46,7 @@ export const VerticalButtons = () => {
           title="Zoom out"
           icon={<FaMinus />}
           size="large"
-          style={toolbarButtonStyle}
+          className={styles.toolbarButton}
         />
       </Toolbar>
     </div>

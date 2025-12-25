@@ -1,0 +1,27 @@
+.container {
+  grid-area: verticalbuttons;
+  z-index: 1000;
+  margin: 0;
+  cursor: auto;
+  position: relative;
+  pointer-events: auto;
+  user-select: none;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.toolbar {
+  padding-bottom: 0;
+}
+
+.toolbarButton {
+  background-color: white;
+  border: 0.666667px solid rgb(209, 209, 209);
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+}
