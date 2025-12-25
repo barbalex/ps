@@ -1,0 +1,30 @@
+.uiButton {
+  grid-area: uibutton;
+  z-index: 1000;
+  margin: 0;
+  cursor: auto;
+  position: relative;
+  pointer-events: auto;
+  user-select: none;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  /* .fui-switch__indicator {
+    margin-left: -0.5px !important;
+    margin-top: 10px !important;
+    transform: scale(0.8);
+    color: black !important;
+    border-color: black !important;
+  } */
+}
+
+.switch {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border: 0.666667px solid rgb(209, 209, 209);
+  border-radius: 4px;
+}

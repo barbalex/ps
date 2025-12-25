@@ -1,3 +1,5 @@
+/* this being a child class of the button,
+it can't be styled using module css */
 .fui-Switch__indicator {
   margin-left: -0.5px !important;
   margin-top: 10px !important;

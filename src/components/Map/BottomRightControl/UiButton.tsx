@@ -3,29 +3,8 @@ import { Switch } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 
 import { mapHideUiAtom } from '../../../store.ts'
+import styles from './UiButton.module.css'
 import './uiButton.css'
-
-const uibuttonStyle = {
-  gridArea: 'uibutton',
-  zIndex: 1000,
-  margin: 0,
-  cursor: 'auto',
-  position: 'relative',
-  pointerEvents: 'auto',
-  userSelect: 'none',
-  display: 'flex',
-  flexWrap: 'nowrap',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-}
-const switchStyle = {
-  width: 40,
-  height: 40,
-  backgroundColor: 'white',
-  border: '0.666667px solid rgb(209, 209, 209)',
-  borderRadius: 4,
-}
 
 export const UiButton = () => {
   const [hideMapUi, setHideMapUi] = useAtom(mapHideUiAtom)
@@ -41,15 +20,12 @@ export const UiButton = () => {
   const onChange = () => setHideMapUi(!hideMapUi)
 
   return (
-    <div
-      style={uibuttonStyle}
-      ref={ref}
-    >
+    <div className={styles.uiButton} ref={ref}>
       <Switch
         title={hideMapUi ? 'Show Map UI' : 'Hide Map UI'}
         checked={hideMapUi}
         onChange={onChange}
-        style={switchStyle}
+        className={styles.switch}
       />
     </div>
   )
