@@ -6,14 +6,17 @@
   /* without this when widening the window the sidebar's bottom will show the map behind it */
   background-color: white;
 
-  @container (width <= 700px) {
+  /* container-type: inline-size;
+  container-name: drawer; */
+
+  @container map (width <= 700px) {
     flex-direction: column;
     bottom: 0;
     width: 100%;
     resize: vertical;
   }
 
-  @container (width > 700px) {
+  @container map (width > 700px) {
     left: 0;
     top: 0;
     height: 100%;
@@ -32,13 +35,13 @@
   border: none !important;
   height: 100%;
 
-  @container (width <= 700px) {
+  @container map (width <= 700px) {
     width: 100% !important;
     transition-property: height;
     will-change: height;
   }
 
-  @container (width > 700px) {
+  @container map (width > 700px) {
     transition-property: width;
     will-change: width;
     height: 100% !important;

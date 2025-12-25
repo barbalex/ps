@@ -4,4 +4,5 @@
   position: relative;
   overflow: hidden;
   container-type: inline-size;
+  container-name: map;
 }
