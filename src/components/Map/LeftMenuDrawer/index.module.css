@@ -5,14 +5,14 @@
   max-width: 100%;
   /* without this when widening the window the sidebar's bottom will show the map behind it */
   background-color: white;
-
-  /* container: drawer / inline-size; */
 }
 
 .innerContainer {
   display: flex;
   height: 100%;
   background-color: white;
+
+  /* container: drawer / inline-size; */
 }
 
 .drawer {

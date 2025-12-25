@@ -1,1 +1,1 @@
-/home/alex/Documents/GitHub/ps/backend/db/init/01_immutableDate.sql
+/Users/alexandergabriel/ps/backend/db/init/01_immutableDate.sql

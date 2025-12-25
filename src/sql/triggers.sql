@@ -1,1 +1,1 @@
-/home/alex/Documents/GitHub/ps/backend/db/init/04_triggers.sql
+/Users/alexandergabriel/ps/backend/db/init/04_triggers.sql
