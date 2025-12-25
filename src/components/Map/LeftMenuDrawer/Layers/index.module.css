@@ -20,3 +20,15 @@
   margin-top: 8px;
   color: rgb(97, 97, 97);
 }
+
+.panel {
+  padding-bottom: 8px;
+}
+
+.tabList {
+  background-color: rgba(103, 216, 101, 0.05);
+}
+
+.headerContainer {
+  display: flex;
+}

@@ -31,13 +31,12 @@ import {
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import {
-  panelStyle,
-  tabListStyle,
   headerContainerStyle,
   headerToggleIconStyle,
   headerLabelStyle,
   deleteButtonStyle,
 } from '../styles.ts'
+import layerStyles from '../index.module.css'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
@@ -119,12 +118,12 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
         value={layer.vector_layer_id}
         style={{
           borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-          ...(isLast ?
-            { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-          : {}),
-          ...(isOpen ?
-            { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
-          : {}),
+          ...(isLast
+            ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+            : {}),
+          ...(isOpen
+            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
+            : {}),
         }}
       >
         <AccordionHeader
@@ -132,11 +131,11 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
           size="extra-large"
           expandIcon={designing ? undefined : null}
           style={
-            isOpen ?
-              {
-                backgroundColor: 'rgba(103, 216, 101, 0.1)',
-              }
-            : {}
+            isOpen
+              ? {
+                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
+                }
+              : {}
           }
         >
           <div style={headerContainerStyle}>
@@ -161,17 +160,14 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
             <p style={headerLabelStyle}>{layer.label}</p>
           </div>
         </AccordionHeader>
-        <AccordionPanel style={panelStyle}>
+        <AccordionPanel className={layerStyles.panel}>
           <TabList
             selectedValue={tab}
             onTabSelect={onTabSelect}
-            style={tabListStyle}
+            className={layerStyles.tabList}
           >
             <Tab value="overall-displays">Overall Display</Tab>
-            <Tab
-              value="feature-displays"
-              onClick={onClickFeatureDisplays}
-            >
+            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
               Feature Displays
             </Tab>
             <Tab value="config">Config</Tab>
@@ -199,16 +195,17 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
           )}
           {tab === 'feature-displays' && (
             <>
-              {vectorLayerDisplayId ?
+              {vectorLayerDisplayId ? (
                 <VectorLayerDisplay
                   vectorLayerDisplayId={vectorLayerDisplayId}
                   from={pathname}
                 />
-              : <VectorLayerDisplays
+              ) : (
+                <VectorLayerDisplays
                   vectorLayerId={layer.vector_layer_id}
                   from={pathname}
                 />
-              }
+              )}
             </>
           )}
           {tab === 'config' && <VectorLayerEditing layer={layer} />}

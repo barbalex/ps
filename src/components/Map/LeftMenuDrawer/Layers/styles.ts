@@ -1,11 +1,3 @@
-export const panelStyle = {
-  paddingBottom: 8,
-}
-
-export const tabListStyle = {
-  backgroundColor: 'rgba(103, 216, 101, 0.05)',
-}
-
 export const headerContainerStyle = {
   display: 'flex',
 }

@@ -23,13 +23,8 @@ import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
-import {
-  panelStyle,
-  tabListStyle,
-  headerContainerStyle,
-  headerLabelStyle,
-  deleteButtonStyle,
-} from '../../styles.ts'
+import { headerLabelStyle, deleteButtonStyle } from '../../styles.ts'
+import layerStyles from '../../index.module.css'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
 import { VectorLayerDisplays } from '../../../../../../formsAndLists/vectorLayerDisplays.tsx'
@@ -165,7 +160,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         }
       >
         {canDrag && <DragHandle ref={dragHandleRef} />}
-        <div style={headerContainerStyle}>
+        <div className={layerStyles.headerContainer}>
           <ToggleButton
             icon={
               <BsCheckSquareFill style={{ color: 'rgba(38, 82, 37, 0.9)' }} />
@@ -189,11 +184,11 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           <p style={headerLabelStyle}>{layer.label}</p>
         </div>
       </AccordionHeader>
-      <AccordionPanel style={panelStyle}>
+      <AccordionPanel className={layerStyles.panel}>
         <TabList
           selectedValue={tab}
           onTabSelect={onTabSelect}
-          style={tabListStyle}
+          className={layerStyles.tabList}
         >
           <Tab value="overall-displays">Overall Display</Tab>
           {isVectorLayer && (

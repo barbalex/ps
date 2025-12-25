@@ -27,13 +27,12 @@ import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import {
-  panelStyle,
-  tabListStyle,
   headerContainerStyle,
   headerToggleIconStyle,
   headerLabelStyle,
   deleteButtonStyle,
 } from '../styles.ts'
+import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
 
 type TabType = 'overall-displays' | 'config'
@@ -117,12 +116,12 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
         value={layer.wms_layer_id}
         style={{
           borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-          ...(isLast ?
-            { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-          : {}),
-          ...(isOpen ?
-            { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
-          : {}),
+          ...(isLast
+            ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+            : {}),
+          ...(isOpen
+            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
+            : {}),
         }}
       >
         <AccordionHeader
@@ -130,11 +129,11 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
           size="extra-large"
           expandIcon={designing ? undefined : null}
           style={
-            isOpen ?
-              {
-                backgroundColor: 'rgba(103, 216, 101, 0.1)',
-              }
-            : {}
+            isOpen
+              ? {
+                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
+                }
+              : {}
           }
         >
           <div style={headerContainerStyle}>
@@ -159,11 +158,11 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
             <p style={headerLabelStyle}>{layer.label}</p>
           </div>
         </AccordionHeader>
-        <AccordionPanel style={panelStyle}>
+        <AccordionPanel className={layerStyles.panel}>
           <TabList
             selectedValue={tab}
             onTabSelect={onTabSelect}
-            style={tabListStyle}
+            className={layerStyles.tabList}
           >
             <Tab value="overall-displays">Overall Display</Tab>
             <Tab value="config">Config</Tab>
