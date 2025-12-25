@@ -132,7 +132,6 @@ export const LeftMenuDrawer = ({ containerRef }) => {
       <div
         className={styles.container}
         style={{
-          ...(isNarrow ? {} : { height: '100%' }),
           // dragging can mark text so we disable pointer events
           ...(isResizing ? { pointerEvents: 'none' } : {}),
         }}
@@ -144,13 +143,9 @@ export const LeftMenuDrawer = ({ containerRef }) => {
               onClick={toggleOpen}
               icon={
                 isOpen ? (
-                  <BiSolidLeftArrow
-                    style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
-                  />
+                  <BiSolidLeftArrow className={styles.icon} />
                 ) : (
-                  <BiSolidRightArrow
-                    style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
-                  />
+                  <BiSolidRightArrow className={styles.icon} />
                 )
               }
               title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}

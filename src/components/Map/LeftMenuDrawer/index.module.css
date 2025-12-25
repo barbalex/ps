@@ -34,6 +34,10 @@
     transition-property: height;
     will-change: height;
   }
+
+  .icon {
+    transform: rotate(270deg);
+  }
 }
 
 @container map (width > 700px) {
@@ -48,5 +52,9 @@
     transition-property: width;
     will-change: width;
     height: 100% !important;
+  }
+
+  .icon {
+    transform: unset;
   }
 }
