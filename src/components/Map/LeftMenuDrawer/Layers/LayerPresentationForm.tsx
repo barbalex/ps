@@ -8,10 +8,7 @@ import { TextField } from '../../../shared/TextField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Loading } from '../../../shared/Loading.tsx'
 import { addOperationAtom, addNotificationAtom } from '../../../../store.ts'
-
-const containerStyle = {
-  padding: '1rem',
-}
+import styles from './LayerPresentationForm.module.css'
 
 export const LayerPresentationForm = ({ layer }) => {
   const db = usePGlite()
@@ -58,7 +55,7 @@ export const LayerPresentationForm = ({ layer }) => {
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
-      <div style={containerStyle} className="form-container-embedded">
+      <div className={`form-container-embedded ${styles.container}`}>
         <SliderField
           label="Opacity (%)"
           name="opacity_percent"
