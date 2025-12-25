@@ -4,33 +4,11 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { Dropdown } from './Dropdown/index.tsx'
 import { formatNumber } from '../../../../../modules/formatNumber.ts'
+import styles from './index.module.css'
 
 // Returns width of map in meters on specified latitude
 const getMapWidthForLanInMeters = (currentLan) =>
   6378137 * 2 * Math.PI * Math.cos((currentLan * Math.PI) / 180)
-
-const containerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  fontSize: '1em',
-}
-const textStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  cursor: 'pointer',
-  border: '1px solid black',
-  padding: '2px 4px',
-  background: 'rgba(255, 255, 255, 0.7)',
-  textAlign: 'center',
-  // ensure text always fits in the box
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  minWidth: 72,
-  height: 30,
-}
 
 export const ScaleSwitchControl = () => {
   const map = useMap()
@@ -78,20 +56,18 @@ export const ScaleSwitchControl = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
+  const boundingRect = ref.current?.getBoundingClientRect?.()
+
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <Dropdown
         open={open}
-        boundingRect={ref.current?.getBoundingClientRect?.()}
+        boundingRect={boundingRect}
         width={width}
         close={close}
         pixelsInMeterWidth={pixelsInMeterWidth}
       />
-      <div
-        style={textStyle}
-        onClick={onClick}
-        ref={ref}
-      >
+      <div onClick={onClick} ref={ref} className={styles.text}>
         {`1 : ${formatNumber(scale)}`}
       </div>
     </div>
