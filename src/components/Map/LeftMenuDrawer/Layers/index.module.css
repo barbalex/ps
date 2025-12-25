@@ -36,3 +36,10 @@
 .headerToggleIcon {
   color: rgb(164, 164, 164);
 }
+
+.headerLabel {
+  font-size: var(--fontSizeBase300);
+  color: var(--colorNeutralForeground1);
+  padding-left: 0.5rem;
+  line-height: var(--lineHeightBase300);
+}

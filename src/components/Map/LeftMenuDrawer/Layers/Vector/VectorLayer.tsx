@@ -30,7 +30,7 @@ import {
   addOperationAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import { headerLabelStyle, deleteButtonStyle } from '../styles.ts'
+import { deleteButtonStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
@@ -152,7 +152,7 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
               // because nested buttons are not allowed
               as="a"
             />
-            <p style={headerLabelStyle}>{layer.label}</p>
+            <p className={layerStyles.headerLabel}>{layer.label}</p>
           </div>
         </AccordionHeader>
         <AccordionPanel className={layerStyles.panel}>

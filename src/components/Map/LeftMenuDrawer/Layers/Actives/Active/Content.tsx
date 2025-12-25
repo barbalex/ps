@@ -23,7 +23,7 @@ import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
-import { headerLabelStyle, deleteButtonStyle } from '../../styles.ts'
+import { deleteButtonStyle } from '../../styles.ts'
 import layerStyles from '../../index.module.css'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
@@ -181,7 +181,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
             // because nested buttons are not allowed
             as="a"
           />
-          <p style={headerLabelStyle}>{layer.label}</p>
+          <p className={layerStyles.headerLabel}>{layer.label}</p>
         </div>
       </AccordionHeader>
       <AccordionPanel className={layerStyles.panel}>

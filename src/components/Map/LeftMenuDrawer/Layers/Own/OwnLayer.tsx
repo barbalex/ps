@@ -25,7 +25,6 @@ import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
-import { headerLabelStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
 
@@ -115,7 +114,7 @@ export const OwnLayer = ({ layer, isLast, isOpen }) => {
               // because nested buttons are not allowed
               as="a"
             />
-            <p style={headerLabelStyle}>{layer.label}</p>
+            <p className={layerStyles.headerLabel}>{layer.label}</p>
           </div>
         </AccordionHeader>
         <AccordionPanel className={layerStyles.panel}>

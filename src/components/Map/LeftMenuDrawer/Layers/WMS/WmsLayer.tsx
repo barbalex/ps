@@ -26,7 +26,7 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
-import { headerLabelStyle, deleteButtonStyle } from '../styles.ts'
+import { deleteButtonStyle } from '../styles.ts'
 import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
 
@@ -150,7 +150,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
               // because nested buttons are not allowed
               as="a"
             />
-            <p style={headerLabelStyle}>{layer.label}</p>
+            <p className={layerStyles.headerLabel}>{layer.label}</p>
           </div>
         </AccordionHeader>
         <AccordionPanel className={layerStyles.panel}>
