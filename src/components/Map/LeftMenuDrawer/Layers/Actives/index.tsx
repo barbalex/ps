@@ -18,22 +18,11 @@ import {
   isItemData,
 } from '../../../../shared/DragAndDrop/index.tsx'
 import layersStyles from '../index.module.css'
+import styles from './index.module.css'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
 const openItemsAtom = atom([])
-
-const layerListStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-}
-const noLayersStyle = {
-  margin: 0,
-  paddingLeft: 10,
-  paddingRight: 10,
-  paddingBottom: 10,
-}
 
 export const ActiveLayers = () => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
@@ -237,8 +226,8 @@ export const ActiveLayers = () => {
     return (
       <section>
         <h2 className={layersStyles.title}>Active</h2>
-        <div style={layerListStyle}>
-          <p style={noLayersStyle}>
+        <div className={styles.layerList}>
+          <p className={styles.noLayers}>
             Active layers are accessible when a project is active
           </p>
         </div>
@@ -274,7 +263,7 @@ export const ActiveLayers = () => {
                 />
               ))
             ) : (
-              <p style={noLayersStyle}>No active layers</p>
+              <p className={styles.noLayers}>No active layers</p>
             )}
           </Accordion>
         </section>
