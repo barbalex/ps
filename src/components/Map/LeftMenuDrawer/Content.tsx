@@ -11,21 +11,7 @@ import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'
 import { Legends } from './Legends/index.tsx'
 import { IsNarrowContext } from './IsNarrowContext.ts'
-
-const containerStyle = {
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-}
-
-const formStyle = {
-  // enable scrolling
-  overflow: 'auto',
-  height: '100%',
-  width: '100%',
-}
+import styles from './Content.module.css'
 
 export const Content = () => {
   const navigate = useNavigate()
@@ -37,7 +23,7 @@ export const Content = () => {
 
   return (
     <ErrorBoundary>
-      <div style={containerStyle}>
+      <div className={styles.container}>
         <TabList
           selectedValue={tab}
           onTabSelect={onTabSelect}
@@ -49,10 +35,8 @@ export const Content = () => {
           <Tab value="layers">Layers</Tab>
           <Tab value="legends">Legends</Tab>
         </TabList>
-        <div style={formStyle}>
-          {tab === 'layers' ?
-            <Layers />
-          : <Legends />}
+        <div className={styles.form}>
+          {tab === 'layers' ? <Layers /> : <Legends />}
         </div>
       </div>
     </ErrorBoundary>
