@@ -9,22 +9,7 @@ import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
 import { IsNarrowContext } from './IsNarrowContext.ts'
 import { mapHideUiAtom } from '../../../store.ts'
-
-import './index.css'
-
-const containerStyle = {
-  position: 'absolute',
-  display: 'flex',
-  zIndex: 10000,
-  maxWidth: '100%',
-  // without this when widening the window the sidebar's bottom will show the map behind it
-  backgroundColor: 'white',
-}
-const innerContainerStyle = {
-  display: 'flex',
-  height: '100%',
-  backgroundColor: 'white',
-}
+import styles from './index.module.css'
 
 export const LeftMenuDrawer = ({ containerRef }) => {
   const mapHideUi = useAtomValue(mapHideUiAtom)
@@ -58,10 +43,7 @@ export const LeftMenuDrawer = ({ containerRef }) => {
   const isOpen = size > 40
   const toggleOpen = (e) => {
     e.stopPropagation()
-    const newValue =
-      isOpen ? 5
-      : isNarrow ? 500
-      : 380
+    const newValue = isOpen ? 5 : isNarrow ? 500 : 380
     setSize(newValue)
   }
 
@@ -86,9 +68,8 @@ export const LeftMenuDrawer = ({ containerRef }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 
-      const newSidebarSize =
-        isNarrow ?
-          window.innerHeight - clientY
+      const newSidebarSize = isNarrow
+        ? window.innerHeight - clientY
         : clientX - sidebarRef.current.getBoundingClientRect().left
 
       animationFrame.current = requestAnimationFrame(() =>
@@ -149,76 +130,71 @@ export const LeftMenuDrawer = ({ containerRef }) => {
   return (
     <IsNarrowContext.Provider value={isNarrow}>
       <div
-        className="map-layers-container"
+        className={styles.container}
         style={{
-          ...containerStyle,
           ...(isNarrow ? {} : { height: '100%' }),
           // dragging can mark text so we disable pointer events
           ...(isResizing ? { pointerEvents: 'none' } : {}),
         }}
         ref={widthRef}
       >
-        <div
-          style={innerContainerStyle}
-          ref={scope}
-        >
+        <div className={styles.innerContainer} ref={scope}>
           {!mapHideUi && (
             <Button
               onClick={toggleOpen}
               icon={
-                isOpen ?
+                isOpen ? (
                   <BiSolidLeftArrow
                     style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
                   />
-                : <BiSolidRightArrow
+                ) : (
+                  <BiSolidRightArrow
                     style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
                   />
+                )
               }
               title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
               style={{
                 position: 'absolute',
-                top:
-                  isNarrow ?
-                    isOpen ? 6
-                    : -31
-                  : 5,
-                right:
-                  isNarrow ? 'unset'
-                  : isOpen ? 0.5
-                  : -31.5,
+                top: isNarrow ? (isOpen ? 6 : -31) : 5,
+                right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
                 left: isNarrow ? 5 : 'unset',
                 marginRight: isOpen ? 5 : 0,
                 zIndex: 100000000,
-                borderTopLeftRadius:
-                  isNarrow ?
-                    isOpen ? 0
+                borderTopLeftRadius: isNarrow
+                  ? isOpen
+                    ? 0
                     : 4
-                  : isOpen ? 4
-                  : 0,
-                borderBottomLeftRadius:
-                  isNarrow ?
-                    isOpen ? 4
+                  : isOpen
+                    ? 4
+                    : 0,
+                borderBottomLeftRadius: isNarrow
+                  ? isOpen
+                    ? 4
                     : 0
-                  : isOpen ? 4
-                  : 0,
-                borderTopRightRadius:
-                  isNarrow ?
-                    isOpen ? 0
+                  : isOpen
+                    ? 4
+                    : 0,
+                borderTopRightRadius: isNarrow
+                  ? isOpen
+                    ? 0
                     : 4
-                  : isOpen ? 0
-                  : 4,
-                borderBottomRightRadius:
-                  isNarrow ?
-                    isOpen ? 4
+                  : isOpen
+                    ? 0
+                    : 4,
+                borderBottomRightRadius: isNarrow
+                  ? isOpen
+                    ? 4
                     : 0
-                  : isOpen ? 0
-                  : 4,
+                  : isOpen
+                    ? 0
+                    : 4,
               }}
             />
           )}
           <InlineDrawer
             open={!mapHideUi}
-            className="map-layers-drawer"
+            className={`map-layers-drawer ${styles.drawer}`}
             ref={sidebarRef}
             style={{
               ...(isNarrow ? { height: size } : { width: size }),
@@ -227,10 +203,7 @@ export const LeftMenuDrawer = ({ containerRef }) => {
             onMouseDown={(e) => isResizing && e.preventDefault()}
           >
             <Content />
-            <Resizer
-              startResizing={startResizing}
-              isResizing={isResizing}
-            />
+            <Resizer startResizing={startResizing} isResizing={isResizing} />
           </InlineDrawer>
         </div>
       </div>

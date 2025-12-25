@@ -1,0 +1,46 @@
+.container {
+  position: absolute;
+  display: flex;
+  z-index: 10000;
+  max-width: 100%;
+  /* without this when widening the window the sidebar's bottom will show the map behind it */
+  background-color: white;
+
+  @container (width <= 700px) {
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+    resize: vertical;
+  }
+
+  @container (width > 700px) {
+    left: 0;
+    top: 0;
+    height: 100%;
+    resize: horizontal;
+  }
+}
+
+.innerContainer {
+  display: flex;
+  height: 100%;
+  background-color: white;
+}
+
+.drawer {
+  transition-duration: 16.66666ms;
+  border: none !important;
+  height: 100%;
+
+  @container (width <= 700px) {
+    width: 100% !important;
+    transition-property: height;
+    will-change: height;
+  }
+
+  @container (width > 700px) {
+    transition-property: width;
+    will-change: width;
+    height: 100% !important;
+  }
+}
