@@ -27,3 +27,11 @@
     field-sizing: content;
   }
 }
+
+.alignRight {
+  text-align: right;
+}
+
+.alignLeft {
+  text-align: left;
+}
