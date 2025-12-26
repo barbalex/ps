@@ -2,13 +2,7 @@ import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Loading } from './Loading.tsx'
-
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  userSelect: 'none',
-}
+import styles from './RadioGroupFromList.module.css'
 
 export const RadioGroupFromList = ({
   name,
@@ -42,7 +36,7 @@ export const RadioGroupFromList = ({
       validationMessage={validationMessage}
       validationState={validationState}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <RadioGroup
           layout="horizontal"
           name={name}
@@ -51,9 +45,10 @@ export const RadioGroupFromList = ({
           autoFocus={autoFocus}
           ref={ref}
         >
-          {res === undefined ?
+          {res === undefined ? (
             <Loading />
-          : <>
+          ) : (
+            <>
               {listValues.map(({ value: listValue }) => {
                 return (
                   <Radio
@@ -65,7 +60,7 @@ export const RadioGroupFromList = ({
                 )
               })}
             </>
-          }
+          )}
         </RadioGroup>
         {!!button && button}
       </div>
