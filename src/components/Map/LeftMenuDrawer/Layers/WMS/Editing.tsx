@@ -5,11 +5,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { WmsLayerForm } from '../../../../../formsAndLists/wmsLayer/Form/index.tsx'
 import { addOperationAtom } from '../../../../../store.ts'
-
-// inset form and give it green shadow
-const formContainerStyle = {
-  padding: '1em',
-}
+import styles from './Editing.module.css'
 
 export const WmsLayerEditing = ({ layer: row }) => {
   const db = usePGlite()
@@ -41,14 +37,8 @@ export const WmsLayerEditing = ({ layer: row }) => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={formContainerStyle}
-        className="form-container-embedded"
-      >
-        <WmsLayerForm
-          onChange={onChange}
-          row={row}
-        />
+      <div className={`${styles.formContainer} form-container-embedded`}>
+        <WmsLayerForm onChange={onChange} row={row} />
       </div>
     </ErrorBoundary>
   )
