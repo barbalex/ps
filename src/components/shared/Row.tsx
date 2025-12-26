@@ -1,18 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 
-const imgStyle = {
-  flexBasis: 50,
-  flexGrow: 0,
-  objectFit: 'cover',
-}
-const imgDivStyle = {
-  flexBasis: 50,
-  flexGrow: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.05)',
-}
-const labelStyle = {
-  flexGrow: 1,
-}
+import styles from './Row.module.css'
 
 export const Row = ({ label, to, onClick, imgSrc, lastHasImages = false }) => {
   const navigate = useNavigate()
@@ -29,25 +17,21 @@ export const Row = ({ label, to, onClick, imgSrc, lastHasImages = false }) => {
 
   return (
     <div className="row">
-      {imgSrc ?
+      {imgSrc ? (
         <img
           onClick={onClickImg}
           src={imgSrc}
           alt={label}
-          style={imgStyle}
+          className={styles.img}
           width="50"
           height="50"
         />
-      : lastHasImages ?
-        <div
-          onClick={onClickImg}
-          style={imgDivStyle}
-        />
-      : <div />}
-      <div
-        onClick={onClickLabel}
-        style={labelStyle}
-      >
+      ) : lastHasImages ? (
+        <div onClick={onClickImg} className={styles.imgDiv} />
+      ) : (
+        <div />
+      )}
+      <div onClick={onClickLabel} className={styles.label}>
         {label}
       </div>
     </div>

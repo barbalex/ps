@@ -1,0 +1,15 @@
+.img {
+  flex-basis: 50px;
+  flex-grow: 0;
+  object-fit: cover;
+}
+
+.imgDiv {
+  flex-basis: 50px;
+  flex-grow: 0;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.label {
+  flex-grow: 1;
+}
