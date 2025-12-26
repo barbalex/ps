@@ -5,11 +5,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { VectorLayerForm } from '../../../../../formsAndLists/vectorLayer/Form/index.tsx'
 import { addOperationAtom } from '../../../../../store.ts'
-
-// inset form and give it green shadow
-const formContainerStyle = {
-  padding: '1em',
-}
+import styles from './Editing.module.css'
 
 export const VectorLayerEditing = ({ layer: row }) => {
   const db = usePGlite()
@@ -43,14 +39,8 @@ export const VectorLayerEditing = ({ layer: row }) => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={formContainerStyle}
-        className="form-container-embedded"
-      >
-        <VectorLayerForm
-          onChange={onChange}
-          row={row}
-        />
+      <div className={`${styles.formContainer} form-container-embedded`}>
+        <VectorLayerForm onChange={onChange} row={row} />
       </div>
     </ErrorBoundary>
   )
