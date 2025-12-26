@@ -1,11 +1,6 @@
 import { Checkbox } from '@fluentui/react-components'
 
-const containerStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-}
+import styles from './CheckboxField.module.css'
 
 export const CheckboxField = ({
   label = '(no label provided)',
@@ -23,10 +18,13 @@ export const CheckboxField = ({
     // if was false, set true
     // if was null, set false
     const newValue =
-      indeterminate === false ? checked
-      : value === true ? null
-      : value === false ? true
-      : false
+      indeterminate === false
+        ? checked
+        : value === true
+          ? null
+          : value === false
+            ? true
+            : false
     onChangeIn(e, { checked: newValue })
   }
 
@@ -34,7 +32,7 @@ export const CheckboxField = ({
     (value === null || value === '') && indeterminate === true ? 'mixed' : value
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <Checkbox
         label={label}
         name={name}
