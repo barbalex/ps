@@ -1,25 +1,7 @@
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { Button } from '@fluentui/react-components'
-import { pipe } from 'remeda'
 
-import { on } from '../../css.ts'
-
-const containerStyle = {
-  padding: 15,
-}
-const buttonContainerStyle = {
-  marginRight: 10,
-  marginBottom: 10,
-}
-const detailsStyle = {
-  marginBottom: 25,
-}
-const preWrappingStyle = {
-  whiteSpace: 'normal',
-}
-const preStyle = {
-  backgroundColor: 'rgba(128, 128, 128, 0.09)',
-}
+import styles from './ErrorBoundary.module.css'
 
 const onReload = () => {
   window.location.reload(true)
@@ -36,37 +18,20 @@ const ErrorFallback = ({
   componentStack,
   resetErrorBoundary,
 }: Props) => (
-  <div style={containerStyle}>
+  <div className={styles.container}>
     <p>Sorry, ein Fehler ist aufgetreten:</p>
-    <pre style={preWrappingStyle}>{error.message}</pre>
-    <details style={detailsStyle}>
-      <summary
-        style={pipe(
-          {
-            userSelect: 'none',
-          },
-          on('&:focus', {
-            outline: 'none !important',
-          }),
-        )}
-      >
-        Mehr Informationen
-      </summary>
-      <pre style={preStyle}>{componentStack}</pre>
+    <pre className={styles.preWrapping}>{error.message}</pre>
+    <details className={styles.details}>
+      <summary className={styles.summary}>Mehr Informationen</summary>
+      <pre className={styles.pre}>{componentStack}</pre>
     </details>
-    <div style={buttonContainerStyle}>
-      <Button
-        appearance="primary"
-        onClick={onReload}
-      >
+    <div className={styles.buttonContainer}>
+      <Button appearance="primary" onClick={onReload}>
         neu starten
       </Button>
     </div>
-    <div style={buttonContainerStyle}>
-      <Button
-        appearance="secondary"
-        onClick={resetErrorBoundary}
-      >
+    <div className={styles.buttonContainer}>
+      <Button appearance="secondary" onClick={resetErrorBoundary}>
         Cache leeren und neu starten (neue Anmeldung nötig)
       </Button>
     </div>
@@ -74,10 +39,7 @@ const ErrorFallback = ({
 )
 
 export const ErrorBoundary = ({ children }) => (
-  <ErrorBoundaryComponent
-    FallbackComponent={ErrorFallback}
-    onReset={onReload}
-  >
+  <ErrorBoundaryComponent FallbackComponent={ErrorFallback} onReset={onReload}>
     {children}
   </ErrorBoundaryComponent>
 )
