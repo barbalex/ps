@@ -85,7 +85,7 @@ export const RightMenuDrawer = ({ containerRef }) => {
     <div
       // dragging can mark text so we disable pointer events
       style={isResizing ? { pointerEvents: 'none' } : {}}
-      className={`${styles.container} map-info-container`}
+      className={styles.container}
     >
       <InlineDrawer
         open={!!mapInfo?.lat}
