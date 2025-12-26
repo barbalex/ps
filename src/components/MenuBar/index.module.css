@@ -1,0 +1,46 @@
+.measuredOuterContainer {
+  overflow: hidden;
+  min-height: 32px;
+  max-height: 32px;
+  min-width: 32px;
+  flex-basis: 32px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  flex-grow: 1;
+  flex-shrink: 0;
+  column-gap: 0;
+  /* backgroundColor needed (not transparent) as in fullscreen backed by black */
+  border-top: 1px solid rgba(225, 247, 224, 0.15);
+  border-bottom: 1px solid rgba(225, 247, 224, 0.15);
+}
+
+/* StylingContainer overflows parent????!!!! */
+/* Possible solution: pass in max-width */
+.stylingContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  column-gap: 0;
+  min-height: 32px;
+  max-height: 32px;
+  overflow: hidden;
+}
+.menuPopover {
+  min-width: unset !important;
+}
+.menuContent {
+  display: flex;
+  flex-direction: column;
+  row-gap: 3px;
+  overflow: hidden;
+  padding: 3px !important;
+}
+.button {
+  margin-left: 10px;
+}

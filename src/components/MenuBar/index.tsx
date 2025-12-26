@@ -18,55 +18,10 @@ import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
 
 import globalStyles from '../../styles.module.css'
+import styles from './index.module.css'
 
-const buttonHeight = 32
+// TODO: check if still used
 export const buttonWidth = 32
-
-const measuredOuterContainerStyle = {
-  overflow: 'hidden',
-  minHeight: buttonHeight,
-  maxHeight: buttonHeight,
-  minWidth: buttonWidth,
-  flexBasis: buttonWidth,
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'nowrap',
-  justifyContent: 'flex-end',
-  flexGrow: 1,
-  flexShrink: 0,
-  columnGap: 0,
-  // backgroundColor needed (not transparent) as in fullscreen backed by black
-  borderTop: '1px solid rgba(225, 247, 224, 0.15)',
-  borderBottom: '1px solid rgba(225, 247, 224, 0.15)',
-}
-// StylingContainer overflows parent????!!!!
-// Possible solution: pass in max-width
-const stylingContainerStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  flexGrow: 1,
-  flexShrink: 0,
-  flexWrap: 'nowrap',
-  columnGap: 0,
-  minHeight: buttonHeight,
-  maxHeight: buttonHeight,
-  overflow: 'hidden',
-}
-const menuPopoverStyle = {
-  minWidth: 'unset !important',
-}
-const menuContentStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  rowGap: '3px',
-  overflow: 'hidden',
-  padding: '3px !important',
-}
-const buttonStyle = {
-  marginLeft: 10,
-}
 
 // possible improvement:
 // add refs in here to measure their widths
@@ -89,10 +44,11 @@ export const MenuBar = ({
     }
     // add 12px for margin and border width to props.width
     const widths = visibleChildren.map((c) =>
-      c.props.width ?
-        addMargin ? c.props.width + 12
-        : c.props.width
-      : buttonWidth,
+      c.props.width
+        ? addMargin
+          ? c.props.width + 12
+          : c.props.width
+        : buttonWidth,
     )
     return { visibleChildren, widths }
   }, [addMargin, children])
@@ -113,22 +69,22 @@ export const MenuBar = ({
 
     const titleWidth = titleComponentWidth ?? 0
     const spaceForButtonsAndMenus = containerWidth - titleWidth
-    const widthOfAllPassedInButtons =
-      widths ?
-        widths.reduce((acc, w) => acc + w, 0)
+    const widthOfAllPassedInButtons = widths
+      ? widths.reduce((acc, w) => acc + w, 0)
       : visibleChildren.length * buttonWidth
     const needMenu = widthOfAllPassedInButtons > spaceForButtonsAndMenus
-    const spaceForButtons =
-      needMenu ? spaceForButtonsAndMenus - buttonWidth : spaceForButtonsAndMenus
+    const spaceForButtons = needMenu
+      ? spaceForButtonsAndMenus - buttonWidth
+      : spaceForButtonsAndMenus
     // sum widths fitting into spaceForButtons
     const newButtons = []
     const newMenus = []
     let widthSum = 0
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [index, child] of Children.toArray(visibleChildren).entries()) {
-      const width =
-        child.props.width ?
-          addMargin ? child.props.width + 12
+      const width = child.props.width
+        ? addMargin
+          ? child.props.width + 12
           : child.props.width
         : buttonWidth
       if (widthSum + width > spaceForButtons) {
@@ -214,17 +170,14 @@ export const MenuBar = ({
   }, [rerenderer, checkOverflowDebounced])
 
   return (
-    <div
-      ref={outerContainerRef}
-      style={measuredOuterContainerStyle}
-    >
+    <div ref={outerContainerRef} className={styles.measuredOuterContainer}>
       {titleComponent}
       <div
         style={{
-          ...stylingContainerStyle,
           maxWidth:
             Math.abs(outerContainerWidth ?? 0) - (titleComponentWidth ?? 0),
         }}
+        className={styles.stylingContainer}
       >
         <div className={globalStyles.controls}>{buttons}</div>
         {!!menus.length && (
@@ -234,16 +187,16 @@ export const MenuBar = ({
                 <Button
                   size="medium"
                   icon={<FaBars />}
-                  style={buttonStyle}
+                  className={styles.button}
                 />
               </Tooltip>
             </MenuTrigger>
-            <MenuPopover style={menuPopoverStyle}>
+            <MenuPopover className={styles.menuPopover}>
               <MenuList
                 className="menubar-more-menus"
                 // GOAL: close menu on click on menu item
                 // TODO: prevents more menu opening on very narrow screens
-                style={{ ...menuContentStyle }}
+                className={styles.menuContent}
               >
                 {menus}
               </MenuList>
