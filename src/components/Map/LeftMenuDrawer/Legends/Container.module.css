@@ -1,0 +1,9 @@
+.section {
+  padding: 10px;
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+}
+
+.title {
+  font-weight: bold;
+  padding-bottom: 5px;
+}
