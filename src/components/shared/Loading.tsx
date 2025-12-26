@@ -1,12 +1,6 @@
 import { Spinner } from '@fluentui/react-components'
 
-const containerStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100%',
-  width: '100%',
-}
+import styles from './Loading.module.css'
 
 export const Loading = ({
   label,
@@ -16,15 +10,11 @@ export const Loading = ({
 }) => (
   <div
     style={{
-      ...containerStyle,
       justifyContent: alignLeft ? 'flex-start' : 'center',
       ...(width ? { width } : {}),
     }}
+    className={styles.container}
   >
-    <Spinner
-      labelPosition="below"
-      label={label}
-      size={size}
-    />
+    <Spinner labelPosition="below" label={label} size={size} />
   </div>
 )
