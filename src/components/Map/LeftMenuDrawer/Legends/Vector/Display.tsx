@@ -17,10 +17,7 @@ export const Display = ({ display, layerPresentation }) => (
       doubleClickZoom={false}
       scrollWheelZoom={false}
       dragging={false}
-      style={{
-        width: 20,
-        height: 20,
-      }}
+      className={styles.mapContainer}
       bounds={[
         [0, 0],
         [20, 20],

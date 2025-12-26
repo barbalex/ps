@@ -9,3 +9,8 @@
   margin-left: 8px;
   font-weight: bold;
 }
+
+.mapContainer {
+  width: 20px;
+  height: 20px;
+}
