@@ -1,41 +1,7 @@
 import { Fragment } from 'react'
 import Linkify from 'react-linkify'
 
-const containerStyle = {
-  borderBottom: '1px solid #ccc',
-  padding: '10px 0 0 0',
-}
-const titleStyle = {
-  margin: 0,
-  paddingBottom: 5,
-  paddingLeft: 10,
-  paddingRight: 10,
-  fontWeight: 'bold',
-}
-const propertyListStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'minmax(100px, 30%) 1fr',
-}
-
-const baseTextStyle = {
-  padding: 5,
-  fontSize: '0.9em',
-  lineHeight: '1.4em',
-  overflowWrap: 'anywhere',
-  color: 'black',
-}
-const textStyle = {
-  ...baseTextStyle,
-  paddingRight: 10,
-}
-const labelStyle = {
-  ...baseTextStyle,
-  fontWeight: 'bold',
-  color: 'rgba(0, 0, 0, 0.5)',
-  borderRight: '1px solid rgba(0, 0, 0, 0.2)',
-  paddingLeft: 10,
-  paddingRight: 5,
-}
+import styles from './Layer.module.css'
 
 export const Layer = ({ layerData }) => {
   const { label, properties = [], html, json, text } = layerData
@@ -43,35 +9,35 @@ export const Layer = ({ layerData }) => {
 
   if (text) {
     return (
-      <div style={containerStyle}>
-        <div style={titleStyle}>{label}</div>
-        <div style={textStyle}>{text}</div>
+      <div className={styles.container}>
+        <div className={styles.title}>{label}</div>
+        <div className={styles.text}>{text}</div>
       </div>
     )
   }
 
   if (json) {
     return (
-      <div style={containerStyle}>
-        <div style={titleStyle}>{label}</div>
-        <pre style={textStyle}>{JSON.stringify(json, null, 2)}</pre>
+      <div className={styles.container}>
+        <div className={styles.title}>{label}</div>
+        <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
       </div>
     )
   }
 
   if (html) {
     return (
-      <div style={containerStyle}>
-        <div style={titleStyle}>{label}</div>
+      <div className={styles.container}>
+        <div className={styles.title}>{label}</div>
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     )
   }
 
   return (
-    <div style={containerStyle}>
-      <div style={titleStyle}>{label}</div>
-      <div style={propertyListStyle}>
+    <div className={styles.container}>
+      <div className={styles.title}>{label}</div>
+      <div className={styles.propertyList}>
         {properties.map((p, i) => {
           const key = p[0]
           const value = p[1]
@@ -79,19 +45,19 @@ export const Layer = ({ layerData }) => {
 
           return (
             <Fragment key={`${i}/${key}`}>
-              <div style={{ ...labelStyle, backgroundColor }}>{key}</div>
+              <div className={styles.label} style={{ backgroundColor }}>
+                {key}
+              </div>
               <Linkify
                 componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a
-                    target="blank"
-                    href={decoratedHref}
-                    key={key}
-                  >
+                  <a target="blank" href={decoratedHref} key={key}>
                     {decoratedText}
                   </a>
                 )}
               >
-                <div style={{ ...textStyle, backgroundColor }}>{value}</div>
+                <div className={styles.text} style={{ backgroundColor }}>
+                  {value}
+                </div>
               </Linkify>
             </Fragment>
           )
