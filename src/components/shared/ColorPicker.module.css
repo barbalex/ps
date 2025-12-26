@@ -1,0 +1,8 @@
+/* need to vertically align, see: https://github.com/microsoft/fluentui/issues/30470 */
+.horizontalField {
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+}
+.input {
+  width: 80px;
+}

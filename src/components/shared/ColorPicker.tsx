@@ -3,14 +3,7 @@ import { HexColorPicker } from 'react-colorful'
 import { Input, Field } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
 
-// need to vertically align, see: https://github.com/microsoft/fluentui/issues/30470
-const horizontalFieldStyle = {
-  gridTemplateColumns: '80px 1fr',
-  alignItems: 'center',
-}
-const inputStyle = {
-  width: 80,
-}
+import styles from './ColorPicker.module.css'
 
 interface Props {
   color?: string
@@ -59,14 +52,11 @@ export const ColorPicker = ({
 
   return (
     <Field label={label}>
-      <HexColorPicker
-        color={val}
-        onChange={onChangeColorPicker}
-      />
+      <HexColorPicker color={val} onChange={onChangeColorPicker} />
       <Field
         label="Hex-Wert"
         orientation="horizontal"
-        style={horizontalFieldStyle}
+        className={styles.horizontalField}
       >
         <Input
           name={name}
@@ -74,7 +64,7 @@ export const ColorPicker = ({
           onChange={onChangeInput}
           onBlur={onBlurControl}
           disabled={disabled}
-          style={inputStyle}
+          className={styles.input}
           appearance="underline"
         />
       </Field>
