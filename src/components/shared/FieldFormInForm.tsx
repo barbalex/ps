@@ -15,33 +15,7 @@ import { useSetAtom } from 'jotai'
 
 import { FieldFormFetchingOwnData } from '../../formsAndLists/field/FormFetchingOwnData.tsx'
 import { addOperationAtom } from '../../store.ts'
-
-const containerStyle = {
-  padding: '0px -10px',
-  paddingLeft: '-10px',
-  display: 'flex',
-  flexDirection: 'column',
-  backgroundColor: 'rgba(103, 216, 101, 0.05)',
-}
-
-const titleRowStyle = {
-  display: 'flex',
-  flexWrap: 'nowrap',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '5px 10px',
-  backgroundColor: 'rgba(103, 216, 101, 0.15)',
-}
-const titleStyle = {
-  margin: 0,
-  fontSize: 'medium',
-  // lineHeight: 32,
-}
-const menuStyle = {
-  display: 'flex',
-  flexWrap: 'nowrap',
-  columnGap: 5,
-}
+import styles from './FieldFormInForm.module.css'
 
 export const FieldFormInForm = ({ field }) => {
   const navigate = useNavigate()
@@ -66,19 +40,15 @@ export const FieldFormInForm = ({ field }) => {
   const fieldLabel = field.field_label ?? field.name ?? ''
 
   return (
-    <div style={containerStyle}>
-      <div style={titleRowStyle}>
-        <h2 style={titleStyle}>{`Editing Field ${
+    <div className={styles.container}>
+      <div className={styles.titleRow}>
+        <h2 className={styles.title}>{`Editing Field ${
           fieldLabel ? `'${fieldLabel}'` : ''
         }`}</h2>
-        <div style={menuStyle}>
+        <div className={styles.menu}>
           <Menu>
             <MenuTrigger disableButtonEnhancement>
-              <Button
-                size="medium"
-                icon={<FaMinus />}
-                title="Delete"
-              />
+              <Button size="medium" icon={<FaMinus />} title="Delete" />
             </MenuTrigger>
 
             <MenuPopover>
@@ -97,10 +67,7 @@ export const FieldFormInForm = ({ field }) => {
           />
         </div>
       </div>
-      <FieldFormFetchingOwnData
-        fieldId={field.field_id}
-        isInForm={true}
-      />
+      <FieldFormFetchingOwnData fieldId={field.field_id} isInForm={true} />
     </div>
   )
 }
