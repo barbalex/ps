@@ -6,13 +6,7 @@ import { WmsLegend } from './WMS.tsx'
 import { VectorLegend } from './Vector/index.tsx'
 import { mapLayerSortingAtom } from '../../../../store.ts'
 import { Container } from './Container.tsx'
-
-const noLayersStyle = {
-  margin: 0,
-  paddingLeft: 10,
-  paddingRight: 10,
-  paddingBottom: 10,
-}
+import styles from './index.module.css'
 
 export const Legends = () => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
@@ -66,22 +60,26 @@ export const Legends = () => {
     },
   )
 
-  return activeLayers.length ?
-      activeLayers?.map((layer, index) => {
-        // display depends on layer type: wms / vector
-        const isVectorLayer = 'vector_layer_id' in layer
+  return activeLayers.length ? (
+    activeLayers?.map((layer, index) => {
+      // display depends on layer type: wms / vector
+      const isVectorLayer = 'vector_layer_id' in layer
 
-        return (
-          <Container
-            key={layer.wms_layer_id ?? layer.vector_layer_id}
-            layer={layer}
-            isLast={index === activeLayers.length - 1}
-          >
-            {isVectorLayer ?
-              <VectorLegend layer={layer} />
-            : <WmsLegend layer={layer} />}
-          </Container>
-        )
-      })
-    : <p style={noLayersStyle}>No active layers</p>
+      return (
+        <Container
+          key={layer.wms_layer_id ?? layer.vector_layer_id}
+          layer={layer}
+          isLast={index === activeLayers.length - 1}
+        >
+          {isVectorLayer ? (
+            <VectorLegend layer={layer} />
+          ) : (
+            <WmsLegend layer={layer} />
+          )}
+        </Container>
+      )
+    })
+  ) : (
+    <p className={styles.noLayers}>No active layers</p>
+  )
 }
