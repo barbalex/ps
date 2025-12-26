@@ -1,8 +1,8 @@
-import './resizer.css'
+import styles from './Resizer.module.css'
 
 export const Resizer = ({ startResizing, isResizing }) => (
   <div
-    className="map-info-resizer"
+    className={styles.resizer}
     onMouseDown={startResizing}
     // need to set this because the element looses the hover on drag
     style={{
