@@ -22,9 +22,7 @@ export const Info = ({ isNarrow }) => {
   return (
     <ErrorBoundary>
       <div
-        style={{
-          ...(isNarrow ? { marginTop: 5 } : { marginLeft: 5 }),
-        }}
+        style={isNarrow ? { marginTop: 5 } : { marginLeft: 5 }}
         className={styles.container}
       >
         <DrawerHeader className={styles.header}>
