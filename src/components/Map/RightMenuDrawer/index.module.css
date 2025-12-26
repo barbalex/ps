@@ -7,4 +7,35 @@
   /* without this when widening the window the sidebar's bottom will show the map behind it */
   /* background-color: white; */
   background-color: transparent !important;
+
+  @container (width <= 700px) {
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+    resize: vertical;
+  }
+
+  @container (width > 700px) {
+    right: 0;
+    top: 0;
+    resize: horizontal;
+  }
+}
+
+.drawer {
+  transition-duration: 16.66666ms;
+  border: none !important;
+
+  @container (width <= 700px) {
+    width: 100% !important;
+    transition-property: height;
+    will-change: height;
+    margin-top: 5px;
+  }
+
+  @container (width > 700px) {
+    transition-property: width;
+    will-change: width;
+    margin-left: 5px;
+  }
 }

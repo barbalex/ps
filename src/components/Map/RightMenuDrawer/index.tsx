@@ -7,7 +7,6 @@ import { Info } from './Info/index.tsx'
 import { Resizer } from './Resizer.tsx'
 import { mapInfoAtom } from '../../../store.ts'
 
-import './index.css'
 import styles from './index.module.css'
 
 export const RightMenuDrawer = ({ containerRef }) => {
@@ -91,10 +90,10 @@ export const RightMenuDrawer = ({ containerRef }) => {
       <InlineDrawer
         open={!!mapInfo?.lat}
         ref={sidebarRef}
-        className="map-info-drawer"
         style={{
           ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
         }}
+        className={styles.drawer}
         position={isNarrow ? 'bottom' : 'end'}
         onMouseDown={(e) => isResizing && e.preventDefault()}
       >
