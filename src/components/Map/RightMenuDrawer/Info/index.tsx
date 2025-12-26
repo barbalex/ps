@@ -7,20 +7,7 @@ import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
 import { mapInfoAtom } from '../../../../store.ts'
-
-const headerStyle = {
-  padding: 0,
-}
-const bodyStyle = {
-  padding: 0,
-  // enable vertical scrolling
-  overflowY: 'auto',
-  flexGrow: 1,
-}
-const noDataStyle = {
-  padding: 10,
-  margin: 0,
-}
+import styles from './index.module.css'
 
 export const Info = ({ isNarrow }) => {
   const [mapInfo, setMapInfo] = useAtom(mapInfoAtom)
@@ -36,14 +23,11 @@ export const Info = ({ isNarrow }) => {
     <ErrorBoundary>
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
           ...(isNarrow ? { marginTop: 5 } : { marginLeft: 5 }),
         }}
+        className={styles.container}
       >
-        <DrawerHeader style={headerStyle}>
+        <DrawerHeader className={styles.header}>
           <FormHeader
             title="Info"
             siblings={
@@ -56,16 +40,15 @@ export const Info = ({ isNarrow }) => {
             }
           />
         </DrawerHeader>
-        <DrawerBody style={bodyStyle}>
+        <DrawerBody className={styles.body}>
           <Location mapInfo={mapInfo} />
-          {layersExist ?
+          {layersExist ? (
             (mapInfo?.layers ?? []).map((layer, i) => (
-              <Layer
-                key={`${i}/${layer.label}`}
-                layerData={layer}
-              />
+              <Layer key={`${i}/${layer.label}`} layerData={layer} />
             ))
-          : <p style={noDataStyle}>No Data found at this location</p>}
+          ) : (
+            <p className={styles.noData}>No Data found at this location</p>
+          )}
         </DrawerBody>
       </div>
     </ErrorBoundary>
