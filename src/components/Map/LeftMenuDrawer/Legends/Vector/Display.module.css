@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.displayPropertyValue {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 8px;
+  font-weight: bold;
+}
