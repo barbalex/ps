@@ -2,14 +2,7 @@ import { Field, Slider, Label } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
 
-const containerStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 5,
-}
-const sliderStyle = {
-  flexGrow: 1,
-}
+import styles from './SliderField.module.css'
 
 export const SliderField = (props: InputProps) => {
   const {
@@ -34,7 +27,7 @@ export const SliderField = (props: InputProps) => {
       validationMessage={validationMessage}
       validationState={validationState}
     >
-      <div style={containerStyle}>
+      <div className={styles.container}>
         <Label aria-hidden>{min}</Label>
         <Slider
           key={value}
@@ -44,7 +37,7 @@ export const SliderField = (props: InputProps) => {
           step={step ?? undefined}
           defaultValue={value}
           onChange={onChangeSliderDebounced}
-          style={sliderStyle}
+          className={styles.slider}
         />
         <Label aria-hidden>{max}</Label>
       </div>
