@@ -1,0 +1,6 @@
+.icon {
+  color: yellow;
+  font-size: 3.5em;
+  transform: translate(-0.38em, -0.75em);
+  filter: drop-shadow(0 0 2px rgb(0 0 0 / 1));
+}
