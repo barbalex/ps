@@ -8,18 +8,7 @@ import {
   removeNotificationAtom,
   // addNotificationAtom,
 } from '../../store.ts'
-
-// z-index needs to cover map, thus so hight
-const containerStyle = {
-  padding: 5,
-  zIndex: 99999,
-  position: 'absolute',
-  bottom: 10,
-  left: 10,
-}
-const buttonStyle = {
-  marginLeft: 5,
-}
+import styles from './index.module.css'
 
 export const Notifications: React.FC = () => {
   const notifications = useAtomValue(notificationsAtom)
@@ -43,12 +32,9 @@ export const Notifications: React.FC = () => {
   return (
     <>
       {firstFourNotifications.length > 0 && (
-        <div style={containerStyle}>
+        <div className={styles.container}>
           {firstFourNotifications.map((n) => (
-            <NotificationComponent
-              key={n.id}
-              notification={n}
-            />
+            <NotificationComponent key={n.id} notification={n} />
           ))}
           {firstFourNotifications.length > 1 && (
             <Button
@@ -58,7 +44,7 @@ export const Notifications: React.FC = () => {
               title="Close all"
               size="small"
               edge="start"
-              style={buttonStyle}
+              className={styles.button}
               icon={<CloseIcon />}
             />
           )}
