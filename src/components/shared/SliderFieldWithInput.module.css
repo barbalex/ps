@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.sliderContainer {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  flex-grow: 1;
+}
+
+.slider {
+  flex-grow: 1;
+}

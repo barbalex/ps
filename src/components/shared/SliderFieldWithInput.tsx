@@ -2,6 +2,8 @@ import { Field, Slider, Label, Input } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
 
+import styles from './SliderFieldWithInput.module.css'
+
 export const SliderFieldWithInput = (props: InputProps) => {
   const {
     label,
@@ -27,15 +29,8 @@ export const SliderFieldWithInput = (props: InputProps) => {
       validationMessage={validationMessage}
       validationState={validationState}
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            paddingRight: 10,
-            flexGrow: 1,
-          }}
-        >
+      <div className={styles.container}>
+        <div className={styles.sliderContainer}>
           <Label aria-hidden>{min}</Label>
           <Slider
             key={value}
@@ -45,7 +40,7 @@ export const SliderFieldWithInput = (props: InputProps) => {
             step={step ?? undefined}
             defaultValue={value}
             onChange={onChangeSliderDebounced}
-            style={{ flexGrow: 1 }}
+            className={styles.slider}
           />
           <Label aria-hidden>{max}</Label>
         </div>
@@ -62,12 +57,17 @@ export const SliderFieldWithInput = (props: InputProps) => {
           ref={ref}
           style={{
             width:
-              max > 10000000 ? '9em'
-              : max > 100000 ? '8em'
-              : max > 10000 ? '7em'
-              : max > 1000 ? '6em'
-              : max > 100 ? '6em'
-              : '5em',
+              max > 10000000
+                ? '9em'
+                : max > 100000
+                  ? '8em'
+                  : max > 10000
+                    ? '7em'
+                    : max > 1000
+                      ? '6em'
+                      : max > 100
+                        ? '6em'
+                        : '5em',
           }}
         />
       </div>
