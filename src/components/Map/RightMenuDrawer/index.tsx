@@ -8,16 +8,7 @@ import { Resizer } from './Resizer.tsx'
 import { mapInfoAtom } from '../../../store.ts'
 
 import './index.css'
-
-const containerStyle = {
-  position: 'absolute',
-  display: 'flex',
-  flexDirection: 'column',
-  zIndex: 10000,
-  maxWidth: '100%',
-  // without this when widening the window the sidebar's bottom will show the map behind it
-  backgroundColor: 'white',
-}
+import styles from './index.module.css'
 
 export const RightMenuDrawer = ({ containerRef }) => {
   const [mapInfo] = useAtom(mapInfoAtom)
@@ -44,9 +35,8 @@ export const RightMenuDrawer = ({ containerRef }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 
-      const newSidebarSize =
-        isNarrow ?
-          window.innerHeight - clientY
+      const newSidebarSize = isNarrow
+        ? window.innerHeight - clientY
         : sidebarRef.current.getBoundingClientRect().right - clientX
 
       animationFrame.current = requestAnimationFrame(() =>
@@ -94,12 +84,9 @@ export const RightMenuDrawer = ({ containerRef }) => {
 
   return (
     <div
-      className="map-info-container"
-      style={{
-        ...containerStyle,
-        // dragging can mark text so we disable pointer events
-        ...(isResizing ? { pointerEvents: 'none' } : {}),
-      }}
+      // dragging can mark text so we disable pointer events
+      style={isResizing ? { pointerEvents: 'none' } : {}}
+      className={`${styles.container} map-info-container`}
     >
       <InlineDrawer
         open={!!mapInfo?.lat}
@@ -112,10 +99,7 @@ export const RightMenuDrawer = ({ containerRef }) => {
         onMouseDown={(e) => isResizing && e.preventDefault()}
       >
         <Info isNarrow={isNarrow} />
-        <Resizer
-          startResizing={startResizing}
-          isResizing={isResizing}
-        />
+        <Resizer startResizing={startResizing} isResizing={isResizing} />
       </InlineDrawer>
     </div>
   )

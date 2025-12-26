@@ -1,0 +1,10 @@
+.container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  max-width: 100%;
+  /* without this when widening the window the sidebar's bottom will show the map behind it */
+  /* background-color: white; */
+  background-color: transparent !important;
+}
