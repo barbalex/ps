@@ -17,24 +17,7 @@ import {
   confirmAssigningToSingleTargetAtom,
   placesToAssignOccurrenceToAtom,
 } from '../../store.ts'
-
-const titleRowStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  columnGap: '1rem',
-}
-const titleCommentStyle = {
-  fontSize: '0.8rem',
-}
-const bodyStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  columnGap: '1rem',
-  rowGap: '0.2rem',
-}
-const actionsStyle = {
-  alignSelf: 'flex-end',
-}
+import styles from './index.module.css'
 
 export const OccurrenceAssignChooser = () => {
   const [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget] =
@@ -54,9 +37,9 @@ export const OccurrenceAssignChooser = () => {
 
   return (
     <Dialog open={true}>
-      <DialogSurface style={{ maxWidth: 'fit-content' }}>
-        <DialogBody style={bodyStyle}>
-          <div style={titleRowStyle}>
+      <DialogSurface className={styles.surface}>
+        <DialogBody className={styles.body}>
+          <div className={styles.titleRow}>
             <DialogTitle>Choose place to assign</DialogTitle>
             <Button
               appearance="subtle"
@@ -66,7 +49,7 @@ export const OccurrenceAssignChooser = () => {
             />
           </div>
           {placesToAssignOccurrenceTo.places.length > 4 && (
-            <div style={titleCommentStyle}>The 5 closest are shown</div>
+            <div className={styles.titleComment}>The 5 closest are shown</div>
           )}
           <DialogContent>
             <MenuList>
@@ -79,7 +62,7 @@ export const OccurrenceAssignChooser = () => {
               ))}
             </MenuList>
           </DialogContent>
-          <DialogActions style={actionsStyle}>
+          <DialogActions className={styles.actions}>
             <Checkbox
               label="Auto-assign when single place found"
               checked={!confirmAssigningToSingleTarget}
