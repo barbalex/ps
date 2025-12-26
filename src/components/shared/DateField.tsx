@@ -1,16 +1,7 @@
 import { Field } from '@fluentui/react-components'
 import { DatePicker } from '@fluentui/react-datepicker-compat'
 
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
-const dfStyle = {
-  flexGrow: 1,
-}
+import styles from './DateField.module.css'
 
 export const DateField = ({
   label,
@@ -31,7 +22,7 @@ export const DateField = ({
       validationMessage={validationMessage}
       validationState={validationState}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <DatePicker
           placeholder="Select a date or click to write..."
           name={name}
@@ -48,7 +39,7 @@ export const DateField = ({
           autoFocus={autoFocus}
           ref={ref}
           appearance="underline"
-          style={dfStyle}
+          className={styles.df}
         />
         {!!button && button}
       </div>
