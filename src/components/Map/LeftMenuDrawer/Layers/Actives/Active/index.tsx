@@ -28,6 +28,7 @@ import {
 import { Content } from './Content.tsx'
 
 import './active.css'
+import styles from './index.module.css'
 
 function useDragAndDropContext() {
   const dragAndDropContext = useContext(DragAndDropContext)
@@ -43,12 +44,6 @@ function getItemData({ layer, index, instanceId }) {
     index,
     instanceId,
   }
-}
-
-const previewStyle = {
-  padding: '0.5rem',
-  backgroundColor: 'white',
-  borderRadius: '0.25rem',
 }
 
 export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
@@ -153,11 +148,11 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
     // needed for the drop indicator to appear
     position: 'relative',
     borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-    ...(isLast ?
-      {
-        borderBottom: `1px solid rgba(55, 118, 28, 0.5)`,
-      }
-    : {}),
+    ...(isLast
+      ? {
+          borderBottom: `1px solid rgba(55, 118, 28, 0.5)`,
+        }
+      : {}),
     ...(isOpen ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` } : {}),
   }
 
@@ -176,16 +171,11 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
           layerCount={layerCount}
           dragHandleRef={dragHandleRef}
         />
-        {closestEdge && (
-          <DropIndicator
-            edge={closestEdge}
-            gap="1px"
-          />
-        )}
+        {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
       </AccordionItem>
       {draggableState.type === 'preview' &&
         createPortal(
-          <div style={previewStyle}>{layer.label}</div>,
+          <div className={styles.preview}>{layer.label}</div>,
           draggableState.container,
         )}
     </ErrorBoundary>
