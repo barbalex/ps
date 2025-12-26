@@ -2,23 +2,7 @@ import { useState, useEffect } from 'react'
 import { Textarea, Field } from '@fluentui/react-components'
 import type { TextareaProps } from '@fluentui/react-components'
 
-import './textArea.css'
-
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
-
-const textareaStyle = {
-  flexGrow: 1,
-}
-
-const fieldStyle = {
-  width: '100%',
-}
+import styles from './TextArea.module.css'
 
 export const TextArea = (props: Partial<TextareaProps>) => {
   const {
@@ -53,9 +37,9 @@ export const TextArea = (props: Partial<TextareaProps>) => {
       label={label ?? '(no label provided)'}
       validationMessage={validationMessage}
       validationState={validationState}
-      style={fieldStyle}
+      className={styles.field}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <Textarea
           {...props}
           name={name}
@@ -66,7 +50,7 @@ export const TextArea = (props: Partial<TextareaProps>) => {
           appearance="outline"
           autoFocus={autoFocus}
           resize="vertical"
-          style={textareaStyle}
+          className={styles.textarea}
           ref={ref}
         />
         {!!button && button}
