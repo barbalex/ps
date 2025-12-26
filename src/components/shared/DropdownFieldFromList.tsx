@@ -1,19 +1,7 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
-const ddStyle = {
-  flexGrow: 1,
-}
-const fieldStyle = {
-  width: '100%',
-}
+import styles from './DropdownFieldFromList.module.css'
 
 interface Props {
   name: string
@@ -50,9 +38,9 @@ export const DropdownFieldFromList = ({
       label={label ?? '(no label provided)'}
       validationMessage={validationMessage}
       validationState={validationState}
-      style={fieldStyle}
+      className={styles.field}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <Dropdown
           name={name}
           value={selectedOptions?.[0] ?? ''}
@@ -61,7 +49,7 @@ export const DropdownFieldFromList = ({
             onChange({ target: { name, value: data.optionValue } })
           }
           appearance="underline"
-          style={ddStyle}
+          className={styles.dd}
           autoFocus={autoFocus}
           ref={ref}
           clearable
