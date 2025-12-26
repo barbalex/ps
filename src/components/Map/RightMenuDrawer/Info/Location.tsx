@@ -1,25 +1,13 @@
-const containerStyle = {
-  borderBottom: '1px solid #ccc',
-  padding: '10px 10px',
-}
-const titleStyle = {
-  margin: 0,
-  paddingBottom: 5,
-  fontSize: 'medium',
-}
-const pStyle = {
-  margin: 0,
-  fontSize: 'small',
-}
+import styles from './Location.module.css'
 
 export const Location = ({ mapInfo }) => {
   const lng = Math.round(mapInfo?.lng * 10000000) / 10000000
   const lat = Math.round(mapInfo?.lat * 10000000) / 10000000
 
   return (
-    <div style={containerStyle}>
-      <h3 style={titleStyle}>Location</h3>
-      <p style={pStyle}>{`WGS84: ${lng} / ${lat}`}</p>
+    <div className={styles.container}>
+      <h3 className={styles.title}>Location</h3>
+      <p className={styles.p}>{`WGS84: ${lng} / ${lat}`}</p>
     </div>
   )
 }

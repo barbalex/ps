@@ -1,0 +1,15 @@
+.container {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 10px;
+}
+
+.title {
+  margin: 0;
+  padding-bottom: 5px;
+  font-size: medium;
+}
+
+.p {
+  margin: 0;
+  font-size: small;
+}
