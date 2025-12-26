@@ -2,13 +2,7 @@ import { useState } from 'react'
 import { Input, Field } from '@fluentui/react-components'
 import { DatePicker } from '@fluentui/react-datepicker-compat'
 
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
+import styles from './DateTimeField.module.css'
 
 export const DateTimeField = ({
   label,
@@ -26,19 +20,25 @@ export const DateTimeField = ({
   const [minutes, setMinutes] = useState(value?.getMinutes?.() ?? '')
 
   const [dateValidationState, dateValidationMessage] =
-    !value && hours === '' && minutes === '' ? ['none', '']
-    : years !== '' ? ['none', '']
-    : ['warning', 'must be set']
+    !value && hours === '' && minutes === ''
+      ? ['none', '']
+      : years !== ''
+        ? ['none', '']
+        : ['warning', 'must be set']
 
   const [hoursValidationState, hoursValidationMessage] =
-    !value && years === '' && minutes === '' ? ['none', '']
-    : hours !== '' ? ['none', '']
-    : ['warning', 'must be set']
+    !value && years === '' && minutes === ''
+      ? ['none', '']
+      : hours !== ''
+        ? ['none', '']
+        : ['warning', 'must be set']
 
   const [minutesValidationState, minutesValidationMessage] =
-    !value && years === '' && hours === '' ? ['none', '']
-    : minutes !== '' ? ['none', '']
-    : ['warning', 'must be set']
+    !value && years === '' && hours === ''
+      ? ['none', '']
+      : minutes !== ''
+        ? ['none', '']
+        : ['warning', 'must be set']
 
   const onChangeDate = (ev) => {
     const newDate = ev?.target.value
@@ -100,7 +100,7 @@ export const DateTimeField = ({
 
   return (
     <Field label={label ?? '(no label provided)'}>
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <div className="field-group-horizontal">
           <Field
             label="Date"
