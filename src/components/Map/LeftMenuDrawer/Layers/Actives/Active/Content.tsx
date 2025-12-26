@@ -17,7 +17,6 @@ import {
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
-import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 
@@ -38,6 +37,7 @@ import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import layerStyles from '../../index.module.css'
 
 import './active.css'
+import styles from './Content.module.css'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
@@ -150,32 +150,15 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         expandIconPosition="end"
         size="extra-large"
         expandIcon={designing ? undefined : null}
-        style={
-          isOpen
-            ? {
-                backgroundColor: 'rgba(103, 216, 101, 0.1)',
-              }
-            : {}
-        }
+        className={isOpen ? styles.headerColor : undefined}
       >
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <div className={layerStyles.headerContainer}>
           <ToggleButton
-            icon={
-              <BsCheckSquareFill style={{ color: 'rgba(38, 82, 37, 0.9)' }} />
-            }
+            icon={<BsCheckSquareFill className={styles.headerIcon} />}
             checked={layer.layer_presentation_active}
             onClick={onChangeActive}
-            style={pipe(
-              {
-                marginLeft: 2,
-                border: 'none',
-                backgroundColor: 'transparent',
-              },
-              on('&:hover', {
-                backgroundColor: 'var(--colorNeutralBackground1Hover)',
-              }),
-            )}
+            className={styles.headerButton}
             // as the accordion header is a button, we need to set this as an a
             // because nested buttons are not allowed
             as="a"
