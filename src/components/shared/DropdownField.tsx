@@ -1,16 +1,7 @@
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
-const ddStyle = {
-  flexGrow: 1,
-}
+import styles from './DropdownField.module.css'
 
 export const DropdownField = ({
   name,
@@ -42,21 +33,17 @@ export const DropdownField = ({
   }))
   const selectedOptions = options.filter(({ value: v }) => v === value)
 
-  const validationState =
-    validationStateIn ? validationStateIn
-    : (
-      !options?.length //&& !!value
-    ) ?
-      'warning'
-    : 'none'
+  const validationState = validationStateIn
+    ? validationStateIn
+    : !options?.length //&& !!value
+      ? 'warning'
+      : 'none'
 
-  const validationMessage =
-    validationMessageIn ? validationMessageIn
-    : (
-      !options?.length //&& !!value
-    ) ?
-      `No ${table} found. Please add one first.`
-    : undefined
+  const validationMessage = validationMessageIn
+    ? validationMessageIn
+    : !options?.length //&& !!value
+      ? `No ${table} found. Please add one first.`
+      : undefined
 
   if (hideWhenNoData && !options?.length) return null
 
@@ -66,7 +53,7 @@ export const DropdownField = ({
       validationMessage={validationMessage}
       validationState={validationState}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <Dropdown
           name={name}
           value={selectedOptions?.[0]?.text ?? ''}
@@ -77,23 +64,22 @@ export const DropdownField = ({
           appearance="underline"
           autoFocus={autoFocus}
           ref={ref}
-          style={ddStyle}
+          className={styles.dd}
           clearable
         >
-          {options.length ?
+          {options.length ? (
             options.map((params) => {
               const { text, value } = params
 
               return (
-                <Option
-                  key={value}
-                  value={value}
-                >
+                <Option key={value} value={value}>
                   {text}
                 </Option>
               )
             })
-          : <Option value={''}>{noDataMessage}</Option>}
+          ) : (
+            <Option value={''}>{noDataMessage}</Option>
+          )}
         </Dropdown>
         {!!button && button}
       </div>
