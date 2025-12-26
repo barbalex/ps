@@ -9,43 +9,7 @@ import {
 import { useSetAtom } from 'jotai'
 
 import { removeNotificationAtom } from '../../store.ts'
-
-const containerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  margin: '5px',
-  padding: '10px',
-  borderRadius: '3px',
-  // color: 'white',
-  backgroundColor: 'white',
-  minHeight: '18px',
-  maxWidth: 'calc(100% - 10px)',
-  wordWrap: 'break-word',
-  boxShadow:
-    'rgba(0, 0, 0, 0.12) 0px 0px 2px 0px, rgba(0, 0, 0, 0.14) 0px 4px 8px 0px',
-  minWidth: 200,
-}
-const titleRowStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-}
-// http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
-const messageStyle = {
-  overflow: 'hidden',
-  display: '-webkit-box',
-  WebkitLineClamp: 3,
-  WebkitBoxOrient: 'vertical',
-}
-const titleStyle = {
-  fontWeight: 500,
-  marginRight: '30px',
-}
-const iconAndTitleStyle = {
-  display: 'flex',
-  justifyContent: 'flex-start',
-  alignItems: 'center',
-  columnGap: 5,
-}
+import styles from './Notification.module.css'
 
 const colorMap = {
   error: '#D84315',
@@ -84,19 +48,20 @@ export const Notification = ({ notification }) => {
   // TODO: add progress bar
   // https://react.fluentui.dev/?path=/docs/components-progressbar--default
   return (
-    <div style={containerStyle}>
-      <div style={titleRowStyle}>
-        <div style={iconAndTitleStyle}>
-          {paused === true ?
+    <div className={styles.container}>
+      <div className={styles.titleRow}>
+        <div className={styles.iconAndTitle}>
+          {paused === true ? (
             <Spinner size="small" />
-          : <>
+          ) : (
+            <>
               {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
               {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
               {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
             </>
-          }
-          {!!title && <div style={titleStyle}>{title}</div>}
+          )}
+          {!!title && <div className={styles.title}>{title}</div>}
         </div>
         <Button
           aria-label="Close"
@@ -107,7 +72,7 @@ export const Notification = ({ notification }) => {
           appearance="subtle"
         />
       </div>
-      <div style={messageStyle}>{body}</div>
+      <div className={styles.message}>{body}</div>
     </div>
   )
 }

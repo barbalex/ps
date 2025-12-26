@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 3px;
+  /* color: white; */
+  background-color: white;
+  min-height: 18px;
+  max-width: calc(100% - 10px);
+  word-wrap: break-word;
+  box-shadow:
+    rgba(0, 0, 0, 0.12) 0px 0px 2px 0px,
+    rgba(0, 0, 0, 0.14) 0px 4px 8px 0px;
+  min-width: 200px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/ */
+.message {
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.title {
+  font-weight: 500;
+  margin-right: 30px;
+}
+
+.iconAndTitle {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 5px;
+}
