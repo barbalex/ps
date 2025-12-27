@@ -1,0 +1,15 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 10px;
+  user-select: none;
+}
+
+.field {
+  width: 100%;
+}
+
+.input {
+  flex-grow: 1;
+}

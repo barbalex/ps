@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Input, Field } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
+import styles from './TextField.module.css'
+
 const rowStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -50,9 +52,9 @@ export const TextField = ({
       validationMessage={validationMessage}
       validationState={validationState}
       hint={hint}
-      style={fieldStyle}
+      className={styles.field}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <Input
           name={name}
           value={stateValue}
@@ -65,7 +67,7 @@ export const TextField = ({
           onKeyPress={onKeyPress}
           onBlur={onChangeIn}
           disabled={disabled}
-          style={{ flexGrow: 1 }}
+          className={styles.input}
         />
         {!!button && button}
       </div>
