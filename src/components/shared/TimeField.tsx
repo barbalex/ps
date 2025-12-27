@@ -2,13 +2,7 @@ import { Field } from '@fluentui/react-components'
 import { TimePicker } from '@fluentui/react-timepicker-compat-preview'
 import dayjs from 'dayjs'
 // import { format } from "@formkit/tempo"
-
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-}
+import styles from './TimeField.module.css'
 
 export const TimeField = ({
   label,
@@ -33,7 +27,7 @@ export const TimeField = ({
       validationMessage={validationMessage}
       validationState={validationState}
     >
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <TimePicker
           placeholder="Select a time or click to write..."
           name={name}
