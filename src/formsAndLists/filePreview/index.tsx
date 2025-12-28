@@ -10,7 +10,6 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
 import '../../form.css'
-import './style.css'
 import '@cyntler/react-doc-viewer/dist/index.css'
 import styles from './index.module.css'
 
@@ -97,7 +96,7 @@ export const FilePreview = ({ from }) => {
                 ]}
                 renderers={DocViewerRenderers}
                 config={{ header: { disableHeader: true } }}
-                className={`${styles.object} doc-viewer`}
+                className={styles.docViewer}
               />
             </div>
           )}

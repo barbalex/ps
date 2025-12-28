@@ -23,3 +23,11 @@
 .object {
   height: 100%;
 }
+
+.docViewer {
+  height: 100%;
+
+  div {
+    height: 100%;
+  }
+}
