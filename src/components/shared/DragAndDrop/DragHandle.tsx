@@ -1,6 +1,6 @@
 import { MdDragIndicator } from 'react-icons/md'
 
-import styles from './DragAndDrop.module.css'
+import styles from './DragHandle.module.css'
 
 // receives drag handle ref
 export const DragHandle = ({ ref }) => (
