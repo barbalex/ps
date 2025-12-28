@@ -6,7 +6,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { Options } from './options.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom } from '../../../store.ts'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
@@ -19,9 +19,8 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
   const [crs, setCrs] = useState([])
 
   const fetchData = useCallback(async () => {
-    const sql =
-      filter ?
-        'SELECT * FROM crs WHERE code ILIKE $1 OR name ILIKE $1'
+    const sql = filter
+      ? 'SELECT * FROM crs WHERE code ILIKE $1 OR name ILIKE $1'
       : 'SELECT * FROM crs'
     const vals = filter ? [`%${filter}%`] : []
     const res = await db.query(sql, vals)
@@ -84,10 +83,7 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
         freeform
         clearable
       >
-        <Options
-          filter={filter}
-          optionsFiltered={crs}
-        />
+        <Options filter={filter} optionsFiltered={crs} />
       </Combobox>
     </Field>
   )
