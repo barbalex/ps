@@ -1,13 +1,7 @@
 import { useState } from 'react'
 import { Input, Field } from '@fluentui/react-components'
 
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
+import styles from './TimeFields.module.css'
 
 export const TimeFields = ({
   label,
@@ -23,14 +17,18 @@ export const TimeFields = ({
   const [minutes, setMinutes] = useState(valArray[1] ?? '')
 
   const [hoursValidationState, hoursValidationMessage] =
-    hours !== '' ? ['none', '']
-    : minutes === '' ? ['none', '']
-    : ['warning', 'must be set']
+    hours !== ''
+      ? ['none', '']
+      : minutes === ''
+        ? ['none', '']
+        : ['warning', 'must be set']
 
   const [minutesValidationState, minutesValidationMessage] =
-    minutes !== '' ? ['none', '']
-    : hours === '' ? ['none', '']
-    : ['warning', 'must be set']
+    minutes !== ''
+      ? ['none', '']
+      : hours === ''
+        ? ['none', '']
+        : ['warning', 'must be set']
 
   const onChangeHours = (ev, data) => {
     const newHours = data.value
@@ -50,7 +48,7 @@ export const TimeFields = ({
 
   return (
     <Field label={label ?? '(no label provided)'}>
-      <div style={rowStyle}>
+      <div className={styles.row}>
         <div className="field-group-horizontal">
           <Field
             label="hours"
