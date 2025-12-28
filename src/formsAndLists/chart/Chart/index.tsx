@@ -5,14 +5,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { buildData } from './buildData/index.ts'
 import { SingleChart } from './Chart.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
-
-const titleRowStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginTop: 10,
-  fontWeight: 'bold',
-}
+import styles from './index.module.css'
 
 export const Chart = ({ from }) => {
   const { projectId, subprojectId, chartId } = useParams({ from })
@@ -52,12 +45,7 @@ export const Chart = ({ from }) => {
   }, [chartId, chart, db, projectId, subjects, subprojectId])
 
   if (!chart) {
-    return (
-      <NotFound
-        table="Chart"
-        id={chartId}
-      />
-    )
+    return <NotFound table="Chart" id={chartId} />
   }
 
   if (!chart || !subjects) return null
@@ -67,8 +55,8 @@ export const Chart = ({ from }) => {
 
   return (
     <>
-      <div style={titleRowStyle}>{chart.title}</div>
-      {chart.subjects_single === true ?
+      <div className={styles.titleRow}>{chart.title}</div>
+      {chart.subjects_single === true ? (
         subjects.map((subject) => (
           <SingleChart
             chart={chart}
@@ -77,12 +65,9 @@ export const Chart = ({ from }) => {
             synchronized={true}
           />
         ))
-      : <SingleChart
-          chart={chart}
-          subjects={subjects}
-          data={data}
-        />
-      }
+      ) : (
+        <SingleChart chart={chart} subjects={subjects} data={data} />
+      )}
     </>
   )
 }
