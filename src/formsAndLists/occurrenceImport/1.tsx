@@ -5,17 +5,7 @@ import { TextArea } from '../../components/shared/TextArea.tsx'
 import { UploadButton } from '../../components/shared/UploadButton.tsx'
 import { processData } from './processData.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
-
-const occurrencesImportedStyle = {
-  color: 'rgba(38, 82, 37, 0.9)',
-  fontWeight: 'bold',
-}
-const doneIconStyle = {
-  paddingRight: 8,
-  fontSize: '1.4em',
-  fontWeight: 'bold',
-  verticalAlign: 'text-bottom',
-}
+import styles from './1.module.css'
 
 export const One = ({ occurrenceImport, onChange, autoFocusRef }) => (
   <>
@@ -35,19 +25,20 @@ export const One = ({ occurrenceImport, onChange, autoFocusRef }) => (
       onChange={onChange}
       validationMessage="Please add the correct citation as required by the data provider"
     />
-    {occurrenceImport?.occurrences?.length ?
-      <div style={occurrencesImportedStyle}>
-        <MdDone style={doneIconStyle} />
+    {occurrenceImport?.occurrences?.length ? (
+      <div className={styles.occurrencesImported}>
+        <MdDone className={styles.doneIcon} />
         {`${formatNumber(
           occurrenceImport.occurrences.length,
         )} occurrences imported`}
       </div>
-    : <UploadButton
+    ) : (
+      <UploadButton
         processData={processData}
         additionalData={{
           occurrence_import_id: occurrenceImport.occurrence_import_id,
         }}
       />
-    }
+    )}
   </>
 )

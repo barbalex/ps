@@ -1,0 +1,11 @@
+.occurrencesImported {
+  color: rgba(38, 82, 37, 0.9);
+  font-weight: bold;
+}
+
+.doneIcon {
+  padding-right: 8px;
+  font-size: 1.4em;
+  font-weight: bold;
+  vertical-align: text-bottom;
+}
