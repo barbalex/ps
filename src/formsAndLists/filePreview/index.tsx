@@ -12,22 +12,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import '../../form.css'
 import './style.css'
 import '@cyntler/react-doc-viewer/dist/index.css'
-
-const containerStyle = {
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-}
-const fileStyle = {
-  flexGrow: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  backgroundColor: 'white',
-}
-const imageStyle = {
-  objectFit: 'contain',
-}
-const textStyle = { alignSelf: 'center', paddingTop: '2em' }
+import styles from './index.module.css'
 
 export const FilePreview = ({ from }) => {
   const { fileId } = useParams({ from })
@@ -46,12 +31,7 @@ export const FilePreview = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="File"
-        id={fileId}
-      />
-    )
+    return <NotFound table="File" id={fileId} />
   }
 
   const isImage = row.mimetype.includes('image')
@@ -79,18 +59,9 @@ export const FilePreview = ({ from }) => {
   return (
     <>
       <Uploader />
-      <div
-        ref={previewRef}
-        style={containerStyle}
-      >
-        <Header
-          row={row}
-          previewRef={previewRef}
-        />
-        <div
-          style={fileStyle}
-          ref={ref}
-        >
+      <div ref={previewRef} className={styles.container}>
+        <Header row={row} previewRef={previewRef} />
+        <div className={styles.file} ref={ref}>
           {isImage && row.url && width && (
             <img
               src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
@@ -99,25 +70,23 @@ export const FilePreview = ({ from }) => {
               alt={row.name}
               width={width}
               height={
-                row.width && row.height ?
-                  (width / row.width) * row.height
-                : undefined
+                row.width && row.height
+                  ? (width / row.width) * row.height
+                  : undefined
               }
-              style={imageStyle}
+              className={styles.image}
             />
           )}
           {isPdf && row.url && (
             <object
               data={row.url}
               type="application/pdf"
-              style={{
-                width,
-                height: '100%',
-              }}
+              style={{ width }}
+              className={styles.object}
             />
           )}
           {isReactDocViewable && (
-            <div style={{ height: '100%' }}>
+            <div className={styles.object}>
               <DocViewer
                 key={width}
                 documents={[
@@ -128,14 +97,13 @@ export const FilePreview = ({ from }) => {
                 ]}
                 renderers={DocViewerRenderers}
                 config={{ header: { disableHeader: true } }}
-                style={{ height: '100%' }}
-                className="doc-viewer"
+                className={`${styles.object} doc-viewer`}
               />
             </div>
           )}
           {isNotViewable && (
             <div
-              style={textStyle}
+              className={styles.text}
             >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
           )}
         </div>
