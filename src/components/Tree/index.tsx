@@ -11,22 +11,14 @@ import { FilesNode } from './Files.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
 import { designingAtom } from '../../store.ts'
-
-const containerStyle = {
-  height: '100%',
-  width: '100%',
-  overflow: 'auto',
-  scrollbarWidth: 'thin',
-  // do not layout offscreen content while allowing search
-  contain: 'paint layout style',
-}
+import styles from './index.module.css'
 
 // so query it here once and pass it down
 export const Tree = () => {
   const [designing] = useAtom(designingAtom)
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <ProjectsNode />
       <UsersNode />
       <AccountsNode />

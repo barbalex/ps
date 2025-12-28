@@ -1,0 +1,8 @@
+.container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  scrollbar-width: thin;
+  /* do not layout offscreen content while allowing search */
+  contain: paint layout style;
+}
