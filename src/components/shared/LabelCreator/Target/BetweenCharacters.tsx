@@ -2,16 +2,7 @@ import { Input } from '@fluentui/react-components'
 
 import { TargetElement } from './TargetElements.tsx'
 import { LabelElement } from '../index.tsx'
-
-const containerStyle = {
-  position: 'relative',
-  top: 4,
-}
-const inputStyle = {
-  marginRight: 6,
-  width: 90,
-  height: 35,
-}
+import styles from './BetweenCharacters.module.css'
 
 interface Props {
   el: TargetElement
@@ -43,10 +34,8 @@ export const BetweenCharacters = ({
 
   return (
     <div
-      style={{
-        ...(snapshot.isDragging ? {} : containerStyle),
-        ...provided.draggableProps.style,
-      }}
+      style={provided.draggableProps.style}
+      className={snapshot.isDragging ? styles.container : ''}
     >
       <Input
         label="Separator (any Text)"
@@ -55,7 +44,7 @@ export const BetweenCharacters = ({
         appearance="outline"
         size="small"
         onChange={onBlur}
-        style={inputStyle}
+        className={styles.input}
         autoFocus
       />
       {children}
