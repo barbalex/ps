@@ -1,0 +1,58 @@
+.container {
+  display: grid;
+  grid-template-areas: 'spacer toggle content';
+  user-select: none;
+  /* do not layout offscreen content while allowing search */
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility */
+  /* UPS: this prevents horizontal scrolling! */
+  /* see: https://stackoverflow.com/a/76597041/712005 */
+  /* using contain: 'paint layout' on parent also */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 22px;
+}
+
+.spacer {
+  grid-area: spacer;
+}
+
+.toggle {
+  border-radius: 20px;
+  border: none;
+  background-color: transparent;
+  color: rgb(51, 51, 51) !important;
+  grid-area: toggle;
+  display: inline;
+  min-width: 22px;
+  height: 22px;
+}
+
+.content {
+  grid-area: content;
+  padding-left: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contentLink {
+  font-size: 1em;
+  line-height: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  color: rgb(51, 51, 51);
+}
+
+.contentSibling {
+  margin-left: 5px;
+  display: inline;
+}
+
+.svg {
+  color: rgb(51, 51, 51);
+}
+
+.contentLabel {
+  cursor: default;
+  user-select: none;
+}
