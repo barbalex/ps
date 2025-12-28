@@ -1,0 +1,11 @@
+.dragHandle {
+  display: flex;
+  align-items: center;
+}
+
+.dragIndicator {
+  font-size: x-large;
+  color: rgba(55, 118, 28, 0.6);
+  padding-right: 5px;
+  cursor: grab;
+}
