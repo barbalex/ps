@@ -1,3 +1,14 @@
+.outerContainer {
+  container-type: inline-size;
+}
+
+.explainer {
+  padding: 5px 2px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.54);
+  font-style: italic;
+}
+
 .container {
   column-rule: solid 1px rgba(55, 118, 28, 0.3);
   @container (min-width: 1020px) {

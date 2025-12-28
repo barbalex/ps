@@ -12,18 +12,7 @@ import { Section } from '../../../components/shared/Section.tsx'
 import { Field } from './Field.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { occurrenceFieldsSortedAtom } from '../../../store.ts'
-
-import './raw.css'
-
-const outerContainerStyle = {
-  containerType: 'inline-size',
-}
-const explainerStyle = {
-  padding: '5px 2px',
-  margin: 0,
-  color: 'rgba(0, 0, 0, 0.54)',
-  fontStyle: 'italic',
-}
+import styles from './index.module.css'
 
 export const OccurenceData = ({ from }) => {
   const [occurrenceFieldsSorted, setOccurrenceFieldsSorted] = useAtom(
@@ -122,13 +111,10 @@ export const OccurenceData = ({ from }) => {
     <ErrorBoundary>
       <div>
         <Section title="Raw data" />
-        <p style={explainerStyle}>Dragg and drop to sort fields</p>
-        <div style={outerContainerStyle}>
-          <div className="container">
-            <DndProvider
-              backend={HTML5Backend}
-              context={window}
-            >
+        <p className={styles.explainer}>Dragg and drop to sort fields</p>
+        <div className={styles.outerContainer}>
+          <div className={styles.container}>
+            <DndProvider backend={HTML5Backend} context={window}>
               {fields.map((field, i) => renderField(field, i))}
             </DndProvider>
           </div>
