@@ -193,10 +193,9 @@ export const MenuBar = ({
             </MenuTrigger>
             <MenuPopover className={styles.menuPopover}>
               <MenuList
-                className="menubar-more-menus"
                 // GOAL: close menu on click on menu item
                 // TODO: prevents more menu opening on very narrow screens
-                className={styles.menuContent}
+                className={`${styles.menuContent} menubar-more-menus`}
               >
                 {menus}
               </MenuList>
