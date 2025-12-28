@@ -41,6 +41,10 @@
   text-overflow: ellipsis;
   text-decoration: none;
   color: rgb(51, 51, 51);
+
+  &:hover {
+    font-weight: bold;
+  }
 }
 
 .contentSibling {

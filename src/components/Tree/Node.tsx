@@ -5,59 +5,7 @@ import {
 import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
 import { Link } from '@tanstack/react-router'
-import { pipe } from 'remeda'
-
-import { on } from '../../css.ts'
-
-const containerStyle = {
-  display: 'grid',
-  gridTemplateAreas: `'spacer toggle content'`,
-  userSelect: 'none',
-  // do not layout offscreen content while allowing search
-  // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
-  // UPS: this prevents horizontal scrolling!
-  // see: https://stackoverflow.com/a/76597041/712005
-  // using contain: 'paint layout' on parent also
-  contentVisibility: 'auto',
-  containIntrinsicSize: 'auto 22px',
-}
-const spacerStyle = {
-  gridArea: 'spacer',
-}
-const toggleStyle = {
-  borderRadius: 20,
-  border: 'none',
-  backgroundColor: 'transparent',
-  color: 'rgb(51, 51, 51) !important',
-  gridArea: 'toggle',
-  display: 'inline',
-  minWidth: 22,
-  height: 22,
-}
-const contentStyle = {
-  gridArea: 'content',
-  paddingLeft: 4,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-}
-const contentLinkStyle = {
-  fontSize: '1em',
-  lineHeight: '1.5em',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  textDecoration: 'none',
-  color: 'rgb(51, 51, 51)',
-}
-const contentSiblingStyle = {
-  marginLeft: 5,
-  display: 'inline',
-}
-const svgStyle = {
-  color: 'rgb(51, 51, 51)',
-}
-
-const contentLabelStyle = { cursor: 'default', userSelect: 'none' }
+import styles from './Node.module.css'
 
 interface Props {
   isInActiveNodeArray: boolean
@@ -91,48 +39,41 @@ export const Node = ({
   return (
     <div
       style={{
-        ...containerStyle,
         fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
         ...(isActive && { color: 'red' }),
         gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
       }}
+      className={styles.container}
     >
-      <div style={spacerStyle} />
+      <div className={styles.spacer} />
       <Button
         aria-label="toggle"
         size="small"
         icon={
-          !childrenCount ? <NoChildrenIcon style={svgStyle} />
-          : isOpen ?
-            <OpenWithChildrenIcon style={svgStyle} />
-          : <ClosedWithChildrenIcon style={svgStyle} />
+          !childrenCount ? (
+            <NoChildrenIcon className={styles.svg} />
+          ) : isOpen ? (
+            <OpenWithChildrenIcon className={styles.svg} />
+          ) : (
+            <ClosedWithChildrenIcon className={styles.svg} />
+          )
         }
         onClick={onClickButton}
         disabled={!childrenCount}
-        style={{
-          ...toggleStyle,
-          ...(!childrenCount && { cursor: 'default' }),
-        }}
+        style={!childrenCount ? { cursor: 'default' } : undefined}
+        className={styles.toggle}
       />
-      <div style={contentStyle}>
-        {isActive ?
-          <span style={contentLabelStyle}>
+      <div className={styles.content}>
+        {isActive ? (
+          <span className={styles.contentLabel}>
             {label ?? id ?? '(missing label)'}
           </span>
-        : <Link
-            style={pipe(
-              contentLinkStyle,
-              on('&:hover', {
-                fontWeight: 'bold',
-              }),
-            )}
-            to={to}
-            params={toParams}
-          >
+        ) : (
+          <Link className={styles.contentLink} to={to} params={toParams}>
             {label ?? id ?? '(missing label)'}
           </Link>
-        }
-        {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}
+        )}
+        {!!sibling && <div className={styles.contentSibling}>{sibling}</div>}
       </div>
     </div>
   )
