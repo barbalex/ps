@@ -11,16 +11,9 @@ import { OrFilter } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
+import styles from './index.module.css'
 
 import '../../../form.css'
-
-const tabListStyle = {
-  backgroundColor: 'rgba(255, 141, 2, 0.08)',
-  borderBottom: '1px solid #e0e0e0',
-}
-const tabStyle = {
-  minWidth: 60,
-}
 
 const getFilterStrings = ({
   filter,
@@ -57,8 +50,9 @@ const getFilterStrings = ({
     whereUnfiltered = projectFilter
   }
   const whereFilteredString = filterStringFromFilter(filter)
-  const whereUnfilteredString =
-    whereUnfiltered ? orFilterToSql(whereUnfiltered) : ''
+  const whereUnfilteredString = whereUnfiltered
+    ? orFilterToSql(whereUnfiltered)
+    : ''
 
   return { whereUnfilteredString, whereFilteredString }
 }
@@ -66,12 +60,12 @@ const getFilterStrings = ({
 const getTitle = ({ tableName, placeNamePlural }) => {
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
-    tableName === 'places' ? placeNamePlural : (
-      tableName
-        .split('_')
-        .map((w) => w[0].toUpperCase() + w.slice(1))
-        .join(' ')
-    )
+    tableName === 'places'
+      ? placeNamePlural
+      : tableName
+          .split('_')
+          .map((w) => w[0].toUpperCase() + w.slice(1))
+          .join(' ')
 
   const title = `${tableNameForTitle} Filters`
   return title
@@ -182,19 +176,17 @@ export const Filter = ({ level, from, children }) => {
       <TabList
         selectedValue={activeTab}
         onTabSelect={onTabSelect}
-        style={tabListStyle}
+        className={styles.tabList}
       >
         {filter.map((f, i) => {
           const label =
-            i === filter.length - 1 && filter.length > 1 ? 'Or'
-            : i === 0 ? `Filter ${i + 1}`
-            : `Or filter ${i + 1}`
+            i === filter.length - 1 && filter.length > 1
+              ? 'Or'
+              : i === 0
+                ? `Filter ${i + 1}`
+                : `Or filter ${i + 1}`
           return (
-            <Tab
-              key={i}
-              value={i + 1}
-              style={tabStyle}
-            >
+            <Tab key={i} value={i + 1} className={styles.tab}>
               {label}
             </Tab>
           )

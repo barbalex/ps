@@ -1,0 +1,8 @@
+.tabList {
+  background-color: rgba(255, 141, 2, 0.08);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab {
+  min-width: 60px;
+}
