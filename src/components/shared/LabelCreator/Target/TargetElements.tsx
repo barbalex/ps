@@ -28,7 +28,6 @@ export const TargetElements = ({
   <div
     style={{
       backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
-      transition: 'background-color 0.2s ease',
     }}
     className={styles.targetContainer}
     ref={provided.innerRef}
