@@ -1,0 +1,9 @@
+.container {
+  padding: 5px 10px;
+  background-color: rgba(103, 216, 101, 0.07);
+
+  p {
+    margin: 0;
+    font-size: 0.8rem;
+  }
+}
