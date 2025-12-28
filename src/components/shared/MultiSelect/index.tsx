@@ -5,8 +5,7 @@ import { useSetAtom } from 'jotai'
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { addOperationAtom } from '../../../store.ts'
-
-const tabGroupStyle = { flexWrap: 'wrap', rowGap: 5 }
+import styles from './index.module.css'
 
 export const MultiSelect = ({
   name,
@@ -97,10 +96,7 @@ export const MultiSelect = ({
       validationState="none"
       validationMessage={validationMessage}
     >
-      <TagGroup
-        onDismiss={removeItem}
-        style={tabGroupStyle}
-      >
+      <TagGroup onDismiss={removeItem} className={styles.tabGroup}>
         {valueArray.map((value) => (
           <Tag
             key={value.value}
@@ -108,9 +104,9 @@ export const MultiSelect = ({
             dismissIcon={{ 'aria-label': 'remove' }}
             value={value.value}
             secondaryText={
-              !optionValues.includes(value.value) ?
-                'not found in options'
-              : undefined
+              !optionValues.includes(value.value)
+                ? 'not found in options'
+                : undefined
             }
           >
             {value.label}

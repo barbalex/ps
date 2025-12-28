@@ -1,0 +1,4 @@
+.tabGroup {
+  flex-wrap: wrap;
+  row-gap: 5px;
+}
