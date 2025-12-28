@@ -20,19 +20,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
-
-const tabNumberStyle = {
-  width: '20px',
-  height: '20px',
-  borderRadius: '50%',
-  backgroundColor: 'grey',
-  color: 'white',
-  fontSize: '0.65em',
-  fontWeight: 'bold',
-  verticalAlign: 'middle',
-  textAlign: 'center',
-  lineHeight: '19px',
-}
+import styles from './index.module.css'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
@@ -94,43 +82,44 @@ export const OccurrenceImport = () => {
     navigate({ search: { occurrenceImportTab: data.value } })
 
   const tab1Style = {
-    ...tabNumberStyle,
     backgroundColor:
-      occurrenceImport?.name && occurrences.length ?
-        'var(--colorCompoundBrandStrokeHover)'
-      : tab === 1 ? 'black'
-      : 'grey',
+      occurrenceImport?.name && occurrences.length
+        ? 'var(--colorCompoundBrandStrokeHover)'
+        : tab === 1
+          ? 'black'
+          : 'grey',
   }
 
   const tab2Style = {
-    ...tabNumberStyle,
     backgroundColor:
       // green if all occurrences have geometry
-      occurrences.length && !occurrencesWithoutGeometryCount ?
-        'var(--colorCompoundBrandStrokeHover)'
-        // black if is current
-      : tab === 2 ? 'black'
-        // grey if no occurrences or not current
-      : 'grey',
+      occurrences.length && !occurrencesWithoutGeometryCount
+        ? 'var(--colorCompoundBrandStrokeHover)'
+        : // black if is current
+          tab === 2
+          ? 'black'
+          : // grey if no occurrences or not current
+            'grey',
   }
 
   const tab3Style = {
-    ...tabNumberStyle,
     backgroundColor:
       // green if label_creation exists
-      occurrenceImport?.label_creation ? 'var(--colorCompoundBrandStrokeHover)'
-        // black if is current
-      : tab === 3 ? 'black'
-        // grey if no occurrences or not current
-      : 'grey',
+      occurrenceImport?.label_creation
+        ? 'var(--colorCompoundBrandStrokeHover)'
+        : // black if is current
+          tab === 3
+          ? 'black'
+          : // grey if no occurrences or not current
+            'grey',
   }
 
   const tab4Style = {
-    ...tabNumberStyle,
-    backgroundColor:
-      occurrenceImport?.id_field ? 'var(--colorCompoundBrandStrokeHover)'
-      : tab === 4 ? 'black'
-      : 'grey',
+    backgroundColor: occurrenceImport?.id_field
+      ? 'var(--colorCompoundBrandStrokeHover)'
+      : tab === 4
+        ? 'black'
+        : 'grey',
   }
 
   // TODO:
@@ -150,12 +139,7 @@ export const OccurrenceImport = () => {
   if (!oIResult) return <Loading />
 
   if (!occurrenceImport) {
-    return (
-      <NotFound
-        table="Occurrence Import"
-        id={occurrenceImportId}
-      />
-    )
+    return <NotFound table="Occurrence Import" id={occurrenceImportId} />
   }
 
   return (
@@ -171,21 +155,26 @@ export const OccurrenceImport = () => {
           occurrenceFields={occurrenceFields}
         />
       )}
-      <TabList
-        selectedValue={tab}
-        onTabSelect={onTabSelect}
-      >
+      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
         <Tab
           id="1"
           value={1}
-          icon={<div style={tab1Style}>1</div>}
+          icon={
+            <div className={styles.tabNumber} style={tab1Style}>
+              1
+            </div>
+          }
         >
           Data
         </Tab>
         <Tab
           id="2"
           value={2}
-          icon={<div style={tab2Style}>2</div>}
+          icon={
+            <div className={styles.tabNumber} style={tab2Style}>
+              2
+            </div>
+          }
           disabled={!occurrences.length}
         >
           Geometry
@@ -193,22 +182,31 @@ export const OccurrenceImport = () => {
         <Tab
           id="3"
           value={3}
-          icon={<div style={tab3Style}>3</div>}
+          icon={
+            <div className={styles.tabNumber} style={tab3Style}>
+              3
+            </div>
+          }
         >
           Label
         </Tab>
         <Tab
           id="4"
           value={4}
-          icon={<div style={tab4Style}>4</div>}
+          icon={
+            <div className={styles.tabNumber} style={tab4Style}>
+              4
+            </div>
+          }
         >
           Identification
         </Tab>
       </TabList>
       <div className="form-container">
-        {!occurrenceImport ?
+        {!occurrenceImport ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {tab === 1 && (
               <One
                 occurrenceImport={occurrenceImport}
@@ -238,7 +236,7 @@ export const OccurrenceImport = () => {
               />
             )}
           </>
-        }
+        )}
       </div>
     </div>
   )
