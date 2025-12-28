@@ -2,9 +2,7 @@ import { useRef, useState } from 'react'
 import { Button, Field } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-const uploadInputStyle = {
-  display: 'none',
-}
+import styles from './UploadButton.module.css'
 
 export const UploadButton = ({ processData, additionalData = {} }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
@@ -61,7 +59,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         onChange={onUpload}
         accept=".csv, .tsv, .xlsx, .xls, .ods, .txt"
         ref={uploadInputRef}
-        style={uploadInputStyle}
+        className={styles.uploadInput}
       />
       <Button
         onClick={onClickUploadButton}
@@ -70,11 +68,11 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         style={{
-          backgroundColor:
-            isDragging ? 'rgba(103, 216, 101, 0.2)' : 'transparent',
-          paddingTop: '10px',
-          paddingBottom: '10px',
+          backgroundColor: isDragging
+            ? 'rgba(103, 216, 101, 0.2)'
+            : 'transparent',
         }}
+        className={styles.button}
       >
         Upload file containing occurrences
       </Button>
