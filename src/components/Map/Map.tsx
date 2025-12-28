@@ -66,9 +66,8 @@ export const Map = () => {
     <ErrorBoundary>
       <div className={styles.outerContainer} ref={resizeRef} id="map">
         <MapContainer
-          className="map-container"
           zoomControl={false}
-          className={styles.mapContainer}
+          className={`${styles.mapContainer} map-container`}
           // maxZoom={22}
           // minZoom={0}
           // bounds={bounds}
