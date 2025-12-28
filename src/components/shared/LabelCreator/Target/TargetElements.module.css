@@ -1,0 +1,37 @@
+.targetContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  flex-grow: 1;
+  min-height: 42px;
+  padding: 8px;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.fieldElement {
+  padding: 8.5px 14px;
+  background-color: rgba(103, 216, 101, 0.07);
+  border: 1px solid lightgrey;
+  margin-right: 6px;
+  margin-top: 8px;
+  border-radius: 4px;
+  font-size: small;
+  line-height: 16.6px;
+  user-select: none;
+  position: relative;
+}
+
+.fieldHandle {
+  color: #989898;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0.95em;
+  width: 0.95em;
+}
+
+.elementContainer {
+  display: flex;
+}
