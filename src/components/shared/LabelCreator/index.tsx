@@ -6,18 +6,7 @@ import { isEqual } from 'es-toolkit'
 
 import { FieldList } from './FieldList.tsx'
 import { Target } from './Target/index.tsx'
-
-const containerStyle = {
-  outline: '1px solid lightgrey',
-  borderRadius: 4,
-  borderCollapse: 'collapse',
-  boxSizing: 'border-box',
-}
-const innerContainerStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  flexGrow: 1,
-}
+import styles from './index.module.css'
 
 export interface LabelElement {
   type: 'field' | 'separator'
@@ -42,12 +31,10 @@ export const LabelCreator = ({
   useEffect(() => setLabel(structuredClone(labelPassed ?? [])), [labelPassed])
 
   const labelChanged =
-    (
-      (!labelPassed || labelPassed?.length === 0) &&
-      (!label || label?.length === 0)
-    ) ?
-      false
-    : !isEqual(label, labelPassed)
+    (!labelPassed || labelPassed?.length === 0) &&
+    (!label || label?.length === 0)
+      ? false
+      : !isEqual(label, labelPassed)
 
   const saveToDb = () => onChangePassed({ target: { value: label, name } })
 
@@ -145,12 +132,12 @@ export const LabelCreator = ({
   return (
     <div
       id="label-creator"
-      style={containerStyle}
+      className={styles.container}
       // onBlur={onBlur}
       ref={containerRef}
     >
       <DragDropContext onDragEnd={onDragEnd}>
-        <div style={innerContainerStyle}>
+        <div className={styles.innerContainer}>
           <Target
             label={label}
             labelChanged={labelChanged}
