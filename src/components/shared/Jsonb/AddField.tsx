@@ -7,11 +7,7 @@ import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { createField } from '../../../modules/createRows.ts'
 import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { designingAtom } from '../../../store.ts'
-
-const buttonStyle = {
-  minHeight: 32,
-  alignSelf: 'flex-start',
-}
+import styles from './AddField.module.css'
 
 // idea:
 // 1. A button to add fields
@@ -47,7 +43,7 @@ export const AddField = ({ tableName, level, from }) => {
       icon={<FaPlus />}
       onClick={addRow}
       title="Add Field"
-      style={buttonStyle}
+      className={styles.button}
     >
       Add Field
     </Button>
