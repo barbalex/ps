@@ -1,73 +1,25 @@
-const emptyContainerStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  overflow: 'auto',
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'auto',
-  width: '100%',
-  height: 250,
-}
-const containerStyle = {
-  overflow: 'auto',
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'auto',
-  width: '100%',
-  maxHeight: 250,
-}
-const fontStyle = {
-  fontSize: '0.8em',
-  lineHeight: '1.2em',
-}
-const tableStyle = {
-  ...fontStyle,
-  borderCollapse: 'collapse',
-}
-const headStyle = {
-  position: 'sticky',
-  top: 0,
-  backgroundColor: '#e2f7e2',
-  fontWeight: 'bold',
-  zIndex: 1,
-}
-const cellStyle = {
-  border: '1px solid rgb(210 210 210)',
-  padding: 2,
-  ...fontStyle,
-}
-const headerCellStyle = {
-  ...cellStyle,
-  overflowWrap: 'break-word',
-  fontWeight: 'bold',
-}
-const bocyCellStyle = {
-  ...cellStyle,
-  overflowWrap: 'anywhere',
-}
+import styles from './Preview.module.css'
 
 export const Preview = ({ occurrences, occurrenceFields }) => {
   if (!occurrences) {
-    return <div style={emptyContainerStyle}>loading preview...</div>
+    return <div className={styles.emptyContainer}>loading preview...</div>
   }
   if (!occurrences.length) {
-    return <div style={emptyContainerStyle}>no data to preview</div>
+    return <div className={styles.emptyContainer}>no data to preview</div>
   }
   const occurrenceFieldsWithLabel = ['label', ...occurrenceFields]
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.container}>
       <table
         aria-label="Preview"
-        style={tableStyle}
+        className={styles.table}
         width={occurrenceFieldsWithLabel.length * 60}
       >
-        <thead style={headStyle}>
+        <thead className={styles.head}>
           <tr>
             {occurrenceFieldsWithLabel.map((f) => (
-              <th
-                key={f}
-                style={headerCellStyle}
-              >
+              <th key={f} className={styles.headerCell}>
                 {f}
               </th>
             ))}
@@ -77,10 +29,7 @@ export const Preview = ({ occurrences, occurrenceFields }) => {
           {occurrences.slice(0, 50).map((o) => (
             <tr key={o.occurrence_id}>
               {occurrenceFieldsWithLabel.map((f, i) => (
-                <td
-                  key={f}
-                  style={bocyCellStyle}
-                >
+                <td key={f} className={styles.bodyCell}>
                   {f === 'label' && i === 0 ? o.label : o.data[f]}
                 </td>
               ))}
@@ -90,7 +39,7 @@ export const Preview = ({ occurrences, occurrenceFields }) => {
             <tr>
               <td
                 colSpan={occurrenceFieldsWithLabel.length}
-                style={bocyCellStyle}
+                className={styles.bodyCell}
               >
                 and {occurrences.length - 50} more rows...
               </td>
