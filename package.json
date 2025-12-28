@@ -29,7 +29,7 @@
     "@fluentui/react-datepicker-compat": "0.6.21",
     "@fluentui/react-icons": "2.0.316",
     "@fluentui/react-timepicker-compat-preview": "0.2.0",
-    "@formkit/tempo": "0.1.2",
+    "@formkit/tempo": "1.0.0",
     "@kripod/uuidv7": "0.3.4",
     "@react-leaflet/core": "3.0.0",
     "@shopify/react-web-worker": "5.1.6",
