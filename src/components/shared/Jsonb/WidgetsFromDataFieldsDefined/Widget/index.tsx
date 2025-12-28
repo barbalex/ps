@@ -27,7 +27,7 @@ import {
 } from '../../../../shared/DragAndDrop/index.tsx'
 import { DragHandle } from '../../../../shared/DragAndDrop/DragHandle.tsx'
 
-import './widget.css'
+import styles from './index.module.css'
 
 function useDragAndDropContext() {
   const dragAndDropContext = useContext(DragAndDropContext)
@@ -43,23 +43,6 @@ function getItemData({ field, index, instanceId }) {
     index,
     instanceId,
   }
-}
-
-const previewStyle = {
-  padding: '0.5rem',
-  backgroundColor: 'white',
-  borderRadius: '0.25rem',
-}
-
-const containerStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  // needed for the drop indicator to appear
-  position: 'relative',
-  // correct for 15px row gap
-  margin: '-7.5px 0px',
-  padding: '7.5px 0',
 }
 
 // this component focuses on drag and drop
@@ -190,12 +173,7 @@ export const WidgetDragAndDrop = ({
 
   return (
     <>
-      <div
-        value={field.field_id}
-        ref={elementRef}
-        style={containerStyle}
-        className="widget-drag-and-drop"
-      >
+      <div value={field.field_id} ref={elementRef} className={styles.container}>
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <Widget
           name={field.name}
@@ -210,16 +188,11 @@ export const WidgetDragAndDrop = ({
           ref={ref}
           from={from}
         />
-        {closestEdge && (
-          <DropIndicator
-            edge={closestEdge}
-            gap="1px"
-          />
-        )}
+        {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
       </div>
       {draggableState.type === 'preview' &&
         createPortal(
-          <div style={previewStyle}>{field.label}</div>,
+          <div className={styles.preview}>{field.label}</div>,
           draggableState.container,
         )}
     </>

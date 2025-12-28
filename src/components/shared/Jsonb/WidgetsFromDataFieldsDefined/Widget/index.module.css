@@ -1,0 +1,19 @@
+.preview {
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 0.25rem;
+  > div:last-child {
+    flex-grow: 1;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* needed for the drop indicator to appear */
+  position: relative;
+  /* correct for 15px row gap */
+  margin: -7.5px 0px;
+  padding: 7.5px 0;
+}

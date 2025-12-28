@@ -1,4 +1,0 @@
-/* last child div needs flex-grow: 1 */
-.widget-drag-and-drop > div:last-child {
-  flex-grow: 1;
-}
