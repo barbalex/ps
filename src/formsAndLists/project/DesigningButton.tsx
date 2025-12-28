@@ -49,7 +49,6 @@ export const DesigningButton = ({ from }) => {
         checked={designing}
         icon={designing ? <MdEdit /> : <MdEditOff />}
         onClick={onClickDesigning}
-        className="designing-button"
       />
     </Tooltip>
   )

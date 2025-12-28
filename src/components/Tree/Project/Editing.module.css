@@ -1,0 +1,15 @@
+.button {
+  border-radius: 20px;
+  border: none;
+  color: rgb(51, 51, 51) !important;
+  background-color: transparent;
+
+  &:hover {
+    filter: brightness(0.9);
+    background-color: white;
+  }
+}
+
+.svg {
+  font-size: medium;
+}

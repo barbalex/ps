@@ -1,23 +1,11 @@
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { Button, Tooltip } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
-import { pipe } from 'remeda'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
-import { on } from '../../../css.ts'
 import { designingAtom } from '../../../store.ts'
-
-const buttonStyle = {
-  borderRadius: 20,
-  border: 'none',
-  color: 'rgb(51, 51, 51) !important',
-  backgroundColor: 'transparent',
-}
-
-const svgStyle = {
-  fontSize: 'medium',
-}
+import styles from './Editing.module.css'
 
 export const Editing = ({ projectId }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
@@ -69,19 +57,14 @@ export const Editing = ({ projectId }) => {
       <Button
         size="small"
         icon={
-          designing ?
-            <MdEdit style={svgStyle} />
-          : <MdEditOff style={svgStyle} />
+          designing ? (
+            <MdEdit className={styles.svg} />
+          ) : (
+            <MdEditOff className={styles.svg} />
+          )
         }
         onClick={onClick}
-        style={pipe(
-          buttonStyle,
-          on('&:hover', {
-            filter: 'brightness(0.9)',
-            backgroundColor: 'white',
-          }),
-        )}
-        className="designing-button"
+        className={styles.button}
       />
     </Tooltip>
   )
