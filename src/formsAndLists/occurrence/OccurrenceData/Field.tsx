@@ -1,31 +1,10 @@
 import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import Linkify from 'react-linkify'
-import { pipe } from 'remeda'
 
-import { on } from '../../../css.ts'
+import styles from './Field.module.css'
 
-const rowStyle = {
-  display: 'flex',
-  borderTop: '1px solid rgba(0, 0, 0, 0.05)',
-  borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-  borderCollapse: 'collapse',
-  cursor: 'move',
-}
-const labelStyle = {
-  color: 'rgb(0, 0, 0, 0.54)',
-  width: 200,
-  minWidth: 200,
-  padding: 5,
-  overflowWrap: 'break-word',
-}
-const valueStyle = {
-  padding: 5,
-}
-
-const ItemTypes = {
-  CARD: 'card',
-}
+const ItemTypes = { CARD: 'card' }
 
 export const Field = ({ label, value, index, moveField }) => {
   const ref = useRef(null)
@@ -87,16 +66,11 @@ export const Field = ({ label, value, index, moveField }) => {
     <div
       ref={ref}
       data-handler-id={handlerId}
-      style={pipe(
-        {
-          ...rowStyle,
-          opacity,
-        },
-        on('&:hover', { backgroundColor: 'rgba(0, 0, 0, 0.05)' }),
-      )}
+      style={{ opacity }}
+      className={styles.row}
     >
-      <div style={labelStyle}>{label}</div>
-      <div style={valueStyle}>
+      <div className={styles.label}>{label}</div>
+      <div className={styles.value}>
         <Linkify properties={{ target: '_blank' }}>{value}</Linkify>
       </div>
     </div>
