@@ -3,16 +3,7 @@ import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
-
-const titleStyle = { margin: 0, fontSize: '1em' }
-const rowStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  gap: 10,
-}
-const hintPStyle = { margin: 0 }
-const fieldStyle = { flexGrow: 1 }
+import styles from './CreateWfsService.module.css'
 
 export const CreateWfsService = ({ vectorLayer }) => {
   const [url, setUrl] = useState('')
@@ -27,8 +18,8 @@ export const CreateWfsService = ({ vectorLayer }) => {
 
   return (
     <div>
-      <h2 style={titleStyle}>Add Web Feature Service (WFS)</h2>
-      <div style={rowStyle}>
+      <h2 className={styles.title}>Add Web Feature Service (WFS)</h2>
+      <div className={styles.row}>
         <Field
           label="URL"
           value={url}
@@ -36,18 +27,20 @@ export const CreateWfsService = ({ vectorLayer }) => {
           validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
           validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
-            urlIsInvalid ? ''
-            : url ?
+            urlIsInvalid ? (
+              ''
+            ) : url ? (
               'The base url of the WFS'
-            : <>
-                <p style={hintPStyle}>Enter the base url of the WFS.</p>
-                <p style={hintPStyle}>
+            ) : (
+              <>
+                <p className={styles.hintP}>Enter the base url of the WFS.</p>
+                <p className={styles.hintP}>
                   Then capabilities can be loaded and a layer selected.
                 </p>
               </>
-
+            )
           }
-          style={fieldStyle}
+          className={styles.field}
         >
           <Input
             contentAfter={

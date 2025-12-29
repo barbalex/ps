@@ -1,0 +1,19 @@
+.title {
+  margin: 0;
+  font-size: 1em;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.hintP {
+  margin: 0;
+}
+
+.field {
+  flex-grow: 1;
+}
