@@ -19,12 +19,8 @@ export const QueuedOperation = ({ qo, index }) => {
     removeOperation(id)
   }
 
-  const valueStyle =
-    index === 0 ?
-      {
-        borderTop: '1px solid rgba(74,20,140,0.1)',
-      }
-    : {}
+  const valueClass =
+    index === 0 ? `${styles.value} ${styles.firstValue}` : styles.value
 
   const prevWithOnlyTheKeysContainedInDraft = {}
   if (prev && draft) {
@@ -39,19 +35,10 @@ export const QueuedOperation = ({ qo, index }) => {
   return (
     <>
       <div
-        className={styles.value}
-        style={valueStyle}
+        className={valueClass}
       >{`${dayjs(time).format('YYYY.MM.DD HH:mm:ss')}`}</div>
-      <div
-        className={styles.value}
-        style={valueStyle}
-      >
-        {table}
-      </div>
-      <div
-        className={styles.value}
-        style={valueStyle}
-      >
+      <div className={valueClass}>{table}</div>
+      <div className={valueClass}>
         {rowId ??
           draft?.[rowIdName] ??
           prev?.[rowIdName] ??
@@ -59,48 +46,37 @@ export const QueuedOperation = ({ qo, index }) => {
           prev?.[idFieldFromTable(table)] ??
           '(leer)'}
       </div>
-      <div
-        className={styles.value}
-        style={valueStyle}
-      >
-        {filter ?
+      <div className={valueClass}>
+        {filter ? (
           <pre className={styles.pre}>
             <code>{JSON.stringify(filter, null, 3)}</code>
           </pre>
-        : '(kein Filter)'}
+        ) : (
+          '(kein Filter)'
+        )}
       </div>
-      <div
-        className={styles.value}
-        style={valueStyle}
-      >
-        {operation}
-      </div>
-      <div
-        className={styles.value}
-        style={valueStyle}
-      >
-        {prev ?
+      <div className={valueClass}>{operation}</div>
+      <div className={valueClass}>
+        {prev ? (
           <pre className={styles.pre}>
             <code>
               {JSON.stringify(prevWithOnlyTheKeysContainedInDraft, null, 3)}
             </code>
           </pre>
-        : '(kein Wert)'}
+        ) : (
+          '(kein Wert)'
+        )}
       </div>
-      <div
-        className={styles.value}
-        style={valueStyle}
-      >
-        {draft ?
+      <div className={valueClass}>
+        {draft ? (
           <pre className={styles.pre}>
             <code> {JSON.stringify(draft, null, 3)}</code>
           </pre>
-        : '(kein Wert)'}
+        ) : (
+          '(kein Wert)'
+        )}
       </div>
-      <div
-        className={styles.icon}
-        style={valueStyle}
-      >
+      <div className={`${styles.icon} ${valueClass}`}>
         <Button
           title="widerrufen"
           aria-label="widerrufen"

@@ -16,6 +16,10 @@
   }
 }
 
+.firstValue {
+  border-top: 1px solid rgba(74, 20, 140, 0.1);
+}
+
 .icon {
   justify-self: center;
   padding: 5px 0;
