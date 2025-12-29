@@ -81,6 +81,8 @@ export const RightMenuDrawer = ({ containerRef }) => {
     }
   }, [resize, stopResizing])
 
+  console.log('RightMenuDrawer, mapInfo:', mapInfo)
+
   return (
     <div
       // dragging can mark text so we disable pointer events

@@ -3,6 +3,13 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+
+  @container map (max-width: 699px) {
+    margin-top: 5px;
+  }
+  @container map (min-width: 700px) {
+    margin-left: 5px;
+  }
 }
 
 .header {

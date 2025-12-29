@@ -25,6 +25,7 @@ export const ClickListener = () => {
   const db = usePGlite()
 
   const onClick = async (event) => {
+    // console.log('ClickListener, click event:', { event, projectId })
     // vector layers are defined on projects
     if (projectId === '99999999-9999-9999-9999-999999999999') return
 
@@ -165,6 +166,7 @@ export const ClickListener = () => {
       }
     }
 
+    // console.log('ClickListener, mapInfo:', mapInfo)
     setMapInfo(mapInfo)
   }
 

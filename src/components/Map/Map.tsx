@@ -31,6 +31,8 @@ export const Map = () => {
 
   const redrawMap = () => mapRef.current?.invalidateSize()
 
+  // Issue: map is not drawn correctly on first render
+  // Solution: invalidateSize() after first render
   const resizeRef = useRef<HTMLDivElement>(null)
   useResizeDetector({
     targetRef: resizeRef,
@@ -39,13 +41,6 @@ export const Map = () => {
     refreshRate: 300,
     refreshOptions: { trailing: true },
   })
-
-  // Issue: map is not drawn correctly on first render
-  // Solution: invalidateSize() after first render
-  useEffect(() => {
-    if (!mapRef.current) return
-    mapRef.current?.invalidateSize()
-  }, [mapRef, mapRef.current?.invalidateSize])
 
   // TODO: this does not seem to do anything useful
   // useEffect(() => {
