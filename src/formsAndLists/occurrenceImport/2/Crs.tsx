@@ -3,10 +3,7 @@ import axios from 'redaxios'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
-
-const notificationStyle = {
-  color: 'red',
-}
+import styles from './Crs.module.css'
 
 export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
   const [notification, setNotification] = useState()
@@ -63,17 +60,11 @@ export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
           <>
             <div>
               See{' '}
-              <a
-                href="https://epsg.org/home.html"
-                target="_blank"
-              >
+              <a href="https://epsg.org/home.html" target="_blank">
                 https://epsg.org
               </a>{' '}
               or{' '}
-              <a
-                href="https://spatialreference.org"
-                target="_blank"
-              >
+              <a href="https://spatialreference.org" target="_blank">
                 https://spatialreference.org
               </a>{' '}
               for a list of EPSG codes and their descriptions.
@@ -89,7 +80,7 @@ export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
               used in Switzerland.
             </div>
             {notification && (
-              <div style={notificationStyle}>{notification}</div>
+              <div className={styles.notification}>{notification}</div>
             )}
           </>
         }
