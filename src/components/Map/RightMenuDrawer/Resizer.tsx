@@ -5,8 +5,6 @@ export const Resizer = ({ startResizing, isResizing }) => (
     className={styles.resizer}
     onMouseDown={startResizing}
     // need to set this because the element looses the hover on drag
-    style={{
-      ...(isResizing ? { backgroundColor: 'rgba(38, 82, 37, 0.9)' } : {}),
-    }}
+    style={isResizing ? { backgroundColor: 'rgba(38, 82, 37, 0.9)' } : {}}
   />
 )
