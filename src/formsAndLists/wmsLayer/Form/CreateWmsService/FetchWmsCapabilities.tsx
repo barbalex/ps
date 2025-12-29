@@ -9,14 +9,11 @@ import {
   addNotificationAtom,
   updateNotificationAtom,
 } from '../../../../store.ts'
+import styles from './FetchWmsCapabilities.module.css'
 
 const createWorker = createWorkerFactory(
   () => import('./getWmsCapabilitiesData.ts'),
 )
-
-const buttonStyle = {
-  marginRight: -10,
-}
 
 export const FetchWmsCapabilities = ({
   wmsLayer,
@@ -147,12 +144,12 @@ export const FetchWmsCapabilities = ({
     <Button
       icon={fetching ? <Spinner size="tiny" /> : undefined}
       onClick={onFetchCapabilities}
-      style={buttonStyle}
+      className={styles.button}
       disabled={!url}
     >
-      {fetching ?
-        `Loading Capabilities (${wmsServiceLayersCount})`
-      : `Fetch Capabilities`}
+      {fetching
+        ? `Loading Capabilities (${wmsServiceLayersCount})`
+        : `Fetch Capabilities`}
     </Button>
   )
 }
