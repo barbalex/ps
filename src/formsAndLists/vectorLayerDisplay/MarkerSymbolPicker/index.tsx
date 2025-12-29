@@ -3,17 +3,7 @@ import type { InputProps } from '@fluentui/react-components'
 
 import { Label } from '../../../components/shared/Label.tsx'
 import { Symbol } from './Symbol.tsx'
-
-const symbolContainerStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  minHeight: 600,
-  overflow: 'auto',
-  scrollbarWidth: 'thin',
-  outline: '1px solid rgba(74, 20, 140, 0.1)',
-  marginBottom: 13,
-  marginTop: -10,
-}
+import styles from './index.module.css'
 
 interface Props {
   onChange: InputProps['onChange']
@@ -30,7 +20,7 @@ export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
   return (
     <>
       <Label label="Symbol" />
-      <div style={symbolContainerStyle}>
+      <div className={styles.symbolContainer}>
         {wantedIconKeys.map((key) => {
           const Component = icons[key]
 

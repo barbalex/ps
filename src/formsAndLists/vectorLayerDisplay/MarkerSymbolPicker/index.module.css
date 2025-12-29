@@ -1,0 +1,10 @@
+.symbolContainer {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 600px;
+  overflow: auto;
+  scrollbar-width: thin;
+  outline: 1px solid rgba(74, 20, 140, 0.1);
+  margin-bottom: 13px;
+  margin-top: -10px;
+}
