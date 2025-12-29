@@ -3,15 +3,7 @@ import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWmsCapabilities } from './FetchWmsCapabilities.tsx'
 import { isValidUrl } from '../../../../modules/isValidUrl.ts'
-
-const titleStyle = { margin: 0, fontSize: '1em' }
-const rowStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  gap: 10,
-}
-const hintPStyle = { margin: 0 }
+import styles from './index.module.css'
 
 export const CreateWmsService = ({ wmsLayer }) => {
   const [url, setUrl] = useState('')
@@ -26,8 +18,8 @@ export const CreateWmsService = ({ wmsLayer }) => {
 
   return (
     <div>
-      <h2 style={titleStyle}>Add Web Map Service (WMS)</h2>
-      <div style={rowStyle}>
+      <h2 className={styles.title}>Add Web Map Service (WMS)</h2>
+      <div className={styles.row}>
         <Field
           label="URL"
           value={url}
@@ -35,18 +27,20 @@ export const CreateWmsService = ({ wmsLayer }) => {
           validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
           validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
-            urlIsInvalid ? ''
-            : url ?
+            urlIsInvalid ? (
+              ''
+            ) : url ? (
               'The base url of the WMS'
-            : <>
-                <p style={hintPStyle}>Enter the base url of the WMS.</p>
-                <p style={hintPStyle}>
+            ) : (
+              <>
+                <p className={styles.hintP}>Enter the base url of the WMS.</p>
+                <p className={styles.hintP}>
                   Then capabilities can be loaded and a layer selected.
                 </p>
               </>
-
+            )
           }
-          style={{ flexGrow: 1 }}
+          className={styles.field}
         >
           <Input
             contentAfter={
