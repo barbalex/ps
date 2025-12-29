@@ -24,6 +24,7 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
   })
   const [size, setSize] = useState(isNarrow ? 500 : 380)
   // when width falls below 40, set sidebarSize to 5
+  // TODO: only react to dragend?
   useEffect(() => {
     if ((isNarrow && ownHeight <= 40) || (!isNarrow && ownWidth <= 40)) {
       setSize(5)
