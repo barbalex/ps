@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'

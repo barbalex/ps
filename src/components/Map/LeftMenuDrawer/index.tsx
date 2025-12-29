@@ -10,17 +10,8 @@ import { Resizer } from './Resizer.tsx'
 import { mapHideUiAtom } from '../../../store.ts'
 import styles from './index.module.css'
 
-export const LeftMenuDrawer = ({ containerRef }) => {
+export const LeftMenuDrawer = ({ isNarrow }) => {
   const mapHideUi = useAtomValue(mapHideUiAtom)
-
-  const { width: containerWidth } = useResizeDetector({
-    targetRef: containerRef,
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
-  const isNarrow = containerWidth < 700
 
   const {
     width: ownWidth,

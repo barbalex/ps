@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
-import { useResizeDetector } from 'react-resize-detector'
 import { InlineDrawer } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 
@@ -9,7 +8,7 @@ import { mapInfoAtom } from '../../../store.ts'
 
 import styles from './index.module.css'
 
-export const RightMenuDrawer = ({ containerRef }) => {
+export const RightMenuDrawer = ({ isNarrow }) => {
   const [mapInfo] = useAtom(mapInfoAtom)
 
   const animationFrame = useRef<number>(0)
@@ -19,14 +18,6 @@ export const RightMenuDrawer = ({ containerRef }) => {
   const startResizing = useCallback(() => setIsResizing(true), [])
   const stopResizing = useCallback(() => setIsResizing(false), [])
 
-  const { width } = useResizeDetector({
-    targetRef: containerRef,
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
-  const isNarrow = width < 700
   const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
 
   const resize = useCallback(
@@ -80,8 +71,6 @@ export const RightMenuDrawer = ({ containerRef }) => {
       window.removeEventListener('mouseleave', stopResizing)
     }
   }, [resize, stopResizing])
-
-  console.log('RightMenuDrawer, mapInfo:', mapInfo)
 
   return (
     <div
