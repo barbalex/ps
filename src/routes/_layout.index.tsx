@@ -1,17 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import './index.css'
+import styles from './_layout.index.module.css'
 
 export const Route = createFileRoute('/_layout/')({
   component: Index,
 })
 
-const containerStyle = {
-  height: '100%',
-}
-
 const Index = () => (
-  <div style={containerStyle}>
+  <div className={styles.container}>
     <picture>
       <source
         srcSet="home_700.avif 700w, home_1000.avif 1000w, home_1400.avif 1400w, home_2000.avif 2000w, home_2500.avif 2500w"
@@ -22,12 +19,12 @@ const Index = () => (
         srcSet="home_700.webp 700w, home_1000.webp 1000w, home_1400.webp 1400w, home_2000.webp 2000w, home_2500.webp 2500w"
         sizes="100vw"
         alt="Spinnen-Ragwurz"
-        className="img"
+        className={styles.img}
       />
     </picture>
-    <div className="scroll-container">
+    <div className={styles.scrollContainer}>
       <h6 className="page-title">Bedrohte Arten und Biotope fördern</h6>
-      <div className="card-container">
+      <div className={styles.cardContainer}>
         <div className="card">
           <h3 className="card-title">Arten und Biotope</h3>
           Seltene und bedrohte Arten und Biotope überwachen und fördern.
