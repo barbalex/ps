@@ -90,9 +90,7 @@ export const RightMenuDrawer = ({ containerRef }) => {
       <InlineDrawer
         open={!!mapInfo?.lat}
         ref={sidebarRef}
-        style={{
-          ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
-        }}
+        style={isNarrow ? { height: sidebarSize } : { width: sidebarSize }}
         className={styles.drawer}
         position={isNarrow ? 'bottom' : 'end'}
         onMouseDown={(e) => isResizing && e.preventDefault()}
