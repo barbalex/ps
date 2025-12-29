@@ -59,7 +59,7 @@ export const RightMenuDrawer = ({ isNarrow }) => {
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)
-    // these events cant be added to the resizer's events
+    // these events can't be added to the resizer's events
     // because on dragging the mouse immediately leaves the resizer
     window.addEventListener('mouseup', stopResizing)
     window.addEventListener('mouseleave', stopResizing)
