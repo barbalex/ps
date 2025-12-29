@@ -1,17 +1,7 @@
 import { createPortal } from 'react-dom'
 
 import { Item } from './Item.tsx'
-
-const dropdownStyle = {
-  padding: '0 5px',
-  borderBottom: 'none',
-  background: 'white',
-  maxHeight: '30em',
-  overflowY: 'hidden',
-  transition: 'max-height 0.2s ease-in-out',
-  position: 'absolute',
-  zIndex: 1000,
-}
+import styles from './index.module.css'
 
 export const Dropdown = ({
   scales = [
@@ -32,14 +22,13 @@ export const Dropdown = ({
   return createPortal(
     <div
       style={{
-        ...dropdownStyle,
         maxHeight: open ? `${scales.length * 2}em` : 0,
         border: open ? '1px solid black' : 'none',
-        borderBottom: 'none',
         bottom: rootHeight - boundingRect.y - 1,
         left: boundingRect.x,
         width,
       }}
+      className={styles.container}
     >
       {scales.map((scale) => (
         <Item
