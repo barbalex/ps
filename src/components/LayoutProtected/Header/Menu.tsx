@@ -21,6 +21,7 @@ import globalStyles from '../../../styles.module.css'
 import { on } from '../../../css.ts'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 import { Online } from './Online.tsx'
+import styles from './Menu.module.css'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -138,15 +139,15 @@ export const Menu = () => {
             <Tooltip content={mapIsActive ? 'Hide Map' : 'Show Map'}>
               <ToolbarToggleButton
                 icon={
-                  !mapIsActive ? undefined
-                  : mapIsMaximized ?
+                  !mapIsActive ? undefined : mapIsMaximized ? (
                     <Tooltip content="Shrink Map">
                       <TbArrowsMinimize onClick={onClickMapView} />
                     </Tooltip>
-                  : <Tooltip content="Maximize Map">
+                  ) : (
+                    <Tooltip content="Maximize Map">
                       <TbArrowsMaximize onClick={onClickMapView} />
                     </Tooltip>
-
+                  )
                 }
                 iconPosition="after"
                 aria-label="Map"
@@ -170,14 +171,7 @@ export const Menu = () => {
             size="medium"
             icon={<FaCog />}
             onClick={onClickOptions}
-            style={pipe(
-              {
-                backgroundColor: 'rgba(38, 82, 37, 0)',
-                border: 'none',
-                color: 'white',
-              },
-              on('&:hover', { filter: 'brightness(85%)' }),
-            )}
+            className={styles.button}
             disabled={mapIsMaximized}
           />
         </Tooltip>
@@ -185,24 +179,18 @@ export const Menu = () => {
       <Online />
       <Tooltip
         content={
-          !isAuthenticated ? 'Login'
-          : isHome ?
-            'Enter'
-          : `Logout ${authUser?.email}`
+          !isAuthenticated
+            ? 'Login'
+            : isHome
+              ? 'Enter'
+              : `Logout ${authUser?.email}`
         }
       >
         <Button
           size="medium"
           icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
           onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
-          style={pipe(
-            {
-              backgroundColor: 'rgba(38, 82, 37, 0)',
-              border: 'none',
-              color: 'white',
-            },
-            on('&:hover', { filter: 'brightness(85%)' }),
-          )}
+          className={styles.button}
         />
       </Tooltip>
     </div>
