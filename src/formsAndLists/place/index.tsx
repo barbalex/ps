@@ -11,8 +11,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
-
-const fieldsStyle = { padding: 10 }
+import styles from './index.module.css'
 
 export const Place = ({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
@@ -79,22 +78,11 @@ export const Place = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table={nameSingular}
-        id={placeId2 ?? placeId}
-      />
-    )
+    return <NotFound table={nameSingular} id={placeId2 ?? placeId} />
   }
 
   if (onlyForm) {
-    return (
-      <Form
-        row={row}
-        onChange={onChange}
-        autoFocusRef={autoFocusRef}
-      />
-    )
+    return <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
   }
 
   return (
@@ -105,12 +93,8 @@ export const Place = ({ from }) => {
         nameSingular={nameSingular}
         namePlural={namePlural}
       />
-      <div style={fieldsStyle}></div>
-      <Form
-        row={row}
-        onChange={onChange}
-        autoFocusRef={autoFocusRef}
-      />
+      <div className={styles.fields}></div>
+      <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
     </div>
   )
 }
