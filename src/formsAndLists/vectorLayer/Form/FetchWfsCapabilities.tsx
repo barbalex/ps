@@ -9,14 +9,11 @@ import {
   addNotificationAtom,
   updateNotificationAtom,
 } from '../../../store.ts'
+import styles from './FetchWfsCapabilities.module.css'
 
 const createWorker = createWorkerFactory(
   () => import('./getWfsCapabilitiesData.ts'),
 )
-
-const buttonStyle = {
-  minHeight: 32,
-}
 
 export const FetchWfsCapabilities = ({
   vectorLayer,
@@ -141,12 +138,12 @@ export const FetchWfsCapabilities = ({
     <Button
       icon={fetching ? <Spinner size="tiny" /> : undefined}
       onClick={onFetchCapabilities}
-      style={buttonStyle}
+      className={styles.button}
       disabled={!url}
     >
-      {fetching ?
-        `Loading Capabilities (${wfsServiceLayersCount})`
-      : `Fetch Capabilities`}
+      {fetching
+        ? `Loading Capabilities (${wfsServiceLayersCount})`
+        : `Fetch Capabilities`}
     </Button>
   )
 }
