@@ -16,8 +16,6 @@
 .tabList {
   background-color: rgba(103, 216, 101, 0.2);
 
-  /* if container map width < 700px
-  set padding-left to 34px */
   @container map (max-width: 699px) {
     padding-left: 34px;
   }
