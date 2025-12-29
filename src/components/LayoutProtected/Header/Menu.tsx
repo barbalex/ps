@@ -15,45 +15,27 @@ import {
 } from '@tanstack/react-router'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
-import { pipe } from 'remeda'
 
 import globalStyles from '../../../styles.module.css'
-import { on } from '../../../css.ts'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 
-const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
+const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
-    return pipe(
-      {
-        backgroundColor: 'rgba(38, 82, 37, 0)',
-        border: 'none',
-        color: 'rgba(255, 255, 255, 0.7)',
-      },
-      on('&:hover', { color: 'white' }),
-    )
+    return styles.toggleInactive
   }
 
-  const style = {
-    backgroundColor: 'rgba(38, 82, 37, 0)',
-    borderTop: '1px solid rgba(255, 255, 255, 0.7)',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.7)',
-    borderRight: '1px solid rgba(255, 255, 255, 0.7)',
-    borderLeft: prevIsActive ? 'none' : '1px solid rgba(255, 255, 255, 0.7)',
-    color: 'white',
-  }
+  let className = styles.toggleActive
 
   if (prevIsActive) {
-    style.borderTopLeftRadius = 0
-    style.borderBottomLeftRadius = 0
+    className += ` ${styles.togglePrevIsActive}`
   }
   if (nextIsActive) {
-    style.borderTopRightRadius = 0
-    style.borderBottomRightRadius = 0
+    className += ` ${styles.toggleNextIsActive}`
   }
 
-  return style
+  return className
 }
 
 // TODO:
@@ -114,7 +96,7 @@ export const Menu = () => {
               aria-label="Tree"
               name="tabs"
               value="tree"
-              style={buildButtonStyle({
+              className={buildToggleClass({
                 prevIsActive: false,
                 nextIsActive: dataIsActive,
                 selfIsActive: treeIsActive,
@@ -127,7 +109,7 @@ export const Menu = () => {
               aria-label="Data"
               name="tabs"
               value="data"
-              style={buildButtonStyle({
+              className={buildToggleClass({
                 prevIsActive: treeIsActive,
                 nextIsActive: mapIsActive,
                 selfIsActive: dataIsActive,
@@ -153,7 +135,7 @@ export const Menu = () => {
                 aria-label="Map"
                 name="tabs"
                 value="map"
-                style={buildButtonStyle({
+                className={buildToggleClass({
                   prevIsActive: dataIsActive,
                   nextIsActive: false,
                   selfIsActive: mapIsActive,
