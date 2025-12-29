@@ -22,11 +22,10 @@ export const Popup = ({
   return (
     <div
       style={{
-        overflow: 'auto',
         maxHeight: mapSize.y - 40,
         maxWidth: mapSize.x - 60,
-        marginRight: -5,
       }}
+      className={styles.container}
     >
       {layersData.map((ld, index) => (
         <div key={`${ld.label}/${index}`}>
