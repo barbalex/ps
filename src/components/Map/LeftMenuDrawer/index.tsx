@@ -7,7 +7,6 @@ import { useAtomValue } from 'jotai'
 
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
-import { IsNarrowContext } from './IsNarrowContext.ts'
 import { mapHideUiAtom } from '../../../store.ts'
 import styles from './index.module.css'
 
@@ -128,80 +127,72 @@ export const LeftMenuDrawer = ({ containerRef }) => {
   }, [resize, stopResizing])
 
   return (
-    <IsNarrowContext.Provider value={isNarrow}>
-      <div
-        className={styles.container}
-        style={{
-          // dragging can mark text so we disable pointer events
-          ...(isResizing ? { pointerEvents: 'none' } : {}),
-        }}
-        ref={widthRef}
-      >
-        <div className={styles.innerContainer} ref={scope}>
-          {!mapHideUi && (
-            <Button
-              onClick={toggleOpen}
-              icon={
-                isOpen ? (
-                  <BiSolidLeftArrow className={styles.icon} />
-                ) : (
-                  <BiSolidRightArrow className={styles.icon} />
-                )
-              }
-              title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
-              style={{
-                position: 'absolute',
-                top: isNarrow ? (isOpen ? 6 : -31) : 5,
-                right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
-                left: isNarrow ? 5 : 'unset',
-                marginRight: isOpen ? 5 : 0,
-                zIndex: 100000000,
-                borderTopLeftRadius: isNarrow
-                  ? isOpen
-                    ? 0
-                    : 4
-                  : isOpen
-                    ? 4
-                    : 0,
-                borderBottomLeftRadius: isNarrow
-                  ? isOpen
-                    ? 4
-                    : 0
-                  : isOpen
-                    ? 4
-                    : 0,
-                borderTopRightRadius: isNarrow
-                  ? isOpen
-                    ? 0
-                    : 4
-                  : isOpen
-                    ? 0
-                    : 4,
-                borderBottomRightRadius: isNarrow
-                  ? isOpen
-                    ? 4
-                    : 0
-                  : isOpen
-                    ? 0
-                    : 4,
-              }}
-            />
-          )}
-          <InlineDrawer
-            open={!mapHideUi}
-            className={`map-layers-drawer ${styles.drawer}`}
-            ref={sidebarRef}
+    <div
+      className={styles.container}
+      style={{
+        // dragging can mark text so we disable pointer events
+        ...(isResizing ? { pointerEvents: 'none' } : {}),
+      }}
+      ref={widthRef}
+    >
+      <div className={styles.innerContainer} ref={scope}>
+        {!mapHideUi && (
+          <Button
+            onClick={toggleOpen}
+            icon={
+              isOpen ? (
+                <BiSolidLeftArrow className={styles.icon} />
+              ) : (
+                <BiSolidRightArrow className={styles.icon} />
+              )
+            }
+            title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
             style={{
-              ...(isNarrow ? { height: size } : { width: size }),
+              position: 'absolute',
+              top: isNarrow ? (isOpen ? 6 : -31) : 5,
+              right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
+              left: isNarrow ? 5 : 'unset',
+              marginRight: isOpen ? 5 : 0,
+              zIndex: 100000000,
+              borderTopLeftRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 4 : 0,
+              borderBottomLeftRadius: isNarrow
+                ? isOpen
+                  ? 4
+                  : 0
+                : isOpen
+                  ? 4
+                  : 0,
+              borderTopRightRadius: isNarrow
+                ? isOpen
+                  ? 0
+                  : 4
+                : isOpen
+                  ? 0
+                  : 4,
+              borderBottomRightRadius: isNarrow
+                ? isOpen
+                  ? 4
+                  : 0
+                : isOpen
+                  ? 0
+                  : 4,
             }}
-            position={isNarrow ? 'bottom' : 'start'}
-            onMouseDown={(e) => isResizing && e.preventDefault()}
-          >
-            <Content />
-            <Resizer startResizing={startResizing} isResizing={isResizing} />
-          </InlineDrawer>
-        </div>
+          />
+        )}
+        <InlineDrawer
+          open={!mapHideUi}
+          className={`map-layers-drawer ${styles.drawer}`}
+          ref={sidebarRef}
+          style={{
+            ...(isNarrow ? { height: size } : { width: size }),
+          }}
+          position={isNarrow ? 'bottom' : 'start'}
+          onMouseDown={(e) => isResizing && e.preventDefault()}
+        >
+          <Content />
+          <Resizer startResizing={startResizing} isResizing={isResizing} />
+        </InlineDrawer>
       </div>
-    </IsNarrowContext.Provider>
+    </div>
   )
 }
