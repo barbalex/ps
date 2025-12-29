@@ -10,26 +10,15 @@ import { LabelBy } from '../../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../../components/shared/SwitchField.tsx'
 import { Type } from './Type.tsx'
-
-const labelStyle = {
-  color: 'grey',
-  fontWeight: 700,
-}
+import styles from './index.module.css'
 
 export const Design = ({ onChange, row, from }) => {
   const { projectId } = useParams({ from })
 
   return (
-    <div
-      className="form-container"
-      role="tabpanel"
-      aria-labelledby="design"
-    >
-      <Label style={labelStyle}>Project configuration</Label>
-      <Type
-        row={row}
-        onChange={onChange}
-      />
+    <div className="form-container" role="tabpanel" aria-labelledby="design">
+      <Label className={styles.label}>Project configuration</Label>
+      <Type row={row} onChange={onChange} />
       <TextField
         label="Name of subproject (singular)"
         name="subproject_name_singular"
