@@ -1,15 +1,13 @@
-.map-layers-resizer {
+.resizer {
   background-color: white;
   position: absolute;
   z-index: 1;
-}
 
-.map-layers-resizer:hover {
-  background-color: rgba(38, 82, 37, 0.9) !important;
-}
+  &:hover {
+    background-color: rgba(38, 82, 37, 0.9) !important;
+  }
 
-@container (width <= 700px) {
-  .map-layers-resizer {
+  @container (width <= 700px) {
     left: 0;
     right: 0;
     border-top: 1px solid rgba(55, 118, 28, 0.5);
@@ -18,10 +16,8 @@
     cursor: row-resize;
     resize: vertical;
   }
-}
 
-@container (width > 700px) {
-  .map-layers-resizer {
+  @container (width > 700px) {
     top: 0;
     bottom: 0;
     right: 0;
