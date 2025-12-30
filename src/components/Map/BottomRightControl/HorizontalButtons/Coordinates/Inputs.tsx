@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useMap } from 'react-leaflet'
-import { pipe } from 'remeda'
 
-import { on } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 import styles from './Inputs.module.css'
 
