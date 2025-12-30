@@ -32,7 +32,6 @@ import {
   addOperationAtom,
   addNotificationAtom,
 } from '../../../../../../store.ts'
-import { on } from '../../../../../../css.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import layerStyles from '../../index.module.css'
 
