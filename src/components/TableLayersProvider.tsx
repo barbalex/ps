@@ -9,6 +9,7 @@ import {
 } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
 import { syncingAtom, sqlInitializingAtom } from '../store.ts'
+import type Projects from '../models/public/Projects.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
 // How to know if data was synced with the server?
@@ -23,11 +24,11 @@ export const TableLayersProvider = () => {
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
   const projectsResult = useLiveQuery(`SELECT project_id FROM projects`)
-  const projects = projectsResult?.rows ?? []
+  const projects: Projects[] = projectsResult?.rows ?? []
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
   const occurrenceCountResult = useLiveQuery(`SELECT COUNT(*) FROM occurrences`)
-  const occurrenceCount = occurrenceCountResult?.rows?.[0]?.count ?? 0
+  const occurrenceCount: number = occurrenceCountResult?.rows?.[0]?.count ?? 0
 
   const firstRender = useFirstRender()
 
@@ -126,9 +127,8 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'actions',
             ownTableLevel: 1,
-            label:
-              placeLevel1?.name_singular ?
-                `${placeLevel1.name_singular} Actions`
+            label: placeLevel1?.name_singular
+              ? `${placeLevel1.name_singular} Actions`
               : 'Actions',
             db,
           })
@@ -173,9 +173,8 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'checks',
             ownTableLevel: 1,
-            label:
-              placeLevel1?.name_singular ?
-                `${placeLevel1.name_singular} Checks`
+            label: placeLevel1?.name_singular
+              ? `${placeLevel1.name_singular} Checks`
               : 'Checks',
             db,
           })
@@ -222,9 +221,8 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'occurrences_assigned',
               ownTableLevel: 1,
-              label:
-                placeLevel1?.name_singular ?
-                  `${placeLevel1.name_singular} Occurrences Assigned`
+              label: placeLevel1?.name_singular
+                ? `${placeLevel1.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
               db,
             })
@@ -409,9 +407,8 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'actions',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Actions`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Actions`
                 : 'Actions',
               db,
             })
@@ -458,9 +455,8 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'checks',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Checks`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Checks`
                 : 'Checks',
               db,
             })
@@ -507,9 +503,8 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'occurrences_assigned',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Occurrences Assigned`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
               db,
             })
