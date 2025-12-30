@@ -30,7 +30,7 @@ export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
           onClick={onClickBack}
           title="Leave Filter"
           checked={true}
-          style={isFiltered ? { color: 'rgba(255, 141, 2, 1' } : {}}
+          style={isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : undefined}
         />
         <Button
           size="medium"
