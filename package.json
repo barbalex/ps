@@ -45,7 +45,7 @@
     "@turf/points-within-polygon": "7.3.1",
     "@turf/polygon-to-line": "7.3.1",
     "@uidotdev/usehooks": "2.4.1",
-    "@uploadcare/file-uploader": "1.24.5",
+    "@uploadcare/file-uploader": "1.24.7",
     "@uploadcare/react-uploader": "1.11.1",
     "allotment": "1.20.5",
     "arktype": "2.1.29",
