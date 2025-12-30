@@ -6,6 +6,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
 import layerStyles from '../index.module.css'
+import type VectorLayers from '../../../../models/public/VectorLayers.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -38,7 +39,7 @@ export const OwnLayers = () => {
   `,
     [projectId],
   )
-  const ownVectorLayers = res?.rows ?? []
+  const ownVectorLayers: VectorLayers[] = res?.rows ?? []
 
   const onToggleItem = (event, { value: vectorLayerId, openItems }) => {
     // use setTimeout to let the child checkbox set the layers active status
