@@ -4,7 +4,6 @@ import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { not } from '../css.ts'
 
 export const useGoalNavData = ({ projectId, subprojectId, goalId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
