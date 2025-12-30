@@ -10,7 +10,6 @@ import {
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
 import { useAtom, useSetAtom } from 'jotai'
-import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 
@@ -26,7 +25,7 @@ import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
 import layerStyles from '../index.module.css'
-import { on } from '../../../../../css.ts'
+import styles from './OwnLayer.module.css'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
@@ -100,16 +99,8 @@ export const OwnLayer = ({ layer, isLast, isOpen }) => {
               icon={<BsSquare className={layerStyles.headerToggleIcon} />}
               checked={false}
               onClick={onChange}
-              style={pipe(
-                {
-                  marginLeft: 2,
-                  border: 'none',
-                  ...(isOpen ? { backgroundColor: 'none' } : {}),
-                },
-                on('&:hover', {
-                  backgroundColor: 'var(--colorNeutralBackground1Hover)',
-                }),
-              )}
+              style={isOpen ? { backgroundColor: 'none' } : undefined}
+              className={styles.labelButton}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed
               as="a"
