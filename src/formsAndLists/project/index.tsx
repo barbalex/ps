@@ -12,6 +12,8 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { designingAtom, addOperationAtom } from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
+// import interface Projects from models
+import type Projects from '../../models/public/Projects.ts'
 
 import '../../form.css'
 
@@ -28,7 +30,7 @@ export const Project = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const row = res?.rows?.[0]
+  const row: Projects | undefined = res?.rows?.[0]
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) =>
     navigate({ search: { projectTab: data.value } })
