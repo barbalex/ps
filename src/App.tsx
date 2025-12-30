@@ -11,7 +11,6 @@ import { PGliteProvider } from '@electric-sql/pglite-react'
 import * as UC from '@uploadcare/file-uploader'
 UC.defineComponents(UC)
 
-import { styleSheet } from './css.ts'
 import './style.css'
 import styles from './App.module.css'
 
@@ -64,11 +63,7 @@ export const App = () => {
             ctx-name="uploadcare-uploader"
             ref={uploaderRef}
           ></uc-upload-ctx-provider>
-          <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-          <div
-            id="router-container"
-            className={styles.routerContainer}
-          >
+          <div id="router-container" className={styles.routerContainer}>
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProvider router={router} />
             </UploaderContext.Provider>
