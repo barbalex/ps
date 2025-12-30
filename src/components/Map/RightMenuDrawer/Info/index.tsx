@@ -9,7 +9,7 @@ import { Layer } from './Layer.tsx'
 import { mapInfoAtom } from '../../../../store.ts'
 import styles from './index.module.css'
 
-export const Info = ({ isNarrow }) => {
+export const Info = () => {
   const [mapInfo, setMapInfo] = useAtom(mapInfoAtom)
 
   const close = (e) => {
@@ -21,10 +21,7 @@ export const Info = ({ isNarrow }) => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={isNarrow ? { marginTop: 5 } : { marginLeft: 5 }}
-        className={styles.container}
-      >
+      <div className={styles.container}>
         <DrawerHeader className={styles.header}>
           <FormHeader
             title="Info"

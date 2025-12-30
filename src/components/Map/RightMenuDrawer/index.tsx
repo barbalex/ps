@@ -86,7 +86,7 @@ export const RightMenuDrawer = ({ isNarrow }) => {
         position={isNarrow ? 'bottom' : 'end'}
         onMouseDown={(e) => isResizing && e.preventDefault()}
       >
-        <Info isNarrow={isNarrow} />
+        <Info />
         <Resizer startResizing={startResizing} isResizing={isResizing} />
       </InlineDrawer>
     </div>
