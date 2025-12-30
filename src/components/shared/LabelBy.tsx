@@ -2,8 +2,8 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
-
 import '../../form.css'
+import type Fields from '../../models/public/Fields.ts'
 
 interface Props {
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
@@ -30,7 +30,7 @@ export const LabelBy = ({
     `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,
     [table, ['files', 'projects'].includes(table) ? null : projectId],
   )
-  const fields = res?.rows ?? []
+  const fields: Fields[] = res?.rows ?? []
   // Could add some fields from root here if needed
   const fieldNames = [
     ...fields.map(({ name }) => name),
