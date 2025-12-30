@@ -9,6 +9,8 @@ import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
 import { round } from '../../../../../modules/roundCoordinates.ts'
 import { Inputs } from './Inputs.tsx'
 import styles from './index.module.css'
+import type ProjectCrs from '../../../../../models/public/ProjectCrs.ts'
+import type Projects from '../../../../../models/public/Projects.ts'
 
 const getCoordinates = ({
   map,
@@ -39,14 +41,14 @@ export const CoordinatesControl = () => {
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const project = resProject?.rows?.[0]
+  const project: Projects | undefined = resProject?.rows?.[0]
   const projectMapPresentationCrs = project?.map_presentation_crs
 
   const resProjectCrs = useLiveQuery(
     `SELECT project_crs_id,code FROM project_crs WHERE project_id = $1`,
     [projectId],
   )
-  const projectCrs = resProjectCrs?.rows ?? []
+  const projectCrs: ProjectCrs[] = resProjectCrs?.rows ?? []
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [renderCount, setRenderCount] = useState(0)
