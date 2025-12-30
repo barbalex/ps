@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TableLayer } from './TableLayer.tsx'
+import type Actions from '../../../../models/public/Actions.ts'
 
 export const Actions1 = ({ layerPresentation }) => {
   // TODO: query only inside current map bounds using places.bbox
@@ -14,7 +15,7 @@ export const Actions1 = ({ layerPresentation }) => {
       AND places.parent_id IS NULL`,
     undefined,
   )
-  const actions = resActions?.rows ?? []
+  const actions: Actions[] = resActions?.rows ?? []
   // console.log('hello Actions1, checks:', checks)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
@@ -45,10 +46,5 @@ export const Actions1 = ({ layerPresentation }) => {
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return (
-    <TableLayer
-      data={data}
-      layerPresentation={layerPresentation}
-    />
-  )
+  return <TableLayer data={data} layerPresentation={layerPresentation} />
 }
