@@ -6,6 +6,7 @@ import { useSetAtom } from 'jotai'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 import { addOperationAtom } from '../../store.ts'
+import type VectorLayers from '../../models/public/VectorLayers.ts'
 
 export const OwnVectorLayerPropertiesProvider = () => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -19,7 +20,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
     `SELECT * FROM vector_layers WHERE project_id = $1 and type = 'own'`,
     [project_id],
   )
-  const vectorLayers = useMemo(() => resVL?.rows ?? [], [resVL])
+  const vectorLayers: VectorLayers[] = useMemo(() => resVL?.rows ?? [], [resVL])
 
   // places level 1
   const resPlaces1Fields = useLiveQuery(
