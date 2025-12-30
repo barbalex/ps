@@ -11,6 +11,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom, addOperationAtom } from '../../store.ts'
+import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
 export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -27,7 +28,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     WHERE vl.project_id = $1 AND vl.type = $2`,
     [projectId, `${table}${level}`],
   )
-  const layerPresentation = res?.rows?.[0]
+  const layerPresentation: LayerPresentations = res?.rows?.[0]
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = () => {
@@ -114,9 +115,9 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
         icon={showLayer ? <MdLayersClear /> : <MdLayers />}
         onClick={onClickShowLayer}
         title={
-          showLayer ?
-            `Show ${placeNamePlural ?? table} layer in map`
-          : `Remove ${placeNamePlural ?? table} layer from map`
+          showLayer
+            ? `Show ${placeNamePlural ?? table} layer in map`
+            : `Remove ${placeNamePlural ?? table} layer from map`
         }
       />
       <Button
