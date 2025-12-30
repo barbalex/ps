@@ -64,44 +64,24 @@ export const Project = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Project"
-        id={projectId}
-      />
-    )
+    return <NotFound table="Project" id={projectId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
-      <TabList
-        selectedValue={projectTab}
-        onTabSelect={onTabSelect}
-      >
-        <Tab
-          id="form"
-          value="form"
-        >
+      <Header autoFocusRef={autoFocusRef} from={from} />
+      <TabList selectedValue={projectTab} onTabSelect={onTabSelect}>
+        <Tab id="form" value="form">
           Form
         </Tab>
         {designing && (
-          <Tab
-            id="design"
-            value="design"
-          >
+          <Tab id="design" value="design">
             Design
           </Tab>
         )}
       </TabList>
       {projectTab === 'form' && (
-        <div
-          role="tabpanel"
-          aria-labelledby="form"
-        >
+        <div role="tabpanel" aria-labelledby="form">
           <Form
             row={row}
             onChange={onChange}
@@ -111,11 +91,7 @@ export const Project = ({ from }) => {
         </div>
       )}
       {projectTab === 'design' && designing && (
-        <Design
-          onChange={onChange}
-          row={row}
-          from={from}
-        />
+        <Design onChange={onChange} row={row} from={from} />
       )}
     </div>
   )
