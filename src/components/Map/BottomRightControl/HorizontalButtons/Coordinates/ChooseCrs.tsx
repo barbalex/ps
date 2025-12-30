@@ -12,6 +12,8 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { addOperationAtom } from '../../../../../store.ts'
+import type ProjectCrs from '../../../../../models/public/ProjectCrs.ts'
+import type Projects from '../../../../../models/public/Projects.ts'
 
 export const ChooseCrs = () => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -25,16 +27,15 @@ export const ChooseCrs = () => {
     `SELECT * FROM project_crs WHERE project_id = $1`,
     [projectId],
   )
-  const projectCrs = resProjectCrs?.rows ?? []
+  const projectCrs: ProjectCrs[] = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
   const resProject = useLiveQuery(
     `SELECT project_id, map_presentation_crs, updated_at, updated_by FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const project = resProject?.rows?.[0]
-  const checkedValues =
-    project?.map_presentation_crs ?
-      { map_presentation_crs: [project.map_presentation_crs] }
+  const project: Projects | undefined = resProject?.rows?.[0]
+  const checkedValues = project?.map_presentation_crs
+    ? { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }
 
   const onChange = (e, { checkedItems }) => {
@@ -61,10 +62,7 @@ export const ChooseCrs = () => {
   if (projectCrs.length < 2) return null
 
   return (
-    <Menu
-      checkedValues={checkedValues}
-      onCheckedValueChange={onChange}
-    >
+    <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
       <MenuTrigger disableButtonEnhancement>
         <Button
           icon={<BsGlobe2 />}
