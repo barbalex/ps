@@ -18,7 +18,6 @@ import {
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
-import { pipe } from 'remeda'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -27,7 +26,6 @@ import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import layerStyles from '../index.module.css'
-import { on } from '../../../../../css.ts'
 import styles from './WmsLayer.module.css'
 
 type TabType = 'overall-displays' | 'config'
