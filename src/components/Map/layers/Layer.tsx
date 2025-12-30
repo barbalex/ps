@@ -8,6 +8,8 @@ import { WmsLayerComponent } from './WmsLayer/index.tsx'
 // import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { mapLayerSortingAtom } from '../../../store.ts'
+import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
 
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
@@ -48,7 +50,7 @@ export const Layer = ({ layerPresentationId, index }) => {
       AND vl.project_id = $2`,
     [layerPresentationId, projectId],
   )
-  const vectorLayer = resVector?.rows?.[0]
+  const vectorLayer: VectorLayers | undefined = resVector?.rows?.[0]
   const isWfsLayer = vectorLayer?.type === 'wfs'
   const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
 
@@ -56,7 +58,7 @@ export const Layer = ({ layerPresentationId, index }) => {
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
     [layerPresentationId],
   )
-  const layerPresentation = resLP?.rows?.[0]
+  const layerPresentation: LayerPresentations | undefined = resLP?.rows?.[0]
 
   // console.log('Layer', {
   //   layerPresentationId,
@@ -78,9 +80,8 @@ export const Layer = ({ layerPresentationId, index }) => {
 
   // // todo: add key, layerPresentationId
   if (wmsLayer) {
-    wmsLayer.opacity =
-      layerPresentation.opacity_percent ?
-        layerPresentation.opacity_percent / 100
+    wmsLayer.opacity = layerPresentation.opacity_percent
+      ? layerPresentation.opacity_percent / 100
       : 1
     const partsToRedrawOn = {
       max_zoom: layerPresentation.max_zoom,
