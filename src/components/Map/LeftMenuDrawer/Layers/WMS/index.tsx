@@ -11,6 +11,8 @@ import {
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
 import layerStyles from '../index.module.css'
+import type WMSLayers from '../../../../models/public/WMSLayers.ts'
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -33,7 +35,7 @@ export const WmsLayers = () => {
     ORDER BY label`,
     [projectId],
   )
-  const wmsLayers = resWmsLayers?.rows ?? []
+  const wmsLayers: WMSLayers[] = resWmsLayers?.rows ?? []
 
   // fetch all layer_presentations for the vector layers
   const resLP = useLiveQuery(
@@ -44,7 +46,7 @@ export const WmsLayers = () => {
     WHERE wms.project_id = $1`,
     [projectId],
   )
-  const layerPresentations = resLP?.rows ?? []
+  const layerPresentations: LayerPresentations[] = resLP?.rows ?? []
   // 2. when one is set active, add layer_presentations for it
   const wms = wmsLayers.filter(
     (l) =>

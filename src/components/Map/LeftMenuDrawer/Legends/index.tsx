@@ -7,6 +7,8 @@ import { VectorLegend } from './Vector/index.tsx'
 import { mapLayerSortingAtom } from '../../../../store.ts'
 import { Container } from './Container.tsx'
 import styles from './index.module.css'
+import type WMSLayers from '../../../../models/public/WMSLayers.ts'
+import type VectorLayers from '../../../../models/public/VectorLayers.ts'
 
 export const Legends = () => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
@@ -27,7 +29,7 @@ export const Legends = () => {
       ${projectId ? `AND wms_layers.project_id = '${projectId}'` : ''}
   `,
   )
-  const activeWmsLayers = resWmsLayers?.rows ?? []
+  const activeWmsLayers: WMSLayers[] = resWmsLayers?.rows ?? []
 
   // same for vector layers
   const resVectorLayers = useLiveQuery(
@@ -45,7 +47,7 @@ export const Legends = () => {
       ${projectId ? `AND project_id = '${projectId}'` : ''}
   `,
   )
-  const activeVectorLayers = resVectorLayers?.rows ?? []
+  const activeVectorLayers: VectorLayers[] = resVectorLayers?.rows ?? []
 
   // sort by mapLayerSorting
   const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(

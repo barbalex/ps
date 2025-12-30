@@ -9,6 +9,7 @@ import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Loading } from '../../../shared/Loading.tsx'
 import { addOperationAtom, addNotificationAtom } from '../../../../store.ts'
 import styles from './LayerPresentationForm.module.css'
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
 
 export const LayerPresentationForm = ({ layer }) => {
   const db = usePGlite()
@@ -20,7 +21,7 @@ export const LayerPresentationForm = ({ layer }) => {
     [layer.layer_presentation_id],
   )
 
-  const row = res?.rows?.[0]
+  const row: LayerPresentations = res?.rows?.[0]
 
   const onChange = (e, data) => {
     if (!row?.layer_presentation_id) {
