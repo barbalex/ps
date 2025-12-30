@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'
 import { draggableLayersAtom } from '../../../../store.ts'
+import type Occurrences from '../../../../models/public/Occurrences.ts'
 
 export const OccurrencesNotToAssign = ({ layerPresentation }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
@@ -21,7 +22,7 @@ export const OccurrencesNotToAssign = ({ layerPresentation }) => {
   `,
     [subprojectId],
   )
-  const occurrences = res?.rows ?? []
+  const occurrences: Occurrences[] = res?.rows ?? []
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
