@@ -28,6 +28,7 @@ import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import layerStyles from '../index.module.css'
 import { on } from '../../../../../css.ts'
+import styles from './WmsLayer.module.css'
 
 type TabType = 'overall-displays' | 'config'
 
@@ -127,7 +128,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
               ? {
                   backgroundColor: 'rgba(103, 216, 101, 0.1)',
                 }
-              : {}
+              : undefined
           }
         >
           <div className={layerStyles.headerContainer}>
@@ -135,16 +136,8 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
               icon={<BsSquare className={layerStyles.headerToggleIcon} />}
               checked={false}
               onClick={onChange}
-              style={pipe(
-                {
-                  marginLeft: 2,
-                  border: 'none',
-                  ...(isOpen ? { backgroundColor: 'none' } : {}),
-                },
-                on('&:hover', {
-                  backgroundColor: 'var(--colorNeutralBackground1Hover)',
-                }),
-              )}
+              style={isOpen ? { backgroundColor: 'none' } : undefined}
+              className={styles.labelButton}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed
               as="a"
