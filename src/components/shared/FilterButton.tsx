@@ -14,9 +14,7 @@ export const FilterButton = ({ isFiltered = false }) => {
       onClick={onClick}
       title="Edit Filter"
       checked={false}
-      style={{
-        ...(isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : {}),
-      }}
+      style={isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : undefined}
     />
   )
 }
