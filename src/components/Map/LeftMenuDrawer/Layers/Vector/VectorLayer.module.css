@@ -1,0 +1,8 @@
+.labelButton {
+  margin-left: 2px;
+  border: none;
+
+  &:hover {
+    background-color: var(--colorNeutralBackground1Hover);
+  }
+}
