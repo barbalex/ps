@@ -22,7 +22,6 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const addRow = async () => {
     const id = await createPlaceReport({
-      db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
@@ -68,9 +67,8 @@ export const Header = ({ autoFocusRef, from }) => {
     )
     const next = placeReports[(index + 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${next.place_report_id}/report`
+      to: isForm
+        ? `../../${next.place_report_id}/report`
         : `../${next.place_report_id}`,
       params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
     })
@@ -88,9 +86,8 @@ export const Header = ({ autoFocusRef, from }) => {
     )
     const previous = placeReports[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.place_report_id}/report`
+      to: isForm
+        ? `../../${previous.place_report_id}/report`
         : `../${previous.place_report_id}`,
       params: (prev) => ({
         ...prev,
