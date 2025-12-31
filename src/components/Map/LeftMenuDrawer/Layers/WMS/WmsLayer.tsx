@@ -27,16 +27,18 @@ import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import layerStyles from '../index.module.css'
 import styles from './WmsLayer.module.css'
+import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
+import type WmsLayer from '../../../../../models/public/WMSLayers.ts'
 
 type TabType = 'overall-displays' | 'config'
 
-// type Props = {
-//   layer: WmsLayer
-//   isLast: number
-//   isOpen: boolean
-// }
+type Props = {
+  layer: WmsLayer
+  isLast: boolean
+  isOpen: boolean
+}
 
-export const WmsLayer = ({ layer, isLast, isOpen }) => {
+export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -56,7 +58,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
       `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
       [layer.wms_layer_id],
     )
-    const presentation = res?.rows?.[0]
+    const presentation: LayerPresentations = res?.rows?.[0]
     // 2. if not, create one
     if (!presentation) {
       await createLayerPresentation({
