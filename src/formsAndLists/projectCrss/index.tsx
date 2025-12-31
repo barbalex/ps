@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
 import { useProjectCrssNavData } from '../../modules/useProjectCrssNavData.ts'
@@ -15,13 +14,11 @@ export const ProjectCrss = () => {
   const navigate = useNavigate()
   const { projectId } = useParams({ from })
 
-  const db = usePGlite()
-
   const { loading, navData } = useProjectCrssNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createProjectCrs({ projectId, db })
+    const id = await createProjectCrs({ projectId })
     if (!id) return
     navigate({
       to: id,
@@ -38,18 +35,15 @@ export const ProjectCrss = () => {
         info={<Info />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map((nav) => (
-              <Row
-                key={nav.id}
-                to={nav.id}
-                label={nav.label ?? nav.id}
-              />
+              <Row key={nav.id} to={nav.id} label={nav.label ?? nav.id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

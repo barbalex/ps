@@ -16,7 +16,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createProjectCrs({ projectId, db })
+    const id = await createProjectCrs({ projectId })
     if (!id) return
     navigate({
       to: `../${id}`,

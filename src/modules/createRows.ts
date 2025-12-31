@@ -331,8 +331,9 @@ export const createCrs = async () => {
   return crs_id
 }
 
-export const createProjectCrs = async ({ projectId, db }) => {
+export const createProjectCrs = async ({ projectId }) => {
   const project_crs_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
   await db.query(
     `insert into project_crs (project_crs_id, project_id) values ($1, $2)`,
     [project_crs_id, projectId],
