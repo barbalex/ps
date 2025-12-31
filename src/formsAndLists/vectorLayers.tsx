@@ -32,7 +32,6 @@ export const VectorLayers = () => {
     // also add vector_layer_display
     await createVectorLayerDisplay({
       vectorLayerId: data.vector_layer_id,
-      db,
     })
     // also add layer_presentation
     await createLayerPresentation({

@@ -47,7 +47,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       // create single display, then return
       return await createVectorLayerDisplay({
         vectorLayerId: vectorLayer.vector_layer_id,
-        db,
       })
     }
 
@@ -181,7 +180,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       await createVectorLayerDisplay({
         vectorLayerId: vectorLayer.vector_layer_id,
         displayPropertyValue: listValue.value,
-        db,
       })
     }
     return
@@ -192,58 +190,58 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   // TODO: test all
   const sqlByTable = {
     places: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `places.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `places.${displayByProperty}`
+      propertyIsInData
+        ? `places.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `places.${displayByProperty}`
     } FROM places
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}' AND places.parent_id IS ${
       level === 1 ? 'NULL' : 'NOT NULL'
     }`,
     actions: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `actions.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `actions.${displayByProperty}`
+      propertyIsInData
+        ? `actions.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `actions.${displayByProperty}`
     } FROM actions
     inner join places on places.place_id = actions.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     checks: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `checks.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `checks.${displayByProperty}`
+      propertyIsInData
+        ? `checks.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `checks.${displayByProperty}`
     } FROM checks 
     inner join places on places.place_id = checks.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `occurrences.${displayByProperty}`
+      propertyIsInData
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned_lines: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `occurrences.${displayByProperty}`
+      propertyIsInData
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_to_assess: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `occurrences.${displayByProperty}`
+      propertyIsInData
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
     inner join subprojects on subprojects.subproject_id = occurrence_imports.subproject_id 
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = false and occurrences.place_id IS NULL`,
     occurrences_not_to_assign: `SELECT DISTINCT ${
-      propertyIsInData ?
-        `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-      : `occurrences.${displayByProperty}`
+      propertyIsInData
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
     inner join subprojects on subprojects.subproject_id = occurrence_imports.subproject_id 
@@ -282,8 +280,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     await createVectorLayerDisplay({
       vectorLayerId: vectorLayer.vector_layer_id,
       displayPropertyValue: value,
-      db,
     })
   }
+
   return
 }

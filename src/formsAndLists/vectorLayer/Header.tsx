@@ -109,7 +109,6 @@ export const Header = ({ autoFocusRef, row, from }) => {
     // also add vector_layer_display
     createVectorLayerDisplay({
       vectorLayerId: vectorLayer.vector_layer_id,
-      db,
     })
     // add layer_presentation
     await createLayerPresentation({
@@ -117,9 +116,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
       db,
     })
     navigate({
-      to:
-        isForm ?
-          `../../${vectorLayer.vector_layer_id}/vector-layer`
+      to: isForm
+        ? `../../${vectorLayer.vector_layer_id}/vector-layer`
         : `../${vectorLayer.vector_layer_id}/vector-layer`,
       params: (prev) => ({
         ...prev,
@@ -146,9 +144,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const next = rows[(index + 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${next.vector_layer_id}/vector-layer`
+      to: isForm
+        ? `../../${next.vector_layer_id}/vector-layer`
         : `../${next.vector_layer_id}`,
       params: (prev) => ({
         ...prev,
@@ -167,9 +164,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
     const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.vector_layer_id}/vector-layer`
+      to: isForm
+        ? `../../${previous.vector_layer_id}/vector-layer`
         : `../${previous.vector_layer_id}`,
       params: (prev) => ({
         ...prev,
@@ -187,14 +183,15 @@ export const Header = ({ autoFocusRef, row, from }) => {
       toPrevious={toPrevious}
       tableName="vector layer"
       siblings={
-        isDraggable ?
+        isDraggable ? (
           <Button
             size="medium"
             icon={<TreasureMapLinePulsating />}
             onClick={onClickToggleAssign}
             title="Stop assigning"
           />
-        : <Menu>
+        ) : (
+          <Menu>
             <MenuTrigger disableButtonEnhancement>
               <Button
                 size="medium"
@@ -209,6 +206,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
               </MenuList>
             </MenuPopover>
           </Menu>
+        )
       }
     />
   )

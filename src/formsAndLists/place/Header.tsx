@@ -75,7 +75,6 @@ export const Header = ({
 
     createVectorLayerDisplay({
       vectorLayerId: newVectorLayer.vector_layer_id,
-      db,
     })
 
     createLayerPresentation({

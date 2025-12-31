@@ -96,7 +96,6 @@ export const TableLayersProvider = () => {
         if (places1VLDCount === 0) {
           await createVectorLayerDisplay({
             vectorLayerId: places1VectorLayer.vector_layer_id,
-            db,
           })
         }
 
@@ -141,7 +140,6 @@ export const TableLayersProvider = () => {
         if (actions1VLDCount === 0) {
           await createVectorLayerDisplay({
             vectorLayerId: actions1VectorLayer.vector_layer_id,
-            db,
           })
         }
 
@@ -186,7 +184,6 @@ export const TableLayersProvider = () => {
         if (checks1VLDCount === 0) {
           await createVectorLayerDisplay({
             vectorLayerId: checks1VectorLayer.vector_layer_id,
-            db,
           })
         }
 
@@ -234,7 +231,6 @@ export const TableLayersProvider = () => {
           if (occurrencesAssigned1VLDCount === 0) {
             await createVectorLayerDisplay({
               vectorLayerId: occurrencesAssigned1VectorLayer.vector_layer_id,
-              db,
             })
           }
 
@@ -278,7 +274,6 @@ export const TableLayersProvider = () => {
           if (occurrencesToAssessVLDCount === 0) {
             await createVectorLayerDisplay({
               vectorLayerId: occurrencesToAssessVectorLayer.vector_layer_id,
-              db,
             })
           }
 
@@ -322,7 +317,6 @@ export const TableLayersProvider = () => {
           if (!occurrencesNotToAssignVLDCount) {
             await createVectorLayerDisplay({
               vectorLayerId: occurrencesNotToAssignVectorLayer.vector_layer_id,
-              db,
             })
           }
 
@@ -368,7 +362,6 @@ export const TableLayersProvider = () => {
           if (!places2VLDCount) {
             await createVectorLayerDisplay({
               vectorLayerId: places2VectorLayer.vector_layer_id,
-              db,
             })
           }
 
@@ -415,7 +408,6 @@ export const TableLayersProvider = () => {
           if (!actions2VLDCount) {
             await createVectorLayerDisplay({
               vectorLayerId: actions2VectorLayer.vector_layer_id,
-              db,
             })
           }
 
@@ -462,7 +454,6 @@ export const TableLayersProvider = () => {
           if (!checks2VLDCount) {
             await createVectorLayerDisplay({
               vectorLayerId: checks2VectorLayer.vector_layer_id,
-              db,
             })
           }
 
@@ -510,7 +501,6 @@ export const TableLayersProvider = () => {
           if (!occurrencesAssigned2VLDCount) {
             await createVectorLayerDisplay({
               vectorLayerId: occurrencesAssigned2VectorLayer.vector_layer_id,
-              db,
             })
           }
 

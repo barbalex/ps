@@ -1209,8 +1209,8 @@ export const createWfsServiceLayer = async ({
 export const createVectorLayerDisplay = async ({
   vectorLayerId = null,
   displayPropertyValue = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const vector_layer_display_id = uuidv7()
   await db.query(
     `

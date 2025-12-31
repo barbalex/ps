@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -22,7 +21,6 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
   const { projectId } = params
   const vectorLayerId = vectorLayerIdIn || params.vectorLayerId
   const calledFromMapDrawer = vectorLayerIdIn !== undefined
-  const db = usePGlite()
 
   const navigate = useNavigate()
 
@@ -33,7 +31,7 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createVectorLayerDisplay({ vectorLayerId, db })
+    const id = await createVectorLayerDisplay({ vectorLayerId })
     if (!id) return
     if (vectorLayerId) {
       // we are in the map drawer
@@ -66,15 +64,12 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
               <Row
                 key={id}
@@ -84,7 +79,7 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
               />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

@@ -36,7 +36,7 @@ export const Header = ({
   const navigate = useNavigate()
 
   const addRow = async () => {
-    const id = await createVectorLayerDisplay({ vectorLayerId, db })
+    const id = await createVectorLayerDisplay({ vectorLayerId })
     if (!id) return
     if (vectorLayerDisplayIdFromProps) {
       setMapLayerDrawerVectorLayerDisplayId(id)
