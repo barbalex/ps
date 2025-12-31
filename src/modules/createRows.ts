@@ -1107,8 +1107,8 @@ export const createVectorLayer = async ({
   ownTableLevel = null,
   label = null,
   maxFeatures = 1000,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const vector_layer_id = uuidv7()
   const res = await db.query(
     `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7) returning *`,
@@ -1147,8 +1147,8 @@ export const createWfsService = async ({
   info_formats = null,
   info_format = null,
   default_crs = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const wfs_service_id = uuidv7()
   const res = await db.query(
     `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7) returning *`,

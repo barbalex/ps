@@ -43,7 +43,7 @@ export const VectorLayers = () => {
   const vectors = res?.rows ?? []
 
   const addRow = async () => {
-    const vectorLayer = await createVectorLayer({ projectId, type: 'wfs', db })
+    const vectorLayer = await createVectorLayer({ projectId, type: 'wfs' })
     // also add vector_layer_display
     await createVectorLayerDisplay({
       vectorLayerId: vectorLayer.vector_layer_id,

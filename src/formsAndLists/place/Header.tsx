@@ -64,7 +64,6 @@ export const Header = ({
       ownTable: 'places',
       ownTableLevel: placeId2 ? 2 : 1,
       label: namePlural,
-      db,
     })
     // console.log('Place.Header.addRow', {
     //   newVectorLayer,

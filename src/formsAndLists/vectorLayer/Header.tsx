@@ -105,7 +105,6 @@ export const Header = ({ autoFocusRef, row, from }) => {
     const vectorLayer = await createVectorLayer({
       projectId,
       type: 'wfs',
-      db,
     })
     // also add vector_layer_display
     createVectorLayerDisplay({

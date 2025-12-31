@@ -27,7 +27,6 @@ export const VectorLayers = () => {
     const data = await createVectorLayer({
       projectId,
       type: 'wfs',
-      db,
     })
     if (!data) return
     // also add vector_layer_display
@@ -55,18 +54,15 @@ export const VectorLayers = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-              />
+              <Row key={id} to={id} label={label ?? id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

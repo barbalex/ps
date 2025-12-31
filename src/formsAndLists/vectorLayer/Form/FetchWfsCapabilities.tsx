@@ -74,7 +74,6 @@ export const FetchWfsCapabilities = ({
       const serviceData = await createWfsService({
         url: urlTrimmed,
         projectId: vectorLayer.project_id,
-        db,
       })
       try {
         await db.query(

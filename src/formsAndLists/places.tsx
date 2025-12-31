@@ -47,7 +47,6 @@ export const Places = ({ from }) => {
       ownTable: 'places',
       ownTableLevel: placeId ? 2 : 1,
       label: namePlural,
-      db,
     })
 
     createVectorLayerDisplay({
