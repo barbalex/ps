@@ -37,7 +37,7 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
                   `SELECT * FROM places WHERE subproject_id = $1 and parent_id IS NOT NULL`,
                   [subproject_id],
                 )
-                const places = res?.rows
+                const places: Places[] = res?.rows
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
