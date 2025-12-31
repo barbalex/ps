@@ -12,6 +12,7 @@ import { Level } from './Level.tsx'
 import { ValueSource } from './ValueSource.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type ChartSubjects from '../../models/public/ChartSubjects.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -30,7 +31,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
     [chartSubjectId],
   )
-  const row = res?.rows?.[0]
+  const row: ChartSubjects = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -54,12 +55,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Chart Subject"
-        id={chartSubjectId}
-      />
-    )
+    return <NotFound table="Chart Subject" id={chartSubjectId} />
   }
 
   return (
@@ -71,15 +67,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         onChange={onChange}
       />
       <Section title="Data">
-        <Table
-          onChange={onChange}
-          row={row}
-          ref={autoFocusRef}
-        />
-        <Level
-          onChange={onChange}
-          row={row}
-        />
+        <Table onChange={onChange} row={row} ref={autoFocusRef} />
+        <Level onChange={onChange} row={row} />
         <TextField
           label="TODO: table filter"
           name="table_filter"
@@ -87,10 +76,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           type="number"
           onChange={onChange}
         />
-        <ValueSource
-          onChange={onChange}
-          row={row}
-        />
+        <ValueSource onChange={onChange} row={row} />
         {row.value_source && row.value_source !== 'count_rows' && (
           <>
             <TextField
