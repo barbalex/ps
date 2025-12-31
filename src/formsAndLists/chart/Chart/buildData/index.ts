@@ -1,7 +1,9 @@
 import { processPlaces as countPlacesRows } from './countPlacesRows.ts'
+import { store, pgliteDbAtom } from '../../../../store.ts'
 
-export const buildData = async ({ db, chart, subjects, subproject_id }) => {
+export const buildData = async ({ chart, subjects, subproject_id }) => {
   if (!subproject_id) return { data: [], years: [] }
+  const db = store.get(pgliteDbAtom)
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}
