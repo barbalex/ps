@@ -6,6 +6,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { FieldForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Field from '../../models/public/Field.ts'
 
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = ({
@@ -19,7 +20,7 @@ export const FieldFormFetchingOwnData = ({
   const res = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
     fieldId,
   ])
-  const row = res?.rows?.[0]
+  const row: Field = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -43,12 +44,7 @@ export const FieldFormFetchingOwnData = ({
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Field"
-        id={fieldId}
-      />
-    )
+    return <NotFound table="Field" id={fieldId} />
   }
 
   return (
