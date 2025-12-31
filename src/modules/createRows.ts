@@ -928,7 +928,8 @@ export const createAction = async ({ projectId, placeId }) => {
   return action_id
 }
 
-export const createActionValue = async ({ db, actionId }) => {
+export const createActionValue = async ({ actionId }) => {
+  const db = store.get(pgliteDbAtom)
   const action_value_id = uuidv7()
   await db.query(
     `insert into action_values (action_value_id, action_id) values ($1, $2)`,

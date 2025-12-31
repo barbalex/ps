@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createActionValue } from '../modules/createRows.ts'
 import { useActionValuesNavData } from '../modules/useActionValuesNavData.ts'
@@ -13,7 +12,6 @@ export const ActionValues = ({ from }) => {
     from,
   })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useActionValuesNavData({
     projectId,
@@ -25,7 +23,7 @@ export const ActionValues = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createActionValue({ db, actionId })
+    const id = await createActionValue({ actionId })
     if (!id) return
     navigate({
       to: id,
@@ -35,24 +33,17 @@ export const ActionValues = ({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
