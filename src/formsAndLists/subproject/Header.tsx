@@ -18,11 +18,10 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   const nameSingularLower = nameSingular?.toLowerCase?.()
 
   const addRow = async () => {
-    const subprojectId = await createSubproject({ db, projectId })
+    const subprojectId = await createSubproject({ projectId })
     navigate({
-      to:
-        isForm ?
-          `../../${subprojectId}/subproject`
+      to: isForm
+        ? `../../${subprojectId}/subproject`
         : `../${subprojectId}/subproject`,
       params: (prev) => ({
         ...prev,
@@ -59,9 +58,8 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
     const index = rows.findIndex((p) => p.subproject_id === subprojectId)
     const next = rows[(index + 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${next.subproject_id}/subproject`
+      to: isForm
+        ? `../../${next.subproject_id}/subproject`
         : `../${next.subproject_id}`,
       params: (prev) => ({
         ...prev,
@@ -80,9 +78,8 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
     const index = rows.findIndex((p) => p.subproject_id === subprojectId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.subproject_id}/subproject`
+      to: isForm
+        ? `../../${previous.subproject_id}/subproject`
         : `../${previous.subproject_id}`,
       params: (prev) => ({
         ...prev,

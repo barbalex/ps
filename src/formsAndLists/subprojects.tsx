@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubproject } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -14,13 +13,12 @@ const from = '/data/projects/$projectId_/subprojects/'
 export const Subprojects = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = useSubprojectsNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const subprojectId = await createSubproject({ db, projectId })
+    const subprojectId = await createSubproject({ projectId })
     if (!subprojectId) return
     navigate({
       to: subprojectId,
@@ -37,9 +35,10 @@ export const Subprojects = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
               <Row
                 key={id}
@@ -48,7 +47,7 @@ export const Subprojects = () => {
               />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
