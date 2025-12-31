@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubprojectTaxon } from '../modules/createRows.ts'
 import { useSubprojectTaxaNavData } from '../modules/useSubprojectTaxaNavData.ts'
@@ -11,7 +10,6 @@ import '../form.css'
 export const SubprojectTaxa = ({ from }) => {
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useSubprojectTaxaNavData({
     projectId,
@@ -20,7 +18,7 @@ export const SubprojectTaxa = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createSubprojectTaxon({ subprojectId, db })
+    const id = await createSubprojectTaxon({ subprojectId })
     if (!id) return
     navigate({
       to: id,
@@ -33,24 +31,17 @@ export const SubprojectTaxa = ({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-              />
+              <Row key={id} to={id} label={label ?? id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

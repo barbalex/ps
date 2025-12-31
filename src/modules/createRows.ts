@@ -765,7 +765,8 @@ export const createPlaceUser = async ({ placeId }) => {
   return place_user_id
 }
 
-export const createSubprojectTaxon = async ({ db, subprojectId }) => {
+export const createSubprojectTaxon = async ({ subprojectId }) => {
+  const db = store.get(pgliteDbAtom)
   const subproject_taxon_id = uuidv7()
   await db.query(
     `insert into subproject_taxa (subproject_taxon_id, subproject_id) values ($1, $2)`,
