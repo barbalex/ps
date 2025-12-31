@@ -196,8 +196,9 @@ export const createPlace = async ({
   return place_id
 }
 
-export const createWidgetForField = async ({ db }) => {
+export const createWidgetForField = async () => {
   const widget_for_field_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
   await db.query(
     `insert into widgets_for_fields (widget_for_field_id) values ($1)`,
     [widget_for_field_id],

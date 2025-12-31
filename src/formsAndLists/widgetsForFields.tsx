@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createWidgetForField } from '../modules/createRows.ts'
 import { useWidgetsForFieldsNavData } from '../modules/useWidgetsForFieldsNavData.ts'
@@ -14,13 +13,12 @@ const from = '/data/widgets-for-fields'
 
 export const WidgetsForFields = () => {
   const navigate = useNavigate({ from })
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const widgetForFieldId = await createWidgetForField({ db })
+    const widgetForFieldId = await createWidgetForField()
     if (!widgetForFieldId) return
     navigate({ to: widgetForFieldId })
   }
@@ -34,18 +32,15 @@ export const WidgetsForFields = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
