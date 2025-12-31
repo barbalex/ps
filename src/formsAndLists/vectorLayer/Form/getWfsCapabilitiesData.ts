@@ -1,8 +1,9 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
-import { addOperationAtom, store } from '../../../store.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
-export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
+export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
+  const db = store.get(pgliteDbAtom)
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')

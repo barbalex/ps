@@ -103,11 +103,7 @@ export const FetchWfsCapabilities = ({
 
     // fetch capabilities
     try {
-      await worker.getWfsCapabilitiesData({
-        vectorLayer,
-        service,
-        db,
-      })
+      await worker.getWfsCapabilitiesData({ vectorLayer, service })
     } catch (error) {
       console.error(
         'hello WmsBaseUrl, onBlur, error getting capabilities data:',
