@@ -20,7 +20,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createChartSubject({ chartId, db })
+    const id = await createChartSubject({ chartId })
     if (!id) return
     navigate({
       to: `../${id}`,

@@ -1431,7 +1431,8 @@ export const createChart = async ({
   return chart_id
 }
 
-export const createChartSubject = async ({ chartId, db }) => {
+export const createChartSubject = async ({ chartId }) => {
+  const db = store.get(pgliteDbAtom)
   const chart_subject_id = uuidv7()
   await db.query(
     `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,

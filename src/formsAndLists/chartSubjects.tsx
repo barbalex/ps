@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -17,7 +16,6 @@ export const ChartSubjects = () => {
     from,
   })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useChartSubjectsNavData({
     projectId,
@@ -27,7 +25,7 @@ export const ChartSubjects = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createChartSubject({ chartId, db })
+    const id = await createChartSubject({ chartId })
     if (!id) return
     navigate({
       to: id,
@@ -40,24 +38,17 @@ export const ChartSubjects = () => {
   // offline to sqlite
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
