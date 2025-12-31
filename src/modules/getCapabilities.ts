@@ -4,13 +4,18 @@ import { useSetAtom } from 'jotai'
 
 import { xmlToJson } from './xmlToJson.ts'
 import { setShortTermOnlineFromFetchError } from './setShortTermOnlineFromFetchError.ts'
-import { addNotificationAtom, updateNotificationAtom, store } from '../store.ts'
+import {
+  addNotificationAtom,
+  updateNotificationAtom,
+  store,
+  pgliteDbAtom,
+} from '../store.ts'
 
 export const getCapabilities = async ({
   url,
   service = 'WFS',
-  db,
 }): object | undefined => {
+  const db = store.get(pgliteDbAtom)
   let notificationId: string | undefined
   // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res

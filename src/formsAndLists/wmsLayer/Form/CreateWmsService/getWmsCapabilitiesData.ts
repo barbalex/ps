@@ -1,21 +1,21 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
-import { addOperationAtom, store } from '../../../../store.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../../../../store.ts'
 
-export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
+export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
   if (!service?.url) {
     return console.warn(
       'getWmsCapabilitiesData: returning due to missing service.url',
     )
   }
 
+  const db = store.get(pgliteDbAtom)
   const serviceData = {}
 
   const capabilities = await getCapabilities({
     url: service.url,
     service: 'WMS',
-    db,
   })
 
   if (!capabilities) return undefined
@@ -101,9 +101,9 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
         l.Name ? `'${l.Name}'` : 'NULL',
         l.Title ? `'${l.Title}'` : 'NULL',
         l.queryable === true,
-        l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?
-          `'${l.Style?.[0]?.LegendURL?.[0]?.OnlineResource}'`
-        : 'NULL',
+        l.Style?.[0]?.LegendURL?.[0]?.OnlineResource
+          ? `'${l.Style?.[0]?.LegendURL?.[0]?.OnlineResource}'`
+          : 'NULL',
       ].join(',')})`,
   )
   const sql = `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url) VALUES ${values.join(

@@ -12,7 +12,6 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
   const capabilitiesData = await getCapabilities({
     url: service?.url,
     service: 'WFS',
-    db,
   })
 
   if (!capabilitiesData) return undefined
