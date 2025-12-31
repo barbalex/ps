@@ -16,7 +16,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const res = await createAccount({ db })
+    const res = await createAccount()
     const data = res?.rows?.[0]
     navigate({ to: `../${data.account_id}` })
     autoFocusRef?.current?.focus()

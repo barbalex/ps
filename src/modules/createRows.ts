@@ -247,8 +247,9 @@ export const createFieldType = async () => {
   return field_type_id
 }
 
-export const createAccount = async ({ db }) => {
+export const createAccount = async () => {
   const account_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
   await db.query(`insert into accounts (account_id, type) values ($1, $2)`, [
     account_id,
     'free',
