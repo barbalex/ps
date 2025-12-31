@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createGoalReport } from '../modules/createRows.ts'
 import { useGoalReportsNavData } from '../modules/useGoalReportsNavData.ts'
@@ -14,7 +13,6 @@ const from =
 export const GoalReports = () => {
   const { projectId, subprojectId, goalId } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useGoalReportsNavData({
     projectId,
@@ -25,7 +23,6 @@ export const GoalReports = () => {
 
   const add = async () => {
     const id = await createGoalReport({
-      db,
       projectId,
       goalId,
     })
@@ -40,24 +37,17 @@ export const GoalReports = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

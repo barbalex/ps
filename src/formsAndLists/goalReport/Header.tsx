@@ -18,7 +18,6 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const addRow = async () => {
     const id = await createGoalReport({
-      db,
       projectId,
       goalId,
     })
@@ -60,9 +59,8 @@ export const Header = ({ autoFocusRef, from }) => {
     )
     const next = goalReports[(index + 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${next.goal_report_id}/report`
+      to: isForm
+        ? `../../${next.goal_report_id}/report`
         : `../${next.goal_report_id}`,
       params: (prev) => ({ ...prev, goalReportId: next.goal_report_id }),
     })
@@ -80,9 +78,8 @@ export const Header = ({ autoFocusRef, from }) => {
     )
     const previous = goalReports[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.goal_report_id}/report`
+      to: isForm
+        ? `../../${previous.goal_report_id}/report`
         : `../${previous.goal_report_id}`,
       params: (prev) => ({ ...prev, goalReportId: previous.goal_report_id }),
     })
