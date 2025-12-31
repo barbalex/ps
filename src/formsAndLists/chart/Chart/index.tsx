@@ -7,6 +7,9 @@ import { SingleChart } from './Chart.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
 import styles from './index.module.css'
 
+import type Charts from '../../../models/public/Charts.ts'
+import type ChartSubjects from '../../../models/public/ChartSubjects.ts'
+
 export const Chart = ({ from }) => {
   const { projectId, subprojectId, chartId } = useParams({ from })
 
@@ -16,13 +19,16 @@ export const Chart = ({ from }) => {
   const resultChart = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
     chartId,
   ])
-  const chart = resultChart?.rows?.[0]
+  const chart: Charts = resultChart?.rows?.[0]
 
   const resultSubjects = useLiveQuery(
     `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort, name`,
     [chartId],
   )
-  const subjects = useMemo(() => resultSubjects?.rows ?? [], [resultSubjects])
+  const subjects: ChartSubjects[] = useMemo(
+    () => resultSubjects?.rows ?? [],
+    [resultSubjects],
+  )
 
   const [data, setData] = useState({ data: [], names: [] })
 
@@ -33,7 +39,6 @@ export const Chart = ({ from }) => {
 
     const run = async () => {
       const data = await buildData({
-        db,
         chart,
         subjects,
         subproject_id: subprojectId,
