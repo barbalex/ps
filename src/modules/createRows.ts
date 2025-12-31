@@ -621,6 +621,7 @@ export const createListValue = async ({ listId }) => {
 }
 
 export const createGoal = async ({ projectId, subprojectId }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,

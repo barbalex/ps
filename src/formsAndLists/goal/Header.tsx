@@ -17,7 +17,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createGoal({ db, projectId, subprojectId })
+    const id = await createGoal({ projectId, subprojectId })
     if (!id) return
     navigate({
       to: isForm ? `../../${id}/goal` : `../${id}/goal`,
