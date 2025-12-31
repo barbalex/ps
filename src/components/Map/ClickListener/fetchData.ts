@@ -1,10 +1,11 @@
 import axios from 'redaxios'
 
-import { store, addNotificationAtom } from '../../../store.ts'
+import { store, addNotificationAtom, pgliteDbAtom } from '../../../store.ts'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 
-export const fetchData = async ({ db, url, params }) => {
+export const fetchData = async ({ url, params }) => {
+  const db = store.get(pgliteDbAtom)
   let res
   let failedToFetch = false
   try {

@@ -85,7 +85,7 @@ export const ClickListener = () => {
         height: mapSize.y,
         bbox: `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`,
       }
-      const requestData = await fetchData({ db, url, params })
+      const requestData = await fetchData({ url, params })
       if (requestData) {
         layersDataFromRequestData({
           layersData: mapInfo.layers,
@@ -151,7 +151,7 @@ export const ClickListener = () => {
         bbox: `${x},${y},${x2},${y2}`,
         // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
       }
-      const requestData = await fetchData({ db, url: wfsService.url, params })
+      const requestData = await fetchData({ url: wfsService.url, params })
       const label = requestData?.name
       const features = requestData?.features.map((f) => ({
         label,
