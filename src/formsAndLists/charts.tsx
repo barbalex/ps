@@ -23,12 +23,14 @@ export const Charts = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const idToAdd =
-      placeId2 ? { placeId: placeId2 }
-      : placeId ? { placeId }
-      : subprojectId ? { subprojectId }
-      : { projectId }
-    const chart_id = await createChart({ ...idToAdd, db })
+    const idToAdd = placeId2
+      ? { placeId: placeId2 }
+      : placeId
+        ? { placeId }
+        : subprojectId
+          ? { subprojectId }
+          : { projectId }
+    const chart_id = await createChart(idToAdd)
     if (!chart_id) return
 
     navigate({
@@ -41,24 +43,17 @@ export const Charts = () => {
   // offline to sqlite
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

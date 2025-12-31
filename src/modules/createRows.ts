@@ -1365,8 +1365,8 @@ export const createWmsServiceLayer = async ({
   queryable = null,
   legend_url = null,
   legend_image = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const wms_service_layer_id = uuidv7()
   await db.query(
     `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, legend_image) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
@@ -1402,8 +1402,8 @@ export const createChart = async ({
   projectId = null,
   subprojectId = null,
   placeId = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const chart_id = uuidv7()
   await db.query(
     `INSERT INTO charts (chart_id, account_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4, $5)`,

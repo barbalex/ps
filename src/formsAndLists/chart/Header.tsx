@@ -39,12 +39,14 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const idToAdd =
-      placeId2 ? { placeId: placeId2 }
-      : placeId ? { placeId }
-      : subprojectId ? { subprojectId }
-      : { projectId }
-    const chart_id = await createChart({ ...idToAdd, db })
+    const idToAdd = placeId2
+      ? { placeId: placeId2 }
+      : placeId
+        ? { placeId }
+        : subprojectId
+          ? { subprojectId }
+          : { projectId }
+    const chart_id = await createChart(idToAdd)
     navigate({
       to: isForm ? `../../${chart_id}/chart` : `../${chart_id}/chart`,
       params: (prev) => ({ ...prev, chartId: chart_id }),
@@ -100,8 +102,9 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = rows.findIndex((p) => p.chart_id === chartId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ? `../../${previous.chart_id}/chart` : `../${previous.chart_id}`,
+      to: isForm
+        ? `../../${previous.chart_id}/chart`
+        : `../${previous.chart_id}`,
       params: (prev) => ({ ...prev, chartId: previous.chart_id }),
     })
   }
