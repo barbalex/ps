@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createUser } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -16,37 +15,29 @@ const from = 'data/users'
 export const Users = () => {
   const setUserId = useSetAtom(userIdAtom)
   const navigate = useNavigate({ from })
-  const db = usePGlite()
 
   const { loading, navData } = useUsersNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createUser({ db, setUserId })
+    const id = await createUser({ setUserId })
     if (!id) return
     navigate({ to: id })
   }
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

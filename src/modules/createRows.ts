@@ -265,8 +265,9 @@ export const createAccount = async () => {
 }
 
 // users creates the db row to ensure creating the app_state too
-export const createUser = async ({ db, setUserId }) => {
+export const createUser = async ({ setUserId }) => {
   const user_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
 
   // TODO: why setUserId?
   setUserId(user_id)
