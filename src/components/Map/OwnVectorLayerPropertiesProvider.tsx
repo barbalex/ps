@@ -167,7 +167,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: places1Properties,
           })
@@ -192,7 +191,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: places2Properties,
           })
@@ -217,7 +215,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: actions1Properties,
           })
@@ -242,7 +239,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: actions2Properties,
           })
@@ -267,7 +263,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: checks1Properties,
           })
@@ -292,7 +287,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: checks2Properties,
           })
@@ -314,7 +308,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: occurrencesAssignedFields,
           })
@@ -336,7 +329,6 @@ export const OwnVectorLayerPropertiesProvider = () => {
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
-            db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: occurrencesToAssessFields,
           })
