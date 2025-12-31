@@ -875,7 +875,8 @@ export const createCheckValue = async ({ checkId }) => {
   return check_value_id
 }
 
-export const createCheckTaxon = async ({ db, checkId }) => {
+export const createCheckTaxon = async ({ checkId }) => {
+  const db = store.get(pgliteDbAtom)
   const check_taxon_id = uuidv7()
   await db.query(
     `insert into check_taxa (check_taxon_id, check_id) values ($1, $2)`,
