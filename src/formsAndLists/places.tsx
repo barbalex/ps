@@ -30,7 +30,6 @@ export const Places = ({ from }) => {
 
   const add = async () => {
     const placeIdNew = await createPlace({
-      db,
       projectId,
       subprojectId,
       parentId: placeId ?? null,
@@ -86,18 +85,15 @@ export const Places = ({ from }) => {
         }
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-              />
+              <Row key={id} to={id} label={label ?? id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

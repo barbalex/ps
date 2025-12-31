@@ -155,12 +155,12 @@ export const createFile = async ({
 }
 
 export const createPlace = async ({
-  db,
   projectId,
   subprojectId,
   parentId,
   level,
 }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,

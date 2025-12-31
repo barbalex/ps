@@ -50,7 +50,6 @@ export const Header = ({
 
   const addRow = async () => {
     const resPlace = await createPlace({
-      db,
       projectId,
       subprojectId,
       parentId: placeId2 ? placeId : null,
@@ -87,8 +86,9 @@ export const Header = ({
 
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to:
-        isForm ? `../../${place.place_id}/place` : `../${place.place_id}/place`,
+      to: isForm
+        ? `../../${place.place_id}/place`
+        : `../${place.place_id}/place`,
       params: (prev) => ({
         ...prev,
         [idName]: place.place_id,
@@ -159,8 +159,9 @@ export const Header = ({
     const previous = places[(index + len - 1) % len]
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to:
-        isForm ? `../../${previous.place_id}/place` : `../${previous.place_id}`,
+      to: isForm
+        ? `../../${previous.place_id}/place`
+        : `../${previous.place_id}`,
       params: (prev) => ({
         ...prev,
         [idName]: previous.place_id,
