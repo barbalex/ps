@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createFieldType } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -14,13 +13,12 @@ const from = '/data/field-types'
 
 export const FieldTypes = () => {
   const navigate = useNavigate({ from })
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = useFieldTypesNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createFieldType({ db })
+    const id = await createFieldType()
     if (!id) return
     navigate({ to: id })
   }
@@ -34,18 +32,15 @@ export const FieldTypes = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

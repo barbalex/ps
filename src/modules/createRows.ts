@@ -230,8 +230,9 @@ export const createWidgetType = async () => {
   return widget_type_id
 }
 
-export const createFieldType = async ({ db }) => {
+export const createFieldType = async () => {
   const field_type_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
   await db.query(
     `insert into field_types (field_type_id, sort) values ($1, $2) returning field_type_id`,
     [field_type_id, 0],
