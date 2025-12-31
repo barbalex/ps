@@ -60,6 +60,7 @@ export const WMTSOffline = ({ layer }) => {
     }
   }, [
     db,
+    addNotification,
     layer,
     layer.grayscale,
     layer.id,

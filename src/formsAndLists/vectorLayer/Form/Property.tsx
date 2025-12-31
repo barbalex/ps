@@ -60,7 +60,6 @@ export const Property = ({ vectorLayer, from }) => {
     })
     // set vector_layer_displays
     upsertVectorLayerDisplaysForVectorLayer({
-      db,
       vectorLayer: prev,
     })
   }

@@ -1,10 +1,10 @@
 import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
-import { addOperationAtom, store } from '../../../store.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
-  db,
   vectorLayer,
 }) => {
+  const db = store.get(pgliteDbAtom)
   if (!vectorLayer) {
     throw new Error(`vector_layer_id ${vectorLayer.vector_layer_id} not found`)
   }
