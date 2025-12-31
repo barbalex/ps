@@ -92,11 +92,11 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
     .filter((l) => l.OTHERCRS?.map((o) => o?.['#text']?.includes('EPSG:4326')))
     // accept only layers with acceptable info formats
     .filter((l) =>
-      preferredInfoFormat ?
-        l.OUTPUTFORMATS?.FORMAT?.map((f) =>
-          acceptableInfoFormats.includes(f?.['#text']),
-        )
-      : true,
+      preferredInfoFormat
+        ? l.OUTPUTFORMATS?.FORMAT?.map((f) =>
+            acceptableInfoFormats.includes(f?.['#text']),
+          )
+        : true,
     )
 
   for (const l of acceptableLayers) {
@@ -104,7 +104,6 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
       wfsServiceId: service.wfs_service_id,
       name: l.NAME?.['#text'],
       label: l.TITLE?.['#text'],
-      db,
     })
   }
 

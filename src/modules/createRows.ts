@@ -1184,8 +1184,8 @@ export const createWfsServiceLayer = async ({
   wfsServiceId,
   name = null,
   label = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const wfs_service_layer_id = uuidv7()
   await db.query(
     `insert into wfs_service_layers (wfs_service_layer_id, wfs_service_id, name, label) values ($1, $2, $3, $4)`,
