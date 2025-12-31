@@ -28,12 +28,12 @@ import { WmsLayerEditing } from './Editing.tsx'
 import layerStyles from '../index.module.css'
 import styles from './WmsLayer.module.css'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
-import type WmsLayer from '../../../../../models/public/WMSLayers.ts'
+import type WmsLayerType from '../../../../../models/public/WMSLayers.ts'
 
 type TabType = 'overall-displays' | 'config'
 
 type Props = {
-  layer: WmsLayer
+  layer: WmsLayerType
   isLast: boolean
   isOpen: boolean
 }
