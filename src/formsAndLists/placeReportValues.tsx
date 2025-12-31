@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceReportValue } from '../modules/createRows.ts'
 import { usePlaceReportValuesNavData } from '../modules/usePlaceReportValuesNavData.ts'
@@ -12,7 +11,6 @@ export const PlaceReportValues = ({ from }) => {
   const { projectId, subprojectId, placeId, placeId2, placeReportId } =
     useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = usePlaceReportValuesNavData({
     projectId,
@@ -24,7 +22,7 @@ export const PlaceReportValues = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createPlaceReportValue({ placeReportId, db })
+    const id = await createPlaceReportValue({ placeReportId })
     if (!id) return
     navigate({
       to: id,
@@ -37,24 +35,17 @@ export const PlaceReportValues = ({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-              />
+              <Row key={id} to={id} label={label ?? id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
