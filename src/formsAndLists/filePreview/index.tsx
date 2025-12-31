@@ -8,6 +8,7 @@ import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import type File from '../../models/public/File.ts'
 
 import '../../form.css'
 import '@cyntler/react-doc-viewer/dist/index.css'
@@ -18,7 +19,7 @@ export const FilePreview = ({ from }) => {
   const previewRef = useRef<HTMLDivElement>(null)
 
   const res = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [fileId])
-  const row = res?.rows?.[0]
+  const row: File | undefined = res?.rows?.[0]
 
   const { width, height, ref } = useResizeDetector({
     // handleHeight: false,
