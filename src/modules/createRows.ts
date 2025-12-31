@@ -494,7 +494,8 @@ export const createTaxonomy = async ({ projectId }) => {
   return taxonomy_id
 }
 
-export const createProjectUser = async ({ projectId, db }) => {
+export const createProjectUser = async ({ projectId }) => {
+  const db = store.get(pgliteDbAtom)
   const project_user_id = uuidv7()
   await db.query(
     `insert into project_users (project_user_id, project_id, role) values ($1, $2, $3)`,
