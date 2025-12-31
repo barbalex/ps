@@ -109,7 +109,6 @@ export const FetchWmsCapabilities = ({
       await worker.getWmsCapabilitiesData({
         wmsLayer,
         service,
-        db,
       })
     } catch (error) {
       console.error(
