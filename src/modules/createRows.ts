@@ -723,7 +723,8 @@ export const createGoalReportValue = async ({ goalReportId }) => {
   return goal_report_value_id
 }
 
-export const createSubprojectUser = async ({ db, subprojectId }) => {
+export const createSubprojectUser = async ({ subprojectId }) => {
+  const db = store.get(pgliteDbAtom)
   const subproject_user_id = uuidv7()
   await db.query(
     `insert into subproject_users (subproject_user_id, subproject_id, role) values ($1, $2, $3)`,
