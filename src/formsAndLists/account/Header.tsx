@@ -17,8 +17,8 @@ export const Header = ({ autoFocusRef }) => {
 
   const addRow = async () => {
     const res = await createAccount()
-    const data = res?.rows?.[0]
-    navigate({ to: `../${data.account_id}` })
+    const accountId = res?.rows?.[0]
+    navigate({ to: `../${accountId}` })
     autoFocusRef?.current?.focus()
   }
 

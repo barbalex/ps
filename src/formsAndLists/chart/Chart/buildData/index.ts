@@ -1,7 +1,16 @@
 import { processPlaces as countPlacesRows } from './countPlacesRows.ts'
 import { store, pgliteDbAtom } from '../../../../store.ts'
+import type Charts from '../../../../models/public/Charts.ts'
+import type ChartSubjects from '../../../../models/public/ChartSubjects.ts'
+import type Places from '../../../../models/public/Places.ts'
 
-export const buildData = async ({ chart, subjects, subproject_id }) => {
+type Props = {
+  chart: Charts
+  subjects: ChartSubjects[]
+  subproject_id: string
+}
+
+export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
   if (!subproject_id) return { data: [], years: [] }
   const db = store.get(pgliteDbAtom)
   const names = subjects.map((subject) => subject.name)
@@ -19,7 +28,7 @@ export const buildData = async ({ chart, subjects, subproject_id }) => {
                   `SELECT * FROM places WHERE subproject_id = $1 AND parent_id IS NULL`,
                   [subproject_id],
                 )
-                const places = res?.rows
+                const places: Places[] = res?.rows
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
