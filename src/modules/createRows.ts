@@ -983,7 +983,8 @@ export const createActionReport = async ({ projectId, actionId }) => {
   return action_report_id
 }
 
-export const createActionReportValue = async ({ db, actionReportId }) => {
+export const createActionReportValue = async ({ actionReportId }) => {
+  const db = store.get(pgliteDbAtom)
   const action_report_value_id = uuidv7()
   await db.query(
     `insert into action_report_values (action_report_value_id, action_report_id) values ($1, $2)`,
