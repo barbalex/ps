@@ -10,6 +10,7 @@ import { createCheck } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { tabsAtom, mapBoundsAtom, addNotificationAtom } from '../../store.ts'
+import type Checks from '../../models/public/Checks.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -97,7 +98,7 @@ export const Header = ({ autoFocusRef, from }) => {
     const res = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
       checkId,
     ])
-    const check = res?.rows?.[0]
+    const check: Checks = res?.rows?.[0]
     const geometry = check?.geometry
     if (!geometry) return alertNoGeometry()
 
