@@ -1080,7 +1080,8 @@ export const createMessage = async () => {
   return message_id
 }
 
-export const createWmsLayer = async ({ projectId, db }) => {
+export const createWmsLayer = async ({ projectId }) => {
+  const db = store.get(pgliteDbAtom)
   const wms_layer_id = uuidv7()
   const res = await db.query(
     `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2)`,

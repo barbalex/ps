@@ -23,7 +23,7 @@ export const WmsLayers = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const wmsLayer = await createWmsLayer({ projectId, db })
+    const wmsLayer = await createWmsLayer({ projectId })
     if (!wmsLayer) return
     // also add layer_presentation
     await createLayerPresentation({
@@ -45,18 +45,15 @@ export const WmsLayers = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-              />
+              <Row key={id} to={id} label={label ?? id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

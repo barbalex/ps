@@ -56,7 +56,7 @@ export const WmsLayers = () => {
   )
 
   const addRow = async () => {
-    const wmsLayer = await createWmsLayer({ projectId, db })
+    const wmsLayer = await createWmsLayer({ projectId })
     // also add layer_presentation
     await createLayerPresentation({
       wmsLayerId: wmsLayer.wms_layer_id,
