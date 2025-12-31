@@ -3,13 +3,13 @@ import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
-import { addOperationAtom, store } from '../../../store.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
 export const setGeometries = async ({
   occurrenceImport,
-  db,
   setNotification,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const addOperation = store.get(addOperationAtom)
 
   const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()

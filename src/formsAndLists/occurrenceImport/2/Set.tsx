@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
 import { MdDone } from 'react-icons/md'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { setGeometries } from './setGeometries.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
@@ -11,7 +11,6 @@ export const Set = ({ occurrenceImport }) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
 
-  const db = usePGlite()
   const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
     [occurrenceImport?.occurrence_import_id],
@@ -25,7 +24,7 @@ export const Set = ({ occurrenceImport }) => {
 
   const onClick = () => {
     setSettingGeometries(true)
-    setGeometries({ occurrenceImport, db, setNotification })
+    setGeometries({ occurrenceImport, setNotification })
   }
 
   if (!occurrences.length) return null
