@@ -27,7 +27,6 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const addRow = async () => {
     const id = await createCheck({
-      db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
@@ -80,8 +79,9 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = checks.findIndex((p) => p.check_id === checkId)
     const previous = checks[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ? `../../${previous.check_id}/check` : `../${previous.check_id}`,
+      to: isForm
+        ? `../../${previous.check_id}/check`
+        : `../${previous.check_id}`,
       params: (prev) => ({ ...prev, checkId: previous.check_id }),
     })
   }
