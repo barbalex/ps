@@ -22,7 +22,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const project_id = await createProject({ db })
+    const project_id = await createProject()
 
     // TODO: add place_levels?
     // now navigate to the new project
@@ -69,9 +69,8 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
     const index = rows.findIndex((p) => p.project_id === projectId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.project_id}/project`
+      to: isForm
+        ? `../../${previous.project_id}/project`
         : `../${previous.project_id}`,
       params: { projectId: previous.project_id },
     })

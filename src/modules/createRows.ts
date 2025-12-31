@@ -1,9 +1,10 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { addOperationAtom, store } from '../store.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
 
 // TODO: run insert query?
-const getPresetData = async ({ db, projectId = null, table }) => {
+const getPresetData = async ({ projectId = null, table }) => {
+  const db = store.get(pgliteDbAtom)
   const fieldsWithPresetsResult = await db.query(
     `select * from fields where project_id = $1 and table_name = $2 and preset is not null`,
     [projectId, table],
@@ -19,9 +20,10 @@ const getPresetData = async ({ db, projectId = null, table }) => {
 }
 
 // TODO: add account_id
-export const createProject = async ({ db }) => {
+export const createProject = async () => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
-  const presetData = await getPresetData({ db, table: 'projects' })
+  const presetData = await getPresetData({ table: 'projects' })
 
   const project_id = uuidv7()
 
@@ -65,7 +67,6 @@ export const createProject = async ({ db }) => {
 export const createSubproject = async ({ db, projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'subprojects',
   })
@@ -112,7 +113,7 @@ export const createFile = async ({
   height = null,
 }) => {
   // find fields with preset values on the data column
-  const presetData = await getPresetData({ db, table: 'files' })
+  const presetData = await getPresetData({ table: 'files' })
 
   const file_id = uuidv7()
   const data = {
@@ -161,7 +162,6 @@ export const createPlace = async ({
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'places',
   })
@@ -277,10 +277,9 @@ export const createUser = async ({ db, setUserId }) => {
   return user_id
 }
 
-export const createPerson = async ({ db, projectId }) => {
+export const createPerson = async ({ projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'persons',
   })
@@ -417,9 +416,9 @@ export const createUnit = async ({ projectId, db }) => {
   return unit_id
 }
 
-export const createList = async ({ db, projectId, name = null }) => {
+export const createList = async ({ projectId, name = null }) => {
   // find fields with preset values on the data column
-  const presetData = await getPresetData({ db, projectId, table: 'lists' })
+  const presetData = await getPresetData({ projectId, table: 'lists' })
 
   const list_id = uuidv7()
   const data = {
@@ -449,10 +448,9 @@ export const createList = async ({ db, projectId, name = null }) => {
   return list_id
 }
 
-export const createTaxonomy = async ({ db, projectId }) => {
+export const createTaxonomy = async ({ projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'taxonomies',
   })
@@ -504,10 +502,9 @@ export const createProjectUser = async ({ projectId, db }) => {
   return project_user_id
 }
 
-export const createProjectReport = async ({ db, projectId }) => {
+export const createProjectReport = async ({ projectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'project_reports',
   })
@@ -606,10 +603,9 @@ export const createListValue = async ({ listId, db }) => {
   return list_value_id
 }
 
-export const createGoal = async ({ db, projectId, subprojectId }) => {
+export const createGoal = async ({ projectId, subprojectId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'goals',
   })
@@ -642,10 +638,9 @@ export const createGoal = async ({ db, projectId, subprojectId }) => {
   return goal_id
 }
 
-export const createGoalReport = async ({ db, projectId, goalId }) => {
+export const createGoalReport = async ({ projectId, goalId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'goal_reports',
   })
@@ -774,7 +769,6 @@ export const createSubprojectReport = async ({
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'subproject_reports',
   })
@@ -806,10 +800,9 @@ export const createSubprojectReport = async ({
   return subproject_report_id
 }
 
-export const createCheck = async ({ db, projectId, placeId }) => {
+export const createCheck = async ({ projectId, placeId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'checks',
   })
@@ -879,9 +872,9 @@ export const createCheckTaxon = async ({ db, checkId }) => {
   return check_taxon_id
 }
 
-export const createAction = async ({ db, projectId, placeId }) => {
+export const createAction = async ({ projectId, placeId }) => {
   // find fields with preset values on the data column
-  const presetData = await getPresetData({ db, projectId, table: 'actions' })
+  const presetData = await getPresetData({ projectId, table: 'actions' })
 
   const action_id = uuidv7()
   const data = {
@@ -930,10 +923,9 @@ export const createActionValue = async ({ db, actionId }) => {
   return action_value_id
 }
 
-export const createActionReport = async ({ db, projectId, actionId }) => {
+export const createActionReport = async ({ projectId, actionId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'action_reports',
   })
@@ -984,10 +976,9 @@ export const createActionReportValue = async ({ db, actionReportId }) => {
   return action_report_value_id
 }
 
-export const createPlaceReport = async ({ db, projectId, placeId }) => {
+export const createPlaceReport = async ({ projectId, placeId }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
-    db,
     projectId,
     table: 'place_reports',
   })

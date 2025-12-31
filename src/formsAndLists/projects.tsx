@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProject } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -12,13 +11,12 @@ import '../form.css'
 
 export const Projects = () => {
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = useProjectsNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const project_id = await createProject({ db })
+    const project_id = await createProject()
     if (!project_id) return
     navigate({
       to: `/data/projects/$project_id`,
@@ -35,18 +33,15 @@ export const Projects = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map((nav) => (
-              <Row
-                key={nav.id}
-                label={nav.label}
-                to={nav.id}
-              />
+              <Row key={nav.id} label={nav.label} to={nav.id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
