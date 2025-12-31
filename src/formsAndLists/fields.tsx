@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createField } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -13,13 +12,11 @@ export const Fields = ({ from }) => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
-  const db = usePGlite()
-
   const { loading, navData, isFiltered } = useFieldsNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createField({ projectId, db })
+    const id = await createField({ projectId })
     if (!id) return
     navigate({
       to: id,
@@ -36,18 +33,15 @@ export const Fields = ({ from }) => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

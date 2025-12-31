@@ -352,8 +352,8 @@ export const createField = async ({
   projectId = null,
   table_name = null,
   level = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const field_id = uuidv7()
   await db.query(
     `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6)`,

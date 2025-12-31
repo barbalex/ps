@@ -1,7 +1,6 @@
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 
 import { createField } from '../../../modules/createRows.ts'
@@ -22,11 +21,9 @@ export const AddField = ({ tableName, level, from }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const db = usePGlite()
-
   const addRow = async () => {
     const isAccountTable = accountTables.includes(tableName)
-    const newFieldParams = { table_name: tableName, level, db }
+    const newFieldParams = { table_name: tableName, level }
     if (!isAccountTable) newFieldParams.projectId = projectId
     const id = await createField(newFieldParams)
     // TODO:
