@@ -17,7 +17,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createGoalReportValue({ db, goalReportId })
+    const id = await createGoalReportValue({ goalReportId })
     if (!id) return
     navigate({
       to: `../${id}`,
