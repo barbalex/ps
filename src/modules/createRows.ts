@@ -596,7 +596,8 @@ export const createTaxon = async ({ taxonomyId }) => {
   return taxon_id
 }
 
-export const createListValue = async ({ listId, db }) => {
+export const createListValue = async ({ listId }) => {
+  const db = store.get(pgliteDbAtom)
   const list_value_id = uuidv7()
   await db.query(
     `

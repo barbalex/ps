@@ -16,7 +16,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createListValue({ db, listId })
+    const id = await createListValue({ listId })
     if (id) return
     navigate({
       to: `../${id}`,
