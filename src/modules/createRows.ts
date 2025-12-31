@@ -896,6 +896,7 @@ export const createCheckTaxon = async ({ checkId }) => {
 }
 
 export const createAction = async ({ projectId, placeId }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({ projectId, table: 'actions' })
 

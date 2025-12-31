@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createAction } from '../modules/createRows.ts'
 import { useActionsNavData } from '../modules/useActionsNavData.ts'
@@ -14,7 +13,6 @@ import '../form.css'
 export const Actions = ({ from }) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = useActionsNavData({
     projectId,
@@ -26,7 +24,6 @@ export const Actions = ({ from }) => {
 
   const add = async () => {
     const id = await createAction({
-      db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
@@ -55,18 +52,15 @@ export const Actions = ({ from }) => {
         }
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

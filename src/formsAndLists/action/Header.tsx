@@ -34,7 +34,6 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const addRow = async () => {
     const id = await createAction({
-      db,
       projectId,
       placeId: placeId2 ?? placeId,
     })
