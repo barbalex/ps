@@ -11,6 +11,9 @@ import {
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { formatNumber } from '../../../modules/formatNumber.ts'
+import type Units from '../../../models/public/Units.ts'
+import type Charts from '../../../models/public/Charts.ts'
+import type ChartSubjects from '../../../models/public/ChartSubjects.ts'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
@@ -20,20 +23,24 @@ const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 //   return toPercent(ratio, 2)
 // }
 
-export const SingleChart = ({ chart, subjects, data, synchronized }) => {
+interface Props {
+  chart: Charts
+  subjects: ChartSubjects[]
+  data: { data: any[]; years: number[] }
+  synchronized?: boolean
+}
+
+export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
   const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
     subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
   ])
-  const firstSubjectsUnit = res?.rows?.[0]
+  const firstSubjectsUnit: Units = res?.rows?.[0]
   if (!chart || !subjects) return null
 
   const unit = firstSubjectsUnit ?? 'Count'
 
   return (
-    <ResponsiveContainer
-      width="99%"
-      height={synchronized ? 200 : 400}
-    >
+    <ResponsiveContainer width="99%" height={synchronized ? 200 : 400}>
       <AreaChart
         width={600}
         height={300}
@@ -44,7 +51,7 @@ export const SingleChart = ({ chart, subjects, data, synchronized }) => {
       >
         <defs>
           {subjects.map((subject) =>
-            subject.fill_graded ?
+            subject.fill_graded ? (
               <linearGradient
                 key={`${subject.chart_subject_id}color`}
                 id={`${subject.chart_subject_id}color`}
@@ -53,19 +60,13 @@ export const SingleChart = ({ chart, subjects, data, synchronized }) => {
                 x2="0"
                 y2="1"
               >
-                <stop
-                  offset="5%"
-                  stopColor={subject.fill}
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor={subject.fill}
-                  stopOpacity={0}
-                />
+                <stop offset="5%" stopColor={subject.fill} stopOpacity={0.8} />
+                <stop offset="95%" stopColor={subject.fill} stopOpacity={0} />
               </linearGradient>
+            ) : (
               // this is needed for gradient to work without missing key warning
-            : <div key={`${subject.chart_subject_id}div`} />,
+              <div key={`${subject.chart_subject_id}div`} />
+            ),
           )}
         </defs>
         <XAxis dataKey="year" />
@@ -93,9 +94,9 @@ export const SingleChart = ({ chart, subjects, data, synchronized }) => {
               stroke={subject.stroke ?? 'red'}
               strokeWidth={2}
               fill={
-                subject.fill_graded ?
-                  `url(#${subject.chart_subject_id}color)`
-                : (subject.fill ?? 'yellow')
+                subject.fill_graded
+                  ? `url(#${subject.chart_subject_id}color)`
+                  : (subject.fill ?? 'yellow')
               }
               isAnimationActive={true} // false for print?
               dot={{ stroke: subject.stroke ?? 'red', strokeWidth: 3 }}
@@ -109,14 +110,8 @@ export const SingleChart = ({ chart, subjects, data, synchronized }) => {
           )
         })}
         <Tooltip />
-        <CartesianGrid
-          strokeDasharray="3 3"
-          horizontal={false}
-        />
-        <Legend
-          verticalAlign="bottom"
-          height={36}
-        />
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+        <Legend verticalAlign="bottom" height={36} />
       </AreaChart>
     </ResponsiveContainer>
   )
