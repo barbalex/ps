@@ -10,10 +10,10 @@ import {
   addOperationAtom,
   addNotificationAtom,
   store,
+  pgliteDbAtom,
 } from '../../../../store.ts'
 
 export const assignToNearestDroppable = async ({
-  db,
   latLng,
   occurrenceId,
   map,
@@ -21,6 +21,7 @@ export const assignToNearestDroppable = async ({
   confirmAssigningToSingleTarget,
   setPlacesToAssignOccurrenceTo,
 }) => {
+  const db = store.get(pgliteDbAtom)
   let latLngPoint
   try {
     latLngPoint = point([latLng.lng, latLng.lat])

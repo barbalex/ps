@@ -120,7 +120,6 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 return
               }
               assignToNearestDroppable({
-                db,
                 latLng: e.latlng,
                 occurrenceId: marker.feature.properties?.occurrence_id,
                 map,
@@ -135,9 +134,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
-          const marker =
-            IconComponent ?
-              L.marker(latlng, {
+          const marker = IconComponent
+            ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -160,7 +158,6 @@ export const TableLayer = ({ data, layerPresentation }) => {
           marker.on('dragend', (e) => {
             const position = marker.getLatLng()
             assignToNearestDroppable({
-              db,
               latLng: position,
               occurrenceId: marker.feature.properties?.occurrence_id,
               map,
