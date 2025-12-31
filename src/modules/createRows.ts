@@ -855,7 +855,8 @@ export const createCheck = async ({ projectId, placeId }) => {
   return check_id
 }
 
-export const createCheckValue = async ({ db, checkId }) => {
+export const createCheckValue = async ({ checkId }) => {
+  const db = store.get(pgliteDbAtom)
   const check_value_id = uuidv7()
   await db.query(
     `insert into check_values (check_value_id, check_id) values ($1, $2)`,
