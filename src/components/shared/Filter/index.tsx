@@ -12,8 +12,8 @@ import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomName
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import styles from './index.module.css'
-
 import '../../../form.css'
+import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
 
 const getFilterStrings = ({
   filter,
@@ -97,7 +97,7 @@ export const Filter = ({ level, from, children }) => {
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [projectId, placeId ? 2 : 1],
   )
-  const placeLevel = resPlaceLevel?.rows?.[0]
+  const placeLevel: PlaceLevels = resPlaceLevel?.rows?.[0]
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
