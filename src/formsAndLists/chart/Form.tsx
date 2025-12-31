@@ -10,9 +10,11 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { ChartType } from './ChartType.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Charts from '../../models/public/Charts.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
+  from: string
 }
 
 // separate from the route because it is also used inside other forms
@@ -24,7 +26,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   const res = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
     chartId,
   ])
-  const row = res?.rows?.[0]
+  const row: Charts = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -244,12 +246,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Chart"
-        id={chartId}
-      />
-    )
+    return <NotFound table="Chart" id={chartId} />
   }
 
   // console.log('hello ChartForm', { row, chart_id })
@@ -257,11 +254,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   return (
     <div className="form-container">
       <Section title="General settings">
-        <ChartType
-          onChange={onChange}
-          row={row}
-          ref={autoFocusRef}
-        />
+        <ChartType onChange={onChange} row={row} ref={autoFocusRef} />
         <TextField
           label="Title"
           name="title"
