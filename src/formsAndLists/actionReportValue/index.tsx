@@ -10,8 +10,8 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-
 import '../../form.css'
+import type ActionReportValues from '../../models/public/ActionReportValues.ts'
 
 export const ActionReportValue = ({ from }) => {
   const { actionReportValueId } = useParams({ from })
@@ -24,7 +24,7 @@ export const ActionReportValue = ({ from }) => {
     `SELECT * FROM action_report_values WHERE action_report_value_id = $1`,
     [actionReportValueId],
   )
-  const row = res?.rows?.[0]
+  const row: ActionReportValues = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -48,20 +48,12 @@ export const ActionReportValue = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Action Report Value"
-        id={actionReportValueId}
-      />
-    )
+    return <NotFound table="Action Report Value" id={actionReportValueId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
           label="Unit"
