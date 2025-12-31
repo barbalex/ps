@@ -10,6 +10,7 @@ import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
+import type Projects from '../../models/public/Projects.ts'
 
 export const ActionNode = ({
   projectId,
@@ -28,7 +29,7 @@ export const ActionNode = ({
     `SELECT * FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const project = resProject?.rows?.[0]
+  const project: Projects = resProject?.rows?.[0]
   const showFiles = project?.files_active_actions ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
