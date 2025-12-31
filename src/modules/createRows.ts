@@ -949,6 +949,7 @@ export const createActionValue = async ({ actionId }) => {
 }
 
 export const createActionReport = async ({ projectId, actionId }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
