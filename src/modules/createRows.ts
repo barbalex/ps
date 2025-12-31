@@ -318,8 +318,9 @@ export const createPerson = async ({ projectId }) => {
   return person_id
 }
 
-export const createCrs = async ({ db }) => {
+export const createCrs = async () => {
   const crs_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
   await db.query(`insert into crs (crs_id) values ($1)`, [crs_id])
   store.set(addOperationAtom, {
     table: 'crs',

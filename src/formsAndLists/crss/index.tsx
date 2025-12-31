@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'
 import { useCrssNavData } from '../../modules/useCrssNavData.ts'
@@ -11,13 +10,12 @@ import '../../form.css'
 
 export const CRSS = () => {
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useCrssNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createCrs({ db })
+    const id = await createCrs()
     if (!id) return
     navigate({
       to: `/data/crs/${id}`,
@@ -34,18 +32,15 @@ export const CRSS = () => {
         info={<Info />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map((nav) => (
-              <Row
-                key={nav.id}
-                to={nav.id}
-                label={nav.label ?? nav.id}
-              />
+              <Row key={nav.id} to={nav.id} label={nav.label ?? nav.id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
