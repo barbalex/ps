@@ -1466,7 +1466,8 @@ export const createChartSubject = async ({ chartId }) => {
   return chart_subject_id
 }
 
-export const createOccurrenceImport = async ({ subprojectId, db }) => {
+export const createOccurrenceImport = async ({ subprojectId }) => {
+  const db = store.get(pgliteDbAtom)
   const occurrence_import_id = uuidv7()
   const date = new Date()
 

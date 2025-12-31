@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createOccurrenceImport } from '../modules/createRows.ts'
 import { useOccurrenceImportsNavData } from '../modules/useOccurrenceImportsNavData.ts'
@@ -15,7 +14,6 @@ const from =
 export const OccurrenceImports = () => {
   const navigate = useNavigate()
   const { projectId, subprojectId } = useParams({ from })
-  const db = usePGlite()
 
   const { loading, navData } = useOccurrenceImportsNavData({
     projectId,
@@ -24,7 +22,7 @@ export const OccurrenceImports = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createOccurrenceImport({ subprojectId, db })
+    const id = await createOccurrenceImport({ subprojectId })
     if (!id) return
     navigate({
       to: id,
@@ -37,24 +35,17 @@ export const OccurrenceImports = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
