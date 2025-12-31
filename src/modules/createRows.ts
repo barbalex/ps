@@ -383,8 +383,9 @@ export const createField = async ({
   return field_id
 }
 
-export const createUnit = async ({ projectId, db }) => {
+export const createUnit = async ({ projectId }) => {
   const unit_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
   await db.query(
     `INSERT INTO units (unit_id, project_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa, summable, sort, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
     [
