@@ -61,7 +61,6 @@ export const PlaceLevel = () => {
       row.project_id
     ) {
       await updateTableVectorLayerLabels({
-        db,
         project_id: row.project_id,
       })
     }
@@ -70,12 +69,7 @@ export const PlaceLevel = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Place Level"
-        id={placeLevelId}
-      />
-    )
+    return <NotFound table="Place Level" id={placeLevelId} />
   }
 
   // console.log('place level', row)

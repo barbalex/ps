@@ -1,6 +1,7 @@
-import { addOperationAtom, store } from '../store.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
 
-export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
+export const updateTableVectorLayerLabels = async ({ project_id }) => {
+  const db = store.get(pgliteDbAtom)
   const plRes = await db.query(
     `SELECT * FROM place_levels WHERE project_id = $1`,
     [project_id],
