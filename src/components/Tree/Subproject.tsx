@@ -17,6 +17,7 @@ import { ChartsNode } from './Charts.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
+import type Projects from '../../models/public/Projects.ts'
 
 export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -27,7 +28,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const project = res?.rows?.[0]
+  const project: Projects = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -69,23 +70,10 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
       />
       {isOpen && (
         <>
-          <PlacesNode
-            projectId={projectId}
-            subprojectId={nav.id}
-            level={5}
-          />
-          <SubprojectReportsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <GoalsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <OccurrenceImportsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
+          <PlacesNode projectId={projectId} subprojectId={nav.id} level={5} />
+          <SubprojectReportsNode projectId={projectId} subprojectId={nav.id} />
+          <GoalsNode projectId={projectId} subprojectId={nav.id} />
+          <OccurrenceImportsNode projectId={projectId} subprojectId={nav.id} />
           <OccurrencesToAssessNode
             projectId={projectId}
             subprojectId={nav.id}
@@ -94,26 +82,12 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             projectId={projectId}
             subprojectId={nav.id}
           />
-          <SubprojectTaxaNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <SubprojectUsersNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
+          <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
+          <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
           {showFiles && (
-            <FilesNode
-              projectId={projectId}
-              subprojectId={nav.id}
-              level={5}
-            />
+            <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}
-          <ChartsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-            level={5}
-          />
+          <ChartsNode projectId={projectId} subprojectId={nav.id} level={5} />
         </>
       )}
     </>
