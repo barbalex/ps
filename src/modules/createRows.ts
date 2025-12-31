@@ -579,7 +579,8 @@ export const createPlaceLevel = async () => {
   return place_level_id
 }
 
-export const createTaxon = async ({ taxonomyId, db }) => {
+export const createTaxon = async ({ taxonomyId }) => {
+  const db = store.get(pgliteDbAtom)
   const taxon_id = uuidv7()
   await db.query(`insert into taxa (taxon_id, taxonomy_id) values ($1, $2)`, [
     taxon_id,

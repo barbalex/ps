@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxon } from '../modules/createRows.ts'
 import { useTaxaNavData } from '../modules/useTaxaNavData.ts'
@@ -13,7 +12,6 @@ const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/'
 export const Taxa = () => {
   const { projectId, taxonomyId } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useTaxaNavData({
     projectId,
@@ -22,7 +20,7 @@ export const Taxa = () => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createTaxon({ taxonomyId, db })
+    const id = await createTaxon({ taxonomyId })
     if (!id) return
     navigate({
       to: id,
@@ -32,24 +30,17 @@ export const Taxa = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

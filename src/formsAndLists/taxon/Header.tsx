@@ -16,7 +16,7 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createTaxon({ taxonomyId, db })
+    const id = await createTaxon({ taxonomyId })
     if (!id) return
     navigate({
       to: `../${id}`,
