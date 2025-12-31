@@ -41,7 +41,6 @@ export const Uploader = ({ from }) => {
     if (files.length) return
 
     const fileInput = {
-      db,
       name: event.detail.name,
       size: event.detail.size,
       mimetype: event.detail.mimeType,

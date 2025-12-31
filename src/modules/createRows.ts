@@ -99,7 +99,6 @@ export const createSubproject = async ({ projectId }) => {
 }
 
 export const createFile = async ({
-  db,
   projectId = null,
   subprojectId = null,
   placeId = null,
@@ -113,6 +112,7 @@ export const createFile = async ({
   width = null,
   height = null,
 }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({ table: 'files' })
 
