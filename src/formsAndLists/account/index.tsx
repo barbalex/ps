@@ -11,8 +11,8 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-
 import '../../form.css'
+import type Accounts from '../../models/public/Accounts.ts'
 
 const from = '/data/accounts/$accountId'
 
@@ -26,7 +26,7 @@ export const Account = () => {
   const res = useLiveQuery(`SELECT * FROM accounts WHERE account_id = $1`, [
     accountId,
   ])
-  const row = res?.rows?.[0]
+  const row: Accounts = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -54,12 +54,7 @@ export const Account = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Account"
-        id={accountId}
-      />
-    )
+    return <NotFound table="Account" id={accountId} />
   }
 
   return (
