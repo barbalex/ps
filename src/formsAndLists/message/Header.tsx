@@ -16,7 +16,7 @@ export const Header = () => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createMessage({ db })
+    const id = await createMessage()
     if (!id) return
     navigate({
       to: `/data/messages/${id}`,

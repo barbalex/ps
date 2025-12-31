@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../modules/createRows.ts'
 import { useMessagesNavData } from '../modules/useMessagesNavData.ts'
@@ -11,13 +10,12 @@ import '../form.css'
 
 export const Messages = () => {
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useMessagesNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createMessage({ db })
+    const id = await createMessage()
     if (!id) return
     navigate({
       to: `/data/messages/${id}`,
@@ -27,24 +25,17 @@ export const Messages = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, date }) => (
-              <Row
-                key={id}
-                to={id}
-                label={date?.toISOString?.() ?? id}
-              />
+              <Row key={id} to={id} label={date?.toISOString?.() ?? id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )

@@ -1058,7 +1058,8 @@ export const createPlaceReportValue = async ({ placeReportId }) => {
   return place_report_value_id
 }
 
-export const createMessage = async ({ db }) => {
+export const createMessage = async () => {
+  const db = store.get(pgliteDbAtom)
   const message_id = uuidv7()
   const date = new Date()
 
