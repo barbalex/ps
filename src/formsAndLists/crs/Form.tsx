@@ -7,6 +7,7 @@ import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type CRS from '../../models/public/CRS.ts'
 
 import '../../form.css'
 
@@ -23,7 +24,7 @@ export const Component = () => {
     [crsId],
     'crs_id',
   )
-  const row = res?.rows?.[0]
+  const row: CRS = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
