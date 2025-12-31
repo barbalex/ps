@@ -460,6 +460,7 @@ export const createList = async ({ projectId, name = null }) => {
 }
 
 export const createTaxonomy = async ({ projectId }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,

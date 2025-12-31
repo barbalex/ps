@@ -16,7 +16,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const id = await createTaxonomy({ db, projectId })
+    const id = await createTaxonomy({ projectId })
     if (!id) return
     navigate({
       to: isForm ? `../../${id}/taxonomy` : `../${id}/taxonomy`,
@@ -54,9 +54,8 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const next = taxonomies[(index + 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${next.taxonomy_id}/taxonomy`
+      to: isForm
+        ? `../../${next.taxonomy_id}/taxonomy`
         : `../${next.taxonomy_id}`,
       params: (prev) => ({ ...prev, taxonomyId: next.taxonomy_id }),
     })
@@ -72,9 +71,8 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
     const previous = taxonomies[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ?
-          `../../${previous.taxonomy_id}/taxonomy`
+      to: isForm
+        ? `../../${previous.taxonomy_id}/taxonomy`
         : `../${previous.taxonomy_id}`,
       params: (prev) => ({ ...prev, taxonomyId: previous.taxonomy_id }),
     })

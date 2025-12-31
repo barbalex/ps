@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxonomy } from '../modules/createRows.ts'
 import { useTaxonomiesNavData } from '../modules/useTaxonomiesNavData.ts'
@@ -13,13 +12,12 @@ const from = '/data/projects/$projectId_/taxonomies/'
 export const Taxonomies = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData } = useTaxonomiesNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createTaxonomy({ db, projectId })
+    const id = await createTaxonomy({ projectId })
     if (!id) return
     navigate({
       to: id,
@@ -29,24 +27,17 @@ export const Taxonomies = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : <>
+        ) : (
+          <>
             {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-              />
+              <Row key={id} label={label ?? id} to={id} />
             ))}
           </>
-        }
+        )}
       </div>
     </div>
   )
