@@ -79,7 +79,6 @@ export const Header = ({
 
     createLayerPresentation({
       vectorLayerId: newVectorLayer.vector_layer_id,
-      db,
     })
 
     const idName = placeId2 ? 'placeId2' : 'placeId'

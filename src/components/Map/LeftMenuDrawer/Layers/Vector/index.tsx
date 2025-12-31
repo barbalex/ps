@@ -51,7 +51,6 @@ export const VectorLayers = () => {
     // also add layer_presentation
     await createLayerPresentation({
       vectorLayerId: vectorLayer.vector_layer_id,
-      db,
     })
     setOpenItems([openItems, vectorLayer.vector_layer_id])
   }

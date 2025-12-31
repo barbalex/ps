@@ -113,7 +113,6 @@ export const Header = ({ autoFocusRef, row, from }) => {
     // add layer_presentation
     await createLayerPresentation({
       vectorLayerId: vectorLayer.vector_layer_id,
-      db,
     })
     navigate({
       to: isForm

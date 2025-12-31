@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createWmsLayer,
@@ -17,7 +16,6 @@ const from = '/data/projects/$projectId_/wms-layers/'
 export const WmsLayers = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = useWmsLayersNavData({ projectId })
   const { navs, label, nameSingular } = navData
@@ -28,7 +26,6 @@ export const WmsLayers = () => {
     // also add layer_presentation
     await createLayerPresentation({
       wmsLayerId: wmsLayer.wms_layer_id,
-      db,
     })
     navigate({
       to: wmsLayer.wms_layer_id,

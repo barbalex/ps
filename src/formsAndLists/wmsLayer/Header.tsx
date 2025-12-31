@@ -23,7 +23,6 @@ export const Header = ({ autoFocusRef }) => {
     // also add layer_presentation
     await createLayerPresentation({
       wmsLayerId: wmsLayer.wms_layer_id,
-      db,
     })
     navigate({
       to: `../${wmsLayer.wms_layer_id}`,

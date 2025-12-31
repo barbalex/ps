@@ -62,7 +62,6 @@ export const WmsLayer = ({ layer, isLast, isOpen }) => {
       await createLayerPresentation({
         wmsLayerId: layer.wms_layer_id,
         active: true,
-        db,
       })
     }
     // 3. if yes, update it

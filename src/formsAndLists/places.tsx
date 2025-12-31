@@ -55,7 +55,6 @@ export const Places = ({ from }) => {
 
     createLayerPresentation({
       vectorLayerId: newVectorLayer.vector_layer_id,
-      db,
     })
 
     navigate({

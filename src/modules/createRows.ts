@@ -1268,8 +1268,8 @@ export const createLayerPresentation = async ({
   accountId = null,
   active = false,
   transparent = false,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const layer_presentation_id = uuidv7()
   await db.query(
     `

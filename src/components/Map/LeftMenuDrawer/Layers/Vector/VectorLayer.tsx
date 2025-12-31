@@ -67,7 +67,6 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
       await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
-        db,
       })
     } else {
       db.query(

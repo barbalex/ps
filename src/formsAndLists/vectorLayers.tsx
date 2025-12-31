@@ -36,7 +36,6 @@ export const VectorLayers = () => {
     // also add layer_presentation
     await createLayerPresentation({
       vectorLayerId: data.vector_layer_id,
-      db,
     })
     navigate({
       to: data.vector_layer_id,

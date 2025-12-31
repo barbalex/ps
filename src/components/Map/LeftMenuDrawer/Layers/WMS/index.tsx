@@ -60,7 +60,6 @@ export const WmsLayers = () => {
     // also add layer_presentation
     await createLayerPresentation({
       wmsLayerId: wmsLayer.wms_layer_id,
-      db,
     })
     setOpenItems((prev) => [...prev, wmsLayer.wms_layer_id])
   }
