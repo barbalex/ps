@@ -1320,8 +1320,8 @@ export const createWmsService = async ({
   info_formats = null,
   info_format = null,
   default_crs = null,
-  db,
 }) => {
+  const db = store.get(pgliteDbAtom)
   const wms_service_id = uuidv7()
   await db.query(
     `INSERT INTO wms_services (wms_service_id, project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,

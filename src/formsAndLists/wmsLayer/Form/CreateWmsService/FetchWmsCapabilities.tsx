@@ -78,7 +78,6 @@ export const FetchWmsCapabilities = ({
       const wms_service_id = await createWmsService({
         url: urlTrimmed,
         projectId: wmsLayer.project_id,
-        db,
       })
       try {
         await db.query(
