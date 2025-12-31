@@ -3,6 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Loading } from './Loading.tsx'
 import styles from './RadioGroupFromList.module.css'
+import type ListValues from '../../models/public/ListValues.ts'
 
 export const RadioGroupFromList = ({
   name,
@@ -19,7 +20,7 @@ export const RadioGroupFromList = ({
   const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
     list_id,
   ])
-  const listValues = res?.rows ?? []
+  const listValues: ListValues[] = res?.rows ?? []
 
   const onClick = (e) => {
     const valueChoosen = e.target.value
