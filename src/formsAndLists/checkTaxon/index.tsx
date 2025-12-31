@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type CheckTaxa from '../../models/public/CheckTaxa.ts'
 
 import '../../form.css'
 
@@ -24,7 +25,7 @@ export const CheckTaxon = ({ from }) => {
     `SELECT * FROM check_taxa WHERE check_taxon_id = $1`,
     [checkTaxonId],
   )
-  const row = res?.rows?.[0]
+  const row: CheckTaxa = res?.rows?.[0]
 
   // console.log('CheckTaxon', { row, results })
 
@@ -50,12 +51,7 @@ export const CheckTaxon = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Check Taxon"
-        id={checkTaxonId}
-      />
-    )
+    return <NotFound table="Check Taxon" id={checkTaxonId} />
   }
 
   return (
