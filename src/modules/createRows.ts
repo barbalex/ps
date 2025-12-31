@@ -785,11 +785,8 @@ export const createSubprojectTaxon = async ({ subprojectId }) => {
   return subproject_taxon_id
 }
 
-export const createSubprojectReport = async ({
-  db,
-  projectId,
-  subprojectId,
-}) => {
+export const createSubprojectReport = async ({ projectId, subprojectId }) => {
+  const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
