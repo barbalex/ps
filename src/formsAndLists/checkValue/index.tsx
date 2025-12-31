@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type CheckValues from '../../models/public/CheckValues.ts'
 
 import '../../form.css'
 
@@ -24,7 +25,7 @@ export const CheckValue = ({ from }) => {
     `SELECT * FROM check_values WHERE check_value_id = $1`,
     [checkValueId],
   )
-  const row = res?.rows?.[0]
+  const row: CheckValues = res?.rows?.[0]
 
   // console.log('CheckValue', { row, results })
 
@@ -50,20 +51,12 @@ export const CheckValue = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Check Value"
-        id={checkValueId}
-      />
-    )
+    return <NotFound table="Check Value" id={checkValueId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
           label="Unit"
