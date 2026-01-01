@@ -9,6 +9,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Messages from '../../models/public/Messages.ts'
 
 import '../../form.css'
 
@@ -22,7 +23,7 @@ export const Message = () => {
   const res = useLiveQuery(`SELECT * FROM messages WHERE message_id = $1`, [
     messageId,
   ])
-  const row = res?.rows?.[0]
+  const row: Messages | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -46,12 +47,7 @@ export const Message = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Message"
-        id={messageId}
-      />
-    )
+    return <NotFound table="Message" id={messageId} />
   }
 
   return (
