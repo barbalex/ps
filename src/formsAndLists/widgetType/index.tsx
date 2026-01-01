@@ -10,6 +10,8 @@ import { WidgetTypeForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
+import type WidgetTypes from '../../models/public/WidgetTypes.ts'
+
 import '../../form.css'
 
 const from = '/data/widget-types/$widgetTypeId'
@@ -25,7 +27,7 @@ export const WidgetType = () => {
     `SELECT * FROM widget_types WHERE widget_type_id = $1`,
     [widgetTypeId],
   )
-  const row = res?.rows?.[0]
+  const row: WidgetTypes | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -47,23 +49,14 @@ export const WidgetType = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Widget Type"
-        id={widgetTypeId}
-      />
-    )
+    return <NotFound table="Widget Type" id={widgetTypeId} />
   }
 
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
