@@ -58,14 +58,19 @@ export const Header = ({ row, previewRef, from }) => {
     navigate({ to: '..' })
   }
 
-  const hFilterField =
-    actionId ? 'action_id'
-    : checkId ? 'check_id'
-    : placeId2 ? 'place_id'
-    : placeId ? 'place_id'
-    : subprojectId ? 'subproject_id'
-    : projectId ? 'project_id'
-    : undefined
+  const hFilterField = actionId
+    ? 'action_id'
+    : checkId
+      ? 'check_id'
+      : placeId2
+        ? 'place_id'
+        : placeId
+          ? 'place_id'
+          : subprojectId
+            ? 'subproject_id'
+            : projectId
+              ? 'project_id'
+              : undefined
 
   const hFilterValue =
     actionId ??
@@ -84,10 +89,10 @@ export const Header = ({ row, previewRef, from }) => {
       ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
       ORDER BY label`,
     )
-    const rows = res?.rows ?? []
-    const len = rows.length
-    const index = rows.findIndex((p) => p.file_id === fileId)
-    const next = rows[(index + 1) % len]
+    const fileIds: { file_id: string }[] = res?.rows ?? []
+    const len = fileIds.length
+    const index = fileIds.findIndex((p) => p.file_id === fileId)
+    const next = fileIds[(index + 1) % len]
     navigate({
       to: `${isPreview ? '../' : ''}../${next.file_id}${
         isPreview ? '/preview' : ''
@@ -104,10 +109,10 @@ export const Header = ({ row, previewRef, from }) => {
       ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
       ORDER BY label`,
     )
-    const rows = res?.rows ?? []
-    const len = rows.length
-    const index = rows.findIndex((p) => p.file_id === fileId)
-    const previous = rows[(index + len - 1) % len]
+    const fileIds: { file_id: string }[] = res?.rows ?? []
+    const len = fileIds.length
+    const index = fileIds.findIndex((p) => p.file_id === fileId)
+    const previous = fileIds[(index + len - 1) % len]
     navigate({
       to: `${isPreview ? '../' : ''}../${previous.file_id}${
         isPreview ? '/preview' : ''
