@@ -11,12 +11,26 @@ import {
   treeOpenNodesAtom,
 } from '../store.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+}
+
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
 export const useActionsNavData = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -40,9 +54,8 @@ export const useActionsNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'),
         count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
@@ -70,7 +83,7 @@ export const useActionsNavData = ({
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavData = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
