@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { PersonForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Persons from '../../models/public/Persons.ts'
 
 import '../../form.css'
 
@@ -25,7 +26,7 @@ export const Person = () => {
   const res = useLiveQuery(`SELECT * FROM persons WHERE person_id = $1`, [
     personId,
   ])
-  const row = res?.rows?.[0]
+  const row: Persons | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -49,12 +50,7 @@ export const Person = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Person"
-        id={personId}
-      />
-    )
+    return <NotFound table="Person" id={personId} />
   }
 
   return (

@@ -5,10 +5,18 @@ import proj4 from 'proj4'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
+import type OccurrenceImports from '../../../models/public/OccurrenceImports.ts'
+import type Occurrences from '../../../models/public/Occurrences.ts'
+
+type Props = {
+  occurrenceImport: OccurrenceImports
+  setNotification: (msg: string) => void
+}
+
 export const setGeometries = async ({
   occurrenceImport,
   setNotification,
-}) => {
+}: Props) => {
   const db = store.get(pgliteDbAtom)
   const addOperation = store.get(addOperationAtom)
 
@@ -42,7 +50,7 @@ export const setGeometries = async ({
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1 AND geometry IS NULL`,
     [occurrenceImport?.occurrence_import_id],
   )
-  const occurrencesWithoutGeometry = res?.rows
+  const occurrencesWithoutGeometry: Occurrences[] = res?.rows
   // unfortunately, updateMany can only be used to update many with a same value
   for (const o of occurrencesWithoutGeometry) {
     const coordinates = [
