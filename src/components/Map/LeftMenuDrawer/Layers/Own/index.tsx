@@ -7,6 +7,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
 import layerStyles from '../index.module.css'
 import type VectorLayers from '../../../../models/public/VectorLayers.ts'
+import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -49,7 +50,7 @@ export const OwnLayers = () => {
         `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
         [vectorLayerId],
       )
-      const isActive = res?.rows?.[0]?.active
+      const isActive: LayerPresentations['active'] = res?.rows?.[0]?.active
       if (isActive) {
         // if not active, remove this item
         const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
