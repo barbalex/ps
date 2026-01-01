@@ -17,7 +17,64 @@ import {
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
-export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
+type Props = {
+  projectId: string
+  forBreadcrumb?: boolean
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+type NavDataNotForBreadcrumb = {
+  id: string
+  label: string | null
+  subprojects_count_unfiltered?: number
+  subprojects_count_filtered?: number
+  subprojects_name_singular?: string | null
+  subprojects_name_plural?: string | null
+  project_reports_count_unfiltered?: number
+  project_reports_count_filtered?: number
+  persons_count_unfiltered?: number
+  persons_count_filtered?: number
+  wms_layers_count_unfiltered?: number
+  wms_layers_count_filtered?: number
+  vector_layers_count_unfiltered?: number
+  vector_layers_count_filtered?: number
+}
+
+type NavDataNotForBreadcrumbDesigning = {
+  id: string
+  label: string | null
+  subprojects_count_unfiltered?: number
+  subprojects_count_filtered?: number
+  subprojects_name_singular?: string | null
+  subprojects_name_plural?: string | null
+  project_reports_count_unfiltered?: number
+  project_reports_count_filtered?: number
+  persons_count_unfiltered?: number
+  persons_count_filtered?: number
+  wms_layers_count_unfiltered?: number
+  wms_layers_count_filtered?: number
+  vector_layers_count_unfiltered?: number
+  vector_layers_count_filtered?: number
+  project_users_count_unfiltered?: number
+  lists_count_unfiltered?: number
+  lists_count_filtered?: number
+  taxonomies_count_unfiltered?: number
+  units_count_unfiltered?: number
+  units_count_filtered?: number
+  project_crs_count_unfiltered?: number
+  place_levels_count_unfiltered?: number
+  fields_count_unfiltered?: number
+  fields_count_filtered?: number
+}
+
+export const useProjectNavData = ({
+  projectId,
+  forBreadcrumb = false,
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
 
@@ -57,8 +114,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
   const res = useLiveQuery(
     `
       ${
-        !forBreadcrumb ?
-          `
+        !forBreadcrumb
+          ? `
           WITH 
             subprojects_count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
             subprojects_count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${subprojectIsFiltered ? ` AND ${subprojectsFilterString}` : ''} ),
@@ -72,8 +129,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
             vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
             vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''})
             ${
-              designing ?
-                `, project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
+              designing
+                ? `, project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
             lists_count_unfiltered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}'),
             lists_count_filtered AS (SELECT count(*) FROM lists WHERE project_id = '${projectId}' ${listsIsFiltered ? ` AND ${listsFilterString}` : ''}),
             taxonomies_count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
@@ -83,16 +140,16 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
             place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}'),
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}'),
             fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''})`
-              : ''
+                : ''
             }`
-        : ''
+          : ''
       }
       SELECT
         project_id AS id,
         label
         ${
-          !forBreadcrumb ?
-            `,
+          !forBreadcrumb
+            ? `,
             subprojects_count_unfiltered.count AS subprojects_count_unfiltered,
             subprojects_count_filtered.count AS subprojects_count_filtered,
             subprojects_names.subproject_name_singular AS subprojects_name_singular,
@@ -106,8 +163,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
             vector_layers_count_unfiltered.count AS vector_layers_count_unfiltered,
             vector_layers_count_filtered.count AS vector_layers_count_filtered
             ${
-              designing ?
-                `, project_users_count_unfiltered.count AS project_users_count_unfiltered,
+              designing
+                ? `, project_users_count_unfiltered.count AS project_users_count_unfiltered,
             lists_count_unfiltered.count AS lists_count_unfiltered,
             lists_count_filtered.count AS lists_count_filtered,
             taxonomies_count_unfiltered.count AS taxonomies_count_unfiltered,
@@ -117,15 +174,15 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
             place_levels_count_unfiltered.count AS place_levels_count_unfiltered,
             fields_count_unfiltered.count AS fields_count_unfiltered,
             fields_count_filtered.count AS fields_count_filtered`
-              : ''
+                : ''
             }`
-          : ''
+            : ''
         }
       FROM 
         projects
         ${
-          !forBreadcrumb ?
-            `, 
+          !forBreadcrumb
+            ? `, 
             subprojects_count_unfiltered, 
             subprojects_count_filtered, 
             subprojects_names, 
@@ -138,8 +195,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
             vector_layers_count_unfiltered,
             vector_layers_count_filtered
             ${
-              designing ?
-                `, project_users_count_unfiltered,
+              designing
+                ? `, project_users_count_unfiltered,
             lists_count_unfiltered,
             lists_count_filtered,
             taxonomies_count_unfiltered,
@@ -149,14 +206,17 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
             place_levels_count_unfiltered,
             fields_count_unfiltered,
             fields_count_filtered`
-              : ''
+                : ''
             }`
-          : ''
+            : ''
         }
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
-  const nav = res?.rows?.[0]
+  const nav:
+    | NavData
+    | NavDataNotForBreadcrumb
+    | NavDataNotForBreadcrumbDesigning = res?.rows?.[0]
 
   const parentArray = ['data', 'projects']
   const parentUrl = `/${parentArray.join('/')}`
@@ -181,9 +241,8 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
     ownUrl,
     label,
     notFound,
-    navs:
-      forBreadcrumb ?
-        []
+    navs: forBreadcrumb
+      ? []
       : [
           { id: 'project', label: 'Project' },
           {
@@ -236,72 +295,72 @@ export const useProjectNavData = ({ projectId, forBreadcrumb = false }) => {
               namePlural: 'Vector Layers',
             }),
           },
-          ...(designing ?
-            [
-              {
-                id: 'users',
-                label: buildNavLabel({
-                  loading,
-                  countFiltered: nav?.project_users_count_unfiltered ?? 0,
-                  namePlural: 'Users',
-                }),
-              },
-              {
-                id: 'lists',
-                label: buildNavLabel({
-                  loading,
-                  isFiltered: listsIsFiltered,
-                  countFiltered: nav?.lists_count_filtered ?? 0,
-                  countUnfiltered: nav?.lists_count_unfiltered ?? 0,
-                  namePlural: 'Lists',
-                }),
-              },
-              {
-                id: 'taxonomies',
-                label: buildNavLabel({
-                  loading,
-                  countFiltered: nav?.taxonomies_count_unfiltered ?? 0,
-                  namePlural: 'Taxonomies',
-                }),
-              },
-              {
-                id: 'units',
-                label: buildNavLabel({
-                  loading,
-                  isFiltered: unitsIsFiltered,
-                  countFiltered: nav?.units_count_filtered ?? 0,
-                  countUnfiltered: nav?.units_count_unfiltered ?? 0,
-                  namePlural: 'Units',
-                }),
-              },
-              {
-                id: 'crs',
-                label: buildNavLabel({
-                  loading,
-                  countFiltered: nav?.project_crs_count_unfiltered ?? 0,
-                  namePlural: 'CRS',
-                }),
-              },
-              {
-                id: 'place-levels',
-                label: buildNavLabel({
-                  loading,
-                  countFiltered: nav?.place_levels_count_unfiltered ?? 0,
-                  namePlural: 'Place Levels',
-                }),
-              },
-              {
-                id: 'fields',
-                label: buildNavLabel({
-                  loading,
-                  isFiltered: fieldsIsFiltered,
-                  countFiltered: nav?.fields_count_filtered ?? 0,
-                  countUnfiltered: nav?.fields_count_unfiltered ?? 0,
-                  namePlural: 'Fields',
-                }),
-              },
-            ]
-          : []),
+          ...(designing
+            ? [
+                {
+                  id: 'users',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.project_users_count_unfiltered ?? 0,
+                    namePlural: 'Users',
+                  }),
+                },
+                {
+                  id: 'lists',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: listsIsFiltered,
+                    countFiltered: nav?.lists_count_filtered ?? 0,
+                    countUnfiltered: nav?.lists_count_unfiltered ?? 0,
+                    namePlural: 'Lists',
+                  }),
+                },
+                {
+                  id: 'taxonomies',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.taxonomies_count_unfiltered ?? 0,
+                    namePlural: 'Taxonomies',
+                  }),
+                },
+                {
+                  id: 'units',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: unitsIsFiltered,
+                    countFiltered: nav?.units_count_filtered ?? 0,
+                    countUnfiltered: nav?.units_count_unfiltered ?? 0,
+                    namePlural: 'Units',
+                  }),
+                },
+                {
+                  id: 'crs',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.project_crs_count_unfiltered ?? 0,
+                    namePlural: 'CRS',
+                  }),
+                },
+                {
+                  id: 'place-levels',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.place_levels_count_unfiltered ?? 0,
+                    namePlural: 'Place Levels',
+                  }),
+                },
+                {
+                  id: 'fields',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: fieldsIsFiltered,
+                    countFiltered: nav?.fields_count_filtered ?? 0,
+                    countUnfiltered: nav?.fields_count_unfiltered ?? 0,
+                    namePlural: 'Fields',
+                  }),
+                },
+              ]
+            : []),
         ],
   }
 
