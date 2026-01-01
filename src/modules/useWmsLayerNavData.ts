@@ -5,7 +5,17 @@ import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
-export const useWmsLayerNavData = ({ projectId, wmsLayerId }) => {
+type Props = {
+  projectId: string
+  wmsLayerId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+export const useWmsLayerNavData = ({ projectId, wmsLayerId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -23,7 +33,7 @@ export const useWmsLayerNavData = ({ projectId, wmsLayerId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const parentArray = ['data', 'projects', projectId, 'wms-layers']
   const ownArray = [...parentArray, wmsLayerId]
