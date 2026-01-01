@@ -24,6 +24,7 @@ import {
   droppableLayerAtom,
   addOperationAtom,
 } from '../../store.ts'
+import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
 // type props
 
@@ -72,7 +73,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
       `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
       [row.vector_layer_id],
     )
-    const layerPresentation = res?.rows?.[0]
+    const layerPresentation: LayerPresentations | undefined = res?.rows?.[0]
     if (!layerPresentation.active) {
       db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
