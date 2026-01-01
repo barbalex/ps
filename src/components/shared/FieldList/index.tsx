@@ -39,8 +39,8 @@ export const FieldList = ({
       ORDER BY table_name, label`,
     [projectId, fieldsTable],
   )
-  const fields = res?.rows ?? []
-  const options = fields.map(({ name }) => name)
+  const fieldNames: { name: string }[] = res?.rows ?? []
+  const options = fieldNames.map(({ name }) => name)
   const unusedOptions = options.filter((o) => !valueArray.includes(o))
 
   const removeItem = async (e, { value }) => {
