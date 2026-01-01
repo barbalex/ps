@@ -6,8 +6,14 @@ import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { setGeometries } from './setGeometries.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
 import styles from './Set.module.css'
+import type OccurrenceImports from '../../../models/public/OccurrenceImports.ts'
+import type Occurrences from '../../../models/public/Occurrences.ts'
 
-export const Set = ({ occurrenceImport }) => {
+interface Props {
+  occurrenceImport: OccurrenceImports
+}
+
+export const Set = ({ occurrenceImport }: Props) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
 
@@ -16,7 +22,7 @@ export const Set = ({ occurrenceImport }) => {
     [occurrenceImport?.occurrence_import_id],
     'occurrence_id',
   )
-  const occurrences = res?.rows ?? []
+  const occurrences: Occurrences[] = res?.rows ?? []
 
   const occurrencesWithoutGeometry = occurrences.filter((o) => !o.geometry)
 
