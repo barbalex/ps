@@ -4,6 +4,13 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
+import type Accounts from '../models/public/Accounts.ts'
+
+// create type from Accounts with account_id as id and label only
+type AccountNavData = {
+  id: Accounts['account_id']
+  label: Accounts['label']
+}
 
 const parentArray = ['data', 'accounts']
 const parentUrl = `/${parentArray.join('/')}`
@@ -25,7 +32,7 @@ export const useAccountNavData = ({ accountId }) => {
   )
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: AccountNavData | undefined = res?.rows?.[0]
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
