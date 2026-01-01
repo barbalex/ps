@@ -9,6 +9,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Users from '../../models/public/Users.ts'
 
 import '../../form.css'
 
@@ -22,7 +23,7 @@ export const User = () => {
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM users WHERE user_id = $1`, [userId])
-  const row = res?.rows?.[0]
+  const row: Users | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -43,12 +44,7 @@ export const User = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="User"
-        id={userId}
-      />
-    )
+    return <NotFound table="User" id={userId} />
   }
 
   return (
