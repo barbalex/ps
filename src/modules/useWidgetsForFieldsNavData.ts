@@ -12,6 +12,18 @@ const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'widgets-for-fields']
 const ownUrl = `/${ownArray.join('/')}`
 
+type NavDataOpen = {
+  id: string
+  label: string
+  count_unfiltered: number
+  count_filtered: number
+}
+
+type NavDataClosed = {
+  count_unfiltered: number
+  count_filtered: number
+}
+
 export const useWidgetsForFieldsNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -23,9 +35,8 @@ export const useWidgetsForFieldsNavData = () => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
         count_filtered AS (SELECT count(*) FROM widgets_for_fields ${isFiltered ? ` WHERE ${filterString}` : ''})
@@ -51,7 +62,7 @@ export const useWidgetsForFieldsNavData = () => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 

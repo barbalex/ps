@@ -7,7 +7,23 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { vectorLayersFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
-export const useVectorLayersNavData = ({ projectId }) => {
+type Props = {
+  projectId: string
+}
+
+type NavDataOpen = {
+  id: string
+  label: string
+  count_unfiltered: number
+  count_filtered: number
+}
+
+type NavDataClosed = {
+  count_unfiltered: number
+  count_filtered: number
+}
+
+export const useVectorLayersNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -20,9 +36,8 @@ export const useVectorLayersNavData = ({ projectId }) => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
@@ -50,7 +65,7 @@ export const useVectorLayersNavData = ({ projectId }) => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
