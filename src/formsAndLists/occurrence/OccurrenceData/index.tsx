@@ -13,6 +13,7 @@ import { Field } from './Field.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { occurrenceFieldsSortedAtom } from '../../../store.ts'
 import styles from './index.module.css'
+import type Occurrences from '../../../models/public/Occurrences.ts'
 
 export const OccurenceData = ({ from }) => {
   const [occurrenceFieldsSorted, setOccurrenceFieldsSorted] = useAtom(
@@ -45,7 +46,7 @@ export const OccurenceData = ({ from }) => {
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrenceId],
   )
-  const occurrence = res?.rows?.[0]
+  const occurrence: Occurrences | undefined = res?.rows?.[0]
 
   const rowData = occurrence?.data ?? {}
   const fields = Object.entries(rowData)
