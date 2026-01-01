@@ -5,6 +5,21 @@ import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+  placeId2?: string
+  occurrenceId: string
+  isToAssess?: boolean
+  isNotToAssign?: boolean
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
 export const useOccurrenceNavData = ({
   projectId,
   subprojectId,
@@ -13,7 +28,7 @@ export const useOccurrenceNavData = ({
   occurrenceId,
   isToAssess = false,
   isNotToAssign = false,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -29,7 +44,7 @@ export const useOccurrenceNavData = ({
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
   const parentArray = [
     'data',
     'projects',
@@ -38,9 +53,11 @@ export const useOccurrenceNavData = ({
     subprojectId,
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
-    ...(isToAssess ? ['occurrences-to-assess']
-    : isNotToAssign ? ['occurrences-not-to-assign']
-    : ['occurrences']),
+    ...(isToAssess
+      ? ['occurrences-to-assess']
+      : isNotToAssign
+        ? ['occurrences-not-to-assign']
+        : ['occurrences']),
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, occurrenceId]
@@ -50,10 +67,11 @@ export const useOccurrenceNavData = ({
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
-  const nameSingular =
-    isToAssess ? ' Occurrence To Assess'
-    : isNotToAssign ? 'Occurrence Not To Assign'
-    : 'Occurrence Assigned'
+  const nameSingular = isToAssess
+    ? ' Occurrence To Assess'
+    : isNotToAssign
+      ? 'Occurrence Not To Assign'
+      : 'Occurrence Assigned'
 
   const notFound = !!res && !nav
   const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
