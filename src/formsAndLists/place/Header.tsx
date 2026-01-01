@@ -174,9 +174,10 @@ export const Header = ({
     })
 
   const onClickZoomTo = async () => {
-    const res = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
-      placeId2 ?? placeId,
-    ])
+    const res = await db.query(
+      `SELECT geometry FROM places WHERE place_id = $1`,
+      [placeId2 ?? placeId],
+    )
     const place = res?.rows?.[0]
     const geometry = place?.geometry
     if (!geometry) {

@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Places from '../../models/public/Places.ts'
 
 import '../../form.css'
 import styles from './index.module.css'
@@ -30,7 +31,7 @@ export const Place = ({ from }) => {
     WHERE place_id = $1`,
     [placeId2 ?? placeId],
   )
-  const row = res?.rows?.[0]
+  const row: Places | undefined = res?.rows?.[0]
 
   const nameRes = useLiveQuery(
     `
