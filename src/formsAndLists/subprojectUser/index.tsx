@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type SubprojectUsers from '../../models/public/SubprojectUsers.ts'
 
 const userRoles = ['manager', 'editor', 'reader']
 
@@ -30,7 +31,7 @@ export const SubprojectUser = () => {
     `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
     [subprojectUserId],
   )
-  const row = res?.rows?.[0]
+  const row: SubprojectUsers | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -54,12 +55,7 @@ export const SubprojectUser = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="User"
-        id={subprojectUserId}
-      />
-    )
+    return <NotFound table="User" id={subprojectUserId} />
   }
 
   return (
