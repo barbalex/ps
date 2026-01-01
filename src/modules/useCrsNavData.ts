@@ -8,7 +8,16 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data', 'crs']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useCrsNavData = ({ crsId }) => {
+type Props = {
+  crsId: string
+}
+
+type NavData = {
+  id: string
+  label: string
+}
+
+export const useCrsNavData = ({ crsId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -24,7 +33,7 @@ export const useCrsNavData = ({ crsId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = [...parentArray, nav?.id]
