@@ -41,7 +41,7 @@ export const VectorLayers = () => {
       )
     ORDER BY label`
   const res = useLiveQuery(sql, [projectId])
-  const vectors = res?.rows ?? []
+  const vectorLayerIds: { vector_layer_id: string }[] = res?.rows ?? []
 
   const addRow = async () => {
     const vectorLayer = await createVectorLayer({ projectId, type: 'wfs' })
@@ -104,12 +104,12 @@ export const VectorLayers = () => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {vectors.length ? (
-            vectors.map((l, index) => (
+          {vectorLayerIds.length ? (
+            vectorLayerIds.map((l, index) => (
               <VectorLayer
                 layer={l}
                 key={l.vector_layer_id}
-                isLast={index === vectors.length - 1}
+                isLast={index === vectorLayerIds.length - 1}
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
