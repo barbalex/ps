@@ -23,7 +23,11 @@ export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
       ORDER BY label`,
     [occurrenceImportId, subprojectId],
   )
-  const occurrenceImportOptions = res?.rows ?? []
+  const occurrenceImportOptions: {
+    occurrence_import_id: string
+    label: string
+    value: string
+  }[] = res?.rows ?? []
 
   // TODO: move previous import operation to a separate component
   return (
@@ -52,10 +56,7 @@ export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
             onChange={onChange}
             validationMessage="Have occurrences been previously imported from the same source? If so: choose the previous import. If not: leave empty."
           />
-          <PreviousImportOperation
-            onChange={onChange}
-            row={occurrenceImport}
-          />
+          <PreviousImportOperation onChange={onChange} row={occurrenceImport} />
         </>
       )}
     </>
