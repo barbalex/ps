@@ -21,7 +21,7 @@ export const LayerPresentationForm = ({ layer }) => {
     [layer.layer_presentation_id],
   )
 
-  const row: LayerPresentations = res?.rows?.[0]
+  const row: LayerPresentations | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     if (!row?.layer_presentation_id) {

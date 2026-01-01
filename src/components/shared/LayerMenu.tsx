@@ -28,7 +28,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     WHERE vl.project_id = $1 AND vl.type = $2`,
     [projectId, `${table}${level}`],
   )
-  const layerPresentation: LayerPresentations = res?.rows?.[0]
+  const layerPresentation: LayerPresentations | undefined = res?.rows?.[0]
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = () => {

@@ -7,7 +7,7 @@ export const WmsLegend = ({ layer }) => {
   const res = useLiveQuery(`SELECT * FROM wms_service_layers WHERE name = $1`, [
     layer.wms_service_layer_name,
   ])
-  const wmsServiceLayer: WmsServiceLayers = res?.rows?.[0]
+  const wmsServiceLayer: WmsServiceLayers | undefined = res?.rows?.[0]
 
   if (wmsServiceLayer?.legend_image) {
     return (
