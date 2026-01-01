@@ -19,6 +19,7 @@ import {
 } from '../../../../shared/DragAndDrop/index.tsx'
 import layersStyles from '../index.module.css'
 import styles from './index.module.css'
+import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -208,7 +209,7 @@ export const ActiveLayers = () => {
         `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
         [layerPresentationId],
       )
-      const isActive = res?.rows?.[0]?.active
+      const isActive: LayerPresentations['active'] = res?.rows?.[0]?.active
       if (!isActive) {
         // if not active, remove this item
         const newOpenItems = openItems.filter(
