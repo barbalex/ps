@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { GoalForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Goals from '../../models/public/Goals.ts'
 
 import '../../form.css'
 
@@ -20,7 +21,7 @@ export const Goal = ({ from }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM goals WHERE goal_id = $1`, [goalId])
-  const row = res?.rows?.[0]
+  const row: Goals | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -44,20 +45,12 @@ export const Goal = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Goal"
-        id={goalId}
-      />
-    )
+    return <NotFound table="Goal" id={goalId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <Form
           onChange={onChange}
