@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { SubprojectReportForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type SubprojectReports from '../../models/public/SubprojectReports.ts'
 
 import '../../form.css'
 
@@ -23,7 +24,7 @@ export const SubprojectReport = ({ from }) => {
     `SELECT * FROM subproject_reports WHERE subproject_report_id = $1`,
     [subprojectReportId],
   )
-  const row = res?.rows?.[0]
+  const row: SubprojectReports | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -47,20 +48,12 @@ export const SubprojectReport = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Report"
-        id={subprojectReportId}
-      />
-    )
+    return <NotFound table="Report" id={subprojectReportId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <Form
           onChange={onChange}
