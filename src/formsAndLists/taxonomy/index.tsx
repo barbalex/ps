@@ -12,6 +12,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Type } from './Type.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Taxonomies from '../../models/public/Taxonomies.ts'
 
 import '../../form.css'
 
@@ -25,7 +26,7 @@ export const Taxonomy = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM taxonomies WHERE taxonomy_id = $1`, [
     taxonomyId,
   ])
-  const row = res?.rows?.[0]
+  const row: Taxonomies | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -49,20 +50,12 @@ export const Taxonomy = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Taxonomy"
-        id={taxonomyId}
-      />
-    )
+    return <NotFound table="Taxonomy" id={taxonomyId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <TextField
           label="Name"
@@ -72,10 +65,7 @@ export const Taxonomy = ({ from }) => {
           autoFocus
           ref={autoFocusRef}
         />
-        <Type
-          row={row}
-          onChange={onChange}
-        />
+        <Type row={row} onChange={onChange} />
         <TextField
           label="Url"
           name="url"
