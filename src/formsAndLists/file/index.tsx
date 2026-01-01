@@ -16,6 +16,9 @@ import type Files from '../../models/public/Files.ts'
 
 import '../../form.css'
 
+// create type from Files with added file_id as id
+type File = Files & { id: Files['file_id'] }
+
 export const File = ({ from }) => {
   const { fileId } = useParams({ from })
   const db = usePGlite()
@@ -28,7 +31,7 @@ export const File = ({ from }) => {
     WHERE file_id = $1`,
     [fileId],
   )
-  const row: Files | undefined = res?.rows?.[0]
+  const row: File | undefined = res?.rows?.[0]
 
   const onChange = (e, dataIn) => {
     const { name, value } = getValueFromChange(e, dataIn)
