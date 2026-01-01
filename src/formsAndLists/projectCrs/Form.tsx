@@ -10,9 +10,16 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+
 import type ProjectCrs from '../../models/public/ProjectCrs.ts'
+import type Projects from '../../models/public/Projects.ts'
 
 import '../../form.css'
+
+// create type from ProjectCrs plus project_map_presentation_crs from Projects
+type ProjectCrsWithPresentation = ProjectCrs & {
+  project_map_presentation_crs: Projects['map_presentation_crs']
+}
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
@@ -32,7 +39,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       WHERE project_crs_id = $1`,
     [projectCrsId],
   )
-  const row: ProjectCrs | undefined = res?.rows?.[0]
+  const row: ProjectCrsWithPresentation | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
