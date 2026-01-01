@@ -16,12 +16,38 @@ import {
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+  placeId2?: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+  name_singular: string | null
+  child_name_plural: string | null
+  places_count_unfiltered: number
+  places_count_filtered: number
+  checks_count_unfiltered: number
+  checks_count_filtered: number
+  actions_count_unfiltered: number
+  actions_count_filtered: number
+  place_reports_count_unfiltered: number
+  place_reports_count_filtered: number
+  occurrences_count: number
+  place_users_count: number
+  files_count_unfiltered: number
+  files_count_filtered: number
+}
+
 export const usePlaceNavData = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const [placesFilter] = useAtom(places1FilterAtom)
@@ -108,7 +134,7 @@ export const usePlaceNavData = ({
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
   const nameSingular = nav?.name_singular ?? 'Place'
   const childNamePlural = nav?.child_name_plural ?? 'Places'
 
@@ -146,20 +172,20 @@ export const usePlaceNavData = ({
     nameSingular,
     navs: [
       { id: 'place', label: nameSingular },
-      ...(!placeId2 ?
-        [
-          {
-            id: 'places',
-            label: buildNavLabel({
-              loading,
-              isFiltered: placesIsFiltered,
-              countFiltered: nav?.places_count_filtered ?? 0,
-              countUnfiltered: nav?.places_count_unfiltered ?? 0,
-              namePlural: childNamePlural,
-            }),
-          },
-        ]
-      : []),
+      ...(!placeId2
+        ? [
+            {
+              id: 'places',
+              label: buildNavLabel({
+                loading,
+                isFiltered: placesIsFiltered,
+                countFiltered: nav?.places_count_filtered ?? 0,
+                countUnfiltered: nav?.places_count_unfiltered ?? 0,
+                namePlural: childNamePlural,
+              }),
+            },
+          ]
+        : []),
       {
         id: 'checks',
         label: buildNavLabel({
