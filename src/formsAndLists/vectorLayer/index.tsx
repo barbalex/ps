@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { VectorLayerForm } from './Form/index.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type VectorLayers from '../../models/public/VectorLayers.ts'
 
 import '../../form.css'
 
@@ -24,7 +25,7 @@ export const VectorLayer = ({ from }) => {
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )
-  const row = res?.rows?.[0]
+  const row: VectorLayers | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -63,21 +64,12 @@ export const VectorLayer = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Vector Layer"
-        id={vectorLayerId}
-      />
-    )
+    return <NotFound table="Vector Layer" id={vectorLayerId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        row={row}
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header row={row} autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <VectorLayerForm
           onChange={onChange}
