@@ -9,7 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { ProjectReportForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import type ProjectReport from '../../models/public/ProjectReport.ts'
+import type ProjectReports from '../../models/public/ProjectReports.ts'
 
 import '../../form.css'
 
@@ -25,7 +25,7 @@ export const ProjectReport = () => {
     `SELECT * FROM project_reports WHERE project_report_id = $1`,
     [projectReportId],
   )
-  const row: ProjectReport | undefined = res?.rows?.[0]
+  const row: ProjectReports | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
