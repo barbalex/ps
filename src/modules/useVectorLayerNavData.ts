@@ -6,7 +6,18 @@ import { isEqual } from 'es-toolkit'
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
-export const useVectorLayerNavData = ({ projectId, vectorLayerId }) => {
+type Props = {
+  projectId: string
+  vectorLayerId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+  vector_layer_displays_count_unfiltered: number
+}
+
+export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -27,7 +38,7 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const parentArray = ['data', 'projects', projectId, 'vector-layers']
   const parentUrl = `/${parentArray.join('/')}`
