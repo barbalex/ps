@@ -8,7 +8,16 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data', 'messages']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useMessageNavData = ({ messageId }) => {
+type Props = {
+  messageId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+export const useMessageNavData = ({ messageId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -22,7 +31,7 @@ export const useMessageNavData = ({ messageId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const ownArray = [...parentArray, messageId]
   const ownUrl = `/${ownArray.join('/')}`
