@@ -8,7 +8,16 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data', 'widget-types']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useWidgetTypeNavData = ({ widgetTypeId }) => {
+type Props = {
+  widgetTypeId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+export const useWidgetTypeNavData = ({ widgetTypeId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -25,7 +34,7 @@ export const useWidgetTypeNavData = ({ widgetTypeId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const ownArray = [...parentArray, widgetTypeId]
   const ownUrl = `/${ownArray.join('/')}`
