@@ -12,6 +12,7 @@ import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLay
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type PlaceLevels from '../../models/public/PlaceLevels.ts'
 
 import '../../form.css'
 
@@ -28,7 +29,7 @@ export const PlaceLevel = () => {
     `SELECT * FROM place_levels WHERE place_level_id = $1`,
     [placeLevelId],
   )
-  const row = res?.rows?.[0]
+  const row: PlaceLevels | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
