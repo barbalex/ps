@@ -31,7 +31,7 @@ export const FetchWfsCapabilities = ({
     `SELECT count(*) FROM wfs_service_layers WHERE wfs_service_id = $1`,
     [vectorLayer.wfs_service_id],
   )
-  const wfsServiceLayersCount = res?.rows?.[0]?.count ?? 0
+  const wfsServiceLayersCount: number = res?.rows?.[0]?.count ?? 0
 
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
