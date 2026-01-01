@@ -1,6 +1,8 @@
 import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
+import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
+
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   vectorLayer,
 }) => {
@@ -173,7 +175,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
         `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
         [vectorLayer.vector_layer_id, listValue.value],
       )
-      const existingVectorLayerDisplay = res?.rows?.[0]
+      const existingVectorLayerDisplay: VectorLayerDisplays | undefined =
+        res?.rows?.[0]
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
@@ -273,7 +276,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
       [vectorLayer.vector_layer_id, value ?? null],
     )
-    const existingVectorLayerDisplay = res?.rows?.[0]
+    const existingVectorLayerDisplay: VectorLayerDisplays | undefined =
+      res?.rows?.[0]
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 
