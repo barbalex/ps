@@ -9,6 +9,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type SubprojectTaxa from '../../models/public/SubprojectTaxa.ts'
 
 import '../../form.css'
 
@@ -28,7 +29,7 @@ export const SubprojectTaxon = ({ from }) => {
     [subprojectTaxonId],
     'subproject_taxon_id',
   )
-  const row = res?.rows?.[0]
+  const row: SubprojectTaxa | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -52,12 +53,7 @@ export const SubprojectTaxon = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Taxon"
-        id={subprojectTaxonId}
-      />
-    )
+    return <NotFound table="Taxon" id={subprojectTaxonId} />
   }
 
   return (
