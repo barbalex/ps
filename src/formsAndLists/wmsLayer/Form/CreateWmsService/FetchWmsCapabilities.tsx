@@ -31,7 +31,7 @@ export const FetchWmsCapabilities = ({
     `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,
     [wmsLayer.wms_service_id],
   )
-  const wmsServiceLayersCount = res?.rows?.[0]?.count
+  const wmsServiceLayersCount: number = res?.rows?.[0]?.count ?? 0
 
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
