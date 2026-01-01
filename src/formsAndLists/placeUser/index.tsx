@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type PlaceUsers from '../../models/public/PlaceUsers.ts'
 
 const userRoles = ['manager', 'editor', 'reader']
 
@@ -26,7 +27,7 @@ export const PlaceUser = ({ from }) => {
     `SELECT * FROM place_users WHERE place_user_id = $1`,
     [placeUserId],
   )
-  const row = res?.rows?.[0]
+  const row: PlaceUsers | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -50,20 +51,12 @@ export const PlaceUser = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="User"
-        id={placeUserId}
-      />
-    )
+    return <NotFound table="User" id={placeUserId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
           label="User"

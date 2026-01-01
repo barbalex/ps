@@ -7,6 +7,7 @@ import { useSetAtom } from 'jotai'
 
 import { Options } from './options.tsx'
 import { addOperationAtom } from '../../../store.ts'
+import type Crs from '../../../models/public/Crs.ts'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
@@ -24,7 +25,7 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
       : 'SELECT * FROM crs'
     const vals = filter ? [`%${filter}%`] : []
     const res = await db.query(sql, vals)
-    const crs = res?.rows
+    const crs: Crs[] = res?.rows
     setCrs(crs)
   }, [db, filter])
 
