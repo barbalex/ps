@@ -30,7 +30,10 @@ export const Header = ({
     `SELECT vector_layer_display_id, vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
   )
-  const vectorLayerDisplays = res?.rows ?? []
+  const vectorLayerDisplays: {
+    vector_layer_display_id: string
+    vector_layer_id: string
+  }[] = res?.rows ?? []
   const vectorLayerId = vectorLayerDisplays?.[0]?.vector_layer_id
 
   const navigate = useNavigate()
