@@ -7,6 +7,29 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
+type Props = {
+  projectId?: string
+  subprojectId?: string
+  placeId?: string
+  placeId2?: string
+  actionId?: string
+  checkId?: string
+}
+
+type NavDataOpen = {
+  id: string
+  label: string
+  url: string
+  mimetype: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
+type NavDataClosed = {
+  count_unfiltered: number
+  count_filtered: number
+}[]
+
 export const useFilesNavData = ({
   projectId,
   subprojectId,
@@ -14,7 +37,7 @@ export const useFilesNavData = ({
   placeId2,
   actionId,
   checkId,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -31,14 +54,19 @@ export const useFilesNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const hKey =
-    actionId ? 'action_id'
-    : checkId ? 'check_id'
-    : placeId2 ? 'place_id'
-    : placeId ? 'place_id'
-    : subprojectId ? 'subproject_id'
-    : projectId ? 'project_id'
-    : undefined
+  const hKey = actionId
+    ? 'action_id'
+    : checkId
+      ? 'check_id'
+      : placeId2
+        ? 'place_id'
+        : placeId
+          ? 'place_id'
+          : subprojectId
+            ? 'subproject_id'
+            : projectId
+              ? 'project_id'
+              : undefined
 
   const hValue =
     actionId ??
@@ -53,9 +81,8 @@ export const useFilesNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}),
         count_filtered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'} ${isFiltered ? ` AND ${filterString}` : ''})
@@ -84,7 +111,7 @@ export const useFilesNavData = ({
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 

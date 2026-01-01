@@ -12,14 +12,19 @@ const ownArray = [...parentArray, 'crs']
 const ownUrl = `/${ownArray.join('/')}`
 const limit = 100
 
+type NavData = {
+  id: string
+  label: string
+  count: number
+}[]
+
 export const useCrssNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH count AS (SELECT COUNT(crs_id) as count FROM crs)
       SELECT
         crs_id as id,
@@ -34,7 +39,7 @@ export const useCrssNavData = () => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavData = res?.rows ?? []
   const count = navs[0]?.count ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
