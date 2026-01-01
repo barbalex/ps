@@ -10,7 +10,15 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
+import type Subprojects from '../../models/public/Subprojects.ts'
+import type Projects from '../../models/public/Projects.ts'
+
 import '../../form.css'
+
+// create type combining Subprojects and project subproject_name_singular from Projects
+type SubprojectWithProjectInfo = Subprojects & {
+  subproject_name_singular: Projects['subproject_name_singular']
+}
 
 export const Subproject = ({ from }) => {
   const { subprojectId } = useParams({ from })
@@ -29,7 +37,7 @@ export const Subproject = ({ from }) => {
     WHERE subproject_id = $1`,
     [subprojectId],
   )
-  const row = res?.rows?.[0]
+  const row: SubprojectWithProjectInfo | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -53,12 +61,7 @@ export const Subproject = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Subproject"
-        id={subprojectId}
-      />
-    )
+    return <NotFound table="Subproject" id={subprojectId} />
   }
 
   console.log('Subproject, row:', row)
@@ -70,11 +73,7 @@ export const Subproject = ({ from }) => {
         nameSingular={row.subproject_name_singular}
         from={from}
       />
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
+      <div className="form-container" role="tabpanel" aria-labelledby="form">
         <Form
           onChange={onChange}
           row={row}
