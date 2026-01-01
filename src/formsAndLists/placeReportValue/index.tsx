@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type PlaceReportValues from '../../models/public/PlaceReportValues.ts'
 
 import '../../form.css'
 
@@ -24,7 +25,7 @@ export const PlaceReportValue = ({ from }) => {
     `SELECT * FROM place_report_values WHERE place_report_value_id = $1`,
     [placeReportValueId],
   )
-  const row = res?.rows?.[0]
+  const row: PlaceReportValues | undefined = res?.rows?.[0]
 
   // console.log('PlaceReportValue, row:', row)
 
@@ -50,20 +51,12 @@ export const PlaceReportValue = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Report Value"
-        id={placeReportValueId}
-      />
-    )
+    return <NotFound table="Report Value" id={placeReportValueId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
           label="Unit"
