@@ -10,6 +10,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type ProjectCrs from '../../models/public/ProjectCrs.ts'
 
 import '../../form.css'
 
@@ -31,7 +32,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       WHERE project_crs_id = $1`,
     [projectCrsId],
   )
-  const row = res?.rows?.[0]
+  const row: ProjectCrs | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -79,20 +80,12 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Project CRS"
-        id={projectCrsId}
-      />
-    )
+    return <NotFound table="Project CRS" id={projectCrsId} />
   }
 
   return (
     <>
-      <ComboboxFilteringOptions
-        autoFocus={!row.code}
-        ref={autoFocusRef}
-      />
+      <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
       <TextField
         label="Code"
         name="code"
