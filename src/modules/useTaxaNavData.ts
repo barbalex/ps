@@ -6,7 +6,17 @@ import { isEqual } from 'es-toolkit'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
-export const useTaxaNavData = ({ projectId, taxonomyId }) => {
+type Props = {
+  projectId: string
+  taxonomyId: string
+}
+
+type NavData = {
+  id: string
+  label: string
+}
+
+export const useTaxaNavData = ({ projectId, taxonomyId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -23,7 +33,7 @@ export const useTaxaNavData = ({ projectId, taxonomyId }) => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavData[] = res?.rows ?? []
   const parentArray = ['data', 'projects', projectId, 'taxonomies', taxonomyId]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'taxa']
