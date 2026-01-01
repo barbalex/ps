@@ -6,7 +6,20 @@ import { useSetAtom } from 'jotai'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 import { addOperationAtom } from '../../../store.ts'
 
-export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
+import type WmsServiceLayers from '../../../models/public/WmsServiceLayers.ts'
+import type WmsLayers from '../../../models/public/WmsLayers.ts'
+
+type Props = {
+  wmsLayer: WmsLayers
+  validationMessage?: string
+}
+
+type ResData = Pick<
+  WmsServiceLayers,
+  'wms_service_layer_id' | 'name' | 'label'
+>[]
+
+export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -24,7 +37,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
       label`,
     [wmsLayer.wms_service_id],
   )
-  const wmsServiceLayers = res?.rows ?? []
+  const wmsServiceLayers: ResData = res?.rows ?? []
 
   const options = wmsServiceLayers.map(({ name, label }) => ({
     value: name,
@@ -142,10 +155,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }) => {
       >
         {options.map((option) => {
           return (
-            <Option
-              key={option.value}
-              value={option.value}
-            >
+            <Option key={option.value} value={option.value}>
               {option.label}
             </Option>
           )
