@@ -126,10 +126,12 @@ export const Header = ({
       `,
       [subprojectId],
     )
-    const places = res?.rows ?? []
-    const len = places.length
-    const index = places.findIndex((p) => p.place_id === (placeId2 ?? placeId))
-    const next = places[(index + 1) % len]
+    const placeIds: { place_id: string }[] = res?.rows ?? []
+    const len = placeIds.length
+    const index = placeIds.findIndex(
+      (p) => p.place_id === (placeId2 ?? placeId),
+    )
+    const next = placeIds[(index + 1) % len]
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: isForm ? `../../${next.place_id}/place` : `../${next.place_id}`,
@@ -152,10 +154,12 @@ export const Header = ({
       `,
       [subprojectId],
     )
-    const places = res?.rows ?? []
-    const len = places.length
-    const index = places.findIndex((p) => p.place_id === (placeId2 ?? placeId))
-    const previous = places[(index + len - 1) % len]
+    const placeIds: { place_id: string }[] = res?.rows ?? []
+    const len = placeIds.length
+    const index = placeIds.findIndex(
+      (p) => p.place_id === (placeId2 ?? placeId),
+    )
+    const previous = placeIds[(index + len - 1) % len]
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: isForm
