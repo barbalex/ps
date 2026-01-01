@@ -7,7 +7,24 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { goalsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
-export const useGoalsNavData = ({ projectId, subprojectId }) => {
+type Props = {
+  projectId: string
+  subprojectId: string
+}
+
+type NavDataOpen = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
+type NavDataClosed = {
+  count_unfiltered: number
+  count_filtered: number
+}[]
+
+export const useGoalsNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -26,9 +43,8 @@ export const useGoalsNavData = ({ projectId, subprojectId }) => {
   const filterString = filterStringFromFilter(filter, 'goals')
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
         count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
@@ -56,7 +72,7 @@ export const useGoalsNavData = ({ projectId, subprojectId }) => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
