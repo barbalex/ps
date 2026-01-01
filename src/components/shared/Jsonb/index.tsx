@@ -16,6 +16,27 @@ import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/ind
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { addOperationAtom, store } from '../../../store.ts'
 
+import type Fields from '../../../models/public/Fields.ts'
+import type FieldTypes from '../../../models/public/FieldTypes.ts'
+import type WidgetTypes from '../../../models/public/WidgetTypes.ts'
+
+type FieldsWithTypes = Fields & {
+  field_type: FieldTypes['name']
+  widget_type: WidgetTypes['name']
+}
+
+interface Props {
+  table: string
+  name?: string // json field name, defaults to 'data'
+  idField: string
+  id: string
+  orIndex?: number // only for array of jsonb objects
+  data: Record<string, any>
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLDivElement>
+  from: string
+}
+
 // and focus the name field on first render?
 export const Jsonb = ({
   table,
@@ -27,7 +48,7 @@ export const Jsonb = ({
   autoFocus = false,
   ref,
   from,
-}) => {
+}: Props) => {
   const isAccountTable = accountTables.includes(table)
   const { projectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
@@ -54,7 +75,7 @@ export const Jsonb = ({
       ORDER BY t.ord`
   const params = isAccountTable ? [table] : [table, placeId2 ? 2 : 1]
   const res = useLiveQuery(sql, params)
-  const fields = res?.rows ?? []
+  const fields: FieldsWithTypes[] = res?.rows ?? []
 
   // TODO: return if value has not changed
   const onChange = async (e, dataReturned) => {
@@ -71,12 +92,7 @@ export const Jsonb = ({
     }
 
     const isFilter = location.pathname.endsWith('filter')
-    const level =
-      table === 'places' ?
-        placeId ? 2
-        : 1
-      : placeId2 ? 2
-      : 1
+    const level = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
 
     if (isFilter) {
       // TODO: wait until new db and it's accessing lib. Then implement these queries
@@ -129,7 +145,7 @@ export const Jsonb = ({
 
   return (
     <>
-      {fields.length > 0 ?
+      {fields.length > 0 ? (
         <WidgetsFromDataFieldsDefined
           key="widgetsFromDataFieldsDefined"
           fields={fields}
@@ -143,7 +159,7 @@ export const Jsonb = ({
           ref={ref}
           from={from}
         />
-      : null}
+      ) : null}
       {dataKeysNotDefined.map((dataKey, index) => (
         <TextField
           key={dataKey}
