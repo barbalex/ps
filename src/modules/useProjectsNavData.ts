@@ -12,8 +12,24 @@ const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'projects']
 const ownUrl = `/${ownArray.join('/')}`
 
+type NavDataOpen = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
+type NavDataClosed = {
+  count_unfiltered: number
+  count_filtered: number
+}[]
+
+type Props = {
+  forBreadcrumb?: boolean
+}
+
 const getNavData = ({ res, isOpen, loading, isFiltered }) => {
-  const navs = res?.rows ?? []
+  const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
@@ -42,7 +58,7 @@ const getNavData = ({ res, isOpen, loading, isFiltered }) => {
   }
 }
 
-export const useProjectsNavData = (params) => {
+export const useProjectsNavData = (params?: Props) => {
   const forBreadcrumb = params?.forBreadcrumb ?? false
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -62,9 +78,8 @@ export const useProjectsNavData = (params) => {
   //   isOpen,
   // })
 
-  const sql =
-    withNavs ?
-      `
+  const sql = withNavs
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),
         count_filtered AS (SELECT count(*) FROM projects${isFiltered ? ` WHERE ${filterString}` : ''})
