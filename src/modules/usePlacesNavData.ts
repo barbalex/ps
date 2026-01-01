@@ -11,7 +11,33 @@ import {
   treeOpenNodesAtom,
 } from '../store.ts'
 
-export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+}
+
+type NavDataOpen = {
+  id: string
+  label: string | null
+  count_unfiltered: number
+  count_filtered: number
+  name_singular: string
+  name_plural: string
+}
+
+type NavDataClosed = {
+  count_unfiltered: number
+  count_filtered: number
+  name_singular: string
+  name_plural: string
+}
+
+export const usePlacesNavData = ({
+  projectId,
+  subprojectId,
+  placeId,
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -31,9 +57,8 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
   const filterString = filterStringFromFilter(filter, 'places')
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
@@ -79,7 +104,7 @@ export const usePlacesNavData = ({ projectId, subprojectId, placeId }) => {
   const nameSingular = res?.rows?.[0]?.name_singular ?? 'Place'
   const namePlural = res?.rows?.[0]?.name_plural ?? 'Places'
 
-  const navs = res?.rows ?? []
+  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
