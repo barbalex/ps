@@ -25,7 +25,7 @@ export const CheckTaxon = ({ from }) => {
     `SELECT * FROM check_taxa WHERE check_taxon_id = $1`,
     [checkTaxonId],
   )
-  const row: CheckTaxa = res?.rows?.[0]
+  const row: CheckTaxa | undefined = res?.rows?.[0]
 
   // console.log('CheckTaxon', { row, results })
 

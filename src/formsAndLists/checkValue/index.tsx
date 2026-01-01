@@ -25,7 +25,7 @@ export const CheckValue = ({ from }) => {
     `SELECT * FROM check_values WHERE check_value_id = $1`,
     [checkValueId],
   )
-  const row: CheckValues = res?.rows?.[0]
+  const row: CheckValues | undefined = res?.rows?.[0]
 
   // console.log('CheckValue', { row, results })
 

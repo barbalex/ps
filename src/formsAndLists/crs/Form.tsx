@@ -24,7 +24,7 @@ export const Component = () => {
     [crsId],
     'crs_id',
   )
-  const row: CRS = res?.rows?.[0]
+  const row: CRS | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -45,12 +45,7 @@ export const Component = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="CRS"
-        id={crsId}
-      />
-    )
+    return <NotFound table="CRS" id={crsId} />
   }
 
   return (
