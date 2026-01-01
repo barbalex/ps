@@ -24,7 +24,7 @@ export const ActionReportValue = ({ from }) => {
     `SELECT * FROM action_report_values WHERE action_report_value_id = $1`,
     [actionReportValueId],
   )
-  const row: ActionReportValues = res?.rows?.[0]
+  const row: ActionReportValues | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)

@@ -23,7 +23,7 @@ export const ActionReport = ({ from }) => {
     `SELECT * FROM action_reports WHERE action_report_id = $1`,
     [actionReportId],
   )
-  const row: ActionReports = res?.rows?.[0]
+  const row: ActionReports | undefined = res?.rows?.[0]
 
   // console.log('ActionReport', { row, results })
 

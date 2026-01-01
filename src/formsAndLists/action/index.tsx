@@ -22,7 +22,7 @@ export const Action = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM actions WHERE action_id = $1`, [
     actionId,
   ])
-  const row: Actions = res?.rows?.[0]
+  const row: Actions | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
