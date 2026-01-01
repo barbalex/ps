@@ -10,6 +10,8 @@ import { WmsLayerForm as Form } from './Form/index.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
+import type WmsLayers from '../../models/public/WmsLayers.ts'
+
 import '../../form.css'
 
 const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
@@ -25,7 +27,7 @@ export const WmsLayer = () => {
   const res = useLiveQuery(`SELECT * FROM wms_layers WHERE wms_layer_id = $1`, [
     wmsLayerId,
   ])
-  const row = res?.rows?.[0]
+  const row: WmsLayers | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -59,12 +61,7 @@ export const WmsLayer = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="WMS Layer"
-        id={wmsLayerId}
-      />
-    )
+    return <NotFound table="WMS Layer" id={wmsLayerId} />
   }
 
   // console.log('hello WmsLayer, row:', row)
@@ -73,11 +70,7 @@ export const WmsLayer = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
