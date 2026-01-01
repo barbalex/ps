@@ -12,7 +12,33 @@ import {
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
-export const useSubprojectNavData = ({ projectId, subprojectId }) => {
+type Props = {
+  projectId: string
+  subprojectId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+  name_singular?: string | null
+  places_count_filtered?: number | null
+  places_count_unfiltered?: number | null
+  place_name_plural?: string | null
+  subproject_reports_count_filtered?: number | null
+  subproject_reports_count_unfiltered?: number | null
+  goals_count_filtered?: number | null
+  goals_count_unfiltered?: number | null
+  occurrence_imports_count?: number | null
+  occurrences_to_assess_count?: number | null
+  occurrences_not_to_assign_count?: number | null
+  subproject_taxa_count?: number | null
+  subproject_users_count?: number | null
+  files_count_filtered?: number | null
+  files_count_unfiltered?: number | null
+  charts_count?: number | null
+}
+
+export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const [placesFilter] = useAtom(places1FilterAtom)
@@ -91,7 +117,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }) => {
 
   const res = useLiveQuery(sql)
   const loading = res === undefined
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const subprojectNameSingular = nav?.name_singular ?? 'Subproject'
 
