@@ -8,7 +8,16 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data', 'field-types']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useFieldTypeNavData = ({ fieldTypeId }) => {
+type Props = {
+  fieldTypeId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+export const useFieldTypeNavData = ({ fieldTypeId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -26,7 +35,7 @@ export const useFieldTypeNavData = ({ fieldTypeId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
   const ownArray = [...parentArray, fieldTypeId]
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
