@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type ListValues from '../../models/public/ListValues.ts'
 
 import '../../form.css'
 
@@ -25,7 +26,7 @@ export const ListValue = () => {
     `SELECT * FROM list_values WHERE list_value_id = $1`,
     [listValueId],
   )
-  const row = res?.rows?.[0]
+  const row: ListValues | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -49,12 +50,7 @@ export const ListValue = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="List Value"
-        id={listValueId}
-      />
-    )
+    return <NotFound table="List Value" id={listValueId} />
   }
 
   return (
