@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 import { createAccount } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Accounts from '../../models/public/Accounts.ts'
 
 const from = '/data/accounts/$accountId'
 
@@ -17,7 +18,7 @@ export const Header = ({ autoFocusRef }) => {
 
   const addRow = async () => {
     const res = await createAccount()
-    const accountId: string | undefined = res?.rows?.[0]
+    const accountId: Accounts['account_id'] | undefined = res?.rows?.[0]
     if (!accountId) return
     navigate({ to: `../${accountId}` })
     autoFocusRef?.current?.focus()

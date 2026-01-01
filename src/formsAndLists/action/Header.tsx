@@ -107,7 +107,7 @@ export const Header = ({ autoFocusRef, from }) => {
       'SELECT geometry FROM actions WHERE action_id = $1',
       [actionId],
     )
-    const geometry: Actions['geometry'] = res?.rows?.[0]?.geometry
+    const geometry: Actions['geometry'] | undefined = res?.rows?.[0]?.geometry
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
