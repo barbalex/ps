@@ -8,7 +8,16 @@ import { treeOpenNodesAtom } from '../store.ts'
 const parentArray = ['data', 'widgets-for-fields']
 const parentUrl = `/${parentArray.join('/')}`
 
-export const useWidgetForFieldNavData = ({ widgetForFieldId }) => {
+type Props = {
+  widgetForFieldId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+export const useWidgetForFieldNavData = ({ widgetForFieldId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -27,7 +36,7 @@ export const useWidgetForFieldNavData = ({ widgetForFieldId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
   const ownArray = [...parentArray, widgetForFieldId]
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
