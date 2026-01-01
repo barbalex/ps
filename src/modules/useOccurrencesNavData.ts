@@ -6,6 +6,20 @@ import { isEqual } from 'es-toolkit'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+  placeId2?: string
+  isToAssess?: boolean
+  isNotToAssign?: boolean
+}
+
+type NavData = {
+  id: string
+  label: string
+}[]
+
 export const useOccurrencesNavData = ({
   projectId,
   subprojectId,
@@ -13,7 +27,7 @@ export const useOccurrencesNavData = ({
   placeId2,
   isToAssess = false,
   isNotToAssign = false,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -39,7 +53,7 @@ export const useOccurrencesNavData = ({
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavData = res?.rows ?? []
   const parentArray = [
     'data',
     'projects',
@@ -52,9 +66,11 @@ export const useOccurrencesNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [
     ...parentArray,
-    ...(isToAssess ? ['occurrences-to-assess']
-    : isNotToAssign ? ['occurrences-not-to-assign']
-    : ['occurrences']),
+    ...(isToAssess
+      ? ['occurrences-to-assess']
+      : isNotToAssign
+        ? ['occurrences-not-to-assign']
+        : ['occurrences']),
   ]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
@@ -62,14 +78,16 @@ export const useOccurrencesNavData = ({
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
-  const namePlural =
-    isToAssess ? ' Occurrences To Assess'
-    : isNotToAssign ? 'Occurrences Not To Assign'
-    : 'Occurrences Assigned'
-  const nameSingular =
-    isToAssess ? ' Occurrence to assess'
-    : isNotToAssign ? 'Occurrence not to assign'
-    : 'Occurrence assigned'
+  const namePlural = isToAssess
+    ? ' Occurrences To Assess'
+    : isNotToAssign
+      ? 'Occurrences Not To Assign'
+      : 'Occurrences Assigned'
+  const nameSingular = isToAssess
+    ? ' Occurrence to assess'
+    : isNotToAssign
+      ? 'Occurrence not to assign'
+      : 'Occurrence assigned'
 
   const navData = {
     isInActiveNodeArray,

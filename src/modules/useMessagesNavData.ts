@@ -11,6 +11,11 @@ const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'messages']
 const ownUrl = `/${ownArray.join('/')}`
 
+type NavData = {
+  id: string
+  label: string
+}[]
+
 export const useMessagesNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -24,7 +29,7 @@ export const useMessagesNavData = () => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavData = res?.rows ?? []
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
