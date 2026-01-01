@@ -11,6 +11,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { OccurenceData } from './OccurrenceData/index.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Occurrences from '../../models/public/Occurrences.ts'
 
 import '../../form.css'
 
@@ -28,7 +29,7 @@ export const Occurrence = ({ from }) => {
     [occurrenceId],
     'occurrence_id',
   )
-  const row = res?.rows?.[0]
+  const row: Occurrences | undefined = res?.rows?.[0]
 
   // console.log('Occurrence, row:', row)
 
@@ -39,11 +40,7 @@ export const Occurrence = ({ from }) => {
 
     // Issue: for not_to_assign, the value needs to be null instead of false
     // because querying for null or false with electric-sql does not work
-    const valueToUse =
-      name === 'not_to_assign' ?
-        value ? true
-        : null
-      : value
+    const valueToUse = name === 'not_to_assign' ? (value ? true : null) : value
     const data = { [name]: valueToUse }
     // ensure that the combinations of not-to-assign and place_id make sense
     if (name === 'not_to_assign' && value) {
@@ -94,9 +91,8 @@ export const Occurrence = ({ from }) => {
         [value],
       )
       const parentPlaceId = res?.rows?.[0]?.parent_id
-      const url =
-        parentPlaceId ?
-          `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/occurrences/${occurrenceId}`
+      const url = parentPlaceId
+        ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/occurrences/${occurrenceId}`
         : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/occurrences/${occurrenceId}`
       navigate(url)
     }
@@ -105,22 +101,14 @@ export const Occurrence = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Occurrence"
-        id={occurrenceId}
-      />
-    )
+    return <NotFound table="Occurrence" id={occurrenceId} />
   }
 
   // TODO:
   // - add place assigner
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <SwitchField
           label="Not to assign"
