@@ -208,8 +208,7 @@ export const ActiveLayers = () => {
         `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
         [layerPresentationId],
       )
-      const layerPresentation = res?.rows?.[0]
-      const isActive = layerPresentation?.active
+      const isActive = res?.rows?.[0]?.active
       if (!isActive) {
         // if not active, remove this item
         const newOpenItems = openItems.filter(
