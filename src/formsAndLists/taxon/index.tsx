@@ -9,6 +9,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Taxa from '../../models/public/Taxa.ts'
 
 import '../../form.css'
 
@@ -26,7 +27,7 @@ export const Taxon = () => {
     [taxonId],
     'taxon_id',
   )
-  const row = res?.rows?.[0]
+  const row: Taxa | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -50,12 +51,7 @@ export const Taxon = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Taxon"
-        id={taxonId}
-      />
-    )
+    return <NotFound table="Taxon" id={taxonId} />
   }
 
   return (
