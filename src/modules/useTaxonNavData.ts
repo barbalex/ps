@@ -5,7 +5,18 @@ import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
-export const useTaxonNavData = ({ projectId, taxonomyId, taxonId }) => {
+type Props = {
+  projectId: string
+  taxonomyId: string
+  taxonId: string
+}
+
+type NavData = {
+  id: string
+  label: string | null
+}
+
+export const useTaxonNavData = ({ projectId, taxonomyId, taxonId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -21,7 +32,7 @@ export const useTaxonNavData = ({ projectId, taxonomyId, taxonId }) => {
 
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
   const parentArray = [
     'data',
     'projects',
