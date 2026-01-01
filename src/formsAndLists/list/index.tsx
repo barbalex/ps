@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { ListForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Lists from '../../models/public/Lists.ts'
 
 import '../../form.css'
 
@@ -19,7 +20,7 @@ export const List = ({ from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const res = useLiveQuery(`SELECT * FROM lists WHERE list_id = $1`, [listId])
-  const row = res?.rows?.[0]
+  const row: Lists | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -43,26 +44,14 @@ export const List = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="List"
-        id={listId}
-      />
-    )
+    return <NotFound table="List" id={listId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
