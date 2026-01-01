@@ -1,3 +1,4 @@
+import { NavData } from './useListValuesNavData'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -6,7 +7,16 @@ import { isEqual } from 'es-toolkit'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
-export const useProjectUsersNavData = ({ projectId }) => {
+type Props = {
+  projectId: string
+}
+
+type NavData = {
+  id: string
+  label: string
+}
+
+export const useProjectUsersNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -23,7 +33,7 @@ export const useProjectUsersNavData = ({ projectId }) => {
 
   const loading = res === undefined
 
-  const navs = res?.rows ?? []
+  const navs: NavData[] = res?.rows ?? []
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'users']
