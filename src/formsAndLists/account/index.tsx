@@ -26,7 +26,7 @@ export const Account = () => {
   const res = useLiveQuery(`SELECT * FROM accounts WHERE account_id = $1`, [
     accountId,
   ])
-  const row: Accounts = res?.rows?.[0]
+  const row: Accounts | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)

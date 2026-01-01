@@ -28,7 +28,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const project: Projects = res?.rows?.[0]
+  const project: Projects | undefined = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
