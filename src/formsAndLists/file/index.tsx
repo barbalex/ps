@@ -12,6 +12,7 @@ import { Uploader } from './Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Files from '../../models/public/Files.ts'
 
 import '../../form.css'
 
@@ -27,7 +28,7 @@ export const File = ({ from }) => {
     WHERE file_id = $1`,
     [fileId],
   )
-  const row = res?.rows?.[0]
+  const row: Files | undefined = res?.rows?.[0]
 
   const onChange = (e, dataIn) => {
     const { name, value } = getValueFromChange(e, dataIn)
@@ -82,19 +83,11 @@ export const File = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="File"
-        id={fileId}
-      />
-    )
+    return <NotFound table="File" id={fileId} />
   }
 
   return (
-    <div
-      className="form-outer-container"
-      ref={ref}
-    >
+    <div className="form-outer-container" ref={ref}>
       <Uploader from={from} />
       <Header from={from} />
       <div className="form-container">
@@ -148,31 +141,15 @@ export const File = ({ from }) => {
           value={row.check_id ?? ''}
           onChange={onChange}
         />
-        <TextFieldInactive
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-        />
-        <TextFieldInactive
-          label="Size"
-          name="size"
-          value={row.size ?? ''}
-        />
+        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
+        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
         <TextFieldInactive
           label="Mimetype"
           name="mimetype"
           value={row.mimetype ?? ''}
         />
-        <TextFieldInactive
-          label="Url"
-          name="url"
-          value={row.url ?? ''}
-        />
-        <TextFieldInactive
-          label="Uuid"
-          name="uuid"
-          value={row.uuid ?? ''}
-        />
+        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
+        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
         <Jsonb
           table="files"
           idField="file_id"

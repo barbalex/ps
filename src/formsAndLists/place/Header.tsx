@@ -178,8 +178,7 @@ export const Header = ({
       `SELECT geometry FROM places WHERE place_id = $1`,
       [placeId2 ?? placeId],
     )
-    const place = res?.rows?.[0]
-    const geometry = place?.geometry
+    const geometry = res?.rows?.[0]?.geometry
     if (!geometry) {
       return alertNoGeometry()
     }

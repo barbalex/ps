@@ -26,7 +26,7 @@ export const FieldType = () => {
     `SELECT * FROM field_types WHERE field_type_id = $1`,
     [fieldTypeId],
   )
-  const row: FieldType = res?.rows?.[0]
+  const row: FieldType | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)

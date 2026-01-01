@@ -20,7 +20,7 @@ export const FieldFormFetchingOwnData = ({
   const res = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
     fieldId,
   ])
-  const row: Field = res?.rows?.[0]
+  const row: Field | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
