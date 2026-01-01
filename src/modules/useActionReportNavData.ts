@@ -5,6 +5,21 @@ import { isEqual } from 'es-toolkit'
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  actionId: string
+  actionReportId: string
+}
+
+type NavData = {
+  id: string
+  label: string
+  action_report_values_count: number
+}
+
 export const useActionReportNavData = ({
   projectId,
   subprojectId,
@@ -12,7 +27,7 @@ export const useActionReportNavData = ({
   placeId2,
   actionId,
   actionReportId,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const sql = `
@@ -30,7 +45,7 @@ export const useActionReportNavData = ({
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
-  const nav = res?.rows?.[0]
+  const nav: NavData | undefined = res?.rows?.[0]
 
   const parentArray = [
     'data',
