@@ -10,6 +10,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type GoalReportValues from '../../models/public/GoalReportValues.ts'
 
 import '../../form.css'
 
@@ -27,7 +28,7 @@ export const GoalReportValue = () => {
     `select * from goal_report_values where goal_report_value_id = $1`,
     [goalReportValueId],
   )
-  const row = res?.rows?.[0]
+  const row: GoalReportValues | undefined = res?.rows?.[0]
 
   // console.log('GoalReportValue', { row, results })
 
@@ -53,12 +54,7 @@ export const GoalReportValue = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Goal Report Value"
-        id={goalReportValueId}
-      />
-    )
+    return <NotFound table="Goal Report Value" id={goalReportValueId} />
   }
 
   return (
