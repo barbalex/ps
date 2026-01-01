@@ -15,6 +15,33 @@ import {
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
+type NavDataUnfiltered = {
+  projects_count_unfiltered: number
+  projects_count_filtered: number
+  users_count_unfiltered: number
+  accounts_count_unfiltered: number
+  messages_count_unfiltered: number
+}
+
+type NavDataFiltered = {
+  projects_count_unfiltered: number
+  projects_count_filtered: number
+  users_count_unfiltered: number
+  accounts_count_unfiltered: number
+  field_types_count_unfiltered?: number
+  field_types_count_filtered?: number
+  widget_types_count_unfiltered?: number
+  widget_types_count_filtered?: number
+  widgets_for_fields_count_unfiltered?: number
+  widgets_for_fields_count_filtered?: number
+  fields_count_unfiltered?: number
+  fields_count_filtered?: number
+  crs_count_unfiltered?: number
+  files_count_unfiltered?: number
+  files_count_filtered?: number
+  messages_count_unfiltered: number
+}
+
 export const useDataNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
@@ -53,8 +80,8 @@ export const useDataNavData = () => {
         users_count_unfiltered AS (SELECT count(*) FROM users),
         accounts_count_unfiltered AS (SELECT count(*) FROM accounts),
         ${
-          designing ?
-            ` 
+          designing
+            ? ` 
             field_types_count_unfiltered AS (SELECT count(*) FROM field_types),
             field_types_count_filtered AS (SELECT count(*) FROM field_types ${fieldTypesIsFiltered ? ` WHERE ${fieldTypesFilterString}` : ''}),
             widget_types_count_unfiltered AS (SELECT count(*) FROM widget_types),
@@ -67,7 +94,7 @@ export const useDataNavData = () => {
             files_count_unfiltered AS (SELECT count(*) FROM files),
             files_count_filtered AS (SELECT count(*) FROM files ${filesIsFiltered ? ` WHERE ${filesFilterString}` : ''}),
           `
-          : ''
+            : ''
         }
         messages_count_unfiltered AS (SELECT count(*) FROM messages)
       SELECT
@@ -76,8 +103,8 @@ export const useDataNavData = () => {
         users_count_unfiltered.count AS users_count_unfiltered,
         accounts_count_unfiltered.count AS accounts_count_unfiltered,
         ${
-          designing ?
-            `
+          designing
+            ? `
               field_types_count_unfiltered.count AS field_types_count_unfiltered,
               field_types_count_filtered.count AS field_types_count_filtered,
               widget_types_count_unfiltered.count AS widget_types_count_unfiltered,
@@ -90,7 +117,7 @@ export const useDataNavData = () => {
               files_count_unfiltered.count AS files_count_unfiltered,
               files_count_filtered.count AS files_count_filtered,
             `
-          : ''
+            : ''
         }
         messages_count_unfiltered.count AS messages_count_unfiltered
       FROM 
@@ -99,8 +126,8 @@ export const useDataNavData = () => {
         users_count_unfiltered,
         accounts_count_unfiltered,
         ${
-          designing ?
-            `
+          designing
+            ? `
               field_types_count_unfiltered,
               field_types_count_filtered,
               widget_types_count_unfiltered,
@@ -113,13 +140,13 @@ export const useDataNavData = () => {
               files_count_unfiltered,
               files_count_filtered,
             `
-          : ''
+            : ''
         }
         messages_count_unfiltered
       `,
   )
   const loading = res === undefined
-  const row = res?.rows?.[0]
+  const row: NavDataFiltered | NavDataUnfiltered | undefined = res?.rows?.[0]
 
   const parentArray = ['data']
   const parentUrl = `/${parentArray.join('/')}`
@@ -168,76 +195,76 @@ export const useDataNavData = () => {
           namePlural: 'Accounts',
         }),
       },
-      ...(designing ?
-        [
-          {
-            id: 'field-types',
-            label: buildNavLabel({
-              loading,
-              isFiltered: fieldTypesIsFiltered,
-              countFiltered: row?.field_types_count_filtered ?? 0,
-              countUnfiltered: row?.field_types_count_unfiltered ?? 0,
-              namePlural: 'Field Types',
-            }),
-          },
-          {
-            id: 'widget-types',
-            label: buildNavLabel({
-              loading,
-              isFiltered: widgetTypesIsFiltered,
-              countFiltered: row?.widget_types_count_filtered ?? 0,
-              countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
-              namePlural: 'Widget Types',
-            }),
-          },
-          {
-            id: 'widgets-for-fields',
-            label: buildNavLabel({
-              loading,
-              isFiltered: widgetsForFieldsIsFiltered,
-              countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
-              countUnfiltered: row?.widgets_for_fields_count_unfiltered ?? 0,
-              namePlural: 'Widgets For Fields',
-            }),
-          },
-          {
-            id: 'fields',
-            label: buildNavLabel({
-              loading,
-              isFiltered: fieldsIsFiltered,
-              countFiltered: row?.fields_count_filtered ?? 0,
-              countUnfiltered: row?.fields_count_unfiltered ?? 0,
-              namePlural: 'Fields',
-            }),
-          },
-          {
-            id: 'crs',
-            label: buildNavLabel({
-              loading,
-              countFiltered: row?.crs_count_unfiltered ?? 0,
-              namePlural: 'CRS',
-            }),
-          },
-          {
-            id: 'files',
-            label: buildNavLabel({
-              loading,
-              isFiltered: filesIsFiltered,
-              countFiltered: row?.files_count_filtered ?? 0,
-              countUnfiltered: row?.files_count_unfiltered ?? 0,
-              namePlural: 'Files',
-            }),
-          },
-          {
-            id: 'widgets',
-            label: buildNavLabel({
-              loading,
-              countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
-              namePlural: 'Widgets',
-            }),
-          },
-        ]
-      : []),
+      ...(designing
+        ? [
+            {
+              id: 'field-types',
+              label: buildNavLabel({
+                loading,
+                isFiltered: fieldTypesIsFiltered,
+                countFiltered: row?.field_types_count_filtered ?? 0,
+                countUnfiltered: row?.field_types_count_unfiltered ?? 0,
+                namePlural: 'Field Types',
+              }),
+            },
+            {
+              id: 'widget-types',
+              label: buildNavLabel({
+                loading,
+                isFiltered: widgetTypesIsFiltered,
+                countFiltered: row?.widget_types_count_filtered ?? 0,
+                countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
+                namePlural: 'Widget Types',
+              }),
+            },
+            {
+              id: 'widgets-for-fields',
+              label: buildNavLabel({
+                loading,
+                isFiltered: widgetsForFieldsIsFiltered,
+                countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
+                countUnfiltered: row?.widgets_for_fields_count_unfiltered ?? 0,
+                namePlural: 'Widgets For Fields',
+              }),
+            },
+            {
+              id: 'fields',
+              label: buildNavLabel({
+                loading,
+                isFiltered: fieldsIsFiltered,
+                countFiltered: row?.fields_count_filtered ?? 0,
+                countUnfiltered: row?.fields_count_unfiltered ?? 0,
+                namePlural: 'Fields',
+              }),
+            },
+            {
+              id: 'crs',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.crs_count_unfiltered ?? 0,
+                namePlural: 'CRS',
+              }),
+            },
+            {
+              id: 'files',
+              label: buildNavLabel({
+                loading,
+                isFiltered: filesIsFiltered,
+                countFiltered: row?.files_count_filtered ?? 0,
+                countUnfiltered: row?.files_count_unfiltered ?? 0,
+                namePlural: 'Files',
+              }),
+            },
+            {
+              id: 'widgets',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
+                namePlural: 'Widgets',
+              }),
+            },
+          ]
+        : []),
       {
         id: 'messages',
         label: buildNavLabel({
