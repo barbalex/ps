@@ -20,6 +20,8 @@ import { FillRule } from './FillRule.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
+import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
+
 import '../../form.css'
 
 // was used to translate
@@ -46,7 +48,7 @@ export const VectorLayerDisplay = ({
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
   )
-  const row = res?.rows?.[0]
+  const row: VectorLayerDisplays | undefined = res?.rows?.[0]
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -70,12 +72,7 @@ export const VectorLayerDisplay = ({
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Vector Layer Display"
-        id={vectorLayerDisplayId}
-      />
-    )
+    return <NotFound table="Vector Layer Display" id={vectorLayerDisplayId} />
   }
 
   // TODO:
@@ -88,15 +85,9 @@ export const VectorLayerDisplay = ({
   return (
     <ErrorBoundary>
       <div className="form-outer-container">
-        <Header
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        <Header autoFocusRef={autoFocusRef} from={from} />
         <div className="form-container">
-          <MarkerType
-            onChange={onChange}
-            row={row}
-          />
+          <MarkerType onChange={onChange} row={row} />
           {row.marker_type === 'circle' && (
             <TextField
               name="circle_marker_radius"
@@ -135,14 +126,8 @@ export const VectorLayerDisplay = ({
             onChange={onChange}
             type="number"
           />
-          <LineCap
-            onChange={onChange}
-            row={row}
-          />
-          <LineJoin
-            onChange={onChange}
-            row={row}
-          />
+          <LineCap onChange={onChange} row={row} />
+          <LineJoin onChange={onChange} row={row} />
           <TextField
             name="dash_array"
             label="Linien: Dash-Array"
@@ -183,10 +168,7 @@ export const VectorLayerDisplay = ({
             min={0}
             step={5}
           />
-          <FillRule
-            onChange={onChange}
-            row={row}
-          />
+          <FillRule onChange={onChange} row={row} />
         </div>
       </div>
     </ErrorBoundary>
