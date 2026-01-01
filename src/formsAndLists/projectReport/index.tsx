@@ -9,6 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { ProjectReportForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type ProjectReport from '../../models/public/ProjectReport.ts'
 
 import '../../form.css'
 
@@ -24,7 +25,7 @@ export const ProjectReport = () => {
     `SELECT * FROM project_reports WHERE project_report_id = $1`,
     [projectReportId],
   )
-  const row = res?.rows?.[0]
+  const row: ProjectReport | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -48,23 +49,14 @@ export const ProjectReport = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Project Report"
-        id={projectReportId}
-      />
-    )
+    return <NotFound table="Project Report" id={projectReportId} />
   }
 
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
