@@ -15,6 +15,7 @@ import {
   addOperationAtom,
   addNotificationAtom,
 } from '../../store.ts'
+import type Actions from '../../models/public/Actions.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -106,7 +107,7 @@ export const Header = ({ autoFocusRef, from }) => {
       'SELECT geometry FROM actions WHERE action_id = $1',
       [actionId],
     )
-    const geometry = res?.rows?.[0]?.geometry
+    const geometry: Actions['geometry'] = res?.rows?.[0]?.geometry
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
