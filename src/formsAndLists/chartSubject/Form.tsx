@@ -31,7 +31,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
     [chartSubjectId],
   )
-  const row: ChartSubjects = res?.rows?.[0]
+  const row: ChartSubjects | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)

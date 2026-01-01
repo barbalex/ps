@@ -26,7 +26,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   const res = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
     chartId,
   ])
-  const row: Charts = res?.rows?.[0]
+  const row: Charts | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)

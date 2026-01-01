@@ -98,7 +98,7 @@ export const Header = ({ autoFocusRef, from }) => {
     const res = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
       checkId,
     ])
-    const check: Checks = res?.rows?.[0]
+    const check: Checks | undefined = res?.rows?.[0]
     const geometry = check?.geometry
     if (!geometry) return alertNoGeometry()
 

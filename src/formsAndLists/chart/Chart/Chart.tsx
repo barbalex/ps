@@ -34,7 +34,7 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
   const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
     subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
   ])
-  const firstSubjectsUnit: Units = res?.rows?.[0]
+  const firstSubjectsUnit: Units | undefined = res?.rows?.[0]
   if (!chart || !subjects) return null
 
   const unit = firstSubjectsUnit ?? 'Count'
