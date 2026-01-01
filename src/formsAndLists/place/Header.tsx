@@ -21,6 +21,8 @@ import {
   addNotificationAtom,
 } from '../../store.ts'
 
+import type Places from '../../models/public/Places.ts'
+
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
   from: string
@@ -178,7 +180,7 @@ export const Header = ({
       `SELECT geometry FROM places WHERE place_id = $1`,
       [placeId2 ?? placeId],
     )
-    const geometry = res?.rows?.[0]?.geometry
+    const geometry: Places['geometry'] | undefined = res?.rows?.[0]?.geometry
     if (!geometry) {
       return alertNoGeometry()
     }
