@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -24,10 +24,9 @@ export const Occurrence = ({ from }) => {
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrenceId],
-    'occurrence_id',
   )
   const row: Occurrences | undefined = res?.rows?.[0]
 
