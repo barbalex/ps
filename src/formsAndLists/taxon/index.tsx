@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -22,11 +22,7 @@ export const Taxon = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM taxa WHERE taxon_id = $1`,
-    [taxonId],
-    'taxon_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM taxa WHERE taxon_id = $1`, [taxonId])
   const row: Taxa | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
