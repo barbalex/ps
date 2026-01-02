@@ -1,5 +1,5 @@
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -19,11 +19,7 @@ export const Component = () => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
-  const res = useLiveIncrementalQuery(
-    `SELECT * FROM crs WHERE crs_id = $1`,
-    [crsId],
-    'crs_id',
-  )
+  const res = useLiveQuery(`SELECT * FROM crs WHERE crs_id = $1`, [crsId])
   const row: CRS | undefined = res?.rows?.[0]
 
   const onChange = (e, data) => {
