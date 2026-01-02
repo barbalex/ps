@@ -69,28 +69,39 @@ export const Project = ({ from }) => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} from={from} />
-      <TabList selectedValue={projectTab} onTabSelect={onTabSelect}>
-        <Tab id="form" value="form">
-          Form
-        </Tab>
-        {designing && (
-          <Tab id="design" value="design">
-            Design
-          </Tab>
-        )}
-      </TabList>
-      {projectTab === 'form' && (
-        <div role="tabpanel" aria-labelledby="form">
-          <Form
-            row={row}
-            onChange={onChange}
-            autoFocusRef={autoFocusRef}
-            from={from}
-          />
-        </div>
-      )}
-      {projectTab === 'design' && designing && (
-        <Design onChange={onChange} row={row} from={from} />
+      {!designing ? (
+        <Form
+          row={row}
+          onChange={onChange}
+          autoFocusRef={autoFocusRef}
+          from={from}
+        />
+      ) : (
+        <>
+          <TabList selectedValue={projectTab} onTabSelect={onTabSelect}>
+            <Tab id="form" value="form">
+              Form
+            </Tab>
+            {designing && (
+              <Tab id="design" value="design">
+                Design
+              </Tab>
+            )}
+          </TabList>
+          {projectTab === 'form' && (
+            <div role="tabpanel" aria-labelledby="form">
+              <Form
+                row={row}
+                onChange={onChange}
+                autoFocusRef={autoFocusRef}
+                from={from}
+              />
+            </div>
+          )}
+          {projectTab === 'design' && designing && (
+            <Design onChange={onChange} row={row} from={from} />
+          )}
+        </>
       )}
     </div>
   )
