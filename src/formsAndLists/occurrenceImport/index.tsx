@@ -1,11 +1,7 @@
 import { useRef, useState } from 'react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import { Tab, TabList } from '@fluentui/react-components'
-import {
-  usePGlite,
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -43,10 +39,9 @@ export const OccurrenceImport = () => {
   )
   const occurrenceImport = oIResult?.rows?.[0]
 
-  const oResult = useLiveIncrementalQuery(
+  const oResult = useLiveQuery(
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
     [occurrenceImportId],
-    'occurrence_id',
   )
   const occurrences = oResult?.rows ?? []
 
