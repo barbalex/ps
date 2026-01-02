@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
@@ -24,10 +24,9 @@ export const SubprojectTaxon = ({ from }) => {
 
   const db = usePGlite()
 
-  const res = useLiveIncrementalQuery(
+  const res = useLiveQuery(
     `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
     [subprojectTaxonId],
-    'subproject_taxon_id',
   )
   const row: SubprojectTaxa | undefined = res?.rows?.[0]
 
