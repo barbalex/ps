@@ -10,6 +10,7 @@ import {
 import { useFirstRender } from '../modules/useFirstRender.ts'
 import { syncingAtom, sqlInitializingAtom } from '../store.ts'
 import type Projects from '../models/public/Projects.ts'
+import type VectorLayers from '../models/public/VectorLayers.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
 // How to know if data was synced with the server?
@@ -61,18 +62,27 @@ export const TableLayersProvider = () => {
           `SELECT * FROM vector_layers WHERE project_id = $1`,
           [projectId],
         )
-        const vectorLayers = resVL?.rows
+        const vectorLayers: VectorLayers[] = resVL?.rows
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
         // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
         // 1.1 places1: is always needed
-        let places1VectorLayer = vectorLayers?.find(
-          (vl) =>
-            vl.type === 'own' &&
-            vl.own_table === 'places' &&
-            vl.own_table_level === 1,
+        const places1VectorLayers = await db.query(
+          `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'places'
+            AND own_table_level = 1
+        `,
+          [projectId],
         )
+
+        let places1VectorLayer: VectorLayers | undefined =
+          places1VectorLayers?.rows?.[0]
         if (!places1VectorLayer) {
           places1VectorLayer = await createVectorLayer({
             projectId,
@@ -124,8 +134,9 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'actions',
             ownTableLevel: 1,
-            label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} Actions`
+            label:
+              placeLevel1?.name_singular ?
+                `${placeLevel1.name_singular} Actions`
               : 'Actions',
           })
         }
@@ -167,8 +178,9 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'checks',
             ownTableLevel: 1,
-            label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} Checks`
+            label:
+              placeLevel1?.name_singular ?
+                `${placeLevel1.name_singular} Checks`
               : 'Checks',
           })
         }
@@ -212,8 +224,9 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'occurrences_assigned',
               ownTableLevel: 1,
-              label: placeLevel1?.name_singular
-                ? `${placeLevel1.name_singular} Occurrences Assigned`
+              label:
+                placeLevel1?.name_singular ?
+                  `${placeLevel1.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
             })
           }
@@ -386,8 +399,9 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'actions',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Actions`
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Actions`
                 : 'Actions',
             })
           }
@@ -431,8 +445,9 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'checks',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Checks`
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Checks`
                 : 'Checks',
             })
           }
@@ -476,8 +491,9 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'occurrences_assigned',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Occurrences Assigned`
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
             })
           }
