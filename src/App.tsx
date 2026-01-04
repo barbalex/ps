@@ -63,7 +63,10 @@ export const App = () => {
             ctx-name="uploadcare-uploader"
             ref={uploaderRef}
           ></uc-upload-ctx-provider>
-          <div id="router-container" className={styles.routerContainer}>
+          <div
+            id="router-container"
+            className={styles.routerContainer}
+          >
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProvider router={router} />
             </UploaderContext.Provider>
