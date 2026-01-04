@@ -58,11 +58,6 @@ export const TableLayersProvider = () => {
           [projectId],
         )
         const placeLevels = resPL?.rows
-        const resVL = await db.query(
-          `SELECT * FROM vector_layers WHERE project_id = $1`,
-          [projectId],
-        )
-        const vectorLayers: VectorLayers[] = resVL?.rows
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
@@ -335,10 +330,19 @@ export const TableLayersProvider = () => {
 
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
         if (occurrenceCount) {
-          let occurrencesNotToAssignVectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' && vl.own_table === 'occurrences_not_to_assign',
+          const occurrencesNotToAssignVectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'occurrences_not_to_assign'
+        `,
+            [projectId],
           )
+          let occurrencesNotToAssignVectorLayer: VectorLayers | undefined =
+            occurrencesNotToAssignVectorLayers?.rows?.[0]
           if (!occurrencesNotToAssignVectorLayer) {
             occurrencesNotToAssignVectorLayer = await createVectorLayer({
               projectId,
@@ -377,12 +381,20 @@ export const TableLayersProvider = () => {
 
         // 7.1 places2 needed if placeLevels2 exists
         if (placeLevel2) {
-          let places2VectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' &&
-              vl.own_table === 'places' &&
-              vl.own_table_level === 2,
+          const places2VectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'places'
+            AND own_table_level = 2
+        `,
+            [projectId],
           )
+          let places2VectorLayer: VectorLayers | undefined =
+            places2VectorLayers?.rows?.[0]
           if (!places2VectorLayer) {
             places2VectorLayer = await createVectorLayer({
               projectId,
@@ -420,12 +432,20 @@ export const TableLayersProvider = () => {
 
         // 8.1 actions2 needed if placeLevels2.actions exists
         if (placeLevel2?.actions) {
-          let actions2VectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' &&
-              vl.own_table === 'actions' &&
-              vl.own_table_level === 2,
+          const actions2VectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'actions'
+            AND own_table_level = 2
+        `,
+            [projectId],
           )
+          let actions2VectorLayer: VectorLayers | undefined =
+            actions2VectorLayers?.rows?.[0]
           if (!actions2VectorLayer) {
             actions2VectorLayer = await createVectorLayer({
               projectId,
@@ -466,12 +486,20 @@ export const TableLayersProvider = () => {
 
         // 9.1 checks2 needed if placeLevels2.checks exists
         if (placeLevel2?.checks) {
-          let checks2VectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' &&
-              vl.own_table === 'checks' &&
-              vl.own_table_level === 2,
+          const checks2VectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'checks'
+            AND own_table_level = 2
+        `,
+            [projectId],
           )
+          let checks2VectorLayer: VectorLayers | undefined =
+            checks2VectorLayers?.rows?.[0]
           if (!checks2VectorLayer) {
             checks2VectorLayer = await createVectorLayer({
               projectId,
@@ -512,12 +540,20 @@ export const TableLayersProvider = () => {
 
         // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
         if (placeLevel2?.occurrences && occurrenceCount) {
-          let occurrencesAssigned2VectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' &&
-              vl.own_table === 'occurrences_assigned' &&
-              vl.own_table_level === 2,
+          const occurrencesAssigned2VectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'occurrences_assigned'
+            AND own_table_level = 2
+        `,
+            [projectId],
           )
+          let occurrencesAssigned2VectorLayer: VectorLayers | undefined =
+            occurrencesAssigned2VectorLayers?.rows?.[0]
           if (!occurrencesAssigned2VectorLayer) {
             occurrencesAssigned2VectorLayer = await createVectorLayer({
               projectId,
