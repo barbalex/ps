@@ -1108,7 +1108,7 @@ export const startSyncing = async (db) => {
         primaryKey: ['project_crs_id'],
       },
     },
-    key: 'ps-sync',
+    key: 'ps-sync', // TODO: use user-specific key once auth is implemented
     initialInsertMethod: 'csv',
     onInitialSync: () => {
       store.set(syncingAtom, false)
