@@ -91,8 +91,8 @@ export const TableLayersProvider = () => {
             ownTableLevel: 1,
             label: placeLevel1?.name_plural ?? 'Places',
           })
-          console.warn(
-            'hello TableLayersProvider, new places 1 vector layer:',
+          console.info(
+            'TableLayersProvider created new places 1 vector layer:',
             places1VectorLayer,
           )
         }
@@ -122,12 +122,20 @@ export const TableLayersProvider = () => {
         }
 
         // 2.1 actions1: always needed
-        let actions1VectorLayer = vectorLayers?.find(
-          (vl) =>
-            vl.type === 'own' &&
-            vl.own_table === 'actions' &&
-            vl.own_table_level === 1,
+        const actions1VectorLayers = await db.query(
+          `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'actions'
+            AND own_table_level = 1
+        `,
+          [projectId],
         )
+        let actions1VectorLayer: VectorLayers | undefined =
+          actions1VectorLayers?.rows?.[0]
         if (!actions1VectorLayer) {
           actions1VectorLayer = await createVectorLayer({
             projectId,
@@ -166,12 +174,20 @@ export const TableLayersProvider = () => {
         }
 
         // 3.1 checks1: always needed
-        let checks1VectorLayer = vectorLayers?.find(
-          (vl) =>
-            vl.type === 'own' &&
-            vl.own_table === 'checks' &&
-            vl.own_table_level === 1,
+        const checks1VectorLayers = await db.query(
+          `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'checks'
+            AND own_table_level = 1
+        `,
+          [projectId],
         )
+        let checks1VectorLayer: VectorLayers | undefined =
+          checks1VectorLayers?.rows?.[0]
         if (!checks1VectorLayer) {
           checks1VectorLayer = await createVectorLayer({
             projectId,
@@ -212,12 +228,20 @@ export const TableLayersProvider = () => {
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned_lines1
         if (placeLevel1?.occurrences && occurrenceCount) {
-          let occurrencesAssigned1VectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' &&
-              vl.own_table === 'occurrences_assigned' &&
-              vl.own_table_level === 1,
+          const occurrencesVectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'occurrences_assigned'
+            AND own_table_level = 1
+        `,
+            [projectId],
           )
+          let occurrencesAssigned1VectorLayer: VectorLayers | undefined =
+            occurrencesVectorLayers?.rows?.[0]
           if (!occurrencesAssigned1VectorLayer) {
             occurrencesAssigned1VectorLayer = await createVectorLayer({
               projectId,
@@ -260,10 +284,19 @@ export const TableLayersProvider = () => {
 
         // 5.1 occurrences_to_assess: needed if occurrences exist
         if (occurrenceCount) {
-          let occurrencesToAssessVectorLayer = vectorLayers?.find(
-            (vl) =>
-              vl.type === 'own' && vl.own_table === 'occurrences_to_assess',
+          const occurrencesToAssessVectorLayers = await db.query(
+            `
+          SELECT * 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'occurrences_to_assess'
+        `,
+            [projectId],
           )
+          let occurrencesToAssessVectorLayer: VectorLayers | undefined =
+            occurrencesToAssessVectorLayers?.rows?.[0]
           if (!occurrencesToAssessVectorLayer) {
             occurrencesToAssessVectorLayer = await createVectorLayer({
               projectId,
