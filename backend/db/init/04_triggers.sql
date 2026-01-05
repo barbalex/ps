@@ -96,6 +96,8 @@ FOR EACH ROW
 EXECUTE PROCEDURE users_email_update_trigger();
 
 -- action_report_values: when any data is changed, update label using units name
+-- TODO: this causes out of memory error
+-- change this to only update on unit_id change
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -103,7 +105,7 @@ BEGIN
     SET label = (
       CASE 
         WHEN units.name is null then NEW.action_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
+        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
       END
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
@@ -113,9 +115,24 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER action_report_values_label_trigger
-AFTER UPDATE OR INSERT ON action_report_values
+AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_report_values_label_trigger();
+
+-- same as above, but only on insert because unit_id can't be looked up on insert
+CREATE OR REPLACE FUNCTION action_report_values_label_trigger_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE action_report_values 
+    SET label = NEW.action_report_value_id::text;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER action_report_values_label_trigger_insert
+AFTER INSERT ON action_report_values
+FOR EACH ROW
+EXECUTE PROCEDURE action_report_values_label_trigger_insert();
 
 -- action_values
 -- TODO: does not work
