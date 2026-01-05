@@ -33,8 +33,8 @@ CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE projects SET label = CASE
-  WHEN NEW.projects_label_by is null THEN name
-  WHEN NEW.projects_label_by = 'name' THEN name
+  WHEN NEW.projects_label_by is null THEN NEW.name
+  WHEN NEW.projects_label_by = 'name' THEN NEW.name
   ELSE coalesce(data ->> NEW.projects_label_by, project_id::text)
   END;
   RETURN NEW;
@@ -52,7 +52,7 @@ create or replace function accounts_label_update_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE accounts set label = CASE
-    WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id::text)
+    WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), OLD.account_id::text, NEW.account_id::text)
     WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
     ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')'
   END
@@ -125,7 +125,7 @@ BEGIN
   UPDATE action_values
     SET label = (
       CASE 
-        WHEN unit.name is null then NEW.action_value_id::text 
+        WHEN unit.name is null then NEW.action_value_id::text
         ELSE unit.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text, '(no value)')
       END
     )
@@ -163,7 +163,7 @@ BEGIN
   UPDATE check_taxa 
     SET label = (
       CASE 
-        WHEN taxa.name is null then NEW.check_taxon_id::text
+        WHEN taxa.name is null then  NEW.check_taxon_id::text
         WHEN taxa.taxon_id is null then NEW.check_taxon_id::text
         ELSE (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) || ': ' || (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
       END
@@ -205,9 +205,9 @@ RETURNS TRIGGER AS $$
 BEGIN
   UPDATE goal_reports SET label = 
   CASE 
-    WHEN projects.goal_reports_label_by IS NULL THEN goal_id::text
-    WHEN projects.goal_reports_label_by = 'goal_id' THEN goal_id::text
-    WHEN NEW.data -> projects.goal_reports_label_by IS NULL THEN goal_id::text
+    WHEN projects.goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    WHEN projects.goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
+    WHEN NEW.data -> projects.goal_reports_label_by IS NULL THEN NEW.goal_id::text
     ELSE NEW.data ->> projects.goal_reports_label_by
   END
   FROM (SELECT goal_reports_label_by FROM projects WHERE project_id =(
@@ -252,7 +252,7 @@ CREATE OR REPLACE FUNCTION projects_places_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE places SET label = case
-    when NEW.places_label_by = 'id' then place_id::text
+    when NEW.places_label_by = 'id' then COALESCE(OLD.place_id::text, NEW.place_id::text)
     when NEW.places_label_by = 'level' then level::text
     when data -> NEW.places_label_by is null then place_id::text
     else data ->> NEW.places_label_by
@@ -271,9 +271,10 @@ EXECUTE PROCEDURE projects_places_label_trigger();
 CREATE OR REPLACE FUNCTION projects_goals_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE goals SET label = case
-    when NEW.goals_label_by = 'id' then goal_id::text
-    when data -> NEW.goals_label_by is null then goal_id::text
+  UPDATE goals 
+  SET label = case
+    when NEW.goals_label_by = 'id' then COALESCE(OLD.goal_id::text, NEW.goal_id::text)
+    when data -> NEW.goals_label_by is null then  COALESCE(OLD.goal_id::text, NEW.goal_id::text)
     else data ->> NEW.goals_label_by
   end;
   RETURN NEW;
@@ -291,9 +292,9 @@ CREATE OR REPLACE FUNCTION projects_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE projects SET label = CASE
-    WHEN accounts.projects_label_by IS NULL THEN coalesce(name, project_id::text)
-    WHEN accounts.projects_label_by = 'name' THEN coalesce(name, project_id::text)
-    WHEN data -> accounts.projects_label_by is null then coalesce(name, project_id::text)
+    WHEN accounts.projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    WHEN accounts.projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    WHEN data -> accounts.projects_label_by is null then coalesce(name, OLD.project_id::text, NEW.project_id::text)
     else data ->> accounts.projects_label_by
   END
   FROM (SELECT projects_label_by FROM accounts WHERE account_id = NEW.account_id) AS accounts
@@ -408,7 +409,7 @@ BEGIN
   UPDATE subproject_taxa 
     SET label = (
       CASE 
-        WHEN (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is null THEN NEW.subproject_taxon_id::text
+        WHEN (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is null THEN  NEW.subproject_taxon_id::text
         ELSE 
           (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) ||
           ': ' ||
@@ -477,7 +478,7 @@ BEGIN
   UPDATE project_users 
   set label = (
     CASE
-      WHEN NEW.email is null THEN project_user_id::text
+      WHEN NEW.email is null THEN NEW.user_id::text
       WHEN project_users.role is null THEN NEW.email
       ELSE NEW.email || ' (' || project_users.role || ')'
     END
@@ -499,7 +500,7 @@ BEGIN
   UPDATE subproject_users 
   set label = (
     CASE
-      WHEN NEW.email is null THEN subproject_user_id::text
+      WHEN NEW.email is null THEN NEW.user_id::text
       WHEN subproject_users.role is null THEN NEW.email
       ELSE NEW.email || ' (' || subproject_users.role || ')'
     END
@@ -539,16 +540,16 @@ BEGIN
   UPDATE widgets_for_fields 
   SET label = (
     CASE 
-      WHEN NEW.field_type_id is null THEN widget_for_field_id::text
+      WHEN NEW.field_type_id is null THEN NEW.widget_for_field_id::text
       WHEN NEW.widget_type_id is null THEN (
         CASE 
-          WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null THEN widget_for_field_id::text
+          WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null THEN NEW.widget_for_field_id::text
           ELSE (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': (no widget)'
         END
       )
       WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null then (
         CASE 
-          WHEN (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) is null THEN widget_for_field_id::text
+          WHEN (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) is null THEN NEW.widget_for_field_id::text
           ELSE (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) || ': (no widget)'
         END
       )
