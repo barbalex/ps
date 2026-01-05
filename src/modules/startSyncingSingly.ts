@@ -582,6 +582,7 @@ export const startSyncingSingly = async (db) => {
       ...(columns ? { columns } : {}),
       primaryKey,
       key: `ps-sync-${table}`, // TODO: use user-specific key once auth is implemented
+      shapeKey: `ps-sync-shape-${table}`,
       initialInsertMethod: 'csv',
       onInitialSync: () => {
         console.log(`initial sync done for table ${table}`)
