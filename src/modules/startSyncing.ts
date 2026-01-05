@@ -1117,6 +1117,7 @@ export const startSyncing = async (db) => {
     },
     onError: (error) => console.error('Syncer', error),
   })
+  store.set(syncingAtom, false)
 
   return sync
 }

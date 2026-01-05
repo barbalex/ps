@@ -3,7 +3,7 @@ import { CorbadoProvider } from '@corbado/react'
 import { SqlInitializer } from './SqlInitializer/index.tsx'
 // TODO: sync with db IF user has an account
 import { Syncer } from './Syncer.tsx'
-import { SyncerProjects } from './SyncerProjects.tsx'
+// import { SyncerSingly } from './SyncerSingly.tsx'
 import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
 import { PostgrestClientInitator } from './PostgrestClientInitator.tsx'
 import { ApiDetector } from './ApiDetector.tsx'
@@ -24,7 +24,7 @@ export const AuthAndDb = () => {
       <PostgrestClientInitator />
       <ApiDetector />
       <Syncer />
-      <SyncerProjects />
+      {/* <SyncerSingly /> */}
       <TreeOpenNodesSetter />
       <OperationsObserver />
       <Layout />
