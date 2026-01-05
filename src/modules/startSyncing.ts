@@ -489,6 +489,25 @@ export const startSyncing = async (db) => {
             table: 'goal_reports',
           },
         },
+        mapColumns: (change: any) => {
+          return {
+            goal_report_id: change.value.goal_report_id,
+            account_id: change.value.account_id,
+            goal_id: change.value.goal_id,
+            label: change.value.label,
+            created_at: change.value.created_at,
+            updated_at: change.value.updated_at,
+            updated_by: change.value.updated_by,
+            data:
+              !change.value.data ? '{}'
+              : (
+                typeof change.value.data === 'string' &&
+                !change.value.data.trim().startsWith('{')
+              ) ?
+                JSON.stringify(change.value.data)
+              : change.value.data,
+          }
+        },
         liveSse: true,
         table: 'goal_reports',
         primaryKey: ['goal_report_id'],
