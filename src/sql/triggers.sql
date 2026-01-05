@@ -103,7 +103,7 @@ BEGIN
     SET label = (
       CASE 
         WHEN units.name is null then NEW.action_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
       END
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
@@ -126,7 +126,7 @@ BEGIN
     SET label = (
       CASE 
         WHEN unit.name is null then NEW.action_value_id::text
-        ELSE unit.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text, '(no value)')
+        ELSE unit.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
       END
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS unit
@@ -185,7 +185,7 @@ BEGIN
     SET label = (
       CASE 
         WHEN units.name is null then NEW.check_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
       END
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
@@ -232,7 +232,7 @@ BEGIN
     SET label = (
       CASE 
         WHEN units.name is null then NEW.goal_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
       END
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
@@ -316,7 +316,7 @@ BEGIN
     SET label = (
       CASE 
         WHEN units.name is null then NEW.place_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
       END
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
