@@ -2,6 +2,8 @@ import { uuidv7 } from '@kripod/uuidv7'
 
 import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
 
+const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
+
 // TODO: run insert query?
 const getPresetData = async ({ projectId = null, table }) => {
   const db = store.get(pgliteDbAtom)
@@ -29,7 +31,7 @@ export const createProject = async () => {
 
   const data = {
     project_id,
-    account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
+    account_id,
     type: 'species',
     subproject_name_singular: 'Art',
     subproject_name_plural: 'Arten',
@@ -603,7 +605,7 @@ export const createListValue = async ({ listId }) => {
     `
     insert into list_values (list_value_id, account_id, list_id, obsolete) 
     values ($1, $2, $3, $4)`,
-    [list_value_id, '018cf958-27e2-7000-90d3-59f024d467be', listId, false],
+    [list_value_id, account_id, listId, false],
   )
 
   store.set(addOperationAtom, {
@@ -611,7 +613,7 @@ export const createListValue = async ({ listId }) => {
     operation: 'insert',
     draft: {
       list_value_id,
-      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      account_id,
       list_id: listId,
       obsolete: false,
     },
@@ -668,6 +670,7 @@ export const createGoalReport = async ({ projectId, goalId }) => {
   const data = {
     goal_report_id,
     goal_id: goalId,
+    account_id,
     ...presetData,
   }
 
@@ -680,6 +683,7 @@ export const createGoalReport = async ({ projectId, goalId }) => {
   console.log('createGoalReport', {
     sql,
     data,
+    presetData,
     columns,
     values,
     dataValues: Object.values(data),
@@ -1265,7 +1269,7 @@ export const createVectorLayerDisplay = async ({
 export const createLayerPresentation = async ({
   vectorLayerId = null,
   wmsLayerId = null,
-  accountId = null,
+  accountId = account_id, // null,
   active = false,
   transparent = false,
 }) => {
@@ -1421,7 +1425,7 @@ export const createChart = async ({
     operation: 'insert',
     draft: {
       chart_id,
-      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      account_id,
       project_id: projectId,
       subproject_id: subprojectId,
       place_id: placeId,
@@ -1438,7 +1442,7 @@ export const createChartSubject = async ({ chartId }) => {
     `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
     [
       chart_subject_id,
-      '018cf958-27e2-7000-90d3-59f024d467be',
+      account_id,
       chartId,
       'monotone',
       '#FF0000',
@@ -1453,7 +1457,7 @@ export const createChartSubject = async ({ chartId }) => {
     operation: 'insert',
     draft: {
       chart_subject_id,
-      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      account_id,
       chart_id: chartId,
       type: 'monotone',
       stroke: '#FF0000',
@@ -1489,7 +1493,7 @@ export const createOccurrenceImport = async ({ subprojectId }) => {
     operation: 'insert',
     draft: {
       occurrence_import_id,
-      account_id: '018cf958-27e2-7000-90d3-59f024d467be',
+      account_id,
       subproject_id: subprojectId,
       geometry_method: 'coordinates',
       crs: 'EPSG:4326',
@@ -1504,7 +1508,7 @@ export const createOccurrenceImport = async ({ subprojectId }) => {
 // no insert as this data is inserted in bulk
 export const createOccurrence = ({ occurrenceImportId, data = null }) => ({
   occurrence_id: uuidv7(),
-  account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
+  account_id,
   occurrence_import_id: occurrenceImportId,
   data,
 })
