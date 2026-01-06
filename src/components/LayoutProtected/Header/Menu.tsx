@@ -92,32 +92,36 @@ export const Menu = () => {
       >
         {!isHome && (
           <>
-            <ToolbarToggleButton
-              aria-label="Tree"
-              name="tabs"
-              value="tree"
-              className={buildToggleClass({
-                prevIsActive: false,
-                nextIsActive: dataIsActive,
-                selfIsActive: treeIsActive,
-              })}
-              disabled={mapIsMaximized}
-            >
-              Tree
-            </ToolbarToggleButton>
-            <ToolbarToggleButton
-              aria-label="Data"
-              name="tabs"
-              value="data"
-              className={buildToggleClass({
-                prevIsActive: treeIsActive,
-                nextIsActive: mapIsActive,
-                selfIsActive: dataIsActive,
-              })}
-              disabled={mapIsMaximized}
-            >
-              Data
-            </ToolbarToggleButton>
+            <Tooltip content={treeIsActive ? 'Hide Tree' : 'Show Tree'}>
+              <ToolbarToggleButton
+                aria-label="Tree"
+                name="tabs"
+                value="tree"
+                className={buildToggleClass({
+                  prevIsActive: false,
+                  nextIsActive: dataIsActive,
+                  selfIsActive: treeIsActive,
+                })}
+                disabled={mapIsMaximized}
+              >
+                Tree
+              </ToolbarToggleButton>
+            </Tooltip>
+            <Tooltip content={dataIsActive ? 'Hide Data' : 'Show Data'}>
+              <ToolbarToggleButton
+                aria-label="Data"
+                name="tabs"
+                value="data"
+                className={buildToggleClass({
+                  prevIsActive: treeIsActive,
+                  nextIsActive: mapIsActive,
+                  selfIsActive: dataIsActive,
+                })}
+                disabled={mapIsMaximized}
+              >
+                Data
+              </ToolbarToggleButton>
+            </Tooltip>
             <Tooltip content={mapIsActive ? 'Hide Map' : 'Show Map'}>
               <ToolbarToggleButton
                 icon={
