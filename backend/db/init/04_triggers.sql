@@ -13,6 +13,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE occurrences
     SET
       label = (
@@ -48,6 +49,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE projects SET label = CASE
   WHEN NEW.projects_label_by is null THEN NEW.name
   WHEN NEW.projects_label_by = 'name' THEN NEW.name
@@ -74,6 +76,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE accounts set label = CASE
     WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), OLD.account_id::text, NEW.account_id::text)
     WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
@@ -110,6 +113,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE accounts SET label = CASE
     WHEN accounts.type is null THEN coalesce(NEW.email, accounts.account_id::text)
     WHEN NEW.email is null THEN accounts.account_id::text
@@ -136,6 +140,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE action_report_values 
     SET label = NEW.action_report_value_id::text;
 -- TODO: this causes out of memory error
@@ -168,6 +173,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE action_report_values 
     SET label = NEW.action_report_value_id::text;
   RETURN NEW;
@@ -191,6 +197,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE action_values
     SET label = (
       CASE 
@@ -222,6 +229,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE action_values
     SET label = NEW.action_value_id::text;
   RETURN NEW;
@@ -244,6 +252,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE check_taxa 
     SET label = (
       CASE 
@@ -272,6 +281,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE check_values 
     SET label = (
       CASE 
@@ -301,6 +311,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE goal_reports SET label = 
   CASE 
     WHEN projects.goal_reports_label_by IS NULL THEN NEW.goal_id::text
@@ -333,6 +344,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE goal_report_values 
     SET label = (
       CASE 
@@ -363,6 +375,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE places SET label = case
     when NEW.places_label_by = 'id' then COALESCE(OLD.place_id::text, NEW.place_id::text)
     when NEW.places_label_by = 'level' then level::text
@@ -390,6 +403,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE goals 
   SET label = case
     when NEW.goals_label_by = 'id' then COALESCE(OLD.goal_id::text, NEW.goal_id::text)
@@ -417,6 +431,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE projects SET label = CASE
     WHEN accounts.projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
     WHEN accounts.projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
@@ -445,6 +460,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE place_report_values 
     SET label = (
       CASE 
@@ -475,6 +491,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE places SET label = 
   case 
     when projects.places_label_by is null then place_id::text
@@ -509,6 +526,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE place_users 
   SET label = (
     CASE
@@ -538,6 +556,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE project_users 
   set label = (
     case
@@ -567,6 +586,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE subproject_taxa 
     SET label = (
       CASE 
@@ -598,6 +618,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE subproject_users 
   set label = (
     CASE
@@ -627,6 +648,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE taxa SET label = (
     case 
       when taxonomies.name is null then taxon_id::text
@@ -657,6 +679,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE project_users 
   set label = (
     CASE
@@ -686,6 +709,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE subproject_users 
   set label = (
     CASE
@@ -717,6 +741,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   INSERT INTO vector_layer_displays (vector_layer_id) VALUES (NEW.vector_layer_id);
   INSERT INTO layer_presentations (vector_layer_id) VALUES (NEW.vector_layer_id);
   RETURN NEW;
@@ -740,6 +765,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE widgets_for_fields 
   SET label = (
     CASE 
@@ -784,6 +810,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   INSERT INTO layer_presentations (wms_layer_id) VALUES (NEW.wms_layer_id);
   RETURN NEW;
 END;
@@ -805,6 +832,7 @@ BEGIN
   IF is_syncing THEN
     RETURN OLD;
   END IF;
+
   UPDATE chart_subjects SET label = (
     case 
       when value_unit is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', ' || coalesce(value_field, '(no field)') || ', (no unit)'
