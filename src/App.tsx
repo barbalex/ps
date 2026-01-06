@@ -37,7 +37,10 @@ declare module '@tanstack/react-router' {
 }
 
 const db = await PGlite.create('idb://ps', {
-  extensions: { live, electric: electricSync() },
+  extensions: {
+    live,
+    electric: electricSync(),
+  },
   relaxedDurability: true,
   // debug: true,
 })
