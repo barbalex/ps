@@ -96,13 +96,13 @@ FOR EACH ROW
 EXECUTE PROCEDURE users_email_update_trigger();
 
 -- action_report_values: when any data is changed, update label using units name
--- TODO: this causes out of memory error
--- re-enable later
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE action_report_values 
     SET label = NEW.action_report_value_id::text;
+-- TODO: this causes out of memory error
+-- re-enable later
   --   SET label = (
   --     CASE 
   --       WHEN units.name is null then NEW.action_report_value_id::text
@@ -115,10 +115,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER action_report_values_label_trigger
-AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
-FOR EACH ROW
-EXECUTE PROCEDURE action_report_values_label_trigger();
+-- CREATE TRIGGER action_report_values_label_trigger
+-- AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
+-- FOR EACH ROW
+-- EXECUTE PROCEDURE action_report_values_label_trigger();
 
 -- same as above, but only on insert because unit_id can't be looked up on insert
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger_insert()
@@ -153,10 +153,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER action_values_label_trigger
-AFTER UPDATE ON action_values
-FOR EACH ROW
-EXECUTE PROCEDURE action_values_label_trigger();
+-- TODO: this causes out of memory error
+-- CREATE TRIGGER action_values_label_trigger
+-- AFTER UPDATE ON action_values
+-- FOR EACH ROW
+-- EXECUTE PROCEDURE action_values_label_trigger();
 
 -- only insert because unit can't yet be looked up
 -- works
