@@ -1,9 +1,18 @@
-
+-- all the triggers should not run when syncing using electric
+-- https://github.com/electric-sql/pglite/issues/637
+-- https://github.com/electric-sql/electric/blob/main/examples/linearlite/db/migrations-client/01-create_tables.sql#L49-L54
 
 -- if occurrence_imports.label_creation is changed, need to update all labels of occurrences
 CREATE OR REPLACE FUNCTION occurrence_imports_label_creation_trigger ()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE occurrences
     SET
       label = (
@@ -31,7 +40,14 @@ EXECUTE PROCEDURE occurrence_imports_label_creation_trigger();
 -- if accounts.projects_label_by is changed, need to update all labels of projects
 CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE projects SET label = CASE
   WHEN NEW.projects_label_by is null THEN NEW.name
   WHEN NEW.projects_label_by = 'name' THEN NEW.name
@@ -50,7 +66,14 @@ EXECUTE PROCEDURE accounts_projects_label_trigger();
 -- if accounts.label is changed, need to update all labels of accounts
 create or replace function accounts_label_update_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE accounts set label = CASE
     WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), OLD.account_id::text, NEW.account_id::text)
     WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
@@ -79,7 +102,14 @@ EXECUTE PROCEDURE accounts_label_update_trigger();
 -- if users.email is changed, need to update label of corresponding accounts
 create or replace function users_email_update_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE accounts SET label = CASE
     WHEN accounts.type is null THEN coalesce(NEW.email, accounts.account_id::text)
     WHEN NEW.email is null THEN accounts.account_id::text
@@ -98,7 +128,14 @@ EXECUTE PROCEDURE users_email_update_trigger();
 -- action_report_values: when any data is changed, update label using units name
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE action_report_values 
     SET label = NEW.action_report_value_id::text;
 -- TODO: this causes out of memory error
@@ -123,7 +160,14 @@ $$ LANGUAGE plpgsql;
 -- same as above, but only on insert because unit_id can't be looked up on insert
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger_insert()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE action_report_values 
     SET label = NEW.action_report_value_id::text;
   RETURN NEW;
@@ -139,7 +183,14 @@ EXECUTE PROCEDURE action_report_values_label_trigger_insert();
 -- TODO: does not work
 CREATE OR REPLACE FUNCTION action_values_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE action_values
     SET label = (
       CASE 
@@ -163,7 +214,14 @@ $$ LANGUAGE plpgsql;
 -- works
 CREATE OR REPLACE FUNCTION action_values_label_trigger_insert()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE action_values
     SET label = NEW.action_value_id::text;
   RETURN NEW;
@@ -178,7 +236,14 @@ EXECUTE PROCEDURE action_values_label_trigger_insert();
 -- check_taxa
 CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE check_taxa 
     SET label = (
       CASE 
@@ -199,7 +264,14 @@ EXECUTE PROCEDURE check_taxon_label_trigger();
 -- check_values
 CREATE OR REPLACE FUNCTION check_values_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE check_values 
     SET label = (
       CASE 
@@ -221,7 +293,14 @@ EXECUTE PROCEDURE check_values_label_trigger();
 -- goal_reports
 CREATE OR REPLACE FUNCTION goal_reports_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE goal_reports SET label = 
   CASE 
     WHEN projects.goal_reports_label_by IS NULL THEN NEW.goal_id::text
@@ -246,7 +325,14 @@ EXECUTE PROCEDURE goal_reports_label_trigger();
 -- goal_report_values
 CREATE OR REPLACE FUNCTION goal_report_values_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE goal_report_values 
     SET label = (
       CASE 
@@ -269,7 +355,14 @@ EXECUTE PROCEDURE goal_report_values_label_trigger();
 -- projects.places_label_by
 CREATE OR REPLACE FUNCTION projects_places_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE places SET label = case
     when NEW.places_label_by = 'id' then COALESCE(OLD.place_id::text, NEW.place_id::text)
     when NEW.places_label_by = 'level' then level::text
@@ -289,7 +382,14 @@ EXECUTE PROCEDURE projects_places_label_trigger();
 -- projects.goals_label_by
 CREATE OR REPLACE FUNCTION projects_goals_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE goals 
   SET label = case
     when NEW.goals_label_by = 'id' then COALESCE(OLD.goal_id::text, NEW.goal_id::text)
@@ -309,7 +409,14 @@ EXECUTE PROCEDURE projects_goals_label_trigger();
 -- projects.label
 CREATE OR REPLACE FUNCTION projects_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE projects SET label = CASE
     WHEN accounts.projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
     WHEN accounts.projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
@@ -330,7 +437,14 @@ EXECUTE PROCEDURE projects_label_trigger();
 -- place_report_values
 CREATE OR REPLACE FUNCTION place_report_values_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE place_report_values 
     SET label = (
       CASE 
@@ -353,7 +467,14 @@ EXECUTE PROCEDURE place_report_values_label_trigger();
 -- places
 CREATE OR REPLACE FUNCTION places_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE places SET label = 
   case 
     when projects.places_label_by is null then place_id::text
@@ -380,7 +501,14 @@ EXECUTE PROCEDURE places_label_trigger();
 -- place_users
 CREATE OR REPLACE FUNCTION place_users_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE place_users 
   SET label = (
     CASE
@@ -402,7 +530,14 @@ EXECUTE PROCEDURE place_users_label_trigger();
 -- project_users.label
 CREATE OR REPLACE FUNCTION project_users_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE project_users 
   set label = (
     case
@@ -424,7 +559,14 @@ EXECUTE PROCEDURE project_users_label_trigger();
 -- subproject_taxa.label
 CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE subproject_taxa 
     SET label = (
       CASE 
@@ -448,7 +590,14 @@ EXECUTE PROCEDURE subproject_taxon_label_trigger();
 -- subproject_users.label
 CREATE OR REPLACE FUNCTION subproject_users_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE subproject_users 
   set label = (
     CASE
@@ -470,7 +619,14 @@ EXECUTE PROCEDURE subproject_users_label_trigger();
 -- taxa.label
 CREATE OR REPLACE FUNCTION taxa_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE taxa SET label = (
     case 
       when taxonomies.name is null then taxon_id::text
@@ -493,7 +649,14 @@ EXECUTE PROCEDURE taxa_label_trigger();
 -- if users.email is changed, update project_users.label
 CREATE OR REPLACE FUNCTION users_project_users_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE project_users 
   set label = (
     CASE
@@ -515,7 +678,14 @@ EXECUTE PROCEDURE users_project_users_label_trigger();
 -- if users.email is changed, subproject_users.label needs to be updated
 CREATE OR REPLACE FUNCTION users_subproject_users_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE subproject_users 
   set label = (
     CASE
@@ -539,7 +709,14 @@ EXECUTE PROCEDURE users_subproject_users_label_trigger();
 -- create a corresponding vector_layer_display
 CREATE OR REPLACE FUNCTION vector_layers_insert_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   INSERT INTO vector_layer_displays (vector_layer_id) VALUES (NEW.vector_layer_id);
   INSERT INTO layer_presentations (vector_layer_id) VALUES (NEW.vector_layer_id);
   RETURN NEW;
@@ -555,7 +732,14 @@ EXECUTE PROCEDURE vector_layers_insert_trigger();
 -- TODO: enable using an array of column names
 CREATE OR REPLACE FUNCTION widgets_for_fields_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE widgets_for_fields 
   SET label = (
     CASE 
@@ -592,7 +776,14 @@ EXECUTE PROCEDURE widgets_for_fields_label_trigger();
 -- create a corresponding wms_layer_display
 CREATE OR REPLACE FUNCTION wms_layers_insert_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   INSERT INTO layer_presentations (wms_layer_id) VALUES (NEW.wms_layer_id);
   RETURN NEW;
 END;
@@ -606,7 +797,14 @@ EXECUTE PROCEDURE wms_layers_insert_trigger();
 -- chart_subjects.label
 CREATE OR REPLACE FUNCTION chart_subjects_label_trigger()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
 BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
   UPDATE chart_subjects SET label = (
     case 
       when value_unit is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', ' || coalesce(value_field, '(no field)') || ', (no unit)'
