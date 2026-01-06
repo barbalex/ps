@@ -97,19 +97,20 @@ EXECUTE PROCEDURE users_email_update_trigger();
 
 -- action_report_values: when any data is changed, update label using units name
 -- TODO: this causes out of memory error
--- change this to only update on unit_id change
+-- re-enable later
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE action_report_values 
-    SET label = (
-      CASE 
-        WHEN units.name is null then NEW.action_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-      END
-    )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
-  WHERE action_report_values.action_report_value_id = NEW.action_report_value_id;
+    SET label = NEW.action_report_value_id::text;
+  --   SET label = (
+  --     CASE 
+  --       WHEN units.name is null then NEW.action_report_value_id::text
+  --       ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+  --     END
+  --   )
+  -- FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
+  -- WHERE action_report_values.action_report_value_id = NEW.action_report_value_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
