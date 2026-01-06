@@ -121,15 +121,21 @@ export const Menu = () => {
             <Tooltip content={mapIsActive ? 'Hide Map' : 'Show Map'}>
               <ToolbarToggleButton
                 icon={
-                  !mapIsActive ? undefined : mapIsMaximized ? (
+                  !mapIsActive ? undefined
+                  : mapIsMaximized ?
                     <Tooltip content="Shrink Map">
-                      <TbArrowsMinimize onClick={onClickMapView} />
+                      <TbArrowsMinimize
+                        onClick={onClickMapView}
+                        className={styles.mapIcon}
+                      />
                     </Tooltip>
-                  ) : (
-                    <Tooltip content="Maximize Map">
-                      <TbArrowsMaximize onClick={onClickMapView} />
+                  : <Tooltip content="Maximize Map">
+                      <TbArrowsMaximize
+                        onClick={onClickMapView}
+                        className={styles.mapIcon}
+                      />
                     </Tooltip>
-                  )
+
                 }
                 iconPosition="after"
                 aria-label="Map"
@@ -161,11 +167,10 @@ export const Menu = () => {
       <Online />
       <Tooltip
         content={
-          !isAuthenticated
-            ? 'Login'
-            : isHome
-              ? 'Enter'
-              : `Logout ${authUser?.email}`
+          !isAuthenticated ? 'Login'
+          : isHome ?
+            'Enter'
+          : `Logout ${authUser?.email}`
         }
       >
         <Button

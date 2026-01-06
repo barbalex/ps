@@ -1,7 +1,8 @@
-.button{
-  background-color: rgba(38, 82, 37, 0);
-  border: none;
-  color: white;
+.button {
+  background-color: rgba(38, 82, 37, 0) !important;
+  border: none !important;
+  color: white !important;
+
   &:hover {
     filter: brightness(85%);
   }
