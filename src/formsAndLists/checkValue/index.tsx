@@ -34,10 +34,15 @@ export const CheckValue = ({ from }) => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE check_values SET ${name} = $1 WHERE check_value_id = $2`, [
-      value,
-      checkValueId,
-    ])
+    try {
+      db.query(
+        `UPDATE check_values SET ${name} = $1 WHERE check_value_id = $2`,
+        [value, checkValueId],
+      )
+    } catch (error) {
+      console.error('Error updating check_value:', error)
+      return
+    }
     addOperation({
       table: 'check_values',
       rowIdName: 'check_value_id',
@@ -51,12 +56,20 @@ export const CheckValue = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Check Value" id={checkValueId} />
+    return (
+      <NotFound
+        table="Check Value"
+        id={checkValueId}
+      />
+    )
   }
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         <DropdownField
           label="Unit"

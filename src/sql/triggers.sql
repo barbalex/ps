@@ -1,4 +1,4 @@
--- all the triggers should not run when syncing using electric
+-- the triggers should not run on sync
 -- https://github.com/electric-sql/pglite/issues/637
 -- https://github.com/electric-sql/electric/blob/main/examples/linearlite/db/migrations-client/01-create_tables.sql#L49-L54
 
@@ -271,7 +271,8 @@ FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
 
 -- check_values
-CREATE OR REPLACE FUNCTION check_values_label_trigger()
+-- TODO: Error: out of memory
+CREATE OR REPLACE FUNCTION check_values_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -295,10 +296,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER check_values_label_trigger
-AFTER UPDATE OR INSERT ON check_values
+-- CREATE TRIGGER check_values_label_update_trigger
+-- AFTER UPDATE ON check_values
+-- FOR EACH ROW
+-- EXECUTE PROCEDURE check_values_label_update_trigger();
+
+CREATE OR REPLACE FUNCTION check_values_label_insert_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  UPDATE check_values 
+    SET label =  NEW.check_value_id::text;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_values_label_insert_trigger
+AFTER INSERT ON check_values
 FOR EACH ROW
-EXECUTE PROCEDURE check_values_label_trigger();
+EXECUTE PROCEDURE check_values_label_insert_trigger();
 
 -- goal_reports
 CREATE OR REPLACE FUNCTION goal_reports_label_trigger()

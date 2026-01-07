@@ -852,7 +852,8 @@ CREATE TABLE IF NOT EXISTS check_values(
   check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  -- with this reference to "on update cascade", when setting unit_id, live_query re-execution fails with memory error
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action,
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
