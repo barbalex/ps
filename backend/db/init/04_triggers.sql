@@ -271,11 +271,12 @@ FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
 
 -- check_values
--- TODO: Error: out of memory
+-- TODO: Error: out of memory when this trigger runs
 CREATE OR REPLACE FUNCTION check_values_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  units_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -283,14 +284,16 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  select name into strict units_name from units where unit_id = NEW.unit_id;
+  -- units_name := (SELECT name FROM units WHERE unit_id = NEW.unit_id);
+
   UPDATE check_values 
     SET label = (
       CASE 
-        WHEN units.name is null then NEW.check_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
+        WHEN units_name is null then NEW.check_value_id::text
+        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
       END
     )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE check_values.check_value_id = NEW.check_value_id;
   RETURN NEW;
 END;
