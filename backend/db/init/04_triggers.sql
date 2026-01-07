@@ -1,4 +1,4 @@
--- all the triggers should not run when syncing using electric
+-- the triggers should not run on sync
 -- https://github.com/electric-sql/pglite/issues/637
 -- https://github.com/electric-sql/electric/blob/main/examples/linearlite/db/migrations-client/01-create_tables.sql#L49-L54
 
