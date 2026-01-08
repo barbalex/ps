@@ -618,8 +618,41 @@ AFTER INSERT ON places
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_insert_trigger();
 
--- place_users
-CREATE OR REPLACE FUNCTION place_users_label_trigger()
+-- place_users update
+CREATE OR REPLACE FUNCTION place_users_label_update_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  email TEXT;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  SELECT users.email INTO STRICT email FROM users WHERE users.user_id = NEW.user_id;
+
+  UPDATE place_users 
+  SET label = (
+    CASE
+      WHEN email is null THEN NEW.place_user_id::text
+      WHEN NEW.role is null THEN email || ' (no role)' 
+      ELSE email || ' (' || NEW.role || ')'
+    END
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER place_users_label_update_trigger
+AFTER UPDATE OF user_id, role ON place_users
+FOR EACH ROW
+EXECUTE PROCEDURE place_users_label_update_trigger();
+
+-- place_users insert
+CREATE OR REPLACE FUNCTION place_users_label_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -631,22 +664,16 @@ BEGIN
   END IF;
 
   UPDATE place_users 
-  SET label = (
-    CASE
-      WHEN NEW.role is null THEN NEW.place_user_id::text
-      WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.place_user_id::text
-      ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
-    END
-  );
+  SET label = NEW.place_user_id::text;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER place_users_label_trigger
-AFTER INSERT OR UPDATE OF user_id, role ON place_users
+CREATE OR REPLACE TRIGGER place_users_label_insert_trigger
+AFTER INSERT ON place_users
 FOR EACH ROW
-EXECUTE PROCEDURE place_users_label_trigger();
+EXECUTE PROCEDURE place_users_label_insert_trigger();
 
 -- project_users.label
 CREATE OR REPLACE FUNCTION project_users_label_trigger()
