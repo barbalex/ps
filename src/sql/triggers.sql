@@ -157,7 +157,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- CREATE TRIGGER action_report_values_label_trigger
+-- CREATE OR REPLACE TRIGGER action_report_values_label_trigger
 -- AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
 -- FOR EACH ROW
 -- EXECUTE PROCEDURE action_report_values_label_trigger();
@@ -180,7 +180,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER action_report_values_label_trigger_insert
+CREATE OR REPLACE TRIGGER action_report_values_label_trigger_insert
 AFTER INSERT ON action_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_report_values_label_trigger_insert();
@@ -212,7 +212,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- TODO: this causes out of memory error
--- CREATE TRIGGER action_values_label_trigger
+-- CREATE OR REPLACE TRIGGER action_values_label_trigger
 -- AFTER UPDATE ON action_values
 -- FOR EACH ROW
 -- EXECUTE PROCEDURE action_values_label_trigger();
@@ -236,7 +236,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER action_values_label_trigger_insert
+CREATE OR REPLACE TRIGGER action_values_label_trigger_insert
 AFTER INSERT ON action_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_values_label_trigger_insert();
@@ -265,7 +265,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER check_taxon_label_trigger
+CREATE OR REPLACE TRIGGER check_taxon_label_trigger
 AFTER UPDATE OF taxon_id OR INSERT ON check_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
@@ -284,25 +284,26 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  select name into strict units_name from units where unit_id = NEW.unit_id;
+  select units.name into strict units_name from units where units.unit_id = NEW.unit_id;
   -- units_name := (SELECT name FROM units WHERE unit_id = NEW.unit_id);
 
   UPDATE check_values 
-    SET label = (
-      CASE 
-        WHEN units_name is null then NEW.check_value_id::text
-        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-      END
-    )
+    SET label = COALESCE(units_name, '(no unit)') || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+    -- SET label = (
+    --   CASE 
+    --     WHEN units_name is null then NEW.check_value_id::text
+    --     ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+    --   END
+    -- )
   WHERE check_values.check_value_id = NEW.check_value_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- CREATE TRIGGER check_values_label_update_trigger
--- AFTER UPDATE ON check_values
--- FOR EACH ROW
--- EXECUTE PROCEDURE check_values_label_update_trigger();
+CREATE OR REPLACE TRIGGER check_values_label_update_trigger
+AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON check_values
+FOR EACH ROW
+EXECUTE PROCEDURE check_values_label_update_trigger();
 
 CREATE OR REPLACE FUNCTION check_values_label_insert_trigger()
 RETURNS TRIGGER AS $$
@@ -321,7 +322,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER check_values_label_insert_trigger
+CREATE OR REPLACE TRIGGER check_values_label_insert_trigger
 AFTER INSERT ON check_values
 FOR EACH ROW
 EXECUTE PROCEDURE check_values_label_insert_trigger();
@@ -354,7 +355,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER goal_reports_label_trigger
+CREATE OR REPLACE TRIGGER goal_reports_label_trigger
 AFTER UPDATE OF data OR INSERT ON goal_reports
 FOR EACH ROW
 EXECUTE PROCEDURE goal_reports_label_trigger();
@@ -385,7 +386,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER goal_report_values_label_trigger
+CREATE OR REPLACE TRIGGER goal_report_values_label_trigger
 AFTER UPDATE OR INSERT ON goal_report_values 
 FOR EACH ROW
 EXECUTE PROCEDURE goal_report_values_label_trigger();
@@ -413,7 +414,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER projects_places_label_trigger
+CREATE OR REPLACE TRIGGER projects_places_label_trigger
 AFTER UPDATE OF places_label_by ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_places_label_trigger();
@@ -441,7 +442,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER projects_goals_label_trigger
+CREATE OR REPLACE TRIGGER projects_goals_label_trigger
 AFTER UPDATE OF goals_label_by ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_goals_label_trigger();
@@ -470,7 +471,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER projects_label_trigger
+CREATE OR REPLACE TRIGGER projects_label_trigger
 AFTER INSERT OR UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
@@ -501,7 +502,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER place_report_values_label_trigger
+CREATE OR REPLACE TRIGGER place_report_values_label_trigger
 AFTER UPDATE ON place_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE place_report_values_label_trigger();
@@ -536,7 +537,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER places_label_trigger
+CREATE OR REPLACE TRIGGER places_label_trigger
 AFTER INSERT OR UPDATE of level, data ON places
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_trigger();
@@ -566,7 +567,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER place_users_label_trigger
+CREATE OR REPLACE TRIGGER place_users_label_trigger
 AFTER INSERT OR UPDATE OF user_id, role ON place_users
 FOR EACH ROW
 EXECUTE PROCEDURE place_users_label_trigger();
@@ -596,7 +597,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER project_users_label_trigger
+CREATE OR REPLACE TRIGGER project_users_label_trigger
 AFTER INSERT OR UPDATE OF user_id, role ON project_users
 FOR EACH ROW
 EXECUTE PROCEDURE project_users_label_trigger();
@@ -628,7 +629,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER subproject_taxon_label_trigger
+CREATE OR REPLACE TRIGGER subproject_taxon_label_trigger
 AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE subproject_taxon_label_trigger();
@@ -658,7 +659,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER subproject_users_label_trigger
+CREATE OR REPLACE TRIGGER subproject_users_label_trigger
 AFTER INSERT OR UPDATE OF user_id, role ON subproject_users
 FOR EACH ROW
 EXECUTE PROCEDURE subproject_users_label_trigger();
@@ -689,7 +690,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER taxa_label_trigger
+CREATE OR REPLACE TRIGGER taxa_label_trigger
 AFTER INSERT OR UPDATE of taxonomy_id, name ON taxa
 FOR EACH ROW
 EXECUTE PROCEDURE taxa_label_trigger();
@@ -719,7 +720,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER users_project_users_label_trigger
+CREATE OR REPLACE TRIGGER users_project_users_label_trigger
 AFTER INSERT OR UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_project_users_label_trigger();
@@ -749,7 +750,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER users_subproject_users_label_trigger
+CREATE OR REPLACE TRIGGER users_subproject_users_label_trigger
 AFTER INSERT OR UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_subproject_users_label_trigger();
@@ -774,7 +775,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER vector_layers_insert_trigger
+CREATE OR REPLACE TRIGGER vector_layers_insert_trigger
 AFTER INSERT ON vector_layers
 FOR EACH ROW
 EXECUTE PROCEDURE vector_layers_insert_trigger();
@@ -817,7 +818,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER widgets_for_fields_label_trigger
+CREATE OR REPLACE TRIGGER widgets_for_fields_label_trigger
 AFTER INSERT OR UPDATE of field_type_id, widget_type_id ON widgets_for_fields
 FOR EACH ROW
 EXECUTE PROCEDURE widgets_for_fields_label_trigger();
@@ -842,7 +843,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER wms_layers_insert_trigger
+CREATE OR REPLACE TRIGGER wms_layers_insert_trigger
 AFTER INSERT ON wms_layers
 FOR EACH ROW
 EXECUTE PROCEDURE wms_layers_insert_trigger();
@@ -875,7 +876,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER chart_subjects_label_trigger
+CREATE OR REPLACE TRIGGER chart_subjects_label_trigger
 AFTER INSERT OR UPDATE OF value_unit, value_field, value_source, table_name ON chart_subjects
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();
