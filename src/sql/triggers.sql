@@ -288,13 +288,13 @@ BEGIN
   -- units_name := (SELECT name FROM units WHERE unit_id = NEW.unit_id);
 
   UPDATE check_values 
-    SET label = COALESCE(units_name, '(no unit)') || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-    -- SET label = (
-    --   CASE 
-    --     WHEN units_name is null then NEW.check_value_id::text
-    --     ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-    --   END
-    -- )
+    -- SET label = COALESCE(units_name, '(no unit)') || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+    SET label = (
+      CASE 
+        WHEN units_name is null then NEW.check_value_id::text
+        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+      END
+    )
   WHERE check_values.check_value_id = NEW.check_value_id;
   RETURN NEW;
 END;
