@@ -206,6 +206,9 @@ CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  _taxon_name TEXT;
+  _taxonomy_id uuid;
+  _taxonomy_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -213,12 +216,29 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  -- ensure queries do not return no row
+  IF NEW.taxon_id IS NULL THEN
+    _taxon_name := NULL;
+  ELSE
+    SELECT taxa.name INTO _taxon_name FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+  END IF;
+  IF NEW.taxon_id IS NULL THEN
+    _taxonomy_id := NULL;
+  ELSE
+    SELECT taxa.taxonomy_id INTO _taxonomy_id FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+  END IF;
+  IF _taxonomy_id IS NULL THEN
+    _taxonomy_name := NULL;
+  ELSE
+    SELECT taxonomies.name INTO _taxonomy_name FROM taxonomies WHERE taxonomies.taxonomy_id = _taxonomy_id;
+  END IF;
+
   UPDATE check_taxa 
     SET label = (
       CASE 
-        WHEN taxa.name is null then  NEW.check_taxon_id::text
-        WHEN taxa.taxon_id is null then NEW.check_taxon_id::text
-        ELSE (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) || ': ' || (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
+        WHEN _taxon_name is null then  NEW.check_taxon_id::text
+        WHEN _taxonomy_name is null then NEW.check_taxon_id::text
+        ELSE _taxonomy_name || ': ' || _taxon_name
       END
     );
   RETURN NEW;
