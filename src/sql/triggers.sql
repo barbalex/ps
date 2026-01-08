@@ -78,8 +78,11 @@ BEGIN
     RETURN OLD;
   END IF;
 
--- TODO: remove all stricts?
-  SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
+  if NEW.user_id is null then
+    email := null;
+  else
+    SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
+  end if;
 
   UPDATE accounts set label = 
     CASE
@@ -147,7 +150,12 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT units.name INTO STRICT units_name FROM units WHERE units.unit_id = NEW.unit_id;
+-- TODO: catch null value in NEW for all select into statements
+  IF NEW.unit_id IS NULL THEN
+    units_name := NULL;
+  ELSE
+    SELECT units.name INTO units_name FROM units WHERE units.unit_id = NEW.unit_id;
+  END IF;
 
   UPDATE action_report_values
     SET label = (
@@ -270,7 +278,11 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  select units.name into strict units_name from units where units.unit_id = NEW.unit_id;
+  if NEW.unit_id is null then
+    units_name := null;
+  else
+    SELECT units.name INTO units_name from units where units.unit_id = NEW.unit_id;
+  end if;
 
   UPDATE check_values 
     SET label = (
@@ -316,7 +328,9 @@ CREATE OR REPLACE FUNCTION goal_reports_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  project_goal_reports_label_by TEXT;
+  _subproject_id uuid;
+  _project_id uuid;
+  _project_goal_reports_label_by TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -324,16 +338,27 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  select goal_reports_label_by into strict project_goal_reports_label_by from projects where project_id =(
-    select project_id from subprojects where subproject_id =(
-      select subproject_id from goals where goal_id = NEW.goal_id));
+  -- ensure queries do not return no row
+  if NEW.goal_id is null then
+    _subproject_id := null;
+  else
+    select goals.subproject_id INTO _subproject_id from goals where goals.goal_id = NEW.goal_id;
+  end if;
+
+  if _subproject_id is null then
+    _project_id := null;
+  else
+    select subprojects.project_id INTO _project_id from subprojects where subprojects.subproject_id = _subproject_id;
+  end if;
+
+  select projects.goal_reports_label_by INTO _project_goal_reports_label_by from projects where projects.project_id = _project_id;
 
   UPDATE goal_reports SET label = 
   CASE 
-    WHEN project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
-    WHEN project_goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
-    WHEN NEW.data -> project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
-    ELSE NEW.data ->> project_goal_reports_label_by
+    WHEN _project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    WHEN _project_goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
+    WHEN NEW.data -> _project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    ELSE NEW.data ->> _project_goal_reports_label_by
   END
   WHERE goal_reports.goal_report_id = NEW.goal_report_id;
   RETURN NEW;
@@ -370,7 +395,7 @@ AFTER INSERT ON goal_reports
 FOR EACH ROW
 EXECUTE PROCEDURE goal_reports_label_insert_trigger();
 
--- goal_report_values update
+-- goal_report_values
 CREATE OR REPLACE FUNCTION goal_report_values_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -383,7 +408,11 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT units.name INTO STRICT units_name FROM units WHERE units.unit_id = NEW.unit_id;
+  if NEW.unit_id is null then
+    units_name := null;
+  else
+    SELECT units.name INTO units_name from units where units.unit_id = NEW.unit_id;
+  end if;
 
   UPDATE goal_report_values 
     SET label = (
@@ -397,36 +426,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE TRIGGER goal_report_values_label_update_trigger
-AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON goal_report_values 
+AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON goal_report_values 
 FOR EACH ROW
 EXECUTE PROCEDURE goal_report_values_label_update_trigger();
-
--- goal_report_values insert
-CREATE OR REPLACE FUNCTION goal_report_values_label_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE goal_report_values 
-    SET label = NEW.goal_report_value_id::text
-  WHERE goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE TRIGGER goal_report_values_label_insert_trigger
-AFTER INSERT ON goal_report_values 
-FOR EACH ROW
-EXECUTE PROCEDURE goal_report_values_label_insert_trigger();
 
 -- projects.places_label_by
 CREATE OR REPLACE FUNCTION projects_places_label_trigger()
@@ -497,7 +500,12 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT accounts.projects_label_by INTO STRICT account_projects_label_by FROM accounts WHERE accounts.account_id = NEW.account_id;
+  -- ensure query does not return no row
+  IF NEW.account_id IS NULL THEN
+    account_projects_label_by := NULL;
+  ELSE
+    SELECT accounts.projects_label_by INTO account_projects_label_by FROM accounts WHERE accounts.account_id = NEW.account_id;
+  END IF;
 
   UPDATE projects SET label = CASE
     WHEN account_projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
@@ -528,7 +536,12 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT units.name INTO STRICT units_name FROM units WHERE units.unit_id = NEW.unit_id;
+  -- ensure query does not return no row
+  if NEW.unit_id is null then
+    units_name := null;
+  else
+    SELECT units.name INTO units_name from units where units.unit_id = NEW.unit_id;
+  end if;
 
   UPDATE place_report_values 
     SET label = (
@@ -547,12 +560,13 @@ AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON place_repor
 FOR EACH ROW
 EXECUTE PROCEDURE place_report_values_label_trigger();
 
--- places update
+-- places
 CREATE OR REPLACE FUNCTION places_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  project_places_label_by TEXT;
+  _project_id uuid;
+  _project_places_label_by TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -560,16 +574,27 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT projects.places_label_by INTO STRICT project_places_label_by FROM projects 
-  WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = NEW.subproject_id);
+  -- ensure query does not return no row
+  IF NEW.subproject_id IS NULL THEN
+    _project_id := NULL;
+  ELSE
+    SELECT subprojects.project_id INTO _project_id FROM subprojects WHERE subprojects.subproject_id = NEW.subproject_id;
+  END IF;
+
+  -- ensure query does not return no row
+  IF _project_id IS NULL THEN
+    _project_places_label_by := NULL;
+  ELSE
+    SELECT projects.places_label_by INTO _project_places_label_by FROM projects WHERE projects.project_id = _project_id;
+  END IF;
 
   UPDATE places SET label = 
   case 
-    when project_places_label_by is null then place_id::text
-    when project_places_label_by = 'id' then place_id::text
-    when project_places_label_by = 'level' then level::text
-    when data -> project_places_label_by is null then place_id::text
-    else data ->> project_places_label_by
+    when _project_places_label_by is null then place_id::text
+    when _project_places_label_by = 'id' then place_id::text
+    when _project_places_label_by = 'level' then level::text
+    when data -> _project_places_label_by is null then place_id::text
+    else data ->> _project_places_label_by
   end
   WHERE places.place_id = NEW.place_id;
   RETURN NEW;
@@ -577,35 +602,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER places_label_update_trigger
-AFTER UPDATE of level, data ON places
+AFTER INSERT OR UPDATE of level, data ON places
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_update_trigger();
 
--- places insert
-CREATE OR REPLACE FUNCTION places_label_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE places SET label = NEW.place_id::text
-  WHERE places.place_id = NEW.place_id;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER places_label_insert_trigger
-AFTER INSERT ON places
-FOR EACH ROW
-EXECUTE PROCEDURE places_label_insert_trigger();
-
 -- place_users update
-CREATE OR REPLACE FUNCTION place_users_label_update_trigger()
+CREATE OR REPLACE FUNCTION place_users_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -617,7 +619,12 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT users.email INTO STRICT email FROM users WHERE users.user_id = NEW.user_id;
+  -- ensure query does not return no row
+  IF NEW.user_id IS NULL THEN
+    email := NULL;
+  ELSE
+    SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
+  END IF;
 
   UPDATE place_users 
   SET label = (
@@ -632,37 +639,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER place_users_label_update_trigger
-AFTER UPDATE OF user_id, role ON place_users
+CREATE OR REPLACE TRIGGER place_users_label_trigger
+AFTER INSERT OR UPDATE OF user_id, role ON place_users
 FOR EACH ROW
-EXECUTE PROCEDURE place_users_label_update_trigger();
+EXECUTE PROCEDURE place_users_label_trigger();
 
--- place_users insert
-CREATE OR REPLACE FUNCTION place_users_label_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE place_users 
-  SET label = NEW.place_user_id::text;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE TRIGGER place_users_label_insert_trigger
-AFTER INSERT ON place_users
-FOR EACH ROW
-EXECUTE PROCEDURE place_users_label_insert_trigger();
-
--- project_users.label update
-CREATE OR REPLACE FUNCTION project_users_label_update_trigger()
+-- project_users.label
+CREATE OR REPLACE FUNCTION project_users_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -674,7 +657,12 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  SELECT users.email INTO STRICT email FROM users WHERE users.user_id = NEW.user_id;
+  -- ensure query does not return no row
+  IF NEW.user_id IS NULL THEN
+    email := NULL;
+  ELSE
+    SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
+  END IF;
 
   UPDATE project_users 
   set label = (
@@ -689,43 +677,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER project_users_label_update_trigger
+CREATE OR REPLACE TRIGGER project_users_label_trigger
 AFTER UPDATE OF user_id, role ON project_users
 FOR EACH ROW
-EXECUTE PROCEDURE project_users_label_update_trigger();
-
--- project_users.label insert
-CREATE OR REPLACE FUNCTION project_users_label_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-  email TEXT;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  SELECT users.email INTO STRICT email FROM users WHERE users.user_id = NEW.user_id;
-
-  UPDATE project_users 
-  set label = (
-    case
-      when email is null then NEW.project_user_id::text
-      when NEW.role is null then email || ' (no role)'
-      else email || ' (' || NEW.role || ')'
-    end
-  );
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE TRIGGER project_users_label_insert_trigger
-AFTER INSERT ON project_users
-FOR EACH ROW
-EXECUTE PROCEDURE project_users_label_insert_trigger();
+EXECUTE PROCEDURE project_users_label_trigger();
 
 -- TODO: go on with checking all label =, insert AND update triggers
 -- subproject_taxa.label
