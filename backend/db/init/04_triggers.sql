@@ -655,13 +655,12 @@ AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE subproject_taxon_label_trigger();
 
--- TODO: go on with checking all label =, insert AND update triggers
-
 -- subproject_users.label
 CREATE OR REPLACE FUNCTION subproject_users_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  _email TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -669,13 +668,19 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  IF NEW.user_id IS NULL THEN
+    _email := NULL;
+  ELSE
+    SELECT users.email INTO _email FROM users WHERE users.user_id = NEW.user_id;
+  END IF;
+
   UPDATE subproject_users 
   set label = (
     CASE
-      WHEN NEW.role is null THEN NEW.subproject_user_id::text
       WHEN NEW.user_id is null THEN NEW.subproject_user_id::text
-      WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.subproject_user_id::text
-      ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
+      WHEN _email is null THEN NEW.subproject_user_id::text
+      WHEN NEW.role is null THEN _email || ' (no role)'
+      ELSE _email || ' (' || NEW.role || ')'
     END
   );
   RETURN NEW;
@@ -702,8 +707,8 @@ BEGIN
   UPDATE taxa SET label = (
     case 
       when taxonomies.name is null then taxon_id::text
-      when taxonomies.type is null then taxonomies.name
-      when taxa.name is null then taxonomies.name || ' (' || taxonomies.type || ')'
+      when taxonomies.type is null then taxonomies.name || ' (no type, no taxon)'
+      when taxa.name is null then taxonomies.name || ' (' || taxonomies.type || '): (no taxon)'
       else taxonomies.name || ' (' || taxonomies.type || '): ' || taxa.name
     end
   )
@@ -734,7 +739,7 @@ BEGIN
   set label = (
     CASE
       WHEN NEW.email is null THEN NEW.user_id::text
-      WHEN project_users.role is null THEN NEW.email
+      WHEN project_users.role is null THEN NEW.email || ' (no role)'
       ELSE NEW.email || ' (' || project_users.role || ')'
     END
   )
@@ -744,7 +749,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER users_project_users_label_trigger
-AFTER INSERT OR UPDATE OF email ON users
+AFTER INSERT OR UPDATE OF email, role ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_project_users_label_trigger();
 
@@ -764,7 +769,7 @@ BEGIN
   set label = (
     CASE
       WHEN NEW.email is null THEN NEW.user_id::text
-      WHEN subproject_users.role is null THEN NEW.email
+      WHEN subproject_users.role is null THEN NEW.email || ' (no role)'
       ELSE NEW.email || ' (' || subproject_users.role || ')'
     END
   )
@@ -774,9 +779,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER users_subproject_users_label_trigger
-AFTER INSERT OR UPDATE OF email ON users
+AFTER INSERT OR UPDATE OF email, role ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_subproject_users_label_trigger();
+
+-- TODO: go on with checking all label =, insert AND update triggers
 
 -- on insert vector_layers if type is in:
 -- places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
@@ -785,6 +792,8 @@ CREATE OR REPLACE FUNCTION vector_layers_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  vld_exists BOOLEAN;
+  lp_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -792,8 +801,16 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  INSERT INTO vector_layer_displays (vector_layer_id) VALUES (NEW.vector_layer_id);
-  INSERT INTO layer_presentations (vector_layer_id) VALUES (NEW.vector_layer_id);
+  -- check if vector_layer_display already exists
+  SELECT EXISTS(SELECT 1 FROM vector_layer_displays WHERE vector_layer_id = NEW.vector_layer_id) INTO vld_exists;
+  IF NOT vld_exists THEN
+    INSERT INTO vector_layer_displays (vector_layer_id) VALUES (NEW.vector_layer_id);
+  END IF;
+  -- check if layer_presentation already exists
+  SELECT EXISTS(SELECT 1 FROM layer_presentations WHERE vector_layer_id = NEW.vector_layer_id) INTO lp_exists;
+  IF NOT lp_exists THEN
+    INSERT INTO layer_presentations (vector_layer_id) VALUES (NEW.vector_layer_id);
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

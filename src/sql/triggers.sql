@@ -662,6 +662,7 @@ CREATE OR REPLACE FUNCTION subproject_users_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  _email TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -669,13 +670,19 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  IF NEW.user_id IS NULL THEN
+    _email := NULL;
+  ELSE
+    SELECT users.email INTO _email FROM users WHERE users.user_id = NEW.user_id;
+  END IF;
+
   UPDATE subproject_users 
   set label = (
     CASE
-      WHEN NEW.role is null THEN NEW.subproject_user_id::text
       WHEN NEW.user_id is null THEN NEW.subproject_user_id::text
-      WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.subproject_user_id::text
-      ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
+      WHEN _email is null THEN NEW.subproject_user_id::text
+      WHEN NEW.role is null THEN _email || ' (no role)'
+      ELSE _email || ' (' || NEW.role || ')'
     END
   );
   RETURN NEW;
