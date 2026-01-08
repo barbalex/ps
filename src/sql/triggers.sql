@@ -285,10 +285,8 @@ BEGIN
   END IF;
 
   select units.name into strict units_name from units where units.unit_id = NEW.unit_id;
-  -- units_name := (SELECT name FROM units WHERE unit_id = NEW.unit_id);
 
   UPDATE check_values 
-    -- SET label = COALESCE(units_name, '(no unit)') || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
     SET label = (
       CASE 
         WHEN units_name is null then NEW.check_value_id::text
@@ -327,11 +325,12 @@ AFTER INSERT ON check_values
 FOR EACH ROW
 EXECUTE PROCEDURE check_values_label_insert_trigger();
 
--- goal_reports
-CREATE OR REPLACE FUNCTION goal_reports_label_trigger()
+-- goal_reports update
+CREATE OR REPLACE FUNCTION goal_reports_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  project_goal_reports_label_by TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -339,29 +338,30 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  select goal_reports_label_by into strict project_goal_reports_label_by from projects where project_id =(
+    select project_id from subprojects where subproject_id =(
+      select subproject_id from goals where goal_id = NEW.goal_id));
+
   UPDATE goal_reports SET label = 
   CASE 
-    WHEN projects.goal_reports_label_by IS NULL THEN NEW.goal_id::text
-    WHEN projects.goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
-    WHEN NEW.data -> projects.goal_reports_label_by IS NULL THEN NEW.goal_id::text
-    ELSE NEW.data ->> projects.goal_reports_label_by
+    WHEN project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    WHEN project_goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
+    WHEN NEW.data -> project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    ELSE NEW.data ->> project_goal_reports_label_by
   END
-  FROM (SELECT goal_reports_label_by FROM projects WHERE project_id =(
-    SELECT project_id FROM subprojects WHERE subproject_id =(
-      SELECT subproject_id FROM goals WHERE goal_id = NEW.goal_id))) AS projects
   WHERE goal_reports.goal_report_id = NEW.goal_report_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER goal_reports_label_trigger
-AFTER UPDATE OF data OR INSERT ON goal_reports
+CREATE OR REPLACE TRIGGER goal_reports_label_update_trigger
+AFTER UPDATE OF data ON goal_reports
 FOR EACH ROW
-EXECUTE PROCEDURE goal_reports_label_trigger();
+EXECUTE PROCEDURE goal_reports_label_update_trigger();
 
--- goal_report_values
-CREATE OR REPLACE FUNCTION goal_report_values_label_trigger()
+-- goal_reports insert
+CREATE OR REPLACE FUNCTION goal_reports_label_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -372,14 +372,40 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  UPDATE goal_reports SET label = NEW.goal_id::text
+  WHERE goal_reports.goal_report_id = NEW.goal_report_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER goal_reports_label_insert_trigger
+AFTER INSERT ON goal_reports
+FOR EACH ROW
+EXECUTE PROCEDURE goal_reports_label_insert_trigger();
+
+-- goal_report_values
+CREATE OR REPLACE FUNCTION goal_report_values_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  units_name TEXT;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  SELECT units.name INTO STRICT units_name FROM units WHERE units.unit_id = NEW.unit_id;
+
   UPDATE goal_report_values 
     SET label = (
       CASE 
-        WHEN units.name is null then NEW.goal_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
+        WHEN units_name is null then NEW.goal_report_value_id::text
+        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
       END
     )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
   RETURN NEW;
 END;
@@ -387,7 +413,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE TRIGGER goal_report_values_label_trigger
-AFTER UPDATE OR INSERT ON goal_report_values 
+AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text OR INSERT ON goal_report_values 
 FOR EACH ROW
 EXECUTE PROCEDURE goal_report_values_label_trigger();
 
