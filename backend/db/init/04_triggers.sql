@@ -503,6 +503,7 @@ CREATE OR REPLACE FUNCTION projects_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  account_projects_label_by TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -510,13 +511,14 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  SELECT accounts.projects_label_by INTO STRICT account_projects_label_by FROM accounts WHERE accounts.account_id = NEW.account_id;
+
   UPDATE projects SET label = CASE
-    WHEN accounts.projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    WHEN accounts.projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    WHEN data -> accounts.projects_label_by is null then coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    else data ->> accounts.projects_label_by
+    WHEN account_projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    WHEN account_projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    WHEN data -> account_projects_label_by is null then coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    else data ->> account_projects_label_by
   END
-  FROM (SELECT projects_label_by FROM accounts WHERE account_id = NEW.account_id) AS accounts
   WHERE projects.project_id = NEW.project_id;
   RETURN NEW;
 END;
