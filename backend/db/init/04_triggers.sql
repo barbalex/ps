@@ -534,6 +534,7 @@ CREATE OR REPLACE FUNCTION place_report_values_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  units_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -541,22 +542,22 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  SELECT units.name INTO STRICT units_name FROM units WHERE units.unit_id = NEW.unit_id;
+
   UPDATE place_report_values 
     SET label = (
       CASE 
-        WHEN units.name is null then NEW.place_report_value_id::text
-        ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text)
+        WHEN units_name is null then NEW.place_report_value_id::text
+        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
       END
     )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE place_report_values.place_report_value_id = NEW.place_report_value_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE TRIGGER place_report_values_label_trigger
-AFTER UPDATE ON place_report_values
+AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON place_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE place_report_values_label_trigger();
 
