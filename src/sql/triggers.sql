@@ -70,6 +70,7 @@ create or replace function accounts_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  email TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -77,11 +78,15 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  UPDATE accounts set label = CASE
-    WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), OLD.account_id::text, NEW.account_id::text)
-    WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
-    ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')'
-  END
+-- TODO: remove all stricts?
+  SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
+
+  UPDATE accounts set label = 
+    CASE
+      WHEN email is null THEN NEW.account_id::text
+      WHEN NEW.type is null THEN email || ' (no type)'
+      ELSE email || ' (' || NEW.type || ')'
+    END
   WHERE account_id = NEW.account_id;
   RETURN NEW;
 END;
@@ -134,6 +139,7 @@ CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  units_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -141,49 +147,29 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  UPDATE action_report_values 
-    SET label = NEW.action_report_value_id::text;
--- TODO: this causes out of memory error
--- re-enable later
-  --   SET label = (
-  --     CASE 
-  --       WHEN units.name is null then NEW.action_report_value_id::text
-  --       ELSE units.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-  --     END
-  --   )
-  -- FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
-  -- WHERE action_report_values.action_report_value_id = NEW.action_report_value_id;
+  SELECT units.name INTO STRICT units_name FROM units WHERE units.unit_id = NEW.unit_id;
+
+  UPDATE action_report_values
+    SET label = (
+      CASE 
+        WHEN units_name is null then NEW.action_report_value_id::text
+        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+      END
+    )
+  WHERE action_report_values.action_report_value_id = NEW.action_report_value_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- CREATE OR REPLACE TRIGGER action_report_values_label_trigger
--- AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
--- FOR EACH ROW
--- EXECUTE PROCEDURE action_report_values_label_trigger();
+CREATE OR REPLACE TRIGGER action_report_values_label_update_trigger
+AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
+FOR EACH ROW
+EXECUTE PROCEDURE action_report_values_label_trigger();
 
--- same as above, but only on insert because unit_id can't be looked up on insert
-CREATE OR REPLACE FUNCTION action_report_values_label_trigger_insert()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE action_report_values 
-    SET label = NEW.action_report_value_id::text;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER action_report_values_label_trigger_insert
+CREATE OR REPLACE TRIGGER action_report_values_label_insert_trigger
 AFTER INSERT ON action_report_values
 FOR EACH ROW
-EXECUTE PROCEDURE action_report_values_label_trigger_insert();
+EXECUTE PROCEDURE action_report_values_label_trigger();
 
 -- action_values
 -- TODO: does not work
@@ -713,6 +699,7 @@ CREATE OR REPLACE FUNCTION project_users_label_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  email TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -720,8 +707,16 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  SELECT users.email INTO STRICT email FROM users WHERE users.user_id = NEW.user_id;
+
   UPDATE project_users 
-  set label = NEW.project_user_id::text;
+  set label = (
+    case
+      when email is null then NEW.project_user_id::text
+      when NEW.role is null then email || ' (no role)'
+      else email || ' (' || NEW.role || ')'
+    end
+  );
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -732,6 +727,7 @@ AFTER INSERT ON project_users
 FOR EACH ROW
 EXECUTE PROCEDURE project_users_label_insert_trigger();
 
+-- TODO: go on with checking all label =, insert AND update triggers
 -- subproject_taxa.label
 CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
 RETURNS TRIGGER AS $$
