@@ -185,6 +185,7 @@ CREATE OR REPLACE FUNCTION action_values_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  unit_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -192,48 +193,29 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  -- ensure query does not return no row
+  if NEW.unit_id is null then
+    unit_name := null;
+  else
+    SELECT units.name INTO unit_name from units where units.unit_id = NEW.unit_id;
+  end if;
+
   UPDATE action_values
     SET label = (
       CASE 
-        WHEN unit.name is null then NEW.action_value_id::text
-        ELSE unit.name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+        WHEN unit_name is null then NEW.action_value_id::text
+        ELSE unit_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
       END
     )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS unit
   WHERE action_values.action_value_id = NEW.action_value_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- TODO: this causes out of memory error
--- CREATE OR REPLACE TRIGGER action_values_label_trigger
--- AFTER UPDATE ON action_values
--- FOR EACH ROW
--- EXECUTE PROCEDURE action_values_label_trigger();
-
--- only insert because unit can't yet be looked up
--- works
-CREATE OR REPLACE FUNCTION action_values_label_trigger_insert()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE action_values
-    SET label = NEW.action_value_id::text;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER action_values_label_trigger_insert
-AFTER INSERT ON action_values
+CREATE OR REPLACE TRIGGER action_values_label_trigger
+AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_values
 FOR EACH ROW
-EXECUTE PROCEDURE action_values_label_trigger_insert();
+EXECUTE PROCEDURE action_values_label_trigger();
 
 -- check_taxa
 CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
@@ -265,7 +247,6 @@ FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
 
 -- check_values
--- TODO: Error: out of memory when this trigger runs
 CREATE OR REPLACE FUNCTION check_values_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
