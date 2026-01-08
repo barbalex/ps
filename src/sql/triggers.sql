@@ -66,7 +66,7 @@ EXECUTE PROCEDURE accounts_projects_label_trigger();
 
 
 -- if accounts.label is changed, need to update all labels of accounts
-create or replace function accounts_label_update_trigger()
+create or replace function accounts_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -95,20 +95,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER accounts_label_update_trigger_from_type
-AFTER UPDATE OF type ON accounts
+CREATE OR REPLACE TRIGGER accounts_label_trigger
+AFTER INSERT OR UPDATE OF type, user_id ON accounts
 FOR EACH ROW
-EXECUTE PROCEDURE accounts_label_update_trigger();
-
-CREATE OR REPLACE TRIGGER accounts_label_update_trigger_from_user_id
-AFTER UPDATE OF user_id ON accounts
-FOR EACH ROW
-EXECUTE PROCEDURE accounts_label_update_trigger();
-
-CREATE OR REPLACE TRIGGER accounts_label_insert_trigger
-AFTER INSERT ON accounts
-FOR EACH ROW
-EXECUTE PROCEDURE accounts_label_update_trigger();
+EXECUTE PROCEDURE accounts_label_trigger();
 
 -- if users.email is changed, need to update label of corresponding accounts
 create or replace function users_email_update_trigger()
@@ -150,7 +140,7 @@ BEGIN
     RETURN OLD;
   END IF;
 
--- TODO: catch null value in NEW for all select into statements
+  -- ensure query does not return no row
   IF NEW.unit_id IS NULL THEN
     units_name := NULL;
   ELSE
@@ -169,18 +159,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER action_report_values_label_update_trigger
-AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
-FOR EACH ROW
-EXECUTE PROCEDURE action_report_values_label_trigger();
-
-CREATE OR REPLACE TRIGGER action_report_values_label_insert_trigger
-AFTER INSERT ON action_report_values
+CREATE OR REPLACE TRIGGER action_report_values_label_trigger
+AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_report_values_label_trigger();
 
 -- action_values
--- TODO: does not work
 CREATE OR REPLACE FUNCTION action_values_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -247,7 +231,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
 
 -- check_values
-CREATE OR REPLACE FUNCTION check_values_label_update_trigger()
+CREATE OR REPLACE FUNCTION check_values_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -277,35 +261,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER check_values_label_update_trigger
-AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON check_values
+CREATE OR REPLACE TRIGGER check_values_label_trigger
+AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON check_values
 FOR EACH ROW
-EXECUTE PROCEDURE check_values_label_update_trigger();
-
-CREATE OR REPLACE FUNCTION check_values_label_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE check_values 
-    SET label =  NEW.check_value_id::text;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER check_values_label_insert_trigger
-AFTER INSERT ON check_values
-FOR EACH ROW
-EXECUTE PROCEDURE check_values_label_insert_trigger();
+EXECUTE PROCEDURE check_values_label_trigger();
 
 -- goal_reports update
-CREATE OR REPLACE FUNCTION goal_reports_label_update_trigger()
+CREATE OR REPLACE FUNCTION goal_reports_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -332,7 +294,11 @@ BEGIN
     select subprojects.project_id INTO _project_id from subprojects where subprojects.subproject_id = _subproject_id;
   end if;
 
-  select projects.goal_reports_label_by INTO _project_goal_reports_label_by from projects where projects.project_id = _project_id;
+  if _project_id is null then
+    _project_goal_reports_label_by := null;
+  else
+    select projects.goal_reports_label_by INTO _project_goal_reports_label_by from projects where projects.project_id = _project_id;
+  end if;
 
   UPDATE goal_reports SET label = 
   CASE 
@@ -347,37 +313,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER goal_reports_label_update_trigger
-AFTER UPDATE OF data ON goal_reports
+CREATE OR REPLACE TRIGGER goal_reports_label_trigger
+AFTER INSERT OR UPDATE OF data ON goal_reports
 FOR EACH ROW
-EXECUTE PROCEDURE goal_reports_label_update_trigger();
-
--- goal_reports insert
-CREATE OR REPLACE FUNCTION goal_reports_label_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE goal_reports SET label = NEW.goal_id::text
-  WHERE goal_reports.goal_report_id = NEW.goal_report_id;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE TRIGGER goal_reports_label_insert_trigger
-AFTER INSERT ON goal_reports
-FOR EACH ROW
-EXECUTE PROCEDURE goal_reports_label_insert_trigger();
+EXECUTE PROCEDURE goal_reports_label_trigger();
 
 -- goal_report_values
-CREATE OR REPLACE FUNCTION goal_report_values_label_update_trigger()
+CREATE OR REPLACE FUNCTION goal_report_values_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -407,10 +349,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER goal_report_values_label_update_trigger
+CREATE OR REPLACE TRIGGER goal_report_values_label_trigger
 AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON goal_report_values 
 FOR EACH ROW
-EXECUTE PROCEDURE goal_report_values_label_update_trigger();
+EXECUTE PROCEDURE goal_report_values_label_trigger();
 
 -- projects.places_label_by
 CREATE OR REPLACE FUNCTION projects_places_label_trigger()
@@ -542,7 +484,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE place_report_values_label_trigger();
 
 -- places
-CREATE OR REPLACE FUNCTION places_label_update_trigger()
+CREATE OR REPLACE FUNCTION places_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -570,22 +512,22 @@ BEGIN
   END IF;
 
   UPDATE places SET label = 
-  case 
-    when _project_places_label_by is null then place_id::text
-    when _project_places_label_by = 'id' then place_id::text
-    when _project_places_label_by = 'level' then level::text
-    when data -> _project_places_label_by is null then place_id::text
-    else data ->> _project_places_label_by
-  end
+    case 
+      when _project_places_label_by is null then place_id::text
+      when _project_places_label_by = 'id' then place_id::text
+      when _project_places_label_by = 'level' then level::text
+      when data -> _project_places_label_by is null then place_id::text
+      else data ->> _project_places_label_by
+    end
   WHERE places.place_id = NEW.place_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER places_label_update_trigger
+CREATE OR REPLACE TRIGGER places_label_trigger
 AFTER INSERT OR UPDATE of level, data ON places
 FOR EACH ROW
-EXECUTE PROCEDURE places_label_update_trigger();
+EXECUTE PROCEDURE places_label_trigger();
 
 -- place_users update
 CREATE OR REPLACE FUNCTION place_users_label_trigger()
@@ -659,16 +601,18 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE TRIGGER project_users_label_trigger
-AFTER UPDATE OF user_id, role ON project_users
+AFTER INSERT OR UPDATE OF user_id, role ON project_users
 FOR EACH ROW
 EXECUTE PROCEDURE project_users_label_trigger();
 
--- TODO: go on with checking all label =, insert AND update triggers
 -- subproject_taxa.label
 CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  taxon_name TEXT;
+  _taxonomy_id uuid;
+  taxonomy_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -676,15 +620,30 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  -- ensure query does not return no row
+  IF NEW.taxon_id IS NULL THEN
+    taxon_name := NULL;
+  ELSE
+    SELECT taxa.name INTO taxon_name FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+  END IF;
+
+  IF NEW.taxon_id IS NULL THEN
+    _taxonomy_id := NULL;
+  ELSE
+    SELECT taxa.taxonomy_id INTO _taxonomy_id FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+  END IF;
+
+  IF _taxonomy_id IS NULL THEN
+    taxonomy_name := NULL;
+  ELSE
+    SELECT taxonomies.name INTO taxonomy_name FROM taxonomies WHERE taxonomies.taxonomy_id = _taxonomy_id;
+  END IF;
+
   UPDATE subproject_taxa 
     SET label = (
       CASE 
-        WHEN (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is null THEN  NEW.subproject_taxon_id::text
-        ELSE 
-          (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) ||
-          ': ' ||
-          (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
-        
+        WHEN taxon_name is null THEN  NEW.subproject_taxon_id::text
+        ELSE taxonomy_name || ': ' || taxon_name
       END
     );
   RETURN NEW;
@@ -695,6 +654,8 @@ CREATE OR REPLACE TRIGGER subproject_taxon_label_trigger
 AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE subproject_taxon_label_trigger();
+
+-- TODO: go on with checking all label =, insert AND update triggers
 
 -- subproject_users.label
 CREATE OR REPLACE FUNCTION subproject_users_label_trigger()
