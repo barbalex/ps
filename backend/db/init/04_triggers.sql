@@ -826,6 +826,8 @@ CREATE OR REPLACE FUNCTION widgets_for_fields_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  field_type_name TEXT;
+  widget_type_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -833,24 +835,24 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  if NEW.field_type_id is null then
+    field_type_name := null;
+  else
+    SELECT field_types.name INTO field_type_name from field_types where field_types.field_type_id = NEW.field_type_id;
+  end if;
+
+  if NEW.widget_type_id is null then
+    widget_type_name := null;
+  else
+    SELECT widget_types.name INTO widget_type_name from widget_types where widget_types.widget_type_id = NEW.widget_type_id;
+  end if;
+
   UPDATE widgets_for_fields 
   SET label = (
     CASE 
-      WHEN NEW.field_type_id is null THEN NEW.widget_for_field_id::text
-      WHEN NEW.widget_type_id is null THEN (
-        CASE 
-          WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null THEN NEW.widget_for_field_id::text
-          ELSE (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': (no widget)'
-        END
-      )
-      WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null then (
-        CASE 
-          WHEN (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) is null THEN NEW.widget_for_field_id::text
-          ELSE (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) || ': (no widget)'
-        END
-      )
-      WHEN (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) is null then (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': (no widget)'
-      ELSE (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': ' || (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id)
+      WHEN field_type_name is null THEN NEW.widget_for_field_id::text
+      WHEN widget_type_name is null THEN field_type_name || ': (no widget)'
+      ELSE field_type_name || ': ' || widget_type_name
     END
   )
   WHERE widgets_for_fields.widget_for_field_id = NEW.widget_for_field_id;
