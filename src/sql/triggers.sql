@@ -675,8 +675,41 @@ AFTER INSERT ON place_users
 FOR EACH ROW
 EXECUTE PROCEDURE place_users_label_insert_trigger();
 
--- project_users.label
-CREATE OR REPLACE FUNCTION project_users_label_trigger()
+-- project_users.label update
+CREATE OR REPLACE FUNCTION project_users_label_update_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  email TEXT;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  SELECT users.email INTO STRICT email FROM users WHERE users.user_id = NEW.user_id;
+
+  UPDATE project_users 
+  set label = (
+    case
+      when email is null then NEW.project_user_id::text
+      when NEW.role is null then email || ' (no role)'
+      else email || ' (' || NEW.role || ')'
+    end
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER project_users_label_update_trigger
+AFTER UPDATE OF user_id, role ON project_users
+FOR EACH ROW
+EXECUTE PROCEDURE project_users_label_update_trigger();
+
+-- project_users.label insert
+CREATE OR REPLACE FUNCTION project_users_label_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -688,22 +721,16 @@ BEGIN
   END IF;
 
   UPDATE project_users 
-  set label = (
-    case
-      when NEW.role is null then NEW.project_user_id::text
-      when (SELECT email FROM users WHERE user_id = NEW.user_id) is null then NEW.project_user_id::text
-      else (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
-    end
-  );
+  set label = NEW.project_user_id::text;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER project_users_label_trigger
-AFTER INSERT OR UPDATE OF user_id, role ON project_users
+CREATE OR REPLACE TRIGGER project_users_label_insert_trigger
+AFTER INSERT ON project_users
 FOR EACH ROW
-EXECUTE PROCEDURE project_users_label_trigger();
+EXECUTE PROCEDURE project_users_label_insert_trigger();
 
 -- subproject_taxa.label
 CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
