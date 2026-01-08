@@ -561,8 +561,42 @@ AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON place_repor
 FOR EACH ROW
 EXECUTE PROCEDURE place_report_values_label_trigger();
 
--- places
-CREATE OR REPLACE FUNCTION places_label_trigger()
+-- places update
+CREATE OR REPLACE FUNCTION places_label_update_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  project_places_label_by TEXT;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  SELECT projects.places_label_by INTO STRICT project_places_label_by FROM projects 
+  WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = NEW.subproject_id);
+
+  UPDATE places SET label = 
+  case 
+    when project_places_label_by is null then place_id::text
+    when project_places_label_by = 'id' then place_id::text
+    when project_places_label_by = 'level' then level::text
+    when data -> project_places_label_by is null then place_id::text
+    else data ->> project_places_label_by
+  end
+  WHERE places.place_id = NEW.place_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER places_label_update_trigger
+AFTER UPDATE of level, data ON places
+FOR EACH ROW
+EXECUTE PROCEDURE places_label_update_trigger();
+
+-- places insert
+CREATE OR REPLACE FUNCTION places_label_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -573,28 +607,16 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  UPDATE places SET label = 
-  case 
-    when projects.places_label_by is null then place_id::text
-    when projects.places_label_by = 'id' then place_id::text
-    when projects.places_label_by = 'level' then level::text
-    when data -> projects.places_label_by is null then place_id::text
-    else data ->> projects.places_label_by
-  end
-  FROM (
-    SELECT places_label_by from projects 
-    where project_id = (select project_id from subprojects where subproject_id = NEW.subproject_id)
-  ) as projects
+  UPDATE places SET label = NEW.place_id::text
   WHERE places.place_id = NEW.place_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE TRIGGER places_label_trigger
-AFTER INSERT OR UPDATE of level, data ON places
+CREATE OR REPLACE TRIGGER places_label_insert_trigger
+AFTER INSERT ON places
 FOR EACH ROW
-EXECUTE PROCEDURE places_label_trigger();
+EXECUTE PROCEDURE places_label_insert_trigger();
 
 -- place_users
 CREATE OR REPLACE FUNCTION place_users_label_trigger()
