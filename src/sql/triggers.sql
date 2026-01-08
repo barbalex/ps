@@ -384,8 +384,8 @@ AFTER INSERT ON goal_reports
 FOR EACH ROW
 EXECUTE PROCEDURE goal_reports_label_insert_trigger();
 
--- goal_report_values
-CREATE OR REPLACE FUNCTION goal_report_values_label_trigger()
+-- goal_report_values update
+CREATE OR REPLACE FUNCTION goal_report_values_label_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -412,10 +412,35 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER goal_report_values_label_trigger
-AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text OR INSERT ON goal_report_values 
+CREATE OR REPLACE TRIGGER goal_report_values_label_update_trigger
+AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON goal_report_values 
 FOR EACH ROW
-EXECUTE PROCEDURE goal_report_values_label_trigger();
+EXECUTE PROCEDURE goal_report_values_label_update_trigger();
+
+-- goal_report_values insert
+CREATE OR REPLACE FUNCTION goal_report_values_label_insert_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  UPDATE goal_report_values 
+    SET label = NEW.goal_report_value_id::text
+  WHERE goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER goal_report_values_label_insert_trigger
+AFTER INSERT ON goal_report_values 
+FOR EACH ROW
+EXECUTE PROCEDURE goal_report_values_label_insert_trigger();
 
 -- projects.places_label_by
 CREATE OR REPLACE FUNCTION projects_places_label_trigger()
