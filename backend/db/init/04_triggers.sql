@@ -749,7 +749,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER users_project_users_label_trigger
-AFTER INSERT OR UPDATE OF email, role ON users
+AFTER INSERT OR UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_project_users_label_trigger();
 
@@ -769,8 +769,7 @@ BEGIN
   set label = (
     CASE
       WHEN NEW.email is null THEN NEW.user_id::text
-      WHEN subproject_users.role is null THEN NEW.email || ' (no role)'
-      ELSE NEW.email || ' (' || subproject_users.role || ')'
+      ELSE NEW.email || ' (' || coalesce(subproject_users.role, 'no role') || ')'
     END
   )
   WHERE user_id = NEW.user_id;
@@ -779,7 +778,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER users_subproject_users_label_trigger
-AFTER INSERT OR UPDATE OF email, role ON users
+AFTER INSERT OR UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_subproject_users_label_trigger();
 
@@ -817,8 +816,6 @@ CREATE OR REPLACE TRIGGER vector_layers_insert_trigger
 AFTER INSERT ON vector_layers
 FOR EACH ROW
 EXECUTE PROCEDURE vector_layers_insert_trigger();
-
--- TODO: go on with checking all label =, insert AND update triggers
 
 -- widgets_for_fields
 -- TODO: enable using an array of column names
@@ -865,14 +862,14 @@ AFTER INSERT OR UPDATE of field_type_id, widget_type_id ON widgets_for_fields
 FOR EACH ROW
 EXECUTE PROCEDURE widgets_for_fields_label_trigger();
 
-
 -- on insert wms_layers if type is in:
 -- places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
--- create a corresponding wms_layer_display
+-- create a corresponding layer_presentation
 CREATE OR REPLACE FUNCTION wms_layers_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  lp_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -880,7 +877,11 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  INSERT INTO layer_presentations (wms_layer_id) VALUES (NEW.wms_layer_id);
+  -- check if layer_presentation already exists
+  SELECT EXISTS(SELECT 1 FROM layer_presentations WHERE wms_layer_id = NEW.wms_layer_id) INTO lp_exists;
+  IF NOT lp_exists THEN
+    INSERT INTO layer_presentations (wms_layer_id) VALUES (NEW.wms_layer_id);
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -895,6 +896,7 @@ CREATE OR REPLACE FUNCTION chart_subjects_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  unit_name TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -902,17 +904,20 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  UPDATE chart_subjects SET label = (
+  if NEW.value_unit is null then
+    unit_name := null;
+  else
+    SELECT units.name INTO unit_name from units where units.unit_id = NEW.value_unit;
+  end if;
+
+  UPDATE chart_subjects 
+  SET label = 
     case 
-      when value_unit is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', ' || coalesce(value_field, '(no field)') || ', (no unit)'
-      when units.name is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', ' || coalesce(value_field, '(no field)') || ', (no unit)'
-      when value_field is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', (no field)' || ', ' || units.name
-      when value_source is null then coalesce(table_name, '(no table name)') || ', (no source)' || ', ' || value_field || ', ' || units.name
-      when table_name is null then '(no table name)' || ', ' || value_source || ', ' || value_field || ', ' || units.name
-      else table_name || ', ' || value_source || ', ' || value_field || ', ' || units.name
+      when NEW.value_field is not null then
+        coalesce(NEW.table_name, '(no table name)') || ', ' || coalesce(NEW.value_source, '(no source)') || ', ' || NEW.value_field || ', ' || coalesce(unit_name, '(no unit)')
+      else 
+        coalesce(NEW.table_name, '(no table name)') || ', ' || coalesce(NEW.value_source, '(no source)')
     end
-  )
-  FROM (SELECT name FROM units WHERE unit_id = NEW.value_unit) AS units
   WHERE chart_subjects.chart_subject_id = NEW.chart_subject_id;
   RETURN NEW;
 END;
