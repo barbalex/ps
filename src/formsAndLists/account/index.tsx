@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -19,6 +19,7 @@ const from = '/data/accounts/$accountId'
 export const Account = () => {
   const { accountId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -39,7 +40,11 @@ export const Account = () => {
         accountId,
       ])
     } catch (error) {
-      console.error('error changing account:', error)
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
     }
     addOperation({
       table: 'accounts',
@@ -54,7 +59,12 @@ export const Account = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Account" id={accountId} />
+    return (
+      <NotFound
+        table="Account"
+        id={accountId}
+      />
+    )
   }
 
   return (
@@ -69,6 +79,8 @@ export const Account = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.user_id?.state}
+          validationMessage={validations.user_id?.message}
         />
         <RadioGroupField
           label="Type"
@@ -76,18 +88,24 @@ export const Account = () => {
           list={['free', 'basic', 'premium']}
           value={row.type ?? ''}
           onChange={onChange}
+          validationState={validations.type?.state}
+          validationMessage={validations.type?.message}
         />
         <DateField
           label="Starts"
           name="period_start"
           value={row.period_start}
           onChange={onChange}
+          validationState={validations.period_start?.state}
+          validationMessage={validations.period_start?.message}
         />
         <DateField
           label="Ends"
           name="period_end"
           value={row.period_end}
           onChange={onChange}
+          validationState={validations.period_end?.state}
+          validationMessage={validations.period_end?.message}
         />
       </div>
     </div>
