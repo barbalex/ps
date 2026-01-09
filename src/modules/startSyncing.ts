@@ -1132,7 +1132,7 @@ export const startSyncing = async (db) => {
     onInitialSync: () => {
       store.set(syncingAtom, false)
       console.log('Syncer.startSyncing: initial sync done')
-      // setTimeout(() => window.location.reload(true), 1000)
+      setTimeout(() => window.location.reload(true), 1000)
     },
     onError: (error) => console.error('Syncer', error),
   })

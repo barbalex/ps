@@ -79,12 +79,12 @@ CREATE TABLE IF NOT EXISTS projects(
   subproject_name_plural text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
   places_label_by text DEFAULT NULL, -- TODO: jsonb array
-  places_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  persons_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  persons_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  goals_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  goal_reports_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  goal_reports_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
+  places_order_by text DEFAULT NULL, -- TODO: jsonb array
+  persons_label_by text DEFAULT NULL, -- TODO: jsonb array
+  persons_order_by text DEFAULT NULL, -- TODO: jsonb array
+  goals_label_by text DEFAULT NULL, -- TODO: jsonb array
+  goal_reports_label_by text DEFAULT NULL, -- TODO: jsonb array
+  goal_reports_order_by text DEFAULT NULL, -- TODO: jsonb array
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
@@ -852,7 +852,7 @@ CREATE TABLE IF NOT EXISTS check_values(
   check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- with this reference, when setting unit_id, live_query re-execution fails with memory error
+  -- with this reference to "on update cascade", when setting unit_id, live_query re-execution fails with memory error
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action,
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
