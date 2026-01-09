@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -21,6 +22,7 @@ interface Props {
 export const Form = ({ autoFocusRef, from }: Props) => {
   const { chartId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
@@ -33,10 +35,23 @@ export const Form = ({ autoFocusRef, from }: Props) => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
-      value,
-      chartId,
-    ])
+    try {
+      await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
+        value,
+        chartId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     const draft = { [name]: value }
     addOperation({
       table: 'charts',
@@ -246,7 +261,12 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Chart" id={chartId} />
+    return (
+      <NotFound
+        table="Chart"
+        id={chartId}
+      />
+    )
   }
 
   // console.log('hello ChartForm', { row, chart_id })
@@ -254,12 +274,19 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   return (
     <div className="form-container">
       <Section title="General settings">
-        <ChartType onChange={onChange} row={row} ref={autoFocusRef} />
+        <ChartType
+          onChange={onChange}
+          row={row}
+          ref={autoFocusRef}
+          validations={validations}
+        />
         <TextField
           label="Title"
           name="title"
           value={row.title}
           onChange={onChange}
+          validationState={validations.title?.state}
+          validationMessage={validations.title?.message}
         />
       </Section>
       <Section title="Data / Subjects presentation">
@@ -268,14 +295,22 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="years_current"
           value={row.years_current ?? false}
           onChange={onChange}
-          validationMessage="The chart shows data of the current year"
+          validationState={validations.years_current?.state}
+          validationMessage={
+            validations.years_current?.message ??
+            'The chart shows data of the current year'
+          }
         />
         <SwitchField
           label="Previous"
           name="years_previous"
           value={row.years_previous ?? false}
           onChange={onChange}
-          validationMessage="The chart shows data of the previous year"
+          validationState={validations.years_previous?.state}
+          validationMessage={
+            validations.years_previous?.message ??
+            'The chart shows data of the previous year'
+          }
         />
         <TextField
           label="Specific"
@@ -283,7 +318,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_specific}
           type="number"
           onChange={onChange}
-          validationMessage="The chart shows data of the specific year entered"
+          validationState={validations.years_specific?.state}
+          validationMessage={
+            validations.years_specific?.message ??
+            'The chart shows data of the specific year entered'
+          }
         />
         <TextField
           label="Last X"
@@ -291,7 +330,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_last_x}
           type="number"
           onChange={onChange}
-          validationMessage="The chart shows no more than the last x years (x = value entered)"
+          validationState={validations.years_last_x?.state}
+          validationMessage={
+            validations.years_last_x?.message ??
+            'The chart shows no more than the last x years (x = value entered)'
+          }
         />
         <TextField
           label="Since"
@@ -299,7 +342,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_since}
           type="number"
           onChange={onChange}
-          validationMessage="The chart shows data since the year entered"
+          validationState={validations.years_since?.state}
+          validationMessage={
+            validations.years_since?.message ??
+            'The chart shows data since the year entered'
+          }
         />
         <TextField
           label="Until"
@@ -307,7 +354,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_until}
           type="number"
           onChange={onChange}
-          validationMessage="The chart shows data until the year entered"
+          validationState={validations.years_until?.state}
+          validationMessage={
+            validations.years_until?.message ??
+            'The chart shows data until the year entered'
+          }
         />
       </Section>
       <Section title="Data / Subjects presentation">
@@ -316,21 +367,33 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="subjects_stacked"
           value={row.subjects_stacked}
           onChange={onChange}
-          validationMessage="When true, subjects graphs will be stacked. If false, they will be drawn covering each other"
+          validationState={validations.subjects_stacked?.state}
+          validationMessage={
+            validations.subjects_stacked?.message ??
+            'When true, subjects graphs will be stacked. If false, they will be drawn covering each other'
+          }
         />
         <SwitchField
           label="Draw subjects in separate charts?"
           name="subjects_single"
           value={row.subjects_single}
           onChange={onChange}
-          validationMessage="When false, subjects will be drawn in a single graph"
+          validationState={validations.subjects_single?.state}
+          validationMessage={
+            validations.subjects_single?.message ??
+            'When false, subjects will be drawn in a single graph'
+          }
         />
         <SwitchField
           label="When multiple subjects exist: show their share as percentage?"
           name="percent"
           value={row.percent}
           onChange={onChange}
-          validationMessage="You will see the percentage of every subject, totalling 100%. This only works well when subjects have values for every year"
+          validationState={validations.percent?.state}
+          validationMessage={
+            validations.percent?.message ??
+            'You will see the percentage of every subject, totalling 100%. This only works well when subjects have values for every year'
+          }
         />
       </Section>
     </div>

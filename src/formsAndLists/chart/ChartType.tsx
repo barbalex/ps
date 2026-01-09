@@ -3,7 +3,7 @@ import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const ChartType = ({ onChange, row, ref }) => {
+export const ChartType = ({ onChange, validations, row, ref }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT chart_type FROM chart_types order by sort, chart_type`,
@@ -20,7 +20,11 @@ export const ChartType = ({ onChange, row, ref }) => {
       value={row.chart_type ?? ''}
       onChange={onChange}
       autoFocus
-      validationMessage="Choose what type of chart you want to display"
+      validationState={validations.chart_type?.state}
+      validationMessage={
+        validations.chart_type?.message ??
+        'Choose what type of chart you want to display'
+      }
       ref={ref}
     />
   )
