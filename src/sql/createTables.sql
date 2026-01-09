@@ -1736,7 +1736,7 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
   -- make combination of project_id and label unique, using explicit error message
-  CONSTRAINT unique_project_label UNIQUE(project_id, label)
+  CONSTRAINT vector_layer_labels_should_be_unique_in_project UNIQUE(project_id, label)
 );
 
 CREATE INDEX IF NOT EXISTS vector_layers_account_id_idx ON vector_layers USING btree(account_id);

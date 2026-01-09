@@ -4,17 +4,6 @@ import type { InputProps } from '@fluentui/react-components'
 
 import styles from './TextField.module.css'
 
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: '10px',
-  userSelect: 'none',
-}
-const fieldStyle = {
-  width: '100%',
-}
-
 export const TextField = ({
   label,
   name,
