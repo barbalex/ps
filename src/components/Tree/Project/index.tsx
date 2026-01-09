@@ -3,6 +3,7 @@ import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
+import { ProjectDesignNode } from '../ProjectDesign.tsx'
 import { SubprojectsNode } from '../Subprojects.tsx'
 import { ProjectReportsNode } from '../ProjectReports.tsx'
 import { PersonsNode } from '../Persons.tsx'
@@ -84,6 +85,10 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           )}
           {designing && (
             <>
+              <ProjectDesignNode
+                nav={nav}
+                level={level + 1}
+              />
               <ProjectUsersNode projectId={nav.id} />
               <ListsNode projectId={nav.id} />
               <TaxonomiesNode projectId={nav.id} />

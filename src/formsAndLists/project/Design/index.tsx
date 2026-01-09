@@ -1,5 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { Label, Divider } from '@fluentui/react-components'
+import { useSetAtom } from 'jotai'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
@@ -10,15 +12,71 @@ import { LabelBy } from '../../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../../components/shared/SwitchField.tsx'
 import { Type } from './Type.tsx'
+import { Loading } from '../../../components/shared/Loading.tsx'
+import { NotFound } from '../../../components/NotFound.tsx'
 import styles from './index.module.css'
+import { addOperationAtom } from '../../../store.ts'
+import type Projects from '../../../models/public/Projects.ts'
 
-export const Design = ({ onChange, row, from }) => {
+export const Design = ({ from }) => {
   const { projectId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
+
+  const db = usePGlite()
+
+  const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
+    projectId,
+  ])
+  const row: Projects | undefined = res?.rows?.[0]
+
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
+
+    try {
+      await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
+        value,
+        projectId,
+      ])
+    } catch (error) {
+      return console.error('error updating project', error)
+    }
+    // add task to update server and rollback PGlite in case of error
+    // https://tanstack.com/db/latest/docs/collections/electric-collection?
+    // TODO: use this everywhere
+    addOperation({
+      table: 'projects',
+      rowIdName: 'project_id',
+      rowId: projectId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
+  }
+
+  if (!res) return <Loading />
+
+  if (!row) {
+    return (
+      <NotFound
+        table="Project"
+        id={projectId}
+      />
+    )
+  }
 
   return (
-    <div className="form-container" role="tabpanel" aria-labelledby="design">
+    <div
+      className="form-container"
+      role="tabpanel"
+      aria-labelledby="design"
+    >
       <Label className={styles.label}>Project configuration</Label>
-      <Type row={row} onChange={onChange} />
+      <Type
+        row={row}
+        onChange={onChange}
+      />
       <TextField
         label="Name of subproject (singular)"
         name="subproject_name_singular"
