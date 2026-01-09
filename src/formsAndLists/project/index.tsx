@@ -1,28 +1,24 @@
 import { useRef } from 'react'
-import { Tab, TabList } from '@fluentui/react-components'
-import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
+import { useParams } from '@tanstack/react-router'
 
 import { Header } from './Header.tsx'
-import { ProjectForm as Form } from './Form.tsx'
-import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { designingAtom, addOperationAtom } from '../../store.ts'
+import { addOperationAtom } from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import type Projects from '../../models/public/Projects.ts'
+import { TextField } from '../../components/shared/TextField.tsx'
+import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
 export const Project = ({ from }) => {
-  const designing = useAtomValue(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
-  const { projectTab } = useSearch({ from })
-  const navigate = useNavigate()
 
   const db = usePGlite()
 
@@ -30,9 +26,6 @@ export const Project = ({ from }) => {
     projectId,
   ])
   const row: Projects | undefined = res?.rows?.[0]
-
-  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) =>
-    navigate({ search: { projectTab: data.value } })
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -63,46 +56,46 @@ export const Project = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Project" id={projectId} />
+    return (
+      <NotFound
+        table="Project"
+        id={projectId}
+      />
+    )
   }
+
+  // need to extract the jsonb data from the row
+  // as inside filters it's name is a path
+  // instead of it being inside of the data field
+  const jsonbData = jsonbDataFromRow(row)
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
-      {!designing ? (
-        <Form
-          row={row}
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
           onChange={onChange}
-          autoFocusRef={autoFocusRef}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <Jsonb
+          table="projects"
+          idField="project_id"
+          id={row.project_id}
+          data={jsonbData}
           from={from}
         />
-      ) : (
-        <>
-          <TabList selectedValue={projectTab} onTabSelect={onTabSelect}>
-            <Tab id="form" value="form">
-              Form
-            </Tab>
-            {designing && (
-              <Tab id="design" value="design">
-                Design
-              </Tab>
-            )}
-          </TabList>
-          {projectTab === 'form' && (
-            <div role="tabpanel" aria-labelledby="form">
-              <Form
-                row={row}
-                onChange={onChange}
-                autoFocusRef={autoFocusRef}
-                from={from}
-              />
-            </div>
-          )}
-          {projectTab === 'design' && designing && (
-            <Design onChange={onChange} row={row} from={from} />
-          )}
-        </>
-      )}
+      </div>
     </div>
   )
 }
