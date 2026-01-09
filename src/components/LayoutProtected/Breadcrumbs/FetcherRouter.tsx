@@ -104,8 +104,6 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
   // causes the compiler to: "Error: Rendered fewer hooks than expected"
   const params = useParams({ strict: false })
 
-  console.log('FetcherRouter', { fetcherName, params })
-
   switch (fetcherName) {
     case 'useDataBreadcrumbData': {
       return <DataFetcher {...other} />
