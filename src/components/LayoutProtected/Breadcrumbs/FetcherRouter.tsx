@@ -631,7 +631,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         />
       )
     }
-    case 'useProjectDesignNavData': {
+    case 'useProjectConfigurationNavData': {
       return (
         <ProjectDesignFetcher
           params={params}

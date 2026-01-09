@@ -1,8 +1,8 @@
-import { useProjectDesignNavData } from '../../../modules/useProjectDesignNavData.ts'
+import { useProjectConfigurationNavData } from '../../../modules/useProjectConfigurationNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
 export const ProjectDesignFetcher = ({ params, ...other }) => {
-  const { navData } = useProjectDesignNavData(params)
+  const { navData } = useProjectConfigurationNavData(params)
 
   return (
     <FetcherReturner

@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { Node } from './Node.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { useProjectDesignNavData } from '../../modules/useProjectDesignNavData.ts'
+import { useProjectConfigurationNavData } from '../../modules/useProjectConfigurationNavData.ts'
 
 interface Props {
   projectId: string
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const ProjectDesignNode = ({ projectId, level = 2 }: Props) => {
-  const { navData } = useProjectDesignNavData({ projectId })
+  const { navData } = useProjectConfigurationNavData({ projectId })
   const {
     label,
     parentUrl,

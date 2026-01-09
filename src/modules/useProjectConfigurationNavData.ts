@@ -8,7 +8,7 @@ type Props = {
   projectId: string
 }
 
-export const useProjectDesignNavData = ({ projectId }: Props) => {
+export const useProjectConfigurationNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
