@@ -7,7 +7,14 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const ActionForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
+export const ActionForm = ({
+  onChange,
+  validations = {},
+  row,
+  orIndex,
+  from,
+  autoFocusRef,
+}) => {
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
@@ -20,12 +27,16 @@ export const ActionForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
         name="date"
         value={row.date}
         onChange={onChange}
+        validationState={validations.date?.state}
+        validationMessage={validations.date?.message}
       />
       <SwitchField
         label="relevant for reports"
         name="relevant_for_reports"
         value={row.relevant_for_reports}
         onChange={onChange}
+        validationState={validations.relevant_for_reports?.state}
+        validationMessage={validations.relevant_for_reports?.message}
       />
       <Jsonb
         table="actions"

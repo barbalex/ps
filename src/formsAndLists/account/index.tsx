@@ -46,6 +46,11 @@ export const Account = () => {
       }))
       return
     }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'accounts',
       rowIdName: 'account_id',

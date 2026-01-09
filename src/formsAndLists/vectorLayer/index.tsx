@@ -43,7 +43,6 @@ export const VectorLayer = ({ from }) => {
       }))
       return
     }
-    // set validations to prev without this field
     setValidations((prev) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [name]: _, ...rest } = prev
@@ -93,7 +92,6 @@ export const VectorLayer = ({ from }) => {
       />
       <div className="form-container">
         <VectorLayerForm
-          // key={JSON.stringify(validations)}
           onChange={onChange}
           validations={validations}
           row={row}

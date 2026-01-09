@@ -19,11 +19,6 @@ export const VectorLayerForm = ({
   isFilter,
   from,
 }) => {
-  console.log('VectorLayerForm, validations:', {
-    validations,
-    labelState: validations.label?.state,
-    labelMessage: validations.label?.message,
-  })
   return (
     <>
       <DropdownFieldSimpleOptions
