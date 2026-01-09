@@ -69,6 +69,7 @@ import { ProjectUserFetcher } from './ProjectUserFetcher.tsx'
 import { ListValuesFetcher } from './ListValuesFetcher.tsx'
 import { ListValueFetcher } from './ListValueFetcher.tsx'
 import { ListsFetcher } from './ListsFetcher.tsx'
+import { ProjectDesignFetcher } from './ProjectDesignFetcher.tsx'
 import { ListFetcher } from './ListFetcher.tsx'
 import { TaxonomiesFetcher } from './TaxonomiesFetcher.tsx'
 import { TaxonomyFetcher } from './TaxonomyFetcher.tsx'
@@ -102,6 +103,8 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
   // need to get params here and pass as props otherwise
   // causes the compiler to: "Error: Rendered fewer hooks than expected"
   const params = useParams({ strict: false })
+
+  console.log('FetcherRouter', { fetcherName, params })
 
   switch (fetcherName) {
     case 'useDataBreadcrumbData': {
@@ -623,6 +626,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useListsNavData': {
       return (
         <ListsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useProjectDesignNavData': {
+      return (
+        <ProjectDesignFetcher
           params={params}
           {...other}
         />
