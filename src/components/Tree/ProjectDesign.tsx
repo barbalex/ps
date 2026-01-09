@@ -26,7 +26,6 @@ export const ProjectDesignNode = ({ projectId, level = 2 }: Props) => {
   const navigate = useNavigate()
 
   const onClickButton = () => {
-    console.log('ProjectDesignNode onClickButton', navData)
     if (isOpen) {
       removeChildNodes({ node: ownArray })
       // TODO: only navigate if urlPath includes ownArray
