@@ -18,7 +18,7 @@ import styles from './index.module.css'
 import { addOperationAtom } from '../../../store.ts'
 import type Projects from '../../../models/public/Projects.ts'
 
-export const Design = ({ from }) => {
+export const Configuration = ({ from }) => {
   const { projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
 

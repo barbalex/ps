@@ -298,10 +298,9 @@ export const useProjectNavData = ({
           },
           ...(designing ?
             [
-              // add a nav Item for Project Design
               {
-                id: 'design',
-                label: 'Project Design',
+                id: 'configuration',
+                label: 'Project Configuration',
               },
               {
                 id: 'users',

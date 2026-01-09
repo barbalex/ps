@@ -68,8 +68,8 @@ import { Route as DataProjectsProjectIdPersonsRouteRouteImport } from './routes/
 import { Route as DataProjectsProjectIdListsRouteRouteImport } from './routes/data/projects/$projectId_/lists/route'
 import { Route as DataProjectsProjectIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/files/route'
 import { Route as DataProjectsProjectIdFieldsRouteRouteImport } from './routes/data/projects/$projectId_/fields/route'
+import { Route as DataProjectsProjectIdDesignRouteRouteImport } from './routes/data/projects/$projectId_/design/route'
 import { Route as DataProjectsProjectIdCrsRouteRouteImport } from './routes/data/projects/$projectId_/crs/route'
-import { Route as DataProjectsProjectIdConfigurationRouteRouteImport } from './routes/data/projects/$projectId_/configuration/route'
 import { Route as DataProjectsProjectIdWmsLayersIndexRouteImport } from './routes/data/projects/$projectId_/wms-layers/index'
 import { Route as DataProjectsProjectIdVectorLayersIndexRouteImport } from './routes/data/projects/$projectId_/vector-layers/index'
 import { Route as DataProjectsProjectIdUsersIndexRouteImport } from './routes/data/projects/$projectId_/users/index'
@@ -82,8 +82,8 @@ import { Route as DataProjectsProjectIdPersonsIndexRouteImport } from './routes/
 import { Route as DataProjectsProjectIdListsIndexRouteImport } from './routes/data/projects/$projectId_/lists/index'
 import { Route as DataProjectsProjectIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/files/index'
 import { Route as DataProjectsProjectIdFieldsIndexRouteImport } from './routes/data/projects/$projectId_/fields/index'
+import { Route as DataProjectsProjectIdDesignIndexRouteImport } from './routes/data/projects/$projectId_/design/index'
 import { Route as DataProjectsProjectIdCrsIndexRouteImport } from './routes/data/projects/$projectId_/crs/index'
-import { Route as DataProjectsProjectIdConfigurationIndexRouteImport } from './routes/data/projects/$projectId_/configuration/index'
 import { Route as DataFilesFileIdPreviewIndexRouteImport } from './routes/data/files/$fileId_/preview.index'
 import { Route as DataProjectsProjectIdWmsLayersFilterRouteImport } from './routes/data/projects/$projectId_/wms-layers/filter'
 import { Route as DataProjectsProjectIdWmsLayersWmsLayerIdRouteImport } from './routes/data/projects/$projectId_/wms-layers/$wmsLayerId'
@@ -629,16 +629,16 @@ const DataProjectsProjectIdFieldsRouteRoute =
     path: '/fields',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
   } as any)
+const DataProjectsProjectIdDesignRouteRoute =
+  DataProjectsProjectIdDesignRouteRouteImport.update({
+    id: '/design',
+    path: '/design',
+    getParentRoute: () => DataProjectsProjectIdRouteRoute,
+  } as any)
 const DataProjectsProjectIdCrsRouteRoute =
   DataProjectsProjectIdCrsRouteRouteImport.update({
     id: '/crs',
     path: '/crs',
-    getParentRoute: () => DataProjectsProjectIdRouteRoute,
-  } as any)
-const DataProjectsProjectIdConfigurationRouteRoute =
-  DataProjectsProjectIdConfigurationRouteRouteImport.update({
-    id: '/configuration',
-    path: '/configuration',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
   } as any)
 const DataProjectsProjectIdWmsLayersIndexRoute =
@@ -713,17 +713,17 @@ const DataProjectsProjectIdFieldsIndexRoute =
     path: '/',
     getParentRoute: () => DataProjectsProjectIdFieldsRouteRoute,
   } as any)
+const DataProjectsProjectIdDesignIndexRoute =
+  DataProjectsProjectIdDesignIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataProjectsProjectIdDesignRouteRoute,
+  } as any)
 const DataProjectsProjectIdCrsIndexRoute =
   DataProjectsProjectIdCrsIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => DataProjectsProjectIdCrsRouteRoute,
-  } as any)
-const DataProjectsProjectIdConfigurationIndexRoute =
-  DataProjectsProjectIdConfigurationIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => DataProjectsProjectIdConfigurationRouteRoute,
   } as any)
 const DataFilesFileIdPreviewIndexRoute =
   DataFilesFileIdPreviewIndexRouteImport.update({
@@ -2669,8 +2669,8 @@ export interface FileRoutesByFullPath {
   '/data/users/': typeof DataUsersIndexRoute
   '/data/widget-types/': typeof DataWidgetTypesIndexRoute
   '/data/widgets-for-fields/': typeof DataWidgetsForFieldsIndexRoute
-  '/data/projects/$projectId/configuration': typeof DataProjectsProjectIdConfigurationRouteRouteWithChildren
   '/data/projects/$projectId/crs': typeof DataProjectsProjectIdCrsRouteRouteWithChildren
+  '/data/projects/$projectId/design': typeof DataProjectsProjectIdDesignRouteRouteWithChildren
   '/data/projects/$projectId/fields': typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
@@ -2702,8 +2702,8 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
   '/data/files/$fileId/preview/': typeof DataFilesFileIdPreviewIndexRoute
-  '/data/projects/$projectId/configuration/': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId/crs/': typeof DataProjectsProjectIdCrsIndexRoute
+  '/data/projects/$projectId/design/': typeof DataProjectsProjectIdDesignIndexRoute
   '/data/projects/$projectId/fields/': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId/files/': typeof DataProjectsProjectIdFilesIndexRoute
   '/data/projects/$projectId/lists/': typeof DataProjectsProjectIdListsIndexRoute
@@ -2972,8 +2972,8 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
   '/data/files/$fileId/preview': typeof DataFilesFileIdPreviewIndexRoute
-  '/data/projects/$projectId/configuration': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId/crs': typeof DataProjectsProjectIdCrsIndexRoute
+  '/data/projects/$projectId/design': typeof DataProjectsProjectIdDesignIndexRoute
   '/data/projects/$projectId/fields': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesIndexRoute
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsIndexRoute
@@ -3175,8 +3175,8 @@ export interface FileRoutesById {
   '/data/users/': typeof DataUsersIndexRoute
   '/data/widget-types/': typeof DataWidgetTypesIndexRoute
   '/data/widgets-for-fields/': typeof DataWidgetsForFieldsIndexRoute
-  '/data/projects/$projectId_/configuration': typeof DataProjectsProjectIdConfigurationRouteRouteWithChildren
   '/data/projects/$projectId_/crs': typeof DataProjectsProjectIdCrsRouteRouteWithChildren
+  '/data/projects/$projectId_/design': typeof DataProjectsProjectIdDesignRouteRouteWithChildren
   '/data/projects/$projectId_/fields': typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   '/data/projects/$projectId_/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
@@ -3208,8 +3208,8 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId_/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
   '/data/files/$fileId_/preview/': typeof DataFilesFileIdPreviewIndexRoute
-  '/data/projects/$projectId_/configuration/': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId_/crs/': typeof DataProjectsProjectIdCrsIndexRoute
+  '/data/projects/$projectId_/design/': typeof DataProjectsProjectIdDesignIndexRoute
   '/data/projects/$projectId_/fields/': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId_/files/': typeof DataProjectsProjectIdFilesIndexRoute
   '/data/projects/$projectId_/lists/': typeof DataProjectsProjectIdListsIndexRoute
@@ -3480,8 +3480,8 @@ export interface FileRouteTypes {
     | '/data/users/'
     | '/data/widget-types/'
     | '/data/widgets-for-fields/'
-    | '/data/projects/$projectId/configuration'
     | '/data/projects/$projectId/crs'
+    | '/data/projects/$projectId/design'
     | '/data/projects/$projectId/fields'
     | '/data/projects/$projectId/files'
     | '/data/projects/$projectId/lists'
@@ -3513,8 +3513,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
     | '/data/files/$fileId/preview/'
-    | '/data/projects/$projectId/configuration/'
     | '/data/projects/$projectId/crs/'
+    | '/data/projects/$projectId/design/'
     | '/data/projects/$projectId/fields/'
     | '/data/projects/$projectId/files/'
     | '/data/projects/$projectId/lists/'
@@ -3783,8 +3783,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
     | '/data/files/$fileId/preview'
-    | '/data/projects/$projectId/configuration'
     | '/data/projects/$projectId/crs'
+    | '/data/projects/$projectId/design'
     | '/data/projects/$projectId/fields'
     | '/data/projects/$projectId/files'
     | '/data/projects/$projectId/lists'
@@ -3985,8 +3985,8 @@ export interface FileRouteTypes {
     | '/data/users/'
     | '/data/widget-types/'
     | '/data/widgets-for-fields/'
-    | '/data/projects/$projectId_/configuration'
     | '/data/projects/$projectId_/crs'
+    | '/data/projects/$projectId_/design'
     | '/data/projects/$projectId_/fields'
     | '/data/projects/$projectId_/files'
     | '/data/projects/$projectId_/lists'
@@ -4018,8 +4018,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId_/wms-layers/filter'
     | '/data/files/$fileId_/preview/'
-    | '/data/projects/$projectId_/configuration/'
     | '/data/projects/$projectId_/crs/'
+    | '/data/projects/$projectId_/design/'
     | '/data/projects/$projectId_/fields/'
     | '/data/projects/$projectId_/files/'
     | '/data/projects/$projectId_/lists/'
@@ -4665,18 +4665,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdFieldsRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
     }
+    '/data/projects/$projectId_/design': {
+      id: '/data/projects/$projectId_/design'
+      path: '/design'
+      fullPath: '/data/projects/$projectId/design'
+      preLoaderRoute: typeof DataProjectsProjectIdDesignRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdRouteRoute
+    }
     '/data/projects/$projectId_/crs': {
       id: '/data/projects/$projectId_/crs'
       path: '/crs'
       fullPath: '/data/projects/$projectId/crs'
       preLoaderRoute: typeof DataProjectsProjectIdCrsRouteRouteImport
-      parentRoute: typeof DataProjectsProjectIdRouteRoute
-    }
-    '/data/projects/$projectId_/configuration': {
-      id: '/data/projects/$projectId_/configuration'
-      path: '/configuration'
-      fullPath: '/data/projects/$projectId/configuration'
-      preLoaderRoute: typeof DataProjectsProjectIdConfigurationRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
     }
     '/data/projects/$projectId_/wms-layers/': {
@@ -4763,19 +4763,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdFieldsIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdFieldsRouteRoute
     }
+    '/data/projects/$projectId_/design/': {
+      id: '/data/projects/$projectId_/design/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/design/'
+      preLoaderRoute: typeof DataProjectsProjectIdDesignIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdDesignRouteRoute
+    }
     '/data/projects/$projectId_/crs/': {
       id: '/data/projects/$projectId_/crs/'
       path: '/'
       fullPath: '/data/projects/$projectId/crs/'
       preLoaderRoute: typeof DataProjectsProjectIdCrsIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdCrsRouteRoute
-    }
-    '/data/projects/$projectId_/configuration/': {
-      id: '/data/projects/$projectId_/configuration/'
-      path: '/'
-      fullPath: '/data/projects/$projectId/configuration/'
-      preLoaderRoute: typeof DataProjectsProjectIdConfigurationIndexRouteImport
-      parentRoute: typeof DataProjectsProjectIdConfigurationRouteRoute
     }
     '/data/files/$fileId_/preview/': {
       id: '/data/files/$fileId_/preview/'
@@ -6470,21 +6470,6 @@ const DataMessagesRouteRouteChildren: DataMessagesRouteRouteChildren = {
 const DataMessagesRouteRouteWithChildren =
   DataMessagesRouteRoute._addFileChildren(DataMessagesRouteRouteChildren)
 
-interface DataProjectsProjectIdConfigurationRouteRouteChildren {
-  DataProjectsProjectIdConfigurationIndexRoute: typeof DataProjectsProjectIdConfigurationIndexRoute
-}
-
-const DataProjectsProjectIdConfigurationRouteRouteChildren: DataProjectsProjectIdConfigurationRouteRouteChildren =
-  {
-    DataProjectsProjectIdConfigurationIndexRoute:
-      DataProjectsProjectIdConfigurationIndexRoute,
-  }
-
-const DataProjectsProjectIdConfigurationRouteRouteWithChildren =
-  DataProjectsProjectIdConfigurationRouteRoute._addFileChildren(
-    DataProjectsProjectIdConfigurationRouteRouteChildren,
-  )
-
 interface DataProjectsProjectIdCrsRouteRouteChildren {
   DataProjectsProjectIdCrsIndexRoute: typeof DataProjectsProjectIdCrsIndexRoute
   DataProjectsProjectIdCrsProjectCrsIdIndexRoute: typeof DataProjectsProjectIdCrsProjectCrsIdIndexRoute
@@ -6500,6 +6485,21 @@ const DataProjectsProjectIdCrsRouteRouteChildren: DataProjectsProjectIdCrsRouteR
 const DataProjectsProjectIdCrsRouteRouteWithChildren =
   DataProjectsProjectIdCrsRouteRoute._addFileChildren(
     DataProjectsProjectIdCrsRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdDesignRouteRouteChildren {
+  DataProjectsProjectIdDesignIndexRoute: typeof DataProjectsProjectIdDesignIndexRoute
+}
+
+const DataProjectsProjectIdDesignRouteRouteChildren: DataProjectsProjectIdDesignRouteRouteChildren =
+  {
+    DataProjectsProjectIdDesignIndexRoute:
+      DataProjectsProjectIdDesignIndexRoute,
+  }
+
+const DataProjectsProjectIdDesignRouteRouteWithChildren =
+  DataProjectsProjectIdDesignRouteRoute._addFileChildren(
+    DataProjectsProjectIdDesignRouteRouteChildren,
   )
 
 interface DataProjectsProjectIdFieldsRouteRouteChildren {
@@ -8230,8 +8230,8 @@ const DataProjectsProjectIdWmsLayersRouteRouteWithChildren =
   )
 
 interface DataProjectsProjectIdRouteRouteChildren {
-  DataProjectsProjectIdConfigurationRouteRoute: typeof DataProjectsProjectIdConfigurationRouteRouteWithChildren
   DataProjectsProjectIdCrsRouteRoute: typeof DataProjectsProjectIdCrsRouteRouteWithChildren
+  DataProjectsProjectIdDesignRouteRoute: typeof DataProjectsProjectIdDesignRouteRouteWithChildren
   DataProjectsProjectIdFieldsRouteRoute: typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   DataProjectsProjectIdFilesRouteRoute: typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   DataProjectsProjectIdListsRouteRoute: typeof DataProjectsProjectIdListsRouteRouteWithChildren
@@ -8250,10 +8250,10 @@ interface DataProjectsProjectIdRouteRouteChildren {
 
 const DataProjectsProjectIdRouteRouteChildren: DataProjectsProjectIdRouteRouteChildren =
   {
-    DataProjectsProjectIdConfigurationRouteRoute:
-      DataProjectsProjectIdConfigurationRouteRouteWithChildren,
     DataProjectsProjectIdCrsRouteRoute:
       DataProjectsProjectIdCrsRouteRouteWithChildren,
+    DataProjectsProjectIdDesignRouteRoute:
+      DataProjectsProjectIdDesignRouteRouteWithChildren,
     DataProjectsProjectIdFieldsRouteRoute:
       DataProjectsProjectIdFieldsRouteRouteWithChildren,
     DataProjectsProjectIdFilesRouteRoute:

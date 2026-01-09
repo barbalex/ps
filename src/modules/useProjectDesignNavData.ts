@@ -13,7 +13,7 @@ export const useProjectDesignNavData = ({ projectId }: Props) => {
   const location = useLocation()
 
   const parentArray = ['data', 'projects', projectId]
-  const ownArray = [...parentArray, 'design']
+  const ownArray = [...parentArray, 'configuration']
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
@@ -31,8 +31,8 @@ export const useProjectDesignNavData = ({ projectId }: Props) => {
     ownArray,
     urlPath,
     ownUrl,
-    label: 'Project Design',
-    nameSingular: 'Project Design',
+    label: 'Project Configuration',
+    nameSingular: 'Project Configuration',
   }
 
   return { navData }
