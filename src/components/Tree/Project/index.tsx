@@ -86,7 +86,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {designing && (
             <>
               <ProjectDesignNode
-                nav={nav}
+                projectId={nav.id}
                 level={level + 1}
               />
               <ProjectUsersNode projectId={nav.id} />
