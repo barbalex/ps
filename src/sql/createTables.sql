@@ -1734,7 +1734,9 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   polygon_count integer DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_by text DEFAULT NULL,
+  -- make combination of project_id and label unique, using explicit error message
+  CONSTRAINT unique_project_label UNIQUE(project_id, label)
 );
 
 CREATE INDEX IF NOT EXISTS vector_layers_account_id_idx ON vector_layers USING btree(account_id);
