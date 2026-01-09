@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -16,8 +15,6 @@ import '../../form.css'
 export const VectorLayer = ({ from }) => {
   const { vectorLayerId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
-
-  const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
 
@@ -64,17 +61,24 @@ export const VectorLayer = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Vector Layer" id={vectorLayerId} />
+    return (
+      <NotFound
+        table="Vector Layer"
+        id={vectorLayerId}
+      />
+    )
   }
 
   return (
     <div className="form-outer-container">
-      <Header row={row} autoFocusRef={autoFocusRef} from={from} />
+      <Header
+        row={row}
+        from={from}
+      />
       <div className="form-container">
         <VectorLayerForm
           onChange={onChange}
           row={row}
-          autoFocusRef={autoFocusRef}
           from={from}
         />
       </div>

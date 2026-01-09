@@ -15,7 +15,6 @@ const vectorLayerTypes = ['wfs', 'upload', 'own']
 export const VectorLayerForm = ({
   onChange,
   row,
-  autoFocusRef,
   isFilter,
   from,
 }) => (
