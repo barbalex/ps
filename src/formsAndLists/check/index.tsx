@@ -73,6 +73,7 @@ export const Check = ({ from }) => {
           row={row}
           autoFocusRef={autoFocusRef}
           from={from}
+          validations={validations}
         />
       </div>
     </div>
