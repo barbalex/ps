@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -17,6 +17,7 @@ import '../../form.css'
 export const CheckValue = ({ from }) => {
   const { checkValueId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -40,9 +41,17 @@ export const CheckValue = ({ from }) => {
         [value, checkValueId],
       )
     } catch (error) {
-      console.error('Error updating check_value:', error)
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
       return
     }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'check_values',
       rowIdName: 'check_value_id',
@@ -56,20 +65,12 @@ export const CheckValue = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Check Value"
-        id={checkValueId}
-      />
-    )
+    return <NotFound table="Check Value" id={checkValueId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
           label="Unit"
@@ -80,6 +81,8 @@ export const CheckValue = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.unit_id?.state}
+          validationMessage={validations.unit_id?.message}
         />
         <TextField
           label="Value (integer)"
@@ -87,6 +90,8 @@ export const CheckValue = ({ from }) => {
           type="number"
           value={row.value_integer ?? ''}
           onChange={onChange}
+          validationState={validations.value_integer?.state}
+          validationMessage={validations.value_integer?.message}
         />
         <TextField
           label="Value (numeric)"
@@ -94,12 +99,16 @@ export const CheckValue = ({ from }) => {
           type="number"
           value={row.value_numeric ?? ''}
           onChange={onChange}
+          validationState={validations.value_numeric?.state}
+          validationMessage={validations.value_numeric?.message}
         />
         <TextField
           label="Value (text)"
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}
+          validationState={validations.value_text?.state}
+          validationMessage={validations.value_text?.message}
         />
       </div>
     </div>
