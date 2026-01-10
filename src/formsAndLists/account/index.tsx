@@ -64,12 +64,7 @@ export const Account = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Account"
-        id={accountId}
-      />
-    )
+    return <NotFound table="Account" id={accountId} />
   }
 
   return (

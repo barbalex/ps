@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, usest } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -17,6 +17,7 @@ import '../../form.css'
 export const CheckTaxon = ({ from }) => {
   const { checkTaxonId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -34,10 +35,23 @@ export const CheckTaxon = ({ from }) => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
-      value,
-      checkTaxonId,
-    ])
+    try {
+      db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
+        value,
+        checkTaxonId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'check_taxa',
       rowIdName: 'check_taxon_id',
@@ -66,6 +80,8 @@ export const CheckTaxon = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.taxon_id?.state}
+          validationMessage={validations.taxon_id?.message}
         />
         <TextField
           label="Value (integer)"
@@ -73,6 +89,8 @@ export const CheckTaxon = ({ from }) => {
           type="number"
           value={row.value_integer ?? ''}
           onChange={onChange}
+          validationState={validations.value_integer?.state}
+          validationMessage={validations.value_integer?.message}
         />
         <TextField
           label="Value (numeric)"
@@ -80,12 +98,16 @@ export const CheckTaxon = ({ from }) => {
           type="number"
           value={row.value_numeric ?? ''}
           onChange={onChange}
+          validationState={validations.value_numeric?.state}
+          validationMessage={validations.value_numeric?.message}
         />
         <TextField
           label="Value (text)"
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}
+          validationState={validations.value_text?.state}
+          validationMessage={validations.value_text?.message}
         />
       </div>
     </div>
