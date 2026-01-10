@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -23,6 +24,7 @@ export const File = ({ from }) => {
   const { fileId } = useParams({ from })
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const res = useLiveQuery(
     `
@@ -33,7 +35,7 @@ export const File = ({ from }) => {
   )
   const row: File | undefined = res?.rows?.[0]
 
-  const onChange = (e, dataIn) => {
+  const onChange = async (e, dataIn) => {
     const { name, value } = getValueFromChange(e, dataIn)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
@@ -62,10 +64,23 @@ export const File = ({ from }) => {
           i === Object.keys(data).length - 1 ? '' : ', '
         }`),
     )
-    db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
-      fileId,
-      ...Object.values(data),
-    ])
+    try {
+      await db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
+        fileId,
+        ...Object.values(data),
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'files',
       rowIdName: 'file_id',
@@ -111,6 +126,8 @@ export const File = ({ from }) => {
           table="projects"
           value={row.project_id ?? ''}
           onChange={onChange}
+          validationState={validations.project_id?.state}
+          validationMessage={validations.project_id?.message}
         />
         <DropdownField
           label="Subproject"
@@ -119,6 +136,8 @@ export const File = ({ from }) => {
           where={`project_id ${row?.project_id ? `= '${row.project_id}'` : 'IS NULL'}`}
           value={row.subproject_id ?? ''}
           onChange={onChange}
+          validationState={validations.subproject_id?.state}
+          validationMessage={validations.subproject_id?.message}
         />
         <DropdownField
           label="Place"
@@ -127,6 +146,8 @@ export const File = ({ from }) => {
           where={`subproject_id ${row?.subproject_id ? `= '${row?.subproject_id}'` : 'IS NULL'}`}
           value={row.place_id ?? ''}
           onChange={onChange}
+          validationState={validations.place_id?.state}
+          validationMessage={validations.place_id?.message}
         />
         <DropdownField
           label="Action"
@@ -135,6 +156,8 @@ export const File = ({ from }) => {
           where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
           value={row.action_id ?? ''}
           onChange={onChange}
+          validationState={validations.action_id?.state}
+          validationMessage={validations.action_id?.message}
         />
         <DropdownField
           label="Check"
@@ -143,6 +166,8 @@ export const File = ({ from }) => {
           where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
           value={row.check_id ?? ''}
           onChange={onChange}
+          validationState={validations.check_id?.state}
+          validationMessage={validations.check_id?.message}
         />
         <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
         <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
