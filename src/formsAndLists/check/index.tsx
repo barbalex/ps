@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -16,6 +16,7 @@ import '../../form.css'
 export const Check = ({ from }) => {
   const { checkId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -30,10 +31,23 @@ export const Check = ({ from }) => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
-      value,
-      checkId,
-    ])
+    try {
+      db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
+        value,
+        checkId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'checks',
       rowIdName: 'check_id',
