@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -18,6 +18,7 @@ const from = '/data/field-types/$fieldTypeId'
 export const FieldType = () => {
   const { fieldTypeId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -28,13 +29,26 @@ export const FieldType = () => {
   )
   const row: FieldType | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
     const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
-    db.query(sql, [value, fieldTypeId])
+    try {
+      await db.query(sql, [value, fieldTypeId])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'field_types',
       rowIdName: 'field_type_id',
@@ -55,7 +69,12 @@ export const FieldType = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          validations={validations}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )
