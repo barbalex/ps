@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -25,6 +26,7 @@ const from =
 export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   const { chartSubjectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -38,10 +40,23 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(
-      `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
-      [value, chartSubjectId],
-    )
+    try {
+      db.query(
+        `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
+        [value, chartSubjectId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'chart_subjects',
       rowIdName: 'chart_subject_id',
@@ -75,8 +90,10 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.table_filter}
           type="number"
           onChange={onChange}
+          validationState={validations.table_filter?.state}
+          validationMessage={validations.table_filter?.message}
         />
-        <ValueSource onChange={onChange} row={row} />
+        <ValueSource onChange={onChange} row={row} validations={validations} />
         {row.value_source && row.value_source !== 'count_rows' && (
           <>
             <TextField
@@ -84,7 +101,10 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
               name="value_field"
               value={row.value_field}
               onChange={onChange}
-              validationMessage="The name of the field"
+              validationState={validations.value_field?.state}
+              validationMessage={
+                validations.value_field?.message ?? 'The name of the field'
+              }
             />
             <TextField
               label="TODO: Value: Unit"
@@ -92,6 +112,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
               value={row.value_unit}
               type="number"
               onChange={onChange}
+              validationState={validations.value_unit?.state}
+              validationMessage={validations.value_unit?.message}
             />
           </>
         )}
@@ -103,14 +125,22 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.sort}
           type="number"
           onChange={onChange}
-          validationMessage="Subjects are sorted by this value if set. Else by their name"
+          validationState={validations.sort?.state}
+          validationMessage={
+            validations.sort?.message ??
+            'Subjects are sorted by this value if set. Else by their name'
+          }
         />
         <SwitchField
           label="Connect missing data"
           name="connect_nulls"
           value={row.connect_nulls}
           onChange={onChange}
-          validationMessage="If true, a line is drawn even when some data points are missing"
+          validationState={validations.connect_nulls?.state}
+          validationMessage={
+            validations.connect_nulls?.message ??
+            'If true, a line is drawn even when some data points are missing'
+          }
         />
       </Section>
       <Section title="Styling">
@@ -120,6 +150,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.stroke}
           type="color"
           onChange={onChange}
+          validationState={validations.stroke?.state}
+          validationMessage={validations.stroke?.message}
         />
         <TextField
           label="Fill"
@@ -127,13 +159,19 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.fill}
           type="color"
           onChange={onChange}
+          validationState={validations.fill?.state}
+          validationMessage={validations.fill?.message}
         />
         <SwitchField
           label="Fill is graded"
           name="fill_graded"
           value={row.fill_graded}
           onChange={onChange}
-          validationMessage="If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap"
+          validationState={validations.fill_graded?.state}
+          validationMessage={
+            validations.fill_graded?.message ??
+            'If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap'
+          }
         />
       </Section>
     </div>
