@@ -5,7 +5,14 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const GoalForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
+export const GoalForm = ({
+  onChange,
+  validations,
+  row,
+  orIndex,
+  from,
+  autoFocusRef,
+}) => {
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
@@ -19,6 +26,8 @@ export const GoalForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
         value={row.year ?? ''}
         type="number"
         onChange={onChange}
+        validationState={validations.year?.state}
+        validationMessage={validations.year?.message}
       />
       <TextField
         label="Name"
@@ -27,6 +36,8 @@ export const GoalForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
+        validationState={validations.name?.state}
+        validationMessage={validations.name?.message}
       />
       <Jsonb
         table="goals"
