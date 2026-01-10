@@ -3,7 +3,7 @@ import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const Table = ({ onChange, row, ref }) => {
+export const Table = ({ onChange, row, ref, validations }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT table_name FROM chart_subject_table_names order by sort, table_name`,
@@ -21,7 +21,11 @@ export const Table = ({ onChange, row, ref }) => {
       onChange={onChange}
       autoFocus
       ref={ref}
-      validationMessage="Choose what table to get the data from"
+      validationState={validations.table_name?.state}
+      validationMessage={
+        validations.table_name?.message ??
+        'Choose what table to get the data from'
+      }
     />
   )
 }

@@ -82,8 +82,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         onChange={onChange}
       />
       <Section title="Data">
-        <Table onChange={onChange} row={row} ref={autoFocusRef} />
-        <Level onChange={onChange} row={row} />
+        <Table onChange={onChange} row={row} ref={autoFocusRef} validations={validations} />
+        <Level onChange={onChange} row={row} validations={validations} />
         <TextField
           label="TODO: table filter"
           name="table_filter"

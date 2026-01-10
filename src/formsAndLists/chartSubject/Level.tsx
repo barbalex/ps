@@ -3,7 +3,7 @@ import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const Level = ({ onChange, row }) => {
+export const Level = ({ onChange, row, validations }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT level FROM chart_subject_table_levels order by level`,
@@ -19,7 +19,11 @@ export const Level = ({ onChange, row }) => {
       isLoading={isLoading}
       value={row.table_level ?? ''}
       onChange={onChange}
-      validationMessage="Level of places and their respective checks and actions"
+      validationState={validations.table_level?.state}
+      validationMessage={
+        validations.table_level?.message ??
+        'Level of places and their respective checks and actions'
+      }
     />
   )
 }
