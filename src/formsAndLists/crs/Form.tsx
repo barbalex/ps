@@ -24,7 +24,7 @@ export const Component = () => {
   const res = useLiveQuery(`SELECT * FROM crs WHERE crs_id = $1`, [crsId])
   const row: CRS | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return

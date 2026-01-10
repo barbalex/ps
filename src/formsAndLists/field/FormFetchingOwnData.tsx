@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
@@ -17,20 +18,35 @@ export const FieldFormFetchingOwnData = ({
 }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
+
   const res = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
     fieldId,
   ])
   const row: Fields | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
-      value,
-      fieldId,
-    ])
+    try {
+      await db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
+        value,
+        fieldId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'fields',
       rowIdName: 'field_id',
@@ -51,6 +67,7 @@ export const FieldFormFetchingOwnData = ({
     <div className="form-container">
       <Form
         onChange={onChange}
+        validations={validations}
         row={row}
         autoFocusRef={autoFocusRef}
         isInForm={isInForm}
