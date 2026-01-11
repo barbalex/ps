@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -21,6 +21,7 @@ export const ListValue = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const res = useLiveQuery(
     `SELECT * FROM list_values WHERE list_value_id = $1`,
@@ -28,15 +29,28 @@ export const ListValue = () => {
   )
   const row: ListValues | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE list_values SET ${name} = $1 WHERE list_value_id = $2`, [
-      value,
-      listValueId,
-    ])
+    try {
+      await db.query(
+        `UPDATE list_values SET ${name} = $1 WHERE list_value_id = $2`,
+        [value, listValueId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'list_values',
       rowIdName: 'list_value_id',
@@ -64,12 +78,16 @@ export const ListValue = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.value?.state}
+          validationMessage={validations.value?.message}
         />
         <SwitchField
           label="Obsolete"
           name="obsolete"
           value={row.obsolete}
           onChange={onChange}
+          validationState={validations.obsolete?.state}
+          validationMessage={validations.obsolete?.message}
         />
       </div>
     </div>
