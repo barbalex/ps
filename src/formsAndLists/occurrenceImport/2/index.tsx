@@ -3,10 +3,16 @@ import { Crs } from './Crs.tsx'
 import { Set } from './Set.tsx'
 import { GeometryMethod } from './GeometryMethod.tsx'
 
-export const Two = ({ occurrenceImport, occurrenceFields, onChange }) => (
+export const Two = ({
+  occurrenceImport,
+  occurrenceFields,
+  onChange,
+  validations,
+}) => (
   <>
     <GeometryMethod
       onChange={onChange}
+      validations={validations}
       row={occurrenceImport}
     />
     {occurrenceImport.geometry_method === 'geojson' && (
@@ -16,7 +22,11 @@ export const Two = ({ occurrenceImport, occurrenceFields, onChange }) => (
         value={occurrenceImport.geojson_geometry_field ?? ''}
         onChange={onChange}
         options={occurrenceFields}
-        validationMessage="Which field contains the GeoJSON geometries?"
+        validationState={validations?.geojson_geometry_field?.state}
+        validationMessage={
+          validations?.geojson_geometry_field?.message ??
+          'Which field contains the GeoJSON geometries?'
+        }
       />
     )}
     {occurrenceImport.geometry_method === 'coordinates' && (
@@ -27,7 +37,11 @@ export const Two = ({ occurrenceImport, occurrenceFields, onChange }) => (
           value={occurrenceImport.x_coordinate_field ?? ''}
           onChange={onChange}
           options={occurrenceFields}
-          validationMessage="Which field contains the X-Coordinates?"
+          validationState={validations?.x_coordinate_field?.state}
+          validationMessage={
+            validations?.x_coordinate_field?.message ??
+            'Which field contains the X-Coordinates?'
+          }
         />
         <DropdownFieldSimpleOptions
           label="Y-Coordinate Field"
@@ -35,7 +49,11 @@ export const Two = ({ occurrenceImport, occurrenceFields, onChange }) => (
           value={occurrenceImport.y_coordinate_field ?? ''}
           onChange={onChange}
           options={occurrenceFields}
-          validationMessage="Which field contains the Y-Coordinates?"
+          validationState={validations?.y_coordinate_field?.state}
+          validationMessage={
+            validations?.y_coordinate_field?.message ??
+            'Which field contains the Y-Coordinates?'
+          }
         />
 
         <p>
@@ -52,6 +70,7 @@ export const Two = ({ occurrenceImport, occurrenceFields, onChange }) => (
         <Crs
           occurrenceImport={occurrenceImport}
           onChange={onChange}
+          validations={validations}
         />
         {occurrenceImport.crs &&
           occurrenceImport.geometry_method === 'coordinates' &&

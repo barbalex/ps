@@ -3,7 +3,7 @@ import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 
-export const GeometryMethod = ({ onChange, row }) => {
+export const GeometryMethod = ({ onChange, validations, row }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT geometry_method FROM occurrence_imports_geometry_methods order by sort, geometry_method`,
@@ -19,7 +19,11 @@ export const GeometryMethod = ({ onChange, row }) => {
       isLoading={isLoading}
       value={row.geometry_method ?? ''}
       onChange={onChange}
-      validationMessage="GeoJSON and Coordinate Fields are supported"
+      validationState={validations?.geometry_method?.state}
+      validationMessage={
+        validations?.geometry_method?.message ??
+        'GeoJSON and Coordinate Fields are supported'
+      }
     />
   )
 }
