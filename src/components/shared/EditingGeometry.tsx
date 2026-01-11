@@ -48,17 +48,15 @@ export const EditingGeometry = ({ row, table }) => {
   const lineCount = value ? value.split(/\r\n|\r|\n/).length : 1
 
   const switchFieldValue =
-    table === 'places' ? row.place_id === editingPlaceGeometry
-    : table === 'checks' ? row.check_id === editingCheckGeometry
-    : row.action_id === editingActionGeometry
+    table === 'places'
+      ? row.place_id === editingPlaceGeometry
+      : table === 'checks'
+        ? row.check_id === editingCheckGeometry
+        : row.action_id === editingActionGeometry
 
   return (
     <Field label="Geometry">
-      <SwitchField
-        label="Edit"
-        value={switchFieldValue}
-        onChange={onChange}
-      />
+      <SwitchField label="Edit" value={switchFieldValue} onChange={onChange} />
       {switchFieldValue && !!row.geometry && (
         <Textarea
           value={row.geometry ? JSON.stringify(row.geometry, null, 3) : ''}

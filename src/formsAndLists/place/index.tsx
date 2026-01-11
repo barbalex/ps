@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams, useSearch } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -49,7 +49,7 @@ export const Place = ({ from }) => {
   const nameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
   const namePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     console.log('Place.onChange', {
@@ -62,10 +62,23 @@ export const Place = ({ from }) => {
     })
     if (row[name] === value) return
 
-    db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
-      value,
-      placeId,
-    ])
+    try {
+      await db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
+        value,
+        placeId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'places',
       rowIdName: 'place_id',
@@ -83,7 +96,14 @@ export const Place = ({ from }) => {
   }
 
   if (onlyForm) {
-    return <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+    return (
+      <Form
+        row={row}
+        onChange={onChange}
+        validations={validations}
+        autoFocusRef={autoFocusRef}
+      />
+    )
   }
 
   return (
@@ -95,7 +115,12 @@ export const Place = ({ from }) => {
         namePlural={namePlural}
       />
       <div className={styles.fields}></div>
-      <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+      <Form
+        row={row}
+        onChange={onChange}
+        validations={validations}
+        autoFocusRef={autoFocusRef}
+      />
     </div>
   )
 }

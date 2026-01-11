@@ -9,7 +9,14 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
-export const PlaceForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
+export const PlaceForm = ({
+  onChange,
+  validations,
+  row,
+  orIndex,
+  from,
+  autoFocusRef,
+}) => {
   const { subprojectId } = useParams({ from })
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('filter')
@@ -32,6 +39,8 @@ export const PlaceForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
             list={[1, 2]}
             value={row.level ?? ''}
             onChange={onChange}
+            validationState={validations.level?.state}
+            validationMessage={validations.level?.message}
           />
           {row.level === 2 && (
             <DropdownField
@@ -44,6 +53,8 @@ export const PlaceForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
               onChange={onChange}
               autoFocus
               ref={autoFocusRef}
+              validationState={validations.parent_id?.state}
+              validationMessage={validations.parent_id?.message}
             />
           )}
         </>
@@ -54,6 +65,8 @@ export const PlaceForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
         value={row.since}
         type="number"
         onChange={onChange}
+        validationState={validations.since?.state}
+        validationMessage={validations.since?.message}
       />
       <TextField
         label="Until when did this place exist? (year)"
@@ -61,6 +74,8 @@ export const PlaceForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
         value={row.until}
         type="number"
         onChange={onChange}
+        validationState={validations.until?.state}
+        validationMessage={validations.until?.message}
       />
       <Jsonb
         table="places"
@@ -72,10 +87,7 @@ export const PlaceForm = ({ onChange, row, orIndex, from, autoFocusRef }) => {
         autoFocus={row.level !== 2}
         ref={row.level !== 2 ? autoFocusRef : undefined}
       />
-      <EditingGeometry
-        row={row}
-        table="places"
-      />
+      <EditingGeometry row={row} table="places" />
     </div>
   )
 }
