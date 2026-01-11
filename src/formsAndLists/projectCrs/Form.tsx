@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -28,6 +29,8 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
   const { projectCrsId, projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
 
+  const [validations, setValidations] = useState({})
+
   const db = usePGlite()
   const res = useLiveQuery(
     `
@@ -41,15 +44,28 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
   )
   const row: ProjectCrsWithPresentation | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row?.[name] === value) return
 
-    db.query(`UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`, [
-      value,
-      projectCrsId,
-    ])
+    try {
+      await db.query(
+        `UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`,
+        [value, projectCrsId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'project_crs',
       rowIdName: 'project_crs_id',
@@ -66,10 +82,24 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       [projectId],
     )
     const prev = prevRes.rows?.[0] ?? {}
-    await db.query(
-      `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
-      [data?.checked ? row?.code : null, projectId],
-    )
+
+    try {
+      await db.query(
+        `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
+        [data?.checked ? row?.code : null, projectId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        map_presentation_crs: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { map_presentation_crs: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'projects',
       rowIdName: 'project_id',
@@ -99,6 +129,8 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         type="code"
         value={row.code ?? ''}
         onChange={onChange}
+        validationState={validations.code?.state}
+        validationMessage={validations.code?.message}
       />
       <TextField
         label="Name"
@@ -106,6 +138,8 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         type="name"
         value={row.name ?? ''}
         onChange={onChange}
+        validationState={validations.name?.state}
+        validationMessage={validations.name?.message}
       />
       <TextArea
         label="Proj4 Value"
@@ -113,12 +147,16 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         type="proj4"
         value={row.proj4 ?? ''}
         onChange={onChange}
+        validationState={validations.proj4?.state}
+        validationMessage={validations.proj4?.message}
       />
       <CheckboxField
         label="Set as Map Presentation CRS"
         name="map_presentation_crs"
         value={row.project_map_presentation_crs === row.code}
         onChange={onChangeMapPresentation}
+        validationState={validations.map_presentation_crs?.state}
+        validationMessage={validations.map_presentation_crs?.message}
       />
     </>
   )
