@@ -5,7 +5,11 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 import styles from './Crs.module.css'
 
-export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
+export const Crs = ({
+  occurrenceImport,
+  onChange: onChangePassed,
+  validations,
+}) => {
   const [notification, setNotification] = useState()
 
   const onChange: TextField['props']['onChange'] = (e, data) => {
@@ -56,33 +60,36 @@ export const Crs = ({ occurrenceImport, onChange: onChangePassed }) => {
         value={occurrenceImport.crs ?? ''}
         onChange={onChange}
         onBlur={onBlurCrs}
+        validationState={validations?.crs?.state}
         validationMessage={
-          <>
-            <div>
-              See{' '}
-              <a href="https://epsg.org/home.html" target="_blank">
-                https://epsg.org
-              </a>{' '}
-              or{' '}
-              <a href="https://spatialreference.org" target="_blank">
-                https://spatialreference.org
-              </a>{' '}
-              for a list of EPSG codes and their descriptions.
-            </div>
-            <div>
-              A valid example is: 'EPSG:2056',{' '}
-              <a
-                href="https://spatialreference.org/ref/epsg/2056/"
-                target="_blank"
-              >
-                the reference system
-              </a>{' '}
-              used in Switzerland.
-            </div>
-            {notification && (
-              <div className={styles.notification}>{notification}</div>
-            )}
-          </>
+          validations?.crs?.message ?? (
+            <>
+              <div>
+                See{' '}
+                <a href="https://epsg.org/home.html" target="_blank">
+                  https://epsg.org
+                </a>{' '}
+                or{' '}
+                <a href="https://spatialreference.org" target="_blank">
+                  https://spatialreference.org
+                </a>{' '}
+                for a list of EPSG codes and their descriptions.
+              </div>
+              <div>
+                A valid example is: 'EPSG:2056',{' '}
+                <a
+                  href="https://spatialreference.org/ref/epsg/2056/"
+                  target="_blank"
+                >
+                  the reference system
+                </a>{' '}
+                used in Switzerland.
+              </div>
+              {notification && (
+                <div className={styles.notification}>{notification}</div>
+              )}
+            </>
+          )
         }
       />
     </>
