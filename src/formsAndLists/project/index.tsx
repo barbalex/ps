@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
@@ -20,6 +20,8 @@ export const Project = ({ from }) => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { projectId } = useParams({ from })
 
+  const [validations, setValidations] = useState({})
+
   const db = usePGlite()
 
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
@@ -38,8 +40,17 @@ export const Project = ({ from }) => {
         projectId,
       ])
     } catch (error) {
-      return console.error('error updating project', error)
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
     }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     // add task to update server and rollback PGlite in case of error
     // https://tanstack.com/db/latest/docs/collections/electric-collection?
     // TODO: use this everywhere
@@ -56,12 +67,7 @@ export const Project = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Project"
-        id={projectId}
-      />
-    )
+    return <NotFound table="Project" id={projectId} />
   }
 
   // need to extract the jsonb data from the row
@@ -71,15 +77,8 @@ export const Project = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
+      <Header autoFocusRef={autoFocusRef} from={from} />
+      <div className="form-container" role="tabpanel" aria-labelledby="form">
         <TextField
           label="Name"
           name="name"
@@ -87,6 +86,8 @@ export const Project = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.name?.state}
+          validationMessage={validations.name?.message}
         />
         <Jsonb
           table="projects"
