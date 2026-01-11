@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -18,6 +18,7 @@ const from = '/data/projects/$projectId_/persons/$personId/'
 export const Person = () => {
   const { personId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -28,15 +29,28 @@ export const Person = () => {
   ])
   const row: Persons | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(`UPDATE persons SET ${name} = $1 WHERE person_id = $2`, [
-      value,
-      personId,
-    ])
+    try {
+      await db.query(`UPDATE persons SET ${name} = $1 WHERE person_id = $2`, [
+        value,
+        personId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'persons',
       rowIdName: 'person_id',
@@ -59,6 +73,7 @@ export const Person = () => {
       <div className="form-container">
         <Form
           onChange={onChange}
+          validations={validations}
           row={row}
           autoFocusRef={autoFocusRef}
           from={from}
