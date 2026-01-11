@@ -28,6 +28,7 @@ export const OccurrenceImport = () => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const [showPreview, setShowPreview] = useState(true)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -54,15 +55,28 @@ export const OccurrenceImport = () => {
 
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (occurrenceImport[name] === value) return
 
-    db.query(
-      `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
-      [value, occurrenceImportId],
-    )
+    try {
+      await db.query(
+        `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
+        [value, occurrenceImportId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'occurrence_imports',
       rowIdName: 'occurrence_import_id',
@@ -206,6 +220,7 @@ export const OccurrenceImport = () => {
               <One
                 occurrenceImport={occurrenceImport}
                 onChange={onChange}
+                validations={validations}
                 autoFocusRef={autoFocusRef}
               />
             )}
@@ -214,6 +229,7 @@ export const OccurrenceImport = () => {
                 occurrenceImport={occurrenceImport}
                 occurrenceFields={occurrenceFields}
                 onChange={onChange}
+                validations={validations}
               />
             )}
             {tab === 3 && (
@@ -221,6 +237,7 @@ export const OccurrenceImport = () => {
                 occurrenceImport={occurrenceImport}
                 occurrenceFields={occurrenceFields}
                 onChange={onChange}
+                validations={validations}
               />
             )}
             {tab === 4 && (
@@ -228,6 +245,7 @@ export const OccurrenceImport = () => {
                 occurrenceImport={occurrenceImport}
                 occurrenceFields={occurrenceFields}
                 onChange={onChange}
+                validations={validations}
               />
             )}
           </>

@@ -7,7 +7,12 @@ import { processData } from './processData.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 import styles from './1.module.css'
 
-export const One = ({ occurrenceImport, onChange, autoFocusRef }) => (
+export const One = ({
+  occurrenceImport,
+  onChange,
+  validations,
+  autoFocusRef,
+}) => (
   <>
     <TextField
       label="Name"
@@ -17,13 +22,19 @@ export const One = ({ occurrenceImport, onChange, autoFocusRef }) => (
       onChange={onChange}
       autoFocus
       ref={autoFocusRef}
+      validationState={validations?.name?.state}
+      validationMessage={validations?.name?.message}
     />
     <TextArea
       label="Attribution"
       name="attribution"
       value={occurrenceImport.attribution ?? ''}
       onChange={onChange}
-      validationMessage="Please add the correct citation as required by the data provider"
+      validationState={validations?.attribution?.state}
+      validationMessage={
+        validations?.attribution?.message ??
+        'Please add the correct citation as required by the data provider'
+      }
     />
     {occurrenceImport?.occurrences?.length ? (
       <div className={styles.occurrencesImported}>
