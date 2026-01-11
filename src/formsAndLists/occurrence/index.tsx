@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -19,6 +19,7 @@ export const Occurrence = ({ from }) => {
   const { projectId, subprojectId, occurrenceId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -56,7 +57,21 @@ export const Occurrence = ({ from }) => {
     })
     const vals = Object.values(data)
     const sql = `UPDATE occurrences SET ${sets} WHERE occurrence_id = $1`
-    db.query(sql, [occurrenceId, ...vals])
+
+    try {
+      await db.query(sql, [occurrenceId, ...vals])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'occurrences',
       rowIdName: 'occurrence_id',
@@ -114,6 +129,8 @@ export const Occurrence = ({ from }) => {
           name="not_to_assign"
           value={row.not_to_assign}
           onChange={onChange}
+          validationState={validations.not_to_assign?.state}
+          validationMessage={validations.not_to_assign?.message}
         />
         {/* TODO: add distance from occurrence and sort by that ascending */}
         <ComboboxFilteringForTable
@@ -124,6 +141,8 @@ export const Occurrence = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.place_id?.state}
+          validationMessage={validations.place_id?.message}
         />
         <OccurenceData from={from} />
       </div>
