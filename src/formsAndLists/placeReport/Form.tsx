@@ -7,6 +7,7 @@ import '../../form.css'
 // this form is rendered from a parent or outlet
 export const PlaceReportForm = ({
   onChange,
+  validations,
   row,
   orIndex,
   from,
@@ -25,6 +26,8 @@ export const PlaceReportForm = ({
         type="number"
         value={row.year ?? ''}
         onChange={onChange}
+        validationState={validations.year?.state}
+        validationMessage={validations.year?.message}
       />
       <Jsonb
         table="place_reports"
