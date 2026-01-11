@@ -133,15 +133,6 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const notFound = !loading && !nav
   const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
 
-  console.log('useSubprojectNavData', {
-    projectId,
-    subprojectId,
-    nav,
-    res,
-    loading,
-    sql,
-  })
-
   const navData = {
     isInActiveNodeArray,
     isActive,
