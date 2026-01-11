@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams, useLocation } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
@@ -37,6 +38,7 @@ export const Widget = ({
   const location = useLocation()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const onChange = async (e, dataReturned) => {
     const { name, value } = getValueFromChange(e, dataReturned)
@@ -55,12 +57,7 @@ export const Widget = ({
     const isFilter = location.pathname.endsWith('filter')
 
     if (isFilter) {
-      const level =
-        table === 'places' ?
-          placeId ? 2
-          : 1
-        : placeId2 ? 2
-        : 1
+      const level = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
       const filterName = filterAtomNameFromTableAndLevel({ table, level })
       const filterAtom = stores[filterName]
       const orFilters = store.get(filterAtom)
@@ -86,7 +83,17 @@ export const Widget = ({
       )
     } catch (error) {
       console.log(`Jsonb, error updating table '${table}':`, error)
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
     }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table,
       rowIdName: idField,
@@ -116,6 +123,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'jes-no':
@@ -128,6 +137,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'checkbox-2':
@@ -140,6 +151,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'checkbox-3':
@@ -153,6 +166,8 @@ export const Widget = ({
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
           indeterminate={true}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'textarea':
@@ -166,6 +181,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'dropdown':
@@ -177,6 +194,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'options-many':
@@ -190,6 +209,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'options-few':
@@ -203,6 +224,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'datepicker':
@@ -216,6 +239,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'timepicker':
@@ -228,6 +253,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     case 'datetimepicker':
@@ -240,6 +267,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
     default:
@@ -253,6 +282,8 @@ export const Widget = ({
           autoFocus={autoFocus}
           ref={ref}
           button={<EditField fieldId={field.field_id} />}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
         />
       )
   }
