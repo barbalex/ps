@@ -61,10 +61,13 @@ export const Subproject = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Subproject" id={subprojectId} />
+    return (
+      <NotFound
+        table="Subproject"
+        id={subprojectId}
+      />
+    )
   }
-
-  console.log('Subproject, row:', row)
 
   return (
     <div className="form-outer-container">
@@ -73,7 +76,11 @@ export const Subproject = ({ from }) => {
         nameSingular={row.subproject_name_singular}
         from={from}
       />
-      <div className="form-container" role="tabpanel" aria-labelledby="form">
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
         <Form
           onChange={onChange}
           row={row}
