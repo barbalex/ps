@@ -26,64 +26,64 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM list_values WHERE list_value_id = $1`,
-      [listValueId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM list_values WHERE list_value_id = $1`, [listValueId])
-    addOperation({
-      table: 'list_values',
-      rowIdName: 'list_value_id',
-      rowId: listValueId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM list_values WHERE list_value_id = $1`,
+        [listValueId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM list_values WHERE list_value_id = $1`, [
+        listValueId,
+      ])
+      addOperation({
+        table: 'list_values',
+        rowIdName: 'list_value_id',
+        rowId: listValueId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
-      [listId],
-    )
-    const listValues = res?.rows
-    const len = listValues.length
-    const index = listValues.findIndex((p) => p.list_value_id === listValueId)
-    const next = listValues[(index + 1) % len]
-    console.log('ListValue.Header.toNext', {
-      listValues,
-      len,
-      index,
-      next,
-      listValueId,
-    })
-    navigate({
-      to: `../${next.list_value_id}`,
-      params: (prev) => ({ ...prev, listValueId: next.list_value_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
+        [listId],
+      )
+      const listValues = res?.rows
+      const len = listValues.length
+      const index = listValues.findIndex((p) => p.list_value_id === listValueId)
+      const next = listValues[(index + 1) % len]
+      navigate({
+        to: `../${next.list_value_id}`,
+        params: (prev) => ({ ...prev, listValueId: next.list_value_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
-      [listId],
-    )
-    const listValues = res?.rows
-    const len = listValues.length
-    const index = listValues.findIndex((p) => p.list_value_id === listValueId)
-    const previous = listValues[(index + len - 1) % len]
-    console.log('ListValue.Header.toPrevious', {
-      listValues,
-      len,
-      index,
-      previous,
-      listValueId,
-    })
-    navigate({
-      to: `../${previous.list_value_id}`,
-      params: (prev) => ({ ...prev, listValueId: previous.list_value_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
+        [listId],
+      )
+      const listValues = res?.rows
+      const len = listValues.length
+      const index = listValues.findIndex((p) => p.list_value_id === listValueId)
+      const previous = listValues[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.list_value_id}`,
+        params: (prev) => ({ ...prev, listValueId: previous.list_value_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
