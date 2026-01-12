@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -18,6 +18,7 @@ const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 export const Taxon = () => {
   const { taxonId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -30,10 +31,23 @@ export const Taxon = () => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    await db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
-      value,
-      taxonId,
-    ])
+    try {
+      await db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
+        value,
+        taxonId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'taxa',
       rowIdName: 'taxon_id',
@@ -61,12 +75,16 @@ export const Taxon = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.name?.state}
+          validationMessage={validations.name?.message}
         />
         <TextField
           label="ID in source"
           name="id_in_source"
           value={row.id_in_source ?? ''}
           onChange={onChange}
+          validationState={validations.id_in_source?.state}
+          validationMessage={validations.id_in_source?.message}
         />
         <TextField
           label="Url"
@@ -74,6 +92,8 @@ export const Taxon = () => {
           type="url"
           value={row.url ?? ''}
           onChange={onChange}
+          validationState={validations.url?.state}
+          validationMessage={validations.url?.message}
         />
       </div>
     </div>

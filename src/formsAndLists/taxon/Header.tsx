@@ -26,49 +26,62 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM taxa WHERE taxon_id = $1`, [
-      taxonomyId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM taxa WHERE taxon_id = $1`, [taxonId])
-    addOperation({
-      table: 'taxa',
-      rowIdName: 'taxon_id',
-      rowId: taxonId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(`SELECT * FROM taxa WHERE taxon_id = $1`, [
+        taxonId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM taxa WHERE taxon_id = $1`, [taxonId])
+      addOperation({
+        table: 'taxa',
+        rowIdName: 'taxon_id',
+        rowId: taxonId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting taxon:', error)
+      // Could add a toast notification here
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
-      [taxonomyId],
-    )
-    const taxa = res?.rows
-    const len = taxa.length
-    const index = taxa.findIndex((p) => p.taxon_id === taxonId)
-    const next = taxa[(index + 1) % len]
-    navigate({
-      to: `../${next.taxon_id}`,
-      params: (prev) => ({ ...prev, taxonId: next.taxon_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
+        [taxonomyId],
+      )
+      const taxa = res?.rows
+      const len = taxa.length
+      const index = taxa.findIndex((p) => p.taxon_id === taxonId)
+      const next = taxa[(index + 1) % len]
+      navigate({
+        to: `../${next.taxon_id}`,
+        params: (prev) => ({ ...prev, taxonId: next.taxon_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next taxon:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
-      [taxonomyId],
-    )
-    const taxa = res?.rows
-    const len = taxa.length
-    const index = taxa.findIndex((p) => p.taxon_id === taxonId)
-    const previous = taxa[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.taxon_id}`,
-      params: (prev) => ({ ...prev, taxonId: previous.taxon_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
+        [taxonomyId],
+      )
+      const taxa = res?.rows
+      const len = taxa.length
+      const index = taxa.findIndex((p) => p.taxon_id === taxonId)
+      const previous = taxa[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.taxon_id}`,
+        params: (prev) => ({ ...prev, taxonId: previous.taxon_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous taxon:', error)
+    }
   }
 
   return (
