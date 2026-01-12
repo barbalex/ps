@@ -30,62 +30,74 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      'select * from goal_report_values where goal_report_value_id = $1',
-      [goalReportValueId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query('delete from goal_report_values where goal_report_value_id = $1', [
-      goalReportValueId,
-    ])
-    addOperation({
-      table: 'goal_report_values',
-      rowIdName: 'goal_report_value_id',
-      rowId: goalReportValueId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        'select * from goal_report_values where goal_report_value_id = $1',
+        [goalReportValueId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      db.query('delete from goal_report_values where goal_report_value_id = $1', [
+        goalReportValueId,
+      ])
+      addOperation({
+        table: 'goal_report_values',
+        rowIdName: 'goal_report_value_id',
+        rowId: goalReportValueId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      'select goal_report_value_id from goal_report_values where goal_report_id = $1 order by label',
-      [goalReportId],
-    )
-    const goalReportValues = res?.rows
-    const len = goalReportValues.length
-    const index = goalReportValues.findIndex(
-      (p) => p.goal_report_value_id === goalReportValueId,
-    )
-    const next = goalReportValues[(index + 1) % len]
-    navigate({
-      to: `../${next.goal_report_value_id}`,
-      params: (prev) => ({
-        ...prev,
-        goalReportValueId: next.goal_report_value_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        'select goal_report_value_id from goal_report_values where goal_report_id = $1 order by label',
+        [goalReportId],
+      )
+      const goalReportValues = res?.rows
+      const len = goalReportValues.length
+      const index = goalReportValues.findIndex(
+        (p) => p.goal_report_value_id === goalReportValueId,
+      )
+      const next = goalReportValues[(index + 1) % len]
+      navigate({
+        to: `../${next.goal_report_value_id}`,
+        params: (prev) => ({
+          ...prev,
+          goalReportValueId: next.goal_report_value_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      'select goal_report_value_id from goal_report_values where goal_report_id = $1 order by label',
-      [goalReportId],
-    )
-    const goalReportValues = res?.rows
-    const len = goalReportValues.length
-    const index = goalReportValues.findIndex(
-      (p) => p.goal_report_value_id === goalReportValueId,
-    )
-    const previous = goalReportValues[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.goal_report_value_id}`,
-      params: (prev) => ({
-        ...prev,
-        goalReportValueId: previous.goal_report_value_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        'select goal_report_value_id from goal_report_values where goal_report_id = $1 order by label',
+        [goalReportId],
+      )
+      const goalReportValues = res?.rows
+      const len = goalReportValues.length
+      const index = goalReportValues.findIndex(
+        (p) => p.goal_report_value_id === goalReportValueId,
+      )
+      const previous = goalReportValues[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.goal_report_value_id}`,
+        params: (prev) => ({
+          ...prev,
+          goalReportValueId: previous.goal_report_value_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
