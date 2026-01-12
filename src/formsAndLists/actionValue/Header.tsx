@@ -27,62 +27,74 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const resPrev = await db.query(
-      'SELECT * FROM action_values WHERE action_value_id = $1',
-      [actionValueId],
-    )
-    const prev = resPrev?.rows?.[0] ?? {}
-    db.query('DELETE FROM action_values WHERE action_value_id = $1', [
-      actionValueId,
-    ])
-    addOperation({
-      table: 'action_values',
-      rowIdName: 'action_value_id',
-      rowId: actionValueId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const resPrev = await db.query(
+        'SELECT * FROM action_values WHERE action_value_id = $1',
+        [actionValueId],
+      )
+      const prev = resPrev?.rows?.[0] ?? {}
+      await db.query('DELETE FROM action_values WHERE action_value_id = $1', [
+        actionValueId,
+      ])
+      addOperation({
+        table: 'action_values',
+        rowIdName: 'action_value_id',
+        rowId: actionValueId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting action value:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      'SELECT action_value_id FROM action_values WHERE action_id = $1 ORDER BY label',
-      [actionId],
-    )
-    const actionValues = res?.rows
-    const len = actionValues.length
-    const index = actionValues.findIndex(
-      (p) => p.action_value_id === actionValueId,
-    )
-    const next = actionValues[(index + 1) % len]
-    navigate({
-      to: `../${next.action_value_id}`,
-      params: (prev) => ({
-        ...prev,
-        actionValueId: next.action_value_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT action_value_id FROM action_values WHERE action_id = $1 ORDER BY label',
+        [actionId],
+      )
+      const actionValues = res?.rows
+      const len = actionValues.length
+      const index = actionValues.findIndex(
+        (p) => p.action_value_id === actionValueId,
+      )
+      const next = actionValues[(index + 1) % len]
+      navigate({
+        to: `../${next.action_value_id}`,
+        params: (prev) => ({
+          ...prev,
+          actionValueId: next.action_value_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next action value:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      'SELECT action_value_id FROM action_values WHERE action_id = $1 ORDER BY label',
-      [actionId],
-    )
-    const actionValues = res?.rows
-    const len = actionValues.length
-    const index = actionValues.findIndex(
-      (p) => p.action_value_id === actionValueId,
-    )
-    const previous = actionValues[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.action_value_id}`,
-      params: (prev) => ({
-        ...prev,
-        actionValueId: previous.action_value_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT action_value_id FROM action_values WHERE action_id = $1 ORDER BY label',
+        [actionId],
+      )
+      const actionValues = res?.rows
+      const len = actionValues.length
+      const index = actionValues.findIndex(
+        (p) => p.action_value_id === actionValueId,
+      )
+      const previous = actionValues[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.action_value_id}`,
+        params: (prev) => ({
+          ...prev,
+          actionValueId: previous.action_value_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous action value:', error)
+    }
   }
 
   return (

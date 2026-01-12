@@ -27,13 +27,13 @@ export const ActionValue = ({ from }) => {
   )
   const row: ActionValues | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
     try {
-      db.query(
+      await db.query(
         `UPDATE action_values SET ${name} = $1 WHERE action_value_id = $2`,
         [value, actionValueId],
       )
