@@ -23,53 +23,66 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM fields WHERE field_id = $1`, [
-      fieldId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
-    addOperation({
-      table: 'fields',
-      rowIdName: 'field_id',
-      rowId: fieldId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '/data/fields' })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM fields WHERE field_id = $1`,
+        [fieldId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
+      addOperation({
+        table: 'fields',
+        rowIdName: 'field_id',
+        rowId: fieldId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '/data/fields' })
+    } catch (error) {
+      console.error('Error deleting field:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(`
+    try {
+      const res = await db.query(`
       SELECT field_id 
       FROM fields 
       WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'} 
       ORDER BY label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.field_id === fieldId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: `/data/fields/${next.field_id}`,
-      params: (prev) => ({ ...prev, fieldId: next.field_id }),
-    })
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.field_id === fieldId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: `/data/fields/${next.field_id}`,
+        params: (prev) => ({ ...prev, fieldId: next.field_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next field:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `
+    try {
+      const res = await db.query(
+        `
       SELECT field_id 
       FROM fields 
       WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'} 
       ORDER BY label`,
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.field_id === fieldId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: `/data/fields/${previous.field_id}`,
-      params: (prev) => ({ ...prev, fieldId: previous.field_id }),
-    })
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.field_id === fieldId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: `/data/fields/${previous.field_id}`,
+        params: (prev) => ({ ...prev, fieldId: previous.field_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous field:', error)
+    }
   }
 
   return (
