@@ -18,6 +18,7 @@ export const Place = ({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const { onlyForm } = useSearch({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -52,14 +53,6 @@ export const Place = ({ from }) => {
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    console.log('Place.onChange', {
-      name,
-      value,
-      oldValue: row[name],
-      row,
-      data,
-      willReturn: row[name] === value,
-    })
     if (row[name] === value) return
 
     try {
@@ -92,7 +85,12 @@ export const Place = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table={nameSingular} id={placeId2 ?? placeId} />
+    return (
+      <NotFound
+        table={nameSingular}
+        id={placeId2 ?? placeId}
+      />
+    )
   }
 
   if (onlyForm) {

@@ -97,26 +97,31 @@ export const Header = ({
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
-      placeId2 ?? placeId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    await db.query(`DELETE FROM places WHERE place_id = $1`, [
-      placeId2 ?? placeId,
-    ])
-    addOperation({
-      table: 'places',
-      rowIdName: 'place_id',
-      rowId: placeId2 ?? placeId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
+        placeId2 ?? placeId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM places WHERE place_id = $1`, [
+        placeId2 ?? placeId,
+      ])
+      addOperation({
+        table: 'places',
+        rowIdName: 'place_id',
+        rowId: placeId2 ?? placeId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `
+    try {
+      const res = await db.query(
+        `
       SELECT place_id 
       FROM places 
       WHERE 
@@ -124,27 +129,31 @@ export const Header = ({
         AND subproject_id = $1 
       ORDER BY label
       `,
-      [subprojectId],
-    )
-    const placeIds: { place_id: string }[] = res?.rows ?? []
-    const len = placeIds.length
-    const index = placeIds.findIndex(
-      (p) => p.place_id === (placeId2 ?? placeId),
-    )
-    const next = placeIds[(index + 1) % len]
-    const idName = placeId2 ? 'placeId2' : 'placeId'
-    navigate({
-      to: isForm ? `../../${next.place_id}/place` : `../${next.place_id}`,
-      params: (prev) => ({
-        ...prev,
-        [idName]: next.place_id,
-      }),
-    })
+        [subprojectId],
+      )
+      const placeIds: { place_id: string }[] = res?.rows ?? []
+      const len = placeIds.length
+      const index = placeIds.findIndex(
+        (p) => p.place_id === (placeId2 ?? placeId),
+      )
+      const next = placeIds[(index + 1) % len]
+      const idName = placeId2 ? 'placeId2' : 'placeId'
+      navigate({
+        to: isForm ? `../../${next.place_id}/place` : `../${next.place_id}`,
+        params: (prev) => ({
+          ...prev,
+          [idName]: next.place_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `
+    try {
+      const res = await db.query(
+        `
       SELECT place_id 
       FROM places 
       WHERE 
@@ -152,24 +161,27 @@ export const Header = ({
         AND subproject_id = $1 
       ORDER BY label
       `,
-      [subprojectId],
-    )
-    const placeIds: { place_id: string }[] = res?.rows ?? []
-    const len = placeIds.length
-    const index = placeIds.findIndex(
-      (p) => p.place_id === (placeId2 ?? placeId),
-    )
-    const previous = placeIds[(index + len - 1) % len]
-    const idName = placeId2 ? 'placeId2' : 'placeId'
-    navigate({
-      to: isForm
-        ? `../../${previous.place_id}/place`
-        : `../${previous.place_id}`,
-      params: (prev) => ({
-        ...prev,
-        [idName]: previous.place_id,
-      }),
-    })
+        [subprojectId],
+      )
+      const placeIds: { place_id: string }[] = res?.rows ?? []
+      const len = placeIds.length
+      const index = placeIds.findIndex(
+        (p) => p.place_id === (placeId2 ?? placeId),
+      )
+      const previous = placeIds[(index + len - 1) % len]
+      const idName = placeId2 ? 'placeId2' : 'placeId'
+      navigate({
+        to: isForm
+          ? `../../${previous.place_id}/place`
+          : `../${previous.place_id}`,
+        params: (prev) => ({
+          ...prev,
+          [idName]: previous.place_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const alertNoGeometry = () =>
