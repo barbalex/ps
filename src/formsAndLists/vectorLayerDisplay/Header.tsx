@@ -56,81 +56,93 @@ export const Header = ({
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
-      [vectorLayerDisplayId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(
-      `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
-      [vectorLayerDisplayId],
-    )
-    addOperation({
-      table: 'vector_layer_displays',
-      rowIdName: 'vector_layer_display_id',
-      rowId: vectorLayerDisplayId,
-      operation: 'delete',
-      prev,
-    })
-    if (vectorLayerDisplayIdFromProps) {
-      setMapLayerDrawerVectorLayerDisplayId(null)
-      return
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+        [vectorLayerDisplayId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(
+        `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+        [vectorLayerDisplayId],
+      )
+      addOperation({
+        table: 'vector_layer_displays',
+        rowIdName: 'vector_layer_display_id',
+        rowId: vectorLayerDisplayId,
+        operation: 'delete',
+        prev,
+      })
+      if (vectorLayerDisplayIdFromProps) {
+        setMapLayerDrawerVectorLayerDisplayId(null)
+        return
+      }
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting vector layer display:', error)
     }
-    navigate({ to: '..' })
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
-      [vectorLayerId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex(
-      (p) => p.vector_layer_display_id === vectorLayerDisplayId,
-    )
-    const next = rows[(index + 1) % len]
-    console.log('VectorLayerDisplay.Header.toNext', {
-      next,
-      rows,
-      res,
-      vectorLayerDisplayIdFromProps,
-    })
-    if (vectorLayerDisplayIdFromProps) {
-      setMapLayerDrawerVectorLayerDisplayId(next.vector_layer_display_id)
-      return
+    try {
+      const res = await db.query(
+        `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
+        [vectorLayerId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex(
+        (p) => p.vector_layer_display_id === vectorLayerDisplayId,
+      )
+      const next = rows[(index + 1) % len]
+      console.log('VectorLayerDisplay.Header.toNext', {
+        next,
+        rows,
+        res,
+        vectorLayerDisplayIdFromProps,
+      })
+      if (vectorLayerDisplayIdFromProps) {
+        setMapLayerDrawerVectorLayerDisplayId(next.vector_layer_display_id)
+        return
+      }
+      navigate({
+        to: `../${next.vector_layer_display_id}`,
+        params: (prev) => ({
+          ...prev,
+          vectorLayerDisplayId: next.vector_layer_display_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next vector layer display:', error)
     }
-    navigate({
-      to: `../${next.vector_layer_display_id}`,
-      params: (prev) => ({
-        ...prev,
-        vectorLayerDisplayId: next.vector_layer_display_id,
-      }),
-    })
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
-      [vectorLayerId],
-    )
-    const vectorLayerDisplays = res?.rows
-    const len = vectorLayerDisplays.length
-    const index = vectorLayerDisplays.findIndex(
-      (p) => p.vector_layer_display_id === vectorLayerDisplayId,
-    )
-    const previous = vectorLayerDisplays[(index + len - 1) % len]
-    if (vectorLayerDisplayIdFromProps) {
-      setMapLayerDrawerVectorLayerDisplayId(previous.vector_layer_display_id)
-      return
+    try {
+      const res = await db.query(
+        `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
+        [vectorLayerId],
+      )
+      const vectorLayerDisplays = res?.rows
+      const len = vectorLayerDisplays.length
+      const index = vectorLayerDisplays.findIndex(
+        (p) => p.vector_layer_display_id === vectorLayerDisplayId,
+      )
+      const previous = vectorLayerDisplays[(index + len - 1) % len]
+      if (vectorLayerDisplayIdFromProps) {
+        setMapLayerDrawerVectorLayerDisplayId(previous.vector_layer_display_id)
+        return
+      }
+      navigate({
+        to: `../${previous.vector_layer_display_id}`,
+        params: (prev) => ({
+          ...prev,
+          vectorLayerDisplayId: previous.vector_layer_display_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous vector layer display:', error)
     }
-    navigate({
-      to: `../${previous.vector_layer_display_id}`,
-      params: (prev) => ({
-        ...prev,
-        vectorLayerDisplayId: previous.vector_layer_display_id,
-      }),
-    })
   }
 
   return (
