@@ -53,39 +53,47 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT project_report_id FROM project_reports WHERE project_id = $1 ORDER BY label`,
-      [projectId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.project_report_id === projectReportId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: `../${next.project_report_id}`,
-      params: (prev) => ({
-        ...prev,
-        projectReportId: next.project_report_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT project_report_id FROM project_reports WHERE project_id = $1 ORDER BY label`,
+        [projectId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.project_report_id === projectReportId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: `../${next.project_report_id}`,
+        params: (prev) => ({
+          ...prev,
+          projectReportId: next.project_report_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT project_report_id FROM project_reports WHERE project_id = $1 ORDER BY label`,
-      [projectId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.project_report_id === projectReportId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.project_report_id}`,
-      params: (prev) => ({
-        ...prev,
-        projectReportId: previous.project_report_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT project_report_id FROM project_reports WHERE project_id = $1 ORDER BY label`,
+        [projectId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.project_report_id === projectReportId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.project_report_id}`,
+        params: (prev) => ({
+          ...prev,
+          projectReportId: previous.project_report_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
