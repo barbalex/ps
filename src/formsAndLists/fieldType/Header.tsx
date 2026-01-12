@@ -22,48 +22,60 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM field_types WHERE field_type_id = $1`,
-      [fieldTypeId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM field_types WHERE field_type_id = $1`, [fieldTypeId])
-    addOperation({
-      table: 'field_types',
-      rowIdName: 'field_type_id',
-      rowId: fieldTypeId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: `..` })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM field_types WHERE field_type_id = $1`,
+        [fieldTypeId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      db.query(`DELETE FROM field_types WHERE field_type_id = $1`, [fieldTypeId])
+      addOperation({
+        table: 'field_types',
+        rowIdName: 'field_type_id',
+        rowId: fieldTypeId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: `..` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT field_type_id FROM field_types order by label`,
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.field_type_id === fieldTypeId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: `/data/field-types/${next.field_type_id}`,
-      params: (prev) => ({ ...prev, fieldTypeId: next.field_type_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT field_type_id FROM field_types order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.field_type_id === fieldTypeId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: `/data/field-types/${next.field_type_id}`,
+        params: (prev) => ({ ...prev, fieldTypeId: next.field_type_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT field_type_id FROM field_types order by label`,
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.field_type_id === fieldTypeId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: `/data/field-types/${previous.field_type_id}`,
-      params: (prev) => ({ ...prev, fieldTypeId: previous.field_type_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT field_type_id FROM field_types order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.field_type_id === fieldTypeId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: `/data/field-types/${previous.field_type_id}`,
+        params: (prev) => ({ ...prev, fieldTypeId: previous.field_type_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
