@@ -47,52 +47,65 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      'SELECT * FROM actions WHERE action_id = $1',
-      [actionId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
-    addOperation({
-      table: 'actions',
-      rowIdName: 'action_id',
-      rowId: actionId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(
+        'SELECT * FROM actions WHERE action_id = $1',
+        [actionId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
+      addOperation({
+        table: 'actions',
+        rowIdName: 'action_id',
+        rowId: actionId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error('Error deleting action:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
-      [placeId2 ?? placeId],
-    )
-    const actions = res?.rows
-    const len = actions.length
-    const index = actions.findIndex((p) => p.action_id === actionId)
-    const next = actions[(index + 1) % len]
-    navigate({
-      to: isForm ? `../../${next.action_id}/action` : `../${next.action_id}`,
-      params: (prev) => ({ ...prev, actionId: next.action_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
+        [placeId2 ?? placeId],
+      )
+      const actions = res?.rows
+      const len = actions.length
+      const index = actions.findIndex((p) => p.action_id === actionId)
+      const next = actions[(index + 1) % len]
+      navigate({
+        to: isForm ? `../../${next.action_id}/action` : `../${next.action_id}`,
+        params: (prev) => ({ ...prev, actionId: next.action_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next action:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
-      [placeId2 ?? placeId],
-    )
-    const actions = res?.rows
-    const len = actions.length
-    const index = actions.findIndex((p) => p.action_id === actionId)
-    const previous = actions[(index + len - 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${previous.action_id}/action`
-        : `../${previous.action_id}`,
-      params: (prev) => ({ ...prev, actionId: previous.action_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
+        [placeId2 ?? placeId],
+      )
+      const actions = res?.rows
+      const len = actions.length
+      const index = actions.findIndex((p) => p.action_id === actionId)
+      const previous = actions[(index + len - 1) % len]
+      navigate({
+        to:
+          isForm ?
+            `../../${previous.action_id}/action`
+          : `../${previous.action_id}`,
+        params: (prev) => ({ ...prev, actionId: previous.action_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous action:', error)
+    }
   }
 
   const alertNoGeometry = () =>
