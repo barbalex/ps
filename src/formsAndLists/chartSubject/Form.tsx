@@ -35,13 +35,13 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   )
   const row: ChartSubjects | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
     try {
-      db.query(
+      await db.query(
         `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
         [value, chartSubjectId],
       )
@@ -70,7 +70,12 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Chart Subject" id={chartSubjectId} />
+    return (
+      <NotFound
+        table="Chart Subject"
+        id={chartSubjectId}
+      />
+    )
   }
 
   return (
@@ -80,10 +85,21 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         name="name"
         value={row.name}
         onChange={onChange}
+        validationState={validations.name?.state}
+        validationMessage={validations.name?.message}
       />
       <Section title="Data">
-        <Table onChange={onChange} row={row} ref={autoFocusRef} validations={validations} />
-        <Level onChange={onChange} row={row} validations={validations} />
+        <Table
+          onChange={onChange}
+          row={row}
+          ref={autoFocusRef}
+          validations={validations}
+        />
+        <Level
+          onChange={onChange}
+          row={row}
+          validations={validations}
+        />
         <TextField
           label="TODO: table filter"
           name="table_filter"
@@ -93,7 +109,11 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationState={validations.table_filter?.state}
           validationMessage={validations.table_filter?.message}
         />
-        <ValueSource onChange={onChange} row={row} validations={validations} />
+        <ValueSource
+          onChange={onChange}
+          row={row}
+          validations={validations}
+        />
         {row.value_source && row.value_source !== 'count_rows' && (
           <>
             <TextField
