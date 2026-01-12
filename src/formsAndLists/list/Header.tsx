@@ -25,49 +25,61 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM lists WHERE list_id = $1`, [
-      listId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM lists WHERE list_id = $1`, [listId])
-    addOperation({
-      table: 'lists',
-      rowIdName: 'list_id',
-      rowId: listId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(`SELECT * FROM lists WHERE list_id = $1`, [
+        listId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      db.query(`DELETE FROM lists WHERE list_id = $1`, [listId])
+      addOperation({
+        table: 'lists',
+        rowIdName: 'list_id',
+        rowId: listId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
-      [projectId],
-    )
-    const lists = res?.rows
-    const len = lists.length
-    const index = lists.findIndex((p) => p.list_id === listId)
-    const next = lists[(index + 1) % len]
-    navigate({
-      to: isForm ? `../../${next.list_id}/list` : `../${next.list_id}`,
-      params: (prev) => ({ ...prev, listId: next.list_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
+        [projectId],
+      )
+      const lists = res?.rows
+      const len = lists.length
+      const index = lists.findIndex((p) => p.list_id === listId)
+      const next = lists[(index + 1) % len]
+      navigate({
+        to: isForm ? `../../${next.list_id}/list` : `../${next.list_id}`,
+        params: (prev) => ({ ...prev, listId: next.list_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
-      [projectId],
-    )
-    const lists = res?.rows
-    const len = lists.length
-    const index = lists.findIndex((p) => p.list_id === listId)
-    const previous = lists[(index + len - 1) % len]
-    navigate({
-      to: isForm ? `../../${previous.list_id}/list` : `../${previous.list_id}`,
-      params: (prev) => ({ ...prev, listId: previous.list_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
+        [projectId],
+      )
+      const lists = res?.rows
+      const len = lists.length
+      const index = lists.findIndex((p) => p.list_id === listId)
+      const previous = lists[(index + len - 1) % len]
+      navigate({
+        to: isForm ? `../../${previous.list_id}/list` : `../${previous.list_id}`,
+        params: (prev) => ({ ...prev, listId: previous.list_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
