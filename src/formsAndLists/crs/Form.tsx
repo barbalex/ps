@@ -7,6 +7,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../store.ts'
 import type CRS from '../../models/public/CRS.ts'
 
@@ -46,7 +47,6 @@ export const Component = () => {
       const { [name]: _, ...rest } = prev
       return rest
     })
-    db.query(`UPDATE crs SET ${name} = $1 WHERE crs_id = $2`, [value, crsId])
     addOperation({
       table: 'crs',
       rowIdName: 'crs_id',

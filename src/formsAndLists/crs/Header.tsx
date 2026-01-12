@@ -26,43 +26,55 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM crs WHERE crs_id = $1`, [
-      crsId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM crs WHERE crs_id = $1`, [crsId])
-    addOperation({
-      table: 'crs',
-      rowIdName: 'crs_id',
-      rowId: crsId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '/data/crs' })
+    try {
+      const prevRes = await db.query(`SELECT * FROM crs WHERE crs_id = $1`, [
+        crsId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM crs WHERE crs_id = $1`, [crsId])
+      addOperation({
+        table: 'crs',
+        rowIdName: 'crs_id',
+        rowId: crsId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '/data/crs' })
+    } catch (error) {
+      console.error('Error deleting crs:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(`SELECT crs_id FROM crs order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.crs_id === crsId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: `/data/crs/${next.crs_id}`,
-      params: (prev) => ({ ...prev, crsId: next.crs_id }),
-    })
+    try {
+      const res = await db.query(`SELECT crs_id FROM crs order by label`)
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.crs_id === crsId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: `/data/crs/${next.crs_id}`,
+        params: (prev) => ({ ...prev, crsId: next.crs_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next crs:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(`SELECT crs_id FROM crs order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.crs_id === crsId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: `/data/crs/${previous.crs_id}`,
-      params: (prev) => ({ ...prev, crsId: previous.crs_id }),
-    })
+    try {
+      const res = await db.query(`SELECT crs_id FROM crs order by label`)
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.crs_id === crsId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: `/data/crs/${previous.crs_id}`,
+        params: (prev) => ({ ...prev, crsId: previous.crs_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous crs:', error)
+    }
   }
 
   return (
