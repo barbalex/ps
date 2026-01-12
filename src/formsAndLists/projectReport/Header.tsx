@@ -29,22 +29,27 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM project_reports WHERE project_report_id = $1`,
-      [projectReportId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM project_reports WHERE project_report_id = $1`, [
-      projectReportId,
-    ])
-    addOperation({
-      table: 'project_reports',
-      rowIdName: 'project_report_id',
-      rowId: projectReportId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM project_reports WHERE project_report_id = $1`,
+        [projectReportId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM project_reports WHERE project_report_id = $1`, [
+        projectReportId,
+      ])
+      addOperation({
+        table: 'project_reports',
+        rowIdName: 'project_report_id',
+        rowId: projectReportId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting project report:', error)
+      // Could add a toast notification here
+    }
   }
 
   const toNext = async () => {
