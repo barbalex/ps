@@ -26,49 +26,62 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM units WHERE unit_id = $1`, [
-      unitId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    await db.query(`DELETE FROM units WHERE unit_id = $1`, [unitId])
-    addOperation({
-      table: 'units',
-      rowIdName: 'unit_id',
-      rowId: unitId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(`SELECT * FROM units WHERE unit_id = $1`, [
+        unitId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM units WHERE unit_id = $1`, [unitId])
+      addOperation({
+        table: 'units',
+        rowIdName: 'unit_id',
+        rowId: unitId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting unit:', error)
+      // Could add a toast notification here
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
-      [projectId],
-    )
-    const units = res?.rows
-    const len = units.length
-    const index = units.findIndex((p) => p.unit_id === unitId)
-    const next = units[(index + 1) % len]
-    navigate({
-      to: `../${next.unit_id}`,
-      params: (prev) => ({ ...prev, unitId: next.unit_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
+        [projectId],
+      )
+      const units = res?.rows
+      const len = units.length
+      const index = units.findIndex((p) => p.unit_id === unitId)
+      const next = units[(index + 1) % len]
+      navigate({
+        to: `../${next.unit_id}`,
+        params: (prev) => ({ ...prev, unitId: next.unit_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next unit:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
-      [projectId],
-    )
-    const units = res?.rows
-    const len = units.length
-    const index = units.findIndex((p) => p.unit_id === unitId)
-    const previous = units[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.unit_id}`,
-      params: (prev) => ({ ...prev, unitId: previous.unit_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
+        [projectId],
+      )
+      const units = res?.rows
+      const len = units.length
+      const index = units.findIndex((p) => p.unit_id === unitId)
+      const previous = units[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.unit_id}`,
+        params: (prev) => ({ ...prev, unitId: previous.unit_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous unit:', error)
+    }
   }
 
   return (
