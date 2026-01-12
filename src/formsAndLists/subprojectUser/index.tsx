@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -22,6 +22,7 @@ const from =
 export const SubprojectUser = () => {
   const { subprojectUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -38,10 +39,23 @@ export const SubprojectUser = () => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    await db.query(
-      `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
-      [value, subprojectUserId],
-    )
+    try {
+      await db.query(
+        `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
+        [value, subprojectUserId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'subproject_users',
       rowIdName: 'subproject_user_id',
@@ -70,6 +84,8 @@ export const SubprojectUser = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.user_id?.state}
+          validationMessage={validations.user_id?.message}
         />
         <RadioGroupField
           label="Role"
@@ -77,6 +93,8 @@ export const SubprojectUser = () => {
           list={userRoles}
           value={row.role ?? ''}
           onChange={onChange}
+          validationState={validations.role?.state}
+          validationMessage={validations.role?.message}
         />
       </div>
     </div>
