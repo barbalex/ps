@@ -10,33 +10,41 @@ export const Header = ({ from }) => {
   const db = usePGlite()
 
   const toNext = async () => {
-    const res = await db.query(
-      'SELECT occurrence_id FROM occurrences WHERE place_id = $1 ORDER BY label',
-      [placeId2 ?? placeId],
-    )
-    const occurrences = res?.rows
-    const len = occurrences.length
-    const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
-    const next = occurrences[(index + 1) % len]
-    navigate({
-      to: `../${next.occurrence_id}`,
-      params: (prev) => ({ ...prev, occurrenceId: next.occurrence_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT occurrence_id FROM occurrences WHERE place_id = $1 ORDER BY label',
+        [placeId2 ?? placeId],
+      )
+      const occurrences = res?.rows
+      const len = occurrences.length
+      const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
+      const next = occurrences[(index + 1) % len]
+      navigate({
+        to: `../${next.occurrence_id}`,
+        params: (prev) => ({ ...prev, occurrenceId: next.occurrence_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      'SELECT occurrence_id FROM occurrences WHERE place_id = $1 ORDER BY label',
-      [placeId2 ?? placeId],
-    )
-    const occurrences = res?.rows
-    const len = occurrences.length
-    const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
-    const previous = occurrences[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.occurrence_id}`,
-      params: (prev) => ({ ...prev, occurrenceId: previous.occurrence_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT occurrence_id FROM occurrences WHERE place_id = $1 ORDER BY label',
+        [placeId2 ?? placeId],
+      )
+      const occurrences = res?.rows
+      const len = occurrences.length
+      const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
+      const previous = occurrences[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.occurrence_id}`,
+        params: (prev) => ({ ...prev, occurrenceId: previous.occurrence_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
