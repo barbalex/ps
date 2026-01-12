@@ -5,7 +5,7 @@ import '../../form.css'
 
 // this form is rendered from a parent or outlet
 // TODO: get working from filter
-export const WidgetTypeForm = ({ onChange, row, autoFocusRef }) => {
+export const WidgetTypeForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
   return (
     <>
       <TextField
@@ -15,6 +15,8 @@ export const WidgetTypeForm = ({ onChange, row, autoFocusRef }) => {
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
+        validationMessage={validations.name?.message}
+        validationState={validations.name?.state}
       />
       <SwitchField
         label="Needs a list"
@@ -28,12 +30,16 @@ export const WidgetTypeForm = ({ onChange, row, autoFocusRef }) => {
         value={row.sort ?? ''}
         type="number"
         onChange={onChange}
+        validationMessage={validations.sort?.message}
+        validationState={validations.sort?.state}
       />
       <TextField
         label="Comment"
         name="comment"
         value={row.comment ?? ''}
         onChange={onChange}
+        validationMessage={validations.comment?.message}
+        validationState={validations.comment?.state}
       />
     </>
   )
