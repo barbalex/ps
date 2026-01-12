@@ -27,63 +27,75 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM action_report_values WHERE action_report_value_id = $1`,
-      [actionReportValueId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(
-      `DELETE FROM action_report_values WHERE action_report_value_id = $1`,
-      [actionReportValueId],
-    )
-    addOperation({
-      table: 'action_report_values',
-      rowIdName: 'action_report_value_id',
-      rowId: actionReportValueId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM action_report_values WHERE action_report_value_id = $1`,
+        [actionReportValueId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(
+        `DELETE FROM action_report_values WHERE action_report_value_id = $1`,
+        [actionReportValueId],
+      )
+      addOperation({
+        table: 'action_report_values',
+        rowIdName: 'action_report_value_id',
+        rowId: actionReportValueId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting action report value:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
-      [actionReportId],
-    )
-    const actionReportValues = res?.rows
-    const len = actionReportValues.length
-    const index = actionReportValues.findIndex(
-      (p) => p.action_report_value_id === actionReportValueId,
-    )
-    const next = actionReportValues[(index + 1) % len]
-    navigate({
-      to: `../${next.action_report_value_id}`,
-      params: (prev) => ({
-        ...prev,
-        actionReportValueId: next.action_report_value_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
+        [actionReportId],
+      )
+      const actionReportValues = res?.rows
+      const len = actionReportValues.length
+      const index = actionReportValues.findIndex(
+        (p) => p.action_report_value_id === actionReportValueId,
+      )
+      const next = actionReportValues[(index + 1) % len]
+      navigate({
+        to: `../${next.action_report_value_id}`,
+        params: (prev) => ({
+          ...prev,
+          actionReportValueId: next.action_report_value_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next action report value:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
-      [actionReportId],
-    )
-    const actionReportValues = res?.rows
-    const len = actionReportValues.length
-    const index = actionReportValues.findIndex(
-      (p) => p.action_report_value_id === actionReportValueId,
-    )
-    const previous = actionReportValues[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.action_report_value_id}`,
-      params: (prev) => ({
-        ...prev,
-        actionReportValueId: previous.action_report_value_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT action_report_value_id FROM action_report_values WHERE action_report_id = $1 ORDER BY label`,
+        [actionReportId],
+      )
+      const actionReportValues = res?.rows
+      const len = actionReportValues.length
+      const index = actionReportValues.findIndex(
+        (p) => p.action_report_value_id === actionReportValueId,
+      )
+      const previous = actionReportValues[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.action_report_value_id}`,
+        params: (prev) => ({
+          ...prev,
+          actionReportValueId: previous.action_report_value_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous action report value:', error)
+    }
   }
 
   return (

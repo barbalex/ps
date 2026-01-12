@@ -64,8 +64,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const next = actionReports[(index + 1) % len]
       navigate({
-        to: isForm
-          ? `../../${next.action_report_id}/report`
+        to:
+          isForm ?
+            `../../${next.action_report_id}/report`
           : `../${next.action_report_id}`,
         params: (prev) => ({ ...prev, actionReportId: next.action_report_id }),
       })
@@ -87,8 +88,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = actionReports[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.action_report_id}/report`
+        to:
+          isForm ?
+            `../../${previous.action_report_id}/report`
           : `../${previous.action_report_id}`,
         params: (prev) => ({
           ...prev,
