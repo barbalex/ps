@@ -27,49 +27,61 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM goals WHERE goal_id = $1`, [
-      goalId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    awaitdb.query(`DELETE FROM goals WHERE goal_id = $1`, [goalId])
-    addOperation({
-      table: 'goals',
-      rowIdName: 'goal_id',
-      rowId: goalId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(`SELECT * FROM goals WHERE goal_id = $1`, [
+        goalId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM goals WHERE goal_id = $1`, [goalId])
+      addOperation({
+        table: 'goals',
+        rowIdName: 'goal_id',
+        rowId: goalId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
-      [subprojectId],
-    )
-    const goals = res?.rows
-    const len = goals.length
-    const index = goals.findIndex((p) => p.goal_id === goalId)
-    const next = goals[(index + 1) % len]
-    navigate({
-      to: isForm ? `../../${next.goal_id}/goal` : `../${next.goal_id}`,
-      params: (prev) => ({ ...prev, goalId: next.goal_id }),
-    })
+    try {
+      const res = await db.query(
+        `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
+        [subprojectId],
+      )
+      const goals = res?.rows
+      const len = goals.length
+      const index = goals.findIndex((p) => p.goal_id === goalId)
+      const next = goals[(index + 1) % len]
+      navigate({
+        to: isForm ? `../../${next.goal_id}/goal` : `../${next.goal_id}`,
+        params: (prev) => ({ ...prev, goalId: next.goal_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
-      [subprojectId],
-    )
-    const goals = res?.rows
-    const len = goals.length
-    const index = goals.findIndex((p) => p.goal_id === goalId)
-    const previous = goals[(index + len - 1) % len]
-    navigate({
-      to: isForm ? `../../${previous.goal_id}/goal` : `../${previous.goal_id}`,
-      params: (prev) => ({ ...prev, goalId: previous.goal_id }),
-    })
+    try {
+      const res = await db.query(
+        `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
+        [subprojectId],
+      )
+      const goals = res?.rows
+      const len = goals.length
+      const index = goals.findIndex((p) => p.goal_id === goalId)
+      const previous = goals[(index + len - 1) % len]
+      navigate({
+        to: isForm ? `../../${previous.goal_id}/goal` : `../${previous.goal_id}`,
+        params: (prev) => ({ ...prev, goalId: previous.goal_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
