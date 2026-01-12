@@ -24,50 +24,62 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      'SELECT * FROM check_taxa WHERE check_taxon_id = $1',
-      [checkTaxonId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query('DELETE FROM check_taxa WHERE check_taxon_id = $1', [checkTaxonId])
-    addOperation({
-      table: 'check_taxa',
-      rowIdName: 'check_taxon_id',
-      rowId: checkTaxonId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        'SELECT * FROM check_taxa WHERE check_taxon_id = $1',
+        [checkTaxonId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query('DELETE FROM check_taxa WHERE check_taxon_id = $1', [checkTaxonId])
+      addOperation({
+        table: 'check_taxa',
+        rowIdName: 'check_taxon_id',
+        rowId: checkTaxonId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting check taxon:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label',
-      [checkId],
-    )
-    const checkTaxa = res?.rows
-    const len = checkTaxa.length
-    const index = checkTaxa.findIndex((p) => p.check_taxon_id === checkTaxonId)
-    const next = checkTaxa[(index + 1) % len]
-    navigate({
-      to: `../${next.check_taxon_id}`,
-      params: (prev) => ({ ...prev, checkTaxonId: next.check_taxon_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label',
+        [checkId],
+      )
+      const checkTaxa = res?.rows
+      const len = checkTaxa.length
+      const index = checkTaxa.findIndex((p) => p.check_taxon_id === checkTaxonId)
+      const next = checkTaxa[(index + 1) % len]
+      navigate({
+        to: `../${next.check_taxon_id}`,
+        params: (prev) => ({ ...prev, checkTaxonId: next.check_taxon_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next check taxon:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label',
-      [checkId],
-    )
-    const checkTaxa = res?.rows
-    const len = checkTaxa.length
-    const index = checkTaxa.findIndex((p) => p.check_taxon_id === checkTaxonId)
-    const previous = checkTaxa[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.check_taxon_id}`,
-      params: (prev) => ({ ...prev, checkTaxonId: previous.check_taxon_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label',
+        [checkId],
+      )
+      const checkTaxa = res?.rows
+      const len = checkTaxa.length
+      const index = checkTaxa.findIndex((p) => p.check_taxon_id === checkTaxonId)
+      const previous = checkTaxa[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.check_taxon_id}`,
+        params: (prev) => ({ ...prev, checkTaxonId: previous.check_taxon_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous check taxon:', error)
+    }
   }
 
   return (

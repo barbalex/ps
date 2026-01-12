@@ -1,4 +1,4 @@
-import { useRef, usest } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -30,13 +30,13 @@ export const CheckTaxon = ({ from }) => {
 
   // console.log('CheckTaxon', { row, results })
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
     try {
-      db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
+      await db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
         value,
         checkTaxonId,
       ])
