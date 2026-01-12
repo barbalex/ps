@@ -2,7 +2,12 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
 
-export const WidgetForFieldForm = ({ onChange, row, autoFocusRef }) => (
+export const WidgetForFieldForm = ({
+  onChange,
+  validations = {},
+  row,
+  autoFocusRef,
+}) => (
   <>
     <DropdownField
       label="Field type"
@@ -12,6 +17,8 @@ export const WidgetForFieldForm = ({ onChange, row, autoFocusRef }) => (
       onChange={onChange}
       autoFocus
       ref={autoFocusRef}
+      validationState={validations.field_type_id?.state}
+      validationMessage={validations.field_type_id?.message}
     />
     <DropdownField
       label="Widget type"
@@ -19,6 +26,8 @@ export const WidgetForFieldForm = ({ onChange, row, autoFocusRef }) => (
       table="widget_types"
       value={row.widget_type_id ?? ''}
       onChange={onChange}
+      validationState={validations.widget_type_id?.state}
+      validationMessage={validations.widget_type_id?.message}
     />
   </>
 )
