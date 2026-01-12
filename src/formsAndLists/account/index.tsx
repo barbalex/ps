@@ -34,6 +34,30 @@ export const Account = () => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
+    // Validate period dates
+    if (name === 'period_start' || name === 'period_end') {
+      const startDate = name === 'period_start' ? value : row.period_start
+      const endDate = name === 'period_end' ? value : row.period_end
+
+      if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+        setValidations((prev) => ({
+          ...prev,
+          [name]: {
+            state: 'error',
+            message: 'End date must be after start date',
+          },
+        }))
+        return
+      } else {
+        // remove all date related validations if any
+        setValidations((prev) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { period_start, period_end, ...rest } = prev
+          return rest
+        })
+      }
+    }
+
     try {
       await db.query(`UPDATE accounts SET ${name} = $1 WHERE account_id = $2`, [
         value,
@@ -64,7 +88,12 @@ export const Account = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Account" id={accountId} />
+    return (
+      <NotFound
+        table="Account"
+        id={accountId}
+      />
+    )
   }
 
   return (
@@ -85,7 +114,7 @@ export const Account = () => {
         <RadioGroupField
           label="Type"
           name="type"
-          list={['free', 'basic', 'premium']}
+          list={['trial', 'free', 'basic', 'premium']}
           value={row.type ?? ''}
           onChange={onChange}
           validationState={validations.type?.state}
