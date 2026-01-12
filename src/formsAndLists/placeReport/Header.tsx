@@ -37,63 +37,75 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM place_reports WHERE place_report_id = $1`,
-      [placeReportId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM place_reports WHERE place_report_id = $1`, [
-      placeReportId,
-    ])
-    addOperation({
-      table: 'place_reports',
-      rowIdName: 'place_report_id',
-      rowId: placeReportId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM place_reports WHERE place_report_id = $1`,
+        [placeReportId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      db.query(`DELETE FROM place_reports WHERE place_report_id = $1`, [
+        placeReportId,
+      ])
+      addOperation({
+        table: 'place_reports',
+        rowIdName: 'place_report_id',
+        rowId: placeReportId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT place_report_id FROM place_reports WHERE place_id = $1 ORDER BY label`,
-      [placeId2 ?? placeId],
-    )
-    const placeReports = res?.rows
-    const len = placeReports.length
-    const index = placeReports.findIndex(
-      (p) => p.place_report_id === placeReportId,
-    )
-    const next = placeReports[(index + 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${next.place_report_id}/report`
-        : `../${next.place_report_id}`,
-      params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT place_report_id FROM place_reports WHERE place_id = $1 ORDER BY label`,
+        [placeId2 ?? placeId],
+      )
+      const placeReports = res?.rows
+      const len = placeReports.length
+      const index = placeReports.findIndex(
+        (p) => p.place_report_id === placeReportId,
+      )
+      const next = placeReports[(index + 1) % len]
+      navigate({
+        to: isForm
+          ? `../../${next.place_report_id}/report`
+          : `../${next.place_report_id}`,
+        params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT place_report_id FROM place_reports WHERE place_id = $1 ORDER BY label`,
-      [placeId2 ?? placeId],
-    )
-    const placeReports = res?.rows
-    const len = placeReports.length
-    const index = placeReports.findIndex(
-      (p) => p.place_report_id === placeReportId,
-    )
-    const previous = placeReports[(index + len - 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${previous.place_report_id}/report`
-        : `../${previous.place_report_id}`,
-      params: (prev) => ({
-        ...prev,
-        placeReportId: previous.place_report_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT place_report_id FROM place_reports WHERE place_id = $1 ORDER BY label`,
+        [placeId2 ?? placeId],
+      )
+      const placeReports = res?.rows
+      const len = placeReports.length
+      const index = placeReports.findIndex(
+        (p) => p.place_report_id === placeReportId,
+      )
+      const previous = placeReports[(index + len - 1) % len]
+      navigate({
+        to: isForm
+          ? `../../${previous.place_report_id}/report`
+          : `../${previous.place_report_id}`,
+        params: (prev) => ({
+          ...prev,
+          placeReportId: previous.place_report_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
