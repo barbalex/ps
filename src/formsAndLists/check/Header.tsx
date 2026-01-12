@@ -9,7 +9,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createCheck } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { tabsAtom, mapBoundsAtom, addNotificationAtom } from '../../store.ts'
+import { tabsAtom, mapBoundsAtom, addNotificationAtom, addOperationAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
@@ -21,6 +21,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)
+  const addOperation = useSetAtom(addOperationAtom)
   const { projectId, placeId, placeId2, checkId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -40,51 +41,63 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
-      checkId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    await db.query(`DELETE FROM checks WHERE check_id = $1`, [checkId])
-    addOperation({
-      table: 'checks',
-      rowIdName: 'check_id',
-      rowId: checkId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
+        checkId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM checks WHERE check_id = $1`, [checkId])
+      addOperation({
+        table: 'checks',
+        rowIdName: 'check_id',
+        rowId: checkId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error('Error deleting check:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
-      [placeId2 ?? placeId],
-    )
-    const checks = res?.rows
-    const len = checks.length
-    const index = checks.findIndex((p) => p.check_id === checkId)
-    const next = checks[(index + 1) % len]
-    navigate({
-      to: isForm ? `../../${next.check_id}/check` : `../${next.check_id}`,
-      params: (prev) => ({ ...prev, checkId: next.check_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
+        [placeId2 ?? placeId],
+      )
+      const checks = res?.rows
+      const len = checks.length
+      const index = checks.findIndex((p) => p.check_id === checkId)
+      const next = checks[(index + 1) % len]
+      navigate({
+        to: isForm ? `../../${next.check_id}/check` : `../${next.check_id}`,
+        params: (prev) => ({ ...prev, checkId: next.check_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next check:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
-      [placeId2 ?? placeId],
-    )
-    const checks = res?.rows
-    const len = checks.length
-    const index = checks.findIndex((p) => p.check_id === checkId)
-    const previous = checks[(index + len - 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${previous.check_id}/check`
-        : `../${previous.check_id}`,
-      params: (prev) => ({ ...prev, checkId: previous.check_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
+        [placeId2 ?? placeId],
+      )
+      const checks = res?.rows
+      const len = checks.length
+      const index = checks.findIndex((p) => p.check_id === checkId)
+      const previous = checks[(index + len - 1) % len]
+      navigate({
+        to: isForm
+          ? `../../${previous.check_id}/check`
+          : `../${previous.check_id}`,
+        params: (prev) => ({ ...prev, checkId: previous.check_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous check:', error)
+    }
   }
 
   const alertNoGeometry = () =>

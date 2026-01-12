@@ -26,13 +26,13 @@ export const Check = ({ from }) => {
   ])
   const row: Checks | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
     try {
-      db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
+      await db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
         value,
         checkId,
       ])
