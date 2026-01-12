@@ -32,60 +32,73 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM subprojects WHERE subproject_id = $1`,
-      [subprojectId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [subprojectId])
-    addOperation({
-      table: 'subprojects',
-      rowIdName: 'subproject_id',
-      rowId: subprojectId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM subprojects WHERE subproject_id = $1`,
+        [subprojectId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [subprojectId])
+      addOperation({
+        table: 'subprojects',
+        rowIdName: 'subproject_id',
+        rowId: subprojectId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error('Error deleting subproject:', error)
+      // Could add a toast notification here
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT subproject_id FROM subprojects WHERE project_id = $1 order by label`,
-      [projectId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.subproject_id === subprojectId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${next.subproject_id}/subproject`
-        : `../${next.subproject_id}`,
-      params: (prev) => ({
-        ...prev,
-        subprojectId: next.subproject_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT subproject_id FROM subprojects WHERE project_id = $1 order by label`,
+        [projectId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.subproject_id === subprojectId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: isForm
+          ? `../../${next.subproject_id}/subproject`
+          : `../${next.subproject_id}`,
+        params: (prev) => ({
+          ...prev,
+          subprojectId: next.subproject_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next subproject:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT subproject_id FROM subprojects WHERE project_id = $1 order by label`,
-      [projectId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.subproject_id === subprojectId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${previous.subproject_id}/subproject`
-        : `../${previous.subproject_id}`,
-      params: (prev) => ({
-        ...prev,
-        subprojectId: previous.subproject_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT subproject_id FROM subprojects WHERE project_id = $1 order by label`,
+        [projectId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.subproject_id === subprojectId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: isForm
+          ? `../../${previous.subproject_id}/subproject`
+          : `../${previous.subproject_id}`,
+        params: (prev) => ({
+          ...prev,
+          subprojectId: previous.subproject_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous subproject:', error)
+    }
   }
 
   return (

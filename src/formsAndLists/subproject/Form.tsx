@@ -7,6 +7,7 @@ export const SubprojectForm = ({
   orIndex,
   from,
   autoFocusRef,
+  validations = {},
 }) => (
   <>
     <TextField
@@ -16,6 +17,8 @@ export const SubprojectForm = ({
       onChange={onChange}
       autoFocus
       ref={autoFocusRef}
+      validationState={validations.name?.state}
+      validationMessage={validations.name?.message}
     />
     <TextField
       label="Start year"
@@ -23,6 +26,8 @@ export const SubprojectForm = ({
       value={row.start_year ?? ''}
       type="number"
       onChange={onChange}
+      validationState={validations.start_year?.state}
+      validationMessage={validations.start_year?.message}
     />
     <Jsonb
       table="subprojects"
