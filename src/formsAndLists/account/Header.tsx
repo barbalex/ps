@@ -25,38 +25,54 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM accounts WHERE account_id = $1`,
-      [accountId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM accounts WHERE account_id = $1`, [accountId])
-    addOperation({
-      table: 'accounts',
-      rowIdName: 'account_id',
-      rowId: accountId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: `..` })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM accounts WHERE account_id = $1`,
+        [accountId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM accounts WHERE account_id = $1`, [accountId])
+      addOperation({
+        table: 'accounts',
+        rowIdName: 'account_id',
+        rowId: accountId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: `..` })
+    } catch (error) {
+      console.error('Error deleting account:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(`SELECT account_id FROM accounts order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.account_id === accountId)
-    const next = rows[(index + 1) % len]
-    navigate({ to: `../${next.account_id}` })
+    try {
+      const res = await db.query(
+        `SELECT account_id FROM accounts order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.account_id === accountId)
+      const next = rows[(index + 1) % len]
+      navigate({ to: `../${next.account_id}` })
+    } catch (error) {
+      console.error('Error navigating to next account:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(`SELECT account_id FROM accounts order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.account_id === accountId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({ to: `../${previous.account_id}` })
+    try {
+      const res = await db.query(
+        `SELECT account_id FROM accounts order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.account_id === accountId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({ to: `../${previous.account_id}` })
+    } catch (error) {
+      console.error('Error navigating to previous account:', error)
+    }
   }
 
   return (
