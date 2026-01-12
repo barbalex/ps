@@ -26,8 +26,6 @@ export const ActionReport = ({ from }) => {
   )
   const row: ActionReports | undefined = res?.rows?.[0]
 
-  // console.log('ActionReport', { row, results })
-
   const onChange = (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
