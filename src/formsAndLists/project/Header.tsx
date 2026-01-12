@@ -9,6 +9,8 @@ import { addOperationAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
+  from: string
+  label?: string
 }
 
 // TODO: add button to enter design mode
@@ -34,46 +36,64 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM projects WHERE project_id = $1`,
-      [projectId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
-    addOperation({
-      table: 'projects',
-      rowIdName: 'project_id',
-      rowId: projectId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: isForm ? `../..` : `..` })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM projects WHERE project_id = $1`,
+        [projectId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
+      addOperation({
+        table: 'projects',
+        rowIdName: 'project_id',
+        rowId: projectId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(`SELECT project_id FROM projects order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.project_id === projectId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: isForm ? `../../${next.project_id}/project` : `../${next.project_id}`,
-      params: { projectId: next.project_id },
-    })
+    try {
+      const res = await db.query(
+        `SELECT project_id FROM projects order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.project_id === projectId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to:
+          isForm ? `../../${next.project_id}/project` : `../${next.project_id}`,
+        params: { projectId: next.project_id },
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(`SELECT project_id FROM projects order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.project_id === projectId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${previous.project_id}/project`
-        : `../${previous.project_id}`,
-      params: { projectId: previous.project_id },
-    })
+    try {
+      const res = await db.query(
+        `SELECT project_id FROM projects order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.project_id === projectId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to:
+          isForm ?
+            `../../${previous.project_id}/project`
+          : `../${previous.project_id}`,
+        params: { projectId: previous.project_id },
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (

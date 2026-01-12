@@ -16,12 +16,14 @@ import { Type } from './Type.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
 import { FormHeader } from '../../../components/FormHeader/index.tsx'
+import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../../store.ts'
 import type Projects from '../../../models/public/Projects.ts'
 
 export const Configuration = ({ from }) => {
   const { projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const db = usePGlite()
 
