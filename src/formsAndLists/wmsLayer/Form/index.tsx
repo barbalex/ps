@@ -8,7 +8,7 @@ import { CreateWmsService } from './CreateWmsService/index.tsx'
 import '../../../form.css'
 
 // this form is rendered from a parent or outlet
-export const WmsLayerForm = ({ onChange, row, isFilter }) => {
+export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
   // TODO: implement later
   const isOffline = false
 
@@ -23,10 +23,12 @@ export const WmsLayerForm = ({ onChange, row, isFilter }) => {
         orderBy="url"
         onChange={onChange}
         autoFocus={true}
+        validationState={validations.wms_service_id?.state}
         validationMessage={
-          row.wms_service_id ? '' : (
+          validations.wms_service_id?.message ??
+          (row.wms_service_id ? '' : (
             'Choose from a configured WMS. Or add a new one.'
-          )
+          ))
         }
         noDataMessage="No WMS found. You can add one."
         hideWhenNoData={true}
@@ -46,6 +48,8 @@ export const WmsLayerForm = ({ onChange, row, isFilter }) => {
             name="label"
             value={row.label ?? ''}
             onChange={onChange}
+            validationMessage={validations.label?.message}
+            validationState={validations.label?.state}
           />
           {/* {wmsLayer?.wms_service_id && (
               <>

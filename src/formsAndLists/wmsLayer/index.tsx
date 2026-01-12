@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -19,6 +19,7 @@ const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
 export const WmsLayer = () => {
   const { wmsLayerId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -40,8 +41,17 @@ export const WmsLayer = () => {
         [value, wmsLayerId],
       )
     } catch (error) {
-      console.log('hello WmsLayer, onChange, error:', error)
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
     }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'wms_layers',
       rowIdName: 'wms_layer_id',
@@ -70,7 +80,7 @@ export const WmsLayer = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form onChange={onChange} validations={validations} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
