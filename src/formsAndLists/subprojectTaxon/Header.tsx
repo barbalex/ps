@@ -30,62 +30,75 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
-      [subprojectTaxonId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`, [
-      subprojectTaxonId,
-    ])
-    addOperation({
-      table: 'subproject_taxa',
-      rowIdName: 'subproject_taxon_id',
-      rowId: subprojectTaxonId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
+        [subprojectTaxonId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`, [
+        subprojectTaxonId,
+      ])
+      addOperation({
+        table: 'subproject_taxa',
+        rowIdName: 'subproject_taxon_id',
+        rowId: subprojectTaxonId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting subproject taxon:', error)
+      // Could add a toast notification here
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT subproject_taxon_id FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
-      [subprojectId],
-    )
-    const subprojectTaxa = res?.rows
-    const len = subprojectTaxa.length
-    const index = subprojectTaxa.findIndex(
-      (p) => p.subproject_taxon_id === subprojectTaxonId,
-    )
-    const next = subprojectTaxa[(index + 1) % len]
-    navigate({
-      to: `../${next.subproject_taxon_id}`,
-      params: (prev) => ({
-        ...prev,
-        subprojectTaxonId: next.subproject_taxon_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT subproject_taxon_id FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
+        [subprojectId],
+      )
+      const subprojectTaxa = res?.rows
+      const len = subprojectTaxa.length
+      const index = subprojectTaxa.findIndex(
+        (p) => p.subproject_taxon_id === subprojectTaxonId,
+      )
+      const next = subprojectTaxa[(index + 1) % len]
+      navigate({
+        to: `../${next.subproject_taxon_id}`,
+        params: (prev) => ({
+          ...prev,
+          subprojectTaxonId: next.subproject_taxon_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next subproject taxon:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT subproject_taxon_id FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
-      [subprojectId],
-    )
-    const subprojectTaxa = res?.rows
-    const len = subprojectTaxa.length
-    const index = subprojectTaxa.findIndex(
-      (p) => p.subproject_taxon_id === subprojectTaxonId,
-    )
-    const previous = subprojectTaxa[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.subproject_taxon_id}`,
-      params: (prev) => ({
-        ...prev,
-        subprojectTaxonId: previous.subproject_taxon_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT subproject_taxon_id FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
+        [subprojectId],
+      )
+      const subprojectTaxa = res?.rows
+      const len = subprojectTaxa.length
+      const index = subprojectTaxa.findIndex(
+        (p) => p.subproject_taxon_id === subprojectTaxonId,
+      )
+      const previous = subprojectTaxa[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.subproject_taxon_id}`,
+        params: (prev) => ({
+          ...prev,
+          subprojectTaxonId: previous.subproject_taxon_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous subproject taxon:', error)
+    }
   }
 
   return (

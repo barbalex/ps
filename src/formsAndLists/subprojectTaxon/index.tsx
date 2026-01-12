@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -19,6 +19,7 @@ const taxaInclude = { taxonomies: true }
 export const SubprojectTaxon = ({ from }) => {
   const { subprojectTaxonId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -30,15 +31,28 @@ export const SubprojectTaxon = ({ from }) => {
   )
   const row: SubprojectTaxa | undefined = res?.rows?.[0]
 
-  const onChange = (e, data) => {
+  const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    db.query(
-      `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
-      [value, subprojectTaxonId],
-    )
+    try {
+      await db.query(
+        `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
+        [value, subprojectTaxonId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'subproject_taxa',
       rowIdName: 'subproject_taxon_id',
@@ -68,6 +82,8 @@ export const SubprojectTaxon = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.taxon_id?.state}
+          validationMessage={validations.taxon_id?.message}
         />
       </div>
     </div>
