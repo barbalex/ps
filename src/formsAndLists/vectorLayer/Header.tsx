@@ -116,8 +116,9 @@ export const Header = ({ autoFocusRef, row, from }) => {
       vectorLayerId: vectorLayer.vector_layer_id,
     })
     navigate({
-      to: isForm
-        ? `../../${vectorLayer.vector_layer_id}/vector-layer`
+      to:
+        isForm ?
+          `../../${vectorLayer.vector_layer_id}/vector-layer`
         : `../${vectorLayer.vector_layer_id}/vector-layer`,
       params: (prev) => ({
         ...prev,
@@ -127,51 +128,65 @@ export const Header = ({ autoFocusRef, row, from }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = () => {
-    db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
-      vectorLayerId,
-    ])
-    navigate({ to: isForm ? `../..` : `..` })
+  const deleteRow = async () => {
+    try {
+      await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
+        vectorLayerId,
+      ])
+      navigate({ to: isForm ? `../..` : `..` })
+    } catch (error) {
+      console.error('Error deleting vector layer:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
-      [projectId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${next.vector_layer_id}/vector-layer`
-        : `../${next.vector_layer_id}`,
-      params: (prev) => ({
-        ...prev,
-        vectorLayerId: next.vector_layer_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
+        [projectId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to:
+          isForm ?
+            `../../${next.vector_layer_id}/vector-layer`
+          : `../${next.vector_layer_id}`,
+        params: (prev) => ({
+          ...prev,
+          vectorLayerId: next.vector_layer_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next vector layer:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
-      [projectId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: isForm
-        ? `../../${previous.vector_layer_id}/vector-layer`
-        : `../${previous.vector_layer_id}`,
-      params: (prev) => ({
-        ...prev,
-        vectorLayerId: previous.vector_layer_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
+        [projectId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to:
+          isForm ?
+            `../../${previous.vector_layer_id}/vector-layer`
+          : `../${previous.vector_layer_id}`,
+        params: (prev) => ({
+          ...prev,
+          vectorLayerId: previous.vector_layer_id,
+        }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous vector layer:', error)
+    }
   }
 
   return (
@@ -183,15 +198,14 @@ export const Header = ({ autoFocusRef, row, from }) => {
       toPrevious={toPrevious}
       tableName="vector layer"
       siblings={
-        isDraggable ? (
+        isDraggable ?
           <Button
             size="medium"
             icon={<TreasureMapLinePulsating />}
             onClick={onClickToggleAssign}
             title="Stop assigning"
           />
-        ) : (
-          <Menu>
+        : <Menu>
             <MenuTrigger disableButtonEnhancement>
               <Button
                 size="medium"
@@ -206,7 +220,6 @@ export const Header = ({ autoFocusRef, row, from }) => {
               </MenuList>
             </MenuPopover>
           </Menu>
-        )
       }
     />
   )
