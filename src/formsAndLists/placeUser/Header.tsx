@@ -24,50 +24,64 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM place_users WHERE place_user_id = $1`,
-      [placeUserId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM place_users WHERE place_user_id = $1`, [placeUserId])
-    addOperation({
-      table: 'place_users',
-      rowIdName: 'place_user_id',
-      rowId: placeUserId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM place_users WHERE place_user_id = $1`,
+        [placeUserId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query(`DELETE FROM place_users WHERE place_user_id = $1`, [
+        placeUserId,
+      ])
+      addOperation({
+        table: 'place_users',
+        rowIdName: 'place_user_id',
+        rowId: placeUserId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
-      [placeId2 ?? placeId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.place_user_id === placeUserId)
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: `../${next.place_user_id}`,
-      params: (prev) => ({ ...prev, placeUserId: next.place_user_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
+        [placeId2 ?? placeId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.place_user_id === placeUserId)
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: `../${next.place_user_id}`,
+        params: (prev) => ({ ...prev, placeUserId: next.place_user_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
-      [placeId2 ?? placeId],
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.place_user_id === placeUserId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.place_user_id}`,
-      params: (prev) => ({ ...prev, placeUserId: previous.place_user_id }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
+        [placeId2 ?? placeId],
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.place_user_id === placeUserId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.place_user_id}`,
+        params: (prev) => ({ ...prev, placeUserId: previous.place_user_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
