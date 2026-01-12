@@ -11,6 +11,7 @@ export const SubprojectReportForm = ({
   orIndex,
   from,
   autoFocusRef,
+  validations = {},
 }) => {
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -25,6 +26,8 @@ export const SubprojectReportForm = ({
         type="number"
         value={row.year ?? ''}
         onChange={onChange}
+        validationState={validations.year?.state}
+        validationMessage={validations.year?.message}
       />
       <Jsonb
         table="subproject_reports"
