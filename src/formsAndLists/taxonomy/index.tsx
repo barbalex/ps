@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -20,6 +20,7 @@ export const Taxonomy = ({ from }) => {
   const { taxonomyId } = useParams({ from })
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -33,10 +34,23 @@ export const Taxonomy = ({ from }) => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
 
-    await db.query(
-      `UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`,
-      [value, taxonomyId],
-    )
+    try {
+      await db.query(
+        `UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`,
+        [value, taxonomyId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'taxonomies',
       rowIdName: 'taxonomy_id',
@@ -64,14 +78,18 @@ export const Taxonomy = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.name?.state}
+          validationMessage={validations.name?.message}
         />
-        <Type row={row} onChange={onChange} />
+        <Type row={row} onChange={onChange} validations={validations} />
         <TextField
           label="Url"
           name="url"
           type="url"
           value={row.url ?? ''}
           onChange={onChange}
+          validationState={validations.url?.state}
+          validationMessage={validations.url?.message}
         />
         <Jsonb
           table="taxonomies"
@@ -84,6 +102,8 @@ export const Taxonomy = ({ from }) => {
           name="obsolete"
           value={row.obsolete ?? false}
           onChange={onChange}
+          validationState={validations.obsolete?.state}
+          validationMessage={validations.obsolete?.message}
         />
       </div>
     </div>

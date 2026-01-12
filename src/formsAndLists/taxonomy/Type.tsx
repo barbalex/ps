@@ -3,7 +3,7 @@ import { useIsFirstRender } from '@uidotdev/usehooks'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
-export const Type = ({ onChange, row }) => {
+export const Type = ({ onChange, row, validations = {} }) => {
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT type FROM taxonomy_types order by sort, type`,
@@ -19,6 +19,8 @@ export const Type = ({ onChange, row }) => {
       isLoading={isLoading}
       value={row.type ?? ''}
       onChange={onChange}
+      validationState={validations.type?.state}
+      validationMessage={validations.type?.message}
     />
   )
 }
