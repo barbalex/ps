@@ -25,38 +25,51 @@ export const Header = ({ autoFocusRef }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM users WHERE user_id = $1`, [
-      userId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    const sql = `DELETE FROM users WHERE user_id = $1`
-    await db.query(sql, [userId])
-    addOperation({
-      table: 'users',
-      rowIdName: 'user_id',
-      rowId: userId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: `..` })
+    try {
+      const prevRes = await db.query(`SELECT * FROM users WHERE user_id = $1`, [
+        userId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      const sql = `DELETE FROM users WHERE user_id = $1`
+      await db.query(sql, [userId])
+      addOperation({
+        table: 'users',
+        rowIdName: 'user_id',
+        rowId: userId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: `..` })
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      // Could add a toast notification here
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(`SELECT user_id FROM users order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.user_id === userId)
-    const next = rows[(index + 1) % len]
-    navigate({ to: `../${next.user_id}` })
+    try {
+      const res = await db.query(`SELECT user_id FROM users order by label`)
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.user_id === userId)
+      const next = rows[(index + 1) % len]
+      navigate({ to: `../${next.user_id}` })
+    } catch (error) {
+      console.error('Error navigating to next user:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(`SELECT user_id FROM users order by label`)
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex((p) => p.user_id === userId)
-    const previous = rows[(index + len - 1) % len]
-    navigate({ to: `../${previous.user_id}` })
+    try {
+      const res = await db.query(`SELECT user_id FROM users order by label`)
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex((p) => p.user_id === userId)
+      const previous = rows[(index + len - 1) % len]
+      navigate({ to: `../${previous.user_id}` })
+    } catch (error) {
+      console.error('Error navigating to previous user:', error)
+    }
   }
 
   return (

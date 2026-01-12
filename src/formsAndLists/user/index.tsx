@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -18,6 +18,7 @@ const from = '/data/users/$userId'
 export const User = () => {
   const { userId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -30,7 +31,20 @@ export const User = () => {
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
     const sql = `UPDATE users SET ${name} = $1 WHERE user_id = $2`
-    await db.query(sql, [value, userId])
+    try {
+      await db.query(sql, [value, userId])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
     addOperation({
       table: 'users',
       rowIdName: 'user_id',
@@ -44,7 +58,12 @@ export const User = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="User" id={userId} />
+    return (
+      <NotFound
+        table="User"
+        id={userId}
+      />
+    )
   }
 
   return (
@@ -59,6 +78,8 @@ export const User = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          validationState={validations.email?.state}
+          validationMessage={validations.email?.message}
         />
       </div>
     </div>
