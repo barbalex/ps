@@ -25,20 +25,24 @@ export const Header = () => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM messages WHERE message_id = $1`,
-      [messageId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM messages WHERE message_id = $1`, [messageId])
-    addOperation({
-      table: 'messages',
-      rowIdName: 'message_id',
-      rowId: messageId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: `/data/messages` })
+    try {
+      const prevRes = await db.query(
+        `SELECT * FROM messages WHERE message_id = $1`,
+        [messageId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      db.query(`DELETE FROM messages WHERE message_id = $1`, [messageId])
+      addOperation({
+        table: 'messages',
+        rowIdName: 'message_id',
+        rowId: messageId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: `/data/messages` })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
