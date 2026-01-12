@@ -43,58 +43,70 @@ export const Header = ({
   }
 
   const deleteRow = async () => {
-    db.query(`DELETE FROM occurrences WHERE occurrence_import_id = $1`, [
-      occurrenceImportId,
-    ])
-    addOperation({
-      table: 'occurrences',
-      operation: 'delete',
-      filter: {
-        function: 'eq',
-        column: 'occurrence_import_id',
-        value: occurrenceImportId,
-      },
-    })
-    // TODO: version where array of ids is passed?
-    navigate({ to: '..' })
+    try {
+      db.query(`DELETE FROM occurrences WHERE occurrence_import_id = $1`, [
+        occurrenceImportId,
+      ])
+      addOperation({
+        table: 'occurrences',
+        operation: 'delete',
+        filter: {
+          function: 'eq',
+          column: 'occurrence_import_id',
+          value: occurrenceImportId,
+        },
+      })
+      // TODO: version where array of ids is passed?
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      `SELECT occurrence_import_id FROM occurrence_imports order by label`,
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex(
-      (p) => p.occurrence_import_id === occurrenceImportId,
-    )
-    const next = rows[(index + 1) % len]
-    navigate({
-      to: `../${next.occurrence_import_id}`,
-      params: (prev) => ({
-        ...prev,
-        occurrenceImportId: next.occurrence_import_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT occurrence_import_id FROM occurrence_imports order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex(
+        (p) => p.occurrence_import_id === occurrenceImportId,
+      )
+      const next = rows[(index + 1) % len]
+      navigate({
+        to: `../${next.occurrence_import_id}`,
+        params: (prev) => ({
+          ...prev,
+          occurrenceImportId: next.occurrence_import_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `SELECT occurrence_import_id FROM occurrence_imports order by label`,
-    )
-    const rows = res?.rows
-    const len = rows.length
-    const index = rows.findIndex(
-      (p) => p.occurrence_import_id === occurrenceImportId,
-    )
-    const previous = rows[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.occurrence_import_id}`,
-      params: (prev) => ({
-        ...prev,
-        occurrenceImportId: previous.occurrence_import_id,
-      }),
-    })
+    try {
+      const res = await db.query(
+        `SELECT occurrence_import_id FROM occurrence_imports order by label`,
+      )
+      const rows = res?.rows
+      const len = rows.length
+      const index = rows.findIndex(
+        (p) => p.occurrence_import_id === occurrenceImportId,
+      )
+      const previous = rows[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.occurrence_import_id}`,
+        params: (prev) => ({
+          ...prev,
+          occurrenceImportId: previous.occurrence_import_id,
+        }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
