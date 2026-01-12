@@ -24,56 +24,68 @@ export const Header = ({ autoFocusRef, from }) => {
   }
 
   const deleteRow = async () => {
-    const prevRes = await db.query(
-      'SELECT * FROM check_values WHERE check_value_id = $1',
-      [checkValueId],
-    )
-    const prev = prevRes?.rows?.[0] ?? {}
-    await db.query('DELETE FROM check_values WHERE check_value_id = $1', [
-      checkValueId,
-    ])
-    addOperation({
-      table: 'check_values',
-      rowIdName: 'check_value_id',
-      rowId: checkValueId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(
+        'SELECT * FROM check_values WHERE check_value_id = $1',
+        [checkValueId],
+      )
+      const prev = prevRes?.rows?.[0] ?? {}
+      await db.query('DELETE FROM check_values WHERE check_value_id = $1', [
+        checkValueId,
+      ])
+      addOperation({
+        table: 'check_values',
+        rowIdName: 'check_value_id',
+        rowId: checkValueId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error('Error deleting check value:', error)
+    }
   }
 
   const toNext = async () => {
-    const res = await db.query(
-      'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
-      [checkId],
-    )
-    const checkValues = res?.rows
-    const len = checkValues.length
-    const index = checkValues.findIndex(
-      (p) => p.check_value_id === checkValueId,
-    )
-    const next = checkValues[(index + 1) % len]
-    navigate({
-      to: `../${next.check_value_id}`,
-      params: (prev) => ({ ...prev, checkValueId: next.check_value_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
+        [checkId],
+      )
+      const checkValues = res?.rows
+      const len = checkValues.length
+      const index = checkValues.findIndex(
+        (p) => p.check_value_id === checkValueId,
+      )
+      const next = checkValues[(index + 1) % len]
+      navigate({
+        to: `../${next.check_value_id}`,
+        params: (prev) => ({ ...prev, checkValueId: next.check_value_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to next check value:', error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
-      [checkId],
-    )
-    const checkValues = res?.rows
-    const len = checkValues.length
-    const index = checkValues.findIndex(
-      (p) => p.check_value_id === checkValueId,
-    )
-    const previous = checkValues[(index + len - 1) % len]
-    navigate({
-      to: `../${previous.check_value_id}`,
-      params: (prev) => ({ ...prev, checkValueId: previous.check_value_id }),
-    })
+    try {
+      const res = await db.query(
+        'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label',
+        [checkId],
+      )
+      const checkValues = res?.rows
+      const len = checkValues.length
+      const index = checkValues.findIndex(
+        (p) => p.check_value_id === checkValueId,
+      )
+      const previous = checkValues[(index + len - 1) % len]
+      navigate({
+        to: `../${previous.check_value_id}`,
+        params: (prev) => ({ ...prev, checkValueId: previous.check_value_id }),
+      })
+    } catch (error) {
+      console.error('Error navigating to previous check value:', error)
+    }
   }
 
   return (
