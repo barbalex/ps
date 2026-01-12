@@ -43,19 +43,23 @@ export const Header = ({ row, previewRef, from }) => {
   const addRow = () => api.initFlow()
 
   const deleteRow = async () => {
-    const prevRes = await db.query(`SELECT * FROM files WHERE file_id = $1`, [
-      fileId,
-    ])
-    const prev = prevRes?.rows?.[0] ?? {}
-    db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
-    addOperation({
-      table: 'file',
-      rowIdName: 'file_id',
-      rowId: fileId,
-      operation: 'delete',
-      prev,
-    })
-    navigate({ to: '..' })
+    try {
+      const prevRes = await db.query(`SELECT * FROM files WHERE file_id = $1`, [
+        fileId,
+      ])
+      const prev = prevRes?.rows?.[0] ?? {}
+      db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
+      addOperation({
+        table: 'file',
+        rowIdName: 'file_id',
+        rowId: fileId,
+        operation: 'delete',
+        prev,
+      })
+      navigate({ to: '..' })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const hFilterField = actionId
@@ -82,43 +86,51 @@ export const Header = ({ row, previewRef, from }) => {
     undefined
 
   const toNext = async () => {
-    const res = await db.query(
-      `
+    try {
+      const res = await db.query(
+        `
       SELECT file_id 
       FROM files 
       ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
       ORDER BY label`,
-    )
-    const fileIds: { file_id: string }[] = res?.rows ?? []
-    const len = fileIds.length
-    const index = fileIds.findIndex((p) => p.file_id === fileId)
-    const next = fileIds[(index + 1) % len]
-    navigate({
-      to: `${isPreview ? '../' : ''}../${next.file_id}${
-        isPreview ? '/preview' : ''
-      }`,
-      params: (prev) => ({ ...prev, fileId: next.file_id }),
-    })
+      )
+      const fileIds: { file_id: string }[] = res?.rows ?? []
+      const len = fileIds.length
+      const index = fileIds.findIndex((p) => p.file_id === fileId)
+      const next = fileIds[(index + 1) % len]
+      navigate({
+        to: `${isPreview ? '../' : ''}../${next.file_id}${
+          isPreview ? '/preview' : ''
+        }`,
+        params: (prev) => ({ ...prev, fileId: next.file_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const toPrevious = async () => {
-    const res = await db.query(
-      `
+    try {
+      const res = await db.query(
+        `
       SELECT file_id 
       FROM files 
       ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
       ORDER BY label`,
-    )
-    const fileIds: { file_id: string }[] = res?.rows ?? []
-    const len = fileIds.length
-    const index = fileIds.findIndex((p) => p.file_id === fileId)
-    const previous = fileIds[(index + len - 1) % len]
-    navigate({
-      to: `${isPreview ? '../' : ''}../${previous.file_id}${
-        isPreview ? '/preview' : ''
-      }`,
-      params: (prev) => ({ ...prev, fileId: previous.file_id }),
-    })
+      )
+      const fileIds: { file_id: string }[] = res?.rows ?? []
+      const len = fileIds.length
+      const index = fileIds.findIndex((p) => p.file_id === fileId)
+      const previous = fileIds[(index + len - 1) % len]
+      navigate({
+        to: `${isPreview ? '../' : ''}../${previous.file_id}${
+          isPreview ? '/preview' : ''
+        }`,
+        params: (prev) => ({ ...prev, fileId: previous.file_id }),
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
