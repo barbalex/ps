@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -19,7 +18,6 @@ import '../form.css'
 export const Places = ({ from }) => {
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId } = useParams({ from })
-  const db = usePGlite()
 
   const { loading, navData, isFiltered } = usePlacesNavData({
     projectId,
@@ -82,15 +80,18 @@ export const Places = ({ from }) => {
         }
       />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {navs.map(({ id, label }) => (
-              <Row key={id} to={id} label={label ?? id} />
+              <Row
+                key={id}
+                to={id}
+                label={label ?? id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
