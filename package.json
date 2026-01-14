@@ -30,6 +30,7 @@
     "@fluentui/react-timepicker-compat-preview": "0.2.0",
     "@formkit/tempo": "1.0.0",
     "@kripod/uuidv7": "0.3.4",
+    "@puckeditor/core": "0.21.0",
     "@react-leaflet/core": "3.0.0",
     "@shopify/react-web-worker": "5.1.6",
     "@supabase/supabase-js": "2.90.1",
