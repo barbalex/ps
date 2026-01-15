@@ -190,12 +190,14 @@ export const Jsonb = ({
           autoFocus={autoFocus && index === 0 && fields.length === 0}
         />
       ))}
-      <AddField
-        key="addField"
-        tableName={table}
-        level={placeId2 ? 2 : 1}
-        from={from}
-      />
+      {!isHistory && (
+        <AddField
+          key="addField"
+          tableName={table}
+          level={placeId2 ? 2 : 1}
+          from={from}
+        />
+      )}
     </>
   )
 }
