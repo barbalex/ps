@@ -124,6 +124,7 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteIm
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesToAssessRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/occurrences-to-assess/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/occurrences-not-to-assign/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/histories/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/charts/route'
@@ -987,6 +988,13 @@ const DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRoute =
         DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteImport.update({
+    id: '/histories',
+    path: '/histories',
+    getParentRoute: () =>
+      DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
+  } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteImport.update({
     id: '/goals',
@@ -1087,10 +1095,10 @@ const DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsIndexRoute =
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRouteImport.update({
-    id: '/histories/',
-    path: '/histories/',
+    id: '/',
+    path: '/',
     getParentRoute: () =>
-      DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
+      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute,
   } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRouteImport.update({
@@ -1151,10 +1159,10 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesFilterRoute =
 const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRouteImport.update(
     {
-      id: '/histories/$subprojectHistoryId',
-      path: '/histories/$subprojectHistoryId',
+      id: '/$subprojectHistoryId',
+      path: '/$subprojectHistoryId',
       getParentRoute: () =>
-        DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
+        DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute,
     } as any,
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute =
@@ -2738,6 +2746,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/charts': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/goals': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/histories': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/occurrence-imports': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/occurrences-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/occurrences-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesToAssessRouteRouteWithChildren
@@ -2776,7 +2785,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/charts/': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/histories': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/histories/': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/occurrence-imports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/occurrences-not-to-assign/': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/occurrences-to-assess/': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesToAssessIndexRoute
@@ -3248,6 +3257,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/histories': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrences-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrences-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesToAssessRouteRouteWithChildren
@@ -3555,6 +3565,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts'
     | '/data/projects/$projectId/subprojects/$subprojectId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals'
+    | '/data/projects/$projectId/subprojects/$subprojectId/histories'
     | '/data/projects/$projectId/subprojects/$subprojectId/occurrence-imports'
     | '/data/projects/$projectId/subprojects/$subprojectId/occurrences-not-to-assign'
     | '/data/projects/$projectId/subprojects/$subprojectId/occurrences-to-assess'
@@ -3593,7 +3604,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/'
-    | '/data/projects/$projectId/subprojects/$subprojectId/histories'
+    | '/data/projects/$projectId/subprojects/$subprojectId/histories/'
     | '/data/projects/$projectId/subprojects/$subprojectId/occurrence-imports/'
     | '/data/projects/$projectId/subprojects/$subprojectId/occurrences-not-to-assign/'
     | '/data/projects/$projectId/subprojects/$subprojectId/occurrences-to-assess/'
@@ -4064,6 +4075,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/charts'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/histories'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/occurrences-not-to-assign'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/occurrences-to-assess'
@@ -5087,6 +5099,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
     }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/histories': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/histories'
+      path: '/histories'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
+    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals'
       path: '/goals'
@@ -5180,10 +5199,10 @@ declare module '@tanstack/react-router' {
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/histories/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/histories/'
-      path: '/histories'
-      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories/'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRouteImport
-      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals/'
@@ -5243,10 +5262,10 @@ declare module '@tanstack/react-router' {
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId'
-      path: '/histories/$subprojectHistoryId'
+      path: '/$subprojectHistoryId'
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories/$subprojectHistoryId'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRouteImport
-      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
@@ -6913,6 +6932,24 @@ const DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren =
     DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteChildren,
   )
 
+interface DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren,
+  )
+
 interface DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsIndexRoute
   DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsOccurrenceImportIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsOccurrenceImportIdIndexRoute
@@ -8033,6 +8070,7 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesToAssessRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesToAssessRouteRouteWithChildren
@@ -8042,8 +8080,6 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdSubprojectRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdSubprojectRoute
   DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
 }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren =
@@ -8054,6 +8090,8 @@ const DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren: DataProjec
       DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdOccurrenceImportsRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdOccurrencesNotToAssignRouteRoute:
@@ -8072,10 +8110,6 @@ const DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren: DataProjec
       DataProjectsProjectIdSubprojectsSubprojectIdSubprojectRoute,
     DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute,
-    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute,
-    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute,
   }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteWithChildren =

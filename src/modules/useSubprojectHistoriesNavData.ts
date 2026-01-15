@@ -54,6 +54,7 @@ export const useSubprojectHistoriesNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const navData = {
+    id: 'histories',
     isInActiveNodeArray,
     isActive,
     isOpen,
