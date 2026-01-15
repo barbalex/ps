@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS subproject_histories(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  CONSTRAINT unique_subproject_year NULLS NOT DISTINCT UNIQUE(subproject_id, year)
+  CONSTRAINT unique_subproject_year UNIQUE NULLS NOT DISTINCT(subproject_id, year)
 );
 
 CREATE INDEX IF NOT EXISTS subproject_histories_subproject_id_idx ON subproject_histories USING btree(subproject_id);
@@ -567,7 +567,7 @@ CREATE TABLE IF NOT EXISTS place_histories(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  CONSTRAINT unique_place_year NULLS NOT DISTINCT UNIQUE(place_id, year)
+  CONSTRAINT unique_place_year UNIQUE NULLS NOT DISTINCT(place_id, year)
 );
 
 CREATE INDEX IF NOT EXISTS place_histories_place_id_idx ON place_histories USING btree(place_id);
