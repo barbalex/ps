@@ -796,7 +796,6 @@ export const createSubprojectHistory = async ({ subprojectId }) => {
   const data = {
     subproject_history_id,
     subproject_id: subprojectId,
-    year: new Date().getFullYear(),
   }
 
   const columns = Object.keys(data).join(',')
