@@ -36,17 +36,17 @@ export default interface Projects {
   places_label_by: string | null;
 
   /** Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. */
-  places_order_by: unknown | null;
+  places_order_by: string | null;
 
-  persons_label_by: unknown | null;
+  persons_label_by: string | null;
 
-  persons_order_by: unknown | null;
+  persons_order_by: string | null;
 
-  goals_label_by: unknown | null;
+  goals_label_by: string | null;
 
-  goal_reports_label_by: unknown | null;
+  goal_reports_label_by: string | null;
 
-  goal_reports_order_by: unknown | null;
+  goal_reports_order_by: string | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels: string | null;
@@ -117,17 +117,17 @@ export interface ProjectsInitializer {
   places_label_by?: string | null;
 
   /** Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. */
-  places_order_by?: unknown | null;
+  places_order_by?: string | null;
 
-  persons_label_by?: unknown | null;
+  persons_label_by?: string | null;
 
-  persons_order_by?: unknown | null;
+  persons_order_by?: string | null;
 
-  goals_label_by?: unknown | null;
+  goals_label_by?: string | null;
 
-  goal_reports_label_by?: unknown | null;
+  goal_reports_label_by?: string | null;
 
-  goal_reports_order_by?: unknown | null;
+  goal_reports_order_by?: string | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels?: string | null;
@@ -215,17 +215,17 @@ export interface ProjectsMutator {
   places_label_by?: string | null;
 
   /** Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. */
-  places_order_by?: unknown | null;
+  places_order_by?: string | null;
 
-  persons_label_by?: unknown | null;
+  persons_label_by?: string | null;
 
-  persons_order_by?: unknown | null;
+  persons_order_by?: string | null;
 
-  goals_label_by?: unknown | null;
+  goals_label_by?: string | null;
 
-  goal_reports_label_by?: unknown | null;
+  goal_reports_label_by?: string | null;
 
-  goal_reports_order_by?: unknown | null;
+  goal_reports_order_by?: string | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels?: string | null;
