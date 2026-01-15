@@ -1194,6 +1194,27 @@ COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current ye
 COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
 
 --------------------------------------------------------------
+-- subproject_report_designs
+--
+CREATE TABLE IF NOT EXISTS subproject_report_designs(
+  subproject_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  design jsonb DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS subproject_report_designs_account_id_idx ON subproject_report_designs USING btree(account_id);
+CREATE INDEX IF NOT EXISTS subproject_report_designs_subproject_id_idx ON subproject_report_designs USING btree(subproject_id);
+
+COMMENT ON TABLE subproject_report_designs IS 'Design of subproject reports, stored as JSON.';
+COMMENT ON COLUMN subproject_report_designs.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN subproject_report_designs.design IS 'JSON design of the subproject report.';
+
+
+--------------------------------------------------------------
 -- project_reports
 --
 CREATE TABLE IF NOT EXISTS project_reports(
@@ -1223,6 +1244,55 @@ COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances d
 COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
+
+
+--------------------------------------------------------------
+-- project_report_subdesigns
+-- per project multiple customizable subdesigns can be stored
+-- they give an overview over all subprojects
+-- they can be added to the project report design
+-- TODO: find out how to do like what is done in apflora
+-- maybe add templates? templates including fields?
+--
+CREATE TABLE IF NOT EXISTS project_report_subdesigns(
+  project_report_subdesign_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  design jsonb DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS project_report_subdesigns_account_id_idx ON project_report_subdesigns USING btree(account_id);
+CREATE INDEX IF NOT EXISTS project_report_subdesigns_project_id_idx ON project_report_subdesigns USING btree(project_id);
+
+COMMENT ON TABLE project_report_subdesigns IS 'Customizable subdesigns for project reports, stored as JSON.';
+COMMENT ON COLUMN project_report_subdesigns.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN project_report_subdesigns.design IS 'JSON design of the project report subdesign.';
+
+
+--------------------------------------------------------------
+-- project_report_designs
+--
+CREATE TABLE IF NOT EXISTS project_report_designs(
+  project_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  design jsonb DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS project_report_designs_account_id_idx ON project_report_designs USING btree(account_id);
+CREATE INDEX IF NOT EXISTS project_report_designs_project_id_idx ON project_report_designs USING btree(project_id);
+
+COMMENT ON TABLE project_report_designs IS 'Customizable designs for project reports, stored as JSON.';
+COMMENT ON COLUMN project_report_designs.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN project_report_designs.design IS 'JSON design of the project report design.';
+
 
 --------------------------------------------------------------
 -- files
