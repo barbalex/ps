@@ -48,7 +48,7 @@ export const SubprojectHistories = () => {
       const data = {
         subproject_history_id,
         subproject_id: subproject.subproject_id,
-        year: new Date().getFullYear(),
+        year: null,
         account_id: subproject.account_id,
         project_id: subproject.project_id,
         name: subproject.name,

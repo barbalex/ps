@@ -817,8 +817,7 @@ export const createSubprojectHistory = async ({ subprojectId }) => {
     draft: data,
   })
 
-  // year is used as the id in navigation
-  return data.year.toString()
+  return subproject_history_id
 }
 
 export const createSubprojectReport = async ({ projectId, subprojectId }) => {

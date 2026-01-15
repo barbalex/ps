@@ -10,12 +10,21 @@ export const SubprojectHistoryForm = ({
 }) => (
   <>
     <TextField
+      label="Year"
+      name="year"
+      value={row.year ?? ''}
+      type="number"
+      onChange={onChange}
+      autoFocus
+      ref={autoFocusRef}
+      validationState={validations.year?.state}
+      validationMessage={validations.year?.message}
+    />
+    <TextField
       label="Name"
       name="name"
       value={row.name ?? ''}
       onChange={onChange}
-      autoFocus
-      ref={autoFocusRef}
       validationState={validations.name?.state}
       validationMessage={validations.name?.message}
     />

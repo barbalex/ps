@@ -10,17 +10,17 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { subprojectId, year } = useParams({ from })
+  const { subprojectId, subprojectHistoryId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 
   const addRow = async () => {
-    const newYear = await createSubprojectHistory({ subprojectId })
-    if (!newYear) return
+    const subprojectHistoryId = await createSubprojectHistory({ subprojectId })
+    if (!subprojectHistoryId) return
     navigate({
-      to: `../${newYear}`,
+      to: `../${subprojectHistoryId}`,
     })
     autoFocusRef?.current?.focus()
   }
@@ -47,7 +47,6 @@ export const Header = ({ autoFocusRef, from }) => {
         start_year: current.start_year,
         end_year: current.end_year,
         data: current.data,
-        label: current.label,
       }
 
       const columns = Object.keys(data).join(',')
@@ -110,7 +109,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.subproject_history_id === subprojectHistoryId)
+      const index = rows.findIndex(
+        (p) => p.subproject_history_id === subprojectHistoryId,
+      )
       const next = rows[(index + 1) % len]
       navigate({
         to: `../${next.subproject_history_id}`,
@@ -128,7 +129,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.subproject_history_id === subprojectHistoryId)
+      const index = rows.findIndex(
+        (p) => p.subproject_history_id === subprojectHistoryId,
+      )
       const previous = rows[(index + len - 1) % len]
       navigate({
         to: `../${previous.subproject_history_id}`,

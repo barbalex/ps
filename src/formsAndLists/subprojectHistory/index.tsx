@@ -9,7 +9,6 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import { TextField } from '../../components/shared/TextField.tsx'
 
 import type SubprojectHistories from '../../models/public/SubprojectHistories.ts'
 
@@ -86,15 +85,6 @@ export const SubprojectHistory = () => {
         role="tabpanel"
         aria-labelledby="form"
       >
-        <TextField
-          label="Year"
-          name="year"
-          value={row.year ?? ''}
-          type="number"
-          onChange={onChange}
-          validationState={validations.year?.state}
-          validationMessage={validations.year?.message}
-        />
         <Form
           onChange={onChange}
           row={row}
