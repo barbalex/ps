@@ -9,7 +9,6 @@ import {
 import { executeOperation } from './executeOperation.ts'
 import { revertOperation } from './revertOperation.ts'
 import { removeOperation } from './removeOperation.ts'
-import { add } from 'proj4/dist/lib/projections'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect

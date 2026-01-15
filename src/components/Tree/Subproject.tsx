@@ -15,13 +15,15 @@ import { SubprojectUsersNode } from './SubprojectUsers.tsx'
 import { OccurrenceImportsNode } from './OccurrenceImports.tsx'
 import { FilesNode } from './Files.tsx'
 import { ChartsNode } from './Charts.tsx'
+import { SubprojectReportDesignsNode } from './SubprojectReportDesigns.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 import type Projects from '../../models/public/Projects.ts'
 
 export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -120,6 +122,13 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             subprojectId={nav.id}
             level={5}
           />
+          {isDesigning && (
+            <SubprojectReportDesignsNode
+              projectId={projectId}
+              subprojectId={nav.id}
+              level={5}
+            />
+          )}
         </>
       )}
     </>

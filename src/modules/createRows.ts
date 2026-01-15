@@ -1495,9 +1495,31 @@ export const createChart = async ({
   return chart_id
 }
 
+export const createSubprojectReportDesign = async ({ subprojectId }) => {
+  const db = store.get(pgliteDbAtom)
+  const subproject_report_design_id = uuidv7()
+  await db.query(
+    `INSERT INTO subproject_report_designs (subproject_report_design_id, account_id, subproject_id) VALUES ($1, $2, $3)`,
+    [subproject_report_design_id, account_id, subprojectId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'subproject_report_designs',
+    operation: 'insert',
+    draft: {
+      subproject_report_design_id,
+      account_id,
+      subproject_id: subprojectId,
+    },
+  })
+
+  return subproject_report_design_id
+}
+
 export const createChartSubject = async ({ chartId }) => {
   const db = store.get(pgliteDbAtom)
   const chart_subject_id = uuidv7()
+
   await db.query(
     `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
     [
