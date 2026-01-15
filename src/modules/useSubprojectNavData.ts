@@ -26,6 +26,7 @@ type NavData = {
   place_name_plural?: string | null
   subproject_reports_count_filtered?: number | null
   subproject_reports_count_unfiltered?: number | null
+  subproject_histories_count?: number | null
   goals_count_filtered?: number | null
   goals_count_unfiltered?: number | null
   occurrence_imports_count?: number | null
@@ -66,6 +67,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         place_name_plural AS (SELECT name_plural FROM place_levels WHERE project_id = '${projectId}' AND level = 1),
         subproject_reports_count_unfiltered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}'),
         subproject_reports_count_filtered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}' ${subprojectReportsIsFiltered ? ` AND ${subprojectReportsFilterString}` : ''}),
+        subproject_histories_count AS (SELECT count(*) FROM subproject_histories WHERE subproject_id = '${subprojectId}'),
         goals_count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
         goals_count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${goalsIsFiltered ? ` AND ${goalsFilterString}` : ''}),
         occurrence_imports_count AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}'),
@@ -85,6 +87,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         place_name_plural.name_plural AS place_name_plural,
         subproject_reports_count_unfiltered.count AS subproject_reports_count_unfiltered,
         subproject_reports_count_filtered.count AS subproject_reports_count_filtered,
+        subproject_histories_count.count AS subproject_histories_count,
         goals_count_unfiltered.count AS goals_count_unfiltered,
         goals_count_filtered.count AS goals_count_filtered,
         occurrence_imports_count.count AS occurrence_imports_count,
@@ -103,6 +106,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         place_name_plural,
         subproject_reports_count_unfiltered,
         subproject_reports_count_filtered,
+        subproject_histories_count,
         goals_count_unfiltered,
         goals_count_filtered,
         occurrence_imports_count,
@@ -164,6 +168,14 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           countFiltered: nav?.subproject_reports_count_filtered ?? 0,
           countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
           namePlural: 'Reports',
+        }),
+      },
+      {
+        id: 'histories',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.subproject_histories_count ?? 0,
+          namePlural: 'Histories',
         }),
       },
       {
