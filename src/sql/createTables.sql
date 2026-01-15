@@ -1025,6 +1025,8 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   subproject_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(name, subproject_report_design_id::text)) STORED,
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1033,6 +1035,7 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
 
 CREATE INDEX IF NOT EXISTS subproject_report_designs_account_id_idx ON subproject_report_designs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS subproject_report_designs_subproject_id_idx ON subproject_report_designs USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_report_designs_label_idx ON subproject_report_designs USING btree(label);
 
 COMMENT ON TABLE subproject_report_designs IS 'Design of subproject reports, stored as JSON.';
 COMMENT ON COLUMN subproject_report_designs.account_id IS 'redundant account_id enhances data safety';
@@ -1099,6 +1102,8 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   project_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(name, project_report_design_id::text)) STORED,
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1107,6 +1112,7 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
 
 CREATE INDEX IF NOT EXISTS project_report_designs_account_id_idx ON project_report_designs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_report_designs_project_id_idx ON project_report_designs USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_report_designs_label_idx ON project_report_designs USING btree(label);
 
 COMMENT ON TABLE project_report_designs IS 'Customizable designs for project reports, stored as JSON.';
 COMMENT ON COLUMN project_report_designs.account_id IS 'redundant account_id enhances data safety';
