@@ -71,7 +71,7 @@ export const SubprojectHistoryForm = ({ from, autoFocusRef }) => {
   }
 
   return (
-  <>
+  <div className="form-container">
     <TextField
       label="Year"
       name="year"
@@ -116,6 +116,6 @@ export const SubprojectHistoryForm = ({ from, autoFocusRef }) => {
       data={row.data ?? {}}
       from={from}
     />
-  </>
+  </div>
   )
 }

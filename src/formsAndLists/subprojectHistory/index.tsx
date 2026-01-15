@@ -17,16 +17,10 @@ export const SubprojectHistory = () => {
         autoFocusRef={autoFocusRef}
         from={from}
       />
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
-        <Form
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
-      </div>
+      <Form
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
     </div>
   )
 }
