@@ -31,7 +31,7 @@ interface Props {
   idField: string
   id: string
   orIndex?: number // only for array of jsonb objects
-  data: Record<string, any>
+  data: Record<string, unknown>
   autoFocus?: boolean
   ref?: React.Ref<HTMLDivElement>
   from: string
@@ -147,7 +147,7 @@ export const Jsonb = ({
   const dataKeysNotDefined = dataKeys.filter(
     (dataKey) => !fieldNamesDefined.includes(dataKey),
   )
-  const isHistory = from.includes('histories')
+  const isHistory = from?.includes('histories')
 
   return (
     <>
