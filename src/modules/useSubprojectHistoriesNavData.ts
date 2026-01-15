@@ -26,7 +26,7 @@ export const useSubprojectHistoriesNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        year::text AS id,
+        subproject_history_id AS id,
         label
       FROM subproject_histories 
       WHERE subproject_id = $1 

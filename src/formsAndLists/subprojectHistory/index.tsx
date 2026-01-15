@@ -16,10 +16,10 @@ import type SubprojectHistories from '../../models/public/SubprojectHistories.ts
 import '../../form.css'
 
 const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$year'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId'
 
 export const SubprojectHistory = () => {
-  const { subprojectId, year } = useParams({ from })
+  const { subprojectHistoryId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
 
@@ -27,8 +27,8 @@ export const SubprojectHistory = () => {
 
   const db = usePGlite()
   const res = useLiveQuery(
-    `SELECT * FROM subproject_histories WHERE subproject_id = $1 AND year = $2`,
-    [subprojectId, parseInt(year)],
+    `SELECT * FROM subproject_histories WHERE subproject_history_id = $1`,
+    [subprojectHistoryId],
   )
   const row: SubprojectHistories | undefined = res?.rows?.[0]
 
@@ -39,8 +39,8 @@ export const SubprojectHistory = () => {
 
     try {
       await db.query(
-        `UPDATE subproject_histories SET ${name} = $1 WHERE subproject_id = $2 AND year = $3`,
-        [value, subprojectId, parseInt(year)],
+        `UPDATE subproject_histories SET ${name} = $1 WHERE subproject_history_id = $2`,
+        [value, subprojectHistoryId],
       )
     } catch (error) {
       setValidations((prev) => ({

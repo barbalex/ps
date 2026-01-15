@@ -29,8 +29,8 @@ export const Header = ({ autoFocusRef, from }) => {
     try {
       // Get the current history
       const currentRes = await db.query(
-        `SELECT * FROM subproject_histories WHERE subproject_id = $1 AND year = $2`,
-        [subprojectId, parseInt(year)],
+        `SELECT * FROM subproject_histories WHERE subproject_history_id = $1`,
+        [subprojectHistoryId],
       )
       const current = currentRes?.rows?.[0]
       if (!current) return
@@ -68,9 +68,9 @@ export const Header = ({ autoFocusRef, from }) => {
         draft: data,
       })
 
-      // Navigate to the new history (year is null, so use 'null' as string)
+      // Navigate to the new history
       navigate({
-        to: `../null`,
+        to: `../${subproject_history_id}`,
       })
       autoFocusRef?.current?.focus()
     } catch (error) {
@@ -81,13 +81,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(
-        `SELECT * FROM subproject_histories WHERE subproject_id = $1 AND year = $2`,
-        [subprojectId, parseInt(year)],
+        `SELECT * FROM subproject_histories WHERE subproject_history_id = $1`,
+        [subprojectHistoryId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
       await db.query(
-        `DELETE FROM subproject_histories WHERE subproject_id = $1 AND year = $2`,
-        [subprojectId, parseInt(year)],
+        `DELETE FROM subproject_histories WHERE subproject_history_id = $1`,
+        [subprojectHistoryId],
       )
       addOperation({
         table: 'subproject_histories',
@@ -105,15 +105,15 @@ export const Header = ({ autoFocusRef, from }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT year FROM subproject_histories WHERE subproject_id = $1 ORDER BY year`,
+        `SELECT subproject_history_id FROM subproject_histories WHERE subproject_id = $1 ORDER BY year`,
         [subprojectId],
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.year === parseInt(year))
+      const index = rows.findIndex((p) => p.subproject_history_id === subprojectHistoryId)
       const next = rows[(index + 1) % len]
       navigate({
-        to: `../${next.year}`,
+        to: `../${next.subproject_history_id}`,
       })
     } catch (error) {
       console.error('Error navigating to next history:', error)
@@ -123,15 +123,15 @@ export const Header = ({ autoFocusRef, from }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT year FROM subproject_histories WHERE subproject_id = $1 ORDER BY year`,
+        `SELECT subproject_history_id FROM subproject_histories WHERE subproject_id = $1 ORDER BY year`,
         [subprojectId],
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.year === parseInt(year))
+      const index = rows.findIndex((p) => p.subproject_history_id === subprojectHistoryId)
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to: `../${previous.year}`,
+        to: `../${previous.subproject_history_id}`,
       })
     } catch (error) {
       console.error('Error navigating to previous history:', error)

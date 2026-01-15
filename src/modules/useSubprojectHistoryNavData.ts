@@ -8,7 +8,7 @@ import { treeOpenNodesAtom } from '../store.ts'
 type Props = {
   projectId: string
   subprojectId: string
-  year: string
+  subprojectHistoryId: string
 }
 
 type NavData = {
@@ -19,7 +19,7 @@ type NavData = {
 export const useSubprojectHistoryNavData = ({
   projectId,
   subprojectId,
-  year,
+  subprojectHistoryId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -27,11 +27,11 @@ export const useSubprojectHistoryNavData = ({
   const res = useLiveQuery(
     `
     SELECT 
-      year::text AS id, 
+      subproject_history_id AS id, 
       label 
     FROM subproject_histories
-    WHERE subproject_id = $1 AND year = $2`,
-    [subprojectId, parseInt(year)],
+    WHERE subproject_history_id = $1`,
+    [subprojectHistoryId],
   )
   const loading = res === undefined
 
