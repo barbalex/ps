@@ -7,6 +7,7 @@ export const PlaceHistoryNode = ({
   projectId,
   subprojectId,
   placeId,
+  placeId2,
   nav,
   level = 8,
 }) => {
@@ -21,6 +22,7 @@ export const PlaceHistoryNode = ({
     subprojectId,
     'places',
     placeId,
+    ...(placeId2 ? ['places', placeId2] : []),
     'histories',
     nav.id,
   ]

@@ -88,14 +88,13 @@ export const PlaceChildren = ({
         placeId2={placeId2}
         level={level + 1}
       />
-      {!placeId2 && (
-        <PlaceHistoriesNode
-          projectId={projectId}
-          subprojectId={subprojectId}
-          placeId={placeId}
-          level={level + 1}
-        />
-      )}
+      <PlaceHistoriesNode
+        projectId={projectId}
+        subprojectId={subprojectId}
+        placeId={placeId}
+        placeId2={placeId2}
+        level={level + 1}
+      />
       {showFiles && (
         <FilesNode
           projectId={projectId}

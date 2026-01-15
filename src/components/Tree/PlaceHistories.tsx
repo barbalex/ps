@@ -10,6 +10,7 @@ interface Props {
   projectId: string
   subprojectId: string
   placeId: string
+  placeId2?: string
   level?: number
 }
 
@@ -17,6 +18,7 @@ export const PlaceHistoriesNode = ({
   projectId,
   subprojectId,
   placeId,
+  placeId2,
   level = 7,
 }: Props) => {
   const navigate = useNavigate()
@@ -25,6 +27,7 @@ export const PlaceHistoriesNode = ({
     projectId,
     subprojectId,
     placeId,
+    placeId2,
   })
   const {
     label,
@@ -73,7 +76,9 @@ export const PlaceHistoriesNode = ({
             projectId={projectId}
             subprojectId={subprojectId}
             placeId={placeId}
+            placeId2={placeId2}
             nav={nav}
+            level={level + 1}
           />
         ))}
     </>

@@ -236,18 +236,14 @@ export const usePlaceNavData = ({
           namePlural: 'Users',
         }),
       },
-      ...(!placeId2
-        ? [
-            {
-              id: 'histories',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.place_histories_count ?? 0,
-                namePlural: 'Histories',
-              }),
-            },
-          ]
-        : []),
+      {
+        id: 'histories',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.place_histories_count ?? 0,
+          namePlural: 'Histories',
+        }),
+      },
       {
         id: 'files',
         label: buildNavLabel({

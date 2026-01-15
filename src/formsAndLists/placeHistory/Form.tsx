@@ -12,13 +12,16 @@ import { addOperationAtom } from '../../store.ts'
 
 import type PlaceHistories from '../../models/public/PlaceHistories.ts'
 
-const formFrom =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/histories/$placeHistoryId'
-
-export const PlaceHistoryForm = ({ from, autoFocusRef }) => {
-  const { placeHistoryId } = useParams({ from: formFrom })
+export const PlaceHistoryForm = ({ autoFocusRef }) => {
+  const params = useParams({ strict: false })
+  const { placeHistoryId, placeId2 } = params
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+
+  const from =
+    placeId2 ?
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/histories/$placeHistoryId'
+    : '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/histories/$placeHistoryId'
 
   const db = usePGlite()
   const res = useLiveQuery(

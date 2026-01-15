@@ -9,15 +9,19 @@ import { createPlaceHistory } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
-  const { placeId, placeHistoryId } = useParams({ from })
+export const Header = ({ autoFocusRef }) => {
+  const params = useParams({ strict: false })
+  const { placeId, placeId2, placeHistoryId } = params
+  const effectivePlaceId = placeId2 ?? placeId
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
 
   const addRow = async () => {
-    const placeHistoryId = await createPlaceHistory({ placeId })
+    const placeHistoryId = await createPlaceHistory({
+      placeId: effectivePlaceId,
+    })
     if (!placeHistoryId) return
     navigate({
       to: `../${placeHistoryId}`,
@@ -113,7 +117,7 @@ export const Header = ({ autoFocusRef, from }) => {
           WHERE place_id = $1 
           ORDER BY year DESC
         `,
-        [placeId],
+        [effectivePlaceId],
       )
       const placeHistories = res?.rows
       const len = placeHistories.length
@@ -140,7 +144,7 @@ export const Header = ({ autoFocusRef, from }) => {
           WHERE place_id = $1 
           ORDER BY year DESC
         `,
-        [placeId],
+        [effectivePlaceId],
       )
       const placeHistories = res?.rows
       const index = placeHistories.findIndex(
@@ -159,24 +163,19 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Place History"
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName="place_histories"
-      menus={[
-        <Tooltip
-          key="copy"
-          content="Copy this history to new history"
-        >
+      siblings={
+        <Tooltip content="Copy to new history without year">
           <Button
             size="medium"
             icon={<FaCopy />}
             onClick={copyRow}
           />
-        </Tooltip>,
-      ]}
+        </Tooltip>
+      }
     />
   )
 }

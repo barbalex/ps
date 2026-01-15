@@ -10,6 +10,7 @@ type Props = {
   projectId: string
   subprojectId: string
   placeId: string
+  placeId2?: string
 }
 
 type NavData = {
@@ -21,6 +22,7 @@ export const usePlaceHistoriesNavData = ({
   projectId,
   subprojectId,
   placeId,
+  placeId2,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -47,6 +49,7 @@ export const usePlaceHistoriesNavData = ({
     subprojectId,
     'places',
     placeId,
+    ...(placeId2 ? ['places', placeId2] : []),
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'histories']

@@ -13,11 +13,10 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { addOperationAtom } from '../store.ts'
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/histories/'
-
 export const PlaceHistories = () => {
-  const { projectId, subprojectId, placeId } = useParams({ from })
+  const params = useParams({ strict: false })
+  const { projectId, subprojectId, placeId, placeId2 } = params
+  const effectivePlaceId = placeId2 ?? placeId
   const navigate = useNavigate()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -26,11 +25,12 @@ export const PlaceHistories = () => {
     projectId,
     subprojectId,
     placeId,
+    placeId2,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createPlaceHistory({ placeId })
+    const id = await createPlaceHistory({ placeId: effectivePlaceId })
     if (!id) return
     navigate({ to: id })
   }
@@ -40,7 +40,7 @@ export const PlaceHistories = () => {
       // Get the parent place data
       const placeRes = await db.query(
         `SELECT * FROM places WHERE place_id = $1`,
-        [placeId],
+        [effectivePlaceId],
       )
       const place = placeRes?.rows?.[0]
       if (!place) return

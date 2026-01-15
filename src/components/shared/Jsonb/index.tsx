@@ -92,7 +92,12 @@ export const Jsonb = ({
     }
 
     const isFilter = location.pathname.endsWith('filter')
-    const level = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
+    const level =
+      table === 'places' ?
+        placeId ? 2
+        : 1
+      : placeId2 ? 2
+      : 1
 
     if (isFilter) {
       // TODO: wait until new db and it's accessing lib. Then implement these queries
@@ -142,10 +147,11 @@ export const Jsonb = ({
   const dataKeysNotDefined = dataKeys.filter(
     (dataKey) => !fieldNamesDefined.includes(dataKey),
   )
+  const isHistory = from.includes('histories')
 
   return (
     <>
-      {fields.length > 0 ? (
+      {fields.length > 0 ?
         <WidgetsFromDataFieldsDefined
           key="widgetsFromDataFieldsDefined"
           fields={fields}
@@ -159,7 +165,7 @@ export const Jsonb = ({
           ref={ref}
           from={from}
         />
-      ) : null}
+      : null}
       {dataKeysNotDefined.map((dataKey, index) => (
         <TextField
           key={dataKey}
@@ -172,10 +178,15 @@ export const Jsonb = ({
             // if value was removed, remove the key also
             onChange(e, dataReturned, true)
           }}
-          validationState="warning"
-          validationMessage={`This field is not defined for this ${
-            isAccountTable ? 'account' : 'project'
-          }`}
+          // if isHistory, don't warn about undefined fields
+          validationState={isHistory ? undefined : 'warning'}
+          validationMessage={
+            isHistory ? undefined : (
+              `This field is not defined for this ${
+                isAccountTable ? 'account' : 'project'
+              }`
+            )
+          }
           autoFocus={autoFocus && index === 0 && fields.length === 0}
         />
       ))}
