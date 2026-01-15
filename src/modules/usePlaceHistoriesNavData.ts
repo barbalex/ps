@@ -27,6 +27,8 @@ export const usePlaceHistoriesNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  const effectivePlaceId = placeId2 ?? placeId
+
   const res = useLiveQuery(
     `
       SELECT
@@ -35,7 +37,7 @@ export const usePlaceHistoriesNavData = ({
       FROM place_histories 
       WHERE place_id = $1 
       ORDER BY year DESC`,
-    [placeId],
+    [effectivePlaceId],
   )
 
   const loading = res === undefined
