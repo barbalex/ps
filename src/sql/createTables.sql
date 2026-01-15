@@ -203,6 +203,35 @@ COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, define
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
 --------------------------------------------------------------
+-- subproject_histories
+--
+CREATE TABLE IF NOT EXISTS subproject_histories(
+  subproject_history_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  start_year integer DEFAULT NULL,
+  end_year integer DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE(subproject_id, year)
+);
+
+CREATE INDEX IF NOT EXISTS subproject_histories_subproject_id_idx ON subproject_histories USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_histories_year_idx ON subproject_histories USING btree(year);
+CREATE INDEX IF NOT EXISTS subproject_histories_account_id_idx ON subproject_histories USING btree(account_id);
+CREATE INDEX IF NOT EXISTS subproject_histories_project_id_idx ON subproject_histories USING btree(project_id);
+
+COMMENT ON COLUMN subproject_histories.year IS 'One history entry per year per subproject';
+COMMENT ON COLUMN subproject_histories.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON TABLE subproject_histories IS 'History of subprojects. Used to analyze subproject development over the years.';
+
+--------------------------------------------------------------
 -- project_users
 --
 create table if not exists user_roles (
@@ -515,6 +544,41 @@ COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in t
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
+
+--------------------------------------------------------------
+-- place_histories
+--
+CREATE TABLE IF NOT EXISTS place_histories(
+  place_history_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
+  level integer DEFAULT 1,
+  since integer DEFAULT NULL,
+  until integer DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  geometry jsonb DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
+  label text DEFAULT NULL,
+  files_active_places boolean DEFAULT TRUE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE(place_id, year)
+);
+
+CREATE INDEX IF NOT EXISTS place_histories_place_id_idx ON place_histories USING btree(place_id);
+CREATE INDEX IF NOT EXISTS place_histories_year_idx ON place_histories USING btree(year);
+CREATE INDEX IF NOT EXISTS place_histories_account_id_idx ON place_histories USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_histories_subproject_id_idx ON place_histories USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS place_histories_parent_id_idx ON place_histories USING btree(parent_id);
+
+COMMENT ON COLUMN place_histories.year IS 'One history entry per year per place';
+COMMENT ON COLUMN place_histories.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON TABLE place_histories IS 'History of places. Used to analyze place development over the years.';
 
 --------------------------------------------------------------
 -- actions
