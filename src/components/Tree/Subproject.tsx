@@ -6,6 +6,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Node } from './Node.tsx'
 import { PlacesNode } from './Places.tsx'
 import { SubprojectReportsNode } from './SubprojectReports.tsx'
+import { SubprojectHistoriesNode } from './SubprojectHistories.tsx'
 import { GoalsNode } from './Goals.tsx'
 import { OccurrencesToAssessNode } from './OccurrencesToAssess.tsx'
 import { OccurrencesNotToAssignNode } from './OccurrencesNotToAssign.tsx'
@@ -70,10 +71,27 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
       />
       {isOpen && (
         <>
-          <PlacesNode projectId={projectId} subprojectId={nav.id} level={5} />
-          <SubprojectReportsNode projectId={projectId} subprojectId={nav.id} />
-          <GoalsNode projectId={projectId} subprojectId={nav.id} />
-          <OccurrenceImportsNode projectId={projectId} subprojectId={nav.id} />
+          <PlacesNode
+            projectId={projectId}
+            subprojectId={nav.id}
+            level={5}
+          />
+          <SubprojectReportsNode
+            projectId={projectId}
+            subprojectId={nav.id}
+          />
+          <SubprojectHistoriesNode
+            projectId={projectId}
+            subprojectId={nav.id}
+          />
+          <GoalsNode
+            projectId={projectId}
+            subprojectId={nav.id}
+          />
+          <OccurrenceImportsNode
+            projectId={projectId}
+            subprojectId={nav.id}
+          />
           <OccurrencesToAssessNode
             projectId={projectId}
             subprojectId={nav.id}
@@ -82,12 +100,26 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             projectId={projectId}
             subprojectId={nav.id}
           />
-          <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
-          <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
+          <SubprojectTaxaNode
+            projectId={projectId}
+            subprojectId={nav.id}
+          />
+          <SubprojectUsersNode
+            projectId={projectId}
+            subprojectId={nav.id}
+          />
           {showFiles && (
-            <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
+            <FilesNode
+              projectId={projectId}
+              subprojectId={nav.id}
+              level={5}
+            />
           )}
-          <ChartsNode projectId={projectId} subprojectId={nav.id} level={5} />
+          <ChartsNode
+            projectId={projectId}
+            subprojectId={nav.id}
+            level={5}
+          />
         </>
       )}
     </>

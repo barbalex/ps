@@ -135,6 +135,15 @@ export const startSyncing = async (db) => {
         table: 'subproject_users',
         primaryKey: ['subproject_user_id'],
       },
+      subproject_histories: {
+        shape: {
+          url,
+          params: { table: 'subproject_histories' },
+        },
+        liveSse: true,
+        table: 'subproject_histories',
+        primaryKey: ['subproject_history_id'],
+      },
       taxonomy_types: {
         shape: {
           url,
