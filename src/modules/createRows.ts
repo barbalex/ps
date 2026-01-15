@@ -819,6 +819,36 @@ export const createSubprojectHistory = async ({ subprojectId }) => {
   return subproject_history_id
 }
 
+export const createPlaceHistory = async ({ placeId }) => {
+  const db = store.get(pgliteDbAtom)
+
+  const place_history_id = uuidv7()
+  const data = {
+    place_history_id,
+    place_id: placeId,
+  }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  await db.query(
+    `insert into place_histories (${columns}) values (${values})`,
+    Object.values(data),
+  )
+
+  store.set(addOperationAtom, {
+    table: 'place_histories',
+    operation: 'insert',
+    rowIdName: 'place_history_id',
+    rowId: place_history_id,
+    draft: data,
+  })
+
+  return place_history_id
+}
+
 export const createSubprojectReport = async ({ projectId, subprojectId }) => {
   const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column

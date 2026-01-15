@@ -5,6 +5,7 @@ import { ActionsNode } from '../Actions.tsx'
 import { PlaceReportsNode } from '../PlaceReports.tsx'
 import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
+import { PlaceHistoriesNode } from '../PlaceHistories.tsx'
 import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
@@ -87,6 +88,14 @@ export const PlaceChildren = ({
         placeId2={placeId2}
         level={level + 1}
       />
+      {!placeId2 && (
+        <PlaceHistoriesNode
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId}
+          level={level + 1}
+        />
+      )}
       {showFiles && (
         <FilesNode
           projectId={projectId}
