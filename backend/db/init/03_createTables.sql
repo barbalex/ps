@@ -203,6 +203,26 @@ COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, define
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
 --------------------------------------------------------------
+-- subproject_histories
+--
+CREATE TABLE IF NOT EXISTS subproject_histories(
+  subproject_history_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  start_year integer DEFAULT NULL,
+  end_year integer DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE(subproject_id, year)
+);
+
+--------------------------------------------------------------
 -- project_users
 --
 create table if not exists user_roles (
