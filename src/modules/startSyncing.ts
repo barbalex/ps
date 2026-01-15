@@ -469,6 +469,18 @@ export const startSyncing = async (db) => {
         table: 'place_users',
         primaryKey: ['place_user_id'],
       },
+      // add place_histories
+      place_histories: {
+        shape: {
+          url,
+          params: {
+            table: 'place_histories',
+          },
+        },
+        liveSse: true,
+        table: 'place_histories',
+        primaryKey: ['place_history_id'],
+      },
       goals: {
         shape: {
           url,
