@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -9,15 +9,20 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../store.ts'
+import { buildData } from '../chart/Chart/buildData/index.ts'
+import { SingleChart } from '../chart/Chart/Chart.tsx'
 
 import type SubprojectReportDesigns from '../../models/public/SubprojectReportDesigns.ts'
 
 import '@puckeditor/core/puck.css'
 
 export const Form = ({ autoFocusRef, from }) => {
-  const { subprojectReportDesignId } = useParams({ from })
+  const { subprojectReportDesignId, projectId, subprojectId } = useParams({
+    from,
+  })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const [chartDataMap, setChartDataMap] = useState({})
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -29,6 +34,15 @@ export const Form = ({ autoFocusRef, from }) => {
         WHERE table_name = 'subproject_reports' 
         ORDER BY name
       ) f) as fields,
+      (SELECT json_agg(c) FROM (
+        SELECT c.chart_id, c.title, c.subjects_single,
+          (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
+           FROM chart_subjects cs 
+           WHERE cs.chart_id = c.chart_id) as subjects
+        FROM charts c
+        WHERE c.subproject_id = srd.subproject_id
+        ORDER BY c.title
+      ) c) as charts,
       (SELECT data FROM subproject_reports 
        WHERE subproject_id = srd.subproject_id 
        ORDER BY year DESC 
@@ -39,7 +53,32 @@ export const Form = ({ autoFocusRef, from }) => {
   )
   const row: SubprojectReportDesigns | undefined = res?.rows?.[0]
   const fields = row?.fields ?? []
+  const charts = row?.charts ?? []
   const reportData = row?.report_data ?? {}
+  const chartsJson = JSON.stringify(charts)
+
+  // Build chart data for all charts
+  useEffect(() => {
+    const parsedCharts = JSON.parse(chartsJson)
+    if (!parsedCharts.length) return
+
+    const buildAllChartData = async () => {
+      const dataMap = {}
+      for (const chart of parsedCharts) {
+        if (!chart.subjects || !chart.subjects.length) continue
+        const data = await buildData({
+          chart,
+          subjects: chart.subjects,
+          subproject_id: subprojectId,
+          project_id: projectId,
+        })
+        dataMap[chart.chart_id] = data
+      }
+      setChartDataMap(dataMap)
+    }
+
+    buildAllChartData()
+  }, [chartsJson, subprojectId, projectId])
 
   // Build Puck config from fields with actual data
   const components = {}
@@ -66,6 +105,42 @@ export const Form = ({ autoFocusRef, from }) => {
               value={value}
               readOnly
             />
+          </div>
+        )
+      },
+    }
+  })
+
+  // Add chart components
+  charts.forEach((chart) => {
+    const componentName = `${chart.title?.replace(/\s+/g, '') || chart.chart_id}Chart`
+
+    components[componentName] = {
+      fields: {},
+      defaultProps: {},
+      render: () => {
+        const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
+        return (
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontSize: '1.2em', fontWeight: 'bold', marginBottom: '8px' }}>
+              {chart.title}
+            </div>
+            {chart.subjects_single === true ?
+              chart.subjects?.map((subject) => (
+                <SingleChart
+                  key={subject.chart_subject_id}
+                  chart={chart}
+                  subjects={[subject]}
+                  data={data}
+                  synchronized={true}
+                />
+              ))
+            : <SingleChart
+                chart={chart}
+                subjects={chart.subjects ?? []}
+                data={data}
+              />
+            }
           </div>
         )
       },
@@ -127,7 +202,13 @@ export const Form = ({ autoFocusRef, from }) => {
     }
   }
 
-  console.log('Subproject Report Design Form', { row, fields, reportData })
+  console.log('Subproject Report Design Form', {
+    row,
+    fields,
+    charts,
+    reportData,
+    chartDataMap,
+  })
 
   if (!res) return <Loading />
 
@@ -152,7 +233,7 @@ export const Form = ({ autoFocusRef, from }) => {
         validationState={validations.name?.state}
         validationMessage={validations.name?.message}
       />
-      {fields.length > 0 && (
+      {(fields.length > 0 || charts.length > 0) && (
         <div style={{ marginTop: '20px', height: 'calc(100vh - 200px)' }}>
           <Puck
             config={config}
@@ -161,9 +242,9 @@ export const Form = ({ autoFocusRef, from }) => {
           />
         </div>
       )}
-      {fields.length === 0 && (
+      {fields.length === 0 && charts.length === 0 && (
         <div>
-          No fields found for subproject_reports. Please seed the fields first.
+          No fields or charts found. Please add fields or charts first.
         </div>
       )}
     </div>
