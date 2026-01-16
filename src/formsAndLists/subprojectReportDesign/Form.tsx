@@ -116,7 +116,7 @@ export const Form = ({ autoFocusRef, from }) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
-      label: chart.name || 'Chart',
+      label: `${chart.label} Chart`,
       fields: {},
       defaultProps: {},
       render: () => {
@@ -154,9 +154,7 @@ export const Form = ({ autoFocusRef, from }) => {
     }
   })
 
-  const config = {
-    components,
-  }
+  const config = { components }
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
