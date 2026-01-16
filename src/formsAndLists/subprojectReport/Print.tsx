@@ -121,30 +121,51 @@ export const SubprojectReportPrint = ({ from }) => {
   }
 
   return (
-    <div className="form-outer-container">
-      <Header from={from} />
-      <div className="form-container">
-        <TextField
-          label="Year"
-          name="year"
-          type="number"
-          value={row.year ?? ''}
-          onChange={onChange}
-          validationState={validations.year?.state}
-          validationMessage={validations.year?.message}
-        />
-        {design && fields.length > 0 && (
-          <div style={{ marginTop: '20px' }}>
-            <Render
-              config={config}
-              data={design}
+    <>
+      <style>{`
+        @media print {
+          .print-hide {
+            display: none !important;
+          }
+          .form-outer-container {
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .form-container {
+            max-width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+      `}</style>
+      <div className="form-outer-container">
+        <div className="print-hide">
+          <Header from={from} />
+        </div>
+        <div className="form-container">
+          <div className="print-hide">
+            <TextField
+              label="Year"
+              name="year"
+              type="number"
+              value={row.year ?? ''}
+              onChange={onChange}
+              validationState={validations.year?.state}
+              validationMessage={validations.year?.message}
             />
           </div>
-        )}
-        {(!design || fields.length === 0) && (
-          <div>No report design found for this subproject.</div>
-        )}
+          {design && fields.length > 0 && (
+            <div style={{ marginTop: '20px' }}>
+              <Render
+                config={config}
+                data={design}
+              />
+            </div>
+          )}
+          {(!design || fields.length === 0) && (
+            <div>No report design found for this subproject.</div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
