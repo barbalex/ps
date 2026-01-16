@@ -355,3 +355,11 @@ html {
   --s-accent: 67%;
   --l-accent: 57%;
 }
+
+/* Print styles */
+@media print {
+  /* Hide the header, breadcrumbs and tree */
+  .no-print {
+    display: none !important;
+  }
+}

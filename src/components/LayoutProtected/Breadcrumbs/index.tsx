@@ -2,7 +2,7 @@ import { useMatches } from '@tanstack/react-router'
 import { TransitionGroup } from 'react-transition-group'
 
 import { FetcherRouter } from './FetcherRouter.tsx'
-import stylex from './index.module.css'
+import styles from './index.module.css'
 
 // this component extracts matches
 export const Breadcrumbs = () => {
@@ -15,7 +15,7 @@ export const Breadcrumbs = () => {
   // flex-direction row-reverse combined with reverse order of matches
   // to align bookmarks to the right, but still have them in order
   return (
-    <div className={stylex.container}>
+    <div className={`${styles.container} no-print`}>
       <TransitionGroup component={null}>
         {navDataFetchers.map((fetcherName) => (
           <FetcherRouter
