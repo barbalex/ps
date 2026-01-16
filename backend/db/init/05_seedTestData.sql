@@ -10103,7 +10103,7 @@ INSERT INTO project_users(project_user_id, project_id, user_id, role) values
 -- subprojects
 INSERT INTO subprojects(subproject_id, project_id, name) values 
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');
--- add three fields for subproject_reports: overview, development, outlook. For subproject '018cfd27-ee92-7000-b678-e75497d6c60e'
+-- seed three fields for subproject_reports: overview, development, outlook. For subproject '018cfd27-ee92-7000-b678-e75497d6c60e'
 
 -- subproject_histories
 INSERT INTO subproject_histories(account_id, subproject_id, subproject_history_id, year) values 
