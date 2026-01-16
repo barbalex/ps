@@ -154,9 +154,7 @@ export const SubprojectReportPrint = ({ from }) => {
     }
   })
 
-  const config = {
-    components,
-  }
+  const config = { components }
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -201,43 +199,34 @@ export const SubprojectReportPrint = ({ from }) => {
   }
 
   return (
-    <>
-      <style>{`
-        @media print {
-          .print-hide {
-            display: none !important;
-          }
-        }
-      `}</style>
-      <div className="form-outer-container">
+    <div className="form-outer-container">
+      <div className="print-hide">
+        <Header from={from} />
+      </div>
+      <div className="form-container">
         <div className="print-hide">
-          <Header from={from} />
+          <TextField
+            label="Year"
+            name="year"
+            type="number"
+            value={row.year ?? ''}
+            onChange={onChange}
+            validationState={validations.year?.state}
+            validationMessage={validations.year?.message}
+          />
         </div>
-        <div className="form-container">
-          <div className="print-hide">
-            <TextField
-              label="Year"
-              name="year"
-              type="number"
-              value={row.year ?? ''}
-              onChange={onChange}
-              validationState={validations.year?.state}
-              validationMessage={validations.year?.message}
+        {design && fields.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <Render
+              config={config}
+              data={design}
             />
           </div>
-          {design && fields.length > 0 && (
-            <div style={{ marginTop: '20px' }}>
-              <Render
-                config={config}
-                data={design}
-              />
-            </div>
-          )}
-          {(!design || fields.length === 0) && (
-            <div>No report design found for this subproject.</div>
-          )}
-        </div>
+        )}
+        {(!design || fields.length === 0) && (
+          <div>No report design found for this subproject.</div>
+        )}
       </div>
-    </>
+    </div>
   )
 }
