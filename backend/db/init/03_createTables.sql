@@ -713,8 +713,6 @@ CREATE TABLE IF NOT EXISTS checks(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  -- label text DEFAULT NULL
-  -- label text GENERATED ALWAYS AS (immutabledate(date)) STORED
   label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -918,8 +916,6 @@ CREATE TABLE IF NOT EXISTS goals(
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  -- label text DEFAULT NULL
-  -- label text GENERATED ALWAYS AS (iif(coalesce(year, name) is not null, year || ': ' || name, goal_id))
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN year is null then goal_id::text 

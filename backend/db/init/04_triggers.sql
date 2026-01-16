@@ -451,9 +451,10 @@ BEGIN
   END IF;
 
   UPDATE projects SET label = CASE
-    WHEN account_projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    WHEN account_projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    WHEN data -> account_projects_label_by is null then coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    WHEN NEW.label IS NOT NULL then NEW.label
+    WHEN account_projects_label_by IS NULL THEN NEW.project_id::text
+    WHEN account_projects_label_by = 'name' THEN NEW.project_id::text
+    WHEN data -> account_projects_label_by is null then NEW.project_id::text
     else data ->> account_projects_label_by
   END
   WHERE projects.project_id = NEW.project_id;

@@ -138,7 +138,24 @@ export const startSyncing = async (db) => {
       subproject_histories: {
         shape: {
           url,
-          params: { table: 'subproject_histories' },
+          params: {
+            table: 'subproject_histories',
+            // add all columns except label. Reason: always generated
+            columns: [
+              'subproject_history_id',
+              'subproject_id',
+              'year',
+              'account_id',
+              'project_id',
+              'name',
+              'start_year',
+              'end_year',
+              'data',
+              'created_at',
+              'updated_at',
+              'updated_by',
+            ],
+          },
         },
         liveSse: true,
         table: 'subproject_histories',
@@ -469,12 +486,30 @@ export const startSyncing = async (db) => {
         table: 'place_users',
         primaryKey: ['place_user_id'],
       },
-      // add place_histories
       place_histories: {
         shape: {
           url,
           params: {
             table: 'place_histories',
+            // add all columns except label. Reason: always generated
+            columns: [
+              'place_history_id',
+              'place_id',
+              'year',
+              'account_id',
+              'subproject_id',
+              'parent_id',
+              'level',
+              'since',
+              'until',
+              'data',
+              'geometry',
+              'bbox',
+              'files_active_places',
+              'created_at',
+              'updated_at',
+              'updated_by',
+            ],
           },
         },
         liveSse: true,
@@ -565,6 +600,28 @@ export const startSyncing = async (db) => {
         table: 'subproject_reports',
         primaryKey: ['subproject_report_id'],
       },
+      // add subproject_report_designs
+      subproject_report_designs: {
+        shape: {
+          url,
+          params: {
+            table: 'subproject_report_designs',
+            columns: [
+              'subproject_report_design_id',
+              'account_id',
+              'subproject_id',
+              'name',
+              'design',
+              'created_at',
+              'updated_at',
+              'updated_by',
+            ],
+          },
+        },
+        liveSse: true,
+        table: 'subproject_report_designs',
+        primaryKey: ['subproject_report_design_id'],
+      },
       project_reports: {
         shape: {
           url,
@@ -585,6 +642,28 @@ export const startSyncing = async (db) => {
         liveSse: true,
         table: 'project_reports',
         primaryKey: ['project_report_id'],
+      },
+      // add project_report_designs
+      project_report_designs: {
+        shape: {
+          url,
+          params: {
+            table: 'project_report_designs',
+            columns: [
+              'project_report_design_id',
+              'account_id',
+              'project_id',
+              'name',
+              'design',
+              'created_at',
+              'updated_at',
+              'updated_by',
+            ],
+          },
+        },
+        liveSse: true,
+        table: 'project_report_designs',
+        primaryKey: ['project_report_design_id'],
       },
       files: {
         shape: {
