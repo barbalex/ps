@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import { Puck } from '@puckeditor/core'
+import { Puck, Config } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -82,13 +82,17 @@ export const Form = ({ autoFocusRef, from }) => {
 
   // Build Puck config from fields with actual data
   const components = {}
+  const categories = {
+    fields: { components: [] },
+    charts: { components: [] },
+  }
 
   fields.forEach((field) => {
     const componentName = `${field.name}Field`
     const fieldValue = reportData[field.name] ?? ''
 
     components[componentName] = {
-      label: `${field.field_label} Field`,
+      label: field.field_label,
       fields: {
         value: {
           type: 'textarea',
@@ -99,7 +103,7 @@ export const Form = ({ autoFocusRef, from }) => {
       },
       render: ({ value }) => {
         return (
-          <div style={{ marginBottom: '16px' }}>
+          <div style={{ marginBottom: 16 }}>
             <TextField
               label={field.field_label || field.name}
               name={field.name}
@@ -110,6 +114,7 @@ export const Form = ({ autoFocusRef, from }) => {
         )
       },
     }
+    categories.fields.components.push(componentName)
   })
 
   // Add chart components
@@ -117,21 +122,21 @@ export const Form = ({ autoFocusRef, from }) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
-      label: `${chart.label} Chart`,
+      label: chart.label,
       fields: {},
       defaultProps: {},
       render: () => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
-          <div style={{ marginBottom: '16px' }}>
+          <div style={{ marginBottom: 16 }}>
             <div
               style={{
                 fontSize: '1.2em',
                 fontWeight: 'bold',
-                marginBottom: '8px',
+                marginBottom: 8,
               }}
             >
-              {chart.name}
+              {chart.label}
             </div>
             {chart.subjects_single === true ?
               chart.subjects?.map((subject) => (
@@ -153,9 +158,10 @@ export const Form = ({ autoFocusRef, from }) => {
         )
       },
     }
+    categories.charts.components.push(componentName)
   })
 
-  const config = { components }
+  const config: Config = { components, categories, root: {} }
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
