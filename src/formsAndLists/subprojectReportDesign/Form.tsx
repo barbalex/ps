@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -21,58 +21,60 @@ export const Form = ({ autoFocusRef, from }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(
-    `SELECT * FROM subproject_report_designs WHERE subproject_report_design_id = $1`,
+    `SELECT 
+      srd.*,
+      (SELECT json_agg(f) FROM (
+        SELECT field_id, name, field_label, field_type_id, widget_type_id 
+        FROM fields 
+        WHERE table_name = 'subproject_reports' 
+        ORDER BY name
+      ) f) as fields,
+      (SELECT data FROM subproject_reports 
+       WHERE subproject_id = srd.subproject_id 
+       ORDER BY year DESC 
+       LIMIT 1) as report_data
+    FROM subproject_report_designs srd
+    WHERE subproject_report_design_id = $1`,
     [subprojectReportDesignId],
   )
   const row: SubprojectReportDesigns | undefined = res?.rows?.[0]
+  const fields = row?.fields ?? []
+  const reportData = row?.report_data ?? {}
 
-  // Query fields seeded for subproject_reports
-  const fieldsRes = useLiveQuery(
-    `SELECT field_id, name, field_label, field_type_id, widget_type_id 
-     FROM fields 
-     WHERE table_name = 'subproject_reports' 
-     ORDER BY name`,
-  )
-  const fields = useMemo(() => fieldsRes?.rows ?? [], [fieldsRes?.rows])
+  // Build Puck config from fields with actual data
+  const components = {}
 
-  // Build Puck config from fields
-  const config = useMemo(() => {
-    const components = {}
+  fields.forEach((field) => {
+    const componentName = `${field.name}Field`
+    const fieldValue = reportData[field.name] ?? ''
 
-    fields.forEach((field) => {
-      const componentName = `${field.name}Field`
-      components[componentName] = {
-        fields: {
-          value: {
-            type: 'textarea',
-          },
+    components[componentName] = {
+      fields: {
+        value: {
+          type: 'textarea',
         },
-        defaultProps: {
-          value: '',
-        },
-        render: ({ value }) => {
-          return (
-            <div style={{ marginBottom: '16px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: 'bold',
-                }}
-              >
-                {field.field_label || field.name}
-              </label>
-              <div style={{ whiteSpace: 'pre-wrap' }}>{value}</div>
-            </div>
-          )
-        },
-      }
-    })
-
-    return {
-      components,
+      },
+      defaultProps: {
+        value: fieldValue,
+      },
+      render: ({ value }) => {
+        return (
+          <div style={{ marginBottom: '16px' }}>
+            <TextField
+              label={field.field_label || field.name}
+              name={field.name}
+              value={value}
+              readOnly
+            />
+          </div>
+        )
+      },
     }
-  }, [fields])
+  })
+
+  const config = {
+    components,
+  }
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -125,7 +127,9 @@ export const Form = ({ autoFocusRef, from }) => {
     }
   }
 
-  if (!res || !fieldsRes) return <Loading />
+  console.log('Subproject Report Design Form', { row, fields, reportData })
+
+  if (!res) return <Loading />
 
   if (!row) {
     return (
