@@ -1,6 +1,8 @@
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { Button } from '@fluentui/react-components'
+import { DocumentPdfRegular, PrintRegular } from '@fluentui/react-icons'
 
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -11,9 +13,23 @@ export const Header = ({ autoFocusRef, from }) => {
     from,
   })
   const navigate = useNavigate()
+  const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const isPrintView = location.pathname.endsWith('/print')
+
+  const onClickPdf = () => {
+    navigate({
+      to: './print',
+      params: (prev) => prev,
+    })
+  }
+
+  const onClickPrint = () => {
+    window.print()
+  }
 
   const addRow = async () => {
     const id = await createSubprojectReport({ projectId, subprojectId })
@@ -35,9 +51,10 @@ export const Header = ({ autoFocusRef, from }) => {
         [subprojectReportId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM subproject_reports WHERE subproject_report_id = $1`, [
-        subprojectReportId,
-      ])
+      await db.query(
+        `DELETE FROM subproject_reports WHERE subproject_report_id = $1`,
+        [subprojectReportId],
+      )
       addOperation({
         table: 'subproject_reports',
         rowIdName: 'subproject_report_id',
@@ -100,6 +117,21 @@ export const Header = ({ autoFocusRef, from }) => {
     }
   }
 
+  const siblings =
+    isPrintView ?
+      <Button
+        icon={<PrintRegular />}
+        onClick={onClickPrint}
+        title="Print"
+      >
+        Print
+      </Button>
+    : <Button
+        icon={<DocumentPdfRegular />}
+        onClick={onClickPdf}
+        title="View printable version"
+      />
+
   return (
     <FormHeader
       title="Subproject Report"
@@ -108,6 +140,7 @@ export const Header = ({ autoFocusRef, from }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="subproject report"
+      siblings={siblings}
     />
   )
 }
