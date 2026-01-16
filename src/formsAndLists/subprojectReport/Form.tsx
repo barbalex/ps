@@ -88,15 +88,6 @@ export const SubprojectReportForm = ({
         validationState={validations.year?.state}
         validationMessage={validations.year?.message}
       />
-      {design && fields.length > 0 && (
-        <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-          <h3>Report Design Preview</h3>
-          <Render
-            config={config}
-            data={design}
-          />
-        </div>
-      )}
       <Jsonb
         table="subproject_reports"
         idField="subproject_report_id"
@@ -107,6 +98,15 @@ export const SubprojectReportForm = ({
         autoFocus
         ref={autoFocusRef}
       />
+      {design && fields.length > 0 && (
+        <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <h3>Report Design Preview</h3>
+          <Render
+            config={config}
+            data={design}
+          />
+        </div>
+      )}
     </>
   )
 }
