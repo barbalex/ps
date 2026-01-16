@@ -79,13 +79,7 @@ export const Form = ({ autoFocusRef, from }) => {
         validationState={validations.name?.state}
         validationMessage={validations.name?.message}
       />
-      <Jsonb
-        table="subproject_report_designs"
-        idField="subproject_report_design_id"
-        id={row.subproject_report_design_id}
-        data={row.design ?? {}}
-        from={from}
-      />
+      <div>TODO: add design tool</div>
     </div>
   )
 }

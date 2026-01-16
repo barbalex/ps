@@ -6,7 +6,7 @@ import { Form } from './Form.tsx'
 import '../../form.css'
 
 const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/designs/$subprojectReportDesignId'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/designs/$subprojectReportDesignId/'
 
 export const SubprojectReportDesign = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -17,10 +17,10 @@ export const SubprojectReportDesign = () => {
         autoFocusRef={autoFocusRef}
         from={from}
       />
-        <Form
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+      <Form
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
     </div>
   )
 }

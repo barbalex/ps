@@ -741,6 +741,7 @@ export const createSubprojectUser = async ({ subprojectId }) => {
     draft: {
       subproject_user_id,
       subproject_id: subprojectId,
+      account_id,
       role: 'reader',
     },
   })
