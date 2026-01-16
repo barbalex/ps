@@ -15,19 +15,20 @@ export const Chart = ({ from }) => {
 
   const db = usePGlite()
 
-  // TODO: query subjects with charts
-  const resultChart = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
-    chartId,
-  ])
-  const chart: Charts = resultChart?.rows?.[0]
-
-  const resultSubjects = useLiveQuery(
-    `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort, name`,
+  const result = useLiveQuery(
+    `SELECT 
+      c.*,
+      (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
+       FROM chart_subjects cs 
+       WHERE cs.chart_id = c.chart_id) as subjects
+    FROM charts c 
+    WHERE c.chart_id = $1`,
     [chartId],
   )
+  const chart: Charts = result?.rows?.[0]
   const subjects: ChartSubjects[] = useMemo(
-    () => resultSubjects?.rows ?? [],
-    [resultSubjects],
+    () => chart?.subjects ?? [],
+    [chart],
   )
 
   const [data, setData] = useState({ data: [], names: [] })
@@ -50,7 +51,12 @@ export const Chart = ({ from }) => {
   }, [chartId, chart, db, projectId, subjects, subprojectId])
 
   if (!chart) {
-    return <NotFound table="Chart" id={chartId} />
+    return (
+      <NotFound
+        table="Chart"
+        id={chartId}
+      />
+    )
   }
 
   if (!chart || !subjects) return null
@@ -61,7 +67,7 @@ export const Chart = ({ from }) => {
   return (
     <>
       <div className={styles.titleRow}>{chart.title}</div>
-      {chart.subjects_single === true ? (
+      {chart.subjects_single === true ?
         subjects.map((subject) => (
           <SingleChart
             chart={chart}
@@ -70,9 +76,12 @@ export const Chart = ({ from }) => {
             synchronized={true}
           />
         ))
-      ) : (
-        <SingleChart chart={chart} subjects={subjects} data={data} />
-      )}
+      : <SingleChart
+          chart={chart}
+          subjects={subjects}
+          data={data}
+        />
+      }
     </>
   )
 }
