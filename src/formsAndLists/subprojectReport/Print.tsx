@@ -113,9 +113,10 @@ export const SubprojectReportPrint = ({ from }) => {
 
   // Add chart components
   charts.forEach((chart) => {
-    const componentName = `${chart.title?.replace(/\s+/g, '') || chart.chart_id}Chart`
+    const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
+      label: chart.title || 'Chart',
       fields: {},
       defaultProps: {},
       render: () => {
