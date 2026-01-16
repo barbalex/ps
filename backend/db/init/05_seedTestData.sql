@@ -10091,8 +10091,8 @@ INSERT INTO crs(crs_id, code, name, proj4) values ('019aeb6d-6cce-7000-9bd1-a732
 ('019aeb6d-6ce6-7059-8823-0d3ddb35056e', 'IAU_2015:30170', 'Moon (2015) - Sphere / Ocentric / Orthographic, clon = 180', '+proj=tmerc +lat_0=40 +lon_0=140.833333333333 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=-146.414,507.337,680.507,0,0,0,0 +units=m +no_defs +type=crs'),
 ('019aeb6d-6ce6-705a-8dcb-6e4b8ae7a8d3', 'IAU_2015:30175', 'Moon (2015) - Sphere / Ocentric / Lambert Conic Conformal', '+proj=tmerc +lat_0=26 +lon_0=127.5 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=-146.414,507.337,680.507,0,0,0,0 +units=m +no_defs +type=crs');
 -- projects
-INSERT INTO projects(project_id, account_id, name, places_label_by, type) values 
-('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'name', 'species');
+INSERT INTO projects(project_id, account_id, name, label, places_label_by, type) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'Demo Project', 'name', 'species');
 -- fields
 INSERT INTO fields(account_id, project_id, field_id, table_name, level, name, field_label, field_type_id, widget_type_id) values
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-46ac-7f14-80f8-57b2b361fd2c', 'places', 1, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553'),
