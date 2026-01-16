@@ -161,7 +161,7 @@ export const Form = ({ autoFocusRef, from }) => {
     categories.charts.components.push(componentName)
   })
 
-  const config: Config = { components, categories, root: {} }
+  const config: Config = { components, categories }
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -243,12 +243,21 @@ export const Form = ({ autoFocusRef, from }) => {
             config={config}
             data={row.design ?? { content: [], root: {} }}
             onChange={onPuckChange}
-            overrides={
-              {
-                // header: () => null
-                // drawerItem: ({ sidebarRight }) => null,
-              }
-            }
+            overrides={{
+              header: () => null,
+              // actionBar: () => null,
+              headerActions: () => null,
+            }}
+            // TypeError: Cannot read properties of undefined (reading 'value')
+            // viewports={[
+            //   {
+            //     width: '100%',
+            //     height: 'auto',
+            //     icon: 'FullWidth',
+            //     label: 'Full-width',
+            //   },
+            // ]}
+            ui={{ rightSideBarVisible: false }}
           />
         </div>
       )}
