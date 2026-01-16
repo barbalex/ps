@@ -122,7 +122,13 @@ export const Form = ({ autoFocusRef, from }) => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
           <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '1.2em', fontWeight: 'bold', marginBottom: '8px' }}>
+            <div
+              style={{
+                fontSize: '1.2em',
+                fontWeight: 'bold',
+                marginBottom: '8px',
+              }}
+            >
               {chart.title}
             </div>
             {chart.subjects_single === true ?
@@ -243,9 +249,7 @@ export const Form = ({ autoFocusRef, from }) => {
         </div>
       )}
       {fields.length === 0 && charts.length === 0 && (
-        <div>
-          No fields or charts found. Please add fields or charts first.
-        </div>
+        <div>No fields or charts found. Please add fields or charts first.</div>
       )}
     </div>
   )

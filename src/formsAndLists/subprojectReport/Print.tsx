@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -11,15 +11,18 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../store.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import { buildData } from '../chart/Chart/buildData/index.ts'
+import { SingleChart } from '../chart/Chart/Chart.tsx'
 import type SubprojectReports from '../../models/public/SubprojectReports.ts'
 
 import '../../form.css'
 import '@puckeditor/core/puck.css'
 
 export const SubprojectReportPrint = ({ from }) => {
-  const { subprojectReportId } = useParams({ from })
+  const { subprojectReportId, projectId, subprojectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const [chartDataMap, setChartDataMap] = useState({})
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -31,6 +34,15 @@ export const SubprojectReportPrint = ({ from }) => {
         WHERE table_name = 'subproject_reports' 
         ORDER BY name
       ) f) as fields,
+      (SELECT json_agg(c) FROM (
+        SELECT c.chart_id, c.title, c.subjects_single,
+          (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
+           FROM chart_subjects cs 
+           WHERE cs.chart_id = c.chart_id) as subjects
+        FROM charts c
+        WHERE c.subproject_id = sr.subproject_id
+        ORDER BY c.title
+      ) c) as charts,
       (SELECT design FROM subproject_report_designs 
        WHERE subproject_id = sr.subproject_id 
        LIMIT 1) as design
@@ -42,6 +54,31 @@ export const SubprojectReportPrint = ({ from }) => {
   const jsonbData = jsonbDataFromRow(row)
   const design = row?.design
   const fields = row?.fields ?? []
+  const charts = row?.charts ?? []
+  const chartsJson = JSON.stringify(charts)
+
+  // Build chart data for all charts
+  useEffect(() => {
+    const parsedCharts = JSON.parse(chartsJson)
+    if (!parsedCharts.length) return
+
+    const buildAllChartData = async () => {
+      const dataMap = {}
+      for (const chart of parsedCharts) {
+        if (!chart.subjects || !chart.subjects.length) continue
+        const data = await buildData({
+          chart,
+          subjects: chart.subjects,
+          subproject_id: subprojectId,
+          project_id: projectId,
+        })
+        dataMap[chart.chart_id] = data
+      }
+      setChartDataMap(dataMap)
+    }
+
+    buildAllChartData()
+  }, [chartsJson, subprojectId, projectId])
 
   // Build Puck config from fields with actual data
   const components = {}
@@ -68,6 +105,42 @@ export const SubprojectReportPrint = ({ from }) => {
               value={fieldValue}
               readOnly
             />
+          </div>
+        )
+      },
+    }
+  })
+
+  // Add chart components
+  charts.forEach((chart) => {
+    const componentName = `${chart.title?.replace(/\s+/g, '') || chart.chart_id}Chart`
+
+    components[componentName] = {
+      fields: {},
+      defaultProps: {},
+      render: () => {
+        const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
+        return (
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontSize: '1.2em', fontWeight: 'bold', marginBottom: '8px' }}>
+              {chart.title}
+            </div>
+            {chart.subjects_single === true ?
+              chart.subjects?.map((subject) => (
+                <SingleChart
+                  key={subject.chart_subject_id}
+                  chart={chart}
+                  subjects={[subject]}
+                  data={data}
+                  synchronized={true}
+                />
+              ))
+            : <SingleChart
+                chart={chart}
+                subjects={chart.subjects ?? []}
+                data={data}
+              />
+            }
           </div>
         )
       },
