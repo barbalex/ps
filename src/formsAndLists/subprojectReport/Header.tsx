@@ -2,7 +2,11 @@ import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { Button } from '@fluentui/react-components'
-import { DocumentPdfRegular, PrintRegular } from '@fluentui/react-icons'
+import {
+  EyeRegular,
+  PrintRegular,
+  ArrowLeftRegular,
+} from '@fluentui/react-icons'
 
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -29,6 +33,13 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const onClickPrint = () => {
     window.print()
+  }
+
+  const onClickBack = () => {
+    navigate({
+      to: '..',
+      params: (prev) => prev,
+    })
   }
 
   const addRow = async () => {
@@ -119,20 +130,29 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const siblings =
     isPrintView ?
-      <Button
-        icon={<PrintRegular />}
-        onClick={onClickPrint}
-        title="Print"
-      />
+      <>
+        <Button
+          icon={<ArrowLeftRegular />}
+          onClick={onClickBack}
+          title="Back to report"
+        />
+        <Button
+          icon={<PrintRegular />}
+          onClick={onClickPrint}
+          title="Print"
+        />
+      </>
     : <Button
-        icon={<DocumentPdfRegular />}
+        icon={<EyeRegular />}
         onClick={onClickPdf}
-        title="View printable version"
+        title="Preview report"
       />
 
   return (
     <FormHeader
-      title="Subproject Report"
+      title={
+        isPrintView ? 'Subproject Report Print Preview' : 'Subproject Report'
+      }
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
