@@ -4,7 +4,7 @@ import { Menu } from './Menu.tsx'
 import styles from './index.module.css'
 
 export const Header = () => (
-  <div className={styles.container}>
+  <div className={`${styles.container} no-print`}>
     <h1 className={styles.title}>
       <Link
         to="/"

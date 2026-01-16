@@ -127,14 +127,6 @@ export const SubprojectReportPrint = ({ from }) => {
           .print-hide {
             display: none !important;
           }
-          .form-outer-container {
-            padding: 0 !important;
-            margin: 0 !important;
-          }
-          .form-container {
-            max-width: 100% !important;
-            padding: 0 !important;
-          }
         }
       `}</style>
       <div className="form-outer-container">

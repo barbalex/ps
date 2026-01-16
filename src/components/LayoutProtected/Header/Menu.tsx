@@ -84,7 +84,7 @@ export const Menu = () => {
   const mapIsActive = tabs.includes('map')
 
   return (
-    <div className={globalStyles.controls}>
+    <div className={`${globalStyles.controls} no-print`}>
       <Toolbar
         aria-label="active tabs"
         checkedValues={{ tabs }}

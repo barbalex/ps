@@ -123,9 +123,7 @@ export const Header = ({ autoFocusRef, from }) => {
         icon={<PrintRegular />}
         onClick={onClickPrint}
         title="Print"
-      >
-        Print
-      </Button>
+      />
     : <Button
         icon={<DocumentPdfRegular />}
         onClick={onClickPdf}

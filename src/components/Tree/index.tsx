@@ -18,7 +18,7 @@ export const Tree = () => {
   const [designing] = useAtom(designingAtom)
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} no-print`}>
       <ProjectsNode />
       <UsersNode />
       <AccountsNode />
