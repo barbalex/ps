@@ -1759,7 +1759,7 @@ CREATE TABLE IF NOT EXISTS charts(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  years_current boolean DEFAULT TRUE,
+  years_current boolean DEFAULT FALSE,
   years_previous boolean DEFAULT FALSE,
   years_specific integer DEFAULT NULL,
   years_last_x integer DEFAULT NULL,
@@ -1791,7 +1791,7 @@ CREATE INDEX IF NOT EXISTS charts_label_idx ON charts USING btree(label);
 
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
 COMMENT ON COLUMN charts.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN charts.years_current IS 'If has value: the chart shows data of the current year';
+COMMENT ON COLUMN charts.years_current IS 'If has value: the chart shows only data of the current year';
 COMMENT ON COLUMN charts.years_previous IS 'If has value: the chart shows data of the previous year';
 COMMENT ON COLUMN charts.years_specific IS 'If has value: the chart shows data of the specific year';
 COMMENT ON COLUMN charts.years_last_x IS 'If has value: the chart shows data of the last {value} years';
