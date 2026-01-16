@@ -10104,7 +10104,10 @@ INSERT INTO project_users(project_user_id, project_id, user_id, role) values
 INSERT INTO subprojects(subproject_id, project_id, name) values 
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');
 -- seed three fields for subproject_reports: overview, development, outlook. For subproject '018cfd27-ee92-7000-b678-e75497d6c60e'
-
+INSERT INTO fields(account_id, project_id, field_id, table_name, name, field_label, field_type_id, widget_type_id) values
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000001', 'subproject_reports', 'overview', 'Overview', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000002', 'subproject_reports', 'development', 'Development', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000003', 'subproject_reports', 'outlook', 'Outlook', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538');
 -- subproject_histories
 INSERT INTO subproject_histories(account_id, subproject_id, subproject_history_id, year) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '019424c0-0000-7000-8000-000000000001', 2020),
