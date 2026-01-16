@@ -1,3 +1,4 @@
+BEGIN;
 --------------------------------------------------------------
 -- users
 --
@@ -1925,3 +1926,4 @@ CREATE INDEX IF NOT EXISTS project_crs_label_idx ON project_crs USING btree(labe
 
 COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
 
+COMMIT;
