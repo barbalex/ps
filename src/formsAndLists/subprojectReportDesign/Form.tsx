@@ -35,7 +35,7 @@ export const Form = ({ autoFocusRef, from }) => {
         ORDER BY name
       ) f) as fields,
       (SELECT json_agg(c) FROM (
-        SELECT c.chart_id, c.name, c.subjects_single,
+        SELECT c.chart_id, c.name, c.label, c.subjects_single,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
            FROM chart_subjects cs 
            WHERE cs.chart_id = c.chart_id) as subjects
