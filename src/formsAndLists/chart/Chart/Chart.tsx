@@ -26,7 +26,7 @@ const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 interface Props {
   chart: Charts
   subjects: ChartSubjects[]
-  data: { data: any[]; years: number[] }
+  data: { data: unknown[]; years: number[] }
   synchronized?: boolean
 }
 
@@ -40,7 +40,10 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
   const unit = firstSubjectsUnit ?? 'Count'
 
   return (
-    <ResponsiveContainer width="99%" height={synchronized ? 200 : 400}>
+    <ResponsiveContainer
+      width="99%"
+      height={synchronized ? 200 : 400}
+    >
       <AreaChart
         width={600}
         height={300}
@@ -51,7 +54,7 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
       >
         <defs>
           {subjects.map((subject) =>
-            subject.fill_graded ? (
+            subject.fill_graded ?
               <linearGradient
                 key={`${subject.chart_subject_id}color`}
                 id={`${subject.chart_subject_id}color`}
@@ -60,13 +63,19 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
                 x2="0"
                 y2="1"
               >
-                <stop offset="5%" stopColor={subject.fill} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={subject.fill} stopOpacity={0} />
+                <stop
+                  offset="5%"
+                  stopColor={subject.fill}
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={subject.fill}
+                  stopOpacity={0}
+                />
               </linearGradient>
-            ) : (
               // this is needed for gradient to work without missing key warning
-              <div key={`${subject.chart_subject_id}div`} />
-            ),
+            : <div key={`${subject.chart_subject_id}div`} />,
           )}
         </defs>
         <XAxis dataKey="year" />
@@ -94,9 +103,9 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
               stroke={subject.stroke ?? 'red'}
               strokeWidth={2}
               fill={
-                subject.fill_graded
-                  ? `url(#${subject.chart_subject_id}color)`
-                  : (subject.fill ?? 'yellow')
+                subject.fill_graded ?
+                  `url(#${subject.chart_subject_id}color)`
+                : (subject.fill ?? 'yellow')
               }
               isAnimationActive={true} // false for print?
               dot={{ stroke: subject.stroke ?? 'red', strokeWidth: 3 }}
@@ -110,8 +119,14 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
           )
         })}
         <Tooltip />
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <Legend verticalAlign="bottom" height={36} />
+        <CartesianGrid
+          strokeDasharray="3 3"
+          horizontal={false}
+        />
+        <Legend
+          verticalAlign="bottom"
+          height={36}
+        />
       </AreaChart>
     </ResponsiveContainer>
   )

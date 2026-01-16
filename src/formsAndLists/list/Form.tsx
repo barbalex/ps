@@ -7,7 +7,7 @@ import type Lists from '../../models/public/Lists.ts'
 import '../../form.css'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => Promise<void>
+  onChange: (e: React.ChangeEvent<unknown>, data?: unknown) => Promise<void>
   validations: Record<string, { state: string; message: string }>
   row: Lists
   orIndex?: number

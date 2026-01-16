@@ -545,7 +545,7 @@ export const startSyncing = async (db) => {
             table: 'goal_reports',
           },
         },
-        mapColumns: (change: any) => {
+        mapColumns: (change: unknown) => {
           return {
             goal_report_id: change.value.goal_report_id,
             account_id: change.value.account_id,
