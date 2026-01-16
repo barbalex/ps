@@ -88,6 +88,7 @@ export const Form = ({ autoFocusRef, from }) => {
     const fieldValue = reportData[field.name] ?? ''
 
     components[componentName] = {
+      label: `${field.field_label} Field`,
       fields: {
         value: {
           type: 'textarea',
@@ -206,14 +207,6 @@ export const Form = ({ autoFocusRef, from }) => {
       console.error('Error saving design:', error)
     }
   }
-
-  console.log('Subproject Report Design Form', {
-    row,
-    fields,
-    charts,
-    reportData,
-    chartDataMap,
-  })
 
   if (!res) return <Loading />
 
