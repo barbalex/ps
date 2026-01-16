@@ -243,6 +243,12 @@ export const Form = ({ autoFocusRef, from }) => {
             config={config}
             data={row.design ?? { content: [], root: {} }}
             onChange={onPuckChange}
+            overrides={
+              {
+                // header: () => null
+                // drawerItem: ({ sidebarRight }) => null,
+              }
+            }
           />
         </div>
       )}
