@@ -4,7 +4,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
