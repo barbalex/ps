@@ -1772,8 +1772,8 @@ CREATE TABLE IF NOT EXISTS charts(
   percent boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (
     CASE 
-      -- not null and not '', see: https://stackoverflow.com/a/23767625/712005
-      WHEN (title = '') IS NOT FALSE THEN chart_id::text 
+      WHEN title IS NULL THEN chart_id::text
+      WHEN title = '' THEN chart_id::text
       ELSE title
     END
   ) STORED,
