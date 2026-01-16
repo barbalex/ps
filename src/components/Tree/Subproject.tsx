@@ -82,6 +82,13 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             projectId={projectId}
             subprojectId={nav.id}
           />
+          {isDesigning && (
+            <SubprojectReportDesignsNode
+              projectId={projectId}
+              subprojectId={nav.id}
+              level={5}
+            />
+          )}
           <SubprojectHistoriesNode
             projectId={projectId}
             subprojectId={nav.id}
@@ -122,13 +129,6 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             subprojectId={nav.id}
             level={5}
           />
-          {isDesigning && (
-            <SubprojectReportDesignsNode
-              projectId={projectId}
-              subprojectId={nav.id}
-              level={5}
-            />
-          )}
         </>
       )}
     </>

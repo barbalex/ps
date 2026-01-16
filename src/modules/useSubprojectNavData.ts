@@ -175,6 +175,14 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         }),
       },
       {
+        id: 'designs',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.subproject_report_designs_count ?? 0,
+          namePlural: 'Report Designs',
+        }),
+      },
+      {
         id: 'histories',
         label: buildNavLabel({
           loading,
@@ -248,14 +256,6 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           loading,
           countFiltered: nav?.charts_count ?? 0,
           namePlural: 'Charts',
-        }),
-      },
-      {
-        id: 'designs',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.subproject_report_designs_count ?? 0,
-          namePlural: 'Report Designs',
         }),
       },
     ],
