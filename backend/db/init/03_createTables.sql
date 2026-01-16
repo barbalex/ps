@@ -1026,7 +1026,8 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_by text DEFAULT NULL,
+  CONSTRAINT unique_subproject_report_design_name UNIQUE NULLS NOT DISTINCT(subproject_id, name)
 );
 
 CREATE INDEX IF NOT EXISTS subproject_report_designs_account_id_idx ON subproject_report_designs USING btree(account_id);
@@ -1103,7 +1104,8 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_by text DEFAULT NULL,
+  CONSTRAINT unique_project_report_design_name UNIQUE NULLS NOT DISTINCT(project_id, name)
 );
 
 CREATE INDEX IF NOT EXISTS project_report_designs_account_id_idx ON project_report_designs USING btree(account_id);
