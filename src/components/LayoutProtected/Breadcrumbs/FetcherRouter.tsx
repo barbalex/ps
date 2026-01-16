@@ -70,6 +70,8 @@ import { ChartSubjectsFetcher } from './ChartSubjectsFetcher.tsx'
 import { ChartSubjectFetcher } from './ChartSubjectFetcher.tsx'
 import { SubprojectReportDesignsFetcher } from './SubprojectReportDesignsFetcher.tsx'
 import { SubprojectReportDesignFetcher } from './SubprojectReportDesignFetcher.tsx'
+import { ProjectReportDesignsFetcher } from './ProjectReportDesignsFetcher.tsx'
+import { ProjectReportDesignFetcher } from './ProjectReportDesignFetcher.tsx'
 import { ProjectUsersFetcher } from './ProjectUsersFetcher.tsx'
 import { ProjectUserFetcher } from './ProjectUserFetcher.tsx'
 import { ListValuesFetcher } from './ListValuesFetcher.tsx'
@@ -550,6 +552,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useSubprojectReportDesignNavData': {
       return (
         <SubprojectReportDesignFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useProjectReportDesignsNavData': {
+      return (
+        <ProjectReportDesignsFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useProjectReportDesignNavData': {
+      return (
+        <ProjectReportDesignFetcher
           params={params}
           {...other}
         />

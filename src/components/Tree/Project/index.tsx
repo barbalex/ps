@@ -17,6 +17,7 @@ import { ProjectUsersNode } from '../ProjectUsers.tsx'
 import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
+import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
 import { Editing } from './Editing.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
@@ -96,6 +97,10 @@ export const ProjectNode = ({ nav, level = 2 }) => {
               <ProjectCrssNode projectId={nav.id} />
               <PlaceLevelsNode projectId={nav.id} />
               <FieldsNode projectId={nav.id} />
+              <ProjectReportDesignsNode
+                projectId={nav.id}
+                level={3}
+              />
             </>
           )}
         </>
