@@ -1113,7 +1113,7 @@ export const startSyncing = async (db) => {
               'years_since',
               'years_until',
               'chart_type',
-              'title',
+              'name',
               'subjects_stacked',
               'subjects_single',
               'percent',

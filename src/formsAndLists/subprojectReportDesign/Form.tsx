@@ -35,13 +35,13 @@ export const Form = ({ autoFocusRef, from }) => {
         ORDER BY name
       ) f) as fields,
       (SELECT json_agg(c) FROM (
-        SELECT c.chart_id, c.title, c.subjects_single,
+        SELECT c.chart_id, c.name, c.subjects_single,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
            FROM chart_subjects cs 
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
         WHERE c.subproject_id = srd.subproject_id
-        ORDER BY c.title
+        ORDER BY c.name
       ) c) as charts,
       (SELECT data FROM subproject_reports 
        WHERE subproject_id = srd.subproject_id 
@@ -116,7 +116,7 @@ export const Form = ({ autoFocusRef, from }) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
-      label: chart.title || 'Chart',
+      label: chart.name || 'Chart',
       fields: {},
       defaultProps: {},
       render: () => {
@@ -130,7 +130,7 @@ export const Form = ({ autoFocusRef, from }) => {
                 marginBottom: '8px',
               }}
             >
-              {chart.title}
+              {chart.name}
             </div>
             {chart.subjects_single === true ?
               chart.subjects?.map((subject) => (

@@ -35,13 +35,13 @@ export const SubprojectReportPrint = ({ from }) => {
         ORDER BY name
       ) f) as fields,
       (SELECT json_agg(c) FROM (
-        SELECT c.chart_id, c.title, c.subjects_single,
+        SELECT c.chart_id, c.name, c.subjects_single,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
            FROM chart_subjects cs 
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
         WHERE c.subproject_id = sr.subproject_id
-        ORDER BY c.title
+        ORDER BY c.name
       ) c) as charts,
       (SELECT design FROM subproject_report_designs 
        WHERE subproject_id = sr.subproject_id 
@@ -116,15 +116,21 @@ export const SubprojectReportPrint = ({ from }) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
-      label: chart.title || 'Chart',
+      label: chart.name || 'Chart',
       fields: {},
       defaultProps: {},
       render: () => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
           <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '1.2em', fontWeight: 'bold', marginBottom: '8px' }}>
-              {chart.title}
+            <div
+              style={{
+                fontSize: '1.2em',
+                fontWeight: 'bold',
+                marginBottom: '8px',
+              }}
+            >
+              {chart.name}
             </div>
             {chart.subjects_single === true ?
               chart.subjects?.map((subject) => (

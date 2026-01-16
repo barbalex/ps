@@ -66,7 +66,7 @@ export const Chart = ({ from }) => {
 
   return (
     <>
-      <div className={styles.titleRow}>{chart.title}</div>
+      <div className={styles.titleRow}>{chart.name}</div>
       {chart.subjects_single === true ?
         subjects.map((subject) => (
           <SingleChart

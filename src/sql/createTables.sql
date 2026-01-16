@@ -713,8 +713,6 @@ CREATE TABLE IF NOT EXISTS checks(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  -- label text DEFAULT NULL
-  -- label text GENERATED ALWAYS AS (immutabledate(date)) STORED
   label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -918,8 +916,6 @@ CREATE TABLE IF NOT EXISTS goals(
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  -- label text DEFAULT NULL
-  -- label text GENERATED ALWAYS AS (iif(coalesce(year, name) is not null, year || ': ' || name, goal_id))
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN year is null then goal_id::text 
@@ -1030,7 +1026,8 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_by text DEFAULT NULL,
+  CONSTRAINT unique_subproject_report_design_name UNIQUE NULLS NOT DISTINCT(subproject_id, name)
 );
 
 CREATE INDEX IF NOT EXISTS subproject_report_designs_account_id_idx ON subproject_report_designs USING btree(account_id);
@@ -1107,7 +1104,8 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_by text DEFAULT NULL,
+  CONSTRAINT unique_project_report_design_name UNIQUE NULLS NOT DISTINCT(project_id, name)
 );
 
 CREATE INDEX IF NOT EXISTS project_report_designs_account_id_idx ON project_report_designs USING btree(account_id);
@@ -1761,22 +1759,22 @@ CREATE TABLE IF NOT EXISTS charts(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  years_current boolean DEFAULT TRUE,
+  years_current boolean DEFAULT FALSE,
   years_previous boolean DEFAULT FALSE,
   years_specific integer DEFAULT NULL,
   years_last_x integer DEFAULT NULL,
   years_since integer DEFAULT NULL,
   years_until integer DEFAULT NULL,
   chart_type text DEFAULT 'Area' REFERENCES chart_types(chart_type) ON DELETE NO action ON UPDATE CASCADE,
-  title text DEFAULT NULL,
+  name text DEFAULT NULL,
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (
     CASE 
-      -- not null and not '', see: https://stackoverflow.com/a/23767625/712005
-      WHEN (title = '') IS NOT FALSE THEN chart_id::text 
-      ELSE title
+      WHEN name IS NULL THEN chart_id::text
+      WHEN name = '' THEN chart_id::text
+      ELSE name
     END
   ) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1793,7 +1791,7 @@ CREATE INDEX IF NOT EXISTS charts_label_idx ON charts USING btree(label);
 
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
 COMMENT ON COLUMN charts.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN charts.years_current IS 'If has value: the chart shows data of the current year';
+COMMENT ON COLUMN charts.years_current IS 'If has value: the chart shows only data of the current year';
 COMMENT ON COLUMN charts.years_previous IS 'If has value: the chart shows data of the previous year';
 COMMENT ON COLUMN charts.years_specific IS 'If has value: the chart shows data of the specific year';
 COMMENT ON COLUMN charts.years_last_x IS 'If has value: the chart shows data of the last {value} years';

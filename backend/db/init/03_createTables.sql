@@ -1766,15 +1766,15 @@ CREATE TABLE IF NOT EXISTS charts(
   years_since integer DEFAULT NULL,
   years_until integer DEFAULT NULL,
   chart_type text DEFAULT 'Area' REFERENCES chart_types(chart_type) ON DELETE NO action ON UPDATE CASCADE,
-  title text DEFAULT NULL,
+  name text DEFAULT NULL,
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (
     CASE 
-      WHEN title IS NULL THEN chart_id::text
-      WHEN title = '' THEN chart_id::text
-      ELSE title
+      WHEN name IS NULL THEN chart_id::text
+      WHEN name = '' THEN chart_id::text
+      ELSE name
     END
   ) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),

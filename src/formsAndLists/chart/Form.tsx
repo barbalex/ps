@@ -281,12 +281,12 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validations={validations}
         />
         <TextField
-          label="Title"
-          name="title"
-          value={row.title}
+          label="Name"
+          name="name"
+          value={row.name}
           onChange={onChange}
-          validationState={validations.title?.state}
-          validationMessage={validations.title?.message}
+          validationState={validations.name?.state}
+          validationMessage={validations.name?.message}
         />
       </Section>
       <Section title="Data / Subjects presentation">
