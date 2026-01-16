@@ -20,17 +20,30 @@ export const Main = () => {
 
   const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 
-  // console.log('LayoutProtected.Main', { tabs })
-
   if (onlyForm) return <Outlet />
 
+  // the classNames are used to style the allotment panes
+  // especially to hide others when only the Outlet is printed
   return (
     <div className={styles.container}>
       <Allotment>
-        {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />}
-        {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
-        {tabs.includes('map') && <MapContainer />}
+        {!mapMaximizedAndVisible && tabs.includes('tree') && (
+          <div className="allotment-tree">
+            <Tree />
+          </div>
+        )}
+        {!mapMaximizedAndVisible && tabs.includes('data') && (
+          <div className="allotment-data">
+            <Outlet />
+          </div>
+        )}
+        {tabs.includes('map') && (
+          <div className="allotment-map">
+            <MapContainer />
+          </div>
+        )}
       </Allotment>
     </div>
   )
 }
+Allotment

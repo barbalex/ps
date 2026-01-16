@@ -362,4 +362,50 @@ html {
   .no-print {
     display: none !important;
   }
+
+  /* Hide Allotment panes containing tree and map */
+  .split-view-view:has(.allotment-tree),
+  .split-view-view:has(.allotment-map) {
+    display: none !important;
+  }
+
+  /* Make data pane full width */
+  .split-view-view:has(.allotment-data) {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+  }
+
+  /* Hide the sash (splitter) */
+  .sash-container {
+    display: none !important;
+  }
+
+  /* Ensure proper layout */
+  .split-view-container {
+    display: block !important;
+  }
+
+  .form-outer-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .form-container {
+    padding: 10mm !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  body,
+  #root {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
 }
