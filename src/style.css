@@ -356,6 +356,17 @@ html {
   --l-accent: 57%;
 }
 
+.allotment-data {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* puck */
+.Puck {
+  height: 100%;
+}
+
 /* Print styles */
 @media print {
   /* Hide the header, breadcrumbs and tree */

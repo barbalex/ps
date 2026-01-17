@@ -225,6 +225,8 @@ export const Form = ({ autoFocusRef, from }) => {
     )
   }
 
+  console.log('Rendering Form with content:', row?.design?.content)
+
   return (
     <div className="form-container">
       <TextField
@@ -238,36 +240,69 @@ export const Form = ({ autoFocusRef, from }) => {
         validationMessage={validations.name?.message}
       />
       {(fields.length > 0 || charts.length > 0) && (
-        <div style={{ marginTop: '20px', height: 'calc(100vh - 200px)' }}>
+        <div style={{ marginTop: 20, flexGrow: 1 }}>
           <Puck
             config={config}
             data={row.design ?? { content: [], root: {} }}
             onChange={onPuckChange}
             overrides={{
               header: () => null,
-              // actionBar: () => null,
               headerActions: () => null,
-              // removes the outline but not the menu left to show outlines
-              // outline: () => null,
+              outline: () => null,
             }}
-            // TypeError: Cannot read properties of undefined (reading 'value')
-            // viewports={[
-            //   {
-            //     width: '100%',
-            //     height: 'auto',
-            //     icon: 'FullWidth',
-            //     label: 'Full-width',
-            //   },
-            // ]}
-            ui={{
-              rightSideBarVisible: false,
-              // mobilePanelExpanded: false,
-            }}
-          />
+            style={{ height: '100%' }}
+          >
+            <div
+              style={{
+                height: '100%',
+                display: 'grid',
+                gridTemplateColumns: '1fr 3fr',
+                gridGap: 16,
+              }}
+            >
+              <div style={{ borderRight: '1px solid #eee', paddingRight: 16 }}>
+                <Puck.Components />
+              </div>
+              <div style={{ position: 'relative', minHeight: 0 }}>
+                {(!row.design?.content || row.design.content.length === 0) && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#999',
+                      fontSize: '1.2em',
+                      pointerEvents: 'none',
+                      zIndex: 1,
+                    }}
+                  >
+                    Drag fields and charts into the design
+                  </div>
+                )}
+                <Puck.Preview />
+              </div>
+            </div>
+          </Puck>
         </div>
       )}
       {fields.length === 0 && charts.length === 0 && (
-        <div>No fields or charts found. Please add fields or charts first.</div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 60,
+            color: '#999',
+            fontSize: '1.2em',
+          }}
+        >
+          No fields or charts found. Please add fields or charts first.
+        </div>
       )}
     </div>
   )
