@@ -240,64 +240,62 @@ export const Form = ({ autoFocusRef, from }) => {
         validationMessage={validations.name?.message}
       />
       {(fields.length > 0 || charts.length > 0) && (
-        <div style={{ marginTop: 20, flexGrow: 1, minHeight: 0 }}>
-          <Puck
-            config={config}
-            data={row.design ?? { content: [], root: {} }}
-            onChange={onPuckChange}
+        <Puck
+          config={config}
+          data={row.design ?? { content: [] }}
+          onChange={onPuckChange}
+        >
+          <div
+            style={{
+              height: '100%',
+              display: 'flex',
+              alignItems: 'stretch',
+              gap: 16,
+            }}
           >
             <div
               style={{
-                height: '100%',
-                display: 'flex',
-                gap: 16,
+                borderRight: '1px solid #eee',
+                paddingRight: 8,
+                overflow: 'auto',
+                scrollbarWidth: 'thin',
               }}
             >
-              <div
-                style={{
-                  borderRight: '1px solid #eee',
-                  paddingRight: 8,
-                  overflow: 'auto',
-                  scrollbarWidth: 'thin',
-                }}
-              >
-                <Puck.Components />
-              </div>
-              <div
-                style={{
-                  position: 'relative',
-                  minHeight: 0,
-                  height: '100%',
-                  overflow: 'auto',
-                  scrollbarWidth: 'thin',
-                  flexGrow: 1,
-                }}
-              >
-                {(!row.design?.content || row.design.content.length === 0) && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#999',
-                      fontSize: '1.2em',
-                      pointerEvents: 'none',
-                      zIndex: 1,
-                    }}
-                  >
-                    Drag fields and charts into the design
-                  </div>
-                )}
-                <Puck.Preview />
-              </div>
+              <Puck.Components />
             </div>
-          </Puck>
-        </div>
+            <div
+              style={{
+                position: 'relative',
+                minHeight: 0,
+                overflow: 'auto',
+                scrollbarWidth: 'thin',
+                flexGrow: 1,
+              }}
+            >
+              {(!row.design?.content || row.design.content.length === 0) && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#999',
+                    fontSize: '1.2em',
+                    pointerEvents: 'none',
+                    zIndex: 1,
+                  }}
+                >
+                  Drag fields and charts into the design
+                </div>
+              )}
+              <Puck.Preview />
+            </div>
+          </div>
+        </Puck>
       )}
       {fields.length === 0 && charts.length === 0 && (
         <div
