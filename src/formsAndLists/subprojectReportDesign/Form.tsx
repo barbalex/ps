@@ -240,30 +240,39 @@ export const Form = ({ autoFocusRef, from }) => {
         validationMessage={validations.name?.message}
       />
       {(fields.length > 0 || charts.length > 0) && (
-        <div style={{ marginTop: 20, flexGrow: 1 }}>
+        <div style={{ marginTop: 20, flexGrow: 1, minHeight: 0 }}>
           <Puck
             config={config}
             data={row.design ?? { content: [], root: {} }}
             onChange={onPuckChange}
-            overrides={{
-              header: () => null,
-              headerActions: () => null,
-              outline: () => null,
-            }}
-            style={{ height: '100%' }}
           >
             <div
               style={{
                 height: '100%',
-                display: 'grid',
-                gridTemplateColumns: '1fr 3fr',
-                gridGap: 16,
+                display: 'flex',
+                gap: 16,
               }}
             >
-              <div style={{ borderRight: '1px solid #eee', paddingRight: 16 }}>
+              <div
+                style={{
+                  borderRight: '1px solid #eee',
+                  paddingRight: 8,
+                  overflow: 'auto',
+                  scrollbarWidth: 'thin',
+                }}
+              >
                 <Puck.Components />
               </div>
-              <div style={{ position: 'relative', minHeight: 0 }}>
+              <div
+                style={{
+                  position: 'relative',
+                  minHeight: 0,
+                  height: '100%',
+                  overflow: 'auto',
+                  scrollbarWidth: 'thin',
+                  flexGrow: 1,
+                }}
+              >
                 {(!row.design?.content || row.design.content.length === 0) && (
                   <div
                     style={{
@@ -276,7 +285,7 @@ export const Form = ({ autoFocusRef, from }) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: '#999',
-                      fontSize: '0.6em',
+                      fontSize: '1.2em',
                       pointerEvents: 'none',
                       zIndex: 1,
                     }}
