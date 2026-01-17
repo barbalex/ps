@@ -247,6 +247,8 @@ export const Form = ({ autoFocusRef, from }) => {
               header: () => null,
               // actionBar: () => null,
               headerActions: () => null,
+              // removes the outline but not the menu left to show outlines
+              // outline: () => null,
             }}
             // TypeError: Cannot read properties of undefined (reading 'value')
             // viewports={[
@@ -257,7 +259,10 @@ export const Form = ({ autoFocusRef, from }) => {
             //     label: 'Full-width',
             //   },
             // ]}
-            ui={{ rightSideBarVisible: false }}
+            ui={{
+              rightSideBarVisible: false,
+              // mobilePanelExpanded: false,
+            }}
           />
         </div>
       )}
