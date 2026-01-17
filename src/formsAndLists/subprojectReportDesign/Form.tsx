@@ -276,7 +276,7 @@ export const Form = ({ autoFocusRef, from }) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: '#999',
-                      fontSize: '1.2em',
+                      fontSize: '0.6em',
                       pointerEvents: 'none',
                       zIndex: 1,
                     }}
