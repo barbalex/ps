@@ -9,7 +9,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { FieldTypeForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import type FieldType from '../../models/public/FieldType.ts'
+import type FieldTypeModel from '../../models/public/FieldType.ts'
 
 import '../../form.css'
 
@@ -27,7 +27,7 @@ export const FieldType = () => {
     `SELECT * FROM field_types WHERE field_type_id = $1`,
     [fieldTypeId],
   )
-  const row: FieldType | undefined = res?.rows?.[0]
+  const row: FieldTypeModel | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
