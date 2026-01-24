@@ -10,3 +10,5 @@ dropbox_uploader.conf
 .electric_migrations_tmp*
 
 .DS_Store
+
+deploy-backend.sh
