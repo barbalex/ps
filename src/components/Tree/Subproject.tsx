@@ -67,12 +67,23 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={5}
+        childrenCount={6}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
         <>
+          <Node
+            label={project?.subproject_name_singular || 'Subproject'}
+            level={5}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'subproject'
+            }
+            isActive={isEqual([...ownArray, 'subproject'], urlPath)}
+            childrenCount={0}
+            to={`${ownUrl}/subproject`}
+          />
           <PlacesNode
             projectId={projectId}
             subprojectId={nav.id}
