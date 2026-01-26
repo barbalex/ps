@@ -40,8 +40,9 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
@@ -86,8 +87,8 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
-  const namePlural = navs[0]?.name_plural ?? 'Subprojects'
-  const nameSingular = navs[0]?.name_singular ?? 'Subproject'
+  const namePlural = navs[0]?.name_plural || 'Subprojects'
+  const nameSingular = navs[0]?.name_singular || 'Subproject'
 
   const navData = {
     isInActiveNodeArray,
