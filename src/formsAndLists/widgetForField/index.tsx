@@ -60,17 +60,16 @@ export const WidgetForField = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Widget For Field" id={widgetForFieldId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} validations={validations} row={row} autoFocusRef={autoFocusRef} />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form onChange={onChange} validations={validations} row={row} autoFocusRef={autoFocusRef} />
+        : <NotFound table="Widget For Field" id={widgetForFieldId} />
+        }
       </div>
     </div>
   )

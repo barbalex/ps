@@ -61,34 +61,38 @@ export const ListValue = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="List Value" id={listValueId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextField
-          label="Value"
-          name="value"
-          value={row.value ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.value?.state}
-          validationMessage={validations?.value?.message}
-        />
-        <SwitchField
-          label="Obsolete"
-          name="obsolete"
-          value={row.obsolete}
-          onChange={onChange}
-          validationState={validations?.obsolete?.state}
-          validationMessage={validations?.obsolete?.message}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <>
+            <TextField
+              label="Value"
+              name="value"
+              value={row.value ?? ''}
+              onChange={onChange}
+              autoFocus
+              ref={autoFocusRef}
+              validationState={validations?.value?.state}
+              validationMessage={validations?.value?.message}
+            />
+            <SwitchField
+              label="Obsolete"
+              name="obsolete"
+              value={row.obsolete}
+              onChange={onChange}
+              validationState={validations?.obsolete?.state}
+              validationMessage={validations?.obsolete?.message}
+            />
+          </>
+        : <NotFound
+            table="List Value"
+            id={listValueId}
+          />
+        }
       </div>
     </div>
   )
