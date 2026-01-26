@@ -55,32 +55,29 @@ export const User = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return (
-      <NotFound
-        table="User"
-        id={userId}
-      />
-    )
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextField
-          label="Email"
-          name="email"
-          type="email"
-          value={row.email ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.email?.state}
-          validationMessage={validations?.email?.message}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            value={row.email ?? ''}
+            onChange={onChange}
+            autoFocus
+            ref={autoFocusRef}
+            validationState={validations?.email?.state}
+            validationMessage={validations?.email?.message}
+          />
+        : <NotFound
+            table="User"
+            id={userId}
+          />
+        }
       </div>
     </div>
   )

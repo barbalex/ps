@@ -66,36 +66,37 @@ export const SubprojectUser = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="User" id={subprojectUserId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <DropdownField
-          label="User"
-          name="user_id"
-          table="users"
-          value={row.user_id ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.user_id?.state}
-          validationMessage={validations?.user_id?.message}
-        />
-        <RadioGroupField
-          label="Role"
-          name="role"
-          list={userRoles}
-          value={row.role ?? ''}
-          onChange={onChange}
-          validationState={validations?.role?.state}
-          validationMessage={validations?.role?.message}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <>
+            <DropdownField
+              label="User"
+              name="user_id"
+              table="users"
+              value={row.user_id ?? ''}
+              onChange={onChange}
+              autoFocus
+              ref={autoFocusRef}
+              validationState={validations?.user_id?.state}
+              validationMessage={validations?.user_id?.message}
+            />
+            <RadioGroupField
+              label="Role"
+              name="role"
+              list={userRoles}
+              value={row.role ?? ''}
+              onChange={onChange}
+              validationState={validations?.role?.state}
+              validationMessage={validations?.role?.message}
+            />
+          </>
+        : <NotFound table="User" id={subprojectUserId} />
+        }
       </div>
     </div>
   )
