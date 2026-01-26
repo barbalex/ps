@@ -62,54 +62,61 @@ export const CheckValue = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Check Value" id={checkValueId} />
-  }
-
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
-        <DropdownField
-          label="Unit"
-          name="unit_id"
-          table="units"
-          where="use_for_check_values is true"
-          value={row.unit_id ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.unit_id?.state}
-          validationMessage={validations?.unit_id?.message}
-        />
-        <TextField
-          label="Value (integer)"
-          name="value_integer"
-          type="number"
-          value={row.value_integer ?? ''}
-          onChange={onChange}
-          validationState={validations?.value_integer?.state}
-          validationMessage={validations?.value_integer?.message}
-        />
-        <TextField
-          label="Value (numeric)"
-          name="value_numeric"
-          type="number"
-          value={row.value_numeric ?? ''}
-          onChange={onChange}
-          validationState={validations?.value_numeric?.state}
-          validationMessage={validations?.value_numeric?.message}
-        />
-        <TextField
-          label="Value (text)"
-          name="value_text"
-          value={row.value_text ?? ''}
-          onChange={onChange}
-          validationState={validations?.value_text?.state}
-          validationMessage={validations?.value_text?.message}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <>
+            <DropdownField
+              label="Unit"
+              name="unit_id"
+              table="units"
+              where="use_for_check_values is true"
+              value={row.unit_id ?? ''}
+              onChange={onChange}
+              autoFocus
+              ref={autoFocusRef}
+              validationState={validations?.unit_id?.state}
+              validationMessage={validations?.unit_id?.message}
+            />
+            <TextField
+              label="Value (integer)"
+              name="value_integer"
+              type="number"
+              value={row.value_integer ?? ''}
+              onChange={onChange}
+              validationState={validations?.value_integer?.state}
+              validationMessage={validations?.value_integer?.message}
+            />
+            <TextField
+              label="Value (numeric)"
+              name="value_numeric"
+              type="number"
+              value={row.value_numeric ?? ''}
+              onChange={onChange}
+              validationState={validations?.value_numeric?.state}
+              validationMessage={validations?.value_numeric?.message}
+            />
+            <TextField
+              label="Value (text)"
+              name="value_text"
+              value={row.value_text ?? ''}
+              onChange={onChange}
+              validationState={validations?.value_text?.state}
+              validationMessage={validations?.value_text?.message}
+            />
+          </>
+        : <NotFound
+            table="Check Value"
+            id={checkValueId}
+          />
+        }
       </div>
     </div>
   )

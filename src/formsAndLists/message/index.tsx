@@ -59,33 +59,37 @@ export const Message = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Message" id={messageId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header />
       <div className="form-container">
-        <DateField
-          label="Date"
-          name="date"
-          value={row.date}
-          onChange={onChange}
-          validationState={validations?.date?.state}
-          validationMessage={validations?.date?.message}
-        />
-        <TextField
-          label="Message"
-          name="message"
-          value={row.message ?? ''}
-          onChange={onChange}
-          autoFocus
-          validationState={validations?.message?.state}
-          validationMessage={validations?.message?.message}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <>
+            <DateField
+              label="Date"
+              name="date"
+              value={row.date}
+              onChange={onChange}
+              validationState={validations?.date?.state}
+              validationMessage={validations?.date?.message}
+            />
+            <TextField
+              label="Message"
+              name="message"
+              value={row.message ?? ''}
+              onChange={onChange}
+              autoFocus
+              validationState={validations?.message?.state}
+              validationMessage={validations?.message?.message}
+            />
+          </>
+        : <NotFound
+            table="Message"
+            id={messageId}
+          />
+        }
       </div>
     </div>
   )
