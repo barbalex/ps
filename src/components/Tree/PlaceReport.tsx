@@ -63,19 +63,31 @@ export const PlaceReportNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={11}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <PlaceReportValuesNode
-          projectId={projectId}
-          subprojectId={subprojectId}
-          placeId={placeId}
-          placeId2={placeId2}
-          placeReportId={nav.id}
-          level={level + 1}
-        />
+        <>
+          <Node
+            label="Report"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'report'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'report'])}
+            to={`${ownUrl}/report`}
+          />
+          <PlaceReportValuesNode
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
+            placeId2={placeId2}
+            placeReportId={nav.id}
+            level={level + 1}
+          />
+        </>
       )}
     </>
   )
