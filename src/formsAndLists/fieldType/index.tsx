@@ -59,22 +59,21 @@ export const FieldType = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Field Type" id={fieldTypeId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          validations={validations}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            validations={validations}
+            row={row}
+            autoFocusRef={autoFocusRef}
+          />
+        : <NotFound table="Field Type" id={fieldTypeId} />
+        }
       </div>
     </div>
   )

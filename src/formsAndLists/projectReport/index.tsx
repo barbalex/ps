@@ -60,17 +60,24 @@ export const ProjectReport = () => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Project Report" id={projectReportId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} validations={validations} />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            row={row}
+            autoFocusRef={autoFocusRef}
+            validations={validations}
+          />
+        : <NotFound
+            table="Project Report"
+            id={projectReportId}
+          />
+        }
       </div>
     </div>
   )
