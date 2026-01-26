@@ -84,7 +84,10 @@ export const ActionNode = ({
           <Node
             label="Action"
             level={level + 1}
-            isInActiveNodeArray={ownArray.every((part, i) => urlPath[i] === part) && urlPath[ownArray.length] === 'action'}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'action'
+            }
             isActive={isEqual([...ownArray, 'action'], urlPath)}
             childrenCount={0}
             to={`${ownUrl}/action`}
