@@ -63,7 +63,7 @@ export const PlaceNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={11}
         to={ownUrl}
         onClickButton={onClickButton}
       />

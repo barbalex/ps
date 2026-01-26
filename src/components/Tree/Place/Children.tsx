@@ -1,5 +1,8 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLocation } from '@tanstack/react-router'
+import { isEqual } from 'es-toolkit'
 
+import { Node } from '../Node.tsx'
 import { ChecksNode } from '../Checks.tsx'
 import { ActionsNode } from '../Actions.tsx'
 import { PlaceReportsNode } from '../PlaceReports.tsx'
@@ -35,8 +38,28 @@ export const PlaceChildren = ({
   const project = resProject?.rows?.[0]
   const showFiles = project?.files_active_places ?? false
 
+  const location = useLocation()
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const ownArray = [
+    'data',
+    'projects',
+    projectId,
+    'subprojects',
+    subprojectId,
+    'places',
+    ...(placeId2 ? [placeId, 'places', placeId2] : [placeId]),
+  ]
+
   return (
     <>
+      <Node
+        label={placeLevel?.name_singular ?? 'Place'}
+        level={level + 1}
+        isInActiveNodeArray={ownArray.every((part, i) => urlPath[i] === part) && urlPath[ownArray.length] === 'place'}
+        isActive={isEqual([...ownArray, 'place'], urlPath)}
+        childrenCount={0}
+        to={`/${ownArray.join('/')}/place`}
+      />
       {!placeId2 && (
         <PlacesNode
           projectId={projectId}
