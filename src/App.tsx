@@ -6,6 +6,7 @@ import { PGlite } from '@electric-sql/pglite'
 import { electricSync } from '@electric-sql/pglite-sync'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
+import { useBeforeunload } from 'react-beforeunload'
 
 // TODO: is this really needed?
 import * as UC from '@uploadcare/file-uploader'
@@ -48,6 +49,10 @@ store.set(pgliteDbAtom, db)
 
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
+
+  // needed to prevent problems with relaxed durability and closing connections
+  // https://github.com/electric-sql/pglite/issues/879#issuecomment-3777577150
+  useBeforeunload(() => db.close())
 
   return (
     <PGliteProvider db={db}>
