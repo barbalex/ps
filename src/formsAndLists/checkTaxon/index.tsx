@@ -36,10 +36,10 @@ export const CheckTaxon = ({ from }) => {
     if (row[name] === value) return
 
     try {
-      await db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
-        value,
-        checkTaxonId,
-      ])
+      await db.query(
+        `UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`,
+        [value, checkTaxonId],
+      )
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
@@ -62,53 +62,57 @@ export const CheckTaxon = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Check Taxon" id={checkTaxonId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <DropdownField
-          label="Taxon"
-          name="taxon_id"
-          table="taxa"
-          value={row.taxon_id ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.taxon_id?.state}
-          validationMessage={validations?.taxon_id?.message}
-        />
-        <TextField
-          label="Value (integer)"
-          name="value_integer"
-          type="number"
-          value={row.value_integer ?? ''}
-          onChange={onChange}
-          validationState={validations?.value_integer?.state}
-          validationMessage={validations?.value_integer?.message}
-        />
-        <TextField
-          label="Value (numeric)"
-          name="value_numeric"
-          type="number"
-          value={row.value_numeric ?? ''}
-          onChange={onChange}
-          validationState={validations?.value_numeric?.state}
-          validationMessage={validations?.value_numeric?.message}
-        />
-        <TextField
-          label="Value (text)"
-          name="value_text"
-          value={row.value_text ?? ''}
-          onChange={onChange}
-          validationState={validations?.value_text?.state}
-          validationMessage={validations?.value_text?.message}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <>
+            <DropdownField
+              label="Taxon"
+              name="taxon_id"
+              table="taxa"
+              value={row.taxon_id ?? ''}
+              onChange={onChange}
+              autoFocus
+              ref={autoFocusRef}
+              validationState={validations?.taxon_id?.state}
+              validationMessage={validations?.taxon_id?.message}
+            />
+            <TextField
+              label="Value (integer)"
+              name="value_integer"
+              type="number"
+              value={row.value_integer ?? ''}
+              onChange={onChange}
+              validationState={validations?.value_integer?.state}
+              validationMessage={validations?.value_integer?.message}
+            />
+            <TextField
+              label="Value (numeric)"
+              name="value_numeric"
+              type="number"
+              value={row.value_numeric ?? ''}
+              onChange={onChange}
+              validationState={validations?.value_numeric?.state}
+              validationMessage={validations?.value_numeric?.message}
+            />
+            <TextField
+              label="Value (text)"
+              name="value_text"
+              value={row.value_text ?? ''}
+              onChange={onChange}
+              validationState={validations?.value_text?.state}
+              validationMessage={validations?.value_text?.message}
+            />
+          </>
+        : <NotFound
+            table="Check Taxon"
+            id={checkTaxonId}
+          />
+        }
       </div>
     </div>
   )
