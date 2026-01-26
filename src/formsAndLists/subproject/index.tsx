@@ -72,22 +72,11 @@ export const Subproject = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return (
-      <NotFound
-        table="Subproject"
-        id={subprojectId}
-      />
-    )
-  }
-
   return (
     <div className="form-outer-container">
       <Header
         autoFocusRef={autoFocusRef}
-        nameSingular={row.subproject_name_singular}
+        nameSingular={row?.subproject_name_singular}
         from={from}
       />
       <div
@@ -95,13 +84,21 @@ export const Subproject = ({ from }) => {
         role="tabpanel"
         aria-labelledby="form"
       >
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-          from={from}
-          validations={validations}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            row={row}
+            autoFocusRef={autoFocusRef}
+            from={from}
+            validations={validations}
+          />
+        : <NotFound
+            table="Subproject"
+            id={subprojectId}
+          />
+        }
       </div>
     </div>
   )
