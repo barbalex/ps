@@ -62,17 +62,6 @@ export const Project = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return (
-      <NotFound
-        table="Project"
-        id={projectId}
-      />
-    )
-  }
-
   return (
     <div className="form-outer-container">
       <Header
@@ -84,13 +73,21 @@ export const Project = ({ from }) => {
         role="tabpanel"
         aria-labelledby="form"
       >
-        <ProjectForm
-          onChange={onChange}
-          validations={validations}
-          row={row}
-          from={from}
-          autoFocusRef={autoFocusRef}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <ProjectForm
+            onChange={onChange}
+            validations={validations}
+            row={row}
+            from={from}
+            autoFocusRef={autoFocusRef}
+          />
+        : <NotFound
+            table="Project"
+            id={projectId}
+          />
+        }
       </div>
     </div>
   )
