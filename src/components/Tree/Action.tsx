@@ -75,12 +75,20 @@ export const ActionNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={11}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
         <>
+          <Node
+            label="Action"
+            level={level + 1}
+            isInActiveNodeArray={ownArray.every((part, i) => urlPath[i] === part) && urlPath[ownArray.length] === 'action'}
+            isActive={isEqual([...ownArray, 'action'], urlPath)}
+            childrenCount={0}
+            to={`${ownUrl}/action`}
+          />
           <ActionValuesNode
             projectId={projectId}
             subprojectId={subprojectId}
