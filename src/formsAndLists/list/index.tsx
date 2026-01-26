@@ -55,22 +55,21 @@ export const List = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="List" id={listId} />
-  }
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-          validations={validations}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            row={row}
+            autoFocusRef={autoFocusRef}
+            validations={validations}
+          />
+        : <NotFound table="List" id={listId} />
+        }
       </div>
     </div>
   )

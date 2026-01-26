@@ -57,17 +57,6 @@ export const Action = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return (
-      <NotFound
-        table="Action"
-        id={actionId}
-      />
-    )
-  }
-
   return (
     <div className="form-outer-container">
       <Header
@@ -75,13 +64,21 @@ export const Action = ({ from }) => {
         from={from}
       />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          validations={validations}
-          row={row}
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            validations={validations}
+            row={row}
+            autoFocusRef={autoFocusRef}
+            from={from}
+          />
+        : <NotFound
+            table="Action"
+            id={actionId}
+          />
+        }
       </div>
     </div>
   )

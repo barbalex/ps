@@ -58,23 +58,28 @@ export const Check = ({ from }) => {
     })
   }
 
-  if (!res) return <Loading />
-
-  if (!row) {
-    return <NotFound table="Check" id={checkId} />
-  }
-
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
-        <Form
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-          from={from}
-          validations={validations}
-        />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            row={row}
+            autoFocusRef={autoFocusRef}
+            from={from}
+            validations={validations}
+          />
+        : <NotFound
+            table="Check"
+            id={checkId}
+          />
+        }
       </div>
     </div>
   )
