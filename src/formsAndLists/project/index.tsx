@@ -4,14 +4,12 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
 import { Header } from './Header.tsx'
+import { ProjectForm } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../store.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import type Projects from '../../models/public/Projects.ts'
-import { TextField } from '../../components/shared/TextField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
-import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
@@ -27,6 +25,7 @@ export const Project = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
+  console.log('Project res:', res)
   const row: Projects | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
@@ -67,34 +66,31 @@ export const Project = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Project" id={projectId} />
+    return (
+      <NotFound
+        table="Project"
+        id={projectId}
+      />
+    )
   }
-
-  // need to extract the jsonb data from the row
-  // as inside filters it's name is a path
-  // instead of it being inside of the data field
-  const jsonbData = jsonbDataFromRow(row)
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
-      <div className="form-container" role="tabpanel" aria-labelledby="form">
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
+        <ProjectForm
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations.name?.state}
-          validationMessage={validations.name?.message}
-        />
-        <Jsonb
-          table="projects"
-          idField="project_id"
-          id={row.project_id}
-          data={jsonbData}
+          validations={validations}
+          row={row}
           from={from}
+          autoFocusRef={autoFocusRef}
         />
       </div>
     </div>
