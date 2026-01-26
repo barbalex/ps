@@ -28,8 +28,8 @@ export const PersonForm = ({
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationState={validations.email?.state}
-        validationMessage={validations.email?.message}
+        validationState={validations?.email?.state}
+        validationMessage={validations?.email?.message}
       />
       <Jsonb
         table="persons"

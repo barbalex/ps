@@ -20,7 +20,7 @@ export const ChartType = ({ onChange, validations, row, ref }) => {
       value={row.chart_type ?? ''}
       onChange={onChange}
       autoFocus
-      validationState={validations.chart_type?.state}
+      validationState={validations?.chart_type?.state}
       validationMessage={
         validations.chart_type?.message ??
         'Choose what type of chart you want to display'

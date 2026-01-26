@@ -75,8 +75,8 @@ export const Form = ({ autoFocusRef, from }) => {
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       <div>TODO: add design tool</div>
     </div>

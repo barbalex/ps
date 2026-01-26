@@ -27,16 +27,16 @@ export const ActionForm = ({
         name="date"
         value={row.date}
         onChange={onChange}
-        validationState={validations.date?.state}
-        validationMessage={validations.date?.message}
+        validationState={validations?.date?.state}
+        validationMessage={validations?.date?.message}
       />
       <SwitchField
         label="relevant for reports"
         name="relevant_for_reports"
         value={row.relevant_for_reports}
         onChange={onChange}
-        validationState={validations.relevant_for_reports?.state}
-        validationMessage={validations.relevant_for_reports?.message}
+        validationState={validations?.relevant_for_reports?.state}
+        validationMessage={validations?.relevant_for_reports?.message}
       />
       <Jsonb
         table="actions"

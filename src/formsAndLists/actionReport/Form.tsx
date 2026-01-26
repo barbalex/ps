@@ -19,8 +19,8 @@ export const ActionReportForm = ({
       value={row.year ?? ''}
       type="number"
       onChange={onChange}
-      validationState={validations.year?.state}
-      validationMessage={validations.year?.message}
+      validationState={validations?.year?.state}
+      validationMessage={validations?.year?.message}
     />
     <Jsonb
       table="action_reports"

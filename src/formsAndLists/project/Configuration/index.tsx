@@ -83,24 +83,24 @@ export const Configuration = ({ from }) => {
           name="subproject_name_singular"
           value={row.subproject_name_singular ?? ''}
           onChange={onChange}
-          validationState={validations.subproject_name_singular?.state}
-          validationMessage={validations.subproject_name_singular?.message}
+          validationState={validations?.subproject_name_singular?.state}
+          validationMessage={validations?.subproject_name_singular?.message}
         />
         <TextField
           label="Name of subproject (plural)"
           name="subproject_name_plural"
           value={row.subproject_name_plural ?? ''}
           onChange={onChange}
-          validationState={validations.subproject_name_plural?.state}
-          validationMessage={validations.subproject_name_plural?.message}
+          validationState={validations?.subproject_name_plural?.state}
+          validationMessage={validations?.subproject_name_plural?.message}
         />
         <TextField
           label="Order subproject by (field name)"
           name="subproject_order_by"
           value={row.subproject_order_by ?? ''}
           onChange={onChange}
-          validationState={validations.subproject_order_by?.state}
-          validationMessage={validations.subproject_order_by?.message}
+          validationState={validations?.subproject_order_by?.state}
+          validationMessage={validations?.subproject_order_by?.message}
         />
         <LabelBy
           label="Goal reports labelled by"
@@ -110,8 +110,8 @@ export const Configuration = ({ from }) => {
           onChange={onChange}
           extraFieldNames={['id']}
           from={from}
-          validationState={validations.goal_reports_label_by?.state}
-          validationMessage={validations.goal_reports_label_by?.message}
+          validationState={validations?.goal_reports_label_by?.state}
+          validationMessage={validations?.goal_reports_label_by?.message}
         />
         <LabelBy
           label="Places labelled by"
@@ -121,8 +121,8 @@ export const Configuration = ({ from }) => {
           onChange={onChange}
           extraFieldNames={['id', 'level']}
           from={from}
-          validationState={validations.places_label_by?.state}
-          validationMessage={validations.places_label_by?.message}
+          validationState={validations?.places_label_by?.state}
+          validationMessage={validations?.places_label_by?.message}
         />
         <FieldList
           label="Places ordered by"
@@ -147,8 +147,8 @@ export const Configuration = ({ from }) => {
           list={['first', 'second', 'all']}
           value={row.values_on_multiple_levels ?? ''}
           onChange={onChange}
-          validationState={validations.values_on_multiple_levels?.state}
-          validationMessage={validations.values_on_multiple_levels?.message}
+          validationState={validations?.values_on_multiple_levels?.state}
+          validationMessage={validations?.values_on_multiple_levels?.message}
         />
         <RadioGroupField
           label="...multiple action values exist on the same place level"
@@ -183,8 +183,8 @@ export const Configuration = ({ from }) => {
             name="files_offline"
             value={row.files_offline}
             onChange={onChange}
-            validationState={validations.files_offline?.state}
-            validationMessage={validations.files_offline?.message}
+            validationState={validations?.files_offline?.state}
+            validationMessage={validations?.files_offline?.message}
           />
           <Label>Enable uploading files to:</Label>
           <CheckboxField
@@ -192,40 +192,40 @@ export const Configuration = ({ from }) => {
             name="files_active_projects"
             value={row.files_active_projects ?? false}
             onChange={onChange}
-            validationState={validations.files_active_projects?.state}
-            validationMessage={validations.files_active_projects?.message}
+            validationState={validations?.files_active_projects?.state}
+            validationMessage={validations?.files_active_projects?.message}
           />
           <CheckboxField
             label="Subprojects"
             name="files_active_subprojects"
             value={row.files_active_subprojects ?? false}
             onChange={onChange}
-            validationState={validations.files_active_subprojects?.state}
-            validationMessage={validations.files_active_subprojects?.message}
+            validationState={validations?.files_active_subprojects?.state}
+            validationMessage={validations?.files_active_subprojects?.message}
           />
           <CheckboxField
             label="Places"
             name="files_active_places"
             value={row.files_active_places ?? false}
             onChange={onChange}
-            validationState={validations.files_active_places?.state}
-            validationMessage={validations.files_active_places?.message}
+            validationState={validations?.files_active_places?.state}
+            validationMessage={validations?.files_active_places?.message}
           />
           <CheckboxField
             label="Actions"
             name="files_active_actions"
             value={row.files_active_actions ?? false}
             onChange={onChange}
-            validationState={validations.files_active_actions?.state}
-            validationMessage={validations.files_active_actions?.message}
+            validationState={validations?.files_active_actions?.state}
+            validationMessage={validations?.files_active_actions?.message}
           />
           <CheckboxField
             label="Checks"
             name="files_active_checks"
             value={row.files_active_checks ?? false}
             onChange={onChange}
-            validationState={validations.files_active_checks?.state}
-            validationMessage={validations.files_active_checks?.message}
+            validationState={validations?.files_active_checks?.state}
+            validationMessage={validations?.files_active_checks?.message}
           />
         </div>
       </div>

@@ -54,7 +54,7 @@ export const FieldForm = ({
             options={projectId ? projectTables : accountTables}
             autoFocus
             ref={autoFocusRef}
-            validationState={validations.table_name?.state}
+            validationState={validations?.table_name?.state}
             validationMessage={
               validations.table_name?.message ??
               (row.table_name ? undefined : 'Required')
@@ -66,8 +66,8 @@ export const FieldForm = ({
             value={row.level}
             type="number"
             onChange={onChange}
-            validationState={validations.level?.state}
-            validationMessage={validations.level?.message}
+            validationState={validations?.level?.state}
+            validationMessage={validations?.level?.message}
           />
         </>
       )}
@@ -76,7 +76,7 @@ export const FieldForm = ({
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
-        validationState={validations.name?.state}
+        validationState={validations?.name?.state}
         validationMessage={
           validations.name?.message ?? (row.name ? undefined : 'Required')
         }
@@ -86,8 +86,8 @@ export const FieldForm = ({
         name="field_label"
         value={row.field_label ?? ''}
         onChange={onChange}
-        validationState={validations.field_label?.state}
-        validationMessage={validations.field_label?.message}
+        validationState={validations?.field_label?.state}
+        validationMessage={validations?.field_label?.message}
       />
       <DropdownField
         label="Type"
@@ -96,7 +96,7 @@ export const FieldForm = ({
         orderBy="sort, name"
         value={row.field_type_id ?? ''}
         onChange={onChange}
-        validationState={validations.field_type_id?.state}
+        validationState={validations?.field_type_id?.state}
         validationMessage={
           validations.field_type_id?.message ??
           (row.field_type_id ? undefined : 'Required')
@@ -115,8 +115,8 @@ export const FieldForm = ({
           table="lists"
           value={row.list_id ?? ''}
           onChange={onChange}
-          validationState={validations.list_id?.state}
-          validationMessage={validations.list_id?.message}
+          validationState={validations?.list_id?.state}
+          validationMessage={validations?.list_id?.message}
         />
       )}
       <TextField
@@ -124,8 +124,8 @@ export const FieldForm = ({
         name="preset"
         value={row.preset ?? ''}
         onChange={onChange}
-        validationState={validations.preset?.state}
-        validationMessage={validations.preset?.message}
+        validationState={validations?.preset?.state}
+        validationMessage={validations?.preset?.message}
       />
       <SwitchField
         label="Obsolete"
@@ -133,7 +133,7 @@ export const FieldForm = ({
         value={row.obsolete ?? false}
         type="number"
         onChange={onChange}
-        validationState={validations.obsolete?.state}
+        validationState={validations?.obsolete?.state}
         validationMessage={
           validations.obsolete?.message ??
           'If obsolete, existing data is shown but this field will not be available for new records'

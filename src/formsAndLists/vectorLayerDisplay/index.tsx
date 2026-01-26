@@ -121,8 +121,8 @@ export const VectorLayerDisplay = ({
               value={row.circle_marker_radius}
               onChange={onChange}
               type="number"
-              validationMessage={validations.circle_marker_radius?.message}
-              validationState={validations.circle_marker_radius?.state}
+              validationMessage={validations?.circle_marker_radius?.message}
+              validationState={validations?.circle_marker_radius?.state}
             />
           )}
           {row.marker_type === 'marker' && (
@@ -137,8 +137,8 @@ export const VectorLayerDisplay = ({
                 value={row.marker_size}
                 onChange={onChange}
                 type="number"
-                validationMessage={validations.marker_size?.message}
-                validationState={validations.marker_size?.state}
+                validationMessage={validations?.marker_size?.message}
+                validationState={validations?.marker_size?.state}
               />
             </>
           )}
@@ -155,8 +155,8 @@ export const VectorLayerDisplay = ({
             value={row.weight}
             onChange={onChange}
             type="number"
-            validationMessage={validations.weight?.message}
-            validationState={validations.weight?.state}
+            validationMessage={validations?.weight?.message}
+            validationState={validations?.weight?.state}
           />
           <LineCap
             onChange={onChange}
@@ -171,32 +171,32 @@ export const VectorLayerDisplay = ({
             label="Linien: Dash-Array"
             value={row.dash_array}
             onChange={onChange}
-            validationMessage={validations.dash_array?.message}
-            validationState={validations.dash_array?.state}
+            validationMessage={validations?.dash_array?.message}
+            validationState={validations?.dash_array?.state}
           />
           <TextField
             name="dash_offset"
             label="Linien: Dash-Offset"
             value={row.dash_offset}
             onChange={onChange}
-            validationMessage={validations.dash_offset?.message}
-            validationState={validations.dash_offset?.state}
+            validationMessage={validations?.dash_offset?.message}
+            validationState={validations?.dash_offset?.state}
           />
           <SwitchField
             label="(Umriss-)Linien zeichnen (Polygone und Kreise)"
             name="stroke"
             value={row.stroke}
             onChange={onChange}
-            validationMessage={validations.stroke?.message}
-            validationState={validations.stroke?.state}
+            validationMessage={validations?.stroke?.message}
+            validationState={validations?.stroke?.state}
           />
           <SwitchField
             label="Flächen füllen"
             name="fill"
             value={row.fill}
             onChange={onChange}
-            validationMessage={validations.fill?.message}
-            validationState={validations.fill?.state}
+            validationMessage={validations?.fill?.message}
+            validationState={validations?.fill?.state}
           />
           <ColorPicker
             id={`${row.id}/fill_color`}

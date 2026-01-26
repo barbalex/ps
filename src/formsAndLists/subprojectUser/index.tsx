@@ -84,8 +84,8 @@ export const SubprojectUser = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.user_id?.state}
-          validationMessage={validations.user_id?.message}
+          validationState={validations?.user_id?.state}
+          validationMessage={validations?.user_id?.message}
         />
         <RadioGroupField
           label="Role"
@@ -93,8 +93,8 @@ export const SubprojectUser = () => {
           list={userRoles}
           value={row.role ?? ''}
           onChange={onChange}
-          validationState={validations.role?.state}
-          validationMessage={validations.role?.message}
+          validationState={validations?.role?.state}
+          validationMessage={validations?.role?.message}
         />
       </div>
     </div>

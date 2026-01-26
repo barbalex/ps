@@ -78,8 +78,8 @@ export const Taxonomy = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.name?.state}
-          validationMessage={validations.name?.message}
+          validationState={validations?.name?.state}
+          validationMessage={validations?.name?.message}
         />
         <Type row={row} onChange={onChange} validations={validations} />
         <TextField
@@ -88,8 +88,8 @@ export const Taxonomy = ({ from }) => {
           type="url"
           value={row.url ?? ''}
           onChange={onChange}
-          validationState={validations.url?.state}
-          validationMessage={validations.url?.message}
+          validationState={validations?.url?.state}
+          validationMessage={validations?.url?.message}
         />
         <Jsonb
           table="taxonomies"
@@ -102,8 +102,8 @@ export const Taxonomy = ({ from }) => {
           name="obsolete"
           value={row.obsolete ?? false}
           onChange={onChange}
-          validationState={validations.obsolete?.state}
-          validationMessage={validations.obsolete?.message}
+          validationState={validations?.obsolete?.state}
+          validationMessage={validations?.obsolete?.message}
         />
       </div>
     </div>

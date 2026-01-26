@@ -80,8 +80,8 @@ export const CheckTaxon = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.taxon_id?.state}
-          validationMessage={validations.taxon_id?.message}
+          validationState={validations?.taxon_id?.state}
+          validationMessage={validations?.taxon_id?.message}
         />
         <TextField
           label="Value (integer)"
@@ -89,8 +89,8 @@ export const CheckTaxon = ({ from }) => {
           type="number"
           value={row.value_integer ?? ''}
           onChange={onChange}
-          validationState={validations.value_integer?.state}
-          validationMessage={validations.value_integer?.message}
+          validationState={validations?.value_integer?.state}
+          validationMessage={validations?.value_integer?.message}
         />
         <TextField
           label="Value (numeric)"
@@ -98,16 +98,16 @@ export const CheckTaxon = ({ from }) => {
           type="number"
           value={row.value_numeric ?? ''}
           onChange={onChange}
-          validationState={validations.value_numeric?.state}
-          validationMessage={validations.value_numeric?.message}
+          validationState={validations?.value_numeric?.state}
+          validationMessage={validations?.value_numeric?.message}
         />
         <TextField
           label="Value (text)"
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}
-          validationState={validations.value_text?.state}
-          validationMessage={validations.value_text?.message}
+          validationState={validations?.value_text?.state}
+          validationMessage={validations?.value_text?.message}
         />
       </div>
     </div>

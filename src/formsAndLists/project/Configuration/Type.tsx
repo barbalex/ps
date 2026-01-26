@@ -17,8 +17,8 @@ export const Type = ({ onChange, validations, row }) => {
       isLoading={isLoading}
       value={row.type ?? ''}
       onChange={onChange}
-      validationState={validations.type?.state}
-      validationMessage={validations.type?.message}
+      validationState={validations?.type?.state}
+      validationMessage={validations?.type?.message}
     />
   )
 }

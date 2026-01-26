@@ -71,8 +71,8 @@ export const Component = () => {
         type="code"
         value={row.code ?? ''}
         onChange={onChange}
-        validationState={validations.code?.state}
-        validationMessage={validations.code?.message}
+        validationState={validations?.code?.state}
+        validationMessage={validations?.code?.message}
       />
       <TextField
         label="Name"
@@ -80,8 +80,8 @@ export const Component = () => {
         type="name"
         value={row.name ?? ''}
         onChange={onChange}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       <TextArea
         label="Proj4 Value"
@@ -89,8 +89,8 @@ export const Component = () => {
         type="proj4"
         value={row.proj4 ?? ''}
         onChange={onChange}
-        validationState={validations.proj4?.state}
-        validationMessage={validations.proj4?.message}
+        validationState={validations?.proj4?.state}
+        validationMessage={validations?.proj4?.message}
       />
     </>
   )

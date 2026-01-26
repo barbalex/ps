@@ -85,8 +85,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         name="name"
         value={row.name}
         onChange={onChange}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       <Section title="Data">
         <Table
@@ -106,8 +106,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.table_filter}
           type="number"
           onChange={onChange}
-          validationState={validations.table_filter?.state}
-          validationMessage={validations.table_filter?.message}
+          validationState={validations?.table_filter?.state}
+          validationMessage={validations?.table_filter?.message}
         />
         <ValueSource
           onChange={onChange}
@@ -121,7 +121,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
               name="value_field"
               value={row.value_field}
               onChange={onChange}
-              validationState={validations.value_field?.state}
+              validationState={validations?.value_field?.state}
               validationMessage={
                 validations.value_field?.message ?? 'The name of the field'
               }
@@ -132,8 +132,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
               value={row.value_unit}
               type="number"
               onChange={onChange}
-              validationState={validations.value_unit?.state}
-              validationMessage={validations.value_unit?.message}
+              validationState={validations?.value_unit?.state}
+              validationMessage={validations?.value_unit?.message}
             />
           </>
         )}
@@ -145,7 +145,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.sort}
           type="number"
           onChange={onChange}
-          validationState={validations.sort?.state}
+          validationState={validations?.sort?.state}
           validationMessage={
             validations.sort?.message ??
             'Subjects are sorted by this value if set. Else by their name'
@@ -156,7 +156,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           name="connect_nulls"
           value={row.connect_nulls}
           onChange={onChange}
-          validationState={validations.connect_nulls?.state}
+          validationState={validations?.connect_nulls?.state}
           validationMessage={
             validations.connect_nulls?.message ??
             'If true, a line is drawn even when some data points are missing'
@@ -170,8 +170,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.stroke}
           type="color"
           onChange={onChange}
-          validationState={validations.stroke?.state}
-          validationMessage={validations.stroke?.message}
+          validationState={validations?.stroke?.state}
+          validationMessage={validations?.stroke?.message}
         />
         <TextField
           label="Fill"
@@ -179,15 +179,15 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.fill}
           type="color"
           onChange={onChange}
-          validationState={validations.fill?.state}
-          validationMessage={validations.fill?.message}
+          validationState={validations?.fill?.state}
+          validationMessage={validations?.fill?.message}
         />
         <SwitchField
           label="Fill is graded"
           name="fill_graded"
           value={row.fill_graded}
           onChange={onChange}
-          validationState={validations.fill_graded?.state}
+          validationState={validations?.fill_graded?.state}
           validationMessage={
             validations.fill_graded?.message ??
             'If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap'

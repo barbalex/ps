@@ -126,8 +126,8 @@ export const File = ({ from }) => {
           table="projects"
           value={row.project_id ?? ''}
           onChange={onChange}
-          validationState={validations.project_id?.state}
-          validationMessage={validations.project_id?.message}
+          validationState={validations?.project_id?.state}
+          validationMessage={validations?.project_id?.message}
         />
         <DropdownField
           label="Subproject"
@@ -136,8 +136,8 @@ export const File = ({ from }) => {
           where={`project_id ${row?.project_id ? `= '${row.project_id}'` : 'IS NULL'}`}
           value={row.subproject_id ?? ''}
           onChange={onChange}
-          validationState={validations.subproject_id?.state}
-          validationMessage={validations.subproject_id?.message}
+          validationState={validations?.subproject_id?.state}
+          validationMessage={validations?.subproject_id?.message}
         />
         <DropdownField
           label="Place"
@@ -146,8 +146,8 @@ export const File = ({ from }) => {
           where={`subproject_id ${row?.subproject_id ? `= '${row?.subproject_id}'` : 'IS NULL'}`}
           value={row.place_id ?? ''}
           onChange={onChange}
-          validationState={validations.place_id?.state}
-          validationMessage={validations.place_id?.message}
+          validationState={validations?.place_id?.state}
+          validationMessage={validations?.place_id?.message}
         />
         <DropdownField
           label="Action"
@@ -156,8 +156,8 @@ export const File = ({ from }) => {
           where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
           value={row.action_id ?? ''}
           onChange={onChange}
-          validationState={validations.action_id?.state}
-          validationMessage={validations.action_id?.message}
+          validationState={validations?.action_id?.state}
+          validationMessage={validations?.action_id?.message}
         />
         <DropdownField
           label="Check"
@@ -166,8 +166,8 @@ export const File = ({ from }) => {
           where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
           value={row.check_id ?? ''}
           onChange={onChange}
-          validationState={validations.check_id?.state}
-          validationMessage={validations.check_id?.message}
+          validationState={validations?.check_id?.state}
+          validationMessage={validations?.check_id?.message}
         />
         <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
         <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />

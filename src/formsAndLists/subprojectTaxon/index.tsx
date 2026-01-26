@@ -82,8 +82,8 @@ export const SubprojectTaxon = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.taxon_id?.state}
-          validationMessage={validations.taxon_id?.message}
+          validationState={validations?.taxon_id?.state}
+          validationMessage={validations?.taxon_id?.message}
         />
       </div>
     </div>

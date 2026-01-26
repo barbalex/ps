@@ -27,8 +27,8 @@ export const ProjectForm = ({
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       <Jsonb
         table="projects"

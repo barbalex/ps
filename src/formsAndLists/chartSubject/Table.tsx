@@ -21,7 +21,7 @@ export const Table = ({ onChange, row, ref, validations }) => {
       onChange={onChange}
       autoFocus
       ref={ref}
-      validationState={validations.table_name?.state}
+      validationState={validations?.table_name?.state}
       validationMessage={
         validations.table_name?.message ??
         'Choose what table to get the data from'

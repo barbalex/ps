@@ -211,8 +211,8 @@ export const SubprojectReportPrint = ({ from }) => {
             type="number"
             value={row.year ?? ''}
             onChange={onChange}
-            validationState={validations.year?.state}
-            validationMessage={validations.year?.message}
+            validationState={validations?.year?.state}
+            validationMessage={validations?.year?.message}
           />
         </div>
         {design && fields.length > 0 && (

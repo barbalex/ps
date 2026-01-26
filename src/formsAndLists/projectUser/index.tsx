@@ -82,8 +82,8 @@ export const ProjectUser = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.user_id?.state}
-          validationMessage={validations.user_id?.message}
+          validationState={validations?.user_id?.state}
+          validationMessage={validations?.user_id?.message}
         />
         <RadioGroupField
           label="Role"
@@ -91,8 +91,8 @@ export const ProjectUser = () => {
           list={userRoles}
           value={row.role ?? ''}
           onChange={onChange}
-          validationState={validations.role?.state}
-          validationMessage={validations.role?.message}
+          validationState={validations?.role?.state}
+          validationMessage={validations?.role?.message}
         />
       </div>
     </div>

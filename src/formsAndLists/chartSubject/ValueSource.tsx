@@ -20,7 +20,7 @@ export const ValueSource = ({ onChange, row, validations }) => {
       value={row.value_source ?? ''}
       onChange={onChange}
       replaceUnderscoreInLabel={true}
-      validationState={validations.value_source?.state}
+      validationState={validations?.value_source?.state}
       validationMessage={
         validations.value_source?.message ??
         "How to extract the subject's data from the table"

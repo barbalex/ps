@@ -24,7 +24,7 @@ export const WidgetType = ({
       value={value ?? ''}
       where={widgetWhere}
       onChange={onChange}
-      validationState={validations.widget_type_id?.state ?? 'none'}
+      validationState={validations?.widget_type_id?.state ?? 'none'}
       validationMessage={
         validations.widget_type_id?.message ??
         (field_type_id ? undefined : 'Field type required')

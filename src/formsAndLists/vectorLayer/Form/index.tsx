@@ -67,8 +67,8 @@ export const VectorLayerForm = ({
             name="label"
             value={row.label ?? ''}
             onChange={onChange}
-            validationMessage={validations.label?.message}
-            validationState={validations.label?.state}
+            validationMessage={validations?.label?.message}
+            validationState={validations?.label?.state}
           />
         )}
       {row?.type === 'own' && (
@@ -77,8 +77,8 @@ export const VectorLayerForm = ({
           name="label"
           value={row.label ?? ''}
           onChange={onChange}
-          validationMessage={validations.label?.message}
-          validationState={validations.label?.state}
+          validationMessage={validations?.label?.message}
+          validationState={validations?.label?.state}
         />
       )}
       {!['wfs', 'upload', 'own'].includes(row.type) && (
@@ -89,8 +89,8 @@ export const VectorLayerForm = ({
               name="label"
               value={row.label ?? ''}
               onChange={onChange}
-              validationMessage={validations.label?.message}
-              validationState={validations.label?.state}
+              validationMessage={validations?.label?.message}
+              validationState={validations?.label?.state}
             />
           : <TextFieldInactive
               label="Label"

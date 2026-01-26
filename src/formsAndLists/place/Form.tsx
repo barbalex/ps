@@ -39,8 +39,8 @@ export const PlaceForm = ({
             list={[1, 2]}
             value={row.level ?? ''}
             onChange={onChange}
-            validationState={validations.level?.state}
-            validationMessage={validations.level?.message}
+            validationState={validations?.level?.state}
+            validationMessage={validations?.level?.message}
           />
           {row.level === 2 && (
             <DropdownField
@@ -53,8 +53,8 @@ export const PlaceForm = ({
               onChange={onChange}
               autoFocus
               ref={autoFocusRef}
-              validationState={validations.parent_id?.state}
-              validationMessage={validations.parent_id?.message}
+              validationState={validations?.parent_id?.state}
+              validationMessage={validations?.parent_id?.message}
             />
           )}
         </>
@@ -65,8 +65,8 @@ export const PlaceForm = ({
         value={row.since}
         type="number"
         onChange={onChange}
-        validationState={validations.since?.state}
-        validationMessage={validations.since?.message}
+        validationState={validations?.since?.state}
+        validationMessage={validations?.since?.message}
       />
       <TextField
         label="Until when did this place exist? (year)"
@@ -74,8 +74,8 @@ export const PlaceForm = ({
         value={row.until}
         type="number"
         onChange={onChange}
-        validationState={validations.until?.state}
-        validationMessage={validations.until?.message}
+        validationState={validations?.until?.state}
+        validationMessage={validations?.until?.message}
       />
       <Jsonb
         table="places"

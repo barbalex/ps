@@ -15,8 +15,8 @@ export const WidgetTypeForm = ({ onChange, validations = {}, row, autoFocusRef }
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationMessage={validations.name?.message}
-        validationState={validations.name?.state}
+        validationMessage={validations?.name?.message}
+        validationState={validations?.name?.state}
       />
       <SwitchField
         label="Needs a list"
@@ -30,16 +30,16 @@ export const WidgetTypeForm = ({ onChange, validations = {}, row, autoFocusRef }
         value={row.sort ?? ''}
         type="number"
         onChange={onChange}
-        validationMessage={validations.sort?.message}
-        validationState={validations.sort?.state}
+        validationMessage={validations?.sort?.message}
+        validationState={validations?.sort?.state}
       />
       <TextField
         label="Comment"
         name="comment"
         value={row.comment ?? ''}
         onChange={onChange}
-        validationMessage={validations.comment?.message}
-        validationState={validations.comment?.state}
+        validationMessage={validations?.comment?.message}
+        validationState={validations?.comment?.state}
       />
     </>
   )

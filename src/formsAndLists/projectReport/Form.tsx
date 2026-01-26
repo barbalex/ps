@@ -19,8 +19,8 @@ export const ProjectReportForm = ({ onChange, row, orIndex, autoFocusRef, valida
         type="number"
         value={row.year ?? ''}
         onChange={onChange}
-        validationState={validations.year?.state}
-        validationMessage={validations.year?.message}
+        validationState={validations?.year?.state}
+        validationMessage={validations?.year?.message}
       />
       <Jsonb
         table="project_reports"

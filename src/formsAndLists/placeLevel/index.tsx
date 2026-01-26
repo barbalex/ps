@@ -100,8 +100,8 @@ export const PlaceLevel = () => {
           list={[1, 2]}
           value={row.level ?? ''}
           onChange={onChange}
-          validationState={validations.level?.state}
-          validationMessage={validations.level?.message}
+          validationState={validations?.level?.state}
+          validationMessage={validations?.level?.message}
         />
         <TextField
           label="Name (singular)"
@@ -110,96 +110,96 @@ export const PlaceLevel = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.name_singular?.state}
-          validationMessage={validations.name_singular?.message}
+          validationState={validations?.name_singular?.state}
+          validationMessage={validations?.name_singular?.message}
         />
         <TextField
           label="Name (plural)"
           name="name_plural"
           value={row.name_plural ?? ''}
           onChange={onChange}
-          validationState={validations.name_plural?.state}
-          validationMessage={validations.name_plural?.message}
+          validationState={validations?.name_plural?.state}
+          validationMessage={validations?.name_plural?.message}
         />
         <TextField
           label="Name (short)"
           name="name_short"
           value={row.name_short ?? ''}
           onChange={onChange}
-          validationState={validations.name_short?.state}
-          validationMessage={validations.name_short?.message}
+          validationState={validations?.name_short?.state}
+          validationMessage={validations?.name_short?.message}
         />
         <SwitchField
           label="Enable reports"
           name="reports"
           value={row.reports ?? false}
           onChange={onChange}
-          validationState={validations.reports?.state}
-          validationMessage={validations.reports?.message}
+          validationState={validations?.reports?.state}
+          validationMessage={validations?.reports?.message}
         />
         <SwitchField
           label="Enable report values"
           name="report_values"
           value={row.report_values ?? false}
           onChange={onChange}
-          validationState={validations.report_values?.state}
-          validationMessage={validations.report_values?.message}
+          validationState={validations?.report_values?.state}
+          validationMessage={validations?.report_values?.message}
         />
         <SwitchField
           label="Enable actions"
           name="actions"
           value={row.actions ?? false}
           onChange={onChange}
-          validationState={validations.actions?.state}
-          validationMessage={validations.actions?.message}
+          validationState={validations?.actions?.state}
+          validationMessage={validations?.actions?.message}
         />
         <SwitchField
           label="Enable action values"
           name="action_values"
           value={row.action_values ?? false}
           onChange={onChange}
-          validationState={validations.action_values?.state}
-          validationMessage={validations.action_values?.message}
+          validationState={validations?.action_values?.state}
+          validationMessage={validations?.action_values?.message}
         />
         <SwitchField
           label="Enable action reports"
           name="action_reports"
           value={row.action_reports ?? false}
           onChange={onChange}
-          validationState={validations.action_reports?.state}
-          validationMessage={validations.action_reports?.message}
+          validationState={validations?.action_reports?.state}
+          validationMessage={validations?.action_reports?.message}
         />
         <SwitchField
           label="Enable checks"
           name="checks"
           value={row.checks ?? false}
           onChange={onChange}
-          validationState={validations.checks?.state}
-          validationMessage={validations.checks?.message}
+          validationState={validations?.checks?.state}
+          validationMessage={validations?.checks?.message}
         />
         <SwitchField
           label="Enable check values"
           name="check_values"
           value={row.check_values ?? false}
           onChange={onChange}
-          validationState={validations.check_values?.state}
-          validationMessage={validations.check_values?.message}
+          validationState={validations?.check_values?.state}
+          validationMessage={validations?.check_values?.message}
         />
         <SwitchField
           label="Enable check taxa"
           name="check_taxa"
           value={row.check_taxa ?? false}
           onChange={onChange}
-          validationState={validations.check_taxa?.state}
-          validationMessage={validations.check_taxa?.message}
+          validationState={validations?.check_taxa?.state}
+          validationMessage={validations?.check_taxa?.message}
         />
         <SwitchField
           label="Enable occurrences"
           name="occurrences"
           value={row.occurrences ?? false}
           onChange={onChange}
-          validationState={validations.occurrences?.state}
-          validationMessage={validations.occurrences?.message}
+          validationState={validations?.occurrences?.state}
+          validationMessage={validations?.occurrences?.message}
         />
       </div>
     </div>

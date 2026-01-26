@@ -23,7 +23,7 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
         orderBy="url"
         onChange={onChange}
         autoFocus={true}
-        validationState={validations.wms_service_id?.state}
+        validationState={validations?.wms_service_id?.state}
         validationMessage={
           validations.wms_service_id?.message ??
           (row.wms_service_id ? '' : (
@@ -48,8 +48,8 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
             name="label"
             value={row.label ?? ''}
             onChange={onChange}
-            validationMessage={validations.label?.message}
-            validationState={validations.label?.state}
+            validationMessage={validations?.label?.message}
+            validationState={validations?.label?.state}
           />
           {/* {wmsLayer?.wms_service_id && (
               <>

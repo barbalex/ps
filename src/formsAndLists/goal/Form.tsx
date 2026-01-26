@@ -26,8 +26,8 @@ export const GoalForm = ({
         value={row.year ?? ''}
         type="number"
         onChange={onChange}
-        validationState={validations.year?.state}
-        validationMessage={validations.year?.message}
+        validationState={validations?.year?.state}
+        validationMessage={validations?.year?.message}
       />
       <TextField
         label="Name"
@@ -36,8 +36,8 @@ export const GoalForm = ({
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       <Jsonb
         table="goals"

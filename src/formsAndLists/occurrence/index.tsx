@@ -129,8 +129,8 @@ export const Occurrence = ({ from }) => {
           name="not_to_assign"
           value={row.not_to_assign}
           onChange={onChange}
-          validationState={validations.not_to_assign?.state}
-          validationMessage={validations.not_to_assign?.message}
+          validationState={validations?.not_to_assign?.state}
+          validationMessage={validations?.not_to_assign?.message}
         />
         {/* TODO: add distance from occurrence and sort by that ascending */}
         <ComboboxFilteringForTable
@@ -141,8 +141,8 @@ export const Occurrence = ({ from }) => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.place_id?.state}
-          validationMessage={validations.place_id?.message}
+          validationState={validations?.place_id?.state}
+          validationMessage={validations?.place_id?.message}
         />
         <OccurenceData from={from} />
       </div>

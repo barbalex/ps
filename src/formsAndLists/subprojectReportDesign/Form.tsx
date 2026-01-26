@@ -236,8 +236,8 @@ export const Form = ({ autoFocusRef, from }) => {
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       {(fields.length > 0 || charts.length > 0) && (
         <Puck

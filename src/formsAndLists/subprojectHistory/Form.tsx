@@ -80,16 +80,16 @@ export const SubprojectHistoryForm = ({ from, autoFocusRef }) => {
       onChange={onChange}
       autoFocus
       ref={autoFocusRef}
-      validationState={validations.year?.state}
-      validationMessage={validations.year?.message}
+      validationState={validations?.year?.state}
+      validationMessage={validations?.year?.message}
     />
     <TextField
       label="Name"
       name="name"
       value={row.name ?? ''}
       onChange={onChange}
-      validationState={validations.name?.state}
-      validationMessage={validations.name?.message}
+      validationState={validations?.name?.state}
+      validationMessage={validations?.name?.message}
     />
     <TextField
       label="Start year"
@@ -97,8 +97,8 @@ export const SubprojectHistoryForm = ({ from, autoFocusRef }) => {
       value={row.start_year ?? ''}
       type="number"
       onChange={onChange}
-      validationState={validations.start_year?.state}
-      validationMessage={validations.start_year?.message}
+      validationState={validations?.start_year?.state}
+      validationMessage={validations?.start_year?.message}
     />
     <TextField
       label="End year"
@@ -106,8 +106,8 @@ export const SubprojectHistoryForm = ({ from, autoFocusRef }) => {
       value={row.end_year ?? ''}
       type="number"
       onChange={onChange}
-      validationState={validations.end_year?.state}
-      validationMessage={validations.end_year?.message}
+      validationState={validations?.end_year?.state}
+      validationMessage={validations?.end_year?.message}
     />
     <Jsonb
       table="subproject_histories"

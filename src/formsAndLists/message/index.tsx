@@ -74,8 +74,8 @@ export const Message = () => {
           name="date"
           value={row.date}
           onChange={onChange}
-          validationState={validations.date?.state}
-          validationMessage={validations.date?.message}
+          validationState={validations?.date?.state}
+          validationMessage={validations?.date?.message}
         />
         <TextField
           label="Message"
@@ -83,8 +83,8 @@ export const Message = () => {
           value={row.message ?? ''}
           onChange={onChange}
           autoFocus
-          validationState={validations.message?.state}
-          validationMessage={validations.message?.message}
+          validationState={validations?.message?.state}
+          validationMessage={validations?.message?.message}
         />
       </div>
     </div>

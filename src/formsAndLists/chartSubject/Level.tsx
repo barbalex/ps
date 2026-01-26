@@ -19,7 +19,7 @@ export const Level = ({ onChange, row, validations }) => {
       isLoading={isLoading}
       value={row.table_level ?? ''}
       onChange={onChange}
-      validationState={validations.table_level?.state}
+      validationState={validations?.table_level?.state}
       validationMessage={
         validations.table_level?.message ??
         'Level of places and their respective checks and actions'

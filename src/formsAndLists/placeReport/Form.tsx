@@ -26,8 +26,8 @@ export const PlaceReportForm = ({
         type="number"
         value={row.year ?? ''}
         onChange={onChange}
-        validationState={validations.year?.state}
-        validationMessage={validations.year?.message}
+        validationState={validations?.year?.state}
+        validationMessage={validations?.year?.message}
       />
       <Jsonb
         table="place_reports"

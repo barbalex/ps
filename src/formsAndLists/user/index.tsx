@@ -78,8 +78,8 @@ export const User = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.email?.state}
-          validationMessage={validations.email?.message}
+          validationState={validations?.email?.state}
+          validationMessage={validations?.email?.message}
         />
       </div>
     </div>

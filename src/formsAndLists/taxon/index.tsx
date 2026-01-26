@@ -75,16 +75,16 @@ export const Taxon = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.name?.state}
-          validationMessage={validations.name?.message}
+          validationState={validations?.name?.state}
+          validationMessage={validations?.name?.message}
         />
         <TextField
           label="ID in source"
           name="id_in_source"
           value={row.id_in_source ?? ''}
           onChange={onChange}
-          validationState={validations.id_in_source?.state}
-          validationMessage={validations.id_in_source?.message}
+          validationState={validations?.id_in_source?.state}
+          validationMessage={validations?.id_in_source?.message}
         />
         <TextField
           label="Url"
@@ -92,8 +92,8 @@ export const Taxon = () => {
           type="url"
           value={row.url ?? ''}
           onChange={onChange}
-          validationState={validations.url?.state}
-          validationMessage={validations.url?.message}
+          validationState={validations?.url?.state}
+          validationMessage={validations?.url?.message}
         />
       </div>
     </div>

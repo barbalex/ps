@@ -78,16 +78,16 @@ export const ListValue = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations.value?.state}
-          validationMessage={validations.value?.message}
+          validationState={validations?.value?.state}
+          validationMessage={validations?.value?.message}
         />
         <SwitchField
           label="Obsolete"
           name="obsolete"
           value={row.obsolete}
           onChange={onChange}
-          validationState={validations.obsolete?.state}
-          validationMessage={validations.obsolete?.message}
+          validationState={validations?.obsolete?.state}
+          validationMessage={validations?.obsolete?.message}
         />
       </div>
     </div>

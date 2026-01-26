@@ -17,8 +17,8 @@ export const WidgetForFieldForm = ({
       onChange={onChange}
       autoFocus
       ref={autoFocusRef}
-      validationState={validations.field_type_id?.state}
-      validationMessage={validations.field_type_id?.message}
+      validationState={validations?.field_type_id?.state}
+      validationMessage={validations?.field_type_id?.message}
     />
     <DropdownField
       label="Widget type"
@@ -26,8 +26,8 @@ export const WidgetForFieldForm = ({
       table="widget_types"
       value={row.widget_type_id ?? ''}
       onChange={onChange}
-      validationState={validations.widget_type_id?.state}
-      validationMessage={validations.widget_type_id?.message}
+      validationState={validations?.widget_type_id?.state}
+      validationMessage={validations?.widget_type_id?.message}
     />
   </>
 )

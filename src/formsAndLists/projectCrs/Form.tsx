@@ -129,8 +129,8 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         type="code"
         value={row.code ?? ''}
         onChange={onChange}
-        validationState={validations.code?.state}
-        validationMessage={validations.code?.message}
+        validationState={validations?.code?.state}
+        validationMessage={validations?.code?.message}
       />
       <TextField
         label="Name"
@@ -138,8 +138,8 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         type="name"
         value={row.name ?? ''}
         onChange={onChange}
-        validationState={validations.name?.state}
-        validationMessage={validations.name?.message}
+        validationState={validations?.name?.state}
+        validationMessage={validations?.name?.message}
       />
       <TextArea
         label="Proj4 Value"
@@ -147,16 +147,16 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         type="proj4"
         value={row.proj4 ?? ''}
         onChange={onChange}
-        validationState={validations.proj4?.state}
-        validationMessage={validations.proj4?.message}
+        validationState={validations?.proj4?.state}
+        validationMessage={validations?.proj4?.message}
       />
       <CheckboxField
         label="Set as Map Presentation CRS"
         name="map_presentation_crs"
         value={row.project_map_presentation_crs === row.code}
         onChange={onChangeMapPresentation}
-        validationState={validations.map_presentation_crs?.state}
-        validationMessage={validations.map_presentation_crs?.message}
+        validationState={validations?.map_presentation_crs?.state}
+        validationMessage={validations?.map_presentation_crs?.message}
       />
     </>
   )

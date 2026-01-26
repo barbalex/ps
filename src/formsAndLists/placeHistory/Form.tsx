@@ -83,8 +83,8 @@ export const PlaceHistoryForm = ({ autoFocusRef }) => {
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
-        validationState={validations.year?.state}
-        validationMessage={validations.year?.message}
+        validationState={validations?.year?.state}
+        validationMessage={validations?.year?.message}
       />
       <TextField
         label="Since"
@@ -92,8 +92,8 @@ export const PlaceHistoryForm = ({ autoFocusRef }) => {
         value={row.since ?? ''}
         type="number"
         onChange={onChange}
-        validationState={validations.since?.state}
-        validationMessage={validations.since?.message}
+        validationState={validations?.since?.state}
+        validationMessage={validations?.since?.message}
       />
       <TextField
         label="Until"
@@ -101,8 +101,8 @@ export const PlaceHistoryForm = ({ autoFocusRef }) => {
         value={row.until ?? ''}
         type="number"
         onChange={onChange}
-        validationState={validations.until?.state}
-        validationMessage={validations.until?.message}
+        validationState={validations?.until?.state}
+        validationMessage={validations?.until?.message}
       />
       <Jsonb
         table="place_histories"

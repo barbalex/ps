@@ -285,8 +285,8 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="name"
           value={row.name}
           onChange={onChange}
-          validationState={validations.name?.state}
-          validationMessage={validations.name?.message}
+          validationState={validations?.name?.state}
+          validationMessage={validations?.name?.message}
         />
       </Section>
       <Section title="Data / Subjects presentation">
@@ -295,7 +295,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="years_current"
           value={row.years_current ?? false}
           onChange={onChange}
-          validationState={validations.years_current?.state}
+          validationState={validations?.years_current?.state}
           validationMessage={
             validations.years_current?.message ??
             'The chart shows data of the current year'
@@ -306,7 +306,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="years_previous"
           value={row.years_previous ?? false}
           onChange={onChange}
-          validationState={validations.years_previous?.state}
+          validationState={validations?.years_previous?.state}
           validationMessage={
             validations.years_previous?.message ??
             'The chart shows data of the previous year'
@@ -318,7 +318,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_specific}
           type="number"
           onChange={onChange}
-          validationState={validations.years_specific?.state}
+          validationState={validations?.years_specific?.state}
           validationMessage={
             validations.years_specific?.message ??
             'The chart shows data of the specific year entered'
@@ -330,7 +330,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_last_x}
           type="number"
           onChange={onChange}
-          validationState={validations.years_last_x?.state}
+          validationState={validations?.years_last_x?.state}
           validationMessage={
             validations.years_last_x?.message ??
             'The chart shows no more than the last x years (x = value entered)'
@@ -342,7 +342,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_since}
           type="number"
           onChange={onChange}
-          validationState={validations.years_since?.state}
+          validationState={validations?.years_since?.state}
           validationMessage={
             validations.years_since?.message ??
             'The chart shows data since the year entered'
@@ -354,7 +354,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           value={row.years_until}
           type="number"
           onChange={onChange}
-          validationState={validations.years_until?.state}
+          validationState={validations?.years_until?.state}
           validationMessage={
             validations.years_until?.message ??
             'The chart shows data until the year entered'
@@ -367,7 +367,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="subjects_stacked"
           value={row.subjects_stacked}
           onChange={onChange}
-          validationState={validations.subjects_stacked?.state}
+          validationState={validations?.subjects_stacked?.state}
           validationMessage={
             validations.subjects_stacked?.message ??
             'When true, subjects graphs will be stacked. If false, they will be drawn covering each other'
@@ -378,7 +378,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="subjects_single"
           value={row.subjects_single}
           onChange={onChange}
-          validationState={validations.subjects_single?.state}
+          validationState={validations?.subjects_single?.state}
           validationMessage={
             validations.subjects_single?.message ??
             'When false, subjects will be drawn in a single graph'
@@ -389,7 +389,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           name="percent"
           value={row.percent}
           onChange={onChange}
-          validationState={validations.percent?.state}
+          validationState={validations?.percent?.state}
           validationMessage={
             validations.percent?.message ??
             'You will see the percentage of every subject, totalling 100%. This only works well when subjects have values for every year'
