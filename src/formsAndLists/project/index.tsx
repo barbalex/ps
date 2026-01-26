@@ -25,7 +25,6 @@ export const Project = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  console.log('Project res:', res)
   const row: Projects | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
