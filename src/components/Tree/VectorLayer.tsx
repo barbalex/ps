@@ -46,15 +46,27 @@ export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <VectorLayerDisplaysNode
-          projectId={projectId}
-          vectorLayerId={nav.id}
-        />
+        <>
+          <Node
+            label="Layer"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'vector-layer'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'vector-layer'])}
+            to={`${ownUrl}/vector-layer`}
+          />
+          <VectorLayerDisplaysNode
+            projectId={projectId}
+            vectorLayerId={nav.id}
+          />
+        </>
       )}
     </>
   )
