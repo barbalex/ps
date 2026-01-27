@@ -61,6 +61,8 @@ export const Places = ({ from }) => {
     })
   }
 
+  console.log({ navs })
+
   return (
     <div className="list-view">
       <ListHeader
@@ -80,23 +82,20 @@ export const Places = ({ from }) => {
         }
       />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-                onDelete={() => {
-                  // Handle deletion here
-                  console.log('Delete item')
-                }}
-              />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              to={id}
+              label={label ?? id}
+              onDelete={() => {
+                // Handle deletion here
+                console.log('Delete item')
+              }}
+            />
+          ))
+        }
       </div>
     </div>
   )
