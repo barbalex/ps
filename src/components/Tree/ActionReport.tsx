@@ -73,7 +73,7 @@ export const ActionReportNode = ({
       {isOpen && (
         <>
           <Node
-            label="Action Report"
+            label="Report"
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
