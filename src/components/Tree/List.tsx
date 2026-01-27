@@ -46,15 +46,27 @@ export const ListNode = ({ projectId, nav, level = 4 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <ListValuesNode
-          projectId={projectId}
-          listId={nav.id}
-        />
+        <>
+          <Node
+            label="List"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'list'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'list'])}
+            to={`${ownUrl}/list`}
+          />
+          <ListValuesNode
+            projectId={projectId}
+            listId={nav.id}
+          />
+        </>
       )}
     </>
   )
