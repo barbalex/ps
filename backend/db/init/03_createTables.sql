@@ -5,7 +5,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   email text UNIQUE DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(email, user_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS subprojects(
   start_year integer DEFAULT NULL,
   end_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -403,7 +403,7 @@ CREATE TABLE IF NOT EXISTS lists(
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(name, list_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), list_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS list_values(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   value text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(value, list_value_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(value, ''), list_value_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -477,7 +477,7 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type text DEFAULT null references unit_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  label text GENERATED ALWAYS AS (coalesce(name, unit_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1101,7 +1101,7 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, project_report_design_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_design_id::text)) STORED,
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1131,7 +1131,7 @@ CREATE TABLE IF NOT EXISTS files(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL, -- file-upload-success-event.detail.name
   size bigint DEFAULT NULL, -- file-upload-success-event.detail.size
-  label text GENERATED ALWAYS AS (coalesce(name, file_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), file_id::text)) STORED,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
   -- need width and height to get the aspect ratio of the image
@@ -1172,7 +1172,7 @@ CREATE TABLE IF NOT EXISTS persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(email, person_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), person_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1196,7 +1196,7 @@ CREATE TABLE IF NOT EXISTS field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  label text GENERATED ALWAYS AS (coalesce(name, field_type_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1216,7 +1216,7 @@ CREATE TABLE IF NOT EXISTS widget_types(
   needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  label text GENERATED ALWAYS AS (coalesce(name, widget_type_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), widget_type_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1359,7 +1359,7 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), occurrence_import_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1681,7 +1681,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
   fill_rule text DEFAULT 'evenodd' REFERENCES vector_layer_fill_rules(fill_rule) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display')) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(display_property_value, ''), 'Single Display')) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1887,7 +1887,7 @@ CREATE TABLE IF NOT EXISTS crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(code, crs_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(code, ''), crs_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1913,7 +1913,7 @@ CREATE TABLE IF NOT EXISTS project_crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(code, project_crs_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(code, ''), project_crs_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
