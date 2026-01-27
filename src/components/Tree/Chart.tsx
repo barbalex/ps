@@ -60,19 +60,31 @@ export const ChartNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={0}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <ChartSubjectsNode
-          projectId={projectId}
-          subprojectId={subprojectId}
-          placeId={placeId}
-          placeId2={placeId2}
-          chartId={nav.id}
-          level={level + 1}
-        />
+        <>
+          <Node
+            label="Chart"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'chart'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'chart'])}
+            to={`${ownUrl}/chart`}
+          />
+          <ChartSubjectsNode
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
+            placeId2={placeId2}
+            chartId={nav.id}
+            level={level + 1}
+          />
+        </>
       )}
     </>
   )
