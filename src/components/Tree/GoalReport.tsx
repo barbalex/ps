@@ -61,17 +61,29 @@ export const GoalReportNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <GoalReportValuesNode
-          projectId={projectId}
-          subprojectId={subprojectId}
-          goalId={goalId}
-          goalReportId={nav.id}
-        />
+        <>
+          <Node
+            label="Report"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'report'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'report'])}
+            to={`${ownUrl}/report`}
+          />
+          <GoalReportValuesNode
+            projectId={projectId}
+            subprojectId={subprojectId}
+            goalId={goalId}
+            goalReportId={nav.id}
+          />
+        </>
       )}
     </>
   )

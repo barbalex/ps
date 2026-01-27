@@ -56,6 +56,7 @@ import { GoalFetcher } from './GoalFetcher.tsx'
 import { GoalGoalFetcher } from './GoalGoalFetcher.tsx'
 import { GoalReportsFetcher } from './GoalReportsFetcher.tsx'
 import { GoalReportFetcher } from './GoalReportFetcher.tsx'
+import { GoalReportReportFetcher } from './GoalReportReportFetcher.tsx'
 import { GoalReportValuesFetcher } from './GoalReportValuesFetcher.tsx'
 import { GoalReportValueFetcher } from './GoalReportValueFetcher.tsx'
 import { OccurrenceImportsFetcher } from './OccurrenceImportsFetcher.tsx'
@@ -449,6 +450,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useGoalReportNavData': {
       return (
         <GoalReportFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useGoalReportReportNavData': {
+      return (
+        <GoalReportReportFetcher
           params={params}
           {...other}
         />
