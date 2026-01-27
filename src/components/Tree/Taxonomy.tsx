@@ -46,15 +46,27 @@ export const TaxonomyNode = ({ projectId, nav, level = 4 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={1}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <TaxaNode
-          projectId={projectId}
-          taxonomyId={nav.id}
-        />
+        <>
+          <Node
+            label="Taxonomy"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'taxonomy'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'taxonomy'])}
+            to={`${ownUrl}/taxonomy`}
+          />
+          <TaxaNode
+            projectId={projectId}
+            taxonomyId={nav.id}
+          />
+        </>
       )}
     </>
   )

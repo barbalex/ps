@@ -6,6 +6,9 @@ export const Route = createFileRoute(
   '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy',
 )({
   component: RouteComponent,
+  beforeLoad: () => ({
+    navDataFetcher: 'useTaxonomyTaxonomyNavData',
+  }),
 })
 
 function RouteComponent() {
