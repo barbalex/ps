@@ -85,6 +85,7 @@ import { TaxonomiesFetcher } from './TaxonomiesFetcher.tsx'
 import { TaxonomyFetcher } from './TaxonomyFetcher.tsx'
 import { TaxonomyTaxonomyFetcher } from './TaxonomyTaxonomyFetcher.tsx'
 import { TaxaFetcher } from './TaxaFetcher.tsx'
+import { TaxonFetcher } from './TaxonFetcher.tsx'
 import { UnitsFetcher } from './UnitsFetcher.tsx'
 import { UnitFetcher } from './UnitFetcher.tsx'
 import { ProjectCrssFetcher } from './ProjectCrssFetcher.tsx'
@@ -764,6 +765,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useTaxaNavData': {
       return (
         <TaxaFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useTaxonNavData': {
+      return (
+        <TaxonFetcher
           params={params}
           {...other}
         />
