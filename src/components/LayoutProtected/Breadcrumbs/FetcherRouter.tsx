@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 // import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
+import { ProjectProjectFetcher } from './ProjectProjectFetcher.tsx'
 import { SubprojectsFetcher } from './SubprojectsFetcher.tsx'
 import { SubprojectFetcher } from './SubprojectFetcher.tsx'
 
@@ -34,6 +35,7 @@ import { ActionValuesFetcher } from './ActionValuesFetcher.tsx'
 import { ActionValueFetcher } from './ActionValueFetcher.tsx'
 import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
 import { ActionReportFetcher } from './ActionReportFetcher.tsx'
+import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
 import { ActionReportValuesFetcher } from './ActionReportValuesFetcher.tsx'
 import { ActionReportValueFetcher } from './ActionReportValueFetcher.tsx'
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
@@ -127,6 +129,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useProjectNavData': {
       return (
         <ProjectFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useProjectProjectNavData': {
+      return (
+        <ProjectProjectFetcher
           params={params}
           {...other}
         />
@@ -255,6 +265,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useActionReportNavData': {
       return (
         <ActionReportFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useActionReportReportNavData': {
+      return (
+        <ActionReportReportFetcher
           params={params}
           {...other}
         />

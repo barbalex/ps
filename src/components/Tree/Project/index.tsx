@@ -73,6 +73,17 @@ export const ProjectNode = ({ nav, level = 2 }) => {
       />
       {isOpen && (
         <>
+          <Node
+            label="Project"
+            level={3}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'project'
+            }
+            isActive={isEqual([...ownArray, 'project'], urlPath)}
+            childrenCount={0}
+            to={`${ownUrl}/project`}
+          />
           <SubprojectsNode projectId={nav.id} />
           <ProjectReportsNode projectId={nav.id} />
           <PersonsNode projectId={nav.id} />
