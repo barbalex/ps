@@ -53,16 +53,28 @@ export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <GoalReportsNode
-          projectId={projectId}
-          subprojectId={subprojectId}
-          goalId={nav.id}
-        />
+        <>
+          <Node
+            label="Goal"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'goal'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'goal'])}
+            to={`${ownUrl}/goal`}
+          />
+          <GoalReportsNode
+            projectId={projectId}
+            subprojectId={subprojectId}
+            goalId={nav.id}
+          />
+        </>
       )}
     </>
   )

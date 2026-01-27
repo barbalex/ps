@@ -53,6 +53,7 @@ import { SubprojectHistoriesFetcher } from './SubprojectHistoriesFetcher.tsx'
 import { SubprojectHistoryFetcher } from './SubprojectHistoryFetcher.tsx'
 import { GoalsFetcher } from './GoalsFetcher.tsx'
 import { GoalFetcher } from './GoalFetcher.tsx'
+import { GoalGoalFetcher } from './GoalGoalFetcher.tsx'
 import { GoalReportsFetcher } from './GoalReportsFetcher.tsx'
 import { GoalReportFetcher } from './GoalReportFetcher.tsx'
 import { GoalReportValuesFetcher } from './GoalReportValuesFetcher.tsx'
@@ -424,6 +425,14 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useGoalNavData': {
       return (
         <GoalFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useGoalGoalNavData': {
+      return (
+        <GoalGoalFetcher
           params={params}
           {...other}
         />

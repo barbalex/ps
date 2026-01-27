@@ -6,6 +6,9 @@ export const Route = createFileRoute(
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal',
 )({
   component: RouteComponent,
+  beforeLoad: () => ({
+    navDataFetcher: 'useGoalGoalNavData',
+  }),
 })
 
 function RouteComponent() {
