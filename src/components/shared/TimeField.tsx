@@ -1,5 +1,5 @@
 import { Field } from '@fluentui/react-components'
-import { TimePicker } from '@fluentui/react-timepicker-compat-preview'
+import { TimePicker } from '@fluentui/react-timepicker-compat'
 import dayjs from 'dayjs'
 // import { format } from "@formkit/tempo"
 import styles from './TimeField.module.css'
