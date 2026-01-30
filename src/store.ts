@@ -403,3 +403,15 @@ export const addNotificationAtom = atom(
 
 // begins true, is set to false after initialization (or it's not needed)
 export const sqlInitializingAtom = atom(true)
+
+export const setSqlInitializingFalseAfterTimeoutAtom = atom(
+  null,
+  (get, set) => {
+    setTimeout(() => {
+      console.log(
+        'SqlInitializer: setting sqlInitializingAtom to false after timeout',
+      )
+      set(sqlInitializingAtom, false)
+    }, 200)
+  },
+)

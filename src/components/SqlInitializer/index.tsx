@@ -3,11 +3,17 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { seedTestData } from './seedTestData.ts'
-import { sqlInitializingAtom } from '../../store.ts'
+import {
+  sqlInitializingAtom,
+  setSqlInitializingFalseAfterTimeoutAtom,
+} from '../../store.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
   const setInitializing = useSetAtom(sqlInitializingAtom)
+  const setSqlInitializingFalseAfterTimeout = useSetAtom(
+    setSqlInitializingFalseAfterTimeoutAtom,
+  )
 
   useEffect(() => {
     const run = async () => {
@@ -23,7 +29,7 @@ export const SqlInitializer = () => {
 
       const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
 
-      if (projectsTableExists) return setInitializing(false)
+      if (projectsTableExists) return setSqlInitializingFalseAfterTimeout()
 
       // create functions, tables and triggers
 
@@ -53,11 +59,11 @@ export const SqlInitializer = () => {
         console.error('SqlInitializer, error creating triggers:', error)
       }
       await seedTestData(db)
-      setInitializing(false)
+      setSqlInitializingFalseAfterTimeout(false)
     }
 
     run()
-  }, [db, setInitializing])
+  }, [db, setInitializing, setSqlInitializingFalseAfterTimeout])
 
   return null
 }
