@@ -19,7 +19,10 @@ export const MapContainer = () => {
   const isNarrow = containerWidth < 700
 
   return (
-    <div className={styles.container} ref={containerRef}>
+    <div
+      className={styles.container}
+      ref={containerRef}
+    >
       <LeftMenuDrawer isNarrow={isNarrow} />
       <Map />
       <RightMenuDrawer isNarrow={isNarrow} />

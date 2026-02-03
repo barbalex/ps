@@ -363,6 +363,12 @@ html {
   flex-direction: column;
 }
 
+.allotment-map {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 /* puck */
 .Puck {
   height: 100%;
