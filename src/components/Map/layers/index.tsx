@@ -12,6 +12,12 @@ export const Layers = () => {
 
   useEffect(() => {
     const run = async () => {
+      // if mapLayerSorting is empty, add osm layer
+      if (!mapLayerSorting.length) {
+        setMapLayerSorting(['aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'])
+        return
+      }
+
       const res = await db.query(
         `SELECT COUNT(wms_layer_id) FROM layer_presentations where layer_presentation_id = ANY($1)`,
         [mapLayerSorting],
