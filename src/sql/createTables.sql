@@ -58,7 +58,8 @@ create table if not exists project_types (
 
 create index if not exists project_types_sort_idx on project_types using btree(sort);
 
-insert into project_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin');
+insert into project_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin')
+on conflict ("type") do nothing;
 
 -- TODO: add crs for presentation
 -- TODO: add geometry
