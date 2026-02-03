@@ -1174,9 +1174,26 @@ export const createVectorLayer = async ({
   maxFeatures = 1000,
 }) => {
   const db = store.get(pgliteDbAtom)
+
+  // First check if vector_layer already exists (e.g., from sync)
+  const existing = await db.query(
+    `select * from vector_layers 
+     where project_id = $1 and label = $2`,
+    [projectId, label],
+  )
+
+  if (existing?.rows?.[0]) {
+    // Return existing record without queuing operation
+    return existing.rows[0]
+  }
+
+  // Create new vector_layer
   const vector_layer_id = uuidv7()
   const res = await db.query(
-    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) values ($1, $2, $3, $4, $5, $6, $7) returning *`,
+    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) 
+     values ($1, $2, $3, $4, $5, $6, $7) 
+     on conflict do nothing
+     returning *`,
     [
       vector_layer_id,
       projectId,
