@@ -85,6 +85,7 @@ export const TableLayersProvider = () => {
             ownTable: 'places',
             ownTableLevel: 1,
             label: placeLevel1?.name_plural ?? 'Places',
+            skipOperationQueue: true,
           })
           console.info(
             'TableLayersProvider created new places 1 vector layer:',
@@ -141,6 +142,7 @@ export const TableLayersProvider = () => {
               placeLevel1?.name_singular ?
                 `${placeLevel1.name_singular} Actions`
               : 'Actions',
+            skipOperationQueue: true,
           })
         }
 
@@ -193,6 +195,7 @@ export const TableLayersProvider = () => {
               placeLevel1?.name_singular ?
                 `${placeLevel1.name_singular} Checks`
               : 'Checks',
+            skipOperationQueue: true,
           })
         }
 
@@ -247,6 +250,7 @@ export const TableLayersProvider = () => {
                 placeLevel1?.name_singular ?
                   `${placeLevel1.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
+              skipOperationQueue: true,
             })
           }
 
@@ -298,6 +302,7 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'occurrences_to_assess',
               label: 'Occurrences To Assess',
+              skipOperationQueue: true,
             })
           }
 
@@ -349,6 +354,7 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'occurrences_not_to_assign',
               label: 'Occurrences Not To Assign',
+              skipOperationQueue: true,
             })
           }
 
@@ -402,6 +408,7 @@ export const TableLayersProvider = () => {
               ownTable: 'places',
               ownTableLevel: 2,
               label: placeLevel2?.name_plural ?? 'Places',
+              skipOperationQueue: true,
             })
           }
 
@@ -456,6 +463,7 @@ export const TableLayersProvider = () => {
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Actions`
                 : 'Actions',
+              skipOperationQueue: true,
             })
           }
 
@@ -510,6 +518,7 @@ export const TableLayersProvider = () => {
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Checks`
                 : 'Checks',
+              skipOperationQueue: true,
             })
           }
 
@@ -564,6 +573,7 @@ export const TableLayersProvider = () => {
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
+              skipOperationQueue: true,
             })
           }
 

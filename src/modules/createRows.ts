@@ -1172,6 +1172,7 @@ export const createVectorLayer = async ({
   ownTableLevel = null,
   label = null,
   maxFeatures = 1000,
+  skipOperationQueue = false, // system-managed layers shouldn't sync back to server
 }) => {
   const db = store.get(pgliteDbAtom)
 
@@ -1187,12 +1188,11 @@ export const createVectorLayer = async ({
     return existing.rows[0]
   }
 
-  // Create new vector_layer
+  // Create new vector_layer locally
   const vector_layer_id = uuidv7()
   const res = await db.query(
     `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) 
      values ($1, $2, $3, $4, $5, $6, $7) 
-     on conflict do nothing
      returning *`,
     [
       vector_layer_id,
@@ -1205,19 +1205,22 @@ export const createVectorLayer = async ({
     ],
   )
 
-  store.set(addOperationAtom, {
-    table: 'vector_layers',
-    operation: 'insert',
-    draft: {
-      vector_layer_id,
-      project_id: projectId,
-      label,
-      type,
-      own_table: ownTable,
-      own_table_level: ownTableLevel,
-      max_features: maxFeatures,
-    },
-  })
+  // Only queue operation if this is a user-created layer (not system-managed)
+  if (!skipOperationQueue) {
+    store.set(addOperationAtom, {
+      table: 'vector_layers',
+      operation: 'insert',
+      draft: {
+        vector_layer_id,
+        project_id: projectId,
+        label,
+        type,
+        own_table: ownTable,
+        own_table_level: ownTableLevel,
+        max_features: maxFeatures,
+      },
+    })
+  }
 
   return res?.rows?.[0]
 }
