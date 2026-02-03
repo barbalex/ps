@@ -19,14 +19,12 @@ export const Header = ({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const wmsLayer = await createWmsLayer({ projectId })
+    const wmsLayerId = await createWmsLayer({ projectId })
     // also add layer_presentation
-    await createLayerPresentation({
-      wmsLayerId: wmsLayer.wms_layer_id,
-    })
+    await createLayerPresentation({ wmsLayerId })
     navigate({
-      to: `../${wmsLayer.wms_layer_id}`,
-      params: (prev) => ({ ...prev, wmsLayerId: wmsLayer.wms_layer_id }),
+      to: `../${wmsLayerId}`,
+      params: (prev) => ({ ...prev, wmsLayerId }),
     })
     autoFocusRef?.current?.focus()
   }

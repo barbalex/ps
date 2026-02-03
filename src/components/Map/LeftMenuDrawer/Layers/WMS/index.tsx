@@ -56,12 +56,12 @@ export const WmsLayers = () => {
   )
 
   const addRow = async () => {
-    const wmsLayer = await createWmsLayer({ projectId })
+    const wmsLayerId = await createWmsLayer({ projectId })
     // also add layer_presentation
     await createLayerPresentation({
-      wmsLayerId: wmsLayer.wms_layer_id,
+      wmsLayerId,
     })
-    setOpenItems((prev) => [...prev, wmsLayer.wms_layer_id])
+    setOpenItems((prev) => [...prev, wmsLayerId])
   }
 
   const onToggleItem = (event, { value: wmsLayerId, openItems }) => {
@@ -113,7 +113,7 @@ export const WmsLayers = () => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {wms.length ? (
+          {wms.length ?
             wms?.map((l, index) => (
               <WmsLayer
                 key={l.wms_layer_id}
@@ -123,9 +123,7 @@ export const WmsLayers = () => {
                 isOpen={openItems.includes(l.wms_layer_id)}
               />
             ))
-          ) : (
-            <p className={layerStyles.none}>No inactive WMS Layers</p>
-          )}
+          : <p className={layerStyles.none}>No inactive WMS Layers</p>}
           <Button
             size="small"
             icon={<FaPlus />}

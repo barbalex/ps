@@ -1162,7 +1162,7 @@ export const createWmsLayer = async ({ projectId }) => {
     },
   })
 
-  return res?.rows?.[0]
+  return wms_layer_id
 }
 
 export const createVectorLayer = async ({
