@@ -36,8 +36,8 @@ export const VectorLayers = () => {
       vectorLayerId,
     })
     navigate({
-      to: vectorLayerId,
-      params: (prev) => ({ ...prev, vectorLayerId }),
+      to: '/data/projects/$projectId_/vector-layers/$vectorLayerId/vector-layer',
+      params: { projectId, vectorLayerId },
     })
   }
 
@@ -50,15 +50,18 @@ export const VectorLayers = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {navs.map(({ id, label }) => (
-              <Row key={id} to={id} label={label ?? id} />
+              <Row
+                key={id}
+                to={id}
+                label={label ?? id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
