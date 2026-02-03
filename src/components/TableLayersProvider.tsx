@@ -87,10 +87,6 @@ export const TableLayersProvider = () => {
             label: placeLevel1?.name_plural ?? 'Places',
             skipOperationQueue: true,
           })
-          console.info(
-            'TableLayersProvider created new places 1 vector layer:',
-            places1VectorLayer,
-          )
         }
 
         // 1.2 places1VectorLayerDisplay: always needed
