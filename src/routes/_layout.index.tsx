@@ -69,8 +69,8 @@ const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Bring your own device</h3>
-          Promoting Species funktioniert auf jedem Betriebssystem mit modernem
-          Browser: Windows, MacOS, Linux, Android, iOS...
+          Promoting Species funktioniert auf jedem Betriebssystem: Windows,
+          MacOS, Linux, Android, iOS...
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Kein Internet? Egal!</h3>
@@ -95,8 +95,8 @@ const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Teamwork</h3>
-          Da die Daten laufend synchronisiert werden, können mehrere
-          Mitarbeitende effizient gleichzeitig arbeiten.
+          Daten werden laufend synchronisiert. So können mehrere Mitarbeitende
+          effizient gleichzeitig arbeiten.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Zeitmaschine</h3>
@@ -121,6 +121,11 @@ const Index = () => (
           Testen ist gratis.
           <br />
           Mitarbeitende zahlen nicht.
+        </div>
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Open Source</h3>
+          Der Code ist offen. Sie können das Projekt jederzeit einsehen,
+          mitgestalten, kopieren und selber weiter entwickeln (lassen).
         </div>
       </div>
     </div>
