@@ -1185,7 +1185,7 @@ export const createVectorLayer = async ({
 
   if (existing?.rows?.[0]) {
     // Return existing record without queuing operation
-    return existing.rows[0]
+    return existing.rows[0].vector_layer_id
   }
 
   // Create new vector_layer locally
@@ -1222,7 +1222,7 @@ export const createVectorLayer = async ({
     })
   }
 
-  return res?.rows?.[0]
+  return vector_layer_id
 }
 
 export const createWfsService = async ({

@@ -60,7 +60,7 @@ export const Header = ({
     const place = resPlace.rows?.[0]
 
     // need to create a corresponding vector layer and vector layer display
-    const newVectorLayer = await createVectorLayer({
+    const vectorLayerId = await createVectorLayer({
       projectId,
       type: 'own',
       ownTable: 'places',
@@ -68,7 +68,7 @@ export const Header = ({
       label: namePlural,
     })
     // console.log('Place.Header.addRow', {
-    //   newVectorLayer,
+    //   vectorLayerId,
     //   resVL,
     //   projectId,
     //   placeId2,
@@ -76,18 +76,17 @@ export const Header = ({
     // })
 
     createVectorLayerDisplay({
-      vectorLayerId: newVectorLayer.vector_layer_id,
+      vectorLayerId,
     })
 
     createLayerPresentation({
-      vectorLayerId: newVectorLayer.vector_layer_id,
+      vectorLayerId,
     })
 
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to: isForm
-        ? `../../${place.place_id}/place`
-        : `../${place.place_id}/place`,
+      to:
+        isForm ? `../../${place.place_id}/place` : `../${place.place_id}/place`,
       params: (prev) => ({
         ...prev,
         [idName]: place.place_id,
@@ -98,9 +97,10 @@ export const Header = ({
 
   const deleteRow = async () => {
     try {
-      const prevRes = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
-        placeId2 ?? placeId,
-      ])
+      const prevRes = await db.query(
+        `SELECT * FROM places WHERE place_id = $1`,
+        [placeId2 ?? placeId],
+      )
       const prev = prevRes?.rows?.[0] ?? {}
       await db.query(`DELETE FROM places WHERE place_id = $1`, [
         placeId2 ?? placeId,
@@ -171,8 +171,9 @@ export const Header = ({
       const previous = placeIds[(index + len - 1) % len]
       const idName = placeId2 ? 'placeId2' : 'placeId'
       navigate({
-        to: isForm
-          ? `../../${previous.place_id}/place`
+        to:
+          isForm ?
+            `../../${previous.place_id}/place`
           : `../${previous.place_id}`,
         params: (prev) => ({
           ...prev,
