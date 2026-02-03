@@ -27,11 +27,6 @@ export const WmsLayers = () => {
     await createLayerPresentation({
       wmsLayerId,
     })
-    console.log('wmsLayer.add', {
-      projectId,
-      wmsLayerId,
-      to: `/data/projects/${projectId}/wms-layers/${wmsLayerId}`,
-    })
     await navigate({
       to: '/data/projects/$projectId_/wms-layers/$wmsLayerId',
       params: { projectId, wmsLayerId },
