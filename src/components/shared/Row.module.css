@@ -1,11 +1,14 @@
 .rowContainer {
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-shrink: 0;
 }
 
 .rowContent {
   display: flex;
   width: 100%;
+  min-height: 50px;
   background-color: white;
   will-change: transform;
 }
