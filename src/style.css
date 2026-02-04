@@ -19,11 +19,11 @@ body {
 even when other elements in between (header, tabs...)
 https://stackoverflow.com/a/21541021/712005 */
 .form-outer-container {
-  height: 100%;
+  flex: 1;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: min-content;
+  min-height: 0;
   user-select: none;
 }
 
