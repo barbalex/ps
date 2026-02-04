@@ -7,6 +7,7 @@ import {
   PrintRegular,
   ArrowLeftRegular,
 } from '@fluentui/react-icons'
+import { useRef, useEffect } from 'react'
 
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -22,8 +23,15 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const db = usePGlite()
 
+  // Keep a ref to the current subprojectReportId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const subprojectReportIdRef = useRef(subprojectReportId)
+  useEffect(() => {
+    subprojectReportIdRef.current = subprojectReportId
+  }, [subprojectReportId])
+
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM subproject_reports WHERE project_id = '${projectId}'`,
+    `SELECT COUNT(*) as count FROM subproject_reports WHERE subproject_id = '${subprojectId}'`,
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
@@ -88,13 +96,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT subproject_report_id FROM subproject_reports WHERE project_id = $1 ORDER BY label`,
-        [projectId],
+        `SELECT subproject_report_id FROM subproject_reports WHERE subproject_id = $1 ORDER BY label`,
+        [subprojectId],
       )
       const subprojectReports = res?.rows
       const len = subprojectReports.length
       const index = subprojectReports.findIndex(
-        (p) => p.subproject_report_id === subprojectReportId,
+        (p) => p.subproject_report_id === subprojectReportIdRef.current,
       )
       const next = subprojectReports[(index + 1) % len]
       navigate({
@@ -112,13 +120,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT subproject_report_id FROM subproject_reports WHERE project_id = $1 ORDER BY label`,
-        [projectId],
+        `SELECT subproject_report_id FROM subproject_reports WHERE subproject_id = $1 ORDER BY label`,
+        [subprojectId],
       )
       const subprojectReports = res?.rows
       const len = subprojectReports.length
       const index = subprojectReports.findIndex(
-        (p) => p.subproject_report_id === subprojectReportId,
+        (p) => p.subproject_report_id === subprojectReportIdRef.current,
       )
       const previous = subprojectReports[(index + len - 1) % len]
       navigate({

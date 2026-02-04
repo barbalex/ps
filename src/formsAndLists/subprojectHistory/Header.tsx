@@ -4,6 +4,7 @@ import { useSetAtom } from 'jotai'
 import { FaCopy } from 'react-icons/fa'
 import { Button, Tooltip } from '@fluentui/react-components'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useRef, useEffect } from 'react'
 
 import { createSubprojectHistory } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -15,6 +16,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current subprojectHistoryId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const subprojectHistoryIdRef = useRef(subprojectHistoryId)
+  useEffect(() => {
+    subprojectHistoryIdRef.current = subprojectHistoryId
+  }, [subprojectHistoryId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM subproject_histories WHERE subproject_id = '${subprojectId}'`,
@@ -109,13 +117,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT subproject_history_id FROM subproject_histories WHERE subproject_id = $1 ORDER BY year`,
+        `SELECT subproject_history_id FROM subproject_histories WHERE subproject_id = $1 ORDER BY year DESC`,
         [subprojectId],
       )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.subproject_history_id === subprojectHistoryId,
+        (p) => p.subproject_history_id === subprojectHistoryIdRef.current,
       )
       const next = rows[(index + 1) % len]
       navigate({
@@ -129,13 +137,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT subproject_history_id FROM subproject_histories WHERE subproject_id = $1 ORDER BY year`,
+        `SELECT subproject_history_id FROM subproject_histories WHERE subproject_id = $1 ORDER BY year DESC`,
         [subprojectId],
       )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.subproject_history_id === subprojectHistoryId,
+        (p) => p.subproject_history_id === subprojectHistoryIdRef.current,
       )
       const previous = rows[(index + len - 1) % len]
       navigate({
