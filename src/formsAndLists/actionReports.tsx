@@ -33,17 +33,22 @@ export const ActionReports = ({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row key={id} label={label} to={id} />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              label={label}
+              to={id}
+            />
+          ))
+        }
       </div>
     </div>
   )

@@ -53,28 +53,25 @@ export const Files = ({
         <Uploader />
         {loading ?
           <Loading />
-        : <>
-            {navs.map(({ id, label, url, mimetype }) => {
-              let imgSrc = undefined
-              if (
-                (mimetype?.includes?.('image') ||
-                  mimetype?.includes?.('pdf')) &&
-                url
-              ) {
-                imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
-              }
+        : navs.map(({ id, label, url, mimetype }) => {
+            let imgSrc = undefined
+            if (
+              (mimetype?.includes?.('image') || mimetype?.includes?.('pdf')) &&
+              url
+            ) {
+              imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
+            }
 
-              return (
-                <Row
-                  key={id}
-                  label={label ?? id}
-                  to={id}
-                  imgSrc={imgSrc}
-                  lastHasImages={true}
-                />
-              )
-            })}
-          </>
+            return (
+              <Row
+                key={id}
+                label={label ?? id}
+                to={id}
+                imgSrc={imgSrc}
+                lastHasImages={true}
+              />
+            )
+          })
         }
       </div>
     </div>

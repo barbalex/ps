@@ -32,15 +32,16 @@ export const FieldTypes = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row key={id} label={label ?? id} to={id} />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              label={label ?? id}
+              to={id}
+            />
+          ))
+        }
       </div>
     </div>
   )

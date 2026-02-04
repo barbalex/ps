@@ -38,11 +38,9 @@ export const ProjectCrss = () => {
         {loading ? (
           <Loading />
         ) : (
-          <>
-            {navs.map((nav) => (
-              <Row key={nav.id} to={nav.id} label={nav.label ?? nav.id} />
-            ))}
-          </>
+          navs.map((nav) => (
+            <Row key={nav.id} to={nav.id} label={nav.label ?? nav.id} />
+          ))
         )}
       </div>
     </div>

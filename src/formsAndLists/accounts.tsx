@@ -23,17 +23,22 @@ export const Accounts = () => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row key={id} label={label ?? id} to={`/data/accounts/${id}`} />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              label={label ?? id}
+              to={`/data/accounts/${id}`}
+            />
+          ))
+        }
       </div>
     </div>
   )

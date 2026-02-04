@@ -64,22 +64,23 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-                onClick={calledFromMapDrawer ? () => onClickRow(id) : undefined}
-              />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              to={id}
+              label={label ?? id}
+              onClick={calledFromMapDrawer ? () => onClickRow(id) : undefined}
+            />
+          ))
+        }
       </div>
     </div>
   )

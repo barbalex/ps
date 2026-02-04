@@ -27,21 +27,22 @@ export const ListValues = () => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ list_value_id, label }) => (
-              <Row
-                key={list_value_id}
-                to={list_value_id}
-                label={label ?? list_value_id}
-              />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              to={id}
+              label={label ?? id}
+            />
+          ))
+        }
       </div>
     </div>
   )

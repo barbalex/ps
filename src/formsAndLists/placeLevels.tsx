@@ -36,15 +36,13 @@ export const PlaceLevels = () => {
       <div className="list-container">
         {loading ?
           <Loading />
-        : <>
-            {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                to={id}
-                label={label ?? id}
-              />
-            ))}
-          </>
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              to={id}
+              label={label ?? id}
+            />
+          ))
         }
       </div>
     </div>

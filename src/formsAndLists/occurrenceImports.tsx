@@ -35,17 +35,22 @@ export const OccurrenceImports = () => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row key={id} label={label ?? id} to={id} />
-            ))}
-          </>
-        )}
+        : navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              label={label ?? id}
+              to={id}
+            />
+          ))
+        }
       </div>
     </div>
   )

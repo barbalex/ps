@@ -38,15 +38,13 @@ export const Subprojects = () => {
         {loading ? (
           <Loading />
         ) : (
-          <>
-            {navs.map(({ id, label }) => (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={`/data/projects/${projectId}/subprojects/${id}`}
-              />
-            ))}
-          </>
+          navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              label={label ?? id}
+              to={`/data/projects/${projectId}/subprojects/${id}`}
+            />
+          ))
         )}
       </div>
     </div>

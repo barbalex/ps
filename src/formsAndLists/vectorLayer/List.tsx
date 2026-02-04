@@ -32,15 +32,13 @@ export const VectorLayerList = ({ from }) => {
       <div className="list-container">
         {loading ?
           <Loading />
-        : <>
-            {navs.map((nav) => (
-              <Row
-                key={nav.id}
-                label={nav.label}
-                to={nav.id}
-              />
-            ))}
-          </>
+        : navs.map((nav) => (
+            <Row
+              key={nav.id}
+              label={nav.label}
+              to={nav.id}
+            />
+          ))
         }
       </div>
     </div>
