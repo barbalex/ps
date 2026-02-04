@@ -2,10 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import {
-  createWmsLayer,
-  createLayerPresentation,
-} from '../../modules/createRows.ts'
+import { createWmsLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
@@ -20,8 +17,6 @@ export const Header = ({ autoFocusRef }) => {
 
   const addRow = async () => {
     const wmsLayerId = await createWmsLayer({ projectId })
-    // also add layer_presentation
-    await createLayerPresentation({ wmsLayerId })
     navigate({
       to: `../${wmsLayerId}`,
       params: (prev) => ({ ...prev, wmsLayerId }),

@@ -1,9 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
-import {
-  createWmsLayer,
-  createLayerPresentation,
-} from '../modules/createRows.ts'
+import { createWmsLayer } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
@@ -23,10 +20,6 @@ export const WmsLayers = () => {
   const add = async () => {
     const wmsLayerId = await createWmsLayer({ projectId })
     if (!wmsLayerId) return
-    // also add layer_presentation
-    await createLayerPresentation({
-      wmsLayerId,
-    })
     await navigate({
       to: '/data/projects/$projectId_/wms-layers/$wmsLayerId',
       params: { projectId, wmsLayerId },

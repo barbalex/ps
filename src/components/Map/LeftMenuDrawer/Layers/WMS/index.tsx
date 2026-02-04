@@ -6,10 +6,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { WmsLayer } from './WmsLayer.tsx'
-import {
-  createWmsLayer,
-  createLayerPresentation,
-} from '../../../../../modules/createRows.ts'
+import { createWmsLayer } from '../../../../../modules/createRows.ts'
 import layerStyles from '../index.module.css'
 import type WMSLayers from '../../../../models/public/WMSLayers.ts'
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
@@ -57,10 +54,6 @@ export const WmsLayers = () => {
 
   const addRow = async () => {
     const wmsLayerId = await createWmsLayer({ projectId })
-    // also add layer_presentation
-    await createLayerPresentation({
-      wmsLayerId,
-    })
     setOpenItems((prev) => [...prev, wmsLayerId])
   }
 
