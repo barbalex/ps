@@ -245,9 +245,9 @@ export const TableLayersProvider = () => {
 
         // 8.1 actions2 needed if placeLevels2.actions exists
         if (placeLevel2?.actions) {
-          const actions2VectorLayers = await db.query(
+          const actions2VectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -257,10 +257,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let actions2VectorLayerId: string | undefined =
-            actions2VectorLayers?.rows?.[0]?.vector_layer_id
-          if (!actions2VectorLayerId) {
-            actions2VectorLayerId = await createVectorLayer({
+          if (actions2VectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'actions',
