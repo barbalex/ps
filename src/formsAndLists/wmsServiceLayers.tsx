@@ -6,9 +6,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useWmsServiceLayersNavData } from '../modules/useWmsServiceLayersNavData.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/wms-services/$wmsServiceId/layers/'
-
-export const WmsServiceLayers = () => {
+export const WmsServiceLayers = ({ from = '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/' }) => {
   const { projectId, wmsServiceId } = useParams({ from })
 
   const { loading, navData } = useWmsServiceLayersNavData({ projectId, wmsServiceId })

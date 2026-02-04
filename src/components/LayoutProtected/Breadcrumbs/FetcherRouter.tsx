@@ -13,6 +13,7 @@ import { PersonsFetcher } from './PersonsFetcher.tsx'
 import { PersonFetcher } from './PersonFetcher.tsx'
 import { WmsServicesFetcher } from './WmsServicesFetcher.tsx'
 import { WmsServiceFetcher } from './WmsServiceFetcher.tsx'
+import { WmsServiceWmsServiceFetcher } from './WmsServiceWmsServiceFetcher.tsx'
 import { WmsServiceLayersFetcher } from './WmsServiceLayersFetcher.tsx'
 import { WmsServiceLayerFetcher } from './WmsServiceLayerFetcher.tsx'
 import { WmsLayersFetcher } from './WmsLayersFetcher.tsx'
@@ -958,6 +959,15 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       if (!params.projectId || !params.wmsServiceId) return null
       return (
         <WmsServiceFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsServiceWmsServiceNavData': {
+      if (!params.projectId || !params.wmsServiceId) return null
+      return (
+        <WmsServiceWmsServiceFetcher
           params={params}
           {...other}
         />

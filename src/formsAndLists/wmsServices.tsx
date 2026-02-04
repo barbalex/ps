@@ -1,5 +1,6 @@
-import { useParams } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 
+import { createWmsService } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -10,15 +11,26 @@ const from = '/data/projects/$projectId_/wms-services/'
 
 export const WmsServices = () => {
   const { projectId } = useParams({ from })
+  const navigate = useNavigate()
 
   const { loading, navData } = useWmsServicesNavData({ projectId })
   const { navs, label } = navData
+
+  const add = async () => {
+    const id = await createWmsService({ projectId })
+    if (!id) return
+    navigate({
+      to: `${id}/wms-service`,
+      params: (prev) => ({ ...prev, wmsServiceId: id }),
+    })
+  }
 
   return (
     <div className="list-view">
       <ListHeader
         label={label}
         nameSingular="WMS Service"
+        addRow={add}
       />
       <div className="list-container">
         {loading ?
