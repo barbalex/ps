@@ -1,6 +1,6 @@
-import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
+import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -20,6 +20,9 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+
+  const countRes = useLiveQuery(`SELECT COUNT(*) as count FROM projects`)
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const db = usePGlite()
 
@@ -103,6 +106,8 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="project"
       siblings={<DesigningButton from={from} />}
     />

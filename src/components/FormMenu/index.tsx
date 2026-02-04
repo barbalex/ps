@@ -9,6 +9,8 @@ export const FormMenu = ({
   deleteRow,
   toNext,
   toPrevious,
+  toNextDisabled,
+  toPreviousDisabled,
   tableName = '',
   siblings,
 }) => (
@@ -20,6 +22,7 @@ export const FormMenu = ({
           size="medium"
           icon={<FaChevronLeft />}
           onClick={toPrevious}
+          disabled={toPreviousDisabled}
         />
       </Tooltip>
     )}
@@ -44,6 +47,7 @@ export const FormMenu = ({
           size="medium"
           icon={<FaChevronRight />}
           onClick={toNext}
+          disabled={toNextDisabled}
         />
       </Tooltip>
     )}
