@@ -94,6 +94,7 @@ export const FetchWmsCapabilities = ({
         operation: 'update',
         draft: { wms_service_id },
       })
+      service = { wms_service_id, url: urlTrimmed }
     }
 
     // show loading indicator
@@ -145,9 +146,9 @@ export const FetchWmsCapabilities = ({
       className={styles.button}
       disabled={!url}
     >
-      {fetching
-        ? `Loading Capabilities (${wmsServiceLayersCount})`
-        : `Fetch Capabilities`}
+      {fetching ?
+        `Loading Capabilities (${wmsServiceLayersCount})`
+      : `Fetch Capabilities`}
     </Button>
   )
 }
