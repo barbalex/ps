@@ -9,6 +9,8 @@ import {
   addNotificationAtom,
   updateNotificationAtom,
   postgrestClientAtom,
+  operationsQueueAtom,
+  store,
 } from '../../../../store.ts'
 import styles from './FetchWmsCapabilities.module.css'
 
@@ -76,7 +78,31 @@ export const FetchWmsCapabilities = ({
           },
           prev: service,
         })
-        // Remove existing layers - delete from server first, then from PGlite
+        // Remove existing layers - first remove ANY pending operations for this service's layers
+        // Get the layer IDs that currently exist
+        const layersToDelete = await db.query(
+          `SELECT wms_service_layer_id FROM wms_service_layers WHERE wms_service_id = $1`,
+          [service.wms_service_id],
+        )
+        const layerIds = layersToDelete.rows.map(row => row.wms_service_layer_id)
+        
+        // Remove ALL operations for wms_service_layers that reference this service
+        // This includes operations for layers that might not exist anymore
+        const operations = store.get(operationsQueueAtom)
+        const filteredOperations = operations.filter(op => {
+          if (op.table !== 'wms_service_layers') return true
+          // Remove insertMany operations for this table entirely
+          if (op.operation === 'insertMany') return false
+          // Remove if it references one of the existing layers
+          if (layerIds.includes(op.rowId)) return false
+          // Also remove if the draft references this service
+          if (op.draft?.wms_service_id === service.wms_service_id) return false
+          return true
+        })
+        const removedCount = operations.length - filteredOperations.length
+        console.log(`Removed ${removedCount} pending operations for layers of service ${service.wms_service_id}`)
+        store.set(operationsQueueAtom, filteredOperations)
+        
         if (postgrestClient) {
           const { error: serverDeleteError } = await postgrestClient
             .from('wms_service_layers')
@@ -106,7 +132,30 @@ export const FetchWmsCapabilities = ({
       if (existingService) {
         // 2. if so, update it
         service = { ...existingService }
-        // and remove its layers - delete from server first, then from PGlite
+        // and remove its layers - first remove ANY pending operations for this service's layers
+        // Get the layer IDs that currently exist
+        const layersToDelete = await db.query(
+          `SELECT wms_service_layer_id FROM wms_service_layers WHERE wms_service_id = $1`,
+          [service.wms_service_id],
+        )
+        const layerIds = layersToDelete.rows.map(row => row.wms_service_layer_id)
+        
+        // Remove ALL operations for wms_service_layers that reference this service
+        const operations = store.get(operationsQueueAtom)
+        const filteredOperations = operations.filter(op => {
+          if (op.table !== 'wms_service_layers') return true
+          // Remove insertMany operations for this table entirely
+          if (op.operation === 'insertMany') return false
+          // Remove if it references one of the existing layers
+          if (layerIds.includes(op.rowId)) return false
+          // Also remove if the draft references this service
+          if (op.draft?.wms_service_id === service.wms_service_id) return false
+          return true
+        })
+        const removedCount = operations.length - filteredOperations.length
+        console.log(`Removed ${removedCount} pending operations for layers of service ${service.wms_service_id}`)
+        store.set(operationsQueueAtom, filteredOperations)
+        
         if (postgrestClient) {
           const { error: serverDeleteError } = await postgrestClient
             .from('wms_service_layers')
