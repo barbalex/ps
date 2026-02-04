@@ -136,6 +136,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
     case 'useProjectNavData': {
+      if (!params.projectId) return null
       return (
         <ProjectFetcher
           params={params}
@@ -160,6 +161,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
     case 'useSubprojectNavData': {
+      if (!params.subprojectId || !params.projectId) return null
       return (
         <SubprojectFetcher
           params={params}
