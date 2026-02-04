@@ -50,7 +50,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? `../../..` : `../..` })
     } catch (error) {
       console.error(error)
     }

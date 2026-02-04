@@ -20,8 +20,9 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   const addRow = async () => {
     const subprojectId = await createSubproject({ projectId })
     navigate({
-      to: isForm
-        ? `../../${subprojectId}/subproject`
+      to:
+        isForm ?
+          `../../${subprojectId}/subproject`
         : `../${subprojectId}/subproject`,
       params: (prev) => ({
         ...prev,
@@ -38,7 +39,9 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         [subprojectId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [subprojectId])
+      await db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [
+        subprojectId,
+      ])
       addOperation({
         table: 'subprojects',
         rowIdName: 'subproject_id',
@@ -46,7 +49,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? `../../..` : `../..` })
     } catch (error) {
       console.error('Error deleting subproject:', error)
       // Could add a toast notification here
@@ -64,8 +67,9 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
       const index = rows.findIndex((p) => p.subproject_id === subprojectId)
       const next = rows[(index + 1) % len]
       navigate({
-        to: isForm
-          ? `../../${next.subproject_id}/subproject`
+        to:
+          isForm ?
+            `../../${next.subproject_id}/subproject`
           : `../${next.subproject_id}`,
         params: (prev) => ({
           ...prev,
@@ -88,8 +92,9 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
       const index = rows.findIndex((p) => p.subproject_id === subprojectId)
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.subproject_id}/subproject`
+        to:
+          isForm ?
+            `../../${previous.subproject_id}/subproject`
           : `../${previous.subproject_id}`,
         params: (prev) => ({
           ...prev,
