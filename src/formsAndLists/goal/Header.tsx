@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { createGoal } from '../../modules/createRows.ts'
@@ -15,6 +15,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM goals WHERE subproject_id = '${subprojectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createGoal({ projectId, subprojectId })
@@ -76,7 +81,8 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = goals.findIndex((p) => p.goal_id === goalId)
       const previous = goals[(index + len - 1) % len]
       navigate({
-        to: isForm ? `../../${previous.goal_id}/goal` : `../${previous.goal_id}`,
+        to:
+          isForm ? `../../${previous.goal_id}/goal` : `../${previous.goal_id}`,
         params: (prev) => ({ ...prev, goalId: previous.goal_id }),
       })
     } catch (error) {
@@ -91,6 +97,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="goal"
     />
   )

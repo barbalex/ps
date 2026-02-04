@@ -36,6 +36,11 @@ export const Header = ({
   }[] = res?.rows ?? []
   const vectorLayerId = vectorLayerDisplays?.[0]?.vector_layer_id
 
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM vector_layer_displays WHERE vector_layer_id = '${vectorLayerId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
+
   const navigate = useNavigate()
 
   const addRow = async () => {
@@ -152,6 +157,8 @@ export const Header = ({
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="vector layer display"
     />
   )

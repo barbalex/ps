@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { FaCopy } from 'react-icons/fa'
 import { Button, Tooltip } from '@fluentui/react-components'
@@ -15,6 +15,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM subproject_histories WHERE subproject_id = '${subprojectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const subprojectHistoryId = await createSubprojectHistory({ subprojectId })
@@ -147,6 +152,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       siblings={
         <Tooltip content="Copy to new history without year">
           <Button

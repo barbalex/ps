@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
@@ -14,6 +14,11 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM project_crs WHERE project_id = '${projectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createProjectCrs({ projectId })
@@ -56,7 +61,9 @@ export const Header = ({ autoFocusRef }) => {
       )
       const projectCrs = res?.rows
       const len = projectCrs.length
-      const index = projectCrs.findIndex((p) => p.project_crs_id === projectCrsId)
+      const index = projectCrs.findIndex(
+        (p) => p.project_crs_id === projectCrsId,
+      )
       const next = projectCrs[(index + 1) % len]
       navigate({
         to: `../${next.project_crs_id}`,
@@ -75,7 +82,9 @@ export const Header = ({ autoFocusRef }) => {
       )
       const projectCrs = res?.rows
       const len = projectCrs.length
-      const index = projectCrs.findIndex((p) => p.project_crs_id === projectCrsId)
+      const index = projectCrs.findIndex(
+        (p) => p.project_crs_id === projectCrsId,
+      )
       const previous = projectCrs[(index + len - 1) % len]
       navigate({
         to: `../${previous.project_crs_id}`,
@@ -93,6 +102,8 @@ export const Header = ({ autoFocusRef }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="project_crs"
     />
   )

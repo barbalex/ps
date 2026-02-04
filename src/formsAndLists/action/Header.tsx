@@ -4,7 +4,7 @@ import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createAction } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -32,6 +32,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM actions WHERE place_id = '${placeId2 ?? placeId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createAction({
@@ -143,6 +148,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="action"
       siblings={
         <Button

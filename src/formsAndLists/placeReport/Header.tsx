@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { createPlaceReport } from '../../modules/createRows.ts'
@@ -19,6 +19,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createPlaceReport({
@@ -72,8 +77,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const next = placeReports[(index + 1) % len]
       navigate({
-        to: isForm
-          ? `../../${next.place_report_id}/report`
+        to:
+          isForm ?
+            `../../${next.place_report_id}/report`
           : `../${next.place_report_id}`,
         params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
       })
@@ -95,8 +101,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = placeReports[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.place_report_id}/report`
+        to:
+          isForm ?
+            `../../${previous.place_report_id}/report`
           : `../${previous.place_report_id}`,
         params: (prev) => ({
           ...prev,
@@ -115,6 +122,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="place report"
     />
   )

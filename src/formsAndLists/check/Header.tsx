@@ -4,7 +4,7 @@ import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createCheck } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -26,6 +26,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM checks WHERE place_id = '${placeId2 ?? placeId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createCheck({
@@ -133,6 +138,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="check"
       siblings={
         <Button

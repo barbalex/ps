@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { Button } from '@fluentui/react-components'
 import {
@@ -21,6 +21,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM subproject_reports WHERE project_id = '${projectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const isPrintView = location.pathname.endsWith('/print')
 
@@ -157,6 +162,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="subproject report"
       siblings={siblings}
     />

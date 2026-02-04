@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -18,6 +18,11 @@ export const Header = ({ autoFocusRef }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM chart_subjects WHERE chart_id = '${chartId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createChartSubject({ chartId })
@@ -88,6 +93,8 @@ export const Header = ({ autoFocusRef }) => {
       deleteRow={designing ? deleteRow : undefined}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="chart subject"
     />
   )

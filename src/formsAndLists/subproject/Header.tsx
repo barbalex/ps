@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { createSubproject } from '../../modules/createRows.ts'
@@ -15,6 +15,11 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM subprojects WHERE project_id = '${projectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const nameSingularLower = nameSingular?.toLowerCase?.()
 
@@ -114,6 +119,8 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName={nameSingularLower}
     />
   )

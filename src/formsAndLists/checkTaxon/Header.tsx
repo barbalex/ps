@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { createCheckTaxon } from '../../modules/createRows.ts'
@@ -12,6 +12,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM check_taxa WHERE check_id = '${checkId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createCheckTaxon({ checkId })
@@ -30,7 +35,9 @@ export const Header = ({ autoFocusRef, from }) => {
         [checkTaxonId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query('DELETE FROM check_taxa WHERE check_taxon_id = $1', [checkTaxonId])
+      await db.query('DELETE FROM check_taxa WHERE check_taxon_id = $1', [
+        checkTaxonId,
+      ])
       addOperation({
         table: 'check_taxa',
         rowIdName: 'check_taxon_id',
@@ -52,7 +59,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const checkTaxa = res?.rows
       const len = checkTaxa.length
-      const index = checkTaxa.findIndex((p) => p.check_taxon_id === checkTaxonId)
+      const index = checkTaxa.findIndex(
+        (p) => p.check_taxon_id === checkTaxonId,
+      )
       const next = checkTaxa[(index + 1) % len]
       navigate({
         to: `../${next.check_taxon_id}`,
@@ -71,7 +80,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const checkTaxa = res?.rows
       const len = checkTaxa.length
-      const index = checkTaxa.findIndex((p) => p.check_taxon_id === checkTaxonId)
+      const index = checkTaxa.findIndex(
+        (p) => p.check_taxon_id === checkTaxonId,
+      )
       const previous = checkTaxa[(index + len - 1) % len]
       navigate({
         to: `../${previous.check_taxon_id}`,
@@ -89,6 +100,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="check taxon"
     />
   )

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { createFieldType } from '../../modules/createRows.ts'
@@ -15,6 +15,9 @@ export const Header = ({ autoFocusRef }) => {
 
   const db = usePGlite()
 
+  const countRes = useLiveQuery('SELECT COUNT(*) as count FROM field_types')
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
+
   const addRow = async () => {
     const id = await createFieldType()
     navigate({ to: `../${id}` })
@@ -28,7 +31,9 @@ export const Header = ({ autoFocusRef }) => {
         [fieldTypeId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      db.query(`DELETE FROM field_types WHERE field_type_id = $1`, [fieldTypeId])
+      db.query(`DELETE FROM field_types WHERE field_type_id = $1`, [
+        fieldTypeId,
+      ])
       addOperation({
         table: 'field_types',
         rowIdName: 'field_type_id',
@@ -85,6 +90,8 @@ export const Header = ({ autoFocusRef }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="field type"
     />
   )

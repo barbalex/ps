@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createSubprojectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +12,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM subproject_report_designs WHERE subproject_id = '${subprojectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const subproject_report_design_id = await createSubprojectReportDesign({
@@ -105,6 +110,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
     />
   )
 }

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -39,13 +39,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const db = usePGlite()
 
   const addRow = async () => {
-    const idToAdd = placeId2
-      ? { placeId: placeId2 }
-      : placeId
-        ? { placeId }
-        : subprojectId
-          ? { subprojectId }
-          : { projectId }
+    const idToAdd =
+      placeId2 ? { placeId: placeId2 }
+      : placeId ? { placeId }
+      : subprojectId ? { subprojectId }
+      : { projectId }
     const chart_id = await createChart(idToAdd)
     navigate({
       to: isForm ? `../../${chart_id}/chart` : `../${chart_id}/chart`,
@@ -77,6 +75,11 @@ export const Header = ({ autoFocusRef, from }) => {
     subprojectId,
   })
 
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM charts WHERE ${filterField} = '${filterValue}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
+
   const toNext = async () => {
     const res = await db.query(
       `select chart_id from charts where ${filterField} = $1 order by label`,
@@ -102,9 +105,8 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = rows.findIndex((p) => p.chart_id === chartId)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to: isForm
-        ? `../../${previous.chart_id}/chart`
-        : `../${previous.chart_id}`,
+      to:
+        isForm ? `../../${previous.chart_id}/chart` : `../${previous.chart_id}`,
       params: (prev) => ({ ...prev, chartId: previous.chart_id }),
     })
   }
@@ -116,6 +118,8 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={designing ? deleteRow : undefined}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName="chart"
     />
   )
