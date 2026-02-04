@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createPlaceReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current placeReportValueId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const placeReportValueIdRef = useRef(placeReportValueId)
+  useEffect(() => {
+    placeReportValueIdRef.current = placeReportValueId
+  }, [placeReportValueId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM place_report_values WHERE place_report_id = '${placeReportId}'`,
@@ -64,7 +72,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.place_report_value_id === placeReportValueId,
+        (p) => p.place_report_value_id === placeReportValueIdRef.current,
       )
       const next = rows[(index + 1) % len]
       navigate({
@@ -88,7 +96,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.place_report_value_id === placeReportValueId,
+        (p) => p.place_report_value_id === placeReportValueIdRef.current,
       )
       const previous = rows[(index + len - 1) % len]
       navigate({
