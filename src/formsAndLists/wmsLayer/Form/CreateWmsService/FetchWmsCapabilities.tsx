@@ -84,12 +84,14 @@ export const FetchWmsCapabilities = ({
           `SELECT wms_service_layer_id FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
-        const layerIds = layersToDelete.rows.map(row => row.wms_service_layer_id)
-        
+        const layerIds = layersToDelete.rows.map(
+          (row) => row.wms_service_layer_id,
+        )
+
         // Remove ALL operations for wms_service_layers that reference this service
         // This includes operations for layers that might not exist anymore
         const operations = store.get(operationsQueueAtom)
-        const filteredOperations = operations.filter(op => {
+        const filteredOperations = operations.filter((op) => {
           if (op.table !== 'wms_service_layers') return true
           // Remove insertMany operations for this table entirely
           if (op.operation === 'insertMany') return false
@@ -100,21 +102,26 @@ export const FetchWmsCapabilities = ({
           return true
         })
         const removedCount = operations.length - filteredOperations.length
-        console.log(`Removed ${removedCount} pending operations for layers of service ${service.wms_service_id}`)
+        console.log(
+          `Removed ${removedCount} pending operations for layers of service ${service.wms_service_id}`,
+        )
         store.set(operationsQueueAtom, filteredOperations)
-        
+
         if (postgrestClient) {
           const { error: serverDeleteError } = await postgrestClient
             .from('wms_service_layers')
             .delete()
             .eq('wms_service_id', service.wms_service_id)
-          
+
           if (serverDeleteError) {
-            console.error('Error deleting layers from server:', serverDeleteError)
+            console.error(
+              'Error deleting layers from server:',
+              serverDeleteError,
+            )
             throw serverDeleteError
           }
         }
-        
+
         await db.query(
           `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
@@ -124,9 +131,10 @@ export const FetchWmsCapabilities = ({
       }
     } else {
       // 1. check if wms_service exists for this url
-      const resES = await db.query(`SELECT * FROM wms_services WHERE url = $1`, [
-        urlTrimmed,
-      ])
+      const resES = await db.query(
+        `SELECT * FROM wms_services WHERE url = $1`,
+        [urlTrimmed],
+      )
       const existingService = resES.rows?.[0]
 
       if (existingService) {
@@ -138,11 +146,13 @@ export const FetchWmsCapabilities = ({
           `SELECT wms_service_layer_id FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
-        const layerIds = layersToDelete.rows.map(row => row.wms_service_layer_id)
-        
+        const layerIds = layersToDelete.rows.map(
+          (row) => row.wms_service_layer_id,
+        )
+
         // Remove ALL operations for wms_service_layers that reference this service
         const operations = store.get(operationsQueueAtom)
-        const filteredOperations = operations.filter(op => {
+        const filteredOperations = operations.filter((op) => {
           if (op.table !== 'wms_service_layers') return true
           // Remove insertMany operations for this table entirely
           if (op.operation === 'insertMany') return false
@@ -153,28 +163,33 @@ export const FetchWmsCapabilities = ({
           return true
         })
         const removedCount = operations.length - filteredOperations.length
-        console.log(`Removed ${removedCount} pending operations for layers of service ${service.wms_service_id}`)
+        console.log(
+          `Removed ${removedCount} pending operations for layers of service ${service.wms_service_id}`,
+        )
         store.set(operationsQueueAtom, filteredOperations)
-        
+
         if (postgrestClient) {
           const { error: serverDeleteError } = await postgrestClient
             .from('wms_service_layers')
             .delete()
             .eq('wms_service_id', service.wms_service_id)
-          
+
           if (serverDeleteError) {
-            console.error('Error deleting layers from server:', serverDeleteError)
+            console.error(
+              'Error deleting layers from server:',
+              serverDeleteError,
+            )
             throw serverDeleteError
           }
         }
-        
+
         await db.query(
           `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
         console.log('Deleted layers from PGlite')
         // Don't add delete operation to queue since we handled server delete directly
-        
+
         // ensure wmsLayer.wms_service_id is set (only if wmsLayer exists)
         if (wmsLayer.wms_layer_id) {
           await db.query(
