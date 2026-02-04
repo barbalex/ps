@@ -9,8 +9,8 @@ export const FormMenu = ({
   deleteRow,
   toNext,
   toPrevious,
-  toNextDisabled,
-  toPreviousDisabled,
+  toNextDisabled = false,
+  toPreviousDisabled = false,
   tableName = '',
   siblings,
 }) => (

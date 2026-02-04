@@ -4,6 +4,7 @@ import { useSetAtom } from 'jotai'
 import { FaCopy } from 'react-icons/fa'
 import { Button, Tooltip } from '@fluentui/react-components'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useRef, useEffect } from 'react'
 
 import { createPlaceHistory } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -17,6 +18,13 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current placeHistoryId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const placeHistoryIdRef = useRef(placeHistoryId)
+  useEffect(() => {
+    placeHistoryIdRef.current = placeHistoryId
+  }, [placeHistoryId])
 
   const addRow = async () => {
     const placeHistoryId = await createPlaceHistory({
@@ -122,10 +130,10 @@ export const Header = ({ autoFocusRef }) => {
       const placeHistories = res?.rows
       const len = placeHistories.length
       const index = placeHistories.findIndex(
-        (p) => p.place_history_id === placeHistoryId,
+        (p) => p.place_history_id === placeHistoryIdRef.current,
       )
-      if (index === -1 || index === len - 1) return
-      const place_history_id = placeHistories[index + 1].place_history_id
+      const next = placeHistories[(index + 1) % len]
+      const place_history_id = next.place_history_id
       navigate({
         to: `../${place_history_id}`,
       })
@@ -147,11 +155,12 @@ export const Header = ({ autoFocusRef }) => {
         [effectivePlaceId],
       )
       const placeHistories = res?.rows
+      const len = placeHistories.length
       const index = placeHistories.findIndex(
-        (p) => p.place_history_id === placeHistoryId,
+        (p) => p.place_history_id === placeHistoryIdRef.current,
       )
-      if (index === -1 || index === 0) return
-      const place_history_id = placeHistories[index - 1].place_history_id
+      const previous = placeHistories[(index + len - 1) % len]
+      const place_history_id = previous.place_history_id
       navigate({
         to: `../${place_history_id}`,
       })
