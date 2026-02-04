@@ -1,4 +1,3 @@
-import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -12,11 +11,8 @@ import {
   operationsQueueAtom,
   store,
 } from '../../../../store.ts'
+import { getWmsCapabilitiesData } from './getWmsCapabilitiesData.ts'
 import styles from './FetchWmsCapabilities.module.css'
-
-const createWorker = createWorkerFactory(
-  () => import('./getWmsCapabilitiesData.ts'),
-)
 
 export const FetchWmsCapabilities = ({
   wmsLayer,
@@ -25,7 +21,6 @@ export const FetchWmsCapabilities = ({
   setFetching,
 }) => {
   const db = usePGlite()
-  const worker = useWorker(createWorker)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const updateNotification = useSetAtom(updateNotificationAtom)
@@ -241,7 +236,7 @@ export const FetchWmsCapabilities = ({
 
     // fetch capabilities
     try {
-      await worker.getWmsCapabilitiesData({
+      await getWmsCapabilitiesData({
         wmsLayer,
         service,
       })

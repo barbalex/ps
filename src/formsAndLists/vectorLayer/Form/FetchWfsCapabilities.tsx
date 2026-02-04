@@ -1,4 +1,3 @@
-import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -9,11 +8,8 @@ import {
   addNotificationAtom,
   updateNotificationAtom,
 } from '../../../store.ts'
+import { getWfsCapabilitiesData } from './getWfsCapabilitiesData.ts'
 import styles from './FetchWfsCapabilities.module.css'
-
-const createWorker = createWorkerFactory(
-  () => import('./getWfsCapabilitiesData.ts'),
-)
 
 export const FetchWfsCapabilities = ({
   vectorLayer,
@@ -22,7 +18,6 @@ export const FetchWfsCapabilities = ({
   setFetching,
 }) => {
   const db = usePGlite()
-  const worker = useWorker(createWorker)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const updateNotification = useSetAtom(updateNotificationAtom)
@@ -103,7 +98,7 @@ export const FetchWfsCapabilities = ({
 
     // fetch capabilities
     try {
-      await worker.getWfsCapabilitiesData({ vectorLayer, service })
+      await getWfsCapabilitiesData({ vectorLayer, service })
     } catch (error) {
       console.error(
         'hello WmsBaseUrl, onBlur, error getting capabilities data:',
@@ -136,9 +131,9 @@ export const FetchWfsCapabilities = ({
       className={styles.button}
       disabled={!url}
     >
-      {fetching
-        ? `Loading Capabilities (${wfsServiceLayersCount})`
-        : `Fetch Capabilities`}
+      {fetching ?
+        `Loading Capabilities (${wfsServiceLayersCount})`
+      : `Fetch Capabilities`}
     </Button>
   )
 }
