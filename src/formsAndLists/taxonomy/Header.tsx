@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createTaxonomy } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -14,6 +15,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current taxonomyId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const taxonomyIdRef = useRef(taxonomyId)
+  useEffect(() => {
+    taxonomyIdRef.current = taxonomyId
+  }, [taxonomyId])
 
   const addRow = async () => {
     const id = await createTaxonomy({ projectId })
@@ -57,7 +65,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const taxonomies = res?.rows
       const len = taxonomies.length
-      const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
+      const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyIdRef.current)
       const next = taxonomies[(index + 1) % len]
       navigate({
         to: isForm
@@ -78,7 +86,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const taxonomies = res?.rows
       const len = taxonomies.length
-      const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyId)
+      const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyIdRef.current)
       const previous = taxonomies[(index + len - 1) % len]
       navigate({
         to: isForm
