@@ -21,7 +21,7 @@ export const Lists = () => {
     const id = await createList({ projectId })
     if (!id) return
     navigate({
-      to: id,
+      to: `${id}/list`,
       params: (prev) => ({ ...prev, listId: id }),
     })
   }
@@ -35,15 +35,18 @@ export const Lists = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {navs.map(({ id, label }) => (
-              <Row key={id} to={id} label={label ?? id} />
+              <Row
+                key={id}
+                to={id}
+                label={label ?? id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
