@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createOccurrenceImport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -26,6 +27,13 @@ export const Header = ({
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current occurrenceImportId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const occurrenceImportIdRef = useRef(occurrenceImportId)
+  useEffect(() => {
+    occurrenceImportIdRef.current = occurrenceImportId
+  }, [occurrenceImportId])
 
   const countRes = useLiveQuery(
     'SELECT COUNT(*) as count FROM occurrence_imports',
@@ -76,7 +84,7 @@ export const Header = ({
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.occurrence_import_id === occurrenceImportId,
+        (p) => p.occurrence_import_id === occurrenceImportIdRef.current,
       )
       const next = rows[(index + 1) % len]
       navigate({
@@ -99,7 +107,7 @@ export const Header = ({
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.occurrence_import_id === occurrenceImportId,
+        (p) => p.occurrence_import_id === occurrenceImportIdRef.current,
       )
       const previous = rows[(index + len - 1) % len]
       navigate({

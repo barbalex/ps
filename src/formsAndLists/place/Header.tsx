@@ -5,6 +5,7 @@ import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createPlace, createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -44,6 +45,13 @@ export const Header = ({
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
   const db = usePGlite()
+
+  // Keep a ref to the current placeId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const placeIdRef = useRef(placeId2 ?? placeId)
+  useEffect(() => {
+    placeIdRef.current = placeId2 ?? placeId
+  }, [placeId, placeId2])
 
   const addRow = async () => {
     const resPlace = await createPlace({
@@ -112,9 +120,7 @@ export const Header = ({
       )
       const placeIds: { place_id: string }[] = res?.rows ?? []
       const len = placeIds.length
-      const index = placeIds.findIndex(
-        (p) => p.place_id === (placeId2 ?? placeId),
-      )
+      const index = placeIds.findIndex((p) => p.place_id === placeIdRef.current)
       const next = placeIds[(index + 1) % len]
       const idName = placeId2 ? 'placeId2' : 'placeId'
       navigate({
@@ -144,9 +150,7 @@ export const Header = ({
       )
       const placeIds: { place_id: string }[] = res?.rows ?? []
       const len = placeIds.length
-      const index = placeIds.findIndex(
-        (p) => p.place_id === (placeId2 ?? placeId),
-      )
+      const index = placeIds.findIndex((p) => p.place_id === placeIdRef.current)
       const previous = placeIds[(index + len - 1) % len]
       const idName = placeId2 ? 'placeId2' : 'placeId'
       navigate({
