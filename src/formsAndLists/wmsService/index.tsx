@@ -1,10 +1,14 @@
 import { useParams } from '@tanstack/react-router'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useRef, useState } from 'react'
+import { useSetAtom } from 'jotai'
 
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { WmsServiceForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { addOperationAtom } from '../../store.ts'
 import type WmsServices from '../../models/public/WmsServices.ts'
 
 import '../../form.css'
@@ -13,20 +17,64 @@ const from = '/data/projects/$projectId_/wms-services/$wmsServiceId/'
 
 export const WmsService = () => {
   const { wmsServiceId } = useParams({ from })
+  const addOperation = useSetAtom(addOperationAtom)
+  const [validations, setValidations] = useState({})
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
+  const db = usePGlite()
 
   const res = useLiveQuery(`SELECT * FROM wms_services WHERE wms_service_id = $1`, [
     wmsServiceId,
   ])
   const row: WmsServices | undefined = res?.rows?.[0]
 
-  if (row === undefined) return <Loading />
-  if (row === null) return <NotFound table="WMS Service" id={wmsServiceId} />
+  const onChange = async (e, data) => {
+    const { name, value } = getValueFromChange(e, data)
+    // only change if value has changed: maybe only focus entered and left
+    if (row[name] === value) return
+
+    try {
+      await db.query(`UPDATE wms_services SET ${name} = $1 WHERE wms_service_id = $2`, [
+        value,
+        wmsServiceId,
+      ])
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [name]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [name]: _, ...rest } = prev
+      return rest
+    })
+    addOperation({
+      table: 'wms_services',
+      rowIdName: 'wms_service_id',
+      rowId: wmsServiceId,
+      operation: 'update',
+      draft: { [name]: value },
+      prev: { ...row },
+    })
+  }
 
   return (
     <div className="form-outer-container">
-      <Header />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form row={row} />
+        {!res ?
+          <Loading />
+        : row ?
+          <Form
+            onChange={onChange}
+            validations={validations}
+            row={row}
+            autoFocusRef={autoFocusRef}
+          />
+        : <NotFound table="WMS Service" id={wmsServiceId} />
+        }
       </div>
     </div>
   )
