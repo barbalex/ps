@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -18,6 +19,13 @@ export const Header = ({ autoFocusRef }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  // Keep a ref to the current chartSubjectId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const chartSubjectIdRef = useRef(chartSubjectId)
+  useEffect(() => {
+    chartSubjectIdRef.current = chartSubjectId
+  }, [chartSubjectId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM chart_subjects WHERE chart_id = '${chartId}'`,
@@ -60,7 +68,9 @@ export const Header = ({ autoFocusRef }) => {
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.chart_subject_id === chartSubjectId)
+    const index = rows.findIndex(
+      (p) => p.chart_subject_id === chartSubjectIdRef.current,
+    )
     const next = rows[(index + 1) % len]
     navigate({
       to: `../${next.chart_subject_id}`,
@@ -75,7 +85,9 @@ export const Header = ({ autoFocusRef }) => {
     )
     const rows = res?.rows
     const len = rows.length
-    const index = rows.findIndex((p) => p.chart_subject_id === chartSubjectId)
+    const index = rows.findIndex(
+      (p) => p.chart_subject_id === chartSubjectIdRef.current,
+    )
     const previous = rows[(index + len - 1) % len]
     navigate({
       to: `../${previous.chart_subject_id}`,

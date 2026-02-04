@@ -5,11 +5,17 @@ import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createCheck } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { tabsAtom, mapBoundsAtom, addNotificationAtom, addOperationAtom } from '../../store.ts'
+import {
+  tabsAtom,
+  mapBoundsAtom,
+  addNotificationAtom,
+  addOperationAtom,
+} from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
@@ -26,6 +32,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  // Keep a ref to the current checkId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const checkIdRef = useRef(checkId)
+  useEffect(() => {
+    checkIdRef.current = checkId
+  }, [checkId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM checks WHERE place_id = '${placeId2 ?? placeId}'`,
@@ -47,9 +60,10 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const deleteRow = async () => {
     try {
-      const prevRes = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
-        checkId,
-      ])
+      const prevRes = await db.query(
+        `SELECT * FROM checks WHERE check_id = $1`,
+        [checkId],
+      )
       const prev = prevRes?.rows?.[0] ?? {}
       await db.query(`DELETE FROM checks WHERE check_id = $1`, [checkId])
       addOperation({
@@ -73,7 +87,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const checks = res?.rows
       const len = checks.length
-      const index = checks.findIndex((p) => p.check_id === checkId)
+      const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const next = checks[(index + 1) % len]
       navigate({
         to: isForm ? `../../${next.check_id}/check` : `../${next.check_id}`,
@@ -92,11 +106,12 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const checks = res?.rows
       const len = checks.length
-      const index = checks.findIndex((p) => p.check_id === checkId)
+      const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const previous = checks[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.check_id}/check`
+        to:
+          isForm ?
+            `../../${previous.check_id}/check`
           : `../${previous.check_id}`,
         params: (prev) => ({ ...prev, checkId: previous.check_id }),
       })
