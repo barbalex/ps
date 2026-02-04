@@ -20,24 +20,31 @@ export const Taxonomies = () => {
     const id = await createTaxonomy({ projectId })
     if (!id) return
     navigate({
-      to: id,
+      to: `${id}/taxonomy`,
       params: (prev) => ({ ...prev, taxonomyId: id }),
     })
   }
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {navs.map(({ id, label }) => (
-              <Row key={id} label={label ?? id} to={id} />
+              <Row
+                key={id}
+                label={label ?? id}
+                to={id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )
