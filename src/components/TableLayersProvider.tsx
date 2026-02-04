@@ -62,9 +62,9 @@ export const TableLayersProvider = () => {
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
         // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
         // 1.1 places1: is always needed
-        const places1VectorLayers = await db.query(
+        const places1VectorLayersCount = await db.query(
           `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -74,11 +74,8 @@ export const TableLayersProvider = () => {
         `,
           [projectId],
         )
-
-        let places1VectorLayerId: string | undefined =
-          places1VectorLayers?.rows?.[0]?.vector_layer_id
-        if (!places1VectorLayerId) {
-          places1VectorLayerId = await createVectorLayer({
+        if (places1VectorLayersCount?.rows?.[0]?.count === 0) {
+          await createVectorLayer({
             projectId,
             type: 'own',
             ownTable: 'places',
@@ -88,34 +85,10 @@ export const TableLayersProvider = () => {
           })
         }
 
-        // 1.2 places1VectorLayerDisplay: always needed
-        const resPlaces1VLDCount = await db.query(
-          `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-          [places1VectorLayerId],
-        )
-        const places1VLDCount = resPlaces1VLDCount?.rows?.[0]?.count
-        if (places1VLDCount === 0) {
-          await createVectorLayerDisplay({
-            vectorLayerId: places1VectorLayerId,
-          })
-        }
-
-        // 1.3 places1LayerPresentation: always needed
-        const resPlaces1LPCount = await db.query(
-          `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-          [places1VectorLayerId],
-        )
-        const places1LPCount = resPlaces1LPCount?.rows?.[0]?.count
-        if (places1LPCount === 0) {
-          await createLayerPresentation({
-            vectorLayerId: places1VectorLayerId,
-          })
-        }
-
         // 2.1 actions1: always needed
-        const actions1VectorLayers = await db.query(
+        const actions1VectorLayersCount = await db.query(
           `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -125,10 +98,8 @@ export const TableLayersProvider = () => {
         `,
           [projectId],
         )
-        let actions1VectorLayerId: string | undefined =
-          actions1VectorLayers?.rows?.[0]?.vector_layer_id
-        if (!actions1VectorLayerId) {
-          actions1VectorLayerId = await createVectorLayer({
+        if (actions1VectorLayersCount?.rows?.[0]?.count === 0) {
+          await createVectorLayer({
             projectId,
             type: 'own',
             ownTable: 'actions',
@@ -141,34 +112,10 @@ export const TableLayersProvider = () => {
           })
         }
 
-        // 2.2 actions1VectorLayerDisplay: always needed
-        const resActions1VLDCount = await db.query(
-          `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-          [actions1VectorLayerId],
-        )
-        const actions1VLDCount = resActions1VLDCount?.rows?.[0]?.count
-        if (actions1VLDCount === 0) {
-          await createVectorLayerDisplay({
-            vectorLayerId: actions1VectorLayerId,
-          })
-        }
-
-        // 2.3 actions1LayerPresentation: always needed
-        const resActions1LPCount = await db.query(
-          `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-          [actions1VectorLayerId],
-        )
-        const actions1LPCount = resActions1LPCount?.rows?.[0]?.count
-        if (actions1LPCount === 0) {
-          await createLayerPresentation({
-            vectorLayerId: actions1VectorLayerId,
-          })
-        }
-
         // 3.1 checks1: always needed
-        const checks1VectorLayers = await db.query(
+        const checks1VectorLayersCount = await db.query(
           `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -178,10 +125,8 @@ export const TableLayersProvider = () => {
         `,
           [projectId],
         )
-        let checks1VectorLayerId: string | undefined =
-          checks1VectorLayers?.rows?.[0]?.vector_layer_id
-        if (!checks1VectorLayerId) {
-          checks1VectorLayerId = await createVectorLayer({
+        if (checks1VectorLayersCount?.rows?.[0]?.count === 0) {
+          await createVectorLayer({
             projectId,
             type: 'own',
             ownTable: 'checks',
@@ -194,36 +139,12 @@ export const TableLayersProvider = () => {
           })
         }
 
-        // 3.2 checks1VectorLayerDisplay: always needed
-        const resChecks1VLDCount = await db.query(
-          `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-          [checks1VectorLayerId],
-        )
-        const checks1VLDCount = resChecks1VLDCount?.rows?.[0]?.count
-        if (checks1VLDCount === 0) {
-          await createVectorLayerDisplay({
-            vectorLayerId: checks1VectorLayerId,
-          })
-        }
-
-        // 3.3 checks1LayerPresentation: always needed
-        const resChecks1LPCount = await db.query(
-          `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-          [checks1VectorLayerId],
-        )
-        const checks1LPCount = resChecks1LPCount?.rows?.[0]?.count
-        if (checks1LPCount === 0) {
-          await createLayerPresentation({
-            vectorLayerId: checks1VectorLayerId,
-          })
-        }
-
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned_lines1
         if (placeLevel1?.occurrences && occurrenceCount) {
-          const occurrencesVectorLayers = await db.query(
+          const occurrencesVectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -233,10 +154,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let occurrencesAssigned1VectorLayerId: string | undefined =
-            occurrencesVectorLayers?.rows?.[0]?.vector_layer_id
-          if (!occurrencesAssigned1VectorLayerId) {
-            occurrencesAssigned1VectorLayerId = await createVectorLayer({
+          if (occurrencesVectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_assigned',
@@ -246,32 +165,6 @@ export const TableLayersProvider = () => {
                   `${placeLevel1.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
               skipOperationQueue: true,
-            })
-          }
-
-          // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
-          const resOccurrencesAssigned1VLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [occurrencesAssigned1VectorLayerId],
-          )
-          const occurrencesAssigned1VLDCount =
-            resOccurrencesAssigned1VLDCount?.rows?.[0]?.count
-          if (occurrencesAssigned1VLDCount === 0) {
-            await createVectorLayerDisplay({
-              vectorLayerId: occurrencesAssigned1VectorLayerId,
-            })
-          }
-
-          // 4.3 occurrences_assigned1LayerPresentation: always needed
-          const resOccurrencesAssigned1LPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [occurrencesAssigned1VectorLayerId],
-          )
-          const occurrencesAssigned1LPCount =
-            resOccurrencesAssigned1LPCount?.rows?.[0]?.count
-          if (occurrencesAssigned1LPCount === 0) {
-            await createLayerPresentation({
-              vectorLayerId: occurrencesAssigned1VectorLayerId,
             })
           }
         }
@@ -300,32 +193,6 @@ export const TableLayersProvider = () => {
               skipOperationQueue: true,
             })
           }
-
-          // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
-          const resOccurrencesToAssessVLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [occurrencesToAssessVectorLayerId],
-          )
-          const occurrencesToAssessVLDCount =
-            resOccurrencesToAssessVLDCount?.rows?.[0]?.count
-          if (occurrencesToAssessVLDCount === 0) {
-            await createVectorLayerDisplay({
-              vectorLayerId: occurrencesToAssessVectorLayerId,
-            })
-          }
-
-          // 5.3 occurrencesToAssessLayerPresentation: always needed
-          const resOccurrencesToAssessLPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [occurrencesToAssessVectorLayerId],
-          )
-          const occurrencesToAssessLPCount =
-            resOccurrencesToAssessLPCount?.rows?.[0]?.count
-          if (occurrencesToAssessLPCount === 0) {
-            await createLayerPresentation({
-              vectorLayerId: occurrencesToAssessVectorLayerId,
-            })
-          }
         }
 
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
@@ -350,32 +217,6 @@ export const TableLayersProvider = () => {
               ownTable: 'occurrences_not_to_assign',
               label: 'Occurrences Not To Assign',
               skipOperationQueue: true,
-            })
-          }
-
-          // 6.2 occurrencesNotToAssignVectorLayerDisplay: always needed
-          const resOccurrencesNotToAssignVLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [occurrencesNotToAssignVectorLayerId],
-          )
-          const occurrencesNotToAssignVLDCount =
-            resOccurrencesNotToAssignVLDCount?.rows?.[0]?.count
-          if (!occurrencesNotToAssignVLDCount) {
-            await createVectorLayerDisplay({
-              vectorLayerId: occurrencesNotToAssignVectorLayerId,
-            })
-          }
-
-          // 6.3 occurrencesNotToAssignLayerPresentation: always needed
-          const resOccurrencesNotToAssignLPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [occurrencesNotToAssignVectorLayerId],
-          )
-          const occurrencesNotToAssignLPCount =
-            resOccurrencesNotToAssignLPCount?.rows?.[0]?.count
-          if (!occurrencesNotToAssignLPCount) {
-            await createLayerPresentation({
-              vectorLayerId: occurrencesNotToAssignVectorLayerId,
             })
           }
         }
@@ -404,30 +245,6 @@ export const TableLayersProvider = () => {
               ownTableLevel: 2,
               label: placeLevel2?.name_plural ?? 'Places',
               skipOperationQueue: true,
-            })
-          }
-
-          // 7.2 places2VectorLayerDisplay: always needed
-          const resPlaces2VLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [places2VectorLayerId],
-          )
-          const places2VLDCount = resPlaces2VLDCount?.rows?.[0]?.count
-          if (!places2VLDCount) {
-            await createVectorLayerDisplay({
-              vectorLayerId: places2VectorLayerId,
-            })
-          }
-
-          // 7.3 places2LayerPresentation: always needed
-          const resPlaces2LPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [places2VectorLayerId],
-          )
-          const places2LPCount = resPlaces2LPCount?.rows?.[0]?.count
-          if (!places2LPCount) {
-            await createLayerPresentation({
-              vectorLayerId: places2VectorLayerId,
             })
           }
         }
@@ -461,30 +278,6 @@ export const TableLayersProvider = () => {
               skipOperationQueue: true,
             })
           }
-
-          // 8.2 actions2VectorLayerDisplay: always needed
-          const resActions2VLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [actions2VectorLayerId],
-          )
-          const actions2VLDCount = resActions2VLDCount?.rows?.[0]?.count
-          if (!actions2VLDCount) {
-            await createVectorLayerDisplay({
-              vectorLayerId: actions2VectorLayerId,
-            })
-          }
-
-          // 8.3 actions2LayerPresentation: always needed
-          const resActions2LPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [actions2VectorLayerId],
-          )
-          const actions2LPCount = resActions2LPCount?.rows?.[0]?.count
-          if (!actions2LPCount) {
-            await createLayerPresentation({
-              vectorLayerId: actions2VectorLayerId,
-            })
-          }
         }
 
         // 9.1 checks2 needed if placeLevels2.checks exists
@@ -514,30 +307,6 @@ export const TableLayersProvider = () => {
                   `${placeLevel2.name_singular} Checks`
                 : 'Checks',
               skipOperationQueue: true,
-            })
-          }
-
-          // 9.2 checks2VectorLayerDisplay: always needed
-          const resChecks2VLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [checks2VectorLayerId],
-          )
-          const checks2VLDCount = resChecks2VLDCount?.rows?.[0]?.count
-          if (!checks2VLDCount) {
-            await createVectorLayerDisplay({
-              vectorLayerId: checks2VectorLayerId,
-            })
-          }
-
-          // 9.3 checks2LayerPresentation: always needed
-          const resChecks2LPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [checks2VectorLayerId],
-          )
-          const checks2LPCount = resChecks2LPCount?.rows?.[0]?.count
-          if (!checks2LPCount) {
-            await createLayerPresentation({
-              vectorLayerId: checks2VectorLayerId,
             })
           }
         }
