@@ -48,7 +48,7 @@
     "@turf/polygon-to-line": "7.3.3",
     "@uidotdev/usehooks": "2.4.1",
     "@uploadcare/file-uploader": "1.25.0",
-    "@uploadcare/react-uploader": "1.11.2",
+    "@uploadcare/react-uploader": "1.12.0",
     "allotment": "1.20.5",
     "arktype": "2.1.29",
     "array-move": "4.0.0",
