@@ -11,6 +11,10 @@ import { ProjectReportsFetcher } from './ProjectReportsFetcher.tsx'
 import { ProjectReportFetcher } from './ProjectReportFetcher.tsx'
 import { PersonsFetcher } from './PersonsFetcher.tsx'
 import { PersonFetcher } from './PersonFetcher.tsx'
+import { WmsServicesFetcher } from './WmsServicesFetcher.tsx'
+import { WmsServiceFetcher } from './WmsServiceFetcher.tsx'
+import { WmsServiceLayersFetcher } from './WmsServiceLayersFetcher.tsx'
+import { WmsServiceLayerFetcher } from './WmsServiceLayerFetcher.tsx'
 import { WmsLayersFetcher } from './WmsLayersFetcher.tsx'
 import { WmsLayerFetcher } from './WmsLayerFetcher.tsx'
 import { VectorLayerDisplaysFetcher } from './VectorLayerDisplaysFetcher.tsx'
@@ -936,6 +940,42 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       if (!params.projectId || !params.personId) return null
       return (
         <PersonFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsServicesNavData': {
+      if (!params.projectId) return null
+      return (
+        <WmsServicesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsServiceNavData': {
+      if (!params.projectId || !params.wmsServiceId) return null
+      return (
+        <WmsServiceFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsServiceLayersNavData': {
+      if (!params.projectId || !params.wmsServiceId) return null
+      return (
+        <WmsServiceLayersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWmsServiceLayerNavData': {
+      if (!params.projectId || !params.wmsServiceId || !params.wmsServiceLayerId) return null
+      return (
+        <WmsServiceLayerFetcher
           params={params}
           {...other}
         />
