@@ -14,7 +14,7 @@ export const ListValueNode = ({ projectId, listId, listValue, level = 6 }) => {
     'lists',
     listId,
     'values',
-    listValue.list_value_id,
+    listValue.id,
   ]
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -24,7 +24,7 @@ export const ListValueNode = ({ projectId, listId, listValue, level = 6 }) => {
   return (
     <Node
       label={listValue.label}
-      id={listValue.list_value_id}
+      id={listValue.id}
       level={level}
       isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}

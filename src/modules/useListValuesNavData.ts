@@ -23,7 +23,7 @@ export const useListValuesNavData = ({ projectId, listId }: Props) => {
   const res = useLiveQuery(
     `
       SELECT
-        list_value_id,
+        list_value_id AS id,
         label 
       FROM list_values 
       WHERE list_id = $1 

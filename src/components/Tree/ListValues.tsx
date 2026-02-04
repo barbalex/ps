@@ -59,7 +59,7 @@ export const ListValuesNode = ({ projectId, listId, level = 5 }: Props) => {
       {showNavs &&
         navs.map((listValue, i) => (
           <ListValueNode
-            key={`${listValue.list_value_id}-${i}`}
+            key={`${listValue.id}-${i}`}
             projectId={projectId}
             listId={listId}
             listValue={listValue}
