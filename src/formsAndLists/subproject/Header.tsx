@@ -7,7 +7,6 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
-  console.log('from in Subproject Header:', from)
   const isForm =
     from === '/data/projects/$projectId_/subprojects/$subprojectId_/subproject'
   const { projectId, subprojectId } = useParams({ from })
