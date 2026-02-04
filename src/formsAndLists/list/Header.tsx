@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createList } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -13,6 +14,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current listId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const listIdRef = useRef(listId)
+  useEffect(() => {
+    listIdRef.current = listId
+  }, [listId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM lists WHERE project_id = '${projectId}'`,
@@ -57,7 +65,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const lists = res?.rows
       const len = lists.length
-      const index = lists.findIndex((p) => p.list_id === listId)
+      const index = lists.findIndex((p) => p.list_id === listIdRef.current)
       const next = lists[(index + 1) % len]
       navigate({
         to: isForm ? `../../${next.list_id}/list` : `../${next.list_id}`,
@@ -76,7 +84,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const lists = res?.rows
       const len = lists.length
-      const index = lists.findIndex((p) => p.list_id === listId)
+      const index = lists.findIndex((p) => p.list_id === listIdRef.current)
       const previous = lists[(index + len - 1) % len]
       navigate({
         to: isForm ? `../../${previous.list_id}/list` : `../${previous.list_id}`,

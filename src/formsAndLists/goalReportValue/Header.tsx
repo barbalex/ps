@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createGoalReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -15,6 +16,13 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current goalReportValueId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const goalReportValueIdRef = useRef(goalReportValueId)
+  useEffect(() => {
+    goalReportValueIdRef.current = goalReportValueId
+  }, [goalReportValueId])
 
   const addRow = async () => {
     const id = await createGoalReportValue({ goalReportId })
@@ -61,7 +69,7 @@ export const Header = ({ autoFocusRef }) => {
       const goalReportValues = res?.rows
       const len = goalReportValues.length
       const index = goalReportValues.findIndex(
-        (p) => p.goal_report_value_id === goalReportValueId,
+        (p) => p.goal_report_value_id === goalReportValueIdRef.current,
       )
       const next = goalReportValues[(index + 1) % len]
       navigate({
@@ -85,7 +93,7 @@ export const Header = ({ autoFocusRef }) => {
       const goalReportValues = res?.rows
       const len = goalReportValues.length
       const index = goalReportValues.findIndex(
-        (p) => p.goal_report_value_id === goalReportValueId,
+        (p) => p.goal_report_value_id === goalReportValueIdRef.current,
       )
       const previous = goalReportValues[(index + len - 1) % len]
       navigate({

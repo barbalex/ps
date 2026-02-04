@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createGoalReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -15,6 +16,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current goalReportId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const goalReportIdRef = useRef(goalReportId)
+  useEffect(() => {
+    goalReportIdRef.current = goalReportId
+  }, [goalReportId])
 
   const addRow = async () => {
     const id = await createGoalReport({
@@ -60,12 +68,13 @@ export const Header = ({ autoFocusRef, from }) => {
       const goalReports = res?.rows
       const len = goalReports.length
       const index = goalReports.findIndex(
-        (p) => p.goal_report_id === goalReportId,
+        (p) => p.goal_report_id === goalReportIdRef.current,
       )
       const next = goalReports[(index + 1) % len]
       navigate({
-        to: isForm
-          ? `../../${next.goal_report_id}/report`
+        to:
+          isForm ?
+            `../../${next.goal_report_id}/report`
           : `../${next.goal_report_id}`,
         params: (prev) => ({ ...prev, goalReportId: next.goal_report_id }),
       })
@@ -83,12 +92,13 @@ export const Header = ({ autoFocusRef, from }) => {
       const goalReports = res?.rows
       const len = goalReports.length
       const index = goalReports.findIndex(
-        (p) => p.goal_report_id === goalReportId,
+        (p) => p.goal_report_id === goalReportIdRef.current,
       )
       const previous = goalReports[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.goal_report_id}/report`
+        to:
+          isForm ?
+            `../../${previous.goal_report_id}/report`
           : `../${previous.goal_report_id}`,
         params: (prev) => ({ ...prev, goalReportId: previous.goal_report_id }),
       })
