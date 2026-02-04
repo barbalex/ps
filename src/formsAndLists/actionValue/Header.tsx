@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createActionValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current actionValueId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const actionValueIdRef = useRef(actionValueId)
+  useEffect(() => {
+    actionValueIdRef.current = actionValueId
+  }, [actionValueId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM action_values WHERE action_id = '${actionId}'`,
@@ -63,7 +71,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const actionValues = res?.rows
       const len = actionValues.length
       const index = actionValues.findIndex(
-        (p) => p.action_value_id === actionValueId,
+        (p) => p.action_value_id === actionValueIdRef.current,
       )
       const next = actionValues[(index + 1) % len]
       navigate({
@@ -87,7 +95,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const actionValues = res?.rows
       const len = actionValues.length
       const index = actionValues.findIndex(
-        (p) => p.action_value_id === actionValueId,
+        (p) => p.action_value_id === actionValueIdRef.current,
       )
       const previous = actionValues[(index + len - 1) % len]
       navigate({
