@@ -37,7 +37,7 @@ export const Header = ({ autoFocusRef, from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: '/data/fields' })
+      navigate({ to: '..' })
     } catch (error) {
       console.error('Error deleting field:', error)
     }
@@ -55,7 +55,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = rows.findIndex((p) => p.field_id === fieldId)
       const next = rows[(index + 1) % len]
       navigate({
-        to: `/data/fields/${next.field_id}`,
+        to: `../${next.field_id}`,
         params: (prev) => ({ ...prev, fieldId: next.field_id }),
       })
     } catch (error) {
@@ -77,7 +77,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = rows.findIndex((p) => p.field_id === fieldId)
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to: `/data/fields/${previous.field_id}`,
+        to: `../${previous.field_id}`,
         params: (prev) => ({ ...prev, fieldId: previous.field_id }),
       })
     } catch (error) {
