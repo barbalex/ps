@@ -11,6 +11,7 @@ import {
 } from '@fluentui/react-components'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -36,6 +37,13 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  // Keep a ref to the current vectorLayerId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const vectorLayerIdRef = useRef(vectorLayerId)
+  useEffect(() => {
+    vectorLayerIdRef.current = vectorLayerId
+  }, [vectorLayerId])
 
   // need to:
   // 1. lowercase all
@@ -135,7 +143,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
+      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerIdRef.current)
       const next = rows[(index + 1) % len]
       console.log('Navigating to next vector layer:', next.vector_layer_id)
       navigate({
@@ -161,7 +169,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
+      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerIdRef.current)
       const previous = rows[(index + len - 1) % len]
       navigate({
         to:

@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
@@ -25,6 +26,14 @@ export const Header = ({
     vectorLayerDisplayIdFromProps ?? vectorLayerDisplayIdFromRouter
 
   const db = usePGlite()
+
+  // Keep a ref to the current vectorLayerDisplayId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const vectorLayerDisplayIdRef = useRef(vectorLayerDisplayId)
+  useEffect(() => {
+    vectorLayerDisplayIdRef.current = vectorLayerDisplayId
+  }, [vectorLayerDisplayId])
+
   // fetch the vector_layer_id from the db as params is not available in the map drawer
   const res = useLiveQuery(
     `SELECT vector_layer_display_id, vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
@@ -97,7 +106,7 @@ export const Header = ({
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.vector_layer_display_id === vectorLayerDisplayId,
+        (p) => p.vector_layer_display_id === vectorLayerDisplayIdRef.current,
       )
       const next = rows[(index + 1) % len]
       console.log('VectorLayerDisplay.Header.toNext', {
@@ -131,7 +140,7 @@ export const Header = ({
       const vectorLayerDisplays = res?.rows
       const len = vectorLayerDisplays.length
       const index = vectorLayerDisplays.findIndex(
-        (p) => p.vector_layer_display_id === vectorLayerDisplayId,
+        (p) => p.vector_layer_display_id === vectorLayerDisplayIdRef.current,
       )
       const previous = vectorLayerDisplays[(index + len - 1) % len]
       if (vectorLayerDisplayIdFromProps) {
