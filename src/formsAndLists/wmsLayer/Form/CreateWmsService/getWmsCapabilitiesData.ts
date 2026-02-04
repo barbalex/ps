@@ -93,17 +93,24 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
     v?.CRS?.includes('EPSG:4326'),
   )
 
-  const values = layers.map(
+  const layersWithIds = layers.map((l) => ({
+    wms_service_layer_id: uuidv7(),
+    wms_service_id: service.wms_service_id,
+    name: l.Name ?? null,
+    label: l.Title ?? null,
+    queryable: l.queryable === true,
+    legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?? null,
+  }))
+
+  const values = layersWithIds.map(
     (l) =>
       `(${[
-        `'${uuidv7()}'`,
-        `'${service.wms_service_id}'`,
-        l.Name ? `'${l.Name}'` : 'NULL',
-        l.Title ? `'${l.Title}'` : 'NULL',
-        l.queryable === true,
-        l.Style?.[0]?.LegendURL?.[0]?.OnlineResource
-          ? `'${l.Style?.[0]?.LegendURL?.[0]?.OnlineResource}'`
-          : 'NULL',
+        `'${l.wms_service_layer_id}'`,
+        `'${l.wms_service_id}'`,
+        l.name ? `'${l.name}'` : 'NULL',
+        l.label ? `'${l.label}'` : 'NULL',
+        l.queryable,
+        l.legend_url ? `'${l.legend_url}'` : 'NULL',
       ].join(',')})`,
   )
   const sql = `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url) VALUES ${values.join(
@@ -119,14 +126,7 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
   store.set(addOperationAtom, {
     table: 'wms_service_layers',
     operation: 'insertMany',
-    draft: layers.map((l) => ({
-      wms_service_layer_id: uuidv7(),
-      wms_service_id: service.wms_service_id,
-      name: l.Name ?? null,
-      label: l.Title ?? null,
-      queryable: l.queryable === true,
-      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?? null,
-    })),
+    draft: layersWithIds,
   })
 
   // single layer? update wmsLayer
