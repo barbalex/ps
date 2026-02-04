@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createPlaceLevel } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -18,6 +19,13 @@ export const Header = ({ autoFocusRef }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current placeLevelId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const placeLevelIdRef = useRef(placeLevelId)
+  useEffect(() => {
+    placeLevelIdRef.current = placeLevelId
+  }, [placeLevelId])
 
   const addRow = async () => {
     const id = await createPlaceLevel({ project_id: projectId })
