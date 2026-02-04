@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createPerson } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -18,6 +19,13 @@ export const Header = ({ autoFocusRef }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current personId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const personIdRef = useRef(personId)
+  useEffect(() => {
+    personIdRef.current = personId
+  }, [personId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM persons WHERE project_id = '${projectId}'`,
@@ -63,7 +71,9 @@ export const Header = ({ autoFocusRef }: Props) => {
       )
       const persons = res?.rows
       const len = persons.length
-      const index = persons.findIndex((p) => p.person_id === personId)
+      const index = persons.findIndex(
+        (p) => p.person_id === personIdRef.current,
+      )
       const next = persons[(index + 1) % len]
       navigate({
         to: `../${next.person_id}`,
@@ -82,7 +92,9 @@ export const Header = ({ autoFocusRef }: Props) => {
       )
       const persons = res?.rows
       const len = persons.length
-      const index = persons.findIndex((p) => p.person_id === personId)
+      const index = persons.findIndex(
+        (p) => p.person_id === personIdRef.current,
+      )
       const previous = persons[(index + len - 1) % len]
       navigate({
         to: `../${previous.person_id}`,

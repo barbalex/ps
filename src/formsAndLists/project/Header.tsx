@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -16,7 +17,7 @@ interface Props {
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
 export const Header = ({ autoFocusRef, from, label }: Props) => {
-  const isForm = from === '/data/projects/$projectId_/project/'
+  const isForm = from === '/data/projects/$projectId_/project'
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -25,6 +26,13 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const db = usePGlite()
+
+  // Keep a ref to the current projectId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const projectIdRef = useRef(projectId)
+  useEffect(() => {
+    projectIdRef.current = projectId
+  }, [projectId])
 
   const addRow = async () => {
     const project_id = await createProject()
@@ -66,7 +74,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.project_id === projectId)
+      const index = rows.findIndex((p) => p.project_id === projectIdRef.current)
       const next = rows[(index + 1) % len]
       navigate({
         to:
@@ -85,7 +93,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.project_id === projectId)
+      const index = rows.findIndex((p) => p.project_id === projectIdRef.current)
       const previous = rows[(index + len - 1) % len]
       navigate({
         to:
