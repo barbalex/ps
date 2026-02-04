@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createSubprojectTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -16,10 +17,19 @@ export const Header = ({ autoFocusRef }) => {
 
   const db = usePGlite()
 
+  // Keep a ref to the current subprojectTaxonId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const subprojectTaxonIdRef = useRef(subprojectTaxonId)
+  useEffect(() => {
+    subprojectTaxonIdRef.current = subprojectTaxonId
+  }, [subprojectTaxonId])
+
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM subproject_taxa WHERE subproject_id = '${subprojectId}'`,
+    `SELECT COUNT(*) as count FROM subproject_taxa WHERE subproject_id = $1`,
+    [subprojectId],
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const toDisabled = rowCount <= 1
 
   const addRow = async () => {
     const id = await createSubprojectTaxon({ subprojectId })
@@ -41,9 +51,10 @@ export const Header = ({ autoFocusRef }) => {
         [subprojectTaxonId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`, [
-        subprojectTaxonId,
-      ])
+      await db.query(
+        `DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`,
+        [subprojectTaxonId],
+      )
       addOperation({
         table: 'subproject_taxa',
         rowIdName: 'subproject_taxon_id',
@@ -67,7 +78,7 @@ export const Header = ({ autoFocusRef }) => {
       const subprojectTaxa = res?.rows
       const len = subprojectTaxa.length
       const index = subprojectTaxa.findIndex(
-        (p) => p.subproject_taxon_id === subprojectTaxonId,
+        (p) => p.subproject_taxon_id === subprojectTaxonIdRef.current,
       )
       const next = subprojectTaxa[(index + 1) % len]
       navigate({
@@ -91,7 +102,7 @@ export const Header = ({ autoFocusRef }) => {
       const subprojectTaxa = res?.rows
       const len = subprojectTaxa.length
       const index = subprojectTaxa.findIndex(
-        (p) => p.subproject_taxon_id === subprojectTaxonId,
+        (p) => p.subproject_taxon_id === subprojectTaxonIdRef.current,
       )
       const previous = subprojectTaxa[(index + len - 1) % len]
       navigate({
@@ -113,8 +124,8 @@ export const Header = ({ autoFocusRef }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      toNextDisabled={rowCount <= 1}
-      toPreviousDisabled={rowCount <= 1}
+      toNextDisabled={toDisabled}
+      toPreviousDisabled={toDisabled}
       tableName="subproject taxon"
     />
   )
