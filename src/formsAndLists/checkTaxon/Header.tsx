@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createCheckTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current checkTaxonId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const checkTaxonIdRef = useRef(checkTaxonId)
+  useEffect(() => {
+    checkTaxonIdRef.current = checkTaxonId
+  }, [checkTaxonId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM check_taxa WHERE check_id = '${checkId}'`,
@@ -60,7 +68,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const checkTaxa = res?.rows
       const len = checkTaxa.length
       const index = checkTaxa.findIndex(
-        (p) => p.check_taxon_id === checkTaxonId,
+        (p) => p.check_taxon_id === checkTaxonIdRef.current,
       )
       const next = checkTaxa[(index + 1) % len]
       navigate({
@@ -81,7 +89,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const checkTaxa = res?.rows
       const len = checkTaxa.length
       const index = checkTaxa.findIndex(
-        (p) => p.check_taxon_id === checkTaxonId,
+        (p) => p.check_taxon_id === checkTaxonIdRef.current,
       )
       const previous = checkTaxa[(index + len - 1) % len]
       navigate({

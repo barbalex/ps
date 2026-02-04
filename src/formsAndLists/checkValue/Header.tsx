@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createCheckValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current checkValueId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const checkValueIdRef = useRef(checkValueId)
+  useEffect(() => {
+    checkValueIdRef.current = checkValueId
+  }, [checkValueId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM check_values WHERE check_id = '${checkId}'`,
@@ -60,7 +68,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const checkValues = res?.rows
       const len = checkValues.length
       const index = checkValues.findIndex(
-        (p) => p.check_value_id === checkValueId,
+        (p) => p.check_value_id === checkValueIdRef.current,
       )
       const next = checkValues[(index + 1) % len]
       navigate({
@@ -81,7 +89,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const checkValues = res?.rows
       const len = checkValues.length
       const index = checkValues.findIndex(
-        (p) => p.check_value_id === checkValueId,
+        (p) => p.check_value_id === checkValueIdRef.current,
       )
       const previous = checkValues[(index + len - 1) % len]
       navigate({
