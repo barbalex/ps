@@ -334,32 +334,6 @@ export const TableLayersProvider = () => {
               skipOperationQueue: true,
             })
           }
-
-          // 10.2 occurrences_assigned2VectorLayerDisplay: always needed
-          const resOccurrencesAssigned2VLDCount = await db.query(
-            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
-            [occurrencesAssigned2VectorLayerId],
-          )
-          const occurrencesAssigned2VLDCount =
-            resOccurrencesAssigned2VLDCount?.rows?.[0]?.count
-          if (!occurrencesAssigned2VLDCount) {
-            await createVectorLayerDisplay({
-              vectorLayerId: occurrencesAssigned2VectorLayerId,
-            })
-          }
-
-          // 10.3 occurrences_assigned2LayerPresentation: always needed
-          const resOccurrencesAssigned2LPCount = await db.query(
-            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
-            [occurrencesAssigned2VectorLayerId],
-          )
-          const occurrencesAssigned2LPCount =
-            resOccurrencesAssigned2LPCount?.rows?.[0]?.count
-          if (!occurrencesAssigned2LPCount) {
-            await createLayerPresentation({
-              vectorLayerId: occurrencesAssigned2VectorLayerId,
-            })
-          }
         }
       }
     }
