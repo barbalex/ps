@@ -5,6 +5,7 @@ import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createAction } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -32,6 +33,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  // Keep a ref to the current actionId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const actionIdRef = useRef(actionId)
+  useEffect(() => {
+    actionIdRef.current = actionId
+  }, [actionId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM actions WHERE place_id = '${placeId2 ?? placeId}'`,
@@ -80,7 +88,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const actions = res?.rows
       const len = actions.length
-      const index = actions.findIndex((p) => p.action_id === actionId)
+      const index = actions.findIndex(
+        (p) => p.action_id === actionIdRef.current,
+      )
       const next = actions[(index + 1) % len]
       navigate({
         to: isForm ? `../../${next.action_id}/action` : `../${next.action_id}`,
@@ -99,7 +109,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const actions = res?.rows
       const len = actions.length
-      const index = actions.findIndex((p) => p.action_id === actionId)
+      const index = actions.findIndex(
+        (p) => p.action_id === actionIdRef.current,
+      )
       const previous = actions[(index + len - 1) % len]
       navigate({
         to:

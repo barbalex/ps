@@ -44,11 +44,10 @@ export const MenuBar = ({
     }
     // add 12px for margin and border width to props.width
     const widths = visibleChildren.map((c) =>
-      c.props.width
-        ? addMargin
-          ? c.props.width + 12
-          : c.props.width
-        : buttonWidth,
+      c.props.width ?
+        addMargin ? c.props.width + 12
+        : c.props.width
+      : buttonWidth,
     )
     return { visibleChildren, widths }
   }, [addMargin, children])
@@ -69,22 +68,22 @@ export const MenuBar = ({
 
     const titleWidth = titleComponentWidth ?? 0
     const spaceForButtonsAndMenus = containerWidth - titleWidth
-    const widthOfAllPassedInButtons = widths
-      ? widths.reduce((acc, w) => acc + w, 0)
+    const widthOfAllPassedInButtons =
+      widths ?
+        widths.reduce((acc, w) => acc + w, 0)
       : visibleChildren.length * buttonWidth
     const needMenu = widthOfAllPassedInButtons > spaceForButtonsAndMenus
-    const spaceForButtons = needMenu
-      ? spaceForButtonsAndMenus - buttonWidth
-      : spaceForButtonsAndMenus
+    const spaceForButtons =
+      needMenu ? spaceForButtonsAndMenus - buttonWidth : spaceForButtonsAndMenus
     // sum widths fitting into spaceForButtons
     const newButtons = []
     const newMenus = []
     let widthSum = 0
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [index, child] of Children.toArray(visibleChildren).entries()) {
-      const width = child.props.width
-        ? addMargin
-          ? child.props.width + 12
+      const width =
+        child.props.width ?
+          addMargin ? child.props.width + 12
           : child.props.width
         : buttonWidth
       if (widthSum + width > spaceForButtons) {
@@ -120,7 +119,7 @@ export const MenuBar = ({
     // Example: file preview (any action that changes the menus passed in)
     checkOverflow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rerenderer])
+  }, [rerenderer, children])
 
   const previousWidthRef = useRef(null)
   useEffect(() => {
@@ -170,7 +169,10 @@ export const MenuBar = ({
   }, [rerenderer, checkOverflowDebounced])
 
   return (
-    <div ref={outerContainerRef} className={styles.measuredOuterContainer}>
+    <div
+      ref={outerContainerRef}
+      className={styles.measuredOuterContainer}
+    >
       {titleComponent}
       <div
         style={{
