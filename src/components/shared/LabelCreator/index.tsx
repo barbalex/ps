@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext } from '@hello-pangea/dnd'
 import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
 import { isEqual } from 'es-toolkit'
@@ -31,10 +31,12 @@ export const LabelCreator = ({
   useEffect(() => setLabel(structuredClone(labelPassed ?? [])), [labelPassed])
 
   const labelChanged =
-    (!labelPassed || labelPassed?.length === 0) &&
-    (!label || label?.length === 0)
-      ? false
-      : !isEqual(label, labelPassed)
+    (
+      (!labelPassed || labelPassed?.length === 0) &&
+      (!label || label?.length === 0)
+    ) ?
+      false
+    : !isEqual(label, labelPassed)
 
   const saveToDb = () => onChangePassed({ target: { value: label, name } })
 

@@ -1,4 +1,4 @@
-import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { Draggable, Droppable } from '@hello-pangea/dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
 // import { LabelElement } from './index.tsx'

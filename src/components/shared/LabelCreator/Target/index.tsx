@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Droppable } from 'react-beautiful-dnd'
+import { Droppable } from '@hello-pangea/dnd'
 import { Button, Spinner } from '@fluentui/react-components'
 
 import { TargetElements } from './TargetElements.tsx'

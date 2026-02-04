@@ -1,4 +1,4 @@
-import { Draggable } from 'react-beautiful-dnd'
+import { Draggable } from '@hello-pangea/dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
 import { BetweenCharacters } from './BetweenCharacters.tsx'
@@ -46,11 +46,12 @@ export const TargetElements = ({
             ref={provided.innerRef}
             className={styles.elementContainer}
           >
-            {labelElement.type === 'field' ? (
+            {labelElement.type === 'field' ?
               <div
                 style={{
-                  backgroundColor: snapshot.isDragging
-                    ? 'rgba(38, 82, 37, 0.9)'
+                  backgroundColor:
+                    snapshot.isDragging ?
+                      'rgba(38, 82, 37, 0.9)'
                     : 'rgba(103, 216, 101, 0.07)',
                   color: snapshot.isDragging ? 'white' : 'black',
                   ...provided.draggableProps.style,
@@ -60,8 +61,7 @@ export const TargetElements = ({
                 {labelElement.value}
                 <BsArrowsMove className={styles.fieldHandle} />
               </div>
-            ) : (
-              <BetweenCharacters
+            : <BetweenCharacters
                 el={labelElement}
                 label={label}
                 onChange={onChange}
@@ -71,7 +71,7 @@ export const TargetElements = ({
               >
                 <BsArrowsMove className={styles.fieldHandle} />
               </BetweenCharacters>
-            )}
+            }
           </div>
         )}
       </Draggable>
