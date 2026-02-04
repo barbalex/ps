@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
@@ -52,14 +52,13 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
   const { pathname } = useLocation()
 
   const db = usePGlite()
-  const [tab, setTab] = useState<TabType>('overall-displays')
-
-  // effect: if layer has no wfs_service_id or wfs_service_layer_name: set tab to 'config'
-  useEffect(() => {
+  const [tab, setTab] = useState<TabType>(() => {
+    // if layer has no wfs_service_id or wfs_service_layer_name: default to 'config'
     if (!layer.wfs_service_id || !layer.wfs_service_layer_name) {
-      setTab('config')
+      return 'config'
     }
-  }, [layer.wfs_service_id, layer.wfs_service_layer_name])
+    return 'overall-displays'
+  })
 
   const onChange = async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -110,12 +109,12 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
         value={layer.vector_layer_id}
         style={{
           borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-          ...(isLast
-            ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-            : {}),
-          ...(isOpen
-            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
-            : {}),
+          ...(isLast ?
+            { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+          : {}),
+          ...(isOpen ?
+            { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
+          : {}),
         }}
       >
         <AccordionHeader
@@ -123,11 +122,11 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
           size="extra-large"
           expandIcon={designing ? undefined : null}
           style={
-            isOpen
-              ? {
-                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
-                }
-              : {}
+            isOpen ?
+              {
+                backgroundColor: 'rgba(103, 216, 101, 0.1)',
+              }
+            : {}
           }
         >
           <div className={layerStyles.headerContainer}>
@@ -151,7 +150,10 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
             className={layerStyles.tabList}
           >
             <Tab value="overall-displays">Overall Display</Tab>
-            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
+            <Tab
+              value="feature-displays"
+              onClick={onClickFeatureDisplays}
+            >
               Feature Displays
             </Tab>
             <Tab value="config">Config</Tab>
@@ -179,17 +181,16 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
           )}
           {tab === 'feature-displays' && (
             <>
-              {vectorLayerDisplayId ? (
+              {vectorLayerDisplayId ?
                 <VectorLayerDisplay
                   vectorLayerDisplayId={vectorLayerDisplayId}
                   from={pathname}
                 />
-              ) : (
-                <VectorLayerDisplays
+              : <VectorLayerDisplays
                   vectorLayerId={layer.vector_layer_id}
                   from={pathname}
                 />
-              )}
+              }
             </>
           )}
           {tab === 'config' && <VectorLayerEditing layer={layer} />}
