@@ -6,13 +6,14 @@ import { createWmsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/wms-services/$wmsServiceId/'
-
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
+  from: string
 }
 
-export const Header = ({ autoFocusRef }: Props) => {
+export const Header = ({ autoFocusRef, from }: Props) => {
+  const isForm =
+    from === '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
   const { projectId, wmsServiceId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -39,7 +40,7 @@ export const Header = ({ autoFocusRef }: Props) => {
     const id = await createWmsService({ projectId })
     if (!id) return
     navigate({
-      to: `../${id}`,
+      to: isForm ? `../../${id}/wms-service` : `../${id}/wms-service`,
       params: (prev) => ({ ...prev, wmsServiceId: id }),
     })
     autoFocusRef?.current?.focus()
@@ -60,7 +61,7 @@ export const Header = ({ autoFocusRef }: Props) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: '..' })
+      navigate({ to: isForm ? `../..` : `..` })
     } catch (error) {
       console.error(error)
     }
@@ -70,7 +71,7 @@ export const Header = ({ autoFocusRef }: Props) => {
     const next = rows[(ownIndex + 1) % len]
     if (!next) return
     navigate({
-      to: `../${next.wms_service_id}`,
+      to: isForm ? `../../${next.wms_service_id}/wms-service` : `../${next.wms_service_id}/wms-service`,
       params: (prev) => ({ ...prev, wmsServiceId: next.wms_service_id }),
     })
   }
@@ -79,7 +80,7 @@ export const Header = ({ autoFocusRef }: Props) => {
     const previous = rows[(ownIndex + len - 1) % len]
     if (!previous) return
     navigate({
-      to: `../${previous.wms_service_id}`,
+      to: isForm ? `../../${previous.wms_service_id}/wms-service` : `../${previous.wms_service_id}/wms-service`,
       params: (prev) => ({ ...prev, wmsServiceId: previous.wms_service_id }),
     })
   }

@@ -1,13 +1,14 @@
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 
 import { createWmsService } from '../../../../modules/createRows.ts'
 import {
   addOperationAtom,
   addNotificationAtom,
   updateNotificationAtom,
+  postgrestClientAtom,
 } from '../../../../store.ts'
 import styles from './FetchWmsCapabilities.module.css'
 
@@ -26,6 +27,7 @@ export const FetchWmsCapabilities = ({
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const updateNotification = useSetAtom(updateNotificationAtom)
+  const postgrestClient = useAtomValue(postgrestClientAtom)
 
   const res = useLiveQuery(
     `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,
@@ -74,20 +76,25 @@ export const FetchWmsCapabilities = ({
           },
           prev: service,
         })
-        // Remove existing layers to be recreated
+        // Remove existing layers - delete from server first, then from PGlite
+        if (postgrestClient) {
+          const { error: serverDeleteError } = await postgrestClient
+            .from('wms_service_layers')
+            .delete()
+            .eq('wms_service_id', service.wms_service_id)
+          
+          if (serverDeleteError) {
+            console.error('Error deleting layers from server:', serverDeleteError)
+            throw serverDeleteError
+          }
+        }
+        
         await db.query(
           `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
-        addOperation({
-          table: 'wms_service_layers',
-          filter: {
-            function: 'eq',
-            column: 'wms_service_id',
-            value: service.wms_service_id,
-          },
-          operation: 'delete',
-        })
+        console.log('Deleted layers from PGlite')
+        // Don't add delete operation to queue since we handled server delete directly
       }
     } else {
       // 1. check if wms_service exists for this url
@@ -99,20 +106,26 @@ export const FetchWmsCapabilities = ({
       if (existingService) {
         // 2. if so, update it
         service = { ...existingService }
-        // and remove its layers to be recreated
+        // and remove its layers - delete from server first, then from PGlite
+        if (postgrestClient) {
+          const { error: serverDeleteError } = await postgrestClient
+            .from('wms_service_layers')
+            .delete()
+            .eq('wms_service_id', service.wms_service_id)
+          
+          if (serverDeleteError) {
+            console.error('Error deleting layers from server:', serverDeleteError)
+            throw serverDeleteError
+          }
+        }
+        
         await db.query(
           `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
-        addOperation({
-          table: 'wms_service_layers',
-          filter: {
-            function: 'eq',
-            column: 'wms_service_id',
-            value: service.wms_service_id,
-          },
-          operation: 'delete',
-        })
+        console.log('Deleted layers from PGlite')
+        // Don't add delete operation to queue since we handled server delete directly
+        
         // ensure wmsLayer.wms_service_id is set (only if wmsLayer exists)
         if (wmsLayer.wms_layer_id) {
           await db.query(

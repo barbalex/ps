@@ -3,6 +3,7 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
+import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
@@ -13,22 +14,26 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
+  layers_count_unfiltered: number
 }
 
-export const useWmsServiceNavData = ({ projectId, wmsServiceId }: Props) => {
+export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
   const res = useLiveQuery(
     `
-      SELECT
-        wms_service_id AS id,
-        coalesce(url, wms_service_id::text) AS label
-      FROM wms_services
-      WHERE
-        wms_service_id = $1
-    `,
-    [wmsServiceId],
+    WITH
+      layers_count AS (SELECT COUNT(*) AS count FROM wms_service_layers WHERE wms_service_id = '${wmsServiceId}')
+    SELECT
+      wms_service_id AS id,
+      coalesce(url, wms_service_id::text) AS label,
+      layers_count.count AS layers_count_unfiltered
+    FROM
+      wms_services, 
+      layers_count
+    WHERE
+      wms_services.wms_service_id = '${wmsServiceId}'`,
   )
 
   const loading = res === undefined
@@ -59,6 +64,17 @@ export const useWmsServiceNavData = ({ projectId, wmsServiceId }: Props) => {
     label,
     notFound,
     nameSingular: 'WMS Service',
+    navs: [
+      { id: 'wms-service', label: 'WMS Service' },
+      {
+        id: 'layers',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.layers_count_unfiltered ?? 0,
+          namePlural: 'Layers',
+        }),
+      },
+    ],
   }
 
   return { loading, navData }

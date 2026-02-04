@@ -13,9 +13,11 @@ import type WmsServices from '../../models/public/WmsServices.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/wms-services/$wmsServiceId/'
+interface Props {
+  from: string
+}
 
-export const WmsService = () => {
+export const WmsService = ({ from }: Props) => {
   const { wmsServiceId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
@@ -62,7 +64,10 @@ export const WmsService = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
       <div className="form-container">
         {!res ?
           <Loading />

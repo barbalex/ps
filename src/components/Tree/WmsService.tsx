@@ -1,36 +1,40 @@
-import { useNavigate, useLocation } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'
 import { WmsServiceLayersNode } from './WmsServiceLayers.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 export const WmsServiceNode = ({ projectId, nav, level = 4 }) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
+
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = ['data', 'projects', projectId, 'wms-services']
+  const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  // Check if layers node is open
-  const layersArray = [...ownArray, 'layers']
-  const isLayersOpen = urlPath.length >= layersArray.length && 
-                        layersArray.every((part, i) => urlPath[i] === part)
-
   const onClickButton = () => {
-    if (isLayersOpen) {
-      removeChildNodes({ node: layersArray })
-      if (isInActiveNodeArray && layersArray.length <= urlPath.length) {
-        navigate({ to: ownUrl })
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
       }
       return
     }
-    addOpenNodes({ nodes: [layersArray] })
+    // add to openNodes without navigating
+    addOpenNodes({ nodes: [ownArray] })
   }
 
   return (
@@ -39,19 +43,30 @@ export const WmsServiceNode = ({ projectId, nav, level = 4 }) => {
         label={nav.label}
         id={nav.id}
         level={level}
+        isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        isOpen={isLayersOpen}
-        childrenCount={1}
+        childrenCount={2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isLayersOpen && (
-        <WmsServiceLayersNode
-          projectId={projectId}
-          wmsServiceId={nav.id}
-          level={level + 1}
-        />
+      {isOpen && (
+        <>
+          <Node
+            label="WMS Service"
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'wms-service'
+            }
+            isActive={isEqual(urlPath, [...ownArray, 'wms-service'])}
+            to={`${ownUrl}/wms-service`}
+          />
+          <WmsServiceLayersNode
+            projectId={projectId}
+            wmsServiceId={nav.id}
+          />
+        </>
       )}
     </>
   )
