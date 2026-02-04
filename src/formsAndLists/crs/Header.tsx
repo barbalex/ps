@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createCrs } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -14,6 +15,13 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current crsId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const crsIdRef = useRef(crsId)
+  useEffect(() => {
+    crsIdRef.current = crsId
+  }, [crsId])
 
   const addRow = async () => {
     const id = await createCrs()
@@ -50,7 +58,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(`SELECT crs_id FROM crs order by label`)
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.crs_id === crsId)
+      const index = rows.findIndex((p) => p.crs_id === crsIdRef.current)
       const next = rows[(index + 1) % len]
       navigate({
         to: `/data/crs/${next.crs_id}`,
@@ -66,7 +74,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(`SELECT crs_id FROM crs order by label`)
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.crs_id === crsId)
+      const index = rows.findIndex((p) => p.crs_id === crsIdRef.current)
       const previous = rows[(index + len - 1) % len]
       navigate({
         to: `/data/crs/${previous.crs_id}`,

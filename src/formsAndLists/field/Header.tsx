@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current fieldId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const fieldIdRef = useRef(fieldId)
+  useEffect(() => {
+    fieldIdRef.current = fieldId
+  }, [fieldId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}`,
@@ -57,7 +65,7 @@ export const Header = ({ autoFocusRef, from }) => {
       ORDER BY label`)
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.field_id === fieldId)
+      const index = rows.findIndex((p) => p.field_id === fieldIdRef.current)
       const next = rows[(index + 1) % len]
       navigate({
         to: `../${next.field_id}`,
@@ -79,7 +87,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.field_id === fieldId)
+      const index = rows.findIndex((p) => p.field_id === fieldIdRef.current)
       const previous = rows[(index + len - 1) % len]
       navigate({
         to: `../${previous.field_id}`,
