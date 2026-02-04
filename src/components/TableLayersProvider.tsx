@@ -171,9 +171,9 @@ export const TableLayersProvider = () => {
 
         // 5.1 occurrences_to_assess: needed if occurrences exist
         if (occurrenceCount) {
-          const occurrencesToAssessVectorLayers = await db.query(
+          const occurrencesToAssessVectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -182,10 +182,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let occurrencesToAssessVectorLayerId: string | undefined =
-            occurrencesToAssessVectorLayers?.rows?.[0]?.vector_layer_id
-          if (!occurrencesToAssessVectorLayerId) {
-            occurrencesToAssessVectorLayerId = await createVectorLayer({
+          if (occurrencesToAssessVectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_to_assess',
@@ -197,9 +195,9 @@ export const TableLayersProvider = () => {
 
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
         if (occurrenceCount) {
-          const occurrencesNotToAssignVectorLayers = await db.query(
+          const occurrencesNotToAssignVectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -208,10 +206,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let occurrencesNotToAssignVectorLayerId: string | undefined =
-            occurrencesNotToAssignVectorLayers?.rows?.[0]?.vector_layer_id
-          if (!occurrencesNotToAssignVectorLayerId) {
-            occurrencesNotToAssignVectorLayerId = await createVectorLayer({
+          if (occurrencesNotToAssignVectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_not_to_assign',
@@ -223,9 +219,9 @@ export const TableLayersProvider = () => {
 
         // 7.1 places2 needed if placeLevels2 exists
         if (placeLevel2) {
-          const places2VectorLayers = await db.query(
+          const places2VectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -235,10 +231,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let places2VectorLayerId: string | undefined =
-            places2VectorLayers?.rows?.[0]?.vector_layer_id
-          if (!places2VectorLayerId) {
-            places2VectorLayerId = await createVectorLayer({
+          if (places2VectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'places',
