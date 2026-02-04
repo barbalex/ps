@@ -21,7 +21,7 @@ export const Subprojects = () => {
     const subprojectId = await createSubproject({ projectId })
     if (!subprojectId) return
     navigate({
-      to: subprojectId,
+      to: `${subprojectId}/subproject`,
       params: (prev) => ({ ...prev, subprojectId }),
     })
   }
@@ -35,17 +35,16 @@ export const Subprojects = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          navs.map(({ id, label }) => (
+        : navs.map(({ id, label }) => (
             <Row
               key={id}
               label={label ?? id}
               to={`/data/projects/${projectId}/subprojects/${id}`}
             />
           ))
-        )}
+        }
       </div>
     </div>
   )
