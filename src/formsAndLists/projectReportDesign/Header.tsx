@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { createProjectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
+
+  // Keep a ref to the current projectReportDesignId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const projectReportDesignIdRef = useRef(projectReportDesignId)
+  useEffect(() => {
+    projectReportDesignIdRef.current = projectReportDesignId
+  }, [projectReportDesignId])
 
   const addRow = async () => {
     const project_report_design_id = await createProjectReportDesign({
@@ -58,11 +66,10 @@ export const Header = ({ autoFocusRef, from }) => {
       const designs = res?.rows
       const len = designs.length
       const index = designs.findIndex(
-        (d) => d.project_report_design_id === projectReportDesignId,
+        (d) => d.project_report_design_id === projectReportDesignIdRef.current,
       )
-      if (index === -1 || index === len - 1) return
-      const project_report_design_id =
-        designs[index + 1].project_report_design_id
+      const next = designs[(index + 1) % len]
+      const project_report_design_id = next.project_report_design_id
       navigate({
         to: `../${project_report_design_id}`,
       })
@@ -84,12 +91,12 @@ export const Header = ({ autoFocusRef, from }) => {
         [projectId],
       )
       const designs = res?.rows
+      const len = designs.length
       const index = designs.findIndex(
-        (d) => d.project_report_design_id === projectReportDesignId,
+        (d) => d.project_report_design_id === projectReportDesignIdRef.current,
       )
-      if (index === -1 || index === 0) return
-      const project_report_design_id =
-        designs[index - 1].project_report_design_id
+      const previous = designs[(index + len - 1) % len]
+      const project_report_design_id = previous.project_report_design_id
       navigate({
         to: `../${project_report_design_id}`,
       })

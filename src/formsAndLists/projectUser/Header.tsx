@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createProjectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -14,6 +15,13 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current projectUserId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const projectUserIdRef = useRef(projectUserId)
+  useEffect(() => {
+    projectUserIdRef.current = projectUserId
+  }, [projectUserId])
 
   const addRow = async () => {
     const id = await createProjectUser({ projectId })
@@ -60,7 +68,7 @@ export const Header = ({ autoFocusRef }) => {
       const projectUsers = res?.rows
       const len = projectUsers.length
       const index = projectUsers.findIndex(
-        (p) => p.project_user_id === projectUserId,
+        (p) => p.project_user_id === projectUserIdRef.current,
       )
       const next = projectUsers[(index + 1) % len]
       navigate({
@@ -84,7 +92,7 @@ export const Header = ({ autoFocusRef }) => {
       const projectUsers = res?.rows
       const len = projectUsers.length
       const index = projectUsers.findIndex(
-        (p) => p.project_user_id === projectUserId,
+        (p) => p.project_user_id === projectUserIdRef.current,
       )
       const previous = projectUsers[(index + len - 1) % len]
       navigate({
