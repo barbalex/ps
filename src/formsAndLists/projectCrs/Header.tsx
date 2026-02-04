@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -14,6 +15,13 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current projectCrsId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const projectCrsIdRef = useRef(projectCrsId)
+  useEffect(() => {
+    projectCrsIdRef.current = projectCrsId
+  }, [projectCrsId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM project_crs WHERE project_id = '${projectId}'`,
@@ -62,7 +70,7 @@ export const Header = ({ autoFocusRef }) => {
       const projectCrs = res?.rows
       const len = projectCrs.length
       const index = projectCrs.findIndex(
-        (p) => p.project_crs_id === projectCrsId,
+        (p) => p.project_crs_id === projectCrsIdRef.current,
       )
       const next = projectCrs[(index + 1) % len]
       navigate({
@@ -83,7 +91,7 @@ export const Header = ({ autoFocusRef }) => {
       const projectCrs = res?.rows
       const len = projectCrs.length
       const index = projectCrs.findIndex(
-        (p) => p.project_crs_id === projectCrsId,
+        (p) => p.project_crs_id === projectCrsIdRef.current,
       )
       const previous = projectCrs[(index + len - 1) % len]
       navigate({
