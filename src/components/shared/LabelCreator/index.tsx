@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { DragDropContext } from '@hello-pangea/dnd'
 import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
@@ -25,10 +25,16 @@ export const LabelCreator = ({
   name,
   onChange: onChangePassed,
 }: Props) => {
-  const [label, setLabel] = useState(structuredClone(labelPassed ?? []))
+  const [labelProp, setLabelProp] = useState(labelPassed)
+  const [label, setLabel] = useState(() => structuredClone(labelPassed ?? []))
+
+  // Reset local state when prop changes (getDerivedStateFromProps pattern)
+  if (!isEqual(labelProp, labelPassed)) {
+    setLabelProp(labelPassed)
+    setLabel(structuredClone(labelPassed ?? []))
+  }
 
   const onChange = (newLabel) => setLabel(newLabel)
-  useEffect(() => setLabel(structuredClone(labelPassed ?? [])), [labelPassed])
 
   const labelChanged =
     (

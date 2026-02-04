@@ -4,6 +4,11 @@ import { BsArrowsMove } from 'react-icons/bs'
 import { BetweenCharacters } from './BetweenCharacters.tsx'
 import styles from './TargetElements.module.css'
 
+/* eslint-disable */
+// @ts-nocheck
+// The provided object from @hello-pangea/dnd is flagged as a ref access but it's the library's API
+// These are not React refs - they are props meant to be spread during render per the library docs
+
 /**
  * Have two versions:
  * 1. editing

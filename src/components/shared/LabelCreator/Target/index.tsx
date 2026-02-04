@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Droppable } from '@hello-pangea/dnd'
 import { Button, Spinner } from '@fluentui/react-components'
 
@@ -30,16 +30,21 @@ interface Props {
 }
 
 export const Target = ({ label, labelChanged, onChange, saveToDb }: Props) => {
-  // TODO: on apply changes: set loading until labelChanged is false
   const [changing, setChanging] = useState(false)
+  const [prevLabelChanged, setPrevLabelChanged] = useState(labelChanged)
+
+  // Reset changing state when labelChanged becomes false (getDerivedStateFromProps pattern)
+  if (prevLabelChanged !== labelChanged) {
+    setPrevLabelChanged(labelChanged)
+    if (changing && !labelChanged) {
+      setChanging(false)
+    }
+  }
+
   const onClick = () => {
     setChanging(true)
     saveToDb()
   }
-
-  useEffect(() => {
-    if (changing && !labelChanged) setChanging(false)
-  }, [changing, labelChanged])
 
   return (
     <div className={styles.container}>
