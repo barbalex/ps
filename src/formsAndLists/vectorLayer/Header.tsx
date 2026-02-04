@@ -12,11 +12,7 @@ import {
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import {
-  createVectorLayer,
-  createVectorLayerDisplay,
-  createLayerPresentation,
-} from '../../modules/createRows.ts'
+import { createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import {
   tabsAtom,
@@ -103,18 +99,18 @@ export const Header = ({ autoFocusRef, row, from }) => {
   }
 
   const addRow = async () => {
-    const vectorLayer = await createVectorLayer({
+    const vectorLayerId = await createVectorLayer({
       projectId,
       type: 'wfs',
     })
     navigate({
       to:
         isForm ?
-          `../../${vectorLayer.vector_layer_id}/vector-layer`
-        : `../${vectorLayer.vector_layer_id}/vector-layer`,
+          `../../${vectorLayerId}/vector-layer`
+        : `../${vectorLayerId}/vector-layer`,
       params: (prev) => ({
         ...prev,
-        vectorLayerId: vectorLayer.vector_layer_id,
+        vectorLayerId,
       }),
     })
     autoFocusRef?.current?.focus()

@@ -1,11 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
-import {
-  createPlace,
-  createVectorLayer,
-  createVectorLayerDisplay,
-  createLayerPresentation,
-} from '../modules/createRows.ts'
+import { createPlace, createVectorLayer } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
@@ -35,11 +30,7 @@ export const Places = ({ from }) => {
     })
     if (!placeIdNew) return
 
-    // need to create a corresponding vector layer and vector layer display
-    // TODO:
-    // 1. only if not yet exists
-    // 2. better via trigger so it also works on import / project creation
-    const vectorLayerId = await createVectorLayer({
+    await createVectorLayer({
       projectId,
       type: 'own',
       ownTable: 'places',
@@ -47,21 +38,11 @@ export const Places = ({ from }) => {
       label: namePlural,
     })
 
-    createVectorLayerDisplay({
-      vectorLayerId,
-    })
-
-    createLayerPresentation({
-      vectorLayerId,
-    })
-
     navigate({
       to: placeIdNew,
       params: (prev) => ({ ...prev, placeId: placeIdNew }),
     })
   }
-
-  console.log({ navs })
 
   return (
     <div className="list-view">

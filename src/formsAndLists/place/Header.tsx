@@ -6,12 +6,7 @@ import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import {
-  createPlace,
-  createVectorLayer,
-  createVectorLayerDisplay,
-  createLayerPresentation,
-} from '../../modules/createRows.ts'
+import { createPlace, createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import {
@@ -59,28 +54,12 @@ export const Header = ({
     })
     const place = resPlace.rows?.[0]
 
-    // need to create a corresponding vector layer and vector layer display
-    const vectorLayerId = await createVectorLayer({
+    await createVectorLayer({
       projectId,
       type: 'own',
       ownTable: 'places',
       ownTableLevel: placeId2 ? 2 : 1,
       label: namePlural,
-    })
-    // console.log('Place.Header.addRow', {
-    //   vectorLayerId,
-    //   resVL,
-    //   projectId,
-    //   placeId2,
-    //   placeNamePlural,
-    // })
-
-    createVectorLayerDisplay({
-      vectorLayerId,
-    })
-
-    createLayerPresentation({
-      vectorLayerId,
     })
 
     const idName = placeId2 ? 'placeId2' : 'placeId'

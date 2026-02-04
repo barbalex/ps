@@ -6,11 +6,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { VectorLayer } from './VectorLayer.tsx'
-import {
-  createVectorLayer,
-  createLayerPresentation,
-  createVectorLayerDisplay,
-} from '../../../../../modules/createRows.ts'
+import { createVectorLayer } from '../../../../../modules/createRows.ts'
 import layerStyles from '../index.module.css'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 
@@ -44,16 +40,8 @@ export const VectorLayers = () => {
   const vectorLayerIds: { vector_layer_id: string }[] = res?.rows ?? []
 
   const addRow = async () => {
-    const vectorLayer = await createVectorLayer({ projectId, type: 'wfs' })
-    // also add vector_layer_display
-    await createVectorLayerDisplay({
-      vectorLayerId: vectorLayer.vector_layer_id,
-    })
-    // also add layer_presentation
-    await createLayerPresentation({
-      vectorLayerId: vectorLayer.vector_layer_id,
-    })
-    setOpenItems([openItems, vectorLayer.vector_layer_id])
+    const vectorLayerId = await createVectorLayer({ projectId, type: 'wfs' })
+    setOpenItems([openItems, vectorLayerId])
   }
 
   const onToggleItem = (event, { value: vectorLayerId, openItems }) => {
@@ -104,7 +92,7 @@ export const VectorLayers = () => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {vectorLayerIds.length ? (
+          {vectorLayerIds.length ?
             vectorLayerIds.map((l, index) => (
               <VectorLayer
                 layer={l}
@@ -113,9 +101,7 @@ export const VectorLayers = () => {
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
-          ) : (
-            <p className={layerStyles.none}>No inactive Vector Layers</p>
-          )}
+          : <p className={layerStyles.none}>No inactive Vector Layers</p>}
           <Button
             size="small"
             icon={<FaPlus />}

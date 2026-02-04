@@ -1,10 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
-import {
-  createVectorLayer,
-  createVectorLayerDisplay,
-  createLayerPresentation,
-} from '../modules/createRows.ts'
+import { createVectorLayer } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
