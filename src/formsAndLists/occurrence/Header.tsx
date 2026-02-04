@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useRef, useEffect } from 'react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
@@ -9,6 +10,13 @@ export const Header = ({ from }) => {
 
   const db = usePGlite()
 
+  // Keep a ref to the current occurrenceId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const occurrenceIdRef = useRef(occurrenceId)
+  useEffect(() => {
+    occurrenceIdRef.current = occurrenceId
+  }, [occurrenceId])
+
   const toNext = async () => {
     try {
       const res = await db.query(
@@ -17,7 +25,7 @@ export const Header = ({ from }) => {
       )
       const occurrences = res?.rows
       const len = occurrences.length
-      const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
+      const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceIdRef.current)
       const next = occurrences[(index + 1) % len]
       navigate({
         to: `../${next.occurrence_id}`,
@@ -36,7 +44,7 @@ export const Header = ({ from }) => {
       )
       const occurrences = res?.rows
       const len = occurrences.length
-      const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceId)
+      const index = occurrences.findIndex((p) => p.occurrence_id === occurrenceIdRef.current)
       const previous = occurrences[(index + len - 1) % len]
       navigate({
         to: `../${previous.occurrence_id}`,

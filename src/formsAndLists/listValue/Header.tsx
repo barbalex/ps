@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createListValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -14,6 +15,13 @@ export const Header = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current listValueId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const listValueIdRef = useRef(listValueId)
+  useEffect(() => {
+    listValueIdRef.current = listValueId
+  }, [listValueId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM list_values WHERE list_id = '${listId}'`,
@@ -62,7 +70,7 @@ export const Header = ({ autoFocusRef }) => {
       )
       const listValues = res?.rows
       const len = listValues.length
-      const index = listValues.findIndex((p) => p.list_value_id === listValueId)
+      const index = listValues.findIndex((p) => p.list_value_id === listValueIdRef.current)
       const next = listValues[(index + 1) % len]
       navigate({
         to: `../${next.list_value_id}`,
@@ -81,7 +89,7 @@ export const Header = ({ autoFocusRef }) => {
       )
       const listValues = res?.rows
       const len = listValues.length
-      const index = listValues.findIndex((p) => p.list_value_id === listValueId)
+      const index = listValues.findIndex((p) => p.list_value_id === listValueIdRef.current)
       const previous = listValues[(index + len - 1) % len]
       navigate({
         to: `../${previous.list_value_id}`,
