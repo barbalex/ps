@@ -18,26 +18,34 @@ export const PlaceLevels = () => {
 
   const add = async () => {
     const id = await createPlaceLevel({ project_id: projectId })
+    console.log('created place level with id', id)
     if (!id) return
     navigate({
-      to: `/data/project/${projectId}/place-levels/${id}`,
+      to: id,
       params: (prev) => ({ ...prev, placeLevelId: id }),
     })
   }
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+      />
       <div className="list-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : (
-          <>
+        : <>
             {navs.map(({ id, label }) => (
-              <Row key={id} to={id} label={label ?? id} />
+              <Row
+                key={id}
+                to={id}
+                label={label ?? id}
+              />
             ))}
           </>
-        )}
+        }
       </div>
     </div>
   )

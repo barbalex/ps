@@ -552,12 +552,25 @@ export const createProjectReport = async ({ projectId }) => {
   return project_report_id
 }
 
-export const createPlaceLevel = async () => {
+export const createPlaceLevel = async ({ project_id }) => {
   const db = store.get(pgliteDbAtom)
   const place_level_id = uuidv7()
   await db.query(
-    `insert into place_levels (place_level_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-    [place_level_id, 1, true, true, true, true, true, true, true, true, true],
+    `insert into place_levels (place_level_id, project_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+    [
+      place_level_id,
+      project_id,
+      1,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+    ],
   )
 
   store.set(addOperationAtom, {
@@ -565,6 +578,7 @@ export const createPlaceLevel = async () => {
     operation: 'insert',
     draft: {
       place_level_id,
+      project_id,
       level: 1,
       reports: true,
       report_values: true,
