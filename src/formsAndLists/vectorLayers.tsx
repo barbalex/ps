@@ -27,16 +27,8 @@ export const VectorLayers = () => {
       type: 'wfs',
     })
     if (!vectorLayerId) return
-    // also add vector_layer_display
-    await createVectorLayerDisplay({
-      vectorLayerId,
-    })
-    // also add layer_presentation
-    await createLayerPresentation({
-      vectorLayerId,
-    })
     navigate({
-      to: '/data/projects/$projectId_/vector-layers/$vectorLayerId/vector-layer',
+      to: `/data/projects/${projectId}/vector-layers/${vectorLayerId}/vector-layer`,
       params: { projectId, vectorLayerId },
     })
   }
