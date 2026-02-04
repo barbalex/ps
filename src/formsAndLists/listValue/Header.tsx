@@ -23,7 +23,7 @@ export const Header = ({ autoFocusRef }) => {
   const addRow = async () => {
     const id = await createListValue({ listId })
     console.log('New list value id:', id)
-    if (id) return
+    if (!id) return
     navigate({
       to: `../${id}`,
       params: (prev) => ({ ...prev, listValueId: id }),
