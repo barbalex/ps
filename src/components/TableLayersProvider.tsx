@@ -2,11 +2,7 @@ import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
-import {
-  createVectorLayer,
-  createVectorLayerDisplay,
-  createLayerPresentation,
-} from '../modules/createRows.ts'
+import { createVectorLayer } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
 import { syncingAtom, sqlInitializingAtom } from '../store.ts'
 import type Projects from '../models/public/Projects.ts'
@@ -274,9 +270,9 @@ export const TableLayersProvider = () => {
 
         // 9.1 checks2 needed if placeLevels2.checks exists
         if (placeLevel2?.checks) {
-          const checks2VectorLayers = await db.query(
+          const checks2VectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -286,10 +282,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let checks2VectorLayerId: string | undefined =
-            checks2VectorLayers?.rows?.[0]?.vector_layer_id
-          if (!checks2VectorLayerId) {
-            checks2VectorLayerId = await createVectorLayer({
+          if (checks2VectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'checks',
@@ -305,9 +299,9 @@ export const TableLayersProvider = () => {
 
         // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
         if (placeLevel2?.occurrences && occurrenceCount) {
-          const occurrencesAssigned2VectorLayers = await db.query(
+          const occurrencesAssigned2VectorLayersCount = await db.query(
             `
-          SELECT * 
+          SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
@@ -317,10 +311,8 @@ export const TableLayersProvider = () => {
         `,
             [projectId],
           )
-          let occurrencesAssigned2VectorLayerId: string | undefined =
-            occurrencesAssigned2VectorLayers?.rows?.[0]?.vector_layer_id
-          if (!occurrencesAssigned2VectorLayerId) {
-            occurrencesAssigned2VectorLayerId = await createVectorLayer({
+          if (occurrencesAssigned2VectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
               projectId,
               type: 'own',
               ownTable: 'occurrences_assigned',
