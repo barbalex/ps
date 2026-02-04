@@ -14,6 +14,7 @@ export const Row = ({
   const navigate = useNavigate()
   const [swipeOffset, setSwipeOffset] = useState(0)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [rowWidth, setRowWidth] = useState(0)
   const startXRef = useRef(0)
   const rowRef = useRef<HTMLDivElement>(null)
 
@@ -29,6 +30,7 @@ export const Row = ({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!onDelete) return
     startXRef.current = e.touches[0].clientX
+    setRowWidth(rowRef.current?.offsetWidth || 0)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -45,7 +47,6 @@ export const Row = ({
   const handleTouchEnd = () => {
     if (!onDelete) return
 
-    const rowWidth = rowRef.current?.offsetWidth || 0
     const swipePercentage = (swipeOffset / rowWidth) * 100
 
     if (swipePercentage >= 30) {
@@ -69,8 +70,7 @@ export const Row = ({
     setSwipeOffset(0)
   }
 
-  const rowWidth = rowRef.current?.offsetWidth || 0
-  const swipePercentage = (swipeOffset / rowWidth) * 100
+  const swipePercentage = rowWidth > 0 ? (swipeOffset / rowWidth) * 100 : 0
   const isOverThreshold = swipePercentage >= 30
 
   return (
@@ -103,7 +103,10 @@ export const Row = ({
           >
             ✓
           </button>
-          <button className={styles.cancelButton} onClick={handleCancelDelete}>
+          <button
+            className={styles.cancelButton}
+            onClick={handleCancelDelete}
+          >
             ✕
           </button>
         </div>
@@ -115,7 +118,7 @@ export const Row = ({
           transition: showConfirm ? 'none' : 'transform 0.3s ease-out',
         }}
       >
-        {imgSrc ? (
+        {imgSrc ?
           <img
             onClick={onClickImg}
             src={imgSrc}
@@ -124,12 +127,16 @@ export const Row = ({
             width="50"
             height="50"
           />
-        ) : lastHasImages ? (
-          <div onClick={onClickImg} className={styles.imgDiv} />
-        ) : (
-          <div />
-        )}
-        <div onClick={onClickLabel} className={styles.label}>
+        : lastHasImages ?
+          <div
+            onClick={onClickImg}
+            className={styles.imgDiv}
+          />
+        : <div />}
+        <div
+          onClick={onClickLabel}
+          className={styles.label}
+        >
           {label}
         </div>
       </div>
