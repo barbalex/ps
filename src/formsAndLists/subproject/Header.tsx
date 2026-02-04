@@ -7,6 +7,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
+  console.log('from in Subproject Header:', from)
   const isForm =
     from === '/data/projects/$projectId_/subprojects/$subprojectId_/subproject'
   const { projectId, subprojectId } = useParams({ from })
@@ -49,7 +50,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../../..` : `../..` })
+      navigate({ to: isForm ? `../..` : `..` })
     } catch (error) {
       console.error('Error deleting subproject:', error)
       // Could add a toast notification here
