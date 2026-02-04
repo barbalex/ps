@@ -107,14 +107,6 @@ export const Header = ({ autoFocusRef, row, from }) => {
       projectId,
       type: 'wfs',
     })
-    // also add vector_layer_display
-    createVectorLayerDisplay({
-      vectorLayerId: vectorLayer.vector_layer_id,
-    })
-    // add layer_presentation
-    await createLayerPresentation({
-      vectorLayerId: vectorLayer.vector_layer_id,
-    })
     navigate({
       to:
         isForm ?
@@ -149,6 +141,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
       const len = rows.length
       const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerId)
       const next = rows[(index + 1) % len]
+      console.log('Navigating to next vector layer:', next.vector_layer_id)
       navigate({
         to:
           isForm ?
