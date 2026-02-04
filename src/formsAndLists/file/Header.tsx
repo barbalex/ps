@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
@@ -34,6 +34,13 @@ export const Header = ({ row, previewRef, from }) => {
   }
 
   const db = usePGlite()
+
+  // Keep a ref to the current fileId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const fileIdRef = useRef(fileId)
+  useEffect(() => {
+    fileIdRef.current = fileId
+  }, [fileId])
 
   // TODO: if is preview, add preview to the url
 
@@ -96,7 +103,7 @@ export const Header = ({ row, previewRef, from }) => {
       )
       const fileIds: { file_id: string }[] = res?.rows ?? []
       const len = fileIds.length
-      const index = fileIds.findIndex((p) => p.file_id === fileId)
+      const index = fileIds.findIndex((p) => p.file_id === fileIdRef.current)
       const next = fileIds[(index + 1) % len]
       navigate({
         to: `${isPreview ? '../' : ''}../${next.file_id}${
@@ -120,7 +127,7 @@ export const Header = ({ row, previewRef, from }) => {
       )
       const fileIds: { file_id: string }[] = res?.rows ?? []
       const len = fileIds.length
-      const index = fileIds.findIndex((p) => p.file_id === fileId)
+      const index = fileIds.findIndex((p) => p.file_id === fileIdRef.current)
       const previous = fileIds[(index + len - 1) % len]
       navigate({
         to: `${isPreview ? '../' : ''}../${previous.file_id}${

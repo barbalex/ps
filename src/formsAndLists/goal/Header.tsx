@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useRef, useEffect } from 'react'
 
 import { createGoal } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -15,6 +16,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+
+  // Keep a ref to the current goalId so it's always fresh in callbacks
+  // without this users can only click toNext or toPrevious once
+  const goalIdRef = useRef(goalId)
+  useEffect(() => {
+    goalIdRef.current = goalId
+  }, [goalId])
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM goals WHERE subproject_id = '${subprojectId}'`,
@@ -59,7 +67,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const goals = res?.rows
       const len = goals.length
-      const index = goals.findIndex((p) => p.goal_id === goalId)
+      const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const next = goals[(index + 1) % len]
       navigate({
         to: isForm ? `../../${next.goal_id}/goal` : `../${next.goal_id}`,
@@ -78,7 +86,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const goals = res?.rows
       const len = goals.length
-      const index = goals.findIndex((p) => p.goal_id === goalId)
+      const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const previous = goals[(index + len - 1) % len]
       navigate({
         to:
