@@ -18,7 +18,7 @@ export const observeOperations = (store) =>
   observe(async (get, set) => {
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
-    console.log(`observeOperations, operations queue:`, operations)
+    // console.log(`observeOperations, operations queue:`, operations)
     // TODO: reset this return
     // is set to test queued operations processing
     // return
