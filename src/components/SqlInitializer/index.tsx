@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 
-import { seedTestData } from './seedTestData.ts'
 import {
   sqlInitializingAtom,
   setSqlInitializingFalseAfterTimeoutAtom,
@@ -25,13 +24,15 @@ export const SqlInitializer = () => {
         hasRun: hasRunRef.current,
         isRunning: isRunningRef.current,
       })
-      
+
       // Prevent multiple simultaneous runs
       if (hasRunRef.current || isRunningRef.current) {
-        console.log('SqlInitializer: Already initialized or initializing, skipping')
+        console.log(
+          'SqlInitializer: Already initialized or initializing, skipping',
+        )
         return
       }
-      
+
       isRunningRef.current = true
       const resultProjectsTableExists = await db.query(
         `
@@ -47,7 +48,9 @@ export const SqlInitializer = () => {
       console.log('SqlInitializer: Projects table exists:', projectsTableExists)
 
       if (projectsTableExists) {
-        console.log('SqlInitializer: Tables exist, scheduling sqlInitializing=false after timeout')
+        console.log(
+          'SqlInitializer: Tables exist, scheduling sqlInitializing=false after timeout',
+        )
         hasRunRef.current = true
         isRunningRef.current = false
         return setSqlInitializingFalseAfterTimeout()
@@ -92,33 +95,12 @@ export const SqlInitializer = () => {
         return setSqlInitializingFalseAfterTimeout()
       }
 
-      console.log('SqlInitializer: All SQL operations complete, scheduling sqlInitializing=false after timeout')
-      
+      console.log(
+        'SqlInitializer: All SQL operations complete, scheduling sqlInitializing=false after timeout',
+      )
+
       hasRunRef.current = true
       isRunningRef.current = false
-      
-      // Only seed test data if backend database is empty
-      // Check for the specific test user that gets seeded
-      // if (postgrestClient) {
-      //   try {
-      //     const { data: users, error } = await postgrestClient
-      //       .from('users')
-      //       .select('user_id')
-      //       .eq('user_id', '018cf95a-d817-7000-92fa-bb3b2ad59dda')
-      //       .limit(1)
-
-      //     if (error) throw error
-
-      //     if (!users || users.length === 0) {
-      //       console.log('Test user not found in backend, seeding test data...')
-      //       await seedTestData(db)
-      //     } else {
-      //       console.log('Test user found in backend, skipping seed')
-      //     }
-      //   } catch (error) {
-      //     console.error('SqlInitializer, error checking backend:', error)
-      //   }
-      // }
 
       setSqlInitializingFalseAfterTimeout(false)
     }
