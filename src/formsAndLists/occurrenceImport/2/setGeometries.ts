@@ -18,7 +18,6 @@ export const setGeometries = async ({
   setNotification,
 }: Props) => {
   const db = store.get(pgliteDbAtom)
-  const addOperation = store.get(addOperationAtom)
 
   const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
   const number = occurrenceImport.crs?.split?.(':')?.[1]
@@ -65,7 +64,7 @@ export const setGeometries = async ({
       geometry,
       o.occurrence_id,
     ])
-    addOperation({
+    store.set(addOperationAtom, {
       table: 'occurrences',
       rowIdName: 'occurrence_id',
       rowId: o.occurrence_id,
