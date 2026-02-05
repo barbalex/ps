@@ -9,6 +9,7 @@ import { startSyncing } from '../modules/startSyncing.ts'
 // Module-level flag to prevent multiple sync attempts across component remounts
 let globalSyncStarted = false
 let globalSyncObject = null
+let globalSyncStartTime = 0
 
 export const Syncer = () => {
   const db = usePGlite()
@@ -21,12 +22,16 @@ export const Syncer = () => {
   // TODO: ensure syncing resumes after user has changed
 
   useEffect(() => {
+    const now = Date.now()
+    const timeSinceLastStart = now - globalSyncStartTime
+    
     console.log('Syncer effect running:', {
       hasDb: !!db,
       sqlInitializing,
       hasSyncRef: !!syncRef.current,
       isStarting: isStartingRef.current,
       globalSyncStarted,
+      timeSinceLastStart,
       authUserEmail: authUser?.email,
     })
 
@@ -51,6 +56,7 @@ export const Syncer = () => {
 
     console.log('Syncer: Starting sync...')
     globalSyncStarted = true
+    globalSyncStartTime = Date.now()
     isStartingRef.current = true
 
     startSyncing(db)
@@ -72,21 +78,24 @@ export const Syncer = () => {
         syncRef.current = syncObj
         globalSyncObject = syncObj
         isStartingRef.current = false
+
+        // Log when sync object receives live updates
+        console.log('Syncer: Setting up live update monitoring...')
+        if (syncObj.isUpToDate !== undefined) {
+          console.log('Syncer: Initial isUpToDate:', syncObj.isUpToDate)
+        }
       })
       .catch((error) => {
         console.error('Syncer: Error starting sync:', error)
+        // Reset flags on error so user can retry
         globalSyncStarted = false
         isStartingRef.current = false
       })
 
     return () => {
       console.log('Syncer: Cleanup running')
-      // Don't unsubscribe on cleanup - let it persist across remounts
-      // if (syncRef.current) {
-      //   console.log('AuthAndDb.Syncer unsubscribing sync')
-      //   syncRef.current.unsubscribe?.()
-      //   syncRef.current = null
-      // }
+      // Keep sync alive - don't unsubscribe
+      // The sync object with its WebSocket connections needs to persist
       isStartingRef.current = false
     }
   }, [db, sqlInitializing]) // removed authUser?.email to prevent restarts. TODO: revisit when implementing auth (user switching)

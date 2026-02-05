@@ -20,16 +20,8 @@ export const SqlInitializer = () => {
 
   useEffect(() => {
     const run = async () => {
-      console.log('SqlInitializer: Starting initialization check', {
-        hasRun: hasRunRef.current,
-        isRunning: isRunningRef.current,
-      })
-
       // Prevent multiple simultaneous runs
       if (hasRunRef.current || isRunningRef.current) {
-        console.log(
-          'SqlInitializer: Already initialized or initializing, skipping',
-        )
         return
       }
 
@@ -45,12 +37,8 @@ export const SqlInitializer = () => {
       )
 
       const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
-      console.log('SqlInitializer: Projects table exists:', projectsTableExists)
 
       if (projectsTableExists) {
-        console.log(
-          'SqlInitializer: Tables exist, scheduling sqlInitializing=false after timeout',
-        )
         hasRunRef.current = true
         isRunningRef.current = false
         return setSqlInitializingFalseAfterTimeout()
@@ -62,35 +50,28 @@ export const SqlInitializer = () => {
         .default
       try {
         await db.exec(immutableDateSql)
-      } catch (error) {
-        console.error('SqlInitializer, error creating immutableDate:', error)
+      } catch {
         isRunningRef.current = false
         return setSqlInitializingFalseAfterTimeout()
       }
       const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
       try {
         await db.exec(uuidv7Sql)
-      } catch (error) {
-        console.error('SqlInitializer, error creating uuidv7:', error)
+      } catch {
         isRunningRef.current = false
         return setSqlInitializingFalseAfterTimeout()
       }
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default
       try {
-        console.log('SqlInitializer: Creating tables...')
         await db.exec(createSql)
-        console.log('SqlInitializer: Tables created successfully')
-      } catch (error) {
-        console.error('SqlInitializer, error creating tables:', error)
+      } catch {
         isRunningRef.current = false
         return setSqlInitializingFalseAfterTimeout()
       }
       const triggersSql = (await import(`../../sql/triggers.sql?raw`)).default
       try {
         await db.exec(triggersSql)
-        console.log('SqlInitializer: Triggers created successfully')
-      } catch (error) {
-        console.error('SqlInitializer, error creating triggers:', error)
+      } catch {
         isRunningRef.current = false
         return setSqlInitializingFalseAfterTimeout()
       }

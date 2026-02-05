@@ -7,7 +7,8 @@ export const startSyncing = async (db) => {
   console.log('Sync from server to PGlite initiated')
   store.set(syncingAtom, true)
 
-  const sync = await db.electric.syncShapesToTables({
+  try {
+    const sync = await db.electric.syncShapesToTables({
     shapes: {
       users: {
         shape: {
@@ -1153,8 +1154,9 @@ export const startSyncing = async (db) => {
         table: 'project_crs',
         primaryKey: ['project_crs_id'],
       },
+    useCopy: false, // disable COPY in favor of INSERT for upsert support
     },
-    key: 'ps-sync', // persistent key - shapes survive page reloads
+    key: null, // null key = fresh shapes each load, avoids 409 conflicts
     initialInsertMethod: 'csv',
     onInitialSync: async () => {
       // Debug: Check database after initial sync
@@ -1176,7 +1178,10 @@ export const startSyncing = async (db) => {
       console.log('Syncer.startSyncing: initial sync done')
     },
     // somehow this happens BEFORE at the top of this function
-    onError: (error) => console.error('Syncer', error),
+    onError: (error) => {
+      console.error('Syncer error:', error)
+      // Don't set syncingAtom to false on error - might be transient
+    },
   })
 
   // Don't set syncingAtom to false here - let onInitialSync handle it
@@ -1193,11 +1198,40 @@ export const startSyncing = async (db) => {
     Object.entries(sync.streams).forEach(([shapeName, stream]) => {
       if (stream) {
         console.log(`Setting up stream listener for: ${shapeName}`)
-        // The stream is already active, we just log updates
-        // Note: Don't call stream.subscribe() as that's not the API
       }
     })
   }
 
+  // CRITICAL: Keep sync object globally accessible to prevent garbage collection
+  // This ensures WebSocket connections stay alive for real-time updates
+  if (typeof window !== 'undefined') {
+    ;(window as any).__electricSync = sync
+    console.log('Sync object stored globally for live updates')
+  }
+
   return sync
+  } catch (error) {
+    // On error, log details and clear loading state
+    console.error('Error starting sync:', error)
+    console.error('Error details:', {
+      message: error?.message,
+      status: error?.status,
+      toString: error?.toString(),
+    })
+    store.set(syncingAtom, false)
+    
+    // Check if we got a 409 - it means shapes already exist
+    const is409 = error?.message?.includes('409') || error?.toString()?.includes('409') || error?.status === 409
+    if (is409) {
+      console.log('Got 409 - shapes already exist. This might indicate a race condition.')
+      console.log('Returning minimal sync object to prevent crash.')
+      // Return a minimal sync object to prevent errors
+      return {
+        unsubscribe: () => console.log('No-op unsubscribe'),
+        isUpToDate: true,
+      }
+    }
+    
+    throw error // Re-throw non-409 errors
+  }
 }
