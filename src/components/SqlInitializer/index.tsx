@@ -41,24 +41,28 @@ export const SqlInitializer = () => {
         await db.exec(immutableDateSql)
       } catch (error) {
         console.error('SqlInitializer, error creating immutableDate:', error)
+        return setSqlInitializingFalseAfterTimeout()
       }
       const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
       try {
         await db.exec(uuidv7Sql)
       } catch (error) {
         console.error('SqlInitializer, error creating uuidv7:', error)
+        return setSqlInitializingFalseAfterTimeout()
       }
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default
       try {
         await db.exec(createSql)
       } catch (error) {
         console.error('SqlInitializer, error creating tables:', error)
+        return setSqlInitializingFalseAfterTimeout()
       }
       const triggersSql = (await import(`../../sql/triggers.sql?raw`)).default
       try {
         await db.exec(triggersSql)
       } catch (error) {
         console.error('SqlInitializer, error creating triggers:', error)
+        return setSqlInitializingFalseAfterTimeout()
       }
 
       // Only seed test data if backend database is empty
