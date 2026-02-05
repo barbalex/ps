@@ -57,11 +57,12 @@ export const Header = ({
 
   const deleteRow = async () => {
     try {
-      db.query(`DELETE FROM occurrences WHERE occurrence_import_id = $1`, [
-        occurrenceImportId,
-      ])
+      await db.query(
+        `DELETE FROM occurrence_imports WHERE occurrence_import_id = $1`,
+        [occurrenceImportId],
+      )
       addOperation({
-        table: 'occurrences',
+        table: 'occurrence_imports',
         operation: 'delete',
         filter: {
           function: 'eq',
@@ -69,7 +70,6 @@ export const Header = ({
           value: occurrenceImportId,
         },
       })
-      // TODO: version where array of ids is passed?
       navigate({ to: '..' })
     } catch (error) {
       console.error(error)
