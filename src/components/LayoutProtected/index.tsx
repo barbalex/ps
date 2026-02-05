@@ -10,17 +10,35 @@ import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
-import { mapMaximizedAtom } from '../../store.ts'
+import { mapMaximizedAtom, sqlInitializingAtom, syncingAtom } from '../../store.ts'
 
 const from = '/data'
 
 // memoizing this component creates error
 export const Layout = () => {
   const mapIsMaximized = useAtomValue(mapMaximizedAtom)
+  const sqlInitializing = useAtomValue(sqlInitializingAtom)
+  const syncing = useAtomValue(syncingAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   const { onlyForm } = useSearch({ from })
+
+  // Show loading state while initializing or syncing
+  if (sqlInitializing || syncing) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '1.5rem',
+        color: '#666'
+      }}>
+        {sqlInitializing ? 'Initializing database...' : 'Syncing with server...'}
+      </div>
+    )
+  }
 
   // Breadcrumbs are not protected because:
   // - they are not (very) sensitive

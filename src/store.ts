@@ -407,10 +407,9 @@ export const sqlInitializingAtom = atom(true)
 export const setSqlInitializingFalseAfterTimeoutAtom = atom(
   null,
   (get, set) => {
+    console.log('setSqlInitializingFalseAfterTimeoutAtom: Starting 200ms timeout')
     setTimeout(() => {
-      // console.log(
-      //   'SqlInitializer: setting sqlInitializingAtom to false after timeout',
-      // )
+      console.log('setSqlInitializingFalseAfterTimeoutAtom: Setting sqlInitializingAtom to false after timeout')
       set(sqlInitializingAtom, false)
     }, 200)
   },

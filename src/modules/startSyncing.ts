@@ -5,6 +5,7 @@ const url = constants.getElectricUri()
 
 export const startSyncing = async (db) => {
   console.log('Sync from server to PGlite initiated')
+  store.set(syncingAtom, true)
 
   const sync = await db.electric.syncShapesToTables({
     shapes: {
@@ -1153,7 +1154,7 @@ export const startSyncing = async (db) => {
         primaryKey: ['project_crs_id'],
       },
     },
-    key: null, // set null to force fresh sync without resuming - 'ps-sync' handles its own resuming
+    key: 'ps-sync', // use persistent key to allow Electric to manage subscriptions properly
     initialInsertMethod: 'csv',
     onInitialSync: () => {
       store.set(syncingAtom, false)

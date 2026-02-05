@@ -17,14 +17,33 @@ export const Syncer = () => {
   // TODO: ensure syncing resumes after user has changed
 
   useEffect(() => {
-    if (!db) return
-    if (sqlInitializing) return
-    if (syncRef.current || isStartingRef.current) return // Don't start if already syncing or starting
+    console.log('Syncer effect running:', { 
+      hasDb: !!db, 
+      sqlInitializing, 
+      hasSyncRef: !!syncRef.current,
+      isStarting: isStartingRef.current,
+      authUserEmail: authUser?.email 
+    })
+    
+    if (!db) {
+      console.log('Syncer: No db, returning')
+      return
+    }
+    if (sqlInitializing) {
+      console.log('Syncer: SQL initializing, returning')
+      return
+    }
+    if (syncRef.current || isStartingRef.current) {
+      console.log('Syncer: Already syncing or starting, returning')
+      return // Don't start if already syncing or starting
+    }
 
+    console.log('Syncer: Starting sync...')
     isStartingRef.current = true
 
     startSyncing(db)
       .then((syncObj) => {
+        console.log('Syncer: Sync started successfully')
         syncRef.current = syncObj
         isStartingRef.current = false
       })
@@ -34,6 +53,7 @@ export const Syncer = () => {
       })
 
     return () => {
+      console.log('Syncer: Cleanup running')
       if (syncRef.current) {
         console.log('AuthAndDb.Syncer unsubscribing sync')
         syncRef.current.unsubscribe?.()
