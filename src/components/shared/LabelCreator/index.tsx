@@ -18,7 +18,7 @@ interface Props {
   name: string
   onChange: () => void
   buttonLabel?: string
-  onApply?: () => Promise<void> | void
+  onApply?: (label: LabelElement[]) => Promise<void> | void
 }
 
 export const LabelCreator = ({

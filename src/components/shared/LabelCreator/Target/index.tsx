@@ -28,7 +28,7 @@ interface Props {
   onChange: () => void
   saveToDb: () => void
   buttonLabel?: string
-  onApply?: () => Promise<void> | void
+  onApply?: (label: LabelElement[]) => Promise<void> | void
 }
 
 export const Target = ({
@@ -54,7 +54,7 @@ export const Target = ({
     setChanging(true)
     saveToDb()
     if (onApply) {
-      await onApply()
+      await onApply(label)
     }
     setChanging(false)
   }

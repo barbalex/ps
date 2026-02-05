@@ -1,10 +1,17 @@
 .container {
   position: relative;
+  margin-top: 8px;
+  margin-right: 6px;
+}
+
+.containerDragging {
+  position: relative;
   top: 4px;
+  margin-top: 8px;
+  margin-right: 6px;
 }
 
 .input {
-  margin-right: 6px;
   width: 90px;
   height: 35px;
 }

@@ -1,16 +1,15 @@
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
-import type OccurrenceImports from '../../../models/public/OccurrenceImports.ts'
 import type Occurrences from '../../../models/public/Occurrences.ts'
+import type { LabelElement } from '../../../components/shared/LabelCreator/index.tsx'
 
 type Props = {
-  occurrenceImport: OccurrenceImports
+  labelCreation: LabelElement[]
+  occurrenceImportId: string
 }
 
-export const setLabels = async ({ occurrenceImport }: Props) => {
+export const setLabels = async ({ labelCreation, occurrenceImportId }: Props) => {
   const db = store.get(pgliteDbAtom)
-
-  const labelCreation = occurrenceImport.label_creation
 
   if (!labelCreation || !Array.isArray(labelCreation)) {
     return
@@ -18,7 +17,7 @@ export const setLabels = async ({ occurrenceImport }: Props) => {
 
   const res = await db.query(
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
-    [occurrenceImport?.occurrence_import_id],
+    [occurrenceImportId],
   )
   const occurrences: Occurrences[] = res?.rows ?? []
 

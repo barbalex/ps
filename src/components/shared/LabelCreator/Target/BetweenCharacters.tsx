@@ -34,8 +34,11 @@ export const BetweenCharacters = ({
 
   return (
     <div
-      style={provided.draggableProps.style}
-      className={snapshot.isDragging ? styles.container : ''}
+      style={{
+        ...provided.draggableProps.style,
+        position: 'relative',
+      }}
+      className={snapshot.isDragging ? styles.containerDragging : styles.container}
     >
       <Input
         label="Separator (any Text)"

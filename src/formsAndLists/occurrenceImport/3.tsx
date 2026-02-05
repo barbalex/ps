@@ -11,8 +11,11 @@ export const Three = ({ occurrenceImport, occurrenceFields, onChange }) => {
   )
   const occurrenceCount = res?.rows?.[0]?.count ?? 0
 
-  const onApply = async () => {
-    await setLabels({ occurrenceImport })
+  const onApply = async (labelCreation) => {
+    await setLabels({
+      labelCreation,
+      occurrenceImportId: occurrenceImport.occurrence_import_id,
+    })
   }
 
   const buttonLabel = occurrenceCount > 0 

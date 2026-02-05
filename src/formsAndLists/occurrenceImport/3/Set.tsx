@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
-import { MdDone } from 'react-icons/md'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { setLabels } from './setLabels.ts'
