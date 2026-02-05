@@ -17,6 +17,8 @@ interface Props {
   fields: string[]
   name: string
   onChange: () => void
+  buttonLabel?: string
+  onApply?: () => Promise<void> | void
 }
 
 export const LabelCreator = ({
@@ -24,6 +26,8 @@ export const LabelCreator = ({
   fields,
   name,
   onChange: onChangePassed,
+  buttonLabel,
+  onApply,
 }: Props) => {
   const [labelProp, setLabelProp] = useState(labelPassed)
   const [label, setLabel] = useState(() => structuredClone(labelPassed ?? []))
@@ -151,6 +155,8 @@ export const LabelCreator = ({
             labelChanged={labelChanged}
             onChange={onChange}
             saveToDb={saveToDb}
+            buttonLabel={buttonLabel}
+            onApply={onApply}
           />
           <FieldList fieldLabels={fieldLabels} />
         </div>

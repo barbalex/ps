@@ -27,9 +27,18 @@ interface Props {
   labelChanged: boolean
   onChange: () => void
   saveToDb: () => void
+  buttonLabel?: string
+  onApply?: () => Promise<void> | void
 }
 
-export const Target = ({ label, labelChanged, onChange, saveToDb }: Props) => {
+export const Target = ({
+  label,
+  labelChanged,
+  onChange,
+  saveToDb,
+  buttonLabel,
+  onApply,
+}: Props) => {
   const [changing, setChanging] = useState(false)
   const [prevLabelChanged, setPrevLabelChanged] = useState(labelChanged)
 
@@ -41,9 +50,13 @@ export const Target = ({ label, labelChanged, onChange, saveToDb }: Props) => {
     }
   }
 
-  const onClickApply = () => {
+  const onClickApply = async () => {
     setChanging(true)
     saveToDb()
+    if (onApply) {
+      await onApply()
+    }
+    setChanging(false)
   }
 
   return (
@@ -78,7 +91,7 @@ export const Target = ({ label, labelChanged, onChange, saveToDb }: Props) => {
               disabled={!labelChanged}
               icon={changing ? <Spinner size="tiny" /> : undefined}
             >
-              {changing ? 'Applying changes' : 'Apply changes'}
+              {changing ? 'Applying changes' : buttonLabel || 'Apply changes'}
             </Button>
           </div>
         )}
