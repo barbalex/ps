@@ -1174,12 +1174,12 @@ export const startSyncing = async (db) => {
 
       store.set(syncingAtom, false)
       console.log('Syncer.startSyncing: initial sync done')
-      // setTimeout(() => window.location.reload(true), 1000)
     },
     // somehow this happens BEFORE at the top of this function
     onError: (error) => console.error('Syncer', error),
   })
-  store.set(syncingAtom, false)
+
+  // Don't set syncingAtom to false here - let onInitialSync handle it
 
   // Debug: log when sync object receives updates
   console.log('Sync object created:', {
@@ -1187,6 +1187,17 @@ export const startSyncing = async (db) => {
     hasStreams: !!sync.streams,
     streamKeys: Object.keys(sync.streams || {}),
   })
+
+  // Subscribe to streams to log updates for debugging
+  if (sync.streams) {
+    Object.entries(sync.streams).forEach(([shapeName, stream]) => {
+      if (stream) {
+        console.log(`Setting up stream listener for: ${shapeName}`)
+        // The stream is already active, we just log updates
+        // Note: Don't call stream.subscribe() as that's not the API
+      }
+    })
+  }
 
   return sync
 }
