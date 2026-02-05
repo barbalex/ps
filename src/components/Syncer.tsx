@@ -9,6 +9,7 @@ import { startSyncing } from '../modules/startSyncing.ts'
 export const Syncer = () => {
   const db = usePGlite()
   const syncRef = useRef(null)
+  const isStartingRef = useRef(false)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   const { user: authUser } = useCorbado()
@@ -18,12 +19,19 @@ export const Syncer = () => {
   useEffect(() => {
     if (!db) return
     if (sqlInitializing) return
+    if (syncRef.current || isStartingRef.current) return // Don't start if already syncing or starting
 
-    if (!syncRef.current) {
-      startSyncing(db).then((sync) => {
-        syncRef.current = sync
+    isStartingRef.current = true
+
+    startSyncing(db)
+      .then((syncObj) => {
+        syncRef.current = syncObj
+        isStartingRef.current = false
       })
-    }
+      .catch((error) => {
+        console.error('Syncer: Error starting sync:', error)
+        isStartingRef.current = false
+      })
 
     return () => {
       if (syncRef.current) {
@@ -31,6 +39,7 @@ export const Syncer = () => {
         syncRef.current.unsubscribe?.()
         syncRef.current = null
       }
+      isStartingRef.current = false
     }
   }, [authUser?.email, db, sqlInitializing])
 

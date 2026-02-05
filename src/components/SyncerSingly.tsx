@@ -9,6 +9,7 @@ import { startSyncingSingly } from '../modules/startSyncingSingly.ts'
 export const SyncerSingly = () => {
   const db = usePGlite()
   const syncsRef = useRef([])
+  const isStartingRef = useRef(false)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   const { user: authUser } = useCorbado()
@@ -18,19 +19,27 @@ export const SyncerSingly = () => {
   useEffect(() => {
     if (!db) return
     if (sqlInitializing) return
+    if (syncsRef.current.length > 0 || isStartingRef.current) return // Don't start if already syncing or starting
 
-    if (!syncsRef.current.length) {
-      startSyncingSingly(db).then((syncs) => {
-        syncsRef.current = syncs
+    isStartingRef.current = true
+
+    startSyncingSingly(db)
+      .then((syncObjs) => {
+        syncsRef.current = syncObjs
+        isStartingRef.current = false
       })
-    }
+      .catch((error) => {
+        console.error('SyncerSingly: Error starting sync:', error)
+        isStartingRef.current = false
+      })
 
     return () => {
-      if (syncsRef.current.length) {
+      if (syncsRef.current.length > 0) {
         console.log('SyncerProjects unsubscribing sync')
-        syncsRef.current.forEach((s) => s.unsubscribe && s.unsubscribe?.())
+        syncsRef.current.forEach((s) => s.unsubscribe?.())
         syncsRef.current = []
       }
+      isStartingRef.current = false
     }
   }, [authUser?.email, db, sqlInitializing])
 
