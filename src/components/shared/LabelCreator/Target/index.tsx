@@ -41,7 +41,7 @@ export const Target = ({ label, labelChanged, onChange, saveToDb }: Props) => {
     }
   }
 
-  const onClick = () => {
+  const onClickApply = () => {
     setChanging(true)
     saveToDb()
   }
@@ -73,7 +73,7 @@ export const Target = ({ label, labelChanged, onChange, saveToDb }: Props) => {
               provided={provided}
             />
             <Button
-              onClick={onClick}
+              onClick={onClickApply}
               className={styles.button}
               disabled={!labelChanged}
               icon={changing ? <Spinner size="tiny" /> : undefined}
