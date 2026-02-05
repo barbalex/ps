@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useAtomValue } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -8,7 +8,7 @@ import { startSyncingSingly } from '../modules/startSyncingSingly.ts'
 
 export const SyncerSingly = () => {
   const db = usePGlite()
-  const [syncs, setSyncs] = useState([])
+  const syncsRef = useRef([])
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   const { user: authUser } = useCorbado()
@@ -19,11 +19,18 @@ export const SyncerSingly = () => {
     if (!db) return
     if (sqlInitializing) return
 
-    if (!syncs.length) startSyncingSingly(db).then((sync) => setSyncs(sync))
+    if (!syncsRef.current.length) {
+      startSyncingSingly(db).then((syncs) => {
+        syncsRef.current = syncs
+      })
+    }
 
     return () => {
-      !!syncs.length && console.log('SyncerProjects unsubscribing sync')
-      syncs.forEach((s) => s.unsubscribe && s.unsubscribe?.())
+      if (syncsRef.current.length) {
+        console.log('SyncerProjects unsubscribing sync')
+        syncsRef.current.forEach((s) => s.unsubscribe && s.unsubscribe?.())
+        syncsRef.current = []
+      }
     }
   }, [authUser?.email, db, sqlInitializing])
 

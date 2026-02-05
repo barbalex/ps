@@ -67,26 +67,26 @@ export const SqlInitializer = () => {
 
       // Only seed test data if backend database is empty
       // Check for the specific test user that gets seeded
-      if (postgrestClient) {
-        try {
-          const { data: users, error } = await postgrestClient
-            .from('users')
-            .select('user_id')
-            .eq('user_id', '018cf95a-d817-7000-92fa-bb3b2ad59dda')
-            .limit(1)
+      // if (postgrestClient) {
+      //   try {
+      //     const { data: users, error } = await postgrestClient
+      //       .from('users')
+      //       .select('user_id')
+      //       .eq('user_id', '018cf95a-d817-7000-92fa-bb3b2ad59dda')
+      //       .limit(1)
 
-          if (error) throw error
+      //     if (error) throw error
 
-          if (!users || users.length === 0) {
-            console.log('Test user not found in backend, seeding test data...')
-            await seedTestData(db)
-          } else {
-            console.log('Test user found in backend, skipping seed')
-          }
-        } catch (error) {
-          console.error('SqlInitializer, error checking backend:', error)
-        }
-      }
+      //     if (!users || users.length === 0) {
+      //       console.log('Test user not found in backend, seeding test data...')
+      //       await seedTestData(db)
+      //     } else {
+      //       console.log('Test user found in backend, skipping seed')
+      //     }
+      //   } catch (error) {
+      //     console.error('SqlInitializer, error checking backend:', error)
+      //   }
+      // }
 
       setSqlInitializingFalseAfterTimeout(false)
     }
