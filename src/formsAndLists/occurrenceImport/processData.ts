@@ -19,8 +19,6 @@ export const processData = async ({ file, additionalData, db }) => {
         const fileAsBinaryString = reader.result
         const workbook = read(fileAsBinaryString, {
             type: 'binary',
-            // need this for utf-8 encoding
-            codepage: 65001,
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]

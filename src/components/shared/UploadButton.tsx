@@ -101,6 +101,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         style={{
           backgroundColor:
             isDragging ? 'rgba(103, 216, 101, 0.2)' : 'transparent',
+          color: successMessage ? 'rgba(38, 82, 37, 0.9)' : undefined,
         }}
         className={styles.button}
       >
