@@ -6,6 +6,10 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { sqlInitializingAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
 
+// Module-level flag to prevent multiple sync attempts across component remounts
+let globalSyncStarted = false
+let globalSyncObject = null
+
 export const Syncer = () => {
   const db = usePGlite()
   const syncRef = useRef(null)
@@ -17,14 +21,15 @@ export const Syncer = () => {
   // TODO: ensure syncing resumes after user has changed
 
   useEffect(() => {
-    console.log('Syncer effect running:', { 
-      hasDb: !!db, 
-      sqlInitializing, 
+    console.log('Syncer effect running:', {
+      hasDb: !!db,
+      sqlInitializing,
       hasSyncRef: !!syncRef.current,
       isStarting: isStartingRef.current,
-      authUserEmail: authUser?.email 
+      globalSyncStarted,
+      authUserEmail: authUser?.email,
     })
-    
+
     if (!db) {
       console.log('Syncer: No db, returning')
       return
@@ -33,20 +38,29 @@ export const Syncer = () => {
       console.log('Syncer: SQL initializing, returning')
       return
     }
-    if (syncRef.current || isStartingRef.current) {
-      console.log('Syncer: Already syncing or starting, returning')
-      return // Don't start if already syncing or starting
+    if (globalSyncStarted || syncRef.current || isStartingRef.current) {
+      console.log(
+        'Syncer: Already syncing or starting (global or local), returning',
+      )
+      // If we already have a global sync object, reuse it
+      if (globalSyncObject && !syncRef.current) {
+        syncRef.current = globalSyncObject
+      }
+      return
     }
 
     console.log('Syncer: Starting sync...')
+    globalSyncStarted = true
     isStartingRef.current = true
 
     startSyncing(db)
       .then(async (syncObj) => {
         console.log('Syncer: Sync started successfully')
-        
+
         // Debug: Check what's in the database
-        const projectTypesCount = await db.query('SELECT COUNT(*) FROM project_types')
+        const projectTypesCount = await db.query(
+          'SELECT COUNT(*) FROM project_types',
+        )
         const usersCount = await db.query('SELECT COUNT(*) FROM users')
         const projectsCount = await db.query('SELECT COUNT(*) FROM projects')
         console.log('Syncer: Database contents after sync start:', {
@@ -54,25 +68,28 @@ export const Syncer = () => {
           users: usersCount?.rows?.[0]?.count,
           projects: projectsCount?.rows?.[0]?.count,
         })
-        
+
         syncRef.current = syncObj
+        globalSyncObject = syncObj
         isStartingRef.current = false
       })
       .catch((error) => {
         console.error('Syncer: Error starting sync:', error)
+        globalSyncStarted = false
         isStartingRef.current = false
       })
 
     return () => {
       console.log('Syncer: Cleanup running')
-      if (syncRef.current) {
-        console.log('AuthAndDb.Syncer unsubscribing sync')
-        syncRef.current.unsubscribe?.()
-        syncRef.current = null
-      }
+      // Don't unsubscribe on cleanup - let it persist across remounts
+      // if (syncRef.current) {
+      //   console.log('AuthAndDb.Syncer unsubscribing sync')
+      //   syncRef.current.unsubscribe?.()
+      //   syncRef.current = null
+      // }
       isStartingRef.current = false
     }
-  }, [authUser?.email, db, sqlInitializing])
+  }, [db, sqlInitializing]) // removed authUser?.email to prevent restarts. TODO: revisit when implementing auth (user switching)
 
   return null
 }

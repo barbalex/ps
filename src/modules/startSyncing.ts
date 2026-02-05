@@ -1154,7 +1154,7 @@ export const startSyncing = async (db) => {
         primaryKey: ['project_crs_id'],
       },
     },
-    key: 'ps-sync', // use persistent key to allow Electric to manage subscriptions properly
+    key: 'ps-sync', // persistent key - shapes survive page reloads
     initialInsertMethod: 'csv',
     onInitialSync: async () => {
       // Debug: Check database after initial sync
