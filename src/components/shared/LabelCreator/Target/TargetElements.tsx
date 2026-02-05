@@ -38,7 +38,7 @@ export const TargetElements = ({
     ref={provided.innerRef}
     {...provided.droppableProps}
   >
-    {label.map((labelElement, index) => (
+    {label?.map((labelElement, index) => (
       <Draggable
         key={labelElement.id}
         draggableId={labelElement.id}
