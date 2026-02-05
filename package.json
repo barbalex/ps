@@ -25,7 +25,7 @@
     "@electric-sql/pglite-react": "0.2.33",
     "@electric-sql/pglite-sync": "0.4.1",
     "@electric-sql/pglite-tools": "0.2.20",
-    "@fluentui/react-components": "9.72.9",
+    "@fluentui/react-components": "9.72.11",
     "@fluentui/react-datepicker-compat": "0.6.22",
     "@fluentui/react-icons": "2.0.317",
     "@fluentui/react-timepicker-compat": "0.4.28",
@@ -87,7 +87,7 @@
   },
   "devDependencies": {
     "@databases/pg-migrations": "5.0.3",
-    "@eslint/compat": "2.0.1",
+    "@eslint/compat": "2.0.2",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.2",
     "@tanstack/eslint-plugin-router": "1.155.0",
