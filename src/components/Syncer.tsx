@@ -42,8 +42,19 @@ export const Syncer = () => {
     isStartingRef.current = true
 
     startSyncing(db)
-      .then((syncObj) => {
+      .then(async (syncObj) => {
         console.log('Syncer: Sync started successfully')
+        
+        // Debug: Check what's in the database
+        const projectTypesCount = await db.query('SELECT COUNT(*) FROM project_types')
+        const usersCount = await db.query('SELECT COUNT(*) FROM users')
+        const projectsCount = await db.query('SELECT COUNT(*) FROM projects')
+        console.log('Syncer: Database contents after sync start:', {
+          project_types: projectTypesCount?.rows?.[0]?.count,
+          users: usersCount?.rows?.[0]?.count,
+          projects: projectsCount?.rows?.[0]?.count,
+        })
+        
         syncRef.current = syncObj
         isStartingRef.current = false
       })

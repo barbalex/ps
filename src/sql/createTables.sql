@@ -58,8 +58,9 @@ create table if not exists project_types (
 
 create index if not exists project_types_sort_idx on project_types using btree(sort);
 
-insert into project_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin')
-on conflict ("type") do nothing;
+-- Let Electric sync reference data from backend instead of inserting locally
+-- insert into project_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin')
+-- on conflict ("type") do nothing;
 
 -- TODO: add crs for presentation
 -- TODO: add geometry
@@ -242,8 +243,9 @@ create table if not exists user_roles (
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
-insert into user_roles ("role", updated_by) values ('manager', 'admin'), ('editor', 'admin'), ('reader', 'admin')
-on conflict ("role") do nothing;
+-- Let Electric sync reference data from backend
+-- insert into user_roles ("role", updated_by) values ('manager', 'admin'), ('editor', 'admin'), ('reader', 'admin')
+-- on conflict ("role") do nothing;
 
 CREATE TABLE IF NOT EXISTS project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -303,8 +305,9 @@ create table if not exists taxonomy_types (
 
 create index if not exists taxonomy_types_sort_idx on taxonomy_types using btree(sort);
 
-insert into taxonomy_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin')
-on conflict ("type") do nothing;
+-- Let Electric sync reference data from backend
+-- insert into taxonomy_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin')
+-- on conflict ("type") do nothing;
 
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -462,8 +465,9 @@ create table if not exists unit_types (
   updated_by text DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS unit_types_sort_idx ON unit_types USING btree(sort);
-insert into unit_types ("type", sort, updated_by) values ('integer', 1, 'admin'), ('numeric', 2, 'admin'), ('text', 3, 'admin')
-on conflict ("type") do nothing;
+-- Let Electric sync reference data from backend
+-- insert into unit_types ("type", sort, updated_by) values ('integer', 1, 'admin'), ('numeric', 2, 'admin'), ('text', 3, 'admin')
+-- on conflict ("type") do nothing;
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),

@@ -1156,7 +1156,22 @@ export const startSyncing = async (db) => {
     },
     key: 'ps-sync', // use persistent key to allow Electric to manage subscriptions properly
     initialInsertMethod: 'csv',
-    onInitialSync: () => {
+    onInitialSync: async () => {
+      // Debug: Check database after initial sync
+      const projectTypesCount = await db.query(
+        'SELECT COUNT(*) FROM project_types',
+      )
+      const usersCount = await db.query('SELECT COUNT(*) FROM users')
+      const projectsCount = await db.query('SELECT COUNT(*) FROM projects')
+      console.log(
+        'Syncer.startSyncing: Database contents after initial sync:',
+        {
+          project_types: projectTypesCount?.rows?.[0]?.count,
+          users: usersCount?.rows?.[0]?.count,
+          projects: projectsCount?.rows?.[0]?.count,
+        },
+      )
+
       store.set(syncingAtom, false)
       console.log('Syncer.startSyncing: initial sync done')
       // setTimeout(() => window.location.reload(true), 1000)
