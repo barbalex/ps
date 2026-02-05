@@ -25,7 +25,7 @@ export const Syncer = () => {
       !!sync && console.log('AuthAndDb.Syncer unsubscribing sync')
       sync?.unsubscribe?.()
     }
-  }, [authUser?.email, db, sync, sqlInitializing])
+  }, [authUser?.email, db, sqlInitializing])
 
   return null
 }

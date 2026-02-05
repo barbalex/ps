@@ -25,7 +25,7 @@ export const SyncerSingly = () => {
       !!syncs.length && console.log('SyncerProjects unsubscribing sync')
       syncs.forEach((s) => s.unsubscribe && s.unsubscribe?.())
     }
-  }, [authUser?.email, db, syncs, sqlInitializing])
+  }, [authUser?.email, db, sqlInitializing])
 
   return null
 }
