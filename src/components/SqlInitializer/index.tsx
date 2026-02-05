@@ -85,13 +85,7 @@ export const SqlInitializer = () => {
           }
         } catch (error) {
           console.error('SqlInitializer, error checking backend:', error)
-          // If backend check fails, seed anyway for offline development
-          await seedTestData(db)
         }
-      } else {
-        // If postgrest client not ready, seed anyway
-        console.log('Postgrest client not ready, seeding test data...')
-        await seedTestData(db)
       }
 
       setSqlInitializingFalseAfterTimeout(false)

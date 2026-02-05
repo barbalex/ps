@@ -1153,7 +1153,7 @@ export const startSyncing = async (db) => {
         primaryKey: ['project_crs_id'],
       },
     },
-    key: 'ps-sync', // set null to force fresh sync without resuming
+    key: null, // set null to force fresh sync without resuming - 'ps-sync' handles its own resuming
     initialInsertMethod: 'csv',
     onInitialSync: () => {
       store.set(syncingAtom, false)

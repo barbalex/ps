@@ -5,7 +5,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   email text UNIQUE DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(email, user_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS subprojects(
   start_year integer DEFAULT NULL,
   end_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -406,7 +406,7 @@ CREATE TABLE IF NOT EXISTS lists(
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(name, list_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), list_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -434,7 +434,7 @@ CREATE TABLE IF NOT EXISTS list_values(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   value text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(value, list_value_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(value, ''), list_value_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -481,7 +481,7 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type text DEFAULT null references unit_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  label text GENERATED ALWAYS AS (coalesce(name, unit_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -535,6 +535,7 @@ CREATE INDEX IF NOT EXISTS places_parent_id_idx ON places USING btree(parent_id)
 CREATE INDEX IF NOT EXISTS places_level_idx ON places USING btree(level);
 CREATE INDEX IF NOT EXISTS places_label_idx ON places USING btree(label);
 CREATE INDEX IF NOT EXISTS places_data_idx ON places USING gin(data);
+-- TODO: switch to gist when postGIS is used
 CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gin(geometry);
 
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
@@ -609,6 +610,7 @@ CREATE INDEX IF NOT EXISTS actions_place_id_idx ON actions USING btree(place_id)
 CREATE INDEX IF NOT EXISTS actions_date_idx ON actions USING btree(date);
 CREATE INDEX IF NOT EXISTS actions_label_idx ON actions USING btree(label);
 CREATE INDEX IF NOT EXISTS actions_data_idx ON actions USING gin(data);
+-- TODO: switch to gist when postGIS is used
 CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gin(geometry);
 
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
@@ -729,8 +731,8 @@ CREATE INDEX IF NOT EXISTS checks_place_id_idx ON checks USING btree(place_id);
 CREATE INDEX IF NOT EXISTS checks_date_idx ON checks USING btree(date);
 CREATE INDEX IF NOT EXISTS checks_label_idx ON checks USING btree(label);
 CREATE INDEX IF NOT EXISTS checks_data_idx ON checks USING gin(data);
--- CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gist(geometry);
-CREATE INDEX checks_geometry_idx ON checks USING gin(geometry);
+-- TODO: switch to gist when postGIS is used
+CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gin(geometry);
 
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
@@ -1105,7 +1107,7 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, project_report_design_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_design_id::text)) STORED,
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1135,7 +1137,7 @@ CREATE TABLE IF NOT EXISTS files(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL, -- file-upload-success-event.detail.name
   size bigint DEFAULT NULL, -- file-upload-success-event.detail.size
-  label text GENERATED ALWAYS AS (coalesce(name, file_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), file_id::text)) STORED,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
   -- need width and height to get the aspect ratio of the image
@@ -1176,7 +1178,7 @@ CREATE TABLE IF NOT EXISTS persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(email, person_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), person_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1200,7 +1202,7 @@ CREATE TABLE IF NOT EXISTS field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  label text GENERATED ALWAYS AS (coalesce(name, field_type_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1220,7 +1222,7 @@ CREATE TABLE IF NOT EXISTS widget_types(
   needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  label text GENERATED ALWAYS AS (coalesce(name, widget_type_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), widget_type_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1365,7 +1367,7 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), occurrence_import_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1409,8 +1411,8 @@ CREATE INDEX IF NOT EXISTS occurrences_occurrence_import_id_idx ON occurrences U
 CREATE INDEX IF NOT EXISTS occurrences_place_id_idx ON occurrences USING btree(place_id);
 CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
 CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
--- CREATE INDEX occurrences_geometry_idx ON occurrences USING gist(geometry);
-CREATE INDEX occurrences_geometry_idx ON occurrences USING gin(geometry);
+-- TODO: switch to gist when postGIS is used
+CREATE INDEX IF NOT EXISTS occurrences_geometry_idx ON occurrences USING gin(geometry);
 
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 COMMENT ON COLUMN occurrences.place_id IS 'The place this occurrence is assigned to.';
@@ -1614,8 +1616,8 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
 
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_account_id_idx ON vector_layer_geoms USING btree(account_id);
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_vector_layer_id_idx ON vector_layer_geoms USING btree(vector_layer_id);
--- CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gist(geometry);
-CREATE INDEX vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gin(geometry);
+-- TODO: switch to gist when postGIS is used
+CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gin(geometry);
 
 COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport) 3. enable displaying by field values. Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
 COMMENT ON COLUMN vector_layer_geoms.geometry IS 'geometry-collection of this row';
@@ -1693,7 +1695,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
   fill_rule text DEFAULT 'evenodd' REFERENCES vector_layer_fill_rules(fill_rule) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display')) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(display_property_value, ''), 'Single Display')) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1904,7 +1906,7 @@ CREATE TABLE IF NOT EXISTS crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(code, crs_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(code, ''), crs_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1930,7 +1932,7 @@ CREATE TABLE IF NOT EXISTS project_crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(code, project_crs_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(code, ''), project_crs_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
