@@ -30,6 +30,7 @@
     "@fluentui/react-icons": "2.0.317",
     "@fluentui/react-timepicker-compat": "0.4.28",
     "@formkit/tempo": "1.0.0",
+    "@hello-pangea/dnd": "18.0.1",
     "@kripod/uuidv7": "0.3.4",
     "@puckeditor/core": "0.21.1",
     "@react-leaflet/core": "3.0.0",
