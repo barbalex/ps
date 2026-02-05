@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Button, Field } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -7,12 +7,31 @@ import styles from './UploadButton.module.css'
 export const UploadButton = ({ processData, additionalData = {} }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const db = usePGlite()
 
-  const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [successMessage])
+
+  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    processData({ file, additionalData, db })
+    setErrorMessage(null)
+    try {
+      const result = await processData({ file, additionalData, db })
+      if (result?.success) {
+        setSuccessMessage(result.message || 'File uploaded successfully')
+      }
+    } catch (error) {
+      setErrorMessage(error.message || 'Failed to process file')
+    }
   }
 
   const onClickUploadButton = () => {
@@ -43,15 +62,27 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     e.stopPropagation()
     e.preventDefault()
     setIsDragging(false)
+    setErrorMessage(null)
     const dt = e.dataTransfer
     const file = dt.files?.[0]
-    await processData({ file, additionalData, db })
+    try {
+      const result = await processData({ file, additionalData, db })
+      if (result?.success) {
+        setSuccessMessage(result.message || 'File uploaded successfully')
+      }
+    } catch (error) {
+      setErrorMessage(error.message || 'Failed to process file')
+    }
   }
 
   return (
     <Field
-      validationMessage="Click to choose or drop a file. Accepts .csv, .tsv, .xlsx, .xls, .ods, .txt."
-      validationState="none"
+      validationMessage={
+        errorMessage ?
+          <span style={{ color: 'rgb(196, 49, 75)' }}>{errorMessage}</span>
+        : 'Click to choose or drop a file. Accepts .csv, .tsv, .xlsx, .xls, .ods, .txt.'
+      }
+      validationState={errorMessage ? 'error' : 'none'}
     >
       <input
         label="Upload"
@@ -68,13 +99,12 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         style={{
-          backgroundColor: isDragging
-            ? 'rgba(103, 216, 101, 0.2)'
-            : 'transparent',
+          backgroundColor:
+            isDragging ? 'rgba(103, 216, 101, 0.2)' : 'transparent',
         }}
         className={styles.button}
       >
-        Upload file containing occurrences
+        {successMessage || 'Upload file containing occurrences'}
       </Button>
     </Field>
   )
