@@ -45,10 +45,22 @@ CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  projects_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if projects table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'projects'
+  ) INTO projects_table_exists;
+
+  IF NOT projects_table_exists THEN
     RETURN OLD;
   END IF;
 
@@ -115,7 +127,7 @@ BEGIN
   END IF;
 
   UPDATE accounts SET label = CASE
-    WHEN accounts.type is null THEN coalesce(NEW.email, accounts.account_id::text)
+    WHEN accounts.type is null THEN coalesce(NULLIF(NEW.email, ''), accounts.account_id::text)
     WHEN NEW.email is null THEN accounts.account_id::text
     ELSE NEW.email || ' (' || accounts.type || ')'
   END
@@ -792,7 +804,7 @@ BEGIN
   set label = (
     CASE
       WHEN NEW.email is null THEN NEW.user_id::text
-      ELSE NEW.email || ' (' || coalesce(subproject_users.role, 'no role') || ')'
+      ELSE NEW.email || ' (' || coalesce(NULLIF(subproject_users.role, ''), 'no role') || ')'
     END
   )
   WHERE user_id = NEW.user_id;
@@ -937,9 +949,9 @@ BEGIN
   SET label = 
     case 
       when NEW.value_field is not null then
-        coalesce(NEW.table_name, '(no table name)') || ', ' || coalesce(NEW.value_source, '(no source)') || ', ' || NEW.value_field || ', ' || coalesce(unit_name, '(no unit)')
+        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.value_source, ''), '(no source)') || ', ' || NEW.value_field || ', ' || coalesce(unit_name, '(no unit)')
       else 
-        coalesce(NEW.table_name, '(no table name)') || ', ' || coalesce(NEW.value_source, '(no source)')
+        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.value_source, ''), '(no source)')
     end
   WHERE chart_subjects.chart_subject_id = NEW.chart_subject_id;
   RETURN NEW;

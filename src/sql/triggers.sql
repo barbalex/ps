@@ -2,6 +2,8 @@
 -- https://github.com/electric-sql/pglite/issues/637
 -- https://github.com/electric-sql/electric/blob/main/examples/linearlite/db/migrations-client/01-create_tables.sql#L49-L54
 
+-- Note: updated_at triggers are in 04_triggers_updated_at.sql
+
 -- if occurrence_imports.label_creation is changed, need to update all labels of occurrences
 CREATE OR REPLACE FUNCTION occurrence_imports_label_creation_trigger ()
 RETURNS TRIGGER AS $$
@@ -113,7 +115,7 @@ BEGIN
   END IF;
 
   UPDATE accounts SET label = CASE
-    WHEN accounts.type is null THEN coalesce(NEW.email, accounts.account_id::text)
+    WHEN accounts.type is null THEN coalesce(NULLIF(NEW.email, ''), accounts.account_id::text)
     WHEN NEW.email is null THEN accounts.account_id::text
     ELSE NEW.email || ' (' || accounts.type || ')'
   END
@@ -451,9 +453,10 @@ BEGIN
   END IF;
 
   UPDATE projects SET label = CASE
-    WHEN account_projects_label_by IS NULL THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    WHEN account_projects_label_by = 'name' THEN coalesce(name, OLD.project_id::text, NEW.project_id::text)
-    WHEN data -> account_projects_label_by is null then coalesce(name, OLD.project_id::text, NEW.project_id::text)
+    WHEN NEW.label IS NOT NULL then NEW.label
+    WHEN account_projects_label_by IS NULL THEN NEW.project_id::text
+    WHEN account_projects_label_by = 'name' THEN NEW.project_id::text
+    WHEN data -> account_projects_label_by is null then NEW.project_id::text
     else data ->> account_projects_label_by
   END
   WHERE projects.project_id = NEW.project_id;
@@ -789,7 +792,7 @@ BEGIN
   set label = (
     CASE
       WHEN NEW.email is null THEN NEW.user_id::text
-      ELSE NEW.email || ' (' || coalesce(subproject_users.role, 'no role') || ')'
+      ELSE NEW.email || ' (' || coalesce(NULLIF(subproject_users.role, ''), 'no role') || ')'
     END
   )
   WHERE user_id = NEW.user_id;
@@ -934,9 +937,9 @@ BEGIN
   SET label = 
     case 
       when NEW.value_field is not null then
-        coalesce(NEW.table_name, '(no table name)') || ', ' || coalesce(NEW.value_source, '(no source)') || ', ' || NEW.value_field || ', ' || coalesce(unit_name, '(no unit)')
+        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.value_source, ''), '(no source)') || ', ' || NEW.value_field || ', ' || coalesce(unit_name, '(no unit)')
       else 
-        coalesce(NEW.table_name, '(no table name)') || ', ' || coalesce(NEW.value_source, '(no source)')
+        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.value_source, ''), '(no source)')
     end
   WHERE chart_subjects.chart_subject_id = NEW.chart_subject_id;
   RETURN NEW;
