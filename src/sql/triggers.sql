@@ -9,10 +9,22 @@ CREATE OR REPLACE FUNCTION occurrence_imports_label_creation_trigger ()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  occurrences_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if occurrences table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'occurrences'
+  ) INTO occurrences_table_exists;
+
+  IF NOT occurrences_table_exists THEN
     RETURN OLD;
   END IF;
 
@@ -119,10 +131,22 @@ create or replace function users_email_update_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  accounts_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if accounts table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'accounts'
+  ) INTO accounts_table_exists;
+
+  IF NOT accounts_table_exists THEN
     RETURN OLD;
   END IF;
 
@@ -393,10 +417,22 @@ CREATE OR REPLACE FUNCTION projects_places_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  places_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if places table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'places'
+  ) INTO places_table_exists;
+
+  IF NOT places_table_exists THEN
     RETURN OLD;
   END IF;
 
@@ -421,10 +457,22 @@ CREATE OR REPLACE FUNCTION projects_goals_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  goals_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if goals table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'goals'
+  ) INTO goals_table_exists;
+
+  IF NOT goals_table_exists THEN
     RETURN OLD;
   END IF;
 
@@ -763,10 +811,22 @@ CREATE OR REPLACE FUNCTION users_project_users_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  project_users_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if project_users table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'project_users'
+  ) INTO project_users_table_exists;
+
+  IF NOT project_users_table_exists THEN
     RETURN OLD;
   END IF;
 
@@ -793,10 +853,22 @@ CREATE OR REPLACE FUNCTION users_subproject_users_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  subproject_users_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if subproject_users table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'subproject_users'
+  ) INTO subproject_users_table_exists;
+
+  IF NOT subproject_users_table_exists THEN
     RETURN OLD;
   END IF;
 
