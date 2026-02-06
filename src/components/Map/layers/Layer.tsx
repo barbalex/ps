@@ -77,11 +77,13 @@ export const Layer = ({ layerPresentationId, index }) => {
   }
 
   if (!layerPresentation) return null
+  if (!layerPresentation.active) return null
 
   // // todo: add key, layerPresentationId
   if (wmsLayer) {
-    wmsLayer.opacity = layerPresentation.opacity_percent
-      ? layerPresentation.opacity_percent / 100
+    wmsLayer.opacity =
+      layerPresentation.opacity_percent ?
+        layerPresentation.opacity_percent / 100
       : 1
     const partsToRedrawOn = {
       max_zoom: layerPresentation.max_zoom,
