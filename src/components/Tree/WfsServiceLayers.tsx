@@ -58,9 +58,9 @@ export const WfsServiceLayersNode = ({
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav) => (
+        navs.map((nav, i) => (
           <WfsServiceLayerNode
-            key={nav.id}
+            key={`${nav.id}-${i}`}
             projectId={projectId}
             wfsServiceId={wfsServiceId}
             nav={nav}
