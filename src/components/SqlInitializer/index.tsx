@@ -1,31 +1,17 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useSetAtom } from 'jotai'
 
-import {
-  sqlInitializingAtom,
-  setSqlInitializingFalseAfterTimeoutAtom,
-  postgrestClientAtom,
-} from '../../store.ts'
+import { sqlInitializingAtom, initialSyncingAtom } from '../../store.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
-  const postgrestClient = useAtomValue(postgrestClientAtom)
-  const setInitializing = useSetAtom(sqlInitializingAtom)
-  const setSqlInitializingFalseAfterTimeout = useSetAtom(
-    setSqlInitializingFalseAfterTimeoutAtom,
-  )
-  const hasRunRef = useRef(false)
-  const isRunningRef = useRef(false)
+  const setSqlInitializing = useSetAtom(sqlInitializingAtom)
+  const setInitialSyncing = useSetAtom(initialSyncingAtom)
 
   useEffect(() => {
     const run = async () => {
-      // Prevent multiple simultaneous runs
-      if (hasRunRef.current || isRunningRef.current) {
-        return
-      }
-
-      isRunningRef.current = true
+      // 1. initialize pgLite db
       const resultProjectsTableExists = await db.query(
         `
           SELECT EXISTS (
@@ -35,64 +21,54 @@ export const SqlInitializer = () => {
           )
         `,
       )
-
       const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
-
       if (projectsTableExists) {
-        hasRunRef.current = true
-        isRunningRef.current = false
-        return setSqlInitializingFalseAfterTimeout()
+        setSqlInitializing(false)
+      } else {
+        // need to create functions, tables and triggers
+        const immutableDateSql = (
+          await import(`../../sql/immutableDate.sql?raw`)
+        ).default
+        try {
+          await db.exec(immutableDateSql)
+        } catch {
+          console.error('Error executing immutableDateSql:', error)
+        }
+        const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
+        try {
+          await db.exec(uuidv7Sql)
+        } catch {
+          console.error('Error executing uuidv7Sql:', error)
+        }
+        const createSql = (await import(`../../sql/createTables.sql?raw`))
+          .default
+        try {
+          await db.exec(createSql)
+        } catch {
+          console.error('Error executing createSql:', error)
+        }
+        const triggersSql = (await import(`../../sql/triggers.sql?raw`)).default
+        try {
+          await db.exec(triggersSql)
+        } catch {
+          console.error('Error executing triggersSql:', error)
+        }
+        setSqlInitializing(false)
       }
 
-      // create functions, tables and triggers
-
-      const immutableDateSql = (await import(`../../sql/immutableDate.sql?raw`))
-        .default
-      try {
-        await db.exec(immutableDateSql)
-      } catch {
-        isRunningRef.current = false
-        return setSqlInitializingFalseAfterTimeout()
-      }
-      const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
-      try {
-        await db.exec(uuidv7Sql)
-      } catch {
-        isRunningRef.current = false
-        return setSqlInitializingFalseAfterTimeout()
-      }
-      const createSql = (await import(`../../sql/createTables.sql?raw`)).default
-      try {
-        await db.exec(createSql)
-      } catch {
-        isRunningRef.current = false
-        return setSqlInitializingFalseAfterTimeout()
-      }
-      const triggersSql = (await import(`../../sql/triggers.sql?raw`)).default
-      try {
-        await db.exec(triggersSql)
-      } catch {
-        isRunningRef.current = false
-        return setSqlInitializingFalseAfterTimeout()
-      }
-
-      console.log(
-        'SqlInitializer: All SQL operations complete, scheduling sqlInitializing=false after timeout',
+      // 2. manage initiallySynced
+      const projectExistsResult = await db.query(
+        `SELECT EXISTS (SELECT 1 FROM projects LIMIT 1)`,
       )
-
-      hasRunRef.current = true
-      isRunningRef.current = false
-
-      setSqlInitializingFalseAfterTimeout(false)
+      const projectExists = projectExistsResult?.rows?.[0]?.exists ?? false
+      if (projectExists) {
+        // if project exists, we can assume initial sync has happened
+        setInitialSyncing(false)
+      }
     }
 
     run()
-  }, [
-    db,
-    postgrestClient,
-    setInitializing,
-    setSqlInitializingFalseAfterTimeout,
-  ])
+  }, [db, setInitialSyncing, setSqlInitializing])
 
   return null
 }

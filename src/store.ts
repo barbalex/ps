@@ -114,11 +114,24 @@ export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
+
 // initialSyncing happens on first app load
 // on first app load liveQueries should not run yet, before initial sync is done
 // on later app loads, data exists locally, so liveQueries can run immediately
 // thus use an atom with storage
 export const initialSyncingAtom = atomWithStorage('initialSyncingAtom', true)
+// begins true, is set to false after initialization (or it's not needed)
+export const sqlInitializingAtom = atomWithStorage('sqlInitializingAtom', true)
+
+export const setSqlInitializingFalseAfterTimeoutAtom = atom(
+  null,
+  (get, set) => {
+    setTimeout(() => {
+      set(sqlInitializingAtom, false)
+    }, 200)
+  },
+)
+
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
 // map of id (layer.id, key) and show boolean
@@ -401,17 +414,5 @@ export const addNotificationAtom = atom(
     setTimeout(() => set(removeNotificationAtom, id), notification.duration)
 
     return notification.id
-  },
-)
-
-// begins true, is set to false after initialization (or it's not needed)
-export const sqlInitializingAtom = atom(true)
-
-export const setSqlInitializingFalseAfterTimeoutAtom = atom(
-  null,
-  (get, set) => {
-    setTimeout(() => {
-      set(sqlInitializingAtom, false)
-    }, 200)
   },
 )
