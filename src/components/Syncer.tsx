@@ -1,14 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useAtomValue } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { sqlInitializingAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
-import { startSyncingUsersOnly } from '../modules/startSyncingUsersOnly.ts'
-import { startSyncingSingly } from '../modules/startSyncingSingly.ts'
+// import { startSyncingUsersOnly } from '../modules/startSyncingUsersOnly.ts'
+// import { startSyncingSingly } from '../modules/startSyncingSingly.ts'
 
 export const Syncer = () => {
-  const db = usePGlite()
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const syncRef = useRef(null)
 
