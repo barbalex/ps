@@ -24,18 +24,27 @@ export const VectorLayers = () => {
   const db = usePGlite()
 
   const sql = `
-    SELECT vector_layer_id
-    FROM vector_layers
+    SELECT 
+      vl.*,
+      json_agg(
+        json_build_object(
+          'layer_presentation_id', lp.layer_presentation_id,
+          'active', lp.active
+        )
+      ) FILTER (WHERE lp.layer_presentation_id IS NOT NULL) AS layer_presentations
+    FROM vector_layers vl
+    LEFT JOIN layer_presentations lp ON vl.vector_layer_id = lp.vector_layer_id
     WHERE
-      type = ANY('{wfs,upload}')
-      AND project_id = $1
+      vl.type = ANY('{wfs,upload}')
+      AND vl.project_id = $1
       AND NOT EXISTS (
         SELECT 1
-        FROM layer_presentations
-        WHERE layer_presentations.vector_layer_id = vector_layers.vector_layer_id
-        AND layer_presentations.active
+        FROM layer_presentations lp2
+        WHERE lp2.vector_layer_id = vl.vector_layer_id
+        AND lp2.active
       )
-    ORDER BY label`
+    GROUP BY vl.vector_layer_id
+    ORDER BY vl.label`
   const res = useLiveQuery(sql, [projectId])
   const vectorLayerIds: { vector_layer_id: string }[] = res?.rows ?? []
 
