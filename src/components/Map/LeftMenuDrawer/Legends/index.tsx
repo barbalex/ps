@@ -16,17 +16,25 @@ export const Legends = () => {
 
   const resWmsLayers = useLiveQuery(
     `
-    SELECT * 
-    FROM wms_layers 
+    SELECT 
+      wl.*,
+      json_agg(
+        json_build_object(
+          'layer_presentation_id', lp.layer_presentation_id,
+          'active', lp.active,
+          'opacity_percent', lp.opacity_percent,
+          'max_zoom', lp.max_zoom,
+          'min_zoom', lp.min_zoom,
+          'transparent', lp.transparent,
+          'grayscale', lp.grayscale
+        )
+      ) FILTER (WHERE lp.layer_presentation_id IS NOT NULL) AS layer_presentations
+    FROM wms_layers wl
+    INNER JOIN layer_presentations lp ON wl.wms_layer_id = lp.wms_layer_id
     WHERE 
-      EXISTS (
-        SELECT 1 
-        FROM layer_presentations lp 
-        WHERE 
-          wms_layers.wms_layer_id = lp.wms_layer_id 
-          AND lp.active = true
-      )
-      ${projectId ? `AND wms_layers.project_id = '${projectId}'` : ''}
+      lp.active = true
+      ${projectId ? `AND wl.project_id = '${projectId}'` : ''}
+    GROUP BY wl.wms_layer_id
   `,
   )
   const activeWmsLayers: WMSLayers[] = resWmsLayers?.rows ?? []
@@ -34,17 +42,25 @@ export const Legends = () => {
   // same for vector layers
   const resVectorLayers = useLiveQuery(
     `
-    SELECT *
-    FROM vector_layers
+    SELECT 
+      vl.*,
+      json_agg(
+        json_build_object(
+          'layer_presentation_id', lp.layer_presentation_id,
+          'active', lp.active,
+          'opacity_percent', lp.opacity_percent,
+          'max_zoom', lp.max_zoom,
+          'min_zoom', lp.min_zoom,
+          'transparent', lp.transparent,
+          'grayscale', lp.grayscale
+        )
+      ) FILTER (WHERE lp.layer_presentation_id IS NOT NULL) AS layer_presentations
+    FROM vector_layers vl
+    INNER JOIN layer_presentations lp ON vl.vector_layer_id = lp.vector_layer_id
     WHERE 
-      EXISTS (
-        SELECT 1 
-        FROM layer_presentations lp 
-        WHERE 
-          vector_layers.vector_layer_id = lp.vector_layer_id 
-          AND lp.active = true
-      )
-      ${projectId ? `AND project_id = '${projectId}'` : ''}
+      lp.active = true
+      ${projectId ? `AND vl.project_id = '${projectId}'` : ''}
+    GROUP BY vl.vector_layer_id
   `,
   )
   const activeVectorLayers: VectorLayers[] = resVectorLayers?.rows ?? []
@@ -62,26 +78,22 @@ export const Legends = () => {
     },
   )
 
-  return activeLayers.length ? (
-    activeLayers?.map((layer, index) => {
-      // display depends on layer type: wms / vector
-      const isVectorLayer = 'vector_layer_id' in layer
+  return activeLayers.length ?
+      activeLayers?.map((layer, index) => {
+        // display depends on layer type: wms / vector
+        const isVectorLayer = 'vector_layer_id' in layer
 
-      return (
-        <Container
-          key={layer.wms_layer_id ?? layer.vector_layer_id}
-          layer={layer}
-          isLast={index === activeLayers.length - 1}
-        >
-          {isVectorLayer ? (
-            <VectorLegend layer={layer} />
-          ) : (
-            <WmsLegend layer={layer} />
-          )}
-        </Container>
-      )
-    })
-  ) : (
-    <p className={styles.noLayers}>No active layers</p>
-  )
+        return (
+          <Container
+            key={layer.wms_layer_id ?? layer.vector_layer_id}
+            layer={layer}
+            isLast={index === activeLayers.length - 1}
+          >
+            {isVectorLayer ?
+              <VectorLegend layer={layer} />
+            : <WmsLegend layer={layer} />}
+          </Container>
+        )
+      })
+    : <p className={styles.noLayers}>No active layers</p>
 }
