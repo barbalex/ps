@@ -1,14 +1,18 @@
 import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 
-import { initialSyncingAtom } from '../store.ts'
+import { initialSyncingAtom, sqlInitializingAtom } from '../store.ts'
 
 export const InitialSyncManager = () => {
   const db = usePGlite()
   const setInitialSyncing = useSetAtom(initialSyncingAtom)
+  const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   useEffect(() => {
+    // Don't run until SQL initialization is complete
+    if (sqlInitializing) return
+
     const run = async () => {
       const projectExistsResult = await db.query(
         `SELECT EXISTS (SELECT 1 FROM projects LIMIT 1)`,
@@ -21,7 +25,7 @@ export const InitialSyncManager = () => {
     }
 
     run()
-  }, [db, setInitialSyncing])
+  }, [db, setInitialSyncing, sqlInitializing])
 
   return null
 }
