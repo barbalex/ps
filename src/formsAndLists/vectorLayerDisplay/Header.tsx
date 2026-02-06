@@ -19,11 +19,9 @@ export const Header = ({
   const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
-  const { vectorLayerDisplayId: vectorLayerDisplayIdFromRouter } = useParams({
-    from,
-  })
+  const params = useParams({ strict: false })
   const vectorLayerDisplayId =
-    vectorLayerDisplayIdFromProps ?? vectorLayerDisplayIdFromRouter
+    vectorLayerDisplayIdFromProps ?? params.vectorLayerDisplayId
 
   const db = usePGlite()
 

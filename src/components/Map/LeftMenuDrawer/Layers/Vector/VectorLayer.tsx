@@ -184,11 +184,9 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
               {vectorLayerDisplayId ?
                 <VectorLayerDisplay
                   vectorLayerDisplayId={vectorLayerDisplayId}
-                  from={pathname}
                 />
               : <VectorLayerDisplays
                   vectorLayerId={layer.vector_layer_id}
-                  from={pathname}
                 />
               }
             </>

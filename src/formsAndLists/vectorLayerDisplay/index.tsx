@@ -34,11 +34,11 @@ export const VectorLayerDisplay = ({
   vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
   from,
 }) => {
-  const { vectorLayerDisplayId: vectorLayerDisplayIdFromRouter } = useParams({
-    from,
-  })
+  // When called from map drawer, we get the ID via props
+  // When called from router, we get it from params
+  const params = useParams({ strict: false })
   const vectorLayerDisplayId =
-    vectorLayerDisplayIdFromProps ?? vectorLayerDisplayIdFromRouter
+    vectorLayerDisplayIdFromProps ?? params.vectorLayerDisplayId
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
@@ -107,7 +107,7 @@ export const VectorLayerDisplay = ({
       <div className="form-outer-container">
         <Header
           autoFocusRef={autoFocusRef}
-          from={from}
+          vectorLayerDisplayId={vectorLayerDisplayId}
         />
         <div className="form-container">
           <MarkerType

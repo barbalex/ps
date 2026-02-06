@@ -18,7 +18,8 @@ const from =
 export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
   const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
   const calledFromMapDrawer = vectorLayerIdIn !== undefined
-  const params = useParams(calledFromMapDrawer ? { strict: false } : { from })
+  const paramsConfig = calledFromMapDrawer ? { strict: false } : { from }
+  const params = useParams(paramsConfig)
   const { projectId } = params
   const vectorLayerId = vectorLayerIdIn || params.vectorLayerId
 
