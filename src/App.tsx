@@ -43,7 +43,7 @@ const db = await PGlite.create('idb://ps', {
     electric: electricSync(),
   },
   relaxedDurability: true,
-  // debug: true,
+  // debug: true, // Disabled - too verbose
 })
 store.set(pgliteDbAtom, db)
 

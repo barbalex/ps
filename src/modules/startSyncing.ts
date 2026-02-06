@@ -12,6 +12,7 @@ export const startSyncing = async (db) => {
   // PGlite data persists in IndexedDB, so no need to clear or re-sync everything
 
   try {
+    console.log('Creating Electric sync with persistent key ps-sync...')
     const sync = await db.electric.syncShapesToTables({
       shapes: {
         users: {
@@ -50,7 +51,9 @@ export const startSyncing = async (db) => {
         projects: {
           shape: {
             url,
-            params: { table: 'projects' },
+            params: {
+              table: 'projects',
+            },
           },
           table: 'projects',
           primaryKey: ['project_id'],
@@ -1160,8 +1163,9 @@ export const startSyncing = async (db) => {
         },
       },
       key: 'ps-sync', // Persistent key for live updates across reloads
-      initialInsertMethod: 'csv',
+      // Removed initialInsertMethod - let Electric use default for live updates
       onInitialSync: async () => {
+        console.log('🎉 onInitialSync callback fired!')
         // Debug: Check database after initial sync
         const projectTypesCount = await db.query(
           'SELECT COUNT(*) FROM project_types',
@@ -1196,17 +1200,57 @@ export const startSyncing = async (db) => {
           return
         }
 
-        console.error('Syncer error:', error)
-        // Don't set syncingAtom to false - let onInitialSync handle it
+        console.error('❌ Syncer error:', error)
+        console.error('Error type:', error?.constructor?.name)
+        console.error('Error message:', error?.message)
+        console.error('Full error:', error)
+        // Don't set syncingAtom to false - let timeout or onInitialSync handle it
       },
     })
 
+    // Validate sync object
+    if (!sync || typeof sync.unsubscribe !== 'function') {
+      throw new Error('Invalid sync object returned from syncShapesToTables')
+    }
+
     // Debug: log when sync object receives updates
-    console.log('Sync object created:', {
+    console.log('Sync object created successfully:', {
       isUpToDate: sync.isUpToDate,
       hasStreams: !!sync.streams,
-      streamKeys: Object.keys(sync.streams || {}),
+      streamCount: sync.streams ? Object.keys(sync.streams).length : 0,
+      syncMethods:
+        sync ?
+          Object.keys(sync).filter((k) => typeof sync[k] === 'function')
+        : [],
+      syncProperties:
+        sync ?
+          Object.keys(sync).filter((k) => typeof sync[k] !== 'function')
+        : [],
     })
+
+    // Log each stream's initial state
+    if (sync.streams) {
+      console.log('Checking individual stream states...')
+      const streamStates = {}
+      for (const [name, stream] of Object.entries(sync.streams)) {
+        if (stream && typeof stream === 'object') {
+          streamStates[name] = {
+            isUpToDate: stream.isUpToDate,
+            hasSubscribe: typeof stream.subscribe === 'function',
+          }
+
+          // DON'T manually subscribe - let Electric handle it automatically
+          // Manual subscriptions are read-only observers and don't trigger writes
+        }
+      }
+      console.log(
+        'Stream states sample (first 5):',
+        Object.fromEntries(Object.entries(streamStates).slice(0, 5)),
+      )
+      console.log(
+        '⚠️ Note: Electric should handle live updates automatically - streams will update PGlite in the background',
+      )
+    }
 
     // CRITICAL: On reload with persistent shapes, if sync is already up to date,
     // onInitialSync won't fire. We need to clear the loading state here.
@@ -1238,24 +1282,56 @@ export const startSyncing = async (db) => {
     // Monitor sync state changes for debugging
     // Check periodically if sync becomes ready
     let checkCount = 0
-    const stateCheckInterval = setInterval(() => {
+    const stateCheckInterval = setInterval(async () => {
       checkCount++
+
       if (sync.isUpToDate && store.get(syncingAtom)) {
-        console.log('Sync became ready - clearing loading state')
+        console.log('✅ Sync became ready - clearing loading state')
         store.set(syncingAtom, false)
         clearInterval(stateCheckInterval)
       }
       if (checkCount > 60) {
         // Stop checking after 30 seconds (60 * 500ms)
+        console.warn(
+          '⚠️ Sync check timeout reached after 30s - forcing loading state off',
+        )
+        store.set(syncingAtom, false)
         clearInterval(stateCheckInterval)
       }
     }, 500)
+
+    // Store the interval ID so we can clean it up if needed
+    if (typeof window !== 'undefined') {
+      ;(window as any).__syncCheckInterval = stateCheckInterval
+    }
 
     // CRITICAL: Keep sync object globally accessible to prevent garbage collection
     // This ensures WebSocket connections stay alive for real-time updates
     if (typeof window !== 'undefined') {
       ;(window as any).__electricSync = sync
       console.log('Sync object stored globally for live updates')
+
+      // Monitor for data changes every 10 seconds to verify live sync is working
+      let previousLabel = null
+      setInterval(async () => {
+        try {
+          const result = await db.query(
+            'SELECT project_id, label, updated_at FROM projects ORDER BY updated_at DESC LIMIT 1',
+          )
+          if (result?.rows?.[0]) {
+            const currentLabel = result.rows[0].label
+            if (currentLabel !== previousLabel) {
+              console.log('🔄 PGlite data CHANGED:', result.rows[0])
+              console.log('   Previous:', previousLabel, '→ New:', currentLabel)
+              previousLabel = currentLabel
+            } else {
+              console.log('📊 PGlite data unchanged:', result.rows[0])
+            }
+          }
+        } catch (e) {
+          // Ignore errors during monitoring
+        }
+      }, 10000)
     }
 
     return sync
@@ -1263,17 +1339,18 @@ export const startSyncing = async (db) => {
     const errorStr = error?.toString() || ''
     const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
 
+    console.error('FATAL: Error in syncShapesToTables:', error)
+
     if (is409) {
-      console.log(
-        'Electric: Shapes already exist (409) on initial setup - this is OK on reload',
+      console.error(
+        '409 error reached catch block - this suggests Electric shape state is inconsistent',
       )
-      store.set(syncingAtom, false)
-      // Return a minimal sync object to avoid crashes
-      // The shapes are already set up on the Electric server
-      return {
-        unsubscribe: () => {},
-        isUpToDate: true,
-      }
+      console.error(
+        'Recommendation: Restart Electric server to clear shape cache',
+      )
+      console.error(
+        'Run: cd /home/alex/Documents/GitHub/ps/backend && docker compose restart electric',
+      )
     }
 
     console.error('Error starting sync:', error)
