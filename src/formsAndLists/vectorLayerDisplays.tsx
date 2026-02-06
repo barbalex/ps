@@ -17,10 +17,10 @@ const from =
 // map drawer passes the vectorLayerId as a prop
 export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
   const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
-  const params = useParams({ from })
+  const calledFromMapDrawer = vectorLayerIdIn !== undefined
+  const params = useParams(calledFromMapDrawer ? { strict: false } : { from })
   const { projectId } = params
   const vectorLayerId = vectorLayerIdIn || params.vectorLayerId
-  const calledFromMapDrawer = vectorLayerIdIn !== undefined
 
   const navigate = useNavigate()
 
