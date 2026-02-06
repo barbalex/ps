@@ -1,15 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers',
 )({
-  component: RouteComponent,
+  component: Outlet,
+  beforeLoad: () => ({
+    navDataFetcher: 'useWfsServiceLayersNavData',
+  }),
 })
-
-function RouteComponent() {
-  return (
-    <div>
-      Hello "/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers"!
-    </div>
-  )
-}
