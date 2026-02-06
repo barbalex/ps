@@ -5,7 +5,6 @@ const url = constants.getElectricUri()
 
 export const startSyncing = async () => {
   const db = store.get(pgliteDbAtom)
-  console.log('Syncer.startSyncing: Sync from server to PGlite initiated')
 
   // Using persistent key for live updates across page reloads
   // On reload: shapes already exist (409 warnings), Electric resumes streaming changes
@@ -1164,7 +1163,7 @@ export const startSyncing = async () => {
       key: 'ps-sync', // Persistent key for live updates across reloads
       // Removed initialInsertMethod - let Electric use default for live updates
       onInitialSync: async () => {
-        console.log('Syncer.startSyncing: initial sync done')
+        console.log('Initial sync done')
         store.set(initialSyncingAtom, false)
       },
       onError: (error) => {

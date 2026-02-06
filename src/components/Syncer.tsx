@@ -15,22 +15,20 @@ export const Syncer = () => {
   useEffect(() => {
     if (sqlInitializing) return
 
-    console.log('Syncer: Starting sync')
-
     startSyncing()
       .then((syncObj) => {
-        console.log('Syncer: Sync started successfully')
+        console.log('Sync started')
         syncRef.current = syncObj
       })
       .catch((error) => {
-        console.error('Syncer: Error starting sync:', error)
+        console.error('Error starting sync:', error)
         // Reset flags on error so user can retry
       })
 
     return () => {
       // unsubscribe from sync when component unmounts
       if (syncRef.current) {
-        console.log('Syncer: Unsubscribing from sync')
+        console.log('Unsubscribing from sync')
         syncRef.current?.unsubscribe?.()
         syncRef.current = null
       }
