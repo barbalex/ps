@@ -254,6 +254,12 @@ button {
 .sash {
   /* prevent focus on divider */
   user-select: none;
+  background-color: rgba(55, 118, 28, 0.5) !important;
+  width: 1px !important;
+}
+
+.sash:hover {
+  background-color: rgba(55, 118, 28, 0.7) !important;
 }
 
 /* corbado */
