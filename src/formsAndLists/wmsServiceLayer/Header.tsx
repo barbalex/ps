@@ -3,7 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-const from = '/data/projects/$projectId_/wms-services/$wmsServiceId/layers/$wmsServiceLayerId/'
+const from = '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId/'
 
 export const Header = () => {
   const { wmsServiceId, wmsServiceLayerId } = useParams({ from })

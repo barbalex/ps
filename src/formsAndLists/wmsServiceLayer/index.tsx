@@ -9,7 +9,7 @@ import type WmsServiceLayers from '../../models/public/WmsServiceLayers.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/wms-services/$wmsServiceId/layers/$wmsServiceLayerId/'
+const from = '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId/'
 
 export const WmsServiceLayer = () => {
   const { wmsServiceLayerId } = useParams({ from })
