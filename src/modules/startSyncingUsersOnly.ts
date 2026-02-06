@@ -1,11 +1,10 @@
-import { store, syncingAtom } from '../store.ts'
+import { store, initialSyncingAtom } from '../store.ts'
 import { constants } from './constants.ts'
 
 const url = constants.getElectricUri()
 
 export const startSyncingUsersOnly = async (db) => {
   console.log('Sync of projects from server to PGlite initiated')
-  store.set(syncingAtom, true)
 
   const table = 'users'
   const primaryKey = ['user_id']
@@ -31,14 +30,13 @@ export const startSyncingUsersOnly = async (db) => {
       shapeKey: `ps-sync-shape-${table}`,
       // initialInsertMethod: 'csv',
       onInitialSync: () => {
-        store.set(syncingAtom, false)
+        store.set(initialSyncingAtom, false)
         console.log(`initial sync done for table ${table}`)
       },
       onError: (error) => console.error(`Syncer ${table}`, error),
     })
   } catch (error) {
     console.error('Error starting sync:', error)
-    store.set(syncingAtom, false)
     throw error
   }
 

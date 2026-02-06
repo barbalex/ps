@@ -1,19 +1,17 @@
-import { store, syncingAtom, pgliteDbAtom } from '../store.ts'
+import { store, initialSyncingAtom, pgliteDbAtom } from '../store.ts'
 import { constants } from './constants.ts'
 
 const url = constants.getElectricUri()
 
 export const startSyncing = async () => {
   const db = store.get(pgliteDbAtom)
-  console.log('Sync from server to PGlite initiated')
-  store.set(syncingAtom, true)
+  console.log('Syncer.startSyncing: Sync from server to PGlite initiated')
 
   // Using persistent key for live updates across page reloads
   // On reload: shapes already exist (409 warnings), Electric resumes streaming changes
   // PGlite data persists in IndexedDB, so no need to clear or re-sync everything
 
   try {
-    console.log('Creating Electric sync with persistent key ps-sync...')
     const sync = await db.electric.syncShapesToTables({
       shapes: {
         users: {
@@ -1166,8 +1164,8 @@ export const startSyncing = async () => {
       key: 'ps-sync', // Persistent key for live updates across reloads
       // Removed initialInsertMethod - let Electric use default for live updates
       onInitialSync: async () => {
-        store.set(syncingAtom, false)
         console.log('Syncer.startSyncing: initial sync done')
+        store.set(initialSyncingAtom, false)
       },
       onError: (error) => {
         const errorStr = error?.toString() || ''
@@ -1194,7 +1192,6 @@ export const startSyncing = async () => {
     return sync
   } catch (error) {
     console.error('Error starting sync:', error)
-    store.set(syncingAtom, false)
     throw error
   }
 }

@@ -13,7 +13,7 @@ import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
 import {
   mapMaximizedAtom,
   sqlInitializingAtom,
-  syncingAtom,
+  initialSyncingAtom,
 } from '../../store.ts'
 
 const from = '/data'
@@ -22,14 +22,15 @@ const from = '/data'
 export const Layout = () => {
   const mapIsMaximized = useAtomValue(mapMaximizedAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
-  const syncing = useAtomValue(syncingAtom)
+  const initialSyncing = useAtomValue(initialSyncingAtom)
+  console.log('Layout, initialSyncing:', initialSyncing)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   const { onlyForm } = useSearch({ from })
 
   // Show loading state while initializing or syncing
-  if (sqlInitializing || syncing) {
+  if (sqlInitializing || initialSyncing) {
     return (
       <div
         style={{

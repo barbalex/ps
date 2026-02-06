@@ -1,4 +1,4 @@
-import { store, syncingAtom } from '../store.ts'
+import { store, initialSyncingAtom } from '../store.ts'
 import { constants } from './constants.ts'
 
 const url = constants.getElectricUri()
@@ -562,7 +562,7 @@ export const startSyncingSingly = async (db) => {
 
     // wait for the other sync to end
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    while (store.get(syncingAtom)) {
+    while (store.get(initialSyncingAtom)) {
       console.log('waiting for previous sync to finish...')
       await new Promise((resolve) => setTimeout(resolve, 500))
     }
@@ -584,10 +584,8 @@ export const startSyncingSingly = async (db) => {
       initialInsertMethod: 'csv',
       onInitialSync: () => {
         console.log(`initial sync done for table ${table}`)
-        // setTimeout(() => window.location.reload(true), 1000)
-        // if this is last tableData, run store.set(syncingAtom, false)
         if (isLastTableData) {
-          store.set(syncingAtom, false)
+          store.set(initialSyncingAtom, false)
           console.log(`all initial syncs done`)
         }
       },

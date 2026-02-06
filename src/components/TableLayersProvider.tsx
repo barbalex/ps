@@ -4,7 +4,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createVectorLayer } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
-import { syncingAtom, sqlInitializingAtom } from '../store.ts'
+import { initialSyncingAtom, sqlInitializingAtom } from '../store.ts'
 import type Projects from '../models/public/Projects.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
@@ -12,7 +12,7 @@ import type Projects from '../models/public/Projects.ts'
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as SQLite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = () => {
-  const syncing = useAtomValue(syncingAtom)
+  const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
@@ -32,8 +32,8 @@ export const TableLayersProvider = () => {
     // if this runs on first render it can race with triggers and lead to multiple vector_layers
     if (firstRender) return
     // only run after syncing is done
-    if (syncing) return
     if (sqlInitializing) return
+    if (initialSyncing) return
 
     const run = async () => {
       for (const projectId of projectIds) {
@@ -330,7 +330,13 @@ export const TableLayersProvider = () => {
     run()
     // use projects.length as dependency to run this effect only when projects change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects.length, occurrenceCount, syncing, sqlInitializing, firstRender])
+  }, [
+    projects.length,
+    occurrenceCount,
+    initialSyncing,
+    sqlInitializing,
+    firstRender,
+  ])
 
   return null
 }

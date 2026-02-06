@@ -114,8 +114,11 @@ export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
-// export const tabsAtom = atom(['tree', 'data'])
-export const syncingAtom = atom(false)
+// initialSyncing happens on first app load
+// on first app load liveQueries should not run yet, before initial sync is done
+// on later app loads, data exists locally, so liveQueries can run immediately
+// thus use an atom with storage
+export const initialSyncingAtom = atomWithStorage('initialSyncingAtom', true)
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
 // map of id (layer.id, key) and show boolean

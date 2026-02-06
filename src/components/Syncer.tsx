@@ -14,11 +14,11 @@ export const Syncer = () => {
 
   useEffect(() => {
     if (sqlInitializing) {
-      console.log('Syncer: SQL initializing, returning')
+      console.log('Syncer: SQL initializing')
       return
     }
 
-    console.log('Syncer: Starting sync...')
+    console.log('Syncer: Starting sync')
 
     startSyncing()
       .then((syncObj) => {
@@ -31,7 +31,6 @@ export const Syncer = () => {
       })
 
     return () => {
-      console.log('Syncer: Cleanup running')
       // unsubscribe from sync when component unmounts
       if (syncRef.current) {
         console.log('Syncer: Unsubscribing from sync')
