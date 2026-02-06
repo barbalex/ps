@@ -17,7 +17,8 @@ export const VectorLayerChooser = ({ layer, layerPresentation }) => {
   // const vectorLayerGeoms = res?.rows ?? []
   // const geomCount = vectorLayerGeoms.length
 
-  return null
+  // TODO: check if there are local geometries
+  const geomCount = 0
 
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
   if (!geomCount)

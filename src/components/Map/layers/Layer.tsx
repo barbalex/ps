@@ -5,7 +5,7 @@ import { useParams } from '@tanstack/react-router'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
-// import { VectorLayerChooser } from './VectorLayer/index.tsx'
+import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { mapLayerSortingAtom } from '../../../store.ts'
 import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
@@ -41,13 +41,43 @@ export const Layer = ({ layerPresentationId, index }) => {
 
   const resVector = useLiveQuery(
     `
-    SELECT vl.* 
+    SELECT 
+      vl.*,
+      json_build_object(
+        'url', ws.url,
+        'version', ws.version,
+        'info_format', ws.info_format,
+        'default_crs', ws.default_crs
+      ) as wfs_services,
+      json_agg(
+        json_build_object(
+          'vector_layer_display_id', vld.vector_layer_display_id,
+          'marker_type', vld.marker_type,
+          'circle_marker_radius', vld.circle_marker_radius,
+          'marker_symbol', vld.marker_symbol,
+          'marker_size', vld.marker_size,
+          'stroke', vld.stroke,
+          'color', vld.color,
+          'weight', vld.weight,
+          'line_cap', vld.line_cap,
+          'line_join', vld.line_join,
+          'dash_array', vld.dash_array,
+          'dash_offset', vld.dash_offset,
+          'fill', vld.fill,
+          'fill_color', vld.fill_color,
+          'fill_opacity_percent', vld.fill_opacity_percent,
+          'fill_rule', vld.fill_rule
+        )
+      ) FILTER (WHERE vld.vector_layer_display_id IS NOT NULL) as vector_layer_displays
     FROM 
       vector_layers vl 
       INNER JOIN layer_presentations lp ON vl.vector_layer_id = lp.vector_layer_id
+      LEFT JOIN wfs_services ws ON vl.wfs_service_id = ws.wfs_service_id
+      LEFT JOIN vector_layer_displays vld ON vl.vector_layer_id = vld.vector_layer_id
     WHERE 
       lp.layer_presentation_id = $1
-      AND vl.project_id = $2`,
+      AND vl.project_id = $2
+    GROUP BY vl.vector_layer_id, ws.wfs_service_id`,
     [layerPresentationId, projectId],
   )
   const vectorLayer: VectorLayers | undefined = resVector?.rows?.[0]
@@ -120,10 +150,10 @@ export const Layer = ({ layerPresentationId, index }) => {
         name={vectorLayer.label}
         style={{ zIndex: paneBaseIndex - index }}
       >
-        {/* <VectorLayerChooser
+        <VectorLayerChooser
           layerPresentation={layerPresentation}
           layer={vectorLayer}
-        /> */}
+        />
       </Pane>
     )
   }
