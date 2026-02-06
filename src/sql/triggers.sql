@@ -45,10 +45,22 @@ CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
+  projects_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- Check if projects table exists
+  SELECT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'projects'
+  ) INTO projects_table_exists;
+
+  IF NOT projects_table_exists THEN
     RETURN OLD;
   END IF;
 
