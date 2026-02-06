@@ -38,8 +38,10 @@ type NavDataNotForBreadcrumb = {
   project_reports_count_filtered?: number
   persons_count_unfiltered?: number
   persons_count_filtered?: number
+  wms_services_count_unfiltered?: number
   wms_layers_count_unfiltered?: number
   wms_layers_count_filtered?: number
+  wfs_services_count_unfiltered?: number
   vector_layers_count_unfiltered?: number
   vector_layers_count_filtered?: number
 }
@@ -55,8 +57,10 @@ type NavDataNotForBreadcrumbDesigning = {
   project_reports_count_filtered?: number
   persons_count_unfiltered?: number
   persons_count_filtered?: number
+  wms_services_count_unfiltered?: number
   wms_layers_count_unfiltered?: number
   wms_layers_count_filtered?: number
+  wfs_services_count_unfiltered?: number
   vector_layers_count_unfiltered?: number
   vector_layers_count_filtered?: number
   project_users_count_unfiltered?: number
@@ -124,8 +128,10 @@ export const useProjectNavData = ({
             project_reports_count_filtered AS (SELECT count(*) FROM project_reports WHERE project_id = '${projectId}' ${projectReportsIsFiltered ? ` AND ${projectReportsFilterString}` : ''}),
             persons_count_unfiltered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}'),
             persons_count_filtered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}' ${personsIsFiltered ? ` AND ${personsFilterString}` : ''}),
+            wms_services_count_unfiltered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}'),
             wms_layers_count_unfiltered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}'),
             wms_layers_count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${wmsLayersIsFiltered ? ` AND ${wmsLayersFilterString}` : ''}),
+            wfs_services_count_unfiltered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}'),
             vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
             vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''})
             ${
@@ -158,8 +164,10 @@ export const useProjectNavData = ({
             project_reports_count_filtered.count AS project_reports_count_filtered,
             persons_count_unfiltered.count AS persons_count_unfiltered,
             persons_count_filtered.count AS persons_count_filtered,
+            wms_services_count_unfiltered.count AS wms_services_count_unfiltered,
             wms_layers_count_unfiltered.count AS wms_layers_count_unfiltered,
             wms_layers_count_filtered.count AS wms_layers_count_filtered,
+            wfs_services_count_unfiltered.count AS wfs_services_count_unfiltered,
             vector_layers_count_unfiltered.count AS vector_layers_count_unfiltered,
             vector_layers_count_filtered.count AS vector_layers_count_filtered
             ${
@@ -190,8 +198,10 @@ export const useProjectNavData = ({
             project_reports_count_filtered,
             persons_count_unfiltered,
             persons_count_filtered,
+            wms_services_count_unfiltered,
             wms_layers_count_unfiltered,
             wms_layers_count_filtered,
+            wfs_services_count_unfiltered,
             vector_layers_count_unfiltered,
             vector_layers_count_filtered
             ${
@@ -277,6 +287,14 @@ export const useProjectNavData = ({
             }),
           },
           {
+            id: 'wms-services',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.wms_services_count_unfiltered ?? 0,
+              namePlural: 'WMS Services',
+            }),
+          },
+          {
             id: 'wms-layers',
             label: buildNavLabel({
               loading,
@@ -284,6 +302,14 @@ export const useProjectNavData = ({
               countFiltered: nav?.wms_layers_count_filtered ?? 0,
               countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
               namePlural: 'WMS Layers',
+            }),
+          },
+          {
+            id: 'wfs-services',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.wfs_services_count_unfiltered ?? 0,
+              namePlural: 'WFS Services',
             }),
           },
           {

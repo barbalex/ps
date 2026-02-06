@@ -16,6 +16,11 @@ import { WmsServiceFetcher } from './WmsServiceFetcher.tsx'
 import { WmsServiceWmsServiceFetcher } from './WmsServiceWmsServiceFetcher.tsx'
 import { WmsServiceLayersFetcher } from './WmsServiceLayersFetcher.tsx'
 import { WmsServiceLayerFetcher } from './WmsServiceLayerFetcher.tsx'
+import { WfsServicesFetcher } from './WfsServicesFetcher.tsx'
+import { WfsServiceFetcher } from './WfsServiceFetcher.tsx'
+import { WfsServiceWfsServiceFetcher } from './WfsServiceWfsServiceFetcher.tsx'
+import { WfsServiceLayersFetcher } from './WfsServiceLayersFetcher.tsx'
+import { WfsServiceLayerFetcher } from './WfsServiceLayerFetcher.tsx'
 import { WmsLayersFetcher } from './WmsLayersFetcher.tsx'
 import { WmsLayerFetcher } from './WmsLayerFetcher.tsx'
 import { VectorLayerDisplaysFetcher } from './VectorLayerDisplaysFetcher.tsx'
@@ -983,9 +988,64 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
     case 'useWmsServiceLayerNavData': {
-      if (!params.projectId || !params.wmsServiceId || !params.wmsServiceLayerId) return null
+      if (
+        !params.projectId ||
+        !params.wmsServiceId ||
+        !params.wmsServiceLayerId
+      )
+        return null
       return (
         <WmsServiceLayerFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWfsServicesNavData': {
+      if (!params.projectId) return null
+      return (
+        <WfsServicesFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWfsServiceNavData': {
+      if (!params.projectId || !params.wfsServiceId) return null
+      return (
+        <WfsServiceFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWfsServiceWfsServiceNavData': {
+      if (!params.projectId || !params.wfsServiceId) return null
+      return (
+        <WfsServiceWfsServiceFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWfsServiceLayersNavData': {
+      if (!params.projectId || !params.wfsServiceId) return null
+      return (
+        <WfsServiceLayersFetcher
+          params={params}
+          {...other}
+        />
+      )
+    }
+    case 'useWfsServiceLayerNavData': {
+      if (
+        !params.projectId ||
+        !params.wfsServiceId ||
+        !params.wfsServiceLayerId
+      )
+        return null
+      return (
+        <WfsServiceLayerFetcher
           params={params}
           {...other}
         />

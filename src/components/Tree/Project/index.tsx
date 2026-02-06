@@ -8,6 +8,7 @@ import { SubprojectsNode } from '../Subprojects.tsx'
 import { ProjectReportsNode } from '../ProjectReports.tsx'
 import { PersonsNode } from '../Persons.tsx'
 import { WmsServicesNode } from '../WmsServices.tsx'
+import { WfsServicesNode } from '../WfsServices.tsx'
 import { ListsNode } from '../Lists.tsx'
 import { TaxonomiesNode } from '../Taxonomies.tsx'
 import { UnitsNode } from '../Units.tsx'
@@ -90,6 +91,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           <PersonsNode projectId={nav.id} />
           <WmsServicesNode projectId={nav.id} />
           <WmsLayersNode projectId={nav.id} />
+          <WfsServicesNode projectId={nav.id} />
           <VectorLayersNode projectId={nav.id} />
           {showFiles && (
             <FilesNode
