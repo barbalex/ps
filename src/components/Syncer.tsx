@@ -13,10 +13,7 @@ export const Syncer = () => {
   // TODO: ensure syncing resumes after user has changed
 
   useEffect(() => {
-    if (sqlInitializing) {
-      console.log('Syncer: SQL initializing')
-      return
-    }
+    if (sqlInitializing) return
 
     console.log('Syncer: Starting sync')
 
