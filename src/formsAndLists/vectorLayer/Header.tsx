@@ -143,9 +143,10 @@ export const Header = ({ autoFocusRef, row, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerIdRef.current)
+      const index = rows.findIndex(
+        (p) => p.vector_layer_id === vectorLayerIdRef.current,
+      )
       const next = rows[(index + 1) % len]
-      console.log('Navigating to next vector layer:', next.vector_layer_id)
       navigate({
         to:
           isForm ?
@@ -169,7 +170,9 @@ export const Header = ({ autoFocusRef, row, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.vector_layer_id === vectorLayerIdRef.current)
+      const index = rows.findIndex(
+        (p) => p.vector_layer_id === vectorLayerIdRef.current,
+      )
       const previous = rows[(index + len - 1) % len]
       navigate({
         to:
