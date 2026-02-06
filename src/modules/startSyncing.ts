@@ -38,24 +38,24 @@ export const startSyncing = async () => {
           table: 'accounts',
           primaryKey: ['account_id'],
         },
-        // project_types: {
-        //   shape: {
-        //     url,
-        //     params: { table: 'project_types' },
-        //   },
-        //   table: 'project_types',
-        //   primaryKey: ['type'],
-        // },
-        // projects: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'projects',
-        //     },
-        //   },
-        //   table: 'projects',
-        //   primaryKey: ['project_id'],
-        // },
+        project_types: {
+          shape: {
+            url,
+            params: { table: 'project_types' },
+          },
+          table: 'project_types',
+          primaryKey: ['type'],
+        },
+        projects: {
+          shape: {
+            url,
+            params: {
+              table: 'projects',
+            },
+          },
+          table: 'projects',
+          primaryKey: ['project_id'],
+        },
         // place_levels: {
         //   shape: {
         //     url,
@@ -887,26 +887,26 @@ export const startSyncing = async () => {
         //   table: 'wfs_service_layers',
         //   primaryKey: ['wfs_service_layer_id'],
         // },
-        // vector_layer_types: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'vector_layer_types',
-        //     },
-        //   },
-        //   table: 'vector_layer_types',
-        //   primaryKey: ['type'],
-        // },
-        // vector_layer_own_tables: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'vector_layer_own_tables',
-        //     },
-        //   },
-        //   table: 'vector_layer_own_tables',
-        //   primaryKey: ['own_table'],
-        // },
+        vector_layer_types: {
+          shape: {
+            url,
+            params: {
+              table: 'vector_layer_types',
+            },
+          },
+          table: 'vector_layer_types',
+          primaryKey: ['type'],
+        },
+        vector_layer_own_tables: {
+          shape: {
+            url,
+            params: {
+              table: 'vector_layer_own_tables',
+            },
+          },
+          table: 'vector_layer_own_tables',
+          primaryKey: ['own_table'],
+        },
         // vector_layers: {
         //   shape: {
         //     url,
@@ -927,46 +927,46 @@ export const startSyncing = async () => {
         //   table: 'vector_layer_geoms',
         //   primaryKey: ['vector_layer_geom_id'],
         // },
-        // vector_layer_marker_types: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'vector_layer_marker_types',
-        //     },
-        //   },
-        //   table: 'vector_layer_marker_types',
-        //   primaryKey: ['marker_type'],
-        // },
-        // vector_layer_line_caps: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'vector_layer_line_caps',
-        //     },
-        //   },
-        //   table: 'vector_layer_line_caps',
-        //   primaryKey: ['line_cap'],
-        // },
-        // vector_layer_line_joins: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'vector_layer_line_joins',
-        //     },
-        //   },
-        //   table: 'vector_layer_line_joins',
-        //   primaryKey: ['line_join'],
-        // },
-        // vector_layer_fill_rules: {
-        //   shape: {
-        //     url,
-        //     params: {
-        //       table: 'vector_layer_fill_rules',
-        //     },
-        //   },
-        //   table: 'vector_layer_fill_rules',
-        //   primaryKey: ['fill_rule'],
-        // },
+        vector_layer_marker_types: {
+          shape: {
+            url,
+            params: {
+              table: 'vector_layer_marker_types',
+            },
+          },
+          table: 'vector_layer_marker_types',
+          primaryKey: ['marker_type'],
+        },
+        vector_layer_line_caps: {
+          shape: {
+            url,
+            params: {
+              table: 'vector_layer_line_caps',
+            },
+          },
+          table: 'vector_layer_line_caps',
+          primaryKey: ['line_cap'],
+        },
+        vector_layer_line_joins: {
+          shape: {
+            url,
+            params: {
+              table: 'vector_layer_line_joins',
+            },
+          },
+          table: 'vector_layer_line_joins',
+          primaryKey: ['line_join'],
+        },
+        vector_layer_fill_rules: {
+          shape: {
+            url,
+            params: {
+              table: 'vector_layer_fill_rules',
+            },
+          },
+          table: 'vector_layer_fill_rules',
+          primaryKey: ['fill_rule'],
+        },
         // vector_layer_displays: {
         //   shape: {
         //     url,
