@@ -10,7 +10,11 @@ import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
-import { mapMaximizedAtom, sqlInitializingAtom, syncingAtom } from '../../store.ts'
+import {
+  mapMaximizedAtom,
+  sqlInitializingAtom,
+  syncingAtom,
+} from '../../store.ts'
 
 const from = '/data'
 
@@ -27,15 +31,19 @@ export const Layout = () => {
   // Show loading state while initializing or syncing
   if (sqlInitializing || syncing) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '1.5rem',
-        color: '#666'
-      }}>
-        {sqlInitializing ? 'Initializing database...' : 'Syncing with server...'}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          fontSize: '1.5rem',
+          color: '#666',
+        }}
+      >
+        {sqlInitializing ?
+          'Initializing database...'
+        : 'Syncing with server...'}
       </div>
     )
   }
