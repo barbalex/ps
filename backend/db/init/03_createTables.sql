@@ -1707,7 +1707,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   active boolean DEFAULT FALSE,
   opacity_percent integer DEFAULT 100,
-  transparent boolean DEFAULT FALSE,
+  transparent boolean DEFAULT TRUE,
   grayscale boolean DEFAULT FALSE,
   max_zoom integer DEFAULT 19,
   min_zoom integer DEFAULT 0,
