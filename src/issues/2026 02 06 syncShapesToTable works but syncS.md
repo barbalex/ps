@@ -1,10 +1,8 @@
 title: syncShapesToTable works but syncShapesToTables not?
 
-For a while I have implemented syncShapesToTables but syncing from server to client has not worked (no errors were shown). 
+I have implemented syncShapesToTables but syncing from server to client has not worked. More precise: When I change a value on the backend that change syncs exactly once. After that first time no more. No errors are shown.
 
-For a while I have implemented syncShapesToTables but syncing from server to client has not worked (no errors were shown). 
-
-Then I saw @debugverma_74597 mentioning that syncShapesToTables had not worked for him (https://discord.com/channels/933657521581858818/1212676471588520006/1429046422690598963). 
+Then I saw @debugverma_74597 mentioning that syncShapesToTables had not worked for him (https://discord.com/channels/933657521581858818/1212676471588520006/1429046422690598963).
 
 So I tried using syncShapeToTable instead. And it works (for a single table, not when I try to get it work for all 58).
 
