@@ -10,6 +10,10 @@ import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
+import { PostgrestClientInitator } from '../PostgrestClientInitator.tsx'
+import { ApiDetector } from '../ApiDetector.tsx'
+import { TreeOpenNodesSetter } from '../TreeOpenNodesSetter.tsx'
+import { OperationsObserver } from '../OperationsObserver.tsx'
 import {
   mapMaximizedAtom,
   sqlInitializingAtom,
@@ -19,7 +23,7 @@ import {
 const from = '/data'
 
 // memoizing this component creates error
-export const Layout = () => {
+export const LayoutProtected = () => {
   const mapIsMaximized = useAtomValue(mapMaximizedAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const initialSyncing = useAtomValue(initialSyncingAtom)
@@ -30,6 +34,7 @@ export const Layout = () => {
   const { onlyForm } = useSearch({ from })
 
   // Show loading state while initializing or syncing
+  // calling components that query data can lead to errors if the database isn't initialized or synced yet, so we block the entire layout until both are done
   if (sqlInitializing || initialSyncing) {
     return (
       <div
@@ -71,6 +76,10 @@ export const Layout = () => {
         <OwnVectorLayerPropertiesProvider />
         <OccurrenceAssignChooser />
         <IsDesktopViewSetter />
+        <PostgrestClientInitator />
+        <ApiDetector />
+        <TreeOpenNodesSetter />
+        <OperationsObserver />
         <Main />
       </ProtectedRoute>
     </>

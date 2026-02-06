@@ -1,15 +1,11 @@
 import { CorbadoProvider } from '@corbado/react'
 
-import { SqlInitializer } from './SqlInitializer/index.tsx'
+import { SqlInitializer } from './SqlInitializer.tsx'
+import { InitialSyncManager } from './InitialSyncManager.tsx'
 // TODO: sync with db IF user has an account
 import { Syncer } from './Syncer.tsx'
-// import { SyncerSingly } from './SyncerSingly.tsx'
-import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
-import { PostgrestClientInitator } from './PostgrestClientInitator.tsx'
-import { ApiDetector } from './ApiDetector.tsx'
-import { OperationsObserver } from './OperationsObserver.tsx'
 
-import { Layout } from './LayoutProtected/index.tsx'
+import { LayoutProtected } from './LayoutProtected/index.tsx'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
@@ -21,13 +17,9 @@ export const AuthAndDb = () => {
       theme="corbado-theme"
     >
       <SqlInitializer />
-      <PostgrestClientInitator />
-      <ApiDetector />
+      <InitialSyncManager />
       <Syncer />
-      {/* <SyncerSingly /> */}
-      <TreeOpenNodesSetter />
-      <OperationsObserver />
-      <Layout />
+      <LayoutProtected />
     </CorbadoProvider>
   )
 }
