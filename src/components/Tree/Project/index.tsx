@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from '../Node.tsx'
 import { ProjectDesignNode } from '../ProjectDesign.tsx'
@@ -20,7 +22,6 @@ import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
-import { Editing } from './Editing.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
@@ -30,6 +31,7 @@ const parentArray = ['data', 'projects']
 export const ProjectNode = ({ nav, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
+  const { user } = useCorbado()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -40,6 +42,17 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
+
+  // Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
+  const resultProject = useLiveQuery(
+    `SELECT project_id FROM projects WHERE project_id = $1`,
+    [nav.id],
+  )
+  const project = resultProject?.rows?.[0]
+  const userIsAccountOwner = !!project
+
+  // Only show designing nodes if user is account owner for this project
+  const showDesigningNodes = designing && userIsAccountOwner
 
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -71,7 +84,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
         childrenCount={10}
         to={ownUrl}
         onClickButton={onClickButton}
-        sibling={<Editing projectId={nav.id} />}
       />
       {isOpen && (
         <>
@@ -99,7 +111,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
               level={3}
             />
           )}
-          {designing && (
+          {showDesigningNodes && (
             <>
               <ProjectDesignNode
                 projectId={nav.id}

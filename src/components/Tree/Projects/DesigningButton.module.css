@@ -1,0 +1,10 @@
+.button {
+  padding: 0;
+  min-width: auto;
+  height: 20px;
+}
+
+.svg {
+  height: 14px;
+  width: 14px;
+}

@@ -5,7 +5,6 @@ import { useRef, useEffect } from 'react'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { DesigningButton } from './DesigningButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -117,7 +116,6 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="project"
-      siblings={<DesigningButton from={from} />}
     />
   )
 }

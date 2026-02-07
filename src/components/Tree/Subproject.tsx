@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import { PlacesNode } from './Places.tsx'
@@ -24,6 +25,7 @@ import type Projects from '../../models/public/Projects.ts'
 export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
+  const { user } = useCorbado()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -33,6 +35,17 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
+
+  // Check if user is account owner for the parent project (auth not yet implemented, assume yes if project exists)
+  const resultProject = useLiveQuery(
+    `SELECT project_id FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectData = resultProject?.rows?.[0]
+  const userIsAccountOwner = !!projectData
+
+  // Only show designing nodes if user is account owner for the parent project
+  const showDesigningNodes = isDesigning && userIsAccountOwner
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = ['data', 'projects', projectId, 'subprojects']
@@ -93,7 +106,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             projectId={projectId}
             subprojectId={nav.id}
           />
-          {isDesigning && (
+          {showDesigningNodes && (
             <SubprojectReportDesignsNode
               projectId={projectId}
               subprojectId={nav.id}

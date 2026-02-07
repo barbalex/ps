@@ -6,6 +6,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useProjectsNavData } from '../modules/useProjectsNavData.ts'
+import { DesigningButton } from './projects/DesigningButton.tsx'
 
 import '../form.css'
 
@@ -30,7 +31,12 @@ export const Projects = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
+        menus={
+          <>
+            <DesigningButton />
+            <FilterButton isFiltered={isFiltered} />
+          </>
+        }
       />
       <div className="list-container">
         {loading ?
