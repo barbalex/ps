@@ -29,7 +29,7 @@ export const OwnLayers = () => {
     WHERE
       type NOT IN ('wfs', 'upload')
       AND project_id = $1
-      AND EXISTS (
+      AND NOT EXISTS (
         SELECT 1
         FROM layer_presentations
         WHERE 
