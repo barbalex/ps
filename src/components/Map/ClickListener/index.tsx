@@ -93,14 +93,8 @@ export const ClickListener = () => {
           featureLabel: layer.feature.properties?.label || 'Feature',
           properties,
         })
-        console.log('TABLE LAYER pushed:', layer.vectorLayerLabel)
       }
     })
-
-    console.log(
-      'After table layers, mapInfo.layers.length:',
-      mapInfo.layers.length,
-    )
 
     // Three types of querying:
     // 1. WMS Layers
@@ -133,7 +127,6 @@ export const ClickListener = () => {
       [projectId],
     )
     const wmsLayers = resWmsLayers?.rows ?? []
-    console.log('WMS layers found:', wmsLayers.length)
 
     // loop through vector layers and get infos
     for await (const layer of wmsLayers) {
@@ -170,14 +163,9 @@ export const ClickListener = () => {
         // Set the label for all newly added layers
         for (let i = beforeLength; i < mapInfo.layers.length; i++) {
           mapInfo.layers[i].label = wmsLayerLabel || mapInfo.layers[i].label
-          console.log('WMS layer added with label:', mapInfo.layers[i].label)
         }
       }
     }
-    console.log(
-      'After WMS layers, mapInfo.layers.length:',
-      mapInfo.layers.length,
-    )
     // 4. Vector Layers from WFS with no downloaded data
     const filterStringVl = filterStringFromFilter(vectorLayersFilter, 'vl')
     const resActiveVectorLayers = await db.query(
@@ -194,7 +182,6 @@ export const ClickListener = () => {
       [projectId],
     )
     const activeVectorLayers = resActiveVectorLayers?.rows ?? []
-    console.log('WFS vector layers found:', activeVectorLayers.length)
     // need to buffer for points and polygons or it will be too hard to get their info
     // (buffer already calculated above for click detection)
 
@@ -242,7 +229,6 @@ export const ClickListener = () => {
         label: layer.label,
         properties: Object.entries(f.properties ?? {}),
       }))
-      console.log('WFS features:', features?.length, 'with label:', layer.label)
       if (requestData) {
         layersDataFromRequestData({
           layersData: mapInfo.layers,
