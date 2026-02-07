@@ -338,10 +338,6 @@ const tablesSyncData = [
   // },
   // { table: 'field_sorts', primaryKey: ['field_sort_id'] },
   // {
-  //   table: 'occurrence_import_previous_operations',
-  //   primaryKey: ['previous_import_operation'],
-  // },
-  // {
   //   table: 'occurrence_imports_geometry_methods',
   //   primaryKey: ['geometry_method'],
   // },
@@ -363,7 +359,6 @@ const tablesSyncData = [
   //     'name',
   //     'attribution',
   //     'previous_import',
-  //     'previous_import_operation',
   //     'download_from_gbif',
   //     'gbif_filters',
   //     'gbif_download_key',

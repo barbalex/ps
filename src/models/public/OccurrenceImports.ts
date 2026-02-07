@@ -4,7 +4,6 @@
 import type { AccountsAccountId } from './Accounts';
 import type { SubprojectsSubprojectId } from './Subprojects';
 import type { OccurrenceImportsGeometryMethodsGeometryMethod } from './OccurrenceImportsGeometryMethods';
-import type { OccurrenceImportPreviousOperationsPreviousImportOperation } from './OccurrenceImportPreviousOperations';
 
 /** Identifier type for public.occurrence_imports */
 export type OccurrenceImportsOccurrenceImportId = string & { __brand: 'public.occurrence_imports' };
@@ -44,8 +43,6 @@ export default interface OccurrenceImports {
 
   /** What import does this one update/replace/extend? */
   previous_import: OccurrenceImportsOccurrenceImportId | null;
-
-  previous_import_operation: OccurrenceImportPreviousOperationsPreviousImportOperation | null;
 
   download_from_gbif: boolean | null;
 
@@ -104,9 +101,6 @@ export interface OccurrenceImportsInitializer {
   /** What import does this one update/replace/extend? */
   previous_import?: OccurrenceImportsOccurrenceImportId | null;
 
-  /** Default value: 'update_and_extend'::text */
-  previous_import_operation?: OccurrenceImportPreviousOperationsPreviousImportOperation | null;
-
   download_from_gbif?: boolean | null;
 
   /** area, groups, speciesKeys... */
@@ -160,8 +154,6 @@ export interface OccurrenceImportsMutator {
 
   /** What import does this one update/replace/extend? */
   previous_import?: OccurrenceImportsOccurrenceImportId | null;
-
-  previous_import_operation?: OccurrenceImportPreviousOperationsPreviousImportOperation | null;
 
   download_from_gbif?: boolean | null;
 

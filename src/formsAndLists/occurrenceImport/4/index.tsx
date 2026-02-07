@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
-import { PreviousImportOperation } from './PreviousImportOperation.tsx'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/occurrence-imports/$occurrenceImportId/'
@@ -56,7 +55,6 @@ export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
             onChange={onChange}
             validationMessage="Have occurrences been previously imported from the same source? If so: choose the previous import. If not: leave empty."
           />
-          <PreviousImportOperation onChange={onChange} row={occurrenceImport} />
         </>
       )}
     </>

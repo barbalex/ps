@@ -772,16 +772,6 @@ export const startSyncing = async () => {
           table: 'field_sorts',
           primaryKey: ['field_sort_id'],
         },
-        occurrence_import_previous_operations: {
-          shape: {
-            url,
-            params: {
-              table: 'occurrence_import_previous_operations',
-            },
-          },
-          table: 'occurrence_import_previous_operations',
-          primaryKey: ['previous_import_operation'],
-        },
         occurrence_imports_geometry_methods: {
           shape: {
             url,
@@ -813,7 +803,6 @@ export const startSyncing = async () => {
                 'name',
                 'attribution',
                 'previous_import',
-                'previous_import_operation',
                 'download_from_gbif',
                 'gbif_filters',
                 'gbif_download_key',

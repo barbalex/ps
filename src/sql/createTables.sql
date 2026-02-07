@@ -1314,15 +1314,6 @@ COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name'
 --------------------------------------------------------------
 --occurrence_imports
 --
-create table if not exists occurrence_import_previous_operations (
-  previous_import_operation text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-CREATE INDEX IF NOT EXISTS occurrence_import_previous_operations_sort_idx ON occurrence_import_previous_operations USING btree(sort);
-
 create table if not exists occurrence_imports_geometry_methods (
   geometry_method text primary key,
   sort integer default null,
@@ -1348,7 +1339,6 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
   previous_import uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  previous_import_operation text DEFAULT 'update_and_extend' REFERENCES occurrence_import_previous_operations(previous_import_operation) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   download_from_gbif boolean DEFAULT NULL,
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
