@@ -53,11 +53,9 @@ export const Info = () => {
                 key={label}
                 className={styles.layerGroup}
               >
-                {layers.length > 1 && (
-                  <div className={styles.groupHeader}>
-                    {label} ({layers.length})
-                  </div>
-                )}
+                <div className={styles.groupHeader}>
+                  {label} ({layers.length})
+                </div>
                 {layers.map((layer, i) => (
                   <Layer
                     key={`${label}/${i}`}

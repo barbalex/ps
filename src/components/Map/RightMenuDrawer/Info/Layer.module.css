@@ -17,11 +17,6 @@
   backdrop-filter: blur(8px);
 }
 
-/* When there's no group header (single item), stick to top */
-.container:first-child .title {
-  top: 0;
-}
-
 .propertyList {
   display: grid;
   grid-template-columns: minmax(100px, 30%) 1fr;
