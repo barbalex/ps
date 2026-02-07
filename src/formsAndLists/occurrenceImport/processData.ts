@@ -3,6 +3,7 @@ import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createOccurrence } from '../../modules/createRows.ts'
 import { addOperationAtom, store } from '../../store.ts'
+import { checkDuplicates } from './checkDuplicates.ts'
 
 set_cptable(cptable)
 
@@ -33,6 +34,28 @@ export const processData = async ({ file, additionalData, db }) => {
           const { __rowNum__, ...rest } = d
           return rest
         })
+        
+        // Check for duplicates
+        const duplicateCount = await checkDuplicates(
+          db,
+          data,
+          additionalData.account_id,
+        )
+        
+        if (duplicateCount > 0) {
+          const proceed = window.confirm(
+            `Warning: ${duplicateCount} of ${data.length} row${duplicateCount !== 1 ? 's' : ''} appear${duplicateCount === 1 ? 's' : ''} to already exist in the database (exact match on all data fields).\n\nDo you want to proceed with the import anyway?`,
+          )
+          
+          if (!proceed) {
+            resolve({
+              success: false,
+              message: 'Import cancelled by user',
+            })
+            return
+          }
+        }
+        
         const occurrences = data.map((dat) =>
           createOccurrence({
             occurrenceImportId: additionalData.occurrence_import_id,

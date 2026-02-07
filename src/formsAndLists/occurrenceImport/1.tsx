@@ -48,6 +48,7 @@ export const One = ({
         processData={processData}
         additionalData={{
           occurrence_import_id: occurrenceImport.occurrence_import_id,
+          account_id: occurrenceImport.account_id,
         }}
       />
     )}
