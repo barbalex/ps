@@ -67,7 +67,7 @@ export const OccurrenceImport = () => {
       return
     }
 
-    const detected = detectCoordinateFields(occurrenceFields)
+    const detected = detectCoordinateFields(occurrenceFields, occurrences)
     
     if (detected.x_coordinate_field || detected.y_coordinate_field) {
       const updates = []
