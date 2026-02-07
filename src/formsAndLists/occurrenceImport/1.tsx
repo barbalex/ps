@@ -76,11 +76,7 @@ export const One = ({
         if (file) {
           const result = await replaceOccurrences({
             file,
-            additionalData: {
-              occurrence_import_id: occurrenceImport.occurrence_import_id,
-              account_id: occurrenceImport.account_id,
-              id_field: occurrenceImport.id_field,
-            },
+            occurrenceImport,
             db,
           })
           if (result.success) {
@@ -111,11 +107,7 @@ export const One = ({
         if (file) {
           const result = await updateAndExtendOccurrences({
             file,
-            additionalData: {
-              occurrence_import_id: occurrenceImport.occurrence_import_id,
-              account_id: occurrenceImport.account_id,
-              id_field: occurrenceImport.id_field,
-            },
+            occurrenceImport,
             db,
           })
           if (result.success) {
