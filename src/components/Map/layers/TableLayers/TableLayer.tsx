@@ -4,11 +4,8 @@ import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
-import { formatNumber } from '../../../../modules/formatNumber.ts'
-import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 import {
@@ -28,7 +25,6 @@ export const TableLayer = ({ data, layerPresentation }) => {
     placesToAssignOccurrenceToAtom,
   )
 
-  const db = usePGlite()
   const layer = layerPresentation.vector_layers
 
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
@@ -69,8 +65,6 @@ export const TableLayer = ({ data, layerPresentation }) => {
     return null
   if (!data?.length) return null
 
-  const mapSize = map.getSize()
-
   return (
     <ErrorBoundary layer={layer}>
       <GeoJSON
@@ -93,7 +87,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
             const visualRadius = displayToUse.circle_marker_radius ?? 8
             // Create larger invisible circle for clicking (min 10px radius or visual + 5px)
             const clickRadius = Math.max(visualRadius + 5, 10)
-            
+
             // Create the larger invisible clickable circle
             const clickableCircle = L.circleMarker(latlng, {
               radius: clickRadius,
@@ -101,9 +95,11 @@ export const TableLayer = ({ data, layerPresentation }) => {
               opacity: 0,
               stroke: false,
               interactive: true,
-              ...(isDraggable ? { className: 'draggable-hitbox' } : { className: 'clickable-hitbox' }),
+              ...(isDraggable ?
+                { className: 'draggable-hitbox' }
+              : { className: 'clickable-hitbox' }),
             })
-            
+
             // Create the visible circle (non-interactive so clicks pass through)
             const visualCircle = L.circleMarker(latlng, {
               ...displayToUse,
@@ -112,12 +108,15 @@ export const TableLayer = ({ data, layerPresentation }) => {
               bubblingMouseEvents: false,
               className: 'non-interactive-visual',
             })
-            
-            // Create layer group with clickable circle first, visual on top
+
+            // Create layer group with both circles
             const marker = L.layerGroup([clickableCircle, visualCircle])
-            // Copy feature to the group for popup binding
+            // Copy feature to the group AND to clickableCircle for popup binding
             marker.feature = feature
-            
+            clickableCircle.feature = feature
+            // Store reference to clickable circle for popup handling
+            marker._clickableCircle = clickableCircle
+
             if (isDraggable) {
               // Problem: circleMarker has not draggable property
               // see: https://stackoverflow.com/a/43417693/712005
@@ -139,7 +138,10 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 map.dragging.enable()
                 map.off('mousemove', trackCursor)
                 // only assign if the marker has moved
-                if (e.latlng.lat === latlng.lat && e.latlng.lng === latlng.lng) {
+                if (
+                  e.latlng.lat === latlng.lat &&
+                  e.latlng.lng === latlng.lng
+                ) {
                   return
                 }
                 assignToNearestDroppable({
@@ -152,14 +154,15 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 })
               })
             }
-            
+
             return marker
           }
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
-          const marker = IconComponent
-            ? L.marker(latlng, {
+          const marker =
+            IconComponent ?
+              L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -170,9 +173,18 @@ export const TableLayer = ({ data, layerPresentation }) => {
                       }}
                     />,
                   ),
-                  className: isDraggable ? 'draggable marker-icon-clickable' : 'marker-icon-clickable',
-                  iconSize: [displayToUse.marker_size ?? 16, displayToUse.marker_size ?? 16],
-                  iconAnchor: [(displayToUse.marker_size ?? 16) / 2, (displayToUse.marker_size ?? 16) / 2],
+                  className:
+                    isDraggable ?
+                      'draggable marker-icon-clickable'
+                    : 'marker-icon-clickable',
+                  iconSize: [
+                    displayToUse.marker_size ?? 16,
+                    displayToUse.marker_size ?? 16,
+                  ],
+                  iconAnchor: [
+                    (displayToUse.marker_size ?? 16) / 2,
+                    (displayToUse.marker_size ?? 16) / 2,
+                  ],
                 }),
                 draggable: isDraggable,
               })
@@ -181,7 +193,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 ...(isDraggable ? { className: 'draggable' } : {}),
               })
 
-          marker.on('dragend', (e) => {
+          marker.on('dragend', () => {
             const position = marker.getLatLng()
             assignToNearestDroppable({
               latLng: position,
@@ -195,40 +207,10 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
           return marker
         }}
-        onEachFeature={(feature, _layer) => {
+        onEachFeature={(feature) => {
           if (!feature) return
-          // draggable markers pop up on dragend (mouseup)
-          if (isDraggable) return
-
-          const layersData = [
-            {
-              label: feature.label,
-              properties: Object.entries(feature?.properties ?? {}).map(
-                ([key, value]) => {
-                  // if value is a date, format it
-                  // the date object blows up
-                  if (value instanceof Date) {
-                    return [key, formatNumber(value)]
-                  }
-                  return [key, value]
-                },
-              ),
-            },
-          ]
-          // TODO: idea
-          // open form in iframe
-          // but: electric-sql syncing errors...
-          // const src =
-          //   'http://localhost:5173/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/places/018dacec-eef1-7000-8801-353c1a84c65b?onlyForm=true'
-          // this would definitely work better with qwick
-          const popupContent = ReactDOMServer.renderToString(
-            <Popup
-              layersData={layersData}
-              mapSize={mapSize}
-              // src={src}
-            />,
-          )
-          _layer.bindPopup(popupContent)
+          // Table layer data is shown in the Info sidebar via ClickListener
+          // so we don't bind popups here
         }}
       />
     </ErrorBoundary>

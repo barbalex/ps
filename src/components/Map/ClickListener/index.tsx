@@ -36,6 +36,48 @@ export const ClickListener = () => {
 
     const mapInfo = { lat, lng, zoom, layers: [] }
 
+    // Check for features from table layers at the click location
+    // Leaflet provides clicked layers via event.target
+    const clickedLayers = []
+    map.eachLayer((layer) => {
+      if (layer.feature && layer.getBounds) {
+        // Check if the clicked point is within this layer's bounds
+        if (layer.getBounds().contains(event.latlng)) {
+          clickedLayers.push(layer)
+        }
+      } else if (layer.feature && layer.getLatLng) {
+        // For point features, check if click is close enough
+        const layerLatLng = layer.getLatLng()
+        const distance = map.distance(event.latlng, layerLatLng)
+        // Use the same buffer calculation as for WFS layers
+        const bufferFraction = 0.00003
+        const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
+        const bufferMeters = buffer * 111000
+        if (distance <= bufferMeters) {
+          clickedLayers.push(layer)
+        }
+      }
+    })
+
+    // Add clicked table layer features to mapInfo
+    clickedLayers.forEach((layer) => {
+      if (layer.feature && layer.feature.properties) {
+        const properties = Object.entries(layer.feature.properties)
+          .filter(([key]) => key !== 'geometry' && key !== 'deleted')
+          .map(([key, value]) => {
+            if (value instanceof Date) {
+              return [key, value.toISOString()]
+            }
+            return [key, value]
+          })
+        
+        mapInfo.layers.push({
+          label: layer.feature.label || 'Feature',
+          properties,
+        })
+      }
+    })
+
     // Three types of querying:
     // 1. WMS Layers
     // 2. Vector Layers from own tables (type !== 'wfs')
@@ -103,6 +145,7 @@ export const ClickListener = () => {
           INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id AND lp.active = true
         WHERE 
           project_id = $1
+          AND wfs_service_id IS NOT NULL
           ${filterStringVl ? ` AND ${filterStringVl}` : ''} 
         ORDER BY label
       `,
@@ -112,6 +155,7 @@ export const ClickListener = () => {
     // need to buffer for points and polygons or it will be too hard to get their info
     const bufferFraction = 0.00003
     const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
+    
     // loop through vector layers and get infos
     for await (const layer of activeVectorLayers) {
       const res = await db.query(
