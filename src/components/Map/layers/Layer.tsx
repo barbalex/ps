@@ -159,10 +159,25 @@ export const Layer = ({ layerPresentationId, index }) => {
   }
 
   if (isTableLayer) {
-    const Component =
-      tableLayerToComponent[
+    const componentKey =
+      vectorLayer.own_table_level ?
         `${vectorLayer.own_table}${vectorLayer.own_table_level}`
-      ]
+      : vectorLayer.own_table
+    const Component = tableLayerToComponent[componentKey]
+
+    if (!Component) {
+      console.warn(
+        `No component found for table layer: ${componentKey}`,
+        vectorLayer,
+      )
+      return null
+    }
+
+    // TableLayer expects layerPresentation.vector_layers with vector_layer_displays
+    const layerPresentationWithVectorLayer = {
+      ...layerPresentation,
+      vector_layers: vectorLayer,
+    }
 
     return (
       <Pane
@@ -172,7 +187,7 @@ export const Layer = ({ layerPresentationId, index }) => {
       >
         <Component
           key={layerPresentationId}
-          layerPresentation={layerPresentation}
+          layerPresentation={layerPresentationWithVectorLayer}
         />
       </Pane>
     )

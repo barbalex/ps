@@ -20,14 +20,13 @@ export const OwnLayers = () => {
   })
 
   const db = usePGlite()
-  // TODO: when including layer_presentations, no results are returned
-  // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
+  // Show table-based vector layers that are not currently active
   const res = useLiveQuery(
     `
     SELECT * 
     FROM vector_layers 
     WHERE
-      type NOT IN ('wfs', 'upload')
+      own_table IS NOT NULL
       AND project_id = $1
       AND NOT EXISTS (
         SELECT 1
