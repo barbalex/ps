@@ -39,8 +39,26 @@ export const ClickListener = () => {
     // Check for features from table layers at the click location
     // Leaflet provides clicked layers via event.target
     const clickedLayers = []
+    const bufferFraction = 0.00003
+    const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
+    const bufferMeters = buffer * 111000
+
     map.eachLayer((layer) => {
-      if (layer.feature && layer.getBounds) {
+      // Handle layer groups with circle markers (from TableLayer)
+      if (layer._clickableCircle && layer.feature) {
+        const clickableCircle = layer._clickableCircle
+        if (clickableCircle.getLatLng) {
+          const layerLatLng = clickableCircle.getLatLng()
+          const distance = map.distance(event.latlng, layerLatLng)
+          // Check if click is within the clickable circle's radius
+          const clickRadius = clickableCircle.options.radius || 10
+          // Convert radius from pixels to meters approximately
+          const radiusMeters = clickRadius * (bufferMeters / 10)
+          if (distance <= radiusMeters) {
+            clickedLayers.push(layer)
+          }
+        }
+      } else if (layer.feature && layer.getBounds) {
         // Check if the clicked point is within this layer's bounds
         if (layer.getBounds().contains(event.latlng)) {
           clickedLayers.push(layer)
@@ -49,10 +67,6 @@ export const ClickListener = () => {
         // For point features, check if click is close enough
         const layerLatLng = layer.getLatLng()
         const distance = map.distance(event.latlng, layerLatLng)
-        // Use the same buffer calculation as for WFS layers
-        const bufferFraction = 0.00003
-        const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
-        const bufferMeters = buffer * 111000
         if (distance <= bufferMeters) {
           clickedLayers.push(layer)
         }
@@ -70,7 +84,7 @@ export const ClickListener = () => {
             }
             return [key, value]
           })
-        
+
         mapInfo.layers.push({
           label: layer.feature.label || 'Feature',
           properties,
@@ -153,9 +167,8 @@ export const ClickListener = () => {
     )
     const activeVectorLayers = resActiveVectorLayers?.rows ?? []
     // need to buffer for points and polygons or it will be too hard to get their info
-    const bufferFraction = 0.00003
-    const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
-    
+    // (buffer already calculated above for click detection)
+
     // loop through vector layers and get infos
     for await (const layer of activeVectorLayers) {
       const res = await db.query(
