@@ -33,7 +33,9 @@ export const ComboboxFilteringForTable = ({
     [idField, name, results],
   )
   useEffect(() => {
-    const filter = selectedOptions[0]?.text ?? ''
+    // Only set filter from selected options if there's an actual value
+    // Otherwise, if value is empty, all options are loaded and we'd show the first one incorrectly
+    const filter = value ? (selectedOptions[0]?.text ?? '') : ''
     setFilter(filter)
   }, [selectedOptions, value])
 
