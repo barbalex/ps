@@ -19,6 +19,16 @@ export const Info = () => {
 
   const layersExist = mapInfo?.layers?.length > 0
 
+  // Group layers by label
+  const groupedLayers = (mapInfo?.layers ?? []).reduce((acc, layer) => {
+    const label = layer.label || 'Unknown'
+    if (!acc[label]) {
+      acc[label] = []
+    }
+    acc[label].push(layer)
+    return acc
+  }, {})
+
   return (
     <ErrorBoundary>
       <div className={styles.container}>
@@ -38,11 +48,24 @@ export const Info = () => {
         <DrawerBody className={styles.body}>
           <Location mapInfo={mapInfo} />
           {layersExist ?
-            (mapInfo?.layers ?? []).map((layer, i) => (
-              <Layer
-                key={`${i}/${layer.label}`}
-                layerData={layer}
-              />
+            Object.entries(groupedLayers).map(([label, layers]) => (
+              <div
+                key={label}
+                className={styles.layerGroup}
+              >
+                {layers.length > 1 && (
+                  <div className={styles.groupHeader}>
+                    {label} ({layers.length})
+                  </div>
+                )}
+                {layers.map((layer, i) => (
+                  <Layer
+                    key={`${label}/${i}`}
+                    layerData={layer}
+                    hideTitle={layers.length > 1}
+                  />
+                ))}
+              </div>
             ))
           : <p className={styles.noData}>No Data found at this location</p>}
         </DrawerBody>

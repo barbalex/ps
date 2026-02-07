@@ -3,14 +3,14 @@ import Linkify from 'react-linkify'
 
 import styles from './Layer.module.css'
 
-export const Layer = ({ layerData }) => {
+export const Layer = ({ layerData, hideTitle = false }) => {
   const { label, properties = [], html, json, text } = layerData
   // console.log('Map Info Drawer Layer', { label, properties, html, json, text })
 
   if (text) {
     return (
       <div className={styles.container}>
-        <div className={styles.title}>{label}</div>
+        {!hideTitle && <div className={styles.title}>{label}</div>}
         <div className={styles.text}>{text}</div>
       </div>
     )
@@ -19,7 +19,7 @@ export const Layer = ({ layerData }) => {
   if (json) {
     return (
       <div className={styles.container}>
-        <div className={styles.title}>{label}</div>
+        {!hideTitle && <div className={styles.title}>{label}</div>}
         <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
       </div>
     )
@@ -28,7 +28,7 @@ export const Layer = ({ layerData }) => {
   if (html) {
     return (
       <div className={styles.container}>
-        <div className={styles.title}>{label}</div>
+        {!hideTitle && <div className={styles.title}>{label}</div>}
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     )
@@ -36,7 +36,7 @@ export const Layer = ({ layerData }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.title}>{label}</div>
+      {!hideTitle && <div className={styles.title}>{label}</div>}
       <div className={styles.propertyList}>
         {properties.map((p, i) => {
           const key = p[0]

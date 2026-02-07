@@ -34,3 +34,16 @@
   padding: 10px;
   margin: 0;
 }
+
+.layerGroup {
+  margin-bottom: 10px;
+}
+
+.groupHeader {
+  padding: 8px 10px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
