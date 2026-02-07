@@ -4,11 +4,22 @@
 }
 
 .title {
+  position: sticky;
+  top: 38px;
+  z-index: 9;
   margin: 0;
   padding-bottom: 5px;
   padding-left: 10px;
   padding-right: 10px;
+  padding-top: 5px;
   font-weight: bold;
+  background-color: white;
+  backdrop-filter: blur(8px);
+}
+
+/* When there's no group header (single item), stick to top */
+.container:first-child .title {
+  top: 0;
 }
 
 .propertyList {
