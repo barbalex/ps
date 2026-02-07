@@ -42,8 +42,8 @@ const validateFieldValues = (
     }
   }
 
-  // At least 80% of sampled values should be valid
-  return totalChecked > 0 && validCount / totalChecked >= 0.8
+  // At least 95% of sampled values should be valid
+  return totalChecked > 0 && validCount / totalChecked >= 0.95
 }
 
 /**

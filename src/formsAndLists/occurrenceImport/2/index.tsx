@@ -2,12 +2,15 @@ import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownF
 import { Crs } from './Crs.tsx'
 import { Set } from './Set.tsx'
 import { GeometryMethod } from './GeometryMethod.tsx'
+import styles from './index.module.css'
 
 export const Two = ({
   occurrenceImport,
   occurrenceFields,
   onChange,
   validations,
+  coordinatesAutoDetected,
+  occurrencesWithoutGeometryCount,
 }) => (
   <>
     <GeometryMethod
@@ -31,6 +34,21 @@ export const Two = ({
     )}
     {occurrenceImport.geometry_method === 'coordinates' && (
       <>
+        {coordinatesAutoDetected && (
+          <div className={styles.autoDetectInfo}>
+            <strong>✓ Coordinate fields automatically detected</strong>
+            <br />
+            Please verify the selected fields and check that the coordinate
+            values are correct.
+            {occurrencesWithoutGeometryCount > 0 && (
+              <>
+                <br />
+                Then set the coordinates by clicking the button at the bottom of
+                the page.
+              </>
+            )}
+          </div>
+        )}
         <DropdownFieldSimpleOptions
           label="X-Coordinate Field"
           name="x_coordinate_field"

@@ -30,6 +30,7 @@ export const OccurrenceImport = () => {
 
   const [showPreview, setShowPreview] = useState(true)
   const [validations, setValidations] = useState({})
+  const [coordinatesAutoDetected, setCoordinatesAutoDetected] = useState(false)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -95,6 +96,7 @@ export const OccurrenceImport = () => {
           draft,
           prev: { ...occurrenceImport },
         })
+        setCoordinatesAutoDetected(true)
       }
     }
   }, [occurrenceFields.length, occurrenceImport?.occurrence_import_id])
@@ -274,6 +276,8 @@ export const OccurrenceImport = () => {
                 occurrenceFields={occurrenceFields}
                 onChange={onChange}
                 validations={validations}
+                coordinatesAutoDetected={coordinatesAutoDetected}
+                occurrencesWithoutGeometryCount={occurrencesWithoutGeometryCount}
               />
             )}
             {tab === 3 && (
