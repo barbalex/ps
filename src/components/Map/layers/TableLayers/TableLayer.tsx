@@ -99,6 +99,10 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 { className: 'draggable-hitbox' }
               : { className: 'clickable-hitbox' }),
             })
+            // Store vector layer label on clickableCircle too
+            clickableCircle.vectorLayerLabel = layer?.label
+            // Mark as internal layer to skip in click detection
+            clickableCircle._isInternal = true
 
             // Create the visible circle (non-interactive so clicks pass through)
             const visualCircle = L.circleMarker(latlng, {
@@ -108,8 +112,9 @@ export const TableLayer = ({ data, layerPresentation }) => {
               bubblingMouseEvents: false,
               className: 'non-interactive-visual',
             })
+            // Mark as internal layer
+            visualCircle._isInternal = true
 
-            // Create layer group with both circles
             const marker = L.layerGroup([clickableCircle, visualCircle])
             // Copy feature to the group AND to clickableCircle for popup binding
             marker.feature = feature
@@ -196,6 +201,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
               })
 
           // Store vector layer label for grouping in info panel
+          marker.feature = feature
           marker.vectorLayerLabel = layer?.label
 
           marker.on('dragend', () => {

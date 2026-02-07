@@ -44,6 +44,9 @@ export const ClickListener = () => {
     const bufferMeters = buffer * 111000
 
     map.eachLayer((layer) => {
+      // Skip internal layers (markers that are part of layer groups)
+      if (layer._isInternal) return
+
       // Handle layer groups with circle markers (from TableLayer)
       if (layer._clickableCircle && layer.feature) {
         const clickableCircle = layer._clickableCircle
@@ -86,12 +89,18 @@ export const ClickListener = () => {
           })
 
         mapInfo.layers.push({
-          label: layer.vectorLayerLabel || layer.feature.label || 'Feature',
-          featureLabel: layer.feature.label || 'Feature',
+          label: layer.vectorLayerLabel || 'Unknown Layer',
+          featureLabel: layer.feature.properties?.label || 'Feature',
           properties,
         })
+        console.log('TABLE LAYER pushed:', layer.vectorLayerLabel)
       }
     })
+
+    console.log(
+      'After table layers, mapInfo.layers.length:',
+      mapInfo.layers.length,
+    )
 
     // Three types of querying:
     // 1. WMS Layers
@@ -107,7 +116,8 @@ export const ClickListener = () => {
     const resWmsLayers = await db.query(
       `
         SELECT 
-          wl.wms_service_layer_name, 
+          wl.wms_service_layer_name,
+          wl.label,
           ws.info_format, 
           ws.version, 
           ws.url
@@ -123,10 +133,17 @@ export const ClickListener = () => {
       [projectId],
     )
     const wmsLayers = resWmsLayers?.rows ?? []
+    console.log('WMS layers found:', wmsLayers.length)
 
     // loop through vector layers and get infos
     for await (const layer of wmsLayers) {
-      const { version, url, wms_service_layer_name, info_format } = layer
+      const {
+        version,
+        url,
+        wms_service_layer_name,
+        info_format,
+        label: wmsLayerLabel,
+      } = layer
       // in raw queries, jsonb columns need to be parsed
       const params = {
         request: 'GetFeatureInfo',
@@ -144,13 +161,23 @@ export const ClickListener = () => {
       }
       const requestData = await fetchData({ url, params })
       if (requestData) {
+        const beforeLength = mapInfo.layers.length
         layersDataFromRequestData({
           layersData: mapInfo.layers,
           requestData,
           infoFormat: info_format,
         })
+        // Set the label for all newly added layers
+        for (let i = beforeLength; i < mapInfo.layers.length; i++) {
+          mapInfo.layers[i].label = wmsLayerLabel || mapInfo.layers[i].label
+          console.log('WMS layer added with label:', mapInfo.layers[i].label)
+        }
       }
     }
+    console.log(
+      'After WMS layers, mapInfo.layers.length:',
+      mapInfo.layers.length,
+    )
     // 4. Vector Layers from WFS with no downloaded data
     const filterStringVl = filterStringFromFilter(vectorLayersFilter, 'vl')
     const resActiveVectorLayers = await db.query(
@@ -167,6 +194,7 @@ export const ClickListener = () => {
       [projectId],
     )
     const activeVectorLayers = resActiveVectorLayers?.rows ?? []
+    console.log('WFS vector layers found:', activeVectorLayers.length)
     // need to buffer for points and polygons or it will be too hard to get their info
     // (buffer already calculated above for click detection)
 
@@ -210,11 +238,11 @@ export const ClickListener = () => {
         // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
       }
       const requestData = await fetchData({ url: wfsService.url, params })
-      const label = requestData?.name
       const features = requestData?.features.map((f) => ({
-        label,
+        label: layer.label,
         properties: Object.entries(f.properties ?? {}),
       }))
+      console.log('WFS features:', features?.length, 'with label:', layer.label)
       if (requestData) {
         layersDataFromRequestData({
           layersData: mapInfo.layers,
