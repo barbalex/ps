@@ -1,7 +1,10 @@
-import { read, utils } from '@e965/xlsx'
+import { read, utils, set_cptable } from '@e965/xlsx'
+import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createOccurrence } from '../../modules/createRows.ts'
 import { addOperationAtom, store } from '../../store.ts'
+
+set_cptable(cptable)
 
 export const processData = async ({ file, additionalData, db }) => {
   if (!file) return { success: false, message: 'No file selected' }
@@ -16,9 +19,12 @@ export const processData = async ({ file, additionalData, db }) => {
 
     reader.onload = async () => {
       try {
-        const fileAsBinaryString = reader.result
-        const workbook = read(fileAsBinaryString, {
-            type: 'binary',
+        const fileAsArrayBuffer = reader.result
+        const workbook = read(fileAsArrayBuffer, {
+            type: 'array',
+            codepage: 65001, // UTF-8
+            cellText: false,
+            cellDates: true,
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
@@ -33,8 +39,6 @@ export const processData = async ({ file, additionalData, db }) => {
             data: dat,
           }),
         )
-        // test the data
-        // console.log('processData, occurrences:', occurrences)
         // TODO:
         // - create chunks of 500 rows
         const chunked = chunkArrayWithMinSize(occurrences, 500)
@@ -74,6 +78,6 @@ export const processData = async ({ file, additionalData, db }) => {
 
     reader.onabort = () => reject(new Error('File reading was aborted'))
     reader.onerror = () => reject(new Error('File reading has failed'))
-    reader.readAsBinaryString(file)
+    reader.readAsArrayBuffer(file)
   })
 }
