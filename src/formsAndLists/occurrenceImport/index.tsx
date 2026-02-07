@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import { Tab, TabList } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { detectCoordinateFields } from './detectCoordinateFields.ts'
 import { Header } from './Header.tsx'
 import { One } from './1.tsx'
 import { Two } from './2/index.tsx'
@@ -54,6 +55,49 @@ export const OccurrenceImport = () => {
     occurrencesWithoutGeometryCountResult?.rows?.[0]?.count ?? 0
 
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
+
+  // Auto-detect coordinate fields when occurrences are first loaded
+  useEffect(() => {
+    if (
+      !occurrenceImport ||
+      !occurrenceFields.length ||
+      occurrenceImport.x_coordinate_field ||
+      occurrenceImport.y_coordinate_field
+    ) {
+      return
+    }
+
+    const detected = detectCoordinateFields(occurrenceFields)
+    
+    if (detected.x_coordinate_field || detected.y_coordinate_field) {
+      const updates = []
+      const draft = {}
+      
+      if (detected.x_coordinate_field) {
+        updates.push(`x_coordinate_field = '${detected.x_coordinate_field}'`)
+        draft.x_coordinate_field = detected.x_coordinate_field
+      }
+      if (detected.y_coordinate_field) {
+        updates.push(`y_coordinate_field = '${detected.y_coordinate_field}'`)
+        draft.y_coordinate_field = detected.y_coordinate_field
+      }
+      
+      if (updates.length) {
+        db.query(
+          `UPDATE occurrence_imports SET ${updates.join(', ')} WHERE occurrence_import_id = $1`,
+          [occurrenceImportId],
+        )
+        addOperation({
+          table: 'occurrence_imports',
+          rowIdName: 'occurrence_import_id',
+          rowId: occurrenceImportId,
+          operation: 'update',
+          draft,
+          prev: { ...occurrenceImport },
+        })
+      }
+    }
+  }, [occurrenceFields.length, occurrenceImport?.occurrence_import_id])
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
