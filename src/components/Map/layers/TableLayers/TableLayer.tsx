@@ -90,45 +90,69 @@ export const TableLayer = ({ data, layerPresentation }) => {
           const displayToUse = displayFromFeature(feature)
 
           if (displayToUse.marker_type === 'circle') {
-            const marker = L.circleMarker(latlng, {
+            const visualRadius = displayToUse.circle_marker_radius ?? 8
+            // Create larger invisible circle for clicking (min 10px radius or visual + 5px)
+            const clickRadius = Math.max(visualRadius + 5, 10)
+            
+            // Create the larger invisible clickable circle
+            const clickableCircle = L.circleMarker(latlng, {
+              radius: clickRadius,
+              fillOpacity: 0,
+              opacity: 0,
+              stroke: false,
+              interactive: true,
+              ...(isDraggable ? { className: 'draggable-hitbox' } : { className: 'clickable-hitbox' }),
+            })
+            
+            // Create the visible circle (non-interactive so clicks pass through)
+            const visualCircle = L.circleMarker(latlng, {
               ...displayToUse,
-              radius: displayToUse.circle_marker_radius ?? 8,
-              ...(isDraggable ? { className: 'draggable' } : {}),
+              radius: visualRadius,
+              interactive: false,
+              bubblingMouseEvents: false,
+              className: 'non-interactive-visual',
             })
+            
+            // Create layer group with clickable circle first, visual on top
+            const marker = L.layerGroup([clickableCircle, visualCircle])
+            // Copy feature to the group for popup binding
+            marker.feature = feature
+            
+            if (isDraggable) {
+              // Problem: circleMarker has not draggable property
+              // see: https://stackoverflow.com/a/43417693/712005
 
-            if (!isDraggable) return marker
-            // Problem: circleMarker has not draggable property
-            // see: https://stackoverflow.com/a/43417693/712005
-
-            // extract trackCursor as a function so this specific
-            // "mousemove" listener can be removed on "mouseup" versus
-            // all listeners if we were to use map.off("mousemove")
-            const trackCursor = (e) => {
-              marker.setLatLng(e.latlng)
-            }
-
-            marker.on('mousedown', function () {
-              map.dragging.disable()
-              map.on('mousemove', trackCursor)
-            })
-
-            marker.on('mouseup', function (e) {
-              map.dragging.enable()
-              map.off('mousemove', trackCursor)
-              // only assign if the marker has moved
-              if (e.latlng.lat === latlng.lat && e.latlng.lng === latlng.lng) {
-                return
+              // extract trackCursor as a function so this specific
+              // "mousemove" listener can be removed on "mouseup" versus
+              // all listeners if we were to use map.off("mousemove")
+              const trackCursor = (e) => {
+                clickableCircle.setLatLng(e.latlng)
+                visualCircle.setLatLng(e.latlng)
               }
-              assignToNearestDroppable({
-                latLng: e.latlng,
-                occurrenceId: marker.feature.properties?.occurrence_id,
-                map,
-                droppableLayer,
-                confirmAssigningToSingleTarget,
-                setPlacesToAssignOccurrenceTo,
-              })
-            })
 
+              clickableCircle.on('mousedown', function () {
+                map.dragging.disable()
+                map.on('mousemove', trackCursor)
+              })
+
+              clickableCircle.on('mouseup', function (e) {
+                map.dragging.enable()
+                map.off('mousemove', trackCursor)
+                // only assign if the marker has moved
+                if (e.latlng.lat === latlng.lat && e.latlng.lng === latlng.lng) {
+                  return
+                }
+                assignToNearestDroppable({
+                  latLng: e.latlng,
+                  occurrenceId: feature.properties?.occurrence_id,
+                  map,
+                  droppableLayer,
+                  confirmAssigningToSingleTarget,
+                  setPlacesToAssignOccurrenceTo,
+                })
+              })
+            }
+            
             return marker
           }
 
@@ -146,7 +170,9 @@ export const TableLayer = ({ data, layerPresentation }) => {
                       }}
                     />,
                   ),
-                  ...(isDraggable ? { className: 'draggable' } : {}),
+                  className: isDraggable ? 'draggable marker-icon-clickable' : 'marker-icon-clickable',
+                  iconSize: [displayToUse.marker_size ?? 16, displayToUse.marker_size ?? 16],
+                  iconAnchor: [(displayToUse.marker_size ?? 16) / 2, (displayToUse.marker_size ?? 16) / 2],
                 }),
                 draggable: isDraggable,
               })

@@ -346,6 +346,27 @@ html {
   .draggable.leaflet-interactive {
     cursor: move;
   }
+
+  /* Make markers easier to click with larger hit area */
+  .marker-icon-clickable {
+    /* Add padding to increase clickable area by 8px on each side */
+    padding: 8px !important;
+    /* Ensure the icon itself stays centered */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Hide the invisible larger circles visually */
+  .clickable-hitbox,
+  .draggable-hitbox {
+    pointer-events: auto !important;
+  }
+
+  /* Ensure visual circle doesn't capture pointer events */
+  .non-interactive-visual {
+    pointer-events: none !important;
+  }
 }
 
 .map-container.col-resize {
