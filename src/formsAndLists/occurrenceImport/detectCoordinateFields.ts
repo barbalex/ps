@@ -124,6 +124,54 @@ export const detectCoordinateFields = (
     }
   }
 
+  // Cross-validate: check if the fields might be swapped
+  // This can happen when both values fall within -90 to 90 range
+  if (xField && yField && occurrences && occurrences.length > 0) {
+    const xValues = occurrences
+      .slice(0, 10)
+      .map((o) => parseFloat(o?.data?.[xField]))
+      .filter((v) => !isNaN(v))
+    const yValues = occurrences
+      .slice(0, 10)
+      .map((o) => parseFloat(o?.data?.[yField]))
+      .filter((v) => !isNaN(v))
+
+    if (xValues.length > 0 && yValues.length > 0) {
+      // Calculate ranges
+      const xMin = Math.min(...xValues)
+      const xMax = Math.max(...xValues)
+      const yMin = Math.min(...yValues)
+      const yMax = Math.max(...yValues)
+      const xRange = xMax - xMin
+      const yRange = yMax - yMin
+
+      // Check if values suggest fields are swapped:
+      // 1. X (longitude) typically has wider range than Y (latitude)
+      // 2. If both are within -90 to 90, but Y has wider range, they might be swapped
+      const bothInLatRange =
+        xMin >= -90 && xMax <= 90 && yMin >= -90 && yMax <= 90
+      const yRangeIsWider = yRange > xRange * 1.5 // Y range significantly wider
+
+      if (bothInLatRange && yRangeIsWider) {
+        // Values suggest fields might be swapped
+        // But only swap if field names don't strongly indicate otherwise
+        const xNameSuggestsLongitude = lowerFields[
+          fields.indexOf(xField)
+        ].includes('lon')
+        const yNameSuggestsLatitude = lowerFields[
+          fields.indexOf(yField)
+        ].includes('lat')
+
+        // Only swap if names don't strongly contradict the swap
+        if (!xNameSuggestsLongitude && !yNameSuggestsLatitude) {
+          const temp = xField
+          xField = yField
+          yField = temp
+        }
+      }
+    }
+  }
+
   return {
     x_coordinate_field: xField,
     y_coordinate_field: yField,
