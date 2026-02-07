@@ -118,6 +118,16 @@ export const OccurrenceImport = () => {
       }))
       return
     }
+    
+    // If geometry-related fields changed, clear geometries so they can be recalculated
+    const geometryFields = ['x_coordinate_field', 'y_coordinate_field', 'geojson_geometry_field', 'geometry_method', 'crs']
+    if (geometryFields.includes(name)) {
+      await db.query(
+        `UPDATE occurrences SET geometry = NULL WHERE occurrence_import_id = $1 AND geometry IS NOT NULL`,
+        [occurrenceImportId],
+      )
+    }
+    
     setValidations((prev) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [name]: _, ...rest } = prev

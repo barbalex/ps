@@ -42,9 +42,12 @@ export const OwnLayer = ({ layer, isLast, isOpen }) => {
   const onChange = async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
       // create the missing layer_presentation
+      // For table layers (own_table is set), skip operation queue as they are system-managed
+      const isTableLayer = !!layer.own_table
       await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
+        skipOperationQueue: isTableLayer,
       })
     } else {
       db.query(

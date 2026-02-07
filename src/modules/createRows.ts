@@ -1368,6 +1368,7 @@ export const createLayerPresentation = async ({
   accountId = account_id, // null,
   active = false,
   transparent = false,
+  skipOperationQueue = false, // system-managed table layers shouldn't sync back to server
 }) => {
   const db = store.get(pgliteDbAtom)
   const layer_presentation_id = uuidv7()
@@ -1391,22 +1392,25 @@ export const createLayerPresentation = async ({
     ],
   )
 
-  store.set(addOperationAtom, {
-    table: 'layer_presentations',
-    operation: 'insert',
-    draft: {
-      layer_presentation_id,
-      account_id: accountId,
-      vector_layer_id: vectorLayerId,
-      wms_layer_id: wmsLayerId,
-      active,
-      opacity_percent: 100,
-      grayscale: false,
-      transparent,
-      max_zoom: 19,
-      min_zoom: 0,
-    },
-  })
+  // Only queue operation if this is not a system-managed layer
+  if (!skipOperationQueue) {
+    store.set(addOperationAtom, {
+      table: 'layer_presentations',
+      operation: 'insert',
+      draft: {
+        layer_presentation_id,
+        account_id: accountId,
+        vector_layer_id: vectorLayerId,
+        wms_layer_id: wmsLayerId,
+        active,
+        opacity_percent: 100,
+        grayscale: false,
+        transparent,
+        max_zoom: 19,
+        min_zoom: 0,
+      },
+    })
+  }
 
   return layer_presentation_id
 }
