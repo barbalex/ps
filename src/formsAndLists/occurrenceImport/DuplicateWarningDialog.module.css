@@ -1,0 +1,15 @@
+.warning {
+  padding: 8px 0;
+}
+
+.warning p {
+  margin: 0 0 12px 0;
+}
+
+.warning p:last-child {
+  margin-bottom: 0;
+}
+
+.warning strong {
+  color: #d13438;
+}

@@ -7,7 +7,49 @@ import { checkDuplicates } from './checkDuplicates.ts'
 
 set_cptable(cptable)
 
-export const processData = async ({ file, additionalData, db }) => {
+// Helper function to insert occurrences
+const insertOccurrences = async (data, additionalData, db, resolve) => {
+  const occurrences = data.map((dat) =>
+    createOccurrence({
+      occurrenceImportId: additionalData.occurrence_import_id,
+      data: dat,
+    }),
+  )
+  // TODO:
+  // - create chunks of 500 rows
+  const chunked = chunkArrayWithMinSize(occurrences, 500)
+  for (const chunk of chunked) {
+    const values = chunk
+      .map(
+        (c) =>
+          `('${c.occurrence_import_id}', '${c.account_id}', '${
+            c.occurrence_id
+          }', '${JSON.stringify(c.data)}')`,
+      )
+      .join(',')
+    await db.query(
+      `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_id, data) VALUES ${values}`,
+    )
+  }
+  // same for server
+  for (const chunk of chunked) {
+    store.set(addOperationAtom, {
+      table: 'occurrences',
+      operation: 'insertMany',
+      draft: chunk,
+    })
+  }
+  // - insert data into occurrences table
+  // - set occurrence_imports.created_time
+  // - set occurrence_imports.inserted_count
+  // - show user data rows
+  resolve({
+    success: true,
+    message: `Successfully imported ${occurrences.length} occurrence${occurrences.length !== 1 ? 's' : ''}`,
+  })
+}
+
+export const processData = async ({ file, additionalData, db, onDuplicatesFound }) => {
   if (!file) return { success: false, message: 'No file selected' }
 
   // console.log('processData', { file, additionalData, db })
@@ -43,57 +85,31 @@ export const processData = async ({ file, additionalData, db }) => {
         )
         
         if (duplicateCount > 0) {
-          const proceed = window.confirm(
-            `Warning: ${duplicateCount} of ${data.length} row${duplicateCount !== 1 ? 's' : ''} appear${duplicateCount === 1 ? 's' : ''} to already exist in the database (exact match on all data fields).\n\nDo you want to proceed with the import anyway?`,
+          // Call the callback to show the dialog
+          onDuplicatesFound(
+            duplicateCount,
+            data.length,
+            // Continue callback
+            async () => {
+              try {
+                await insertOccurrences(data, additionalData, db, resolve)
+              } catch (error) {
+                reject(error)
+              }
+            },
+            // Cancel callback
+            () => {
+              resolve({
+                success: false,
+                message: 'Import cancelled by user',
+              })
+            },
           )
-          
-          if (!proceed) {
-            resolve({
-              success: false,
-              message: 'Import cancelled by user',
-            })
-            return
-          }
+          return
         }
         
-        const occurrences = data.map((dat) =>
-          createOccurrence({
-            occurrenceImportId: additionalData.occurrence_import_id,
-            data: dat,
-          }),
-        )
-        // TODO:
-        // - create chunks of 500 rows
-        const chunked = chunkArrayWithMinSize(occurrences, 500)
-        for (const chunk of chunked) {
-          const values = chunk
-            .map(
-              (c) =>
-                `('${c.occurrence_import_id}', '${c.account_id}', '${
-                  c.occurrence_id
-                }', '${JSON.stringify(c.data)}')`,
-            )
-            .join(',')
-          await db.query(
-            `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_id, data) VALUES ${values}`,
-          )
-        }
-        // same for server
-        for (const chunk of chunked) {
-          store.set(addOperationAtom, {
-            table: 'occurrences',
-            operation: 'insertMany',
-            draft: chunk,
-          })
-        }
-        // - insert data into occurrences table
-        // - set occurrence_imports.created_time
-        // - set occurrence_imports.inserted_count
-        // - show user data rows
-        resolve({
-          success: true,
-          message: `Successfully imported ${occurrences.length} occurrence${occurrences.length !== 1 ? 's' : ''}`,
-        })
+        // No duplicates, proceed with import
+        await insertOccurrences(data, additionalData, db, resolve)
       } catch (error) {
         reject(error)
       }
