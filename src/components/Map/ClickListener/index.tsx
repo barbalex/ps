@@ -86,7 +86,8 @@ export const ClickListener = () => {
           })
 
         mapInfo.layers.push({
-          label: layer.feature.label || 'Feature',
+          label: layer.vectorLayerLabel || layer.feature.label || 'Feature',
+          featureLabel: layer.feature.label || 'Feature',
           properties,
         })
       }

@@ -62,7 +62,6 @@ export const Info = () => {
                   <Layer
                     key={`${label}/${i}`}
                     layerData={layer}
-                    hideTitle={layers.length > 1}
                   />
                 ))}
               </div>

@@ -114,6 +114,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
             // Copy feature to the group AND to clickableCircle for popup binding
             marker.feature = feature
             clickableCircle.feature = feature
+            // Store vector layer label for grouping in info panel
+            marker.vectorLayerLabel = layer?.label
             // Store reference to clickable circle for popup handling
             marker._clickableCircle = clickableCircle
 
@@ -192,6 +194,9 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 draggable: isDraggable,
                 ...(isDraggable ? { className: 'draggable' } : {}),
               })
+
+          // Store vector layer label for grouping in info panel
+          marker.vectorLayerLabel = layer?.label
 
           marker.on('dragend', () => {
             const position = marker.getLatLng()
