@@ -25,6 +25,9 @@
 .drawer {
   transition-duration: 16.66666ms;
   border: none !important;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden;
 
   @container map (width <= 700px) {
     width: 100% !important;

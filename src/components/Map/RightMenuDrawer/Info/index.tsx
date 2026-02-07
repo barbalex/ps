@@ -37,13 +37,14 @@ export const Info = () => {
         </DrawerHeader>
         <DrawerBody className={styles.body}>
           <Location mapInfo={mapInfo} />
-          {layersExist ? (
+          {layersExist ?
             (mapInfo?.layers ?? []).map((layer, i) => (
-              <Layer key={`${i}/${layer.label}`} layerData={layer} />
+              <Layer
+                key={`${i}/${layer.label}`}
+                layerData={layer}
+              />
             ))
-          ) : (
-            <p className={styles.noData}>No Data found at this location</p>
-          )}
+          : <p className={styles.noData}>No Data found at this location</p>}
         </DrawerBody>
       </div>
     </ErrorBoundary>
