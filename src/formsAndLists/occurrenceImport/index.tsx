@@ -265,9 +265,11 @@ export const OccurrenceImport = () => {
             {tab === 1 && (
               <One
                 occurrenceImport={occurrenceImport}
+                occurrences={occurrences}
                 onChange={onChange}
                 validations={validations}
                 autoFocusRef={autoFocusRef}
+                db={db}
               />
             )}
             {tab === 2 && (

@@ -9,3 +9,35 @@
   font-weight: bold;
   vertical-align: text-bottom;
 }
+
+.updateSection {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.updateSection h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+}
+
+.updateButtons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.updateDescription {
+  margin: 0;
+  font-size: 0.9em;
+  color: #666;
+  line-height: 1.5;
+}
+
+.updateDescription strong {
+  color: #333;
+}
