@@ -11,6 +11,7 @@ import {
   updateAndExtendOccurrences,
 } from './updateOccurrences.ts'
 import { DuplicateWarningDialog } from './DuplicateWarningDialog.tsx'
+import { ResultDialog } from './ResultDialog.tsx'
 import { formatNumber } from '../../modules/formatNumber.ts'
 import styles from './1.module.css'
 
@@ -27,6 +28,11 @@ export const One = ({
     totalCount: number
     continueImport: () => void
     cancelImport: () => void
+  } | null>(null)
+  const [resultDialogData, setResultDialogData] = useState<{
+    title: string
+    message: string
+    isError: boolean
   } | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -80,9 +86,17 @@ export const One = ({
             db,
           })
           if (result.success) {
-            alert(result.message)
+            setResultDialogData({
+              title: 'Replace Successful',
+              message: result.message,
+              isError: false,
+            })
           } else {
-            alert(`Error: ${result.message}`)
+            setResultDialogData({
+              title: 'Replace Failed',
+              message: result.message,
+              isError: true,
+            })
           }
         }
         setIsProcessing(false)
@@ -90,7 +104,11 @@ export const One = ({
       fileInput.click()
     } catch (error) {
       console.error('Replace error:', error)
-      alert(`Error: ${error.message}`)
+      setResultDialogData({
+        title: 'Replace Failed',
+        message: error.message || 'An unexpected error occurred',
+        isError: true,
+      })
       setIsProcessing(false)
     }
   }
@@ -111,9 +129,17 @@ export const One = ({
             db,
           })
           if (result.success) {
-            alert(result.message)
+            setResultDialogData({
+              title: 'Update Successful',
+              message: result.message,
+              isError: false,
+            })
           } else {
-            alert(`Error: ${result.message}`)
+            setResultDialogData({
+              title: 'Update Failed',
+              message: result.message,
+              isError: true,
+            })
           }
         }
         setIsProcessing(false)
@@ -121,7 +147,11 @@ export const One = ({
       fileInput.click()
     } catch (error) {
       console.error('Update and extend error:', error)
-      alert(`Error: ${error.message}`)
+      setResultDialogData({
+        title: 'Update Failed',
+        message: error.message || 'An unexpected error occurred',
+        isError: true,
+      })
       setIsProcessing(false)
     }
   }
@@ -200,6 +230,16 @@ export const One = ({
           totalCount={duplicateDialogData.totalCount}
           onConfirm={duplicateDialogData.continueImport}
           onCancel={duplicateDialogData.cancelImport}
+        />
+      )}
+
+      {resultDialogData && (
+        <ResultDialog
+          open={true}
+          title={resultDialogData.title}
+          message={resultDialogData.message}
+          isError={resultDialogData.isError}
+          onClose={() => setResultDialogData(null)}
         />
       )}
     </>
