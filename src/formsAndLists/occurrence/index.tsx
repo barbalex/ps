@@ -5,9 +5,9 @@ import { useSetAtom } from 'jotai'
 
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
-import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
+import { PlaceComboboxWithDistance } from './PlaceComboboxWithDistance.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { OccurenceData } from './OccurrenceData/index.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
@@ -146,11 +146,8 @@ export const Occurrence = ({ from }) => {
           validationState={validations?.not_to_assign?.state}
           validationMessage={validations?.not_to_assign?.message}
         />
-        {/* TODO: add distance from occurrence and sort by that ascending */}
-        <ComboboxFilteringForTable
-          label="Place"
-          name="place_id"
-          table="places"
+        <PlaceComboboxWithDistance
+          occurrenceId={occurrenceId}
           value={row.place_id ?? ''}
           onChange={onChange}
           autoFocus
