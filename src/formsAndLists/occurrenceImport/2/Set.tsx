@@ -27,10 +27,12 @@ export const Set = ({ occurrenceImport }: Props) => {
 
   const toSetCount = occurrencesWithoutGeometry?.length ?? 0
 
-  const onClick = async () => {
+  const onClick = () => {
     setSettingGeometries(true)
-    await setGeometries({ occurrenceImport, setNotification })
-    setSettingGeometries(false)
+    // Don't await - let it run in background
+    setGeometries({ occurrenceImport, setNotification }).finally(() => {
+      setSettingGeometries(false)
+    })
   }
 
   if (!occurrences.length) return null

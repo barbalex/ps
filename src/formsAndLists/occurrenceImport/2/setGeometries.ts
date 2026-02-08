@@ -4,6 +4,7 @@ import proj4 from 'proj4'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
+import { backgroundTasks } from '../../../modules/backgroundTasks.ts'
 
 import type OccurrenceImports from '../../../models/public/OccurrenceImports.ts'
 import type Occurrences from '../../../models/public/Occurrences.ts'
@@ -18,6 +19,7 @@ export const setGeometries = async ({
   setNotification,
 }: Props) => {
   const db = store.get(pgliteDbAtom)
+  const taskId = `set-geometries-${occurrenceImport.occurrence_import_id}`
 
   const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
   const number = occurrenceImport.crs?.split?.(':')?.[1]
@@ -51,35 +53,54 @@ export const setGeometries = async ({
   )
   const occurrencesWithoutGeometry: Occurrences[] = res?.rows
 
+  // Register background task
+  backgroundTasks.add(
+    taskId,
+    'Setting coordinates',
+    occurrencesWithoutGeometry.length,
+  )
+
   // Process in batches to allow UI updates
   const batchSize = 50
-  for (let i = 0; i < occurrencesWithoutGeometry.length; i += batchSize) {
-    const batch = occurrencesWithoutGeometry.slice(i, i + batchSize)
+  let processed = 0
 
-    for (const o of batch) {
-      const coordinates = [
-        o.data[occurrenceImport?.x_coordinate_field],
-        o.data[occurrenceImport?.y_coordinate_field],
-      ]
-      const position = proj4(occurrenceImport.crs, 'EPSG:4326', coordinates)
-      // TODO: why is reversing needed? is it a bug?
-      const myPoint: Point = point(position.reverse())
-      const geometry = featureCollection([myPoint])
-      await db.query(
-        `UPDATE occurrences SET geometry = $1 WHERE occurrence_id = $2`,
-        [geometry, o.occurrence_id],
-      )
-      store.set(addOperationAtom, {
-        table: 'occurrences',
-        rowIdName: 'occurrence_id',
-        rowId: o.occurrence_id,
-        operation: 'update',
-        draft: { geometry },
-        prev: { ...o },
-      })
+  try {
+    for (let i = 0; i < occurrencesWithoutGeometry.length; i += batchSize) {
+      const batch = occurrencesWithoutGeometry.slice(i, i + batchSize)
+
+      for (const o of batch) {
+        const coordinates = [
+          o.data[occurrenceImport?.x_coordinate_field],
+          o.data[occurrenceImport?.y_coordinate_field],
+        ]
+        const position = proj4(occurrenceImport.crs, 'EPSG:4326', coordinates)
+        // TODO: why is reversing needed? is it a bug?
+        const myPoint: Point = point(position.reverse())
+        const geometry = featureCollection([myPoint])
+        await db.query(
+          `UPDATE occurrences SET geometry = $1 WHERE occurrence_id = $2`,
+          [geometry, o.occurrence_id],
+        )
+        store.set(addOperationAtom, {
+          table: 'occurrences',
+          rowIdName: 'occurrence_id',
+          rowId: o.occurrence_id,
+          operation: 'update',
+          draft: { geometry },
+          prev: { ...o },
+        })
+
+        processed++
+        backgroundTasks.updateProgress(taskId, processed)
+      }
+
+      // Small delay to allow UI to update
+      await new Promise((resolve) => setTimeout(resolve, 10))
     }
 
-    // Small delay to allow UI to update
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    backgroundTasks.complete(taskId)
+  } catch (error) {
+    backgroundTasks.error(taskId, error.message)
+    throw error
   }
 }
