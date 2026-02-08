@@ -1,5 +1,13 @@
 .fui-AccordionHeader__button {
   padding-left: 6px !important;
+  --fui-AccordionHeader__expandIcon--width: 32px !important;
+}
+
+.fui-AccordionHeader__button .fui-AccordionHeader__expandIconWrapper {
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  flex: 0 0 32px !important;
 }
 
 /* ensure checkbox stays vertically centered when text breaks */

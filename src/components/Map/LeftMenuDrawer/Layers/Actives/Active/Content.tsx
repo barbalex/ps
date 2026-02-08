@@ -280,18 +280,10 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         size="extra-large"
         expandIcon={designing ? undefined : null}
         className={isOpen ? styles.headerColor : undefined}
+        style={{ '--fui-AccordionHeader--icon-width': '32px' }}
       >
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <div className={layerStyles.headerContainer}>
-          <Button
-            icon={<TbZoomScan />}
-            onClick={onClickZoomToFeatures}
-            className={styles.headerButton}
-            title="Zoom to features"
-            appearance="subtle"
-            size="small"
-            as="a"
-          />
           <ToggleButton
             icon={<BsCheckSquareFill className={styles.headerIcon} />}
             checked={layer.layer_presentation_active}
@@ -303,6 +295,15 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           />
           <p className={layerStyles.headerLabel}>{layer.label}</p>
         </div>
+        <Button
+          icon={<TbZoomScan />}
+          onClick={onClickZoomToFeatures}
+          className={styles.headerButton}
+          title="Zoom to features"
+          appearance="subtle"
+          size="small"
+          as="a"
+        />
       </AccordionHeader>
       <AccordionPanel className={layerStyles.panel}>
         <TabList
