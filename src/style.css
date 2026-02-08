@@ -384,6 +384,12 @@ html {
   --l-accent: 57%;
 }
 
+.allotment-tree {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .allotment-data {
   height: 100%;
   display: flex;
