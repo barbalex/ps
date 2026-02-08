@@ -299,7 +299,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           icon={<TbZoomScan />}
           onClick={onClickZoomToFeatures}
           className={styles.headerButton}
-          title="Zoom to features"
+          title="Zoom to layer"
           appearance="subtle"
           size="small"
           as="a"
