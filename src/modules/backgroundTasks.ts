@@ -19,7 +19,6 @@ const listeners = new Set<(tasks: Map<string, Task>) => void>()
 
 export const backgroundTasks = {
   add(id: string, name: string, total: number) {
-    console.log('BackgroundTasks: Adding task', { id, name, total })
     tasks.set(id, {
       id,
       name,
@@ -39,7 +38,6 @@ export const backgroundTasks = {
   },
 
   complete(id: string) {
-    console.log('BackgroundTasks: Completing task', id)
     const task = tasks.get(id)
     if (task) {
       task.status = 'completed'

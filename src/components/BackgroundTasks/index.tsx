@@ -7,16 +7,11 @@ export const BackgroundTasks = () => {
   const [tasks, setTasks] = useState(() => backgroundTasks.getAll())
 
   useEffect(() => {
-    console.log('BackgroundTasks component mounted')
     const unsubscribe = backgroundTasks.subscribe(() => {
-      const allTasks = backgroundTasks.getAll()
-      console.log('BackgroundTasks: Tasks updated', allTasks)
-      setTasks(allTasks)
+      setTasks(backgroundTasks.getAll())
     })
     return unsubscribe
   }, [])
-
-  console.log('BackgroundTasks: Rendering with', tasks.length, 'tasks')
 
   if (tasks.length === 0) return null
 
