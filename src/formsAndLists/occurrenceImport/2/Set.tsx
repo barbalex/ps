@@ -27,9 +27,10 @@ export const Set = ({ occurrenceImport }: Props) => {
 
   const toSetCount = occurrencesWithoutGeometry?.length ?? 0
 
-  const onClick = () => {
+  const onClick = async () => {
     setSettingGeometries(true)
-    setGeometries({ occurrenceImport, setNotification })
+    await setGeometries({ occurrenceImport, setNotification })
+    setSettingGeometries(false)
   }
 
   if (!occurrences.length) return null
@@ -53,7 +54,7 @@ export const Set = ({ occurrenceImport }: Props) => {
       <>
         <div>{`${
           settingGeometries ? 'Setting' : 'Set'
-        } coordinates of ${toSetCount} occurrences`}</div>
+        } coordinates of ${formatNumber(toSetCount)} occurrence${toSetCount !== 1 ? 's' : ''}`}</div>
         {notification && (
           <div className={styles.notification}>{notification}</div>
         )}
