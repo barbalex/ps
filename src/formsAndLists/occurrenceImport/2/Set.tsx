@@ -49,18 +49,19 @@ export const Set = ({ occurrenceImport }: Props) => {
   }
 
   return (
-    <Button
-      onClick={onClick}
-      icon={settingGeometries ? <Spinner size="tiny" /> : null}
-    >
-      <>
-        <div>{`${
+    <>
+      <Button
+        onClick={onClick}
+        icon={settingGeometries ? <Spinner size="tiny" /> : null}
+        className={styles.setButton}
+      >
+        {`${
           settingGeometries ? 'Setting' : 'Set'
-        } coordinates of ${formatNumber(toSetCount)} occurrence${toSetCount !== 1 ? 's' : ''}`}</div>
-        {notification && (
-          <div className={styles.notification}>{notification}</div>
-        )}
-      </>
-    </Button>
+        } coordinates of ${formatNumber(toSetCount)} occurrence${toSetCount !== 1 ? 's' : ''}`}
+      </Button>
+      {notification && (
+        <div className={styles.notification}>{notification}</div>
+      )}
+    </>
   )
 }
