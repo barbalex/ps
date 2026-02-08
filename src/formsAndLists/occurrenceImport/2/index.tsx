@@ -58,7 +58,7 @@ export const Two = ({
           validationState={validations?.x_coordinate_field?.state}
           validationMessage={
             validations?.x_coordinate_field?.message ??
-            'Which field contains the X-Coordinates?'
+            'Which field contains the X-Coordinates? This should be latitude.'
           }
         />
         <DropdownFieldSimpleOptions
@@ -70,7 +70,7 @@ export const Two = ({
           validationState={validations?.y_coordinate_field?.state}
           validationMessage={
             validations?.y_coordinate_field?.message ??
-            'Which field contains the Y-Coordinates?'
+            'Which field contains the Y-Coordinates? This should be longitude.'
           }
         />
 
