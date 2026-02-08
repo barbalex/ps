@@ -1619,7 +1619,7 @@ export const createOccurrenceImport = async ({ subprojectId }) => {
   const date = new Date()
 
   await db.query(
-    `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (occurrence_import_id) DO NOTHING`,
     [
       occurrence_import_id,
       '018cf958-27e2-7000-90d3-59f024d467be',
