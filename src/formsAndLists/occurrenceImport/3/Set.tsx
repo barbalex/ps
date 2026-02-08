@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
+import { MdDone } from 'react-icons/md'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { setLabels } from './setLabels.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
+import styles from './Set.module.css'
 import type OccurrenceImports from '../../../models/public/OccurrenceImports.ts'
 import type Occurrences from '../../../models/public/Occurrences.ts'
 
@@ -20,16 +22,22 @@ export const Set = ({ occurrenceImport }: Props) => {
   )
   const occurrences: Occurrences[] = res?.rows ?? []
 
-  const onClick = async () => {
+  const occurrencesWithoutLabel = occurrences.filter((o) => !o.label)
+  const toSetCount = occurrencesWithoutLabel?.length ?? 0
+
+  const onClick = () => {
     setSettingLabels(true)
-    await setLabels({ occurrenceImport })
-    setSettingLabels(false)
+    // Don't await - let it run in background
+    setLabels({ 
+      labelCreation: occurrenceImport.label_creation,
+      occurrenceImportId: occurrenceImport.occurrence_import_id 
+    }).finally(() => {
+      setSettingLabels(false)
+    })
   }
 
   if (!occurrences.length) return null
 
-  // Check if all occurrences have labels that match the current label_creation
-  // Since we can't easily check if labels match, we'll just show the button if label_creation exists
   const labelCreation = occurrenceImport?.label_creation
   const hasLabelCreation =
     labelCreation && Array.isArray(labelCreation) && labelCreation.length > 0
@@ -42,15 +50,27 @@ export const Set = ({ occurrenceImport }: Props) => {
     )
   }
 
+  if (toSetCount === 0) {
+    return (
+      <div className={styles.allSet}>
+        <MdDone className={styles.doneIcon} />
+        {`All ${formatNumber(
+          occurrences.length,
+        )} occurrence${occurrences.length !== 1 ? 's' : ''} have labels set`}
+      </div>
+    )
+  }
+
   return (
     <div style={{ marginTop: '16px' }}>
       <Button
         onClick={onClick}
         icon={settingLabels ? <Spinner size="tiny" /> : null}
+        className={styles.setButton}
       >
         {`${
           settingLabels ? 'Setting' : 'Set'
-        } labels of ${formatNumber(occurrences.length)} occurrence${occurrences.length !== 1 ? 's' : ''}`}
+        } labels of ${formatNumber(toSetCount)} occurrence${toSetCount !== 1 ? 's' : ''}`}
       </Button>
     </div>
   )

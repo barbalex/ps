@@ -1,0 +1,17 @@
+.allSet {
+  color: rgba(38, 82, 37, 0.9);
+  font-weight: bold;
+  margin-top: 16px;
+}
+
+.doneIcon {
+  padding-right: 8px;
+  font-size: 1.4em;
+  font-weight: bold;
+  vertical-align: text-bottom;
+}
+
+.setButton {
+  flex-shrink: 0;
+  min-height: 32px;
+}
