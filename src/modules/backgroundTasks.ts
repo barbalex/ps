@@ -43,11 +43,11 @@ export const backgroundTasks = {
       task.status = 'completed'
       task.progress = task.total
       notifyListeners()
-      // Auto-remove completed tasks after 5 seconds
+      // Auto-remove completed tasks after 3 seconds
       setTimeout(() => {
         tasks.delete(id)
         notifyListeners()
-      }, 5000)
+      }, 3000)
     }
   },
 
@@ -57,7 +57,17 @@ export const backgroundTasks = {
       task.status = 'error'
       task.error = error
       notifyListeners()
+      // Auto-remove error tasks after 10 seconds
+      setTimeout(() => {
+        tasks.delete(id)
+        notifyListeners()
+      }, 10000)
     }
+  },
+
+  remove(id: string) {
+    tasks.delete(id)
+    notifyListeners()
   },
 
   get(id: string): Task | undefined {

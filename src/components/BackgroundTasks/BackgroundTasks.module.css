@@ -30,10 +30,26 @@
   color: #333;
 }
 
+.taskRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .taskProgress {
   font-size: 0.9em;
   color: #666;
   white-space: nowrap;
+}
+
+.closeButton {
+  min-width: 28px;
+  padding: 4px;
+  opacity: 0.6;
+}
+
+.closeButton:hover {
+  opacity: 1;
 }
 
 .progressBar {

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { Button } from '@fluentui/react-components'
+import { Dismiss24Regular } from '@fluentui/react-icons'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 import styles from './BackgroundTasks.module.css'
@@ -21,15 +23,24 @@ export const BackgroundTasks = () => {
         <div key={task.id} className={styles.task}>
           <div className={styles.taskHeader}>
             <span className={styles.taskName}>{task.name}</span>
-            <span className={styles.taskProgress}>
-              {task.status === 'completed' ? (
-                '✓ Complete'
-              ) : task.status === 'error' ? (
-                '✗ Error'
-              ) : (
-                `${formatNumber(task.progress)} / ${formatNumber(task.total)}`
-              )}
-            </span>
+            <div className={styles.taskRight}>
+              <span className={styles.taskProgress}>
+                {task.status === 'completed' ? (
+                  '✓ Complete'
+                ) : task.status === 'error' ? (
+                  '✗ Error'
+                ) : (
+                  `${formatNumber(task.progress)} / ${formatNumber(task.total)}`
+                )}
+              </span>
+              <Button
+                appearance="subtle"
+                size="small"
+                icon={<Dismiss24Regular />}
+                onClick={() => backgroundTasks.remove(task.id)}
+                className={styles.closeButton}
+              />
+            </div>
           </div>
           {task.status === 'running' && (
             <div className={styles.progressBar}>
