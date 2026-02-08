@@ -66,17 +66,19 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   // if layer is wms and has no wms_service_id or wms_service_layer_name: set tab to 'config'
   // if layer is wfs and has no wfs_service_id or wfs_service_layer_name: set tab to 'config'
   useEffect(() => {
-    if (
+    const shouldShowConfig =
       (isVectorLayer &&
         (!layer.wfs_service_id || !layer.wfs_service_layer_name)) ||
       (isWmsLayer && (!layer.wms_service_id || !layer.wms_service_layer_name))
-    ) {
-      setTab('config')
+
+    if (shouldShowConfig) {
+      // Use setTimeout to defer the state update
+      const timeout = setTimeout(() => setTab('config'), 0)
+      return () => clearTimeout(timeout)
     }
   }, [
     isVectorLayer,
     isWmsLayer,
-    layer.layer_type,
     layer.wfs_service_id,
     layer.wfs_service_layer_name,
     layer.wms_service_id,
