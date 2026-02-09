@@ -149,7 +149,8 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       })
     }
   }
-  const onClickZoomToFeatures = async () => {
+  const onClickZoomToFeatures = async (event) => {
+    event.stopPropagation()
     // Get all geometries for this layer
     let geometries = []
 
