@@ -21,6 +21,7 @@
 
 .body {
   padding: 0;
+  padding-bottom: 0 !important;
   /* enable vertical scrolling */
   overflow-y: auto;
   overflow-x: hidden;
@@ -37,6 +38,10 @@
 
 .layerGroup {
   margin-bottom: 10px;
+}
+
+.layerGroup:last-child {
+  margin-bottom: 0;
 }
 
 .groupHeader {
