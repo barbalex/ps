@@ -167,6 +167,22 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
+          const markerSize = displayToUse.marker_size ?? 16
+          const clickRadius = Math.max(markerSize / 2 + 5, 10)
+
+          const clickableCircle = L.circleMarker(latlng, {
+            radius: clickRadius,
+            fillOpacity: 0,
+            opacity: 0,
+            stroke: false,
+            interactive: true,
+            ...(isDraggable ?
+              { className: 'draggable-hitbox' }
+            : { className: 'clickable-hitbox' }),
+          })
+          clickableCircle.vectorLayerLabel = layer?.label
+          clickableCircle._isInternal = true
+
           const marker =
             IconComponent ?
               L.marker(latlng, {
@@ -175,7 +191,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                     <IconComponent
                       style={{
                         color: displayToUse.color ?? '#cc756b',
-                        fontSize: displayToUse.marker_size ?? 16,
+                        fontSize: markerSize,
                         filter: 'drop-shadow(0 0 2px rgb(0 0 0 / 1))',
                       }}
                     />,
@@ -184,14 +200,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
                     isDraggable ?
                       'draggable marker-icon-clickable'
                     : 'marker-icon-clickable',
-                  iconSize: [
-                    displayToUse.marker_size ?? 16,
-                    displayToUse.marker_size ?? 16,
-                  ],
-                  iconAnchor: [
-                    (displayToUse.marker_size ?? 16) / 2,
-                    (displayToUse.marker_size ?? 16) / 2,
-                  ],
+                  iconSize: [markerSize, markerSize],
+                  iconAnchor: [markerSize / 2, markerSize / 2],
                 }),
                 draggable: isDraggable,
               })
@@ -200,23 +210,28 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 ...(isDraggable ? { className: 'draggable' } : {}),
               })
 
-          // Store vector layer label for grouping in info panel
+          const group = L.layerGroup([clickableCircle, marker])
+          group.feature = feature
+          clickableCircle.feature = feature
           marker.feature = feature
-          marker.vectorLayerLabel = layer?.label
+          group.vectorLayerLabel = layer?.label
+          group._clickableCircle = clickableCircle
 
-          marker.on('dragend', () => {
-            const position = marker.getLatLng()
-            assignToNearestDroppable({
-              latLng: position,
-              occurrenceId: marker.feature.properties?.occurrence_id,
-              map,
-              droppableLayer,
-              confirmAssigningToSingleTarget,
-              setPlacesToAssignOccurrenceTo,
+          if (isDraggable) {
+            marker.on('dragend', () => {
+              const position = marker.getLatLng()
+              assignToNearestDroppable({
+                latLng: position,
+                occurrenceId: marker.feature.properties?.occurrence_id,
+                map,
+                droppableLayer,
+                confirmAssigningToSingleTarget,
+                setPlacesToAssignOccurrenceTo,
+              })
             })
-          })
+          }
 
-          return marker
+          return group
         }}
         onEachFeature={(feature, geoLayer) => {
           if (!feature) return
