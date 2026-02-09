@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { GeoJSON, useMapEvent } from 'react-leaflet'
+import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
@@ -47,8 +47,9 @@ export const TableLayer = ({ data, layerPresentation }) => {
     return displayToUse ?? firstDisplay
   }
 
-  const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
+  const map: Map = useMap()
   const [zoom, setZoom] = useState(map.getZoom())
+  useMapEvent('zoomend', () => setZoom(map.getZoom()))
 
   if (!firstDisplay) return null
   if (!layer) return null
@@ -95,9 +96,9 @@ export const TableLayer = ({ data, layerPresentation }) => {
               opacity: 0,
               stroke: false,
               interactive: true,
-              ...(isDraggable ?
-                { className: 'draggable-hitbox' }
-              : { className: 'clickable-hitbox' }),
+              ...(isDraggable
+                ? { className: 'draggable-hitbox' }
+                : { className: 'clickable-hitbox' }),
             })
             // Store vector layer label on clickableCircle too
             clickableCircle.vectorLayerLabel = layer?.label
@@ -176,16 +177,15 @@ export const TableLayer = ({ data, layerPresentation }) => {
             opacity: 0,
             stroke: false,
             interactive: true,
-            ...(isDraggable ?
-              { className: 'draggable-hitbox' }
-            : { className: 'clickable-hitbox' }),
+            ...(isDraggable
+              ? { className: 'draggable-hitbox' }
+              : { className: 'clickable-hitbox' }),
           })
           clickableCircle.vectorLayerLabel = layer?.label
           clickableCircle._isInternal = true
 
-          const marker =
-            IconComponent ?
-              L.marker(latlng, {
+          const marker = IconComponent
+            ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -196,9 +196,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
                       }}
                     />,
                   ),
-                  className:
-                    isDraggable ?
-                      'draggable marker-icon-clickable'
+                  className: isDraggable
+                    ? 'draggable marker-icon-clickable'
                     : 'marker-icon-clickable',
                   iconSize: [markerSize, markerSize],
                   iconAnchor: [markerSize / 2, markerSize / 2],
