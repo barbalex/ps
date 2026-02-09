@@ -136,7 +136,6 @@ export const TableLayersProvider = () => {
         }
 
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
-        // TODO: add occurrences_assigned_lines1
         if (placeLevel1?.occurrences && occurrenceCount) {
           const occurrencesVectorLayersCount = await db.query(
             `
@@ -160,6 +159,32 @@ export const TableLayersProvider = () => {
                 placeLevel1?.name_singular ?
                   `${placeLevel1.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
+              skipOperationQueue: true,
+            })
+          }
+
+          const occurrencesAssignedLinesVectorLayersCount = await db.query(
+            `
+          SELECT COUNT(*) 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'occurrences_assigned_lines'
+            AND own_table_level = 1
+        `,
+            [projectId],
+          )
+          if (occurrencesAssignedLinesVectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
+              projectId,
+              type: 'own',
+              ownTable: 'occurrences_assigned_lines',
+              ownTableLevel: 1,
+              label:
+                placeLevel1?.name_singular ?
+                  `${placeLevel1.name_singular} Occurrence Assignments Lines`
+                : 'Occurrence Assignments Lines',
               skipOperationQueue: true,
             })
           }
@@ -297,7 +322,7 @@ export const TableLayersProvider = () => {
           }
         }
 
-        // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
+        // 10.1 occurrences_assigned2 and occurrences_assigned_lines2 needed if occurrences exist and placeLevels2 has occurrences
         if (placeLevel2?.occurrences && occurrenceCount) {
           const occurrencesAssigned2VectorLayersCount = await db.query(
             `
@@ -321,6 +346,32 @@ export const TableLayersProvider = () => {
                 placeLevel2?.name_singular ?
                   `${placeLevel2.name_singular} Occurrences Assigned`
                 : 'Occurrences Assigned',
+              skipOperationQueue: true,
+            })
+          }
+
+          const occurrencesAssignedLines2VectorLayersCount = await db.query(
+            `
+          SELECT COUNT(*) 
+          FROM vector_layers 
+          WHERE 
+            project_id = $1
+            AND type = 'own'
+            AND own_table = 'occurrences_assigned_lines'
+            AND own_table_level = 2
+        `,
+            [projectId],
+          )
+          if (occurrencesAssignedLines2VectorLayersCount?.rows?.[0]?.count === 0) {
+            await createVectorLayer({
+              projectId,
+              type: 'own',
+              ownTable: 'occurrences_assigned_lines',
+              ownTableLevel: 2,
+              label:
+                placeLevel2?.name_singular ?
+                  `${placeLevel2.name_singular} Occurrence Assignments Lines`
+                : 'Occurrence Assignments Lines',
               skipOperationQueue: true,
             })
           }

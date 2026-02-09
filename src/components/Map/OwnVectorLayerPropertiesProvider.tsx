@@ -94,6 +94,11 @@ export const OwnVectorLayerPropertiesProvider = () => {
     [resOccurrencesAssignedFields],
   )
 
+  const occurrencesAssignedLinesProperties = useMemo(
+    () => ['occurrence_label', 'place_label', 'occurrence_id', 'place_id'],
+    [],
+  )
+
   // occurrences-to-assess
   const resOccurrencesToAssessFields = useLiveQuery(
     `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
@@ -313,6 +318,29 @@ export const OwnVectorLayerPropertiesProvider = () => {
           })
         }
       }
+      // occurrences-assigned-lines
+      if (vectorLayer.own_table === 'occurrences_assigned_lines') {
+        if (
+          !isEqual(vectorLayer.properties, occurrencesAssignedLinesProperties)
+        ) {
+          db.query(
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
+            [occurrencesAssignedLinesProperties, vectorLayer.vector_layer_id],
+          )
+          addOperation({
+            table: 'vector_layers',
+            rowIdName: 'vector_layer_id',
+            rowId: vectorLayer.vector_layer_id,
+            operation: 'update',
+            draft: { properties: occurrencesAssignedLinesProperties },
+            prev: { ...vectorLayer },
+          })
+          completeVectorLayerDisplaysForLayerWithProperties({
+            vectorLayerId: vectorLayer.vector_layer_id,
+            properties: occurrencesAssignedLinesProperties,
+          })
+        }
+      }
       // occurrences-to-assess
       if (vectorLayer.own_table === 'occurrences_to_assess') {
         if (!isEqual(vectorLayer.properties, occurrencesToAssessFields)) {
@@ -359,6 +387,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
     checks2Properties,
     db,
     occurrencesAssignedFields,
+    occurrencesAssignedLinesProperties,
     occurrencesNotToAssignFields,
     occurrencesToAssessFields,
     places1Properties,
