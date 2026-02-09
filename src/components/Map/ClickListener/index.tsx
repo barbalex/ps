@@ -79,8 +79,35 @@ export const ClickListener = () => {
     // Add clicked table layer features to mapInfo
     clickedLayers.forEach((layer) => {
       if (layer.feature && layer.feature.properties) {
-        const properties = Object.entries(layer.feature.properties)
-          .filter(([key]) => key !== 'geometry' && key !== 'deleted')
+        const entries = Object.entries(layer.feature.properties)
+          .filter(
+            ([key]) =>
+              key !== 'geometry' &&
+              key !== 'deleted' &&
+              key !== 'label' &&
+              !key.endsWith('_label'),
+          )
+
+        const sortRank = (key) => {
+          if (key.startsWith('occurrence_')) return 1
+          if (key.startsWith('place_')) return 2
+          return 3
+        }
+
+        const labelFirstRank = (key) => {
+          if (key.endsWith('_label')) return 1
+          if (key.endsWith('_id')) return 3
+          return 2
+        }
+
+        const properties = entries
+          .sort(([a], [b]) => {
+            const groupDiff = sortRank(a) - sortRank(b)
+            if (groupDiff !== 0) return groupDiff
+            const labelDiff = labelFirstRank(a) - labelFirstRank(b)
+            if (labelDiff !== 0) return labelDiff
+            return a.localeCompare(b)
+          })
           .map(([key, value]) => {
             if (value instanceof Date) {
               return [key, value.toISOString()]
