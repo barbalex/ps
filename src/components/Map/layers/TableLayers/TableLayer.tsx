@@ -218,8 +218,11 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
           return marker
         }}
-        onEachFeature={(feature) => {
+        onEachFeature={(feature, geoLayer) => {
           if (!feature) return
+          if (geoLayer) {
+            geoLayer.vectorLayerLabel = layer?.label
+          }
           // Table layer data is shown in the Info sidebar via ClickListener
           // so we don't bind popups here
         }}
