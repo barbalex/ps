@@ -232,6 +232,11 @@ export const WFS = ({ layer, layerPresentation }) => {
           layerPresentation,
         )}`}
         data={data}
+        onEachFeature={(feature, geoLayer) => {
+          geoLayer.vectorLayerLabel = layer.label || 'WFS Layer'
+          feature.properties = feature.properties ?? {}
+          feature.properties.label = 'Feature'
+        }}
         style={vectorLayerDisplayToProperties({
           vectorLayerDisplay: display,
           presentation: layerPresentation,

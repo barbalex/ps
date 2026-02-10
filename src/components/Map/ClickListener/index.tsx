@@ -79,14 +79,13 @@ export const ClickListener = () => {
     // Add clicked table layer features to mapInfo
     clickedLayers.forEach((layer) => {
       if (layer.feature && layer.feature.properties) {
-        const entries = Object.entries(layer.feature.properties)
-          .filter(
-            ([key]) =>
-              key !== 'geometry' &&
-              key !== 'deleted' &&
-              key !== 'label' &&
-              !key.endsWith('_label'),
-          )
+        const entries = Object.entries(layer.feature.properties).filter(
+          ([key]) =>
+            key !== 'geometry' &&
+            key !== 'deleted' &&
+            key !== 'label' &&
+            !key.endsWith('_label'),
+        )
 
         const sortRank = (key) => {
           if (key.startsWith('occurrence_')) return 1
@@ -254,6 +253,7 @@ export const ClickListener = () => {
       const requestData = await fetchData({ url: wfsService.url, params })
       const features = requestData?.features.map((f) => ({
         label: layer.label,
+        featureLabel: 'Feature',
         properties: Object.entries(f.properties ?? {}),
       }))
       if (requestData) {
