@@ -20,6 +20,9 @@ import { TbZoomScan } from 'react-icons/tb'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
+import axios from 'redaxios'
+import proj4 from 'proj4'
+import reproject from 'reproject'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
@@ -239,6 +242,73 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           [layer.vector_layer_id],
         )
         geometries = res?.rows ?? []
+
+        if (!geometries.length) {
+          const wfsRes = await db.query(
+            `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
+            [layer.wfs_service_id],
+          )
+          const wfsService = wfsRes?.rows?.[0]
+          if (!wfsService?.url || !layer.wfs_service_layer_name) {
+            return addNotification({
+              title: 'No geometries found for this layer',
+              intent: 'info',
+            })
+          }
+
+          const wfsDefaultCrsArray = wfsService.default_crs
+            ?.split(':')
+            .slice(-3)
+          const wfsDefaultCrsCode =
+            wfsDefaultCrsArray?.length === 3
+              ? [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
+              : 'EPSG:4326'
+          const defaultCrsRes = await db.query(
+            `SELECT * FROM crs WHERE code = $1`,
+            [wfsDefaultCrsCode],
+          )
+          const defaultCrs = defaultCrsRes?.rows?.[0]
+
+          let response
+          try {
+            response = await axios.get(wfsService.url, {
+              params: {
+                service: 'WFS',
+                request: 'GetFeature',
+                version: wfsService.version ?? '1.3.0',
+                typeNames: layer.wfs_service_layer_name,
+                outputFormat: wfsService.info_format ?? 'application/json',
+                srsName: wfsDefaultCrsCode,
+                maxfeatures: layer.max_features ?? 1000,
+              },
+            })
+          } catch (error) {
+            console.error('Zoom to WFS layer failed', error)
+            return addNotification({
+              title: 'No geometries found for this layer',
+              intent: 'info',
+            })
+          }
+
+          const data = response?.data
+          const rawFeatures = data?.features ?? []
+          if (!rawFeatures.length) {
+            return addNotification({
+              title: 'No geometries found for this layer',
+              intent: 'info',
+            })
+          }
+
+          let fc = featureCollection(rawFeatures)
+          if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
+            fc = reproject.reproject(
+              fc,
+              defaultCrs.proj4,
+              '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
+            )
+          }
+          geometries = [{ geometry: fc }]
+        }
       } else {
         // For uploaded vector layers
         const res = await db.query(
