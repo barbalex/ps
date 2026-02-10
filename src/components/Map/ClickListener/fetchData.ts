@@ -4,7 +4,7 @@ import { store, addNotificationAtom, pgliteDbAtom } from '../../../store.ts'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 
-export const fetchData = async ({ url, params }) => {
+export const fetchData = async ({ url, params, layerLabel }) => {
   const db = store.get(pgliteDbAtom)
   let res
   let failedToFetch = false
@@ -41,7 +41,7 @@ export const fetchData = async ({ url, params }) => {
     }
     if (failedToFetch) {
       store.set(addNotificationAtom, {
-        title: `Fehler beim Laden der Informationen für ${layer.label}`,
+        title: `Fehler beim Laden der Informationen${layerLabel ? ` für ${layerLabel}` : ''}`,
         body: error.message,
         intent: 'info',
       })

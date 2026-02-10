@@ -18,17 +18,25 @@ export const BoundsListener = () => {
   useEffect(() => {
     const updateBounds = () => {
       const bounds = map.getBounds()
+      const southWest = bounds.getSouthWest()
+      const northEast = bounds.getNorthEast()
       setMapViewportBounds({
-        southWest: bounds.getSouthWest(),
-        northEast: bounds.getNorthEast(),
+        swLat: southWest.lat,
+        swLng: southWest.lng,
+        neLat: northEast.lat,
+        neLng: northEast.lng,
       })
     }
 
     updateBounds()
+    map.on('move', updateBounds)
+    map.on('zoom', updateBounds)
     map.on('moveend', updateBounds)
     map.on('zoomend', updateBounds)
 
     return () => {
+      map.off('move', updateBounds)
+      map.off('zoom', updateBounds)
       map.off('moveend', updateBounds)
       map.off('zoomend', updateBounds)
     }

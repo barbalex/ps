@@ -2,12 +2,11 @@
  * Not sure if this is ever used - data should always be downloaded
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { GeoJSON, useMapEvent } from 'react-leaflet'
+import { GeoJSON, useMap } from 'react-leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
-import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
 import reproject from 'reproject'
@@ -44,24 +43,26 @@ const xmlTheme = {
 }
 
 const bboxFromBounds = ({ bounds, defaultCrs }) => {
-  let bbox
   const ne = bounds.getNorthEast()
   const sw = bounds.getSouthWest()
-  if (!defaultCrs || !defaultCrs.code === 'EPSG:4326') {
-    bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`
-  } else {
-    const neReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [
-      ne.lng,
-      ne.lat,
-    ])
-    const swReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [
-      sw.lng,
-      sw.lat,
-    ])
-    bbox = `${swReprojected[0]},${swReprojected[1]},${neReprojected[0]},${neReprojected[1]}`
-  }
+  const usesDefaultCrs = !!defaultCrs && defaultCrs.code !== 'EPSG:4326'
 
-  return bbox
+  const [swX, swY] = usesDefaultCrs
+    ? proj4('EPSG:4326', defaultCrs?.proj4, [sw.lng, sw.lat])
+    : [sw.lng, sw.lat]
+  const [neX, neY] = usesDefaultCrs
+    ? proj4('EPSG:4326', defaultCrs?.proj4, [ne.lng, ne.lat])
+    : [ne.lng, ne.lat]
+
+  const minX = Math.min(swX, neX)
+  const maxX = Math.max(swX, neX)
+  const minY = Math.min(swY, neY)
+  const maxY = Math.max(swY, neY)
+
+  const padX = (maxX - minX) * 0.1
+  const padY = (maxY - minY) * 0.1
+
+  return `${minX - padX},${minY - padY},${maxX + padX},${maxY + padY}`
 }
 
 export const WFS = ({ layer, layerPresentation }) => {
@@ -82,15 +83,17 @@ export const WFS = ({ layer, layerPresentation }) => {
     notificationIds.current = []
   }, [removeNotification])
 
-  const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
+  const map = useMap()
   // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
   // extract the relevant parts for db.crs.code:
   const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
-  const wfsDefaultCrsCode = [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(
-    ':',
-  )
+  const wfsDefaultCrsCode =
+    wfsDefaultCrsArray?.length === 3
+      ? [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
+      : 'EPSG:4326'
 
   const [zoom, setZoom] = useState(map.getZoom())
+  const [lastBbox, setLastBbox] = useState<string | null>(null)
 
   const [data, setData] = useState()
   const fetchData = useCallback(
@@ -101,6 +104,7 @@ export const WFS = ({ layer, layerPresentation }) => {
       const defaultCrs = resCrs?.rows?.[0]
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
+      setLastBbox(bbox)
       const notificationId = await addNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
@@ -108,14 +112,18 @@ export const WFS = ({ layer, layerPresentation }) => {
       })
       notificationIds.current = [notificationId, ...notificationIds.current]
       let res
+      const outputFormat = wfsService.info_format
+        ?.toLowerCase?.()
+        .includes('json')
+        ? wfsService.info_format
+        : 'application/json'
       const params = {
         service: 'WFS',
         version: wfsService.version,
         request: 'GetFeature',
         typeName: layer.wfs_service_layer_name,
         srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
-        outputFormat: wfsService.info_format,
-        maxfeatures: layer.max_features ? layer.max_features : 1001,
+        outputFormat,
         // seems that bbox expects the layers default crs
         // if not, returns 0 features
         bbox,
@@ -153,29 +161,69 @@ export const WFS = ({ layer, layerPresentation }) => {
       //   defaultCrs,
       //   wfsDefaultCrsCode,
       // })
-      const reprojectedData = reproject.reproject(
-        res.data,
-        defaultCrs?.proj4,
-        '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
-      )
-      setData(reprojectedData.features)
+      const sourceData = res?.data
+      const dataToProject = sourceData?.features ? sourceData : null
+      const responseCrsName = sourceData?.crs?.properties?.name
+      const responseEpsg = responseCrsName?.includes('EPSG')
+        ? `EPSG:${responseCrsName.split(':').at(-1)}`
+        : null
+      const sourceCrsCode = responseEpsg ?? wfsDefaultCrsCode
+      const sourceCrsRes = sourceCrsCode
+        ? await db.query(`SELECT * FROM crs WHERE code = $1`, [sourceCrsCode])
+        : null
+      const sourceCrs = sourceCrsRes?.rows?.[0] ?? defaultCrs
+
+      const reprojectedData =
+        dataToProject && sourceCrs?.proj4 && sourceCrsCode !== 'EPSG:4326'
+          ? reproject.reproject(
+              dataToProject,
+              sourceCrs.proj4,
+              '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
+            )
+          : dataToProject
+
+      setData(reprojectedData ?? sourceData ?? null)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      addNotification,
+      db,
       layer.label,
+      layer.max_features,
       layer.wfs_service_layer_name,
+      map,
+      removeNotifs,
+      wfsDefaultCrsCode,
       wfsService.info_format,
       wfsService.url,
       wfsService.version,
-      removeNotifs,
     ],
   )
-  useMapEvent('dragend zoomend', fetchData)
-
-  const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
   useEffect(() => {
-    fetchDataDebounced()
-  }, [fetchDataDebounced])
+    const handleMoveEnd = () => {
+      fetchData()
+    }
+    const handleDragEnd = () => {
+      fetchData()
+    }
+    const handleZoomEnd = () => {
+      setZoom(map.getZoom())
+      fetchData()
+    }
+
+    map.on('moveend', handleMoveEnd)
+    map.on('dragend', handleDragEnd)
+    map.on('zoomend', handleZoomEnd)
+
+    return () => {
+      map.off('moveend', handleMoveEnd)
+      map.off('dragend', handleDragEnd)
+      map.off('zoomend', handleZoomEnd)
+    }
+  }, [fetchData, map])
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   // include only if zoom between min_zoom and max_zoom
   if (
@@ -220,7 +268,7 @@ export const WFS = ({ layer, layerPresentation }) => {
   //   ]
   // }
 
-  if (!data) {
+  if (!data?.features?.length) {
     // console.log('VectorLayerWFS, no data, thus returning null')
     return null
   }
@@ -228,7 +276,7 @@ export const WFS = ({ layer, layerPresentation }) => {
   return (
     <>
       <GeoJSON
-        key={`${data?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
+        key={`${lastBbox ?? ''}/${data?.features?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
           layerPresentation,
         )}`}
         data={data}
@@ -251,8 +299,8 @@ export const WFS = ({ layer, layerPresentation }) => {
 
           const IconComponent = icons[display?.marker_symbol]
 
-          return IconComponent ?
-              L.marker(latlng, {
+          return IconComponent
+            ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -267,19 +315,12 @@ export const WFS = ({ layer, layerPresentation }) => {
             : L.marker(latlng)
         }}
       />
-      <Dialog
-        onOpenChange={() => setError(null)}
-        open={!!error}
-      >
+      <Dialog onOpenChange={() => setError(null)} open={!!error}>
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent style={dialogContentStyle}>
-              <XMLViewer
-                style={xmlViewerStyle}
-                xml={error}
-                theme={xmlTheme}
-              />
+              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
             </DialogContent>
             <DialogActions>
               <Button

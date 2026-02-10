@@ -273,20 +273,25 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
           let response
           let bboxParam
-          if (mapViewportBounds?.southWest && mapViewportBounds?.northEast) {
-            const { southWest, northEast } = mapViewportBounds
+          if (
+            mapViewportBounds?.swLat !== undefined &&
+            mapViewportBounds?.swLng !== undefined &&
+            mapViewportBounds?.neLat !== undefined &&
+            mapViewportBounds?.neLng !== undefined
+          ) {
+            const { swLat, swLng, neLat, neLng } = mapViewportBounds
             if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
               const [x1, y1] = proj4('EPSG:4326', defaultCrs.proj4, [
-                southWest.lng,
-                southWest.lat,
+                swLng,
+                swLat,
               ])
               const [x2, y2] = proj4('EPSG:4326', defaultCrs.proj4, [
-                northEast.lng,
-                northEast.lat,
+                neLng,
+                neLat,
               ])
               bboxParam = `${x1},${y1},${x2},${y2}`
             } else {
-              bboxParam = `${southWest.lng},${southWest.lat},${northEast.lng},${northEast.lat}`
+              bboxParam = `${swLng},${swLat},${neLng},${neLat}`
             }
           }
           try {
