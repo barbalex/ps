@@ -143,6 +143,7 @@ export const setSqlInitializingFalseAfterTimeoutAtom = atom(
 
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
+export const mapViewportBoundsAtom = atom(null)
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
 export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})

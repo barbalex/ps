@@ -17,7 +17,7 @@ import {
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import axios from 'redaxios'
@@ -39,6 +39,7 @@ import {
   addOperationAtom,
   addNotificationAtom,
   mapBoundsAtom,
+  mapViewportBoundsAtom,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
@@ -57,6 +58,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
+  const mapViewportBounds = useAtomValue(mapViewportBoundsAtom)
 
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
@@ -270,6 +272,23 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           const defaultCrs = defaultCrsRes?.rows?.[0]
 
           let response
+          let bboxParam
+          if (mapViewportBounds?.southWest && mapViewportBounds?.northEast) {
+            const { southWest, northEast } = mapViewportBounds
+            if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
+              const [x1, y1] = proj4('EPSG:4326', defaultCrs.proj4, [
+                southWest.lng,
+                southWest.lat,
+              ])
+              const [x2, y2] = proj4('EPSG:4326', defaultCrs.proj4, [
+                northEast.lng,
+                northEast.lat,
+              ])
+              bboxParam = `${x1},${y1},${x2},${y2}`
+            } else {
+              bboxParam = `${southWest.lng},${southWest.lat},${northEast.lng},${northEast.lat}`
+            }
+          }
           try {
             response = await axios.get(wfsService.url, {
               params: {
@@ -279,6 +298,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                 typeNames: layer.wfs_service_layer_name,
                 outputFormat: wfsService.info_format ?? 'application/json',
                 srsName: wfsDefaultCrsCode,
+                ...(bboxParam ? { bbox: bboxParam } : {}),
                 maxfeatures: layer.max_features ?? 1000,
               },
             })
