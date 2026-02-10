@@ -15,6 +15,7 @@ import { PostgrestClientInitator } from '../PostgrestClientInitator.tsx'
 import { ApiDetector } from '../ApiDetector.tsx'
 import { TreeOpenNodesSetter } from '../TreeOpenNodesSetter.tsx'
 import { OperationsObserver } from '../OperationsObserver.tsx'
+import { AutoFetchCapabilities } from '../AutoFetchCapabilities.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
 const from = '/data'
@@ -47,6 +48,7 @@ export const LayoutProtected = () => {
         <PostgrestClientInitator />
         <ApiDetector />
         <TreeOpenNodesSetter />
+        <AutoFetchCapabilities />
         <OperationsObserver />
         <Main />
       </ProtectedRoute>

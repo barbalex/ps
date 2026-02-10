@@ -108,7 +108,11 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
   }
 
   // single layer? update vectorLayer
-  if (!vectorLayer?.wfs_service_layer_name && layers?.length === 1) {
+  if (
+    !vectorLayer?.wfs_service_layer_name &&
+    layers?.length === 1 &&
+    vectorLayer?.vector_layer_id
+  ) {
     await db.query(
       `UPDATE vector_layers SET wfs_service_layer_name = $1, label = $2 WHERE vector_layer_id = $3`,
       [layers[0].Name, layers[0].Title, vectorLayer.vector_layer_id],

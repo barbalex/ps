@@ -130,7 +130,11 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
   })
 
   // single layer? update wmsLayer
-  if (!wmsLayer?.wms_service_layer_name && layers?.length === 1) {
+  if (
+    !wmsLayer?.wms_service_layer_name &&
+    layers?.length === 1 &&
+    wmsLayer?.wms_layer_id
+  ) {
     await db.query(
       `UPDATE wms_layers SET wms_service_layer_name = $1, label = $2 WHERE wms_layer_id = $3`,
       [layers[0].Name, layers[0].Title, wmsLayer.wms_layer_id],

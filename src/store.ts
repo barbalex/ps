@@ -123,6 +123,15 @@ export const initialSyncingAtom = atomWithStorage('initialSyncingAtom', true)
 // begins true, is set to false after initialization (or it's not needed)
 export const sqlInitializingAtom = atomWithStorage('sqlInitializingAtom', true)
 
+export const seenWmsServiceKeysAtom = atomWithStorage<string[]>(
+  'seenWmsServiceKeysAtom',
+  [],
+)
+export const seenWfsServiceKeysAtom = atomWithStorage<string[]>(
+  'seenWfsServiceKeysAtom',
+  [],
+)
+
 export const setSqlInitializingFalseAfterTimeoutAtom = atom(
   null,
   (get, set) => {
