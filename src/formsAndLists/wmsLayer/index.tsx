@@ -14,10 +14,10 @@ import type WmsLayers from '../../models/public/WmsLayers.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/wms-layers/$wmsLayerId'
-
 export const WmsLayer = () => {
-  const { wmsLayerId } = useParams({ from })
+  const { projectId: projectIdFromUrl, wmsLayerId } = useParams({
+    strict: false,
+  })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
 
@@ -29,6 +29,9 @@ export const WmsLayer = () => {
     wmsLayerId,
   ])
   const row: WmsLayers | undefined = res?.rows?.[0]
+
+  // Use projectId from the row data if available, fallback to URL param
+  const projectId = row?.project_id ?? projectIdFromUrl
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -78,9 +81,18 @@ export const WmsLayer = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        projectId={projectId}
+        wmsLayerId={wmsLayerId}
+        autoFocusRef={autoFocusRef}
+      />
       <div className="form-container">
-        <Form onChange={onChange} validations={validations} row={row} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          validations={validations}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )
