@@ -30,6 +30,14 @@ export const ProjectForm = ({
         validationState={validations?.name?.state}
         validationMessage={validations?.name?.message}
       />
+      <TextField
+        label="Label"
+        name="label"
+        value={row.label ?? ''}
+        onChange={onChange}
+        validationState={validations?.label?.state}
+        validationMessage={validations?.label?.message}
+      />
       <Jsonb
         table="projects"
         idField="project_id"
