@@ -4,6 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
+import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -18,7 +19,9 @@ type NavData = {
 export const useWmsLayerNavData = ({ projectId, wmsLayerId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-
+  
+  // Validate after hooks to comply with Rules of Hooks
+  validateIds({ projectId, wmsLayerId })
   const res = useLiveQuery(
     `
       SELECT
