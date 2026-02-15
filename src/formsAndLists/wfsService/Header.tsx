@@ -38,8 +38,9 @@ export const Header = ({ autoFocusRef, from }: Props) => {
   const ownIndex = rows.findIndex((row) => row.wfs_service_id === wfsServiceId)
 
   const addRow = async () => {
-    const id = await createWfsService({ projectId })
-    if (!id) return
+    const data = await createWfsService({ projectId })
+    if (!data) return
+    const id = data.wfs_service_id
     navigate({
       to: isForm ? `../../${id}/wfs-service` : `../${id}/wfs-service`,
       params: (prev) => ({ ...prev, wfsServiceId: id }),

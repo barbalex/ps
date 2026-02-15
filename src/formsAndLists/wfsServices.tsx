@@ -17,8 +17,9 @@ export const WfsServices = () => {
   const { navs, label } = navData
 
   const add = async () => {
-    const id = await createWfsService({ projectId })
-    if (!id) return
+    const data = await createWfsService({ projectId })
+    if (!data) return
+    const id = data.wfs_service_id
     navigate({
       to: `${id}/wfs-service`,
       params: (prev) => ({ ...prev, wfsServiceId: id }),

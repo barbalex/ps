@@ -1276,7 +1276,7 @@ export const createWfsService = async ({
     },
   })
 
-  // in this case DO return the full row
+  // Return full row because FetchWfsCapabilities needs the object
   return res?.rows?.[0]
 }
 
