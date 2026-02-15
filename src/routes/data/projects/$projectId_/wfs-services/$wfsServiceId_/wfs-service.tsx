@@ -8,9 +8,17 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   notFoundComponent: NotFound,
-  beforeLoad: () => ({
+  beforeLoad: ({ params }) => {
+    if (!params.projectId_ || params.projectId_ === 'undefined') {
+      throw new Error('Invalid or missing projectId_ in route parameters')
+    }
+    if (!params.wfsServiceId_ || params.wfsServiceId_ === 'undefined') {
+      throw new Error('Invalid or missing wfsServiceId_ in route parameters')
+    }
+    return {
     navDataFetcher: 'useWfsServiceWfsServiceNavData',
-  }),
+  }
+  },
 })
 
 function RouteComponent() {
