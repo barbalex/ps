@@ -4,6 +4,7 @@ import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -19,6 +20,9 @@ type NavData = {
 
 export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+
+  // Validate after hooks to comply with Rules of Hooks
+  validateIds({ projectId, subprojectId, goalId })
 
   const res = useLiveQuery(
     `
