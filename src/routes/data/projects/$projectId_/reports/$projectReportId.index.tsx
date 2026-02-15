@@ -6,7 +6,15 @@ export const Route = createFileRoute(
   '/data/projects/$projectId_/reports/$projectReportId/',
 )({
   component: ProjectReport,
-  beforeLoad: () => ({
+  beforeLoad: ({ params }) => {
+    if (!params.projectId_ || params.projectId_ === 'undefined') {
+      throw new Error('Invalid or missing projectId_ in route parameters')
+    }
+    if (!params.projectReportId || params.projectReportId === 'undefined') {
+      throw new Error('Invalid or missing projectReportId in route parameters')
+    }
+    return {
     navDataFetcher: 'useProjectReportNavData',
-  }),
+  }
+  },
 })
