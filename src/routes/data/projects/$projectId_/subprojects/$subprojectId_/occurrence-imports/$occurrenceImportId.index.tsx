@@ -17,7 +17,18 @@ export const Route = createFileRoute(
   component: OccurrenceImport,
   validateSearch: occurrenceImportTabSchema,
   middlewares: [stripSearchParams(defaultValues)],
-  beforeLoad: () => ({
+  beforeLoad: ({ params }) => {
+    if (!params.projectId_ || params.projectId_ === 'undefined') {
+      throw new Error('Invalid or missing projectId_ in route parameters')
+    }
+    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
+      throw new Error('Invalid or missing subprojectId_ in route parameters')
+    }
+    if (!params.occurrenceImportId || params.occurrenceImportId === 'undefined') {
+      throw new Error('Invalid or missing occurrenceImportId in route parameters')
+    }
+    return {
     navDataFetcher: 'useOccurrenceImportNavData',
-  }),
+  }
+  },
 })
