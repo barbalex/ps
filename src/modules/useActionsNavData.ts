@@ -10,7 +10,6 @@ import {
   actions2FilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
-import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
