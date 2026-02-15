@@ -8,9 +8,20 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   notFoundComponent: NotFound,
-  beforeLoad: () => ({
+  beforeLoad: ({ params }) => {
+    if (!params.projectId_ || params.projectId_ === 'undefined') {
+      throw new Error('Invalid or missing projectId_ in route parameters')
+    }
+    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
+      throw new Error('Invalid or missing subprojectId_ in route parameters')
+    }
+    if (!params.fileId || params.fileId === 'undefined') {
+      throw new Error('Invalid or missing fileId in route parameters')
+    }
+    return {
     navDataFetcher: 'useFileNavData',
-  }),
+  }
+  },
 })
 
 const RouteComponent = () => {
