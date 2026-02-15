@@ -31,16 +31,14 @@ export const WfsServiceForm = ({
         validationState={validations?.url?.state}
         validationMessage={validations?.url?.message}
       />
-      {row.url && (
-        <div style={{ marginBottom: '1rem' }}>
-          <FetchWfsCapabilities
-            vectorLayer={vectorLayerForFetch}
-            url={row.url}
-            fetching={fetching}
-            setFetching={setFetching}
-          />
-        </div>
-      )}
+      <div style={{ marginBottom: '1rem' }}>
+        <FetchWfsCapabilities
+          vectorLayer={vectorLayerForFetch}
+          url={row.url}
+          fetching={fetching}
+          setFetching={setFetching}
+        />
+      </div>
       <TextField
         label="Version"
         name="version"
