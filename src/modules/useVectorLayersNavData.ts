@@ -6,6 +6,7 @@ import { isEqual } from 'es-toolkit'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { vectorLayersFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { validateId } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -24,6 +25,8 @@ type NavDataClosed = {
 }
 
 export const useVectorLayersNavData = ({ projectId }: Props) => {
+  validateId(projectId, 'projectId')
+  
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
