@@ -30,25 +30,25 @@ export const SqlInitializer = () => {
         .default
       try {
         await db.exec(immutableDateSql)
-      } catch {
+      } catch (error) {
         console.error('Error executing immutableDateSql:', error)
       }
       const uuidv7Sql = (await import(`../sql/uuidv7.sql?raw`)).default
       try {
         await db.exec(uuidv7Sql)
-      } catch {
+      } catch (error) {
         console.error('Error executing uuidv7Sql:', error)
       }
       const createSql = (await import(`../sql/createTables.sql?raw`)).default
       try {
         await db.exec(createSql)
-      } catch {
+      } catch (error) {
         console.error('Error executing createSql:', error)
       }
       const triggersSql = (await import(`../sql/triggers.sql?raw`)).default
       try {
         await db.exec(triggersSql)
-      } catch {
+      } catch (error) {
         console.error('Error executing triggersSql:', error)
       }
 

@@ -47,6 +47,12 @@ const db = await PGlite.create('idb://ps', {
 })
 store.set(pgliteDbAtom, db)
 
+// Expose db and store on window for console debugging
+if (import.meta.env.DEV) {
+  window.__pglite_db__ = db
+  window.__jotai_store__ = store
+}
+
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
 
