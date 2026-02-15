@@ -5,7 +5,6 @@ import { Node } from './Node.tsx'
 
 export const WmsLayerNode = ({ projectId, nav, level = 4 }) => {
   const location = useLocation()
-
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = ['data', 'projects', projectId, 'wms-layers', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
