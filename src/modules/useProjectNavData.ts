@@ -16,6 +16,7 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { validateId } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -114,6 +115,9 @@ export const useProjectNavData = ({
   const [fieldsFilter] = useAtom(fieldsFilterAtom)
   const fieldsFilterString = filterStringFromFilter(fieldsFilter)
   const fieldsIsFiltered = !!fieldsFilterString
+
+  // Validate after hooks to comply with Rules of Hooks
+  validateId(projectId, 'projectId')
 
   const res = useLiveQuery(
     `
