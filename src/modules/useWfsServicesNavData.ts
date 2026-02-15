@@ -5,7 +5,6 @@ import { isEqual } from 'es-toolkit'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
-import { validateId } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -26,17 +25,13 @@ type NavDataClosed = {
 export const useWfsServicesNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-  
-  // Validate after hooks to comply with Rules of Hooks
-  validateId(projectId, 'projectId')
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wfs-services']
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}')

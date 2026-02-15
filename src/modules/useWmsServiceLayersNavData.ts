@@ -5,7 +5,6 @@ import { isEqual } from 'es-toolkit'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
-import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -24,11 +23,20 @@ type NavDataClosed = {
   count_filtered: number
 }[]
 
-export const useWmsServiceLayersNavData = ({ projectId, wmsServiceId }: Props) => {
+export const useWmsServiceLayersNavData = ({
+  projectId,
+  wmsServiceId,
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const parentArray = ['data', 'projects', projectId, 'wms-services', wmsServiceId]
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'wms-services',
+    wmsServiceId,
+  ]
   const ownArray = [...parentArray, 'layers']
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
