@@ -6,6 +6,7 @@ import { isEqual } from 'es-toolkit'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { subprojectsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { validateId } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -31,6 +32,9 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
+  // Validate after hooks to comply with Rules of Hooks
+  validateId(projectId, 'projectId')
+
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'subprojects']
   // needs to work not only works for urlPath, for all opened paths!
@@ -40,9 +44,8 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
+  const sql = isOpen
+    ? `
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})

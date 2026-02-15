@@ -25,10 +25,11 @@ type NavDataClosed = {
 }
 
 export const useWmsLayersNavData = ({ projectId }: Props) => {
-  validateId(projectId, 'projectId')
-
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  
+  // Validate after hooks to comply with Rules of Hooks
+  validateId(projectId, 'projectId')
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wms-layers']
