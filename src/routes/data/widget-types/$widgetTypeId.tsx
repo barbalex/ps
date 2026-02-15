@@ -6,7 +6,12 @@ export const Route = createFileRoute(
   '/data/widget-types/$widgetTypeId',
 )({
   component: WidgetType,
-  beforeLoad: () => ({
-    navDataFetcher: 'useWidgetTypeNavData',
-  }),
+  beforeLoad: ({ params }) => {
+    if (!params.widgetTypeId || params.widgetTypeId === 'undefined') {
+      throw new Error('Invalid or missing widgetTypeId in route parameters')
+    }
+    return {
+      navDataFetcher: 'useWidgetTypeNavData',
+    }
+  },
 })
