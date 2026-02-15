@@ -7,11 +7,11 @@ export const Route = createFileRoute(
 )({
   component: WmsServiceLayer,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.wmsServiceId_ || params.wmsServiceId_ === 'undefined') {
-      throw new Error('Invalid or missing wmsServiceId_ in route parameters')
+    if (!params.wmsServiceId || params.wmsServiceId === 'undefined') {
+      throw new Error('Invalid or missing wmsServiceId in route parameters')
     }
     if (!params.wmsServiceLayerId || params.wmsServiceLayerId === 'undefined') {
       throw new Error('Invalid or missing wmsServiceLayerId in route parameters')

@@ -5,14 +5,14 @@ export const Route = createFileRoute(
 )({
   component: Outlet,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
-      throw new Error('Invalid or missing subprojectId_ in route parameters')
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
+      throw new Error('Invalid or missing subprojectId in route parameters')
     }
-    if (!params.chartId_ || params.chartId_ === 'undefined') {
-      throw new Error('Invalid or missing chartId_ in route parameters')
+    if (!params.chartId || params.chartId === 'undefined') {
+      throw new Error('Invalid or missing chartId in route parameters')
     }
     return {
     navDataFetcher: 'useChartNavData',

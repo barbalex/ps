@@ -7,11 +7,11 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
-      throw new Error('Invalid or missing subprojectId_ in route parameters')
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
+      throw new Error('Invalid or missing subprojectId in route parameters')
     }
     if (!params.subprojectTaxonId || params.subprojectTaxonId === 'undefined') {
       throw new Error('Invalid or missing subprojectTaxonId in route parameters')

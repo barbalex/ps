@@ -7,11 +7,11 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.listId_ || params.listId_ === 'undefined') {
-      throw new Error('Invalid or missing listId_ in route parameters')
+    if (!params.listId || params.listId === 'undefined') {
+      throw new Error('Invalid or missing listId in route parameters')
     }
     return {
     navDataFetcher: 'useListListNavData',

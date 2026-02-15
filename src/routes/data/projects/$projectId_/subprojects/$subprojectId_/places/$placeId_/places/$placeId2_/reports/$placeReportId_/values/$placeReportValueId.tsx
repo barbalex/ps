@@ -7,20 +7,20 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
-      throw new Error('Invalid or missing subprojectId_ in route parameters')
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
+      throw new Error('Invalid or missing subprojectId in route parameters')
     }
-    if (!params.placeId_ || params.placeId_ === 'undefined') {
-      throw new Error('Invalid or missing placeId_ in route parameters')
+    if (!params.placeId || params.placeId === 'undefined') {
+      throw new Error('Invalid or missing placeId in route parameters')
     }
-    if (!params.placeId2_ || params.placeId2_ === 'undefined') {
-      throw new Error('Invalid or missing placeId2_ in route parameters')
+    if (!params.placeId2 || params.placeId2 === 'undefined') {
+      throw new Error('Invalid or missing placeId2 in route parameters')
     }
-    if (!params.placeReportId_ || params.placeReportId_ === 'undefined') {
-      throw new Error('Invalid or missing placeReportId_ in route parameters')
+    if (!params.placeReportId || params.placeReportId === 'undefined') {
+      throw new Error('Invalid or missing placeReportId in route parameters')
     }
     if (!params.placeReportValueId || params.placeReportValueId === 'undefined') {
       throw new Error('Invalid or missing placeReportValueId in route parameters')

@@ -7,11 +7,11 @@ export const Route = createFileRoute(
 )({
   component: Taxon,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.taxonomyId_ || params.taxonomyId_ === 'undefined') {
-      throw new Error('Invalid or missing taxonomyId_ in route parameters')
+    if (!params.taxonomyId || params.taxonomyId === 'undefined') {
+      throw new Error('Invalid or missing taxonomyId in route parameters')
     }
     if (!params.taxonId || params.taxonId === 'undefined') {
       throw new Error('Invalid or missing taxonId in route parameters')

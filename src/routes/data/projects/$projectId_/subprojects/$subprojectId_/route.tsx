@@ -5,10 +5,10 @@ export const Route = createFileRoute(
 )({
   component: Outlet,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
+    if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
       throw new Error('Invalid or missing subprojectId in route parameters')
     }
     return {

@@ -7,17 +7,17 @@ export const Route = createFileRoute(
 )({
   component: GoalReportValue,
   beforeLoad: ({ params }) => {
-    if (!params.projectId_ || params.projectId_ === 'undefined') {
-      throw new Error('Invalid or missing projectId_ in route parameters')
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
     }
-    if (!params.subprojectId_ || params.subprojectId_ === 'undefined') {
-      throw new Error('Invalid or missing subprojectId_ in route parameters')
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
+      throw new Error('Invalid or missing subprojectId in route parameters')
     }
-    if (!params.goalId_ || params.goalId_ === 'undefined') {
-      throw new Error('Invalid or missing goalId_ in route parameters')
+    if (!params.goalId || params.goalId === 'undefined') {
+      throw new Error('Invalid or missing goalId in route parameters')
     }
-    if (!params.goalReportId_ || params.goalReportId_ === 'undefined') {
-      throw new Error('Invalid or missing goalReportId_ in route parameters')
+    if (!params.goalReportId || params.goalReportId === 'undefined') {
+      throw new Error('Invalid or missing goalReportId in route parameters')
     }
     if (!params.goalReportValueId || params.goalReportValueId === 'undefined') {
       throw new Error('Invalid or missing goalReportValueId in route parameters')
