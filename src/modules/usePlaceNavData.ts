@@ -15,7 +15,6 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -77,9 +76,6 @@ export const usePlaceNavData = ({
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesFilterString = filterStringFromFilter(filesFilter)
   const filesIsFiltered = !!filesFilterString
-
-  // Validate after hooks to comply with Rules of Hooks
-  validateIds({ projectId, subprojectId })
 
   const sql = `
       WITH
