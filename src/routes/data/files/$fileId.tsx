@@ -8,9 +8,14 @@ const from = '/data/files/$fileId'
 export const Route = createFileRoute(from)({
   component: RouteComponent,
   notFoundComponent: NotFound,
-  beforeLoad: () => ({
-    navDataFetcher: 'useFileNavData',
-  }),
+  beforeLoad: ({ params }) => {
+    if (!params.fileId || params.fileId === 'undefined') {
+      throw new Error('Invalid or missing fileId in route parameters')
+    }
+    return {
+      navDataFetcher: 'useFileNavData',
+    }
+  },
 })
 
 function RouteComponent() {

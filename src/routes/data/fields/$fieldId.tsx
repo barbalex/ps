@@ -4,9 +4,14 @@ import { Field } from '../../../formsAndLists/field/index.tsx'
 
 export const Route = createFileRoute('/data/fields/$fieldId')({
   component: RouteComponent,
-  beforeLoad: () => ({
-    navDataFetcher: 'useFieldNavData',
-  }),
+  beforeLoad: ({ params }) => {
+    if (!params.fieldId || params.fieldId === 'undefined') {
+      throw new Error('Invalid or missing fieldId in route parameters')
+    }
+    return {
+      navDataFetcher: 'useFieldNavData',
+    }
+  },
 })
 
 function RouteComponent() {
