@@ -5,7 +5,12 @@ import { NotFound } from '../../../../components/NotFound.tsx'
 export const Route = createFileRoute('/data/projects/$projectId_')({
   component: Outlet,
   notFoundComponent: NotFound,
-  beforeLoad: () => ({
-    navDataFetcher: 'useProjectNavData',
-  }),
+  beforeLoad: ({ params }) => {
+    if (!params.projectId_ || params.projectId_ === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
+    }
+    return {
+      navDataFetcher: 'useProjectNavData',
+    }
+  },
 })
