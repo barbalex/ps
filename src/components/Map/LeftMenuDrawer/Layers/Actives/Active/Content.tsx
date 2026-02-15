@@ -17,6 +17,7 @@ import {
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
+import { FaPlay, FaStopCircle } from 'react-icons/fa'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -40,6 +41,7 @@ import {
   addNotificationAtom,
   mapBoundsAtom,
   mapViewportBoundsAtom,
+  assigningOccurrencesAtom,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
@@ -55,6 +57,9 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
+  const [assigningOccurrences, setAssigningOccurrences] = useAtom(
+    assigningOccurrencesAtom,
+  )
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -66,6 +71,15 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
   const isVectorLayer = layer.layer_type === 'vector'
   const isWmsLayer = layer.layer_type === 'wms'
+  
+  // Check if this is an occurrence layer
+  const tableName = layer.own_table_level
+    ? `${layer.own_table}${layer.own_table_level}`
+    : layer.own_table
+  const isOccurrenceLayer =
+    tableName === 'occurrences_to_assess' ||
+    tableName === 'occurrences_not_to_assign' ||
+    tableName?.startsWith('occurrences_assigned')
 
   // effect:
   // if layer is wms and has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -154,6 +168,12 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       })
     }
   }
+  
+  const onClickAssignOccurrences = (event) => {
+    event.stopPropagation()
+    setAssigningOccurrences(!assigningOccurrences)
+  }
+
   const onClickZoomToFeatures = async (event) => {
     event.stopPropagation()
     // Get all geometries for this layer
@@ -393,6 +413,30 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           />
           <p className={layerStyles.headerLabel}>{layer.label}</p>
         </div>
+        {isOccurrenceLayer && (
+          <Button
+            icon={
+              assigningOccurrences ?
+                <FaStopCircle />
+              : <FaPlay style={{ fontSize: '0.85em' }} />
+            }
+            onClick={onClickAssignOccurrences}
+            className={styles.headerButton}
+            title={
+              assigningOccurrences ?
+                'Stop assigning occurrences'
+              : 'Assign occurrences by dragging'
+            }
+            appearance="subtle"
+            size="small"
+            as="a"
+            style={
+              assigningOccurrences ?
+                { color: 'black', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
+              : undefined
+            }
+          />
+        )}
         <Button
           icon={<TbZoomScan />}
           onClick={onClickZoomToFeatures}
