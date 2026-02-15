@@ -31,6 +31,7 @@ export const FetchWfsCapabilities = ({
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
     if (!urlTrimmed) return
+    if (fetching) return
 
     // 1. check if wfs_service exists for this url
     const eSRes = await db.query(`SELECT * FROM wfs_services WHERE url = $1`, [
@@ -129,8 +130,12 @@ export const FetchWfsCapabilities = ({
       icon={fetching ? <Spinner size="tiny" /> : undefined}
       onClick={onFetchCapabilities}
       className={styles.button}
-      disabled={!url}
+      aria-disabled={!url || fetching}
       tabIndex={0}
+      style={{
+        opacity: !url || fetching ? 0.5 : 1,
+        cursor: !url || fetching ? 'not-allowed' : 'pointer',
+      }}
     >
       {fetching ?
         `Loading Capabilities (${wfsServiceLayersCount})`
