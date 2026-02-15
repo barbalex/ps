@@ -130,6 +130,7 @@ export const FetchWfsCapabilities = ({
       onClick={onFetchCapabilities}
       className={styles.button}
       disabled={!url}
+      tabIndex={0}
     >
       {fetching ?
         `Loading Capabilities (${wfsServiceLayersCount})`

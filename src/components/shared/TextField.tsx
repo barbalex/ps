@@ -18,6 +18,8 @@ export const TextField = ({
   disabled = false,
   button,
   ref,
+  tabIndex,
+  readOnly,
 }: InputProps) => {
   const [stateValue, setStateValue] = useState(
     value || value === 0 ? value : '',
@@ -57,6 +59,8 @@ export const TextField = ({
           onBlur={onChangeIn}
           disabled={disabled}
           className={styles.input}
+          tabIndex={tabIndex}
+          readOnly={readOnly}
         />
         {!!button && button}
       </div>

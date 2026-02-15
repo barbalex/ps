@@ -44,18 +44,21 @@ export const WfsServiceForm = ({
         name="version"
         value={row.version ?? ''}
         readOnly
+        tabIndex={-1}
       />
       <TextField
         label="Info Format"
         name="info_format"
         value={row.info_format ?? ''}
         readOnly
+        tabIndex={-1}
       />
       <TextField
         label="Default CRS"
         name="default_crs"
         value={row.default_crs ?? ''}
         readOnly
+        tabIndex={-1}
       />
     </>
   )
