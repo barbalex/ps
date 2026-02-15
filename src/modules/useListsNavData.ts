@@ -6,6 +6,7 @@ import { isEqual } from 'es-toolkit'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { listsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { validateId } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -26,6 +27,9 @@ type NavDataClosed = {
 export const useListsNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  
+  // Validate after hooks to comply with Rules of Hooks
+  validateId(projectId, 'projectId')
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'lists']

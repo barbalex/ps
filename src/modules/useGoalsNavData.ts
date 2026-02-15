@@ -6,6 +6,7 @@ import { isEqual } from 'es-toolkit'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { goalsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string

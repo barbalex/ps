@@ -5,6 +5,7 @@ import { isEqual } from 'es-toolkit'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
+import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
