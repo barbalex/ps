@@ -18,6 +18,7 @@ type NavData = {
 export const useFieldNavData = ({ projectId, fieldId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  
 
   const res = useLiveQuery(
     `
