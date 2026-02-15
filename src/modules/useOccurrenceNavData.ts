@@ -4,7 +4,6 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../store.ts'
-import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -32,9 +31,6 @@ export const useOccurrenceNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-
-  // Validate after hooks to comply with Rules of Hooks
-  validateIds({ projectId, subprojectId, occurrenceId })
 
   const res = useLiveQuery(
     `
