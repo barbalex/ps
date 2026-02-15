@@ -10,7 +10,6 @@ import {
   places2FilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
-import { validateIds } from './validateIds.ts'
 
 type Props = {
   projectId: string
@@ -41,10 +40,6 @@ export const usePlacesNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-  
-  // Validate after hooks to comply with Rules of Hooks
-  // placeId is optional, so only validate required IDs
-  validateIds({ projectId, subprojectId })
 
   const parentArray = [
     'data',
