@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -19,13 +19,47 @@ import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { InfoMarker } from './RightMenuDrawer/Marker.tsx'
 import { CenterMarker } from './CenterMarker.tsx'
-import { mapLocateAtom, mapInfoAtom, mapShowCenterAtom } from '../../store.ts'
+import {
+  mapLocateAtom,
+  mapInfoAtom,
+  mapShowCenterAtom,
+} from '../../store.ts'
 import styles from './Map.module.css'
+
+const DEFAULT_CENTER = [47.4, 8.65]
+const DEFAULT_ZOOM = 13
 
 export const Map = () => {
   const mapShowCenter = useAtomValue(mapShowCenterAtom)
   const mapIsLocating = useAtomValue(mapLocateAtom)
   const mapInfo = useAtomValue(mapInfoAtom)
+
+  // Read initial map state directly from localStorage
+  const initialCenter = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('mapCenter')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return Array.isArray(parsed) && parsed.length === 2 ? parsed : DEFAULT_CENTER
+      }
+    } catch (e) {
+      console.error('Failed to parse mapCenter from localStorage:', e)
+    }
+    return DEFAULT_CENTER
+  }, [])
+
+  const initialZoom = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('mapZoom')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return typeof parsed === 'number' ? parsed : DEFAULT_ZOOM
+      }
+    } catch (e) {
+      console.error('Failed to parse mapZoom from localStorage:', e)
+    }
+    return DEFAULT_ZOOM
+  }, [])
 
   const mapRef = useRef()
 
@@ -55,7 +89,6 @@ export const Map = () => {
   //   [47.159, 8.354],
   //   [47.696, 8.984],
   // ]
-  const position = [47.4, 8.65]
 
   return (
     <ErrorBoundary>
@@ -66,8 +99,8 @@ export const Map = () => {
           // maxZoom={22}
           // minZoom={0}
           // bounds={bounds}
-          center={position}
-          zoom={13}
+          center={initialCenter}
+          zoom={initialZoom}
           ref={mapRef}
         >
           {mapIsLocating && <LocationMarker />}
