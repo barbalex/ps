@@ -41,33 +41,46 @@ export const OccurrenceAssignChooser = () => {
 
   if (!placesToAssignOccurrenceTo) return null
 
+  const hasPlaces = placesToAssignOccurrenceTo.places.length > 0
+
   return (
     <Dialog open={true}>
       <DialogSurface className={styles.surface}>
         <DialogBody className={styles.body}>
-          <DialogTitle>Choose place to assign</DialogTitle>
+          <DialogTitle>
+            {hasPlaces ? 'Choose place to assign' : 'No place found'}
+          </DialogTitle>
           {placesToAssignOccurrenceTo.places.length > 4 && (
             <div className={styles.titleComment}>The 5 closest are shown</div>
           )}
           <DialogContent>
-            <MenuList>
-              {placesToAssignOccurrenceTo.places.map((place) => (
-                <Item
-                  key={place.place_id}
-                  occurrenceId={placesToAssignOccurrenceTo.occurrence_id}
-                  place={place}
-                />
-              ))}
-            </MenuList>
+            {hasPlaces ? (
+              <MenuList>
+                {placesToAssignOccurrenceTo.places.map((place) => (
+                  <Item
+                    key={place.place_id}
+                    occurrenceId={placesToAssignOccurrenceTo.occurrence_id}
+                    place={place}
+                  />
+                ))}
+              </MenuList>
+            ) : (
+              <div style={{ padding: '12px 0' }}>
+                No places found within approximately 40 pixels of the drop
+                location. Try dropping closer to a place or zooming in.
+              </div>
+            )}
           </DialogContent>
           <DialogActions className={styles.actions}>
-            <Checkbox
-              label="Auto-assign when single place found"
-              checked={!confirmAssigningToSingleTarget}
-              onChange={onClickSingleTarget}
-            />
+            {hasPlaces && (
+              <Checkbox
+                label="Auto-assign when single place found"
+                checked={!confirmAssigningToSingleTarget}
+                onChange={onClickSingleTarget}
+              />
+            )}
             <Button appearance="secondary" onClick={onClickCancel}>
-              Don't assign
+              {hasPlaces ? "Don't assign" : 'Close'}
             </Button>
           </DialogActions>
         </DialogBody>

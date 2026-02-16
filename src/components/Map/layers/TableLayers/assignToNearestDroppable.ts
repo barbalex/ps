@@ -152,10 +152,10 @@ export const assignToNearestDroppable = async ({
     point([mapNorthWest.lng, mapNorthWest.lat]),
   )
 
-  // Calculate distance for 20 pixels
+  // Calculate distance for 40 pixels
   const mapWidthInPixels = map.getSize().x
   const kmPerPixel = mapWidth / mapWidthInPixels
-  const minDistance = kmPerPixel * 20
+  const minDistance = kmPerPixel * 40
 
   const placeIdsWithMinDistances = placeIdsWithDistance.filter(
     (d) => d.distance < minDistance,
@@ -175,11 +175,13 @@ export const assignToNearestDroppable = async ({
   // })
 
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
-    // tell user no place found to assign to
-    store.set(addNotificationAtom, {
-      title: 'Kein Ort zum Zuweisen gefunden',
-      intent: 'error',
-    })
+    // Show dialog to inform user no place found within 20px
+    const placesToAssignOccurrenceTo = {
+      occurrence_id: occurrenceId,
+      places: [],
+    }
+    setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
+    return
   }
 
   // TODO: really? Maybe better to always confirm?
