@@ -25,7 +25,7 @@ export const Item = ({ place, occurrenceId }: Props) => {
   const db = usePGlite()
 
   const onClick = async () => {
-    db.query(
+    await db.query(
       `UPDATE occurrences SET place_id = $1, not_to_assign = NULL WHERE occurrence_id = $2`,
       [place.place_id, occurrenceId],
     )

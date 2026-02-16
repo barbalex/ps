@@ -189,12 +189,9 @@ export const assignToNearestDroppable = async ({
     placeIdsWithMinDistancesSortedByDistance.length === 1 &&
     !confirmAssigningToSingleTarget
   ) {
-    // console.log(
-    //   'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
-    // )
     const place_id = placeIdsWithMinDistancesSortedByDistance[0]?.place_id
     // 3.2.1: assign to place
-    db.query(
+    await db.query(
       `UPDATE occurrences SET place_id = $1, not_to_assign = $2 WHERE occurrence_id = $3`,
       [place_id, null, occurrenceId],
     )
@@ -204,7 +201,7 @@ export const assignToNearestDroppable = async ({
       [occurrenceId],
     )
     const prev = occurrenceRes?.rows?.[0] ?? {}
-    addOperation({
+    store.set(addOperationAtom, {
       table: 'occurrences',
       rowIdName: 'occurrence_id',
       rowId: occurrenceId,
