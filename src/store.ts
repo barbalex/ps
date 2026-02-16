@@ -143,7 +143,8 @@ export const setSqlInitializingFalseAfterTimeoutAtom = atom(
 
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 // bounds are used for setting the map view to a specific area. They are set as an object with keys: swLat, swLng, neLat, neLng
-export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
+// This is a command atom - not persisted because once fitBounds is applied, the result is saved via mapCenterAtom/mapZoomAtom
+export const mapBoundsAtom = atom(null)
 // is used for:
 // - Making WFS requests with bbox parameters to fetch features within the visible map area
 // - Any spatial queries that need to know what's currently visible
