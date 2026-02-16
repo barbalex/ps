@@ -194,7 +194,7 @@ export const confirmAssigningToSingleTargetAtom = atomWithStorage(
   'confirmAssigningToSingleTargetAtom',
   true,
 )
-// If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, latLng (where marker was dropped, used only for finding nearby places), places. Places is array with: place_id, label, distance
+// If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, latLng (where marker was dropped, used only for finding nearby places), places (array with: place_id, label, distance), current_place_id (the occurrence's current assignment, if any)
 export const placesToAssignOccurrenceToAtom = atomWithStorage(
   'placesToAssignOccurrenceToAtom',
   null,

@@ -9,12 +9,14 @@ import {
   MenuList,
   Checkbox,
 } from '@fluentui/react-components'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Item } from './Item.tsx'
 import {
   confirmAssigningToSingleTargetAtom,
   placesToAssignOccurrenceToAtom,
+  addOperationAtom,
 } from '../../store.ts'
 import { resetOccurrenceMarkerPosition } from '../Map/layers/TableLayers/occurrenceMarkers.ts'
 import styles from './index.module.css'
@@ -25,6 +27,9 @@ export const OccurrenceAssignChooser = () => {
   const [placesToAssignOccurrenceTo, setPlacesToAssignOccurrenceTo] = useAtom(
     placesToAssignOccurrenceToAtom,
   )
+  const addOperation = useSetAtom(addOperationAtom)
+  const db = usePGlite()
+
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
@@ -36,12 +41,40 @@ export const OccurrenceAssignChooser = () => {
     setPlacesToAssignOccurrenceTo(null)
   }
 
+  const onClickRemoveAssignment = async () => {
+    const occurrenceId = placesToAssignOccurrenceTo?.occurrence_id
+    if (!occurrenceId) return
+
+    await db.query(
+      `UPDATE occurrences SET place_id = NULL, not_to_assign = NULL WHERE occurrence_id = $1`,
+      [occurrenceId],
+    )
+    const occurrenceRes = await db.query(
+      `SELECT * FROM occurrences WHERE occurrence_id = $1`,
+      [occurrenceId],
+    )
+    const prev = occurrenceRes?.rows?.[0] ?? {}
+    addOperation({
+      table: 'occurrences',
+      rowIdName: 'occurrence_id',
+      rowId: occurrenceId,
+      operation: 'update',
+      draft: { place_id: null, not_to_assign: null },
+      prev,
+    })
+    // Reset marker to original position
+    resetOccurrenceMarkerPosition(occurrenceId)
+    // reset state
+    setPlacesToAssignOccurrenceTo(null)
+  }
+
   const onClickSingleTarget = () =>
     setConfirmAssigningToSingleTarget(!confirmAssigningToSingleTarget)
 
   if (!placesToAssignOccurrenceTo) return null
 
   const hasPlaces = placesToAssignOccurrenceTo.places.length > 0
+  const hasCurrentAssignment = !!placesToAssignOccurrenceTo.current_place_id
 
   return (
     <Dialog open={true}>
@@ -78,6 +111,11 @@ export const OccurrenceAssignChooser = () => {
                 checked={!confirmAssigningToSingleTarget}
                 onChange={onClickSingleTarget}
               />
+            )}
+            {!hasPlaces && hasCurrentAssignment && (
+              <Button appearance="primary" onClick={onClickRemoveAssignment}>
+                Remove assignment
+              </Button>
             )}
             <Button appearance="secondary" onClick={onClickCancel}>
               {hasPlaces ? "Don't assign" : 'Close'}

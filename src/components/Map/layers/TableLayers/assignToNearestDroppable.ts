@@ -175,12 +175,20 @@ export const assignToNearestDroppable = async ({
   //   placeIdsWithMinDistancesSortedByDistance,
   // })
 
+  // Query current assignment to pass to dialog
+  const occurrenceRes = await db.query(
+    `SELECT place_id FROM occurrences WHERE occurrence_id = $1`,
+    [occurrenceId],
+  )
+  const currentPlaceId = occurrenceRes?.rows?.[0]?.place_id
+
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // Show dialog to inform user no place found within 20px
     const placesToAssignOccurrenceTo = {
       occurrence_id: occurrenceId,
       latLng,
       places: [],
+      current_place_id: currentPlaceId,
     }
     setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
     return
@@ -226,6 +234,7 @@ export const assignToNearestDroppable = async ({
       ...p,
       label: places.find((place) => place.place_id === p.place_id)?.label,
     })),
+    current_place_id: currentPlaceId,
   }
   setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
 }
