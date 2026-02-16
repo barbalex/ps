@@ -14,6 +14,7 @@ import {
   confirmAssigningToSingleTargetAtom,
   placesToAssignOccurrenceToAtom,
 } from '../../../../store.ts'
+import { occurrenceMarkers } from './occurrenceMarkers.ts'
 
 export const TableLayer = ({ data, layerPresentation }) => {
   const confirmAssigningToSingleTarget = useAtomValue(
@@ -138,6 +139,16 @@ export const TableLayer = ({ data, layerPresentation }) => {
               }
 
               clickableCircle.on('mousedown', function () {
+                // Store marker reference and original position for potential reset
+                const occurrenceId = feature.properties?.occurrence_id
+                if (occurrenceId) {
+                  occurrenceMarkers.set(occurrenceId, {
+                    clickableCircle,
+                    visualCircle,
+                    marker: null,
+                    originalLatLng: latlng,
+                  })
+                }
                 map.dragging.disable()
                 map.on('mousemove', trackCursor)
               })
@@ -152,6 +163,16 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 ) {
                   return
                 }
+                // Stop propagation to prevent click event from opening info sidebar
+                L.DomEvent.stopPropagation(e)
+                L.DomEvent.preventDefault(e)
+
+                // Set a flag to ignore the next click event
+                clickableCircle._justDragged = true
+                setTimeout(() => {
+                  clickableCircle._justDragged = false
+                }, 100)
+
                 assignToNearestDroppable({
                   latLng: e.latlng,
                   occurrenceId: feature.properties?.occurrence_id,
@@ -160,6 +181,15 @@ export const TableLayer = ({ data, layerPresentation }) => {
                   confirmAssigningToSingleTarget,
                   setPlacesToAssignOccurrenceTo,
                 })
+              })
+
+              // Prevent click event immediately after drag
+              clickableCircle.on('click', function (e) {
+                if (clickableCircle._justDragged) {
+                  L.DomEvent.stopPropagation(e)
+                  L.DomEvent.preventDefault(e)
+                  return false
+                }
               })
             }
 
@@ -217,8 +247,29 @@ export const TableLayer = ({ data, layerPresentation }) => {
           group._clickableCircle = clickableCircle
 
           if (isDraggable) {
-            marker.on('dragend', () => {
+            // Store marker reference and original position for potential reset
+            const occurrenceId = feature.properties?.occurrence_id
+            if (occurrenceId) {
+              occurrenceMarkers.set(occurrenceId, {
+                clickableCircle: null,
+                visualCircle: null,
+                marker,
+                originalLatLng: latlng,
+              })
+            }
+
+            marker.on('dragend', (e) => {
               const position = marker.getLatLng()
+              // Prevent click event from firing after drag
+              L.DomEvent.stopPropagation(e)
+              L.DomEvent.preventDefault(e)
+              // Set a flag to ignore the next click event
+              marker._justDragged = true
+              clickableCircle._justDragged = true
+              setTimeout(() => {
+                marker._justDragged = false
+                clickableCircle._justDragged = false
+              }, 100)
               assignToNearestDroppable({
                 latLng: position,
                 occurrenceId: marker.feature.properties?.occurrence_id,
@@ -227,6 +278,24 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 confirmAssigningToSingleTarget,
                 setPlacesToAssignOccurrenceTo,
               })
+            })
+
+            // Prevent click event immediately after drag
+            marker.on('click', (e) => {
+              if (marker._justDragged) {
+                L.DomEvent.stopPropagation(e)
+                L.DomEvent.preventDefault(e)
+                return false
+              }
+            })
+
+            // Also prevent click on the clickable circle after drag
+            clickableCircle.on('click', (e) => {
+              if (clickableCircle._justDragged) {
+                L.DomEvent.stopPropagation(e)
+                L.DomEvent.preventDefault(e)
+                return false
+              }
             })
           }
 

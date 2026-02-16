@@ -9,7 +9,6 @@ import {
   MenuList,
   Checkbox,
 } from '@fluentui/react-components'
-import { Dismiss24Regular } from '@fluentui/react-icons'
 import { useAtom } from 'jotai'
 
 import { Item } from './Item.tsx'
@@ -17,6 +16,7 @@ import {
   confirmAssigningToSingleTargetAtom,
   placesToAssignOccurrenceToAtom,
 } from '../../store.ts'
+import { resetOccurrenceMarkerPosition } from '../Map/layers/TableLayers/occurrenceMarkers.ts'
 import styles from './index.module.css'
 
 export const OccurrenceAssignChooser = () => {
@@ -28,7 +28,13 @@ export const OccurrenceAssignChooser = () => {
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
-  const onClickCancel = () => setPlacesToAssignOccurrenceTo(null)
+  const onClickCancel = () => {
+    // Reset the marker position to its original location
+    if (placesToAssignOccurrenceTo?.occurrence_id) {
+      resetOccurrenceMarkerPosition(placesToAssignOccurrenceTo.occurrence_id)
+    }
+    setPlacesToAssignOccurrenceTo(null)
+  }
 
   const onClickSingleTarget = () =>
     setConfirmAssigningToSingleTarget(!confirmAssigningToSingleTarget)
@@ -39,15 +45,7 @@ export const OccurrenceAssignChooser = () => {
     <Dialog open={true}>
       <DialogSurface className={styles.surface}>
         <DialogBody className={styles.body}>
-          <div className={styles.titleRow}>
-            <DialogTitle>Choose place to assign</DialogTitle>
-            <Button
-              appearance="subtle"
-              aria-label="close"
-              icon={<Dismiss24Regular />}
-              onClick={onClickCancel}
-            />
-          </div>
+          <DialogTitle>Choose place to assign</DialogTitle>
           {placesToAssignOccurrenceTo.places.length > 4 && (
             <div className={styles.titleComment}>The 5 closest are shown</div>
           )}
@@ -68,6 +66,9 @@ export const OccurrenceAssignChooser = () => {
               checked={!confirmAssigningToSingleTarget}
               onChange={onClickSingleTarget}
             />
+            <Button appearance="secondary" onClick={onClickCancel}>
+              Don't assign
+            </Button>
           </DialogActions>
         </DialogBody>
       </DialogSurface>
