@@ -162,6 +162,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
                     originalLatLng: latlng,
                   })
                 }
+                // Set flag to prevent ClickListener from opening info on other layers
+                map._isDraggingOccurrence = true
                 map.dragging.disable()
                 map.on('mousemove', trackCursor)
               })
@@ -174,6 +176,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
                   e.latlng.lat === latlng.lat &&
                   e.latlng.lng === latlng.lng
                 ) {
+                  // Reset drag flag
+                  map._isDraggingOccurrence = false
                   return
                 }
                 // Stop propagation to prevent click event from opening info sidebar
@@ -185,6 +189,11 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 setTimeout(() => {
                   clickableCircle._justDragged = false
                 }, 100)
+
+                // Keep drag flag set for a short duration to prevent ClickListener from firing
+                setTimeout(() => {
+                  map._isDraggingOccurrence = false
+                }, 150)
 
                 assignToNearestDroppable({
                   latLng: e.latlng,
@@ -271,6 +280,11 @@ export const TableLayer = ({ data, layerPresentation }) => {
               })
             }
 
+            // Set flag when drag starts
+            marker.on('dragstart', () => {
+              map._isDraggingOccurrence = true
+            })
+
             marker.on('dragend', (e) => {
               const position = marker.getLatLng()
               // Prevent click event from firing after drag
@@ -283,6 +297,10 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 marker._justDragged = false
                 clickableCircle._justDragged = false
               }, 100)
+              // Keep drag flag set for a short duration to prevent ClickListener from firing
+              setTimeout(() => {
+                map._isDraggingOccurrence = false
+              }, 150)
               assignToNearestDroppable({
                 latLng: position,
                 occurrenceId: marker.feature.properties?.occurrence_id,
