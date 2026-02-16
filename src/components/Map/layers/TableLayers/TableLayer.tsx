@@ -151,26 +151,12 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 visualCircle.setLatLng(e.latlng)
               }
 
-              clickableCircle.on('mousedown', function () {
-                // Store marker reference and original position for potential reset
-                const occurrenceId = feature.properties?.occurrence_id
-                if (occurrenceId) {
-                  occurrenceMarkers.set(occurrenceId, {
-                    clickableCircle,
-                    visualCircle,
-                    marker: null,
-                    originalLatLng: latlng,
-                  })
-                }
-                // Set flag to prevent ClickListener from opening info on other layers
-                map._isDraggingOccurrence = true
-                map.dragging.disable()
-                map.on('mousemove', trackCursor)
-              })
-
-              clickableCircle.on('mouseup', function (e) {
+              // Define mouseup handler that will be attached to map
+              const handleMouseUp = (e) => {
                 map.dragging.enable()
                 map.off('mousemove', trackCursor)
+                map.off('mouseup', handleMouseUp)
+
                 // only assign if the marker has moved
                 if (
                   e.latlng.lat === latlng.lat &&
@@ -203,6 +189,25 @@ export const TableLayer = ({ data, layerPresentation }) => {
                   confirmAssigningToSingleTarget,
                   setPlacesToAssignOccurrenceTo,
                 })
+              }
+
+              clickableCircle.on('mousedown', function () {
+                // Store marker reference and original position for potential reset
+                const occurrenceId = feature.properties?.occurrence_id
+                if (occurrenceId) {
+                  occurrenceMarkers.set(occurrenceId, {
+                    clickableCircle,
+                    visualCircle,
+                    marker: null,
+                    originalLatLng: latlng,
+                  })
+                }
+                // Set flag to prevent ClickListener from opening info on other layers
+                map._isDraggingOccurrence = true
+                map.dragging.disable()
+                map.on('mousemove', trackCursor)
+                // Attach mouseup to map so it fires regardless of what's under the cursor
+                map.on('mouseup', handleMouseUp)
               })
 
               // Prevent click event immediately after drag
