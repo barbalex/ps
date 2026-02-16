@@ -7,6 +7,7 @@ import {
   addOperationAtom,
 } from '../../store.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
+import { resetOccurrenceMarkerPosition } from '../Map/layers/TableLayers/occurrenceMarkers.ts'
 
 interface Props {
   place: { place_id: string; label: string; distance: number }
@@ -42,6 +43,8 @@ export const Item = ({ place, occurrenceId }: Props) => {
       draft: { place_id: place.place_id, not_to_assign: null },
       prev,
     })
+    // Reset marker to original position
+    resetOccurrenceMarkerPosition(occurrenceId)
     // reset state
     setPlacesToAssignOccurrenceTo(null)
   }

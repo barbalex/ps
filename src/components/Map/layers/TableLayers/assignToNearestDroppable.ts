@@ -12,6 +12,7 @@ import {
   store,
   pgliteDbAtom,
 } from '../../../../store.ts'
+import { resetOccurrenceMarkerPosition } from './occurrenceMarkers.ts'
 
 export const assignToNearestDroppable = async ({
   latLng,
@@ -178,6 +179,7 @@ export const assignToNearestDroppable = async ({
     // Show dialog to inform user no place found within 20px
     const placesToAssignOccurrenceTo = {
       occurrence_id: occurrenceId,
+      latLng,
       places: [],
     }
     setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
@@ -210,12 +212,16 @@ export const assignToNearestDroppable = async ({
       prev,
     })
 
+    // Reset marker to original position
+    resetOccurrenceMarkerPosition(occurrenceId)
+
     return
   }
 
   // ask user to choose
   const placesToAssignOccurrenceTo = {
     occurrence_id: occurrenceId,
+    latLng,
     places: placeIdsWithMinDistancesSortedByDistance.map((p) => ({
       ...p,
       label: places.find((place) => place.place_id === p.place_id)?.label,
