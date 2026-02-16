@@ -17,7 +17,7 @@ export const assignToNearestDroppable = async ({
   latLng,
   occurrenceId,
   map,
-  droppableLayer,
+  droppableLayers,
   confirmAssigningToSingleTarget,
   setPlacesToAssignOccurrenceTo,
 }) => {
@@ -35,11 +35,21 @@ export const assignToNearestDroppable = async ({
     console.log('hello assignToNearestDroppable', { error })
   }
   // TODO: best would be to query using PostGIS functions...
-  // 1. get all features from droppable layer
+  // 1. get all features from droppable layers
+  // Build WHERE clause based on which place levels are droppable
+  const includePlaces1 = droppableLayers.some(layer => layer.includes('places') && layer.includes('1'))
+  const includePlaces2 = droppableLayers.some(layer => layer.includes('places') && layer.includes('2'))
+  
+  let whereClause = 'geometry IS NOT NULL'
+  if (includePlaces1 && !includePlaces2) {
+    whereClause += ' AND parent_id IS NULL'
+  } else if (includePlaces2 && !includePlaces1) {
+    whereClause += ' AND parent_id IS NOT NULL'
+  }
+  // If both or neither are included, we don't filter by parent_id
+  
   const placesRes = await db.query(
-    `SELECT * FROM places WHERE geometry IS NOT NULL AND parent_id ${
-      droppableLayer === 'places1' ? ' is null' : 'is not null'
-    }`,
+    `SELECT * FROM places WHERE ${whereClause}`,
   )
   const places = placesRes?.rows ?? []
 

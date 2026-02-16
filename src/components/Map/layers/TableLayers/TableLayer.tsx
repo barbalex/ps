@@ -10,7 +10,7 @@ import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 import {
   draggableLayersAtom,
-  droppableLayerAtom,
+  droppableLayersAtom,
   confirmAssigningToSingleTargetAtom,
   placesToAssignOccurrenceToAtom,
 } from '../../../../store.ts'
@@ -19,7 +19,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
   const confirmAssigningToSingleTarget = useAtomValue(
     confirmAssigningToSingleTargetAtom,
   )
-  const droppableLayer = useAtomValue(droppableLayerAtom)
+  const droppableLayers = useAtomValue(droppableLayersAtom)
   const draggableLayers = useAtomValue(draggableLayersAtom)
   const setPlacesToAssignOccurrenceTo = useSetAtom(
     placesToAssignOccurrenceToAtom,
@@ -156,7 +156,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                   latLng: e.latlng,
                   occurrenceId: feature.properties?.occurrence_id,
                   map,
-                  droppableLayer,
+                  droppableLayers,
                   confirmAssigningToSingleTarget,
                   setPlacesToAssignOccurrenceTo,
                 })
@@ -223,7 +223,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 latLng: position,
                 occurrenceId: marker.feature.properties?.occurrence_id,
                 map,
-                droppableLayer,
+                droppableLayers,
                 confirmAssigningToSingleTarget,
                 setPlacesToAssignOccurrenceTo,
               })

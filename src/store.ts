@@ -148,10 +148,6 @@ export const mapViewportBoundsAtom = atom(null)
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
 export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})
 export const mapHideUiAtom = atomWithStorage('mapHideUiAtom', false)
-export const assigningOccurrencesAtom = atomWithStorage(
-  'assigningOccurrencesAtom',
-  false,
-)
 export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // TODO:
 // new structure for map_info
@@ -191,8 +187,8 @@ export const editingActionGeometryAtom = atomWithStorage(
 )
 // The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2
 export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])
-// The layer that is currently droppable (places1 or places2)
-export const droppableLayerAtom = atomWithStorage('droppableLayerAtom', null)
+// The layers that are currently droppable (any of: places-1, places-2). Array of layer names in the same format as draggableLayersAtom
+export const droppableLayersAtom = atomWithStorage('droppableLayersAtom', [])
 // Whether to show a dialog to confirm assigning an occurrence to a single target. Preset: true
 export const confirmAssigningToSingleTargetAtom = atomWithStorage(
   'confirmAssigningToSingleTargetAtom',

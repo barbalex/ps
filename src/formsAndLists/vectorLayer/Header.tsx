@@ -18,7 +18,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import {
   tabsAtom,
   draggableLayersAtom,
-  droppableLayerAtom,
+  droppableLayersAtom,
   addOperationAtom,
 } from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
@@ -29,7 +29,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const isForm =
     from ===
     '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
-  const setDroppableLayer = useSetAtom(droppableLayerAtom)
+  const [droppableLayers, setDroppableLayers] = useAtom(droppableLayersAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -95,13 +95,23 @@ export const Header = ({ autoFocusRef, row, from }) => {
   }
 
   const onClickAssignToPlaces1 = () => {
-    setDroppableLayer('places1')
+    // Toggle places-1 in droppableLayers
+    if (droppableLayers.includes('places-1')) {
+      setDroppableLayers(droppableLayers.filter((l) => l !== 'places-1'))
+    } else {
+      setDroppableLayers([...droppableLayers, 'places-1'])
+    }
     onClickToggleAssign()
     onClickAssignToPlaces()
   }
 
   const onClickAssignToPlaces2 = () => {
-    setDroppableLayer('places2')
+    // Toggle places-2 in droppableLayers
+    if (droppableLayers.includes('places-2')) {
+      setDroppableLayers(droppableLayers.filter((l) => l !== 'places-2'))
+    } else {
+      setDroppableLayers([...droppableLayers, 'places-2'])
+    }
     onClickToggleAssign()
     onClickAssignToPlaces()
   }
@@ -112,9 +122,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
       type: 'wfs',
     })
     navigate({
-      to:
-        isForm ?
-          `../../${vectorLayerId}/vector-layer`
+      to: isForm
+        ? `../../${vectorLayerId}/vector-layer`
         : `../${vectorLayerId}/vector-layer`,
       params: (prev) => ({
         ...prev,
@@ -148,9 +157,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
       )
       const next = rows[(index + 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${next.vector_layer_id}/vector-layer`
+        to: isForm
+          ? `../../${next.vector_layer_id}/vector-layer`
           : `../${next.vector_layer_id}`,
         params: (prev) => ({
           ...prev,
@@ -175,9 +183,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
       )
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.vector_layer_id}/vector-layer`
+        to: isForm
+          ? `../../${previous.vector_layer_id}/vector-layer`
           : `../${previous.vector_layer_id}`,
         params: (prev) => ({
           ...prev,
@@ -198,14 +205,15 @@ export const Header = ({ autoFocusRef, row, from }) => {
       toPrevious={toPrevious}
       tableName="vector layer"
       siblings={
-        isDraggable ?
+        isDraggable ? (
           <Button
             size="medium"
             icon={<TreasureMapLinePulsating />}
             onClick={onClickToggleAssign}
             title="Stop assigning"
           />
-        : <Menu>
+        ) : (
+          <Menu>
             <MenuTrigger disableButtonEnhancement>
               <Button
                 size="medium"
@@ -220,6 +228,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
               </MenuList>
             </MenuPopover>
           </Menu>
+        )
       }
     />
   )

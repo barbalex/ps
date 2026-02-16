@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import {
   AccordionHeader,
   AccordionPanel,
@@ -13,13 +13,14 @@ import {
   Tab,
   TabList,
   SelectTabData,
+  Checkbox,
 } from '@fluentui/react-components'
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
-import { TbZoomScan } from 'react-icons/tb'
+import { TbZoomScan, TbTarget } from 'react-icons/tb'
 import { FaPlay, FaStopCircle } from 'react-icons/fa'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import axios from 'redaxios'
 import proj4 from 'proj4'
@@ -41,7 +42,8 @@ import {
   addNotificationAtom,
   mapBoundsAtom,
   mapViewportBoundsAtom,
-  assigningOccurrencesAtom,
+  draggableLayersAtom,
+  droppableLayersAtom,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
@@ -57,9 +59,8 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
-  const [assigningOccurrences, setAssigningOccurrences] = useAtom(
-    assigningOccurrencesAtom,
-  )
+  const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
+  const [droppableLayers, setDroppableLayers] = useAtom(droppableLayersAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -67,11 +68,16 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
+  const [assignMenuOpen, setAssignMenuOpen] = useState(false)
+  const [selectedPlaceLayers, setSelectedPlaceLayers] = useState<string[]>([])
   const { pathname } = useLocation()
 
   const isVectorLayer = layer.layer_type === 'vector'
   const isWmsLayer = layer.layer_type === 'wms'
-  
+
+  // Get the layer name for state (same format as in TableLayer)
+  const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
+
   // Check if this is an occurrence layer
   const tableName = layer.own_table_level
     ? `${layer.own_table}${layer.own_table_level}`
@@ -80,6 +86,70 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     tableName === 'occurrences_to_assess' ||
     tableName === 'occurrences_not_to_assign' ||
     tableName?.startsWith('occurrences_assigned')
+
+  // Check if this is a place layer that's droppable
+  const isPlaceLayer = layer.own_table === 'places'
+  const isDroppable =
+    isPlaceLayer && droppableLayers.includes(layerNameForState)
+
+  const isAssigning = draggableLayers.includes(layerNameForState)
+
+  // Query for active place layers
+  const resPlaceLayers = useLiveQuery(
+    `
+    SELECT 
+      vl.*,
+      pl.name_plural
+    FROM vector_layers vl
+    LEFT JOIN place_levels pl ON vl.own_table_level = pl.level AND vl.project_id = pl.project_id
+    INNER JOIN layer_presentations lp 
+      ON vl.vector_layer_id = lp.vector_layer_id 
+      AND lp.active = TRUE
+    WHERE vl.project_id = $1
+      AND vl.type = 'own'
+      AND vl.own_table = 'places'
+    ORDER BY vl.own_table_level
+    `,
+    [layer.project_id],
+  )
+  const activePlaceLayers = useMemo(
+    () => resPlaceLayers?.rows ?? [],
+    [resPlaceLayers],
+  )
+
+  // Initialize selectedPlaceLayers from droppableLayers when menu opens
+  useEffect(() => {
+    if (!assignMenuOpen || !isOccurrenceLayer) return
+
+    const placeLayerNames = activePlaceLayers
+      .map((pl) => pl.label?.replace?.(/ /g, '-')?.toLowerCase?.())
+      .filter(Boolean)
+
+    // If only one place layer is available, automatically select it
+    const selectedFromStore =
+      activePlaceLayers.length === 1 && placeLayerNames.length === 1
+        ? placeLayerNames
+        : droppableLayers.filter((dl) => placeLayerNames.includes(dl))
+
+    // Only update if the selection has changed to avoid cascading renders
+    if (
+      JSON.stringify(selectedFromStore.sort()) !==
+      JSON.stringify(selectedPlaceLayers.sort())
+    ) {
+      // Use setTimeout to defer the state update
+      const timeout = setTimeout(
+        () => setSelectedPlaceLayers(selectedFromStore),
+        0,
+      )
+      return () => clearTimeout(timeout)
+    }
+  }, [
+    assignMenuOpen,
+    isOccurrenceLayer,
+    activePlaceLayers,
+    droppableLayers,
+    selectedPlaceLayers,
+  ])
 
   // effect:
   // if layer is wms and has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -168,10 +238,41 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       })
     }
   }
-  
-  const onClickAssignOccurrences = (event) => {
+
+  const onTogglePlaceLayer = (placeLayerName: string) => {
+    if (selectedPlaceLayers.includes(placeLayerName)) {
+      setSelectedPlaceLayers(
+        selectedPlaceLayers.filter((l) => l !== placeLayerName),
+      )
+    } else {
+      setSelectedPlaceLayers([...selectedPlaceLayers, placeLayerName])
+    }
+  }
+
+  const onClickStartStopAssigning = (event) => {
     event.stopPropagation()
-    setAssigningOccurrences(!assigningOccurrences)
+
+    if (isAssigning) {
+      // Stop assigning: remove occurrence layer from draggable and clear droppable layers
+      setDraggableLayers(
+        draggableLayers.filter((layer) => layer !== layerNameForState),
+      )
+      // Remove all selected place layers from droppable
+      setDroppableLayers(
+        droppableLayers.filter((l) => !selectedPlaceLayers.includes(l)),
+      )
+    } else {
+      // Start assigning: add occurrence layer to draggable and set droppable layers
+      setDraggableLayers([...draggableLayers, layerNameForState])
+      // Add selected place layers to droppable (merge with existing)
+      const newDroppableLayers = [
+        ...new Set([...droppableLayers, ...selectedPlaceLayers]),
+      ]
+      setDroppableLayers(newDroppableLayers)
+    }
+
+    // Close the menu
+    setAssignMenuOpen(false)
   }
 
   const onClickZoomToFeatures = async (event) => {
@@ -414,27 +515,91 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           <p className={layerStyles.headerLabel}>{layer.label}</p>
         </div>
         {isOccurrenceLayer && (
+          <Menu
+            open={assignMenuOpen}
+            onOpenChange={(e, data) => setAssignMenuOpen(data.open)}
+          >
+            <MenuTrigger disableButtonEnhancement>
+              <Button
+                icon={
+                  isAssigning ? (
+                    <FaStopCircle />
+                  ) : (
+                    <FaPlay style={{ fontSize: '0.85em' }} />
+                  )
+                }
+                onClick={(e) => e.stopPropagation()}
+                className={styles.headerButton}
+                title={
+                  isAssigning
+                    ? 'Stop assigning occurrences'
+                    : 'Assign occurrences by dragging'
+                }
+                appearance="subtle"
+                size="small"
+                as="a"
+                style={
+                  isAssigning
+                    ? { color: 'black', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
+                    : undefined
+                }
+              />
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>
+                <MenuGroupHeader>
+                  {isAssigning ? 'Stop assigning?' : 'Assign to which places?'}
+                </MenuGroupHeader>
+                {!isAssigning &&
+                  activePlaceLayers.map((placeLayer) => {
+                    const placeLayerName = placeLayer.label
+                      ?.replace?.(/ /g, '-')
+                      ?.toLowerCase?.()
+                    const isChecked =
+                      selectedPlaceLayers.includes(placeLayerName)
+                    return (
+                      <MenuItem
+                        key={placeLayer.vector_layer_id}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          onTogglePlaceLayer(placeLayerName)
+                        }}
+                      >
+                        <Checkbox
+                          checked={isChecked}
+                          label={
+                            placeLayer.name_plural ||
+                            placeLayer.label ||
+                            `Places ${placeLayer.own_table_level}`
+                          }
+                          onChange={(e) => {
+                            e.stopPropagation()
+                            onTogglePlaceLayer(placeLayerName)
+                          }}
+                        />
+                      </MenuItem>
+                    )
+                  })}
+                <MenuItem
+                  onClick={onClickStartStopAssigning}
+                  disabled={!isAssigning && selectedPlaceLayers.length === 0}
+                >
+                  {isAssigning ? 'Stop assigning' : 'Start assigning'}
+                </MenuItem>
+              </MenuList>
+            </MenuPopover>
+          </Menu>
+        )}
+        {isDroppable && (
           <Button
-            icon={
-              assigningOccurrences ?
-                <FaStopCircle />
-              : <FaPlay style={{ fontSize: '0.85em' }} />
-            }
-            onClick={onClickAssignOccurrences}
+            icon={<TbTarget />}
             className={styles.headerButton}
-            title={
-              assigningOccurrences ?
-                'Stop assigning occurrences'
-              : 'Assign occurrences by dragging'
-            }
+            title="This layer is a drop target for occurrences"
             appearance="subtle"
             size="small"
             as="a"
-            style={
-              assigningOccurrences ?
-                { color: 'black', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
-              : undefined
-            }
+            style={{ color: 'green', backgroundColor: 'rgba(0, 128, 0, 0.1)' }}
           />
         )}
         <Button
