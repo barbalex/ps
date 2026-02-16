@@ -125,11 +125,9 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       .map((pl) => pl.label?.replace?.(/ /g, '-')?.toLowerCase?.())
       .filter(Boolean)
 
-    // If only one place layer is available, automatically select it
-    const selectedFromStore =
-      activePlaceLayers.length === 1 && placeLayerNames.length === 1
-        ? placeLayerNames
-        : droppableLayers.filter((dl) => placeLayerNames.includes(dl))
+    const selectedFromStore = droppableLayers.filter((dl) =>
+      placeLayerNames.includes(dl),
+    )
 
     // Only update if the selection has changed to avoid cascading renders
     if (
@@ -246,6 +244,35 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       )
     } else {
       setSelectedPlaceLayers([...selectedPlaceLayers, placeLayerName])
+    }
+  }
+
+  const onClickAssignButton = (event) => {
+    event.stopPropagation()
+
+    // If only one place layer is available, directly start/stop assignment without opening menu
+    if (activePlaceLayers.length === 1) {
+      const placeLayerName = activePlaceLayers[0]?.label
+        ?.replace?.(/ /g, '-')
+        ?.toLowerCase?.()
+
+      if (isAssigning) {
+        // Stop assigning
+        setDraggableLayers(
+          draggableLayers.filter((layer) => layer !== layerNameForState),
+        )
+        setDroppableLayers(droppableLayers.filter((l) => l !== placeLayerName))
+      } else {
+        // Start assigning with the only available place layer
+        setDraggableLayers([...draggableLayers, layerNameForState])
+        const newDroppableLayers = [
+          ...new Set([...droppableLayers, placeLayerName]),
+        ]
+        setDroppableLayers(newDroppableLayers)
+      }
+    } else {
+      // Multiple place layers available, open menu for selection
+      setAssignMenuOpen(true)
     }
   }
 
@@ -514,83 +541,116 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           />
           <p className={layerStyles.headerLabel}>{layer.label}</p>
         </div>
-        {isOccurrenceLayer && (
-          <Menu
-            open={assignMenuOpen}
-            onOpenChange={(e, data) => setAssignMenuOpen(data.open)}
-          >
-            <MenuTrigger disableButtonEnhancement>
-              <Button
-                icon={
-                  isAssigning ? (
-                    <FaStopCircle />
-                  ) : (
-                    <FaPlay style={{ fontSize: '0.85em' }} />
-                  )
-                }
-                onClick={(e) => e.stopPropagation()}
-                className={styles.headerButton}
-                title={
-                  isAssigning
-                    ? 'Stop assigning occurrences'
-                    : 'Assign occurrences by dragging'
-                }
-                appearance="subtle"
-                size="small"
-                as="a"
-                style={
-                  isAssigning
-                    ? { color: 'black', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
-                    : undefined
-                }
-              />
-            </MenuTrigger>
-            <MenuPopover>
-              <MenuList>
-                <MenuGroupHeader>
-                  {isAssigning ? 'Stop assigning?' : 'Assign to which places?'}
-                </MenuGroupHeader>
-                {!isAssigning &&
-                  activePlaceLayers.map((placeLayer) => {
-                    const placeLayerName = placeLayer.label
-                      ?.replace?.(/ /g, '-')
-                      ?.toLowerCase?.()
-                    const isChecked =
-                      selectedPlaceLayers.includes(placeLayerName)
-                    return (
-                      <MenuItem
-                        key={placeLayer.vector_layer_id}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          onTogglePlaceLayer(placeLayerName)
-                        }}
-                      >
-                        <Checkbox
-                          checked={isChecked}
-                          label={
-                            placeLayer.name_plural ||
-                            placeLayer.label ||
-                            `Places ${placeLayer.own_table_level}`
-                          }
-                          onChange={(e) => {
+        {isOccurrenceLayer &&
+          (activePlaceLayers.length === 1 ? (
+            // Single place layer: just a button, no menu
+            <Button
+              icon={
+                isAssigning ? (
+                  <FaStopCircle />
+                ) : (
+                  <FaPlay style={{ fontSize: '0.85em' }} />
+                )
+              }
+              onClick={onClickAssignButton}
+              className={styles.headerButton}
+              title={
+                isAssigning
+                  ? 'Stop assigning occurrences'
+                  : 'Assign occurrences by dragging'
+              }
+              appearance="subtle"
+              size="small"
+              as="a"
+              style={
+                isAssigning
+                  ? { color: 'black', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
+                  : undefined
+              }
+            />
+          ) : (
+            // Multiple place layers: show menu
+            <Menu
+              open={assignMenuOpen}
+              onOpenChange={(e, data) => setAssignMenuOpen(data.open)}
+            >
+              <MenuTrigger disableButtonEnhancement>
+                <Button
+                  icon={
+                    isAssigning ? (
+                      <FaStopCircle />
+                    ) : (
+                      <FaPlay style={{ fontSize: '0.85em' }} />
+                    )
+                  }
+                  onClick={(e) => e.stopPropagation()}
+                  className={styles.headerButton}
+                  title={
+                    isAssigning
+                      ? 'Stop assigning occurrences'
+                      : 'Assign occurrences by dragging'
+                  }
+                  appearance="subtle"
+                  size="small"
+                  as="a"
+                  style={
+                    isAssigning
+                      ? {
+                          color: 'black',
+                          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        }
+                      : undefined
+                  }
+                />
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  <MenuGroupHeader>
+                    {isAssigning
+                      ? 'Stop assigning?'
+                      : 'Assign to which places?'}
+                  </MenuGroupHeader>
+                  {!isAssigning &&
+                    activePlaceLayers.map((placeLayer) => {
+                      const placeLayerName = placeLayer.label
+                        ?.replace?.(/ /g, '-')
+                        ?.toLowerCase?.()
+                      const isChecked =
+                        selectedPlaceLayers.includes(placeLayerName)
+                      return (
+                        <MenuItem
+                          key={placeLayer.vector_layer_id}
+                          onClick={(e) => {
+                            e.preventDefault()
                             e.stopPropagation()
                             onTogglePlaceLayer(placeLayerName)
                           }}
-                        />
-                      </MenuItem>
-                    )
-                  })}
-                <MenuItem
-                  onClick={onClickStartStopAssigning}
-                  disabled={!isAssigning && selectedPlaceLayers.length === 0}
-                >
-                  {isAssigning ? 'Stop assigning' : 'Start assigning'}
-                </MenuItem>
-              </MenuList>
-            </MenuPopover>
-          </Menu>
-        )}
+                        >
+                          <Checkbox
+                            checked={isChecked}
+                            label={
+                              placeLayer.name_plural ||
+                              placeLayer.label ||
+                              `Places ${placeLayer.own_table_level}`
+                            }
+                            onChange={(e) => {
+                              e.stopPropagation()
+                              onTogglePlaceLayer(placeLayerName)
+                            }}
+                          />
+                        </MenuItem>
+                      )
+                    })}
+                  <MenuItem
+                    onClick={onClickStartStopAssigning}
+                    disabled={!isAssigning && selectedPlaceLayers.length === 0}
+                  >
+                    {isAssigning ? 'Stop assigning' : 'Start assigning'}
+                  </MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+          ))}
         {isDroppable && (
           <Button
             icon={<TbTarget />}
