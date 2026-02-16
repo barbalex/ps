@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useRef } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -23,43 +23,17 @@ import {
   mapLocateAtom,
   mapInfoAtom,
   mapShowCenterAtom,
+  mapCenterAtom,
+  mapZoomAtom,
 } from '../../store.ts'
 import styles from './Map.module.css'
-
-const DEFAULT_CENTER = [47.4, 8.65]
-const DEFAULT_ZOOM = 13
 
 export const Map = () => {
   const mapShowCenter = useAtomValue(mapShowCenterAtom)
   const mapIsLocating = useAtomValue(mapLocateAtom)
   const mapInfo = useAtomValue(mapInfoAtom)
-
-  // Read initial map state directly from localStorage
-  const initialCenter = useMemo(() => {
-    try {
-      const stored = localStorage.getItem('mapCenter')
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        return Array.isArray(parsed) && parsed.length === 2 ? parsed : DEFAULT_CENTER
-      }
-    } catch (e) {
-      console.error('Failed to parse mapCenter from localStorage:', e)
-    }
-    return DEFAULT_CENTER
-  }, [])
-
-  const initialZoom = useMemo(() => {
-    try {
-      const stored = localStorage.getItem('mapZoom')
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        return typeof parsed === 'number' ? parsed : DEFAULT_ZOOM
-      }
-    } catch (e) {
-      console.error('Failed to parse mapZoom from localStorage:', e)
-    }
-    return DEFAULT_ZOOM
-  }, [])
+  const initialCenter = useAtomValue(mapCenterAtom)
+  const initialZoom = useAtomValue(mapZoomAtom)
 
   const mapRef = useRef()
 

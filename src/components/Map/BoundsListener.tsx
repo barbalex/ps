@@ -2,13 +2,22 @@ import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { mapBoundsAtom, mapViewportBoundsAtom } from '../../store.ts'
+import {
+  mapBoundsAtom,
+  mapViewportBoundsAtom,
+  mapCenterAtom,
+  mapZoomAtom,
+} from '../../store.ts'
 
 // Problem: when setting bounds from a form query, map is not available
 // Solution: use BoundsListener to set bounds from here where map is available
 export const BoundsListener = () => {
   const mapBounds = useAtomValue(mapBoundsAtom)
   const setMapViewportBounds = useSetAtom(mapViewportBoundsAtom)
+  const storedCenter = useAtomValue(mapCenterAtom)
+  const storedZoom = useAtomValue(mapZoomAtom)
+  const setMapCenter = useSetAtom(mapCenterAtom)
+  const setMapZoom = useSetAtom(mapZoomAtom)
   const map = useMap()
 
   useEffect(() => {
@@ -35,24 +44,15 @@ export const BoundsListener = () => {
 
       const center = map.getCenter()
       const zoom = map.getZoom()
-      // Save directly to localStorage
-      localStorage.setItem(
-        'mapCenter',
-        JSON.stringify([center.lat, center.lng]),
-      )
-      localStorage.setItem('mapZoom', JSON.stringify(zoom))
+      // Save to atoms (which persist to localStorage via atomWithStorage)
+      setMapCenter([center.lat, center.lng])
+      setMapZoom(zoom)
     }
 
-    // Restore view from localStorage immediately when map is ready
+    // Restore view from atoms immediately when map is ready
     map.whenReady(() => {
-      const storedCenterStr = localStorage.getItem('mapCenter')
-      const storedZoomStr = localStorage.getItem('mapZoom')
-
-      if (storedCenterStr && storedZoomStr) {
+      if (storedCenter && storedZoom) {
         try {
-          const storedCenter = JSON.parse(storedCenterStr)
-          const storedZoom = JSON.parse(storedZoomStr)
-
           // Force the view regardless of current state
           map.setView(storedCenter, storedZoom, { animate: false, reset: true })
 
@@ -99,7 +99,8 @@ export const BoundsListener = () => {
       map.off('moveend')
       map.off('zoomend')
     }
-  }, [map, setMapViewportBounds])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, setMapViewportBounds, setMapCenter, setMapZoom])
 
   return null
 }

@@ -142,8 +142,16 @@ export const setSqlInitializingFalseAfterTimeoutAtom = atom(
 )
 
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
+// bounds are used for setting the map view to a specific area. They are set as an object with keys: swLat, swLng, neLat, neLng
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
+// is used for:
+// - Making WFS requests with bbox parameters to fetch features within the visible map area
+// - Any spatial queries that need to know what's currently visible
 export const mapViewportBoundsAtom = atom(null)
+// center and zoom are used to set the map view to a specific center and zoom level. They are set as [lat, lng] and number respectively
+export const mapCenterAtom = atomWithStorage('mapCenter', [47.4, 8.65])
+export const mapZoomAtom = atomWithStorage('mapZoom', 13)
+
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
 export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})
