@@ -67,10 +67,23 @@ export const TableLayer = ({ data, layerPresentation }) => {
     return null
   if (!data?.length) return null
 
+  // Create a stable key that changes when data content changes
+  // For assignment lines, include place_ids to detect reassignments
+  const dataKey = data
+    .map((fc) =>
+      fc.features
+        ?.map(
+          (f) =>
+            `${f.properties?.occurrence_id || ''}_${f.properties?.place_id || ''}`,
+        )
+        .join(','),
+    )
+    .join('|')
+
   return (
     <ErrorBoundary layer={layer}>
       <GeoJSON
-        key={`${data.length ?? 0}/${JSON.stringify(firstDisplay)}`}
+        key={`${dataKey}/${JSON.stringify(firstDisplay)}`}
         data={data}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
