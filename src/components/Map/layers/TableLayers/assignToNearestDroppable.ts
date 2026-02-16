@@ -37,9 +37,13 @@ export const assignToNearestDroppable = async ({
   // TODO: best would be to query using PostGIS functions...
   // 1. get all features from droppable layers
   // Build WHERE clause based on which place levels are droppable
-  const includePlaces1 = droppableLayers.some(layer => layer.includes('places') && layer.includes('1'))
-  const includePlaces2 = droppableLayers.some(layer => layer.includes('places') && layer.includes('2'))
-  
+  const includePlaces1 = droppableLayers.some(
+    (layer) => layer.includes('places') && layer.includes('1'),
+  )
+  const includePlaces2 = droppableLayers.some(
+    (layer) => layer.includes('places') && layer.includes('2'),
+  )
+
   let whereClause = 'geometry IS NOT NULL'
   if (includePlaces1 && !includePlaces2) {
     whereClause += ' AND parent_id IS NULL'
@@ -47,10 +51,8 @@ export const assignToNearestDroppable = async ({
     whereClause += ' AND parent_id IS NOT NULL'
   }
   // If both or neither are included, we don't filter by parent_id
-  
-  const placesRes = await db.query(
-    `SELECT * FROM places WHERE ${whereClause}`,
-  )
+
+  const placesRes = await db.query(`SELECT * FROM places WHERE ${whereClause}`)
   const places = placesRes?.rows ?? []
 
   // 2. get the nearest feature
@@ -150,7 +152,11 @@ export const assignToNearestDroppable = async ({
     point([mapNorthWest.lng, mapNorthWest.lat]),
   )
 
-  const minDistance = mapWidth / 2
+  // Calculate distance for 20 pixels
+  const mapWidthInPixels = map.getSize().x
+  const kmPerPixel = mapWidth / mapWidthInPixels
+  const minDistance = kmPerPixel * 20
+
   const placeIdsWithMinDistances = placeIdsWithDistance.filter(
     (d) => d.distance < minDistance,
   )
