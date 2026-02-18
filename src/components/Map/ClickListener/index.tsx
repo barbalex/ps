@@ -42,8 +42,12 @@ export const ClickListener = () => {
     // Check for features from table layers at the click location
     // Leaflet provides clicked layers via event.target
     const clickedLayers = []
-    const bufferFraction = 0.00003
-    const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
+    // Buffer grows exponentially at lower zoom levels to make clicking features easier
+    // Base fraction is larger and scales with zoom distance from max zoom
+    const bufferFraction = 0.0001
+    const zoomDistance = Math.max(0, 19 - zoom)
+    // Exponential growth: at zoom 19 = 0.0001, zoom 15 = ~0.0016, zoom 10 = ~0.032
+    const buffer = bufferFraction * Math.pow(2, zoomDistance * 0.5)
     const bufferMeters = buffer * 111000
 
     map.eachLayer((layer) => {
@@ -181,7 +185,11 @@ export const ClickListener = () => {
         height: mapSize.y,
         bbox: `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`,
       }
-      const requestData = await fetchData({ url, params, layerLabel: wmsLayerLabel })
+      const requestData = await fetchData({
+        url,
+        params,
+        layerLabel: wmsLayerLabel,
+      })
       if (requestData) {
         const beforeLength = mapInfo.layers.length
         layersDataFromRequestData({
