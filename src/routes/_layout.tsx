@@ -1,18 +1,6 @@
-import { Outlet, createFileRoute } from '@tanstack/react-router'
-import { Header } from '../components/Layout/Header/index.tsx'
-import styles from './_layout.module.css'
+import { createFileRoute } from '@tanstack/react-router'
+import { Layout } from '../components/Layout/index.tsx'
 
 export const Route = createFileRoute('/_layout')({
-  component: Component,
+  component: Layout,
 })
-
-function Component() {
-  return (
-    <>
-      <Header />
-      <div className={styles.outlet}>
-        <Outlet />
-      </div>
-    </>
-  )
-}
