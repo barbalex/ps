@@ -1,20 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Filter } from '../../../components/shared/Filter/index.tsx'
-import { WidgetForFieldForm } from '../../../formsAndLists/widgetForField/Form.tsx'
+import { WidgetForFieldFilter } from '../../../formsAndLists/widgetForField/Filter.tsx'
 
 const from = '/data/widgets-for-fields/filter'
 
 export const Route = createFileRoute(from)({
-  component: RouteComponent,
+  component: WidgetForFieldFilter,
 })
-
-function RouteComponent() {
-  return (
-    <Filter from={from}>
-      {({ row, onChange }) => (
-        <WidgetForFieldForm row={row} onChange={onChange} from={from} />
-      )}
-    </Filter>
-  )
-}
