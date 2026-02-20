@@ -3,8 +3,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Project } from '../../../../formsAndLists/project/index.tsx'
 import { NotFound } from '../../../../components/NotFound.tsx'
 
-export const Route = createFileRoute('/data/projects/$projectId_/project')({
-  component: <Project from="/data/projects/$projectId_/project" />,
+const from = '/data/projects/$projectId_/project'
+
+export const Route = createFileRoute(from)({
+  component: RouteComponent,
   notFoundComponent: NotFound,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
@@ -15,3 +17,7 @@ export const Route = createFileRoute('/data/projects/$projectId_/project')({
     }
   },
 })
+
+function RouteComponent() {
+  return <Project from={from} />
+}
