@@ -241,6 +241,10 @@ export const projectReportsFilterAtom = atomWithStorage(
   "projectReportsFilterAtom",
   [],
 );
+export const projectUsersFilterAtom = atomWithStorage(
+  "projectUsersFilterAtom",
+  [],
+);
 export const personsFilterAtom = atomWithStorage("personsFilterAtom", []);
 export const wmsLayersFilterAtom = atomWithStorage("wmsLayersFilterAtom", []);
 export const wmsServicesFilterAtom = atomWithStorage(
@@ -309,6 +313,7 @@ export const filterAtoms = {
   widgetTypes: widgetTypesFilterAtom,
   widgetsForFields: widgetsForFieldsFilterAtom,
   projectReports: projectReportsFilterAtom,
+  projectUsers: projectUsersFilterAtom,
   persons: personsFilterAtom,
   wmsLayers: wmsLayersFilterAtom,
   wmsServices: wmsServicesFilterAtom,

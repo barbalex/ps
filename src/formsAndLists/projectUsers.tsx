@@ -4,6 +4,7 @@ import { createProjectUser } from '../modules/createRows.ts'
 import { useProjectUsersNavData } from '../modules/useProjectUsersNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
@@ -13,7 +14,9 @@ export const ProjectUsers = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
-  const { loading, navData } = useProjectUsersNavData({ projectId })
+  const { loading, navData, isFiltered } = useProjectUsersNavData({
+    projectId,
+  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
@@ -31,18 +34,16 @@ export const ProjectUsers = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              to={id}
-              label={label ?? id}
-            />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} to={id} label={label ?? id} />
           ))
-        }
+        )}
       </div>
     </div>
   )
