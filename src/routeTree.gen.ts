@@ -180,6 +180,7 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojec
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/route'
@@ -1414,6 +1415,13 @@ const DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute =
     path: '/$fileId',
     getParentRoute: () =>
       DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRoute,
+  } as any)
+const DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRouteImport.update({
+    id: '/filter',
+    path: '/filter',
+    getParentRoute: () =>
+      DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRoute,
   } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteImport.update(
@@ -3197,6 +3205,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/charts/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute
@@ -3492,6 +3501,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/vector-layers/$vectorLayerId': typeof DataProjectsProjectIdVectorLayersVectorLayerIdIndexRoute
   '/data/projects/$projectId/wfs-services/$wfsServiceId': typeof DataProjectsProjectIdWfsServicesWfsServiceIdIndexRoute
   '/data/projects/$projectId/wms-services/$wmsServiceId': typeof DataProjectsProjectIdWmsServicesWmsServiceIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/charts/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute
@@ -3794,6 +3804,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute
@@ -4150,6 +4161,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/charts/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/filter'
@@ -4445,6 +4457,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers/$vectorLayerId'
     | '/data/projects/$projectId/wfs-services/$wfsServiceId'
     | '/data/projects/$projectId/wms-services/$wmsServiceId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/charts/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/filter'
@@ -4746,6 +4759,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
@@ -6156,6 +6170,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/charts/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_'
@@ -7810,6 +7831,7 @@ const DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRouteWithChi
 
 interface DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute
   DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute
 }
 
@@ -7817,6 +7839,8 @@ const DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteChildren: Data
   {
     DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdChartsFilterRoute,
     DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute,
   }

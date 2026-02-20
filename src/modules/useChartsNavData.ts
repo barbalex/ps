@@ -3,8 +3,9 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
+import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { chartsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -16,6 +17,8 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  count_unfiltered?: number
+  count_filtered?: number
 }[]
 
 export const useChartsNavData = ({
@@ -25,6 +28,7 @@ export const useChartsNavData = ({
   placeId2,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filter] = useAtom(chartsFilterAtom)
   const location = useLocation()
 
   let hKey
@@ -43,17 +47,6 @@ export const useChartsNavData = ({
     hValue = projectId
   }
 
-  const sql = `
-    SELECT chart_id as id, label 
-    FROM charts 
-    WHERE ${hKey} = '${hValue}' 
-    ORDER BY label`
-
-  const res = useLiveQuery(sql)
-
-  const loading = res === undefined
-
-  const navs: NavData = res?.rows ?? []
   const parentArray = [
     'data',
     ...(projectId ? ['projects', projectId] : []),
@@ -66,6 +59,46 @@ export const useChartsNavData = ({
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+
+  const sql = `
+    ${
+      isOpen
+        ? `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}'),
+        count_filtered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}' ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        chart_id as id,
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM charts, count_unfiltered, count_filtered
+      WHERE ${hKey} = '${hValue}'
+      ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label
+    `
+        : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}'),
+        count_filtered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}' ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `
+    }
+  `
+
+  const res = useLiveQuery(sql)
+
+  const loading = res === undefined
+
+  const navs: NavData = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
@@ -79,13 +112,15 @@ export const useChartsNavData = ({
     urlPath,
     ownUrl,
     label: buildNavLabel({
-      countFiltered: navs.length,
+      countFiltered,
+      countUnfiltered,
       namePlural: 'Charts',
       loading,
+      isFiltered,
     }),
     nameSingular: 'Chart',
     navs,
   }
 
-  return { loading, navData }
+  return { loading, navData, isFiltered }
 }

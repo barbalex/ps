@@ -274,6 +274,7 @@ export const subprojectUsersFilterAtom = atomWithStorage(
   "subprojectUsersFilterAtom",
   [],
 );
+export const chartsFilterAtom = atomWithStorage("chartsFilterAtom", []);
 export const goalsFilterAtom = atomWithStorage("goalsFilterAtom", []);
 export const usersFilterAtom = atomWithStorage("usersFilterAtom", []);
 export const places1FilterAtom = atomWithStorage("places1FilterAtom", []);
@@ -303,7 +304,6 @@ export const filesFilterAtom = atomWithStorage("filesFilterAtom", []);
 // TODO: add more filters
 // filter_vector_layer_displays
 // filter_occurrence_imports
-// filter_subproject_charts
 // filter_subproject_chart_subjects
 // filter_place_check_taxa_1
 // filter_place_users_1
@@ -337,6 +337,7 @@ export const filterAtoms = {
   subprojects: subprojectsFilterAtom,
   subprojectReports: subprojectReportsFilterAtom,
   subprojectUsers: subprojectUsersFilterAtom,
+  charts: chartsFilterAtom,
   goals: goalsFilterAtom,
   users: usersFilterAtom,
   places1: places1FilterAtom,

@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { createChart } from '../modules/createRows.ts'
 import { useChartsNavData } from '../modules/useChartsNavData.ts'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -14,7 +15,7 @@ export const Charts = () => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const navigate = useNavigate()
 
-  const { loading, navData } = useChartsNavData({
+  const { loading, navData, isFiltered } = useChartsNavData({
     projectId,
     subprojectId,
     placeId,
@@ -45,6 +46,7 @@ export const Charts = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {loading ?
