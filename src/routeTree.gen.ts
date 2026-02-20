@@ -95,6 +95,7 @@ import { Route as DataProjectsProjectIdDesignsIndexRouteImport } from './routes/
 import { Route as DataProjectsProjectIdCrsIndexRouteImport } from './routes/data/projects/$projectId_/crs/index'
 import { Route as DataProjectsProjectIdConfigurationIndexRouteImport } from './routes/data/projects/$projectId_/configuration/index'
 import { Route as DataFilesFileIdPreviewIndexRouteImport } from './routes/data/files/$fileId_/preview.index'
+import { Route as DataProjectsProjectIdWmsServicesFilterRouteImport } from './routes/data/projects/$projectId_/wms-services/filter'
 import { Route as DataProjectsProjectIdWmsLayersFilterRouteImport } from './routes/data/projects/$projectId_/wms-layers/filter'
 import { Route as DataProjectsProjectIdWmsLayersWmsLayerIdRouteImport } from './routes/data/projects/$projectId_/wms-layers/$wmsLayerId'
 import { Route as DataProjectsProjectIdVectorLayersFilterRouteImport } from './routes/data/projects/$projectId_/vector-layers/filter'
@@ -830,6 +831,12 @@ const DataFilesFileIdPreviewIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => DataFilesFileIdPreviewRoute,
+  } as any)
+const DataProjectsProjectIdWmsServicesFilterRoute =
+  DataProjectsProjectIdWmsServicesFilterRouteImport.update({
+    id: '/filter',
+    path: '/filter',
+    getParentRoute: () => DataProjectsProjectIdWmsServicesRouteRoute,
   } as any)
 const DataProjectsProjectIdWmsLayersFilterRoute =
   DataProjectsProjectIdWmsLayersFilterRouteImport.update({
@@ -3079,6 +3086,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
+  '/data/projects/$projectId/wms-services/filter': typeof DataProjectsProjectIdWmsServicesFilterRoute
   '/data/files/$fileId/preview/': typeof DataFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/configuration/': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId/crs/': typeof DataProjectsProjectIdCrsIndexRoute
@@ -3388,6 +3396,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
+  '/data/projects/$projectId/wms-services/filter': typeof DataProjectsProjectIdWmsServicesFilterRoute
   '/data/files/$fileId/preview': typeof DataFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/configuration': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId/crs': typeof DataProjectsProjectIdCrsIndexRoute
@@ -3662,6 +3671,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
   '/data/projects/$projectId_/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId_/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
+  '/data/projects/$projectId_/wms-services/filter': typeof DataProjectsProjectIdWmsServicesFilterRoute
   '/data/files/$fileId_/preview/': typeof DataFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId_/configuration/': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId_/crs/': typeof DataProjectsProjectIdCrsIndexRoute
@@ -4011,6 +4021,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers/filter'
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
+    | '/data/projects/$projectId/wms-services/filter'
     | '/data/files/$fileId/preview/'
     | '/data/projects/$projectId/configuration/'
     | '/data/projects/$projectId/crs/'
@@ -4320,6 +4331,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers/filter'
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
+    | '/data/projects/$projectId/wms-services/filter'
     | '/data/files/$fileId/preview'
     | '/data/projects/$projectId/configuration'
     | '/data/projects/$projectId/crs'
@@ -4593,6 +4605,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/vector-layers/filter'
     | '/data/projects/$projectId_/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId_/wms-layers/filter'
+    | '/data/projects/$projectId_/wms-services/filter'
     | '/data/files/$fileId_/preview/'
     | '/data/projects/$projectId_/configuration/'
     | '/data/projects/$projectId_/crs/'
@@ -5463,6 +5476,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/files/$fileId/preview/'
       preLoaderRoute: typeof DataFilesFileIdPreviewIndexRouteImport
       parentRoute: typeof DataFilesFileIdPreviewRoute
+    }
+    '/data/projects/$projectId_/wms-services/filter': {
+      id: '/data/projects/$projectId_/wms-services/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/wms-services/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdWmsServicesFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdWmsServicesRouteRoute
     }
     '/data/projects/$projectId_/wms-layers/filter': {
       id: '/data/projects/$projectId_/wms-layers/filter'
@@ -9380,6 +9400,7 @@ const DataProjectsProjectIdWmsServicesWmsServiceIdRouteRouteWithChildren =
 
 interface DataProjectsProjectIdWmsServicesRouteRouteChildren {
   DataProjectsProjectIdWmsServicesWmsServiceIdRouteRoute: typeof DataProjectsProjectIdWmsServicesWmsServiceIdRouteRouteWithChildren
+  DataProjectsProjectIdWmsServicesFilterRoute: typeof DataProjectsProjectIdWmsServicesFilterRoute
   DataProjectsProjectIdWmsServicesIndexRoute: typeof DataProjectsProjectIdWmsServicesIndexRoute
 }
 
@@ -9387,6 +9408,8 @@ const DataProjectsProjectIdWmsServicesRouteRouteChildren: DataProjectsProjectIdW
   {
     DataProjectsProjectIdWmsServicesWmsServiceIdRouteRoute:
       DataProjectsProjectIdWmsServicesWmsServiceIdRouteRouteWithChildren,
+    DataProjectsProjectIdWmsServicesFilterRoute:
+      DataProjectsProjectIdWmsServicesFilterRoute,
     DataProjectsProjectIdWmsServicesIndexRoute:
       DataProjectsProjectIdWmsServicesIndexRoute,
   }

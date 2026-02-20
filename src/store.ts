@@ -243,6 +243,14 @@ export const projectReportsFilterAtom = atomWithStorage(
 );
 export const personsFilterAtom = atomWithStorage("personsFilterAtom", []);
 export const wmsLayersFilterAtom = atomWithStorage("wmsLayersFilterAtom", []);
+export const wmsServicesFilterAtom = atomWithStorage(
+  "wmsServicesFilterAtom",
+  [],
+);
+export const wfsServicesFilterAtom = atomWithStorage(
+  "wfsServicesFilterAtom",
+  [],
+);
 export const vectorLayersFilterAtom = atomWithStorage(
   "vectorLayersFilterAtom",
   [],
@@ -303,6 +311,8 @@ export const filterAtoms = {
   projectReports: projectReportsFilterAtom,
   persons: personsFilterAtom,
   wmsLayers: wmsLayersFilterAtom,
+  wmsServices: wmsServicesFilterAtom,
+  wfsServices: wfsServicesFilterAtom,
   vectorLayers: vectorLayersFilterAtom,
   lists: listsFilterAtom,
   units: unitsFilterAtom,
