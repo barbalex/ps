@@ -42,6 +42,7 @@ import { Route as DataWidgetsForFieldsFilterRouteImport } from './routes/data/wi
 import { Route as DataWidgetsForFieldsWidgetForFieldIdRouteImport } from './routes/data/widgets-for-fields/$widgetForFieldId'
 import { Route as DataWidgetTypesFilterRouteImport } from './routes/data/widget-types/filter'
 import { Route as DataWidgetTypesWidgetTypeIdRouteImport } from './routes/data/widget-types/$widgetTypeId'
+import { Route as DataUsersFilterRouteImport } from './routes/data/users/filter'
 import { Route as DataUsersUserIdRouteImport } from './routes/data/users/$userId'
 import { Route as DataProjectsFilterRouteImport } from './routes/data/projects/filter'
 import { Route as DataMessagesMessageIdRouteImport } from './routes/data/messages/$messageId'
@@ -515,6 +516,11 @@ const DataWidgetTypesWidgetTypeIdRoute =
     path: '/$widgetTypeId',
     getParentRoute: () => DataWidgetTypesRouteRoute,
   } as any)
+const DataUsersFilterRoute = DataUsersFilterRouteImport.update({
+  id: '/filter',
+  path: '/filter',
+  getParentRoute: () => DataUsersRouteRoute,
+} as any)
 const DataUsersUserIdRoute = DataUsersUserIdRouteImport.update({
   id: '/$userId',
   path: '/$userId',
@@ -2923,6 +2929,7 @@ export interface FileRoutesByFullPath {
   '/data/messages/$messageId': typeof DataMessagesMessageIdRoute
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/users/$userId': typeof DataUsersUserIdRoute
+  '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
@@ -3244,6 +3251,7 @@ export interface FileRoutesByTo {
   '/data/messages/$messageId': typeof DataMessagesMessageIdRoute
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/users/$userId': typeof DataUsersUserIdRoute
+  '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
@@ -3482,6 +3490,7 @@ export interface FileRoutesById {
   '/data/messages/$messageId': typeof DataMessagesMessageIdRoute
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/users/$userId': typeof DataUsersUserIdRoute
+  '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
@@ -3819,6 +3828,7 @@ export interface FileRouteTypes {
     | '/data/messages/$messageId'
     | '/data/projects/filter'
     | '/data/users/$userId'
+    | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
@@ -4140,6 +4150,7 @@ export interface FileRouteTypes {
     | '/data/messages/$messageId'
     | '/data/projects/filter'
     | '/data/users/$userId'
+    | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
@@ -4377,6 +4388,7 @@ export interface FileRouteTypes {
     | '/data/messages/$messageId'
     | '/data/projects/filter'
     | '/data/users/$userId'
+    | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
@@ -4921,6 +4933,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/widget-types/$widgetTypeId'
       preLoaderRoute: typeof DataWidgetTypesWidgetTypeIdRouteImport
       parentRoute: typeof DataWidgetTypesRouteRoute
+    }
+    '/data/users/filter': {
+      id: '/data/users/filter'
+      path: '/filter'
+      fullPath: '/data/users/filter'
+      preLoaderRoute: typeof DataUsersFilterRouteImport
+      parentRoute: typeof DataUsersRouteRoute
     }
     '/data/users/$userId': {
       id: '/data/users/$userId'
@@ -9209,11 +9228,13 @@ const DataQueuedOperationsRouteRouteWithChildren =
 
 interface DataUsersRouteRouteChildren {
   DataUsersUserIdRoute: typeof DataUsersUserIdRoute
+  DataUsersFilterRoute: typeof DataUsersFilterRoute
   DataUsersIndexRoute: typeof DataUsersIndexRoute
 }
 
 const DataUsersRouteRouteChildren: DataUsersRouteRouteChildren = {
   DataUsersUserIdRoute: DataUsersUserIdRoute,
+  DataUsersFilterRoute: DataUsersFilterRoute,
   DataUsersIndexRoute: DataUsersIndexRoute,
 }
 
