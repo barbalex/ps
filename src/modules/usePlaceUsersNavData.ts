@@ -1,22 +1,29 @@
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
-import { useLocation } from '@tanstack/react-router'
-import { isEqual } from 'es-toolkit'
+import { useLiveQuery } from "@electric-sql/pglite-react";
+import { useAtom } from "jotai";
+import { useLocation } from "@tanstack/react-router";
+import { isEqual } from "es-toolkit";
 
-import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { filterStringFromFilter } from "./filterStringFromFilter.ts";
+import { buildNavLabel } from "./buildNavLabel.ts";
+import {
+  placeUsers1FilterAtom,
+  placeUsers2FilterAtom,
+  treeOpenNodesAtom,
+} from "../store.ts";
 
 type Props = {
-  projectId: string
-  subprojectId: string
-  placeId: string
-  placeId2?: string
-}
+  projectId: string;
+  subprojectId: string;
+  placeId: string;
+  placeId2?: string;
+};
 
 type NavData = {
-  id: string
-  label: string
-}[]
+  id: string;
+  label: string;
+  count_unfiltered?: number;
+  count_filtered?: number;
+}[];
 
 export const usePlaceUsersNavData = ({
   projectId,
@@ -24,41 +31,65 @@ export const usePlaceUsersNavData = ({
   placeId,
   placeId2,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
+  const [openNodes] = useAtom(treeOpenNodesAtom);
+  const location = useLocation();
 
-  const res = useLiveQuery(
-    `
+  const [filter] = useAtom(
+    placeId2 ? placeUsers2FilterAtom : placeUsers1FilterAtom,
+  );
+  const filterString = filterStringFromFilter(filter);
+  const isFiltered = !!filterString;
+
+  const sql = isOpen
+    ? `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ""})
       SELECT
         place_user_id AS id,
-        label
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
       FROM place_users 
-      WHERE place_id = $1 
-      ORDER BY label`,
-    [placeId2 ?? placeId],
-  )
+      , count_unfiltered, count_filtered
+      WHERE place_id = '${placeId2 ?? placeId}'
+        ${isFiltered ? ` AND ${filterString}` : ""}
+      ORDER BY label`
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ""})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
+    `;
 
-  const loading = res === undefined
+  const res = useLiveQuery(sql);
 
-  const navs: NavData = res?.rows ?? []
+  const loading = res === undefined;
+
+  const navs: NavData = res?.rows ?? [];
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0;
+  const countFiltered = navs[0]?.count_filtered ?? 0;
   const parentArray = [
-    'data',
-    'projects',
+    "data",
+    "projects",
     projectId,
-    'subprojects',
+    "subprojects",
     subprojectId,
-    'places',
+    "places",
     placeId,
-    ...(placeId2 ? ['places', placeId2] : []),
-  ]
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'users']
-  const ownUrl = `/${ownArray.join('/')}`
+    ...(placeId2 ? ["places", placeId2] : []),
+  ];
+  const parentUrl = `/${parentArray.join("/")}`;
+  const ownArray = [...parentArray, "users"];
+  const ownUrl = `/${ownArray.join("/")}`;
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray));
+  const urlPath = location.pathname.split("/").filter((p) => p !== "");
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part);
+  const isActive = isEqual(urlPath, ownArray);
 
   const navData = {
     isInActiveNodeArray,
@@ -69,13 +100,15 @@ export const usePlaceUsersNavData = ({
     urlPath,
     ownUrl,
     label: buildNavLabel({
-      countFiltered: navs.length,
-      namePlural: 'Users',
+      countFiltered,
+      countUnfiltered,
+      isFiltered,
+      namePlural: "Users",
       loading,
     }),
-    nameSingular: 'User',
+    nameSingular: "User",
     navs,
-  }
+  };
 
-  return { loading, navData }
-}
+  return { loading, navData, isFiltered };
+};

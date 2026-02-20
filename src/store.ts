@@ -279,6 +279,14 @@ export const places1FilterAtom = atomWithStorage("places1FilterAtom", []);
 export const places2FilterAtom = atomWithStorage("places2FilterAtom", []);
 export const checks1FilterAtom = atomWithStorage("checks1FilterAtom", []);
 export const checks2FilterAtom = atomWithStorage("checks2FilterAtom", []);
+export const placeUsers1FilterAtom = atomWithStorage(
+  "placeUsers1FilterAtom",
+  [],
+);
+export const placeUsers2FilterAtom = atomWithStorage(
+  "placeUsers2FilterAtom",
+  [],
+);
 export const actions1FilterAtom = atomWithStorage("actions1FilterAtom", []);
 export const actions2FilterAtom = atomWithStorage("actions2FilterAtom", []);
 export const placeReports1FilterAtom = atomWithStorage(
@@ -334,6 +342,8 @@ export const filterAtoms = {
   places2: places2FilterAtom,
   checks1: checks1FilterAtom,
   checks2: checks2FilterAtom,
+  placeUsers1: placeUsers1FilterAtom,
+  placeUsers2: placeUsers2FilterAtom,
   actions1: actions1FilterAtom,
   actions2: actions2FilterAtom,
   placeReports1: placeReports1FilterAtom,

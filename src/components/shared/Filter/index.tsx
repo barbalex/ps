@@ -32,7 +32,9 @@ const getFilterStrings = ({
     if (!filter.length) filter.push(parentFilter)
     whereUnfiltered = parentFilter
   }
-  if (['actions', 'checks', 'place_reports'].includes(tableName)) {
+  if (
+    ['actions', 'checks', 'place_reports', 'place_users'].includes(tableName)
+  ) {
     const placeFilter = { place_id: placeId2 ?? placeId }
     for (const orFilter of filter) {
       Object.assign(orFilter, placeFilter)
