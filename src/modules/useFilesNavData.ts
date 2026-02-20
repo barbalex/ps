@@ -140,5 +140,5 @@ export const useFilesNavData = ({
     navs,
   }
 
-  return { loading, navData }
+  return { loading, navData, isFiltered }
 }

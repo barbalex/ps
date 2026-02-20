@@ -1,12 +1,14 @@
-import { Filter } from '../../components/shared/Filter/index.tsx'
-import { WidgetForFieldForm } from './Form.tsx'
+import { Filter } from "../../components/shared/Filter/index.tsx";
+import { WidgetForFieldForm } from "./Form.tsx";
 
-const from = '/data/widgets-for-fields/filter'
+type Props = {
+  from: string;
+};
 
-export const WidgetForFieldFilter = () => (
+export const WidgetForFieldFilter = ({ from }: Props) => (
   <Filter from={from}>
     {({ row, onChange }) => (
       <WidgetForFieldForm row={row} onChange={onChange} from={from} />
     )}
   </Filter>
-)
+);

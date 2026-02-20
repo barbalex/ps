@@ -1,20 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-import { Filter } from '../../../components/shared/Filter/index.tsx'
-import { FieldForm } from '../../../formsAndLists/field/Form.tsx'
+import { FieldFilter } from "../../../formsAndLists/field/Filter.tsx";
 
-const from = '/data/fields/filter'
+const from = "/data/fields/filter";
 
 export const Route = createFileRoute(from)({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return (
-    <Filter from={from}>
-      {({ row, onChange }) => (
-        <FieldForm row={row} onChange={onChange} from={from} />
-      )}
-    </Filter>
-  )
-}
+  component: () => <FieldFilter from={from} />,
+});

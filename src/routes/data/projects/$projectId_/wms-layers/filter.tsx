@@ -1,27 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-import { WmsLayerForm } from '../../../../../formsAndLists/wmsLayer/Form/index.tsx'
-import { Filter } from '../../../../../components/shared/Filter/index.tsx'
+import { WmsLayerFilter } from "../../../../../formsAndLists/wmsLayer/Filter.tsx";
 
-const from = '/data/projects/$projectId_/wms-layers/filter'
+const from = "/data/projects/$projectId_/wms-layers/filter";
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/wms-layers/filter',
+  "/data/projects/$projectId_/wms-layers/filter",
 )({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return (
-    <Filter from={from}>
-      {({ row, onChange }) => (
-        <WmsLayerForm
-          row={row}
-          onChange={onChange}
-          isFilter={true}
-          from={from}
-        />
-      )}
-    </Filter>
-  )
-}
+  component: () => <WmsLayerFilter from={from} />,
+});

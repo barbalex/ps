@@ -1,14 +1,14 @@
 import { Filter } from "../../components/shared/Filter/index.tsx";
-import { ProjectForm } from "./Form.tsx";
+import { SubprojectReportForm } from "./Form.tsx";
 
 type Props = {
   from: string;
 };
 
-export const ProjectFilter = ({ from }: Props) => (
+export const SubprojectReportFilter = ({ from }: Props) => (
   <Filter from={from}>
     {({ row, onChange, orIndex }) => (
-      <ProjectForm
+      <SubprojectReportForm
         row={row}
         onChange={onChange}
         orIndex={orIndex}

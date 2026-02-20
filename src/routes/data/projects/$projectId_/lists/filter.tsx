@@ -1,27 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-import { ListForm } from '../../../../../formsAndLists/list/Form.tsx'
-import { Filter } from '../../../../../components/shared/Filter/index.tsx'
+import { ListFilter } from "../../../../../formsAndLists/list/Filter.tsx";
 
-const from = '/data/projects/$projectId_/lists/filter'
+const from = "/data/projects/$projectId_/lists/filter";
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/lists/filter',
-)({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return (
-    <Filter from={from}>
-      {({ row, onChange, orIndex }) => (
-        <ListForm
-          row={row}
-          onChange={onChange}
-          orIndex={orIndex}
-          from={from}
-        />
-      )}
-    </Filter>
-  )
-}
+export const Route = createFileRoute("/data/projects/$projectId_/lists/filter")(
+  {
+    component: () => <ListFilter from={from} />,
+  },
+);

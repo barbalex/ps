@@ -1,27 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-import { SubprojectForm } from '../../../../../formsAndLists/subproject/Form.tsx'
-import { Filter } from '../../../../../components/shared/Filter/index.tsx'
+import { SubprojectFilter } from "../../../../../formsAndLists/subproject/Filter.tsx";
 
-const from = '/data/projects/$projectId_/subprojects/filter'
+const from = "/data/projects/$projectId_/subprojects/filter";
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/filter',
+  "/data/projects/$projectId_/subprojects/filter",
 )({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return (
-    <Filter from={from}>
-      {({ row, onChange, orIndex }) => (
-        <SubprojectForm
-          row={row}
-          onChange={onChange}
-          orIndex={orIndex}
-          from={from}
-        />
-      )}
-    </Filter>
-  )
-}
+  component: () => <SubprojectFilter from={from} />,
+});

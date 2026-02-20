@@ -1,17 +1,17 @@
 import { Filter } from "../../components/shared/Filter/index.tsx";
-import { ProjectForm } from "./Form.tsx";
+import { VectorLayerForm } from "./Form/index.tsx";
 
 type Props = {
   from: string;
 };
 
-export const ProjectFilter = ({ from }: Props) => (
+export const VectorLayerFilter = ({ from }: Props) => (
   <Filter from={from}>
-    {({ row, onChange, orIndex }) => (
-      <ProjectForm
+    {({ row, onChange }) => (
+      <VectorLayerForm
         row={row}
         onChange={onChange}
-        orIndex={orIndex}
+        isFilter={true}
         from={from}
       />
     )}

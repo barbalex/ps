@@ -5,6 +5,7 @@ import { FaPlus } from 'react-icons/fa'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { useFilesNavData } from '../modules/useFilesNavData.ts'
 import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
@@ -19,7 +20,7 @@ export const Files = ({
   actionId,
   checkId,
 }) => {
-  const { loading, navData } = useFilesNavData({
+  const { loading, navData, isFiltered } = useFilesNavData({
     projectId,
     subprojectId,
     placeId,
@@ -41,12 +42,16 @@ export const Files = ({
         label={label}
         nameSingular={nameSingular}
         menus={
-          <Button
-            size="medium"
-            title="add File"
-            icon={<FaPlus />}
-            onClick={onClickAdd}
-          />
+          [
+            <FilterButton key="filter" isFiltered={isFiltered} />,
+            <Button
+              key="add"
+              size="medium"
+              title="add File"
+              icon={<FaPlus />}
+              onClick={onClickAdd}
+            />,
+          ]
         }
       />
       <div className="list-container">

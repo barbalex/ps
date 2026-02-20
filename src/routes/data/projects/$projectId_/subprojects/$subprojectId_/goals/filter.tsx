@@ -1,28 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-import { GoalForm } from '../../../../../../../formsAndLists/goal/Form.tsx'
-import { Filter } from '../../../../../../../components/shared/Filter/index.tsx'
+import { GoalFilter } from "../../../../../../../formsAndLists/goal/Filter.tsx";
 
 const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
+  "/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter";
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter',
+  "/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter",
 )({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return (
-    <Filter from={from}>
-      {({ row, onChange, orIndex }) => (
-        <GoalForm
-          row={row}
-          onChange={onChange}
-          orIndex={orIndex}
-          from={from}
-        />
-      )}
-    </Filter>
-  )
-}
+  component: () => <GoalFilter from={from} />,
+});

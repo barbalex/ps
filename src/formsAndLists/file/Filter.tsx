@@ -5,14 +5,13 @@ type Props = {
   from: string;
 };
 
-export const UserFilter = ({ from }: Props) => (
+export const FileFilter = ({ from }: Props) => (
   <Filter from={from}>
     {({ row, onChange }) => (
       <TextField
-        label="Email"
-        name="email"
-        type="email"
-        value={row.email ?? ""}
+        label="Label"
+        name="label"
+        value={row.label ?? ""}
         onChange={onChange}
       />
     )}
