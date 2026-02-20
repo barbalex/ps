@@ -4,6 +4,7 @@ import { createTaxonomy } from '../modules/createRows.ts'
 import { useTaxonomiesNavData } from '../modules/useTaxonomiesNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
@@ -13,7 +14,7 @@ export const Taxonomies = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
-  const { loading, navData } = useTaxonomiesNavData({ projectId })
+  const { loading, navData, isFiltered } = useTaxonomiesNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
@@ -31,18 +32,16 @@ export const Taxonomies = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              label={label ?? id}
-              to={id}
-            />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} label={label ?? id} to={id} />
           ))
-        }
+        )}
       </div>
     </div>
   )

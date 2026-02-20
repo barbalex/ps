@@ -260,6 +260,7 @@ export const vectorLayersFilterAtom = atomWithStorage(
   [],
 );
 export const listsFilterAtom = atomWithStorage("listsFilterAtom", []);
+export const taxonomiesFilterAtom = atomWithStorage("taxonomiesFilterAtom", []);
 export const unitsFilterAtom = atomWithStorage("unitsFilterAtom", []);
 export const subprojectsFilterAtom = atomWithStorage(
   "subprojectsFilterAtom",
@@ -301,7 +302,6 @@ export const placeReports2FilterAtom = atomWithStorage(
 export const filesFilterAtom = atomWithStorage("filesFilterAtom", []);
 // TODO: add more filters
 // filter_vector_layer_displays
-// filter_taxonomies
 // filter_occurrence_imports
 // filter_subproject_charts
 // filter_subproject_chart_subjects
@@ -332,6 +332,7 @@ export const filterAtoms = {
   wfsServices: wfsServicesFilterAtom,
   vectorLayers: vectorLayersFilterAtom,
   lists: listsFilterAtom,
+  taxonomies: taxonomiesFilterAtom,
   units: unitsFilterAtom,
   subprojects: subprojectsFilterAtom,
   subprojectReports: subprojectReportsFilterAtom,

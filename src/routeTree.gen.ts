@@ -102,6 +102,7 @@ import { Route as DataProjectsProjectIdWfsServicesFilterRouteImport } from './ro
 import { Route as DataProjectsProjectIdVectorLayersFilterRouteImport } from './routes/data/projects/$projectId_/vector-layers/filter'
 import { Route as DataProjectsProjectIdUsersFilterRouteImport } from './routes/data/projects/$projectId_/users/filter'
 import { Route as DataProjectsProjectIdUnitsFilterRouteImport } from './routes/data/projects/$projectId_/units/filter'
+import { Route as DataProjectsProjectIdTaxonomiesFilterRouteImport } from './routes/data/projects/$projectId_/taxonomies/filter'
 import { Route as DataProjectsProjectIdSubprojectsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/filter'
 import { Route as DataProjectsProjectIdReportsFilterRouteImport } from './routes/data/projects/$projectId_/reports/filter'
 import { Route as DataProjectsProjectIdPersonsFilterRouteImport } from './routes/data/projects/$projectId_/persons/filter'
@@ -878,6 +879,12 @@ const DataProjectsProjectIdUnitsFilterRoute =
     id: '/filter',
     path: '/filter',
     getParentRoute: () => DataProjectsProjectIdUnitsRouteRoute,
+  } as any)
+const DataProjectsProjectIdTaxonomiesFilterRoute =
+  DataProjectsProjectIdTaxonomiesFilterRouteImport.update({
+    id: '/filter',
+    path: '/filter',
+    getParentRoute: () => DataProjectsProjectIdTaxonomiesRouteRoute,
   } as any)
 const DataProjectsProjectIdSubprojectsFilterRoute =
   DataProjectsProjectIdSubprojectsFilterRouteImport.update({
@@ -3124,6 +3131,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/persons/filter': typeof DataProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
+  '/data/projects/$projectId/taxonomies/filter': typeof DataProjectsProjectIdTaxonomiesFilterRoute
   '/data/projects/$projectId/units/filter': typeof DataProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId/users/filter': typeof DataProjectsProjectIdUsersFilterRoute
   '/data/projects/$projectId/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
@@ -3439,6 +3447,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/persons/filter': typeof DataProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
+  '/data/projects/$projectId/taxonomies/filter': typeof DataProjectsProjectIdTaxonomiesFilterRoute
   '/data/projects/$projectId/units/filter': typeof DataProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId/users/filter': typeof DataProjectsProjectIdUsersFilterRoute
   '/data/projects/$projectId/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
@@ -3719,6 +3728,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/persons/filter': typeof DataProjectsProjectIdPersonsFilterRoute
   '/data/projects/$projectId_/reports/filter': typeof DataProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId_/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
+  '/data/projects/$projectId_/taxonomies/filter': typeof DataProjectsProjectIdTaxonomiesFilterRoute
   '/data/projects/$projectId_/units/filter': typeof DataProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId_/users/filter': typeof DataProjectsProjectIdUsersFilterRoute
   '/data/projects/$projectId_/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
@@ -4074,6 +4084,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/persons/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
+    | '/data/projects/$projectId/taxonomies/filter'
     | '/data/projects/$projectId/units/filter'
     | '/data/projects/$projectId/users/filter'
     | '/data/projects/$projectId/vector-layers/filter'
@@ -4389,6 +4400,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/persons/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
+    | '/data/projects/$projectId/taxonomies/filter'
     | '/data/projects/$projectId/units/filter'
     | '/data/projects/$projectId/users/filter'
     | '/data/projects/$projectId/vector-layers/filter'
@@ -4668,6 +4680,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/persons/filter'
     | '/data/projects/$projectId_/reports/filter'
     | '/data/projects/$projectId_/subprojects/filter'
+    | '/data/projects/$projectId_/taxonomies/filter'
     | '/data/projects/$projectId_/units/filter'
     | '/data/projects/$projectId_/users/filter'
     | '/data/projects/$projectId_/vector-layers/filter'
@@ -5597,6 +5610,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/units/filter'
       preLoaderRoute: typeof DataProjectsProjectIdUnitsFilterRouteImport
       parentRoute: typeof DataProjectsProjectIdUnitsRouteRoute
+    }
+    '/data/projects/$projectId_/taxonomies/filter': {
+      id: '/data/projects/$projectId_/taxonomies/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/taxonomies/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdTaxonomiesFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdTaxonomiesRouteRoute
     }
     '/data/projects/$projectId_/subprojects/filter': {
       id: '/data/projects/$projectId_/subprojects/filter'
@@ -9284,6 +9304,7 @@ const DataProjectsProjectIdTaxonomiesTaxonomyIdRouteRouteWithChildren =
 
 interface DataProjectsProjectIdTaxonomiesRouteRouteChildren {
   DataProjectsProjectIdTaxonomiesTaxonomyIdRouteRoute: typeof DataProjectsProjectIdTaxonomiesTaxonomyIdRouteRouteWithChildren
+  DataProjectsProjectIdTaxonomiesFilterRoute: typeof DataProjectsProjectIdTaxonomiesFilterRoute
   DataProjectsProjectIdTaxonomiesIndexRoute: typeof DataProjectsProjectIdTaxonomiesIndexRoute
 }
 
@@ -9291,6 +9312,8 @@ const DataProjectsProjectIdTaxonomiesRouteRouteChildren: DataProjectsProjectIdTa
   {
     DataProjectsProjectIdTaxonomiesTaxonomyIdRouteRoute:
       DataProjectsProjectIdTaxonomiesTaxonomyIdRouteRouteWithChildren,
+    DataProjectsProjectIdTaxonomiesFilterRoute:
+      DataProjectsProjectIdTaxonomiesFilterRoute,
     DataProjectsProjectIdTaxonomiesIndexRoute:
       DataProjectsProjectIdTaxonomiesIndexRoute,
   }

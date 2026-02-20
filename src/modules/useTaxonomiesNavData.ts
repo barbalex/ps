@@ -3,8 +3,9 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
+import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { taxonomiesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -13,35 +14,59 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  count_unfiltered?: number
+  count_filtered?: number
 }
 
 export const useTaxonomiesNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filter] = useAtom(taxonomiesFilterAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
-    `
-    SELECT
-      taxonomy_id AS id,
-      label 
-    FROM taxonomies 
-    WHERE project_id = $1 
-    ORDER BY label`,
-    [projectId],
-  )
-
-  const loading = res === undefined
-
-  const navs: NavData[] = res?.rows ?? []
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'taxonomies']
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+
+  const sql = isOpen
+    ? `
+    WITH
+      count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
+      count_filtered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+    SELECT
+      taxonomy_id AS id,
+      label,
+      count_unfiltered.count AS count_unfiltered,
+      count_filtered.count AS count_filtered
+    FROM taxonomies, count_unfiltered, count_filtered
+    WHERE project_id = '${projectId}'
+      ${isFiltered ? ` AND ${filterString}` : ''}
+    ORDER BY label`
+    : `
+    WITH
+      count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
+      count_filtered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+    SELECT
+      count_unfiltered.count AS count_unfiltered,
+      count_filtered.count AS count_filtered
+    FROM count_unfiltered, count_filtered`
+
+  const res = useLiveQuery(sql)
+
+  const loading = res === undefined
+
+  const navs: NavData[] = res?.rows ?? []
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
+
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
 
   const navData = {
     isInActiveNodeArray,
@@ -53,12 +78,14 @@ export const useTaxonomiesNavData = ({ projectId }: Props) => {
     ownUrl,
     label: buildNavLabel({
       loading,
-      countFiltered: navs.length,
+      countFiltered,
+      countUnfiltered,
       namePlural: 'Taxonomies',
+      isFiltered,
     }),
     nameSingular: 'Taxonomy',
     navs,
   }
 
-  return { loading, navData }
+  return { loading, navData, isFiltered }
 }
