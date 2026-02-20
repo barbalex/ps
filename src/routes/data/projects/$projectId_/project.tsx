@@ -4,7 +4,7 @@ import { Project } from '../../../../formsAndLists/project/index.tsx'
 import { NotFound } from '../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/project')({
-  component: RouteComponent,
+  component: <Project from="/data/projects/$projectId_/project" />,
   notFoundComponent: NotFound,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
@@ -15,7 +15,3 @@ export const Route = createFileRoute('/data/projects/$projectId_/project')({
     }
   },
 })
-
-const RouteComponent = () => {
-  return <Project from={'/data/projects/$projectId_/project'} />
-}
