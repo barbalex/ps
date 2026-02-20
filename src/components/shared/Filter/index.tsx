@@ -20,6 +20,7 @@ const getFilterStrings = ({
   placeId,
   placeId2,
   projectId,
+  subprojectId,
   tableName,
 }) => {
   if (tableName === 'users') {
@@ -61,6 +62,14 @@ const getFilterStrings = ({
     }
     if (!filter.length) filter.push(projectFilter)
     whereUnfiltered = projectFilter
+  }
+  if (['subproject_taxa'].includes(tableName)) {
+    const subprojectFilter = { subproject_id: subprojectId ?? null }
+    for (const orFilter of filter) {
+      Object.assign(orFilter, subprojectFilter)
+    }
+    if (!filter.length) filter.push(subprojectFilter)
+    whereUnfiltered = subprojectFilter
   }
   const whereFilteredString = filterStringFromFilter(filter)
   const whereUnfilteredString = whereUnfiltered
@@ -113,7 +122,7 @@ export const Filter = ({
   tableNameOverride,
   filterAtomNameOverride,
 }) => {
-  const { projectId, placeId, placeId2 } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
@@ -148,6 +157,7 @@ export const Filter = ({
     placeId,
     placeId2,
     projectId,
+    subprojectId,
     tableName,
   })
 

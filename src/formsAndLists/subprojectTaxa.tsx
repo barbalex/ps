@@ -4,6 +4,7 @@ import { createSubprojectTaxon } from '../modules/createRows.ts'
 import { useSubprojectTaxaNavData } from '../modules/useSubprojectTaxaNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
@@ -11,11 +12,13 @@ export const SubprojectTaxa = ({ from }) => {
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
 
-  const { loading, navData } = useSubprojectTaxaNavData({
+  const { loading, navData, isFiltered } = useSubprojectTaxaNavData({
     projectId,
     subprojectId,
   })
   const { navs, label, nameSingular } = navData
+  const canFilter =
+    from === '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/'
 
   const add = async () => {
     const id = await createSubprojectTaxon({ subprojectId })
@@ -35,6 +38,7 @@ export const SubprojectTaxa = ({ from }) => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        menus={canFilter ? <FilterButton isFiltered={isFiltered} /> : undefined}
       />
       <div className="list-container">
         {loading ?
