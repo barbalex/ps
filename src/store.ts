@@ -269,6 +269,10 @@ export const subprojectReportsFilterAtom = atomWithStorage(
   "subprojectReportsFilterAtom",
   [],
 );
+export const subprojectUsersFilterAtom = atomWithStorage(
+  "subprojectUsersFilterAtom",
+  [],
+);
 export const goalsFilterAtom = atomWithStorage("goalsFilterAtom", []);
 export const usersFilterAtom = atomWithStorage("usersFilterAtom", []);
 export const places1FilterAtom = atomWithStorage("places1FilterAtom", []);
@@ -323,6 +327,7 @@ export const filterAtoms = {
   units: unitsFilterAtom,
   subprojects: subprojectsFilterAtom,
   subprojectReports: subprojectReportsFilterAtom,
+  subprojectUsers: subprojectUsersFilterAtom,
   goals: goalsFilterAtom,
   users: usersFilterAtom,
   places1: places1FilterAtom,
