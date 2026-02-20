@@ -639,7 +639,8 @@ BEGIN
       WHEN NEW.role is null THEN email || ' (no role)' 
       ELSE email || ' (' || NEW.role || ')'
     END
-  );
+  )
+  WHERE place_user_id = NEW.place_user_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -677,7 +678,8 @@ BEGIN
       when NEW.role is null then email || ' (no role)'
       else email || ' (' || NEW.role || ')'
     end
-  );
+  )
+  WHERE project_user_id = NEW.project_user_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -765,7 +767,8 @@ BEGIN
       WHEN NEW.role is null THEN _email || ' (no role)'
       ELSE _email || ' (' || NEW.role || ')'
     END
-  );
+  )
+  WHERE subproject_user_id = NEW.subproject_user_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
