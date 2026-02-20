@@ -279,6 +279,14 @@ export const occurrenceImportsFilterAtom = atomWithStorage(
   "occurrenceImportsFilterAtom",
   [],
 );
+export const occurrencesToAssessFilterAtom = atomWithStorage(
+  "occurrencesToAssessFilterAtom",
+  [],
+);
+export const occurrencesNotToAssignFilterAtom = atomWithStorage(
+  "occurrencesNotToAssignFilterAtom",
+  [],
+);
 export const goalsFilterAtom = atomWithStorage("goalsFilterAtom", []);
 export const usersFilterAtom = atomWithStorage("usersFilterAtom", []);
 export const places1FilterAtom = atomWithStorage("places1FilterAtom", []);
@@ -342,6 +350,8 @@ export const filterAtoms = {
   subprojectUsers: subprojectUsersFilterAtom,
   charts: chartsFilterAtom,
   occurrenceImports: occurrenceImportsFilterAtom,
+  occurrencesToAssess: occurrencesToAssessFilterAtom,
+  occurrencesNotToAssign: occurrencesNotToAssignFilterAtom,
   goals: goalsFilterAtom,
   users: usersFilterAtom,
   places1: places1FilterAtom,

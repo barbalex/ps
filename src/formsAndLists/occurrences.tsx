@@ -1,5 +1,6 @@
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useOccurrencesNavData } from '../modules/useOccurrencesNavData.ts'
 
@@ -13,7 +14,7 @@ export const Occurrences = ({
   isToAssess = false,
   isNotToAssign = false,
 }) => {
-  const { loading, navData } = useOccurrencesNavData({
+  const { loading, navData, isFiltered } = useOccurrencesNavData({
     projectId,
     subprojectId,
     placeId,
@@ -28,6 +29,11 @@ export const Occurrences = ({
       <ListHeader
         label={label}
         nameSingular={nameSingular}
+        menus={
+          isToAssess || isNotToAssign ? (
+            <FilterButton isFiltered={isFiltered} />
+          ) : undefined
+        }
       />
       <div className="list-container">
         {loading ?

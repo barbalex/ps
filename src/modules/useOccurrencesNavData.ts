@@ -3,8 +3,13 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
+import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import {
+  occurrencesNotToAssignFilterAtom,
+  occurrencesToAssessFilterAtom,
+  treeOpenNodesAtom,
+} from '../store.ts'
 
 type Props = {
   projectId: string
@@ -18,6 +23,8 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  count_unfiltered?: number
+  count_filtered?: number
 }[]
 
 export const useOccurrencesNavData = ({
@@ -29,31 +36,26 @@ export const useOccurrencesNavData = ({
   isNotToAssign = false,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filterToAssess] = useAtom(occurrencesToAssessFilterAtom)
+  const [filterNotToAssign] = useAtom(occurrencesNotToAssignFilterAtom)
   const location = useLocation()
 
-  let filter = `oi.subproject_id = '${subprojectId}'`
+  const filter =
+    isToAssess ? filterToAssess
+    : isNotToAssign ? filterNotToAssign
+    : []
+  const filterString = filterStringFromFilter(filter, 'o')
+  const isFiltered = !!filterString
+
+  let baseFilter = `oi.subproject_id = '${subprojectId}'`
   if (isToAssess) {
-    filter += ' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL'
+    baseFilter += ' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL'
   } else if (isNotToAssign) {
-    filter += ' AND o.not_to_assign IS TRUE AND o.place_id IS NULL'
+    baseFilter += ' AND o.not_to_assign IS TRUE AND o.place_id IS NULL'
   } else if (!!placeId || !!placeId2) {
-    filter += ` AND o.place_id = '${placeId2 ?? placeId}'`
+    baseFilter += ` AND o.place_id = '${placeId2 ?? placeId}'`
   }
 
-  const res = useLiveQuery(
-    `
-    SELECT 
-      o.occurrence_id AS id, 
-      o.label 
-    FROM occurrences o 
-      INNER JOIN occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
-    WHERE ${filter} 
-    ORDER BY label`,
-  )
-
-  const loading = res === undefined
-
-  const navs: NavData = res?.rows ?? []
   const parentArray = [
     'data',
     'projects',
@@ -75,6 +77,63 @@ export const useOccurrencesNavData = ({
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+
+  const res = useLiveQuery(
+    isOpen
+      ? `
+    WITH
+      count_unfiltered AS (
+        SELECT count(*)
+        FROM occurrences o
+        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        WHERE ${baseFilter}
+      ),
+      count_filtered AS (
+        SELECT count(*)
+        FROM occurrences o
+        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        WHERE ${baseFilter}
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      )
+    SELECT
+      o.occurrence_id AS id,
+      o.label,
+      count_unfiltered.count AS count_unfiltered,
+      count_filtered.count AS count_filtered
+    FROM occurrences o
+      INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id,
+      count_unfiltered,
+      count_filtered
+    WHERE ${baseFilter}
+    ${isFiltered ? ` AND ${filterString}` : ''}
+    ORDER BY label`
+      : `
+    WITH
+      count_unfiltered AS (
+        SELECT count(*)
+        FROM occurrences o
+        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        WHERE ${baseFilter}
+      ),
+      count_filtered AS (
+        SELECT count(*)
+        FROM occurrences o
+        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        WHERE ${baseFilter}
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      )
+    SELECT
+      count_unfiltered.count AS count_unfiltered,
+      count_filtered.count AS count_filtered
+    FROM count_unfiltered,
+      count_filtered`,
+  )
+
+  const loading = res === undefined
+
+  const navs: NavData = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
@@ -98,13 +157,15 @@ export const useOccurrencesNavData = ({
     urlPath,
     ownUrl,
     label: buildNavLabel({
-      countFiltered: navs.length,
+      countFiltered,
+      countUnfiltered,
       namePlural,
       loading,
+      isFiltered,
     }),
     nameSingular,
     navs,
   }
 
-  return { loading, navData }
+  return { loading, navData, isFiltered }
 }

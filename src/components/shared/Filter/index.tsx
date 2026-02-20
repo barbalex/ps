@@ -106,12 +106,19 @@ const getTableName = (urlPath) => {
   return tableName
 }
 
-export const Filter = ({ level, from, children }) => {
+export const Filter = ({
+  level,
+  from,
+  children,
+  tableNameOverride,
+  filterAtomNameOverride,
+}) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
-  const tableName = getTableName(urlPath)
+  const inferredTableName = getTableName(urlPath)
+  const tableName = tableNameOverride ?? inferredTableName
 
   const resPlaceLevel = useLiveQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
@@ -126,10 +133,12 @@ export const Filter = ({ level, from, children }) => {
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
   const onTabSelect = (e, data) => setActiveTab(data.value)
-  const filterAtomName = filterAtomNameFromTableAndLevel({
-    table: tableName,
-    level,
-  })
+  const filterAtomName =
+    filterAtomNameOverride ??
+    filterAtomNameFromTableAndLevel({
+      table: tableName,
+      level,
+    })
   // ensure atom exists - got errors when it didn't
   const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
   const [filter] = useAtom(filterAtom)
