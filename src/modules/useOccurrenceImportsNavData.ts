@@ -3,8 +3,9 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
+import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { occurrenceImportsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -14,6 +15,8 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  count_unfiltered?: number
+  count_filtered?: number
 }[]
 
 export const useOccurrenceImportsNavData = ({
@@ -21,22 +24,9 @@ export const useOccurrenceImportsNavData = ({
   subprojectId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filter] = useAtom(occurrenceImportsFilterAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
-    `
-      SELECT
-        occurrence_import_id AS id,
-        label 
-      FROM occurrence_imports 
-      WHERE subproject_id = $1 
-      ORDER BY label`,
-    [subprojectId],
-  )
-
-  const loading = res === undefined
-
-  const navs: NavData = res?.rows ?? []
   const parentArray = [
     'data',
     'projects',
@@ -49,6 +39,40 @@ export const useOccurrenceImportsNavData = ({
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+
+  const sql = isOpen
+    ? `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}'),
+        count_filtered AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        occurrence_import_id AS id,
+        label,
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM occurrence_imports, count_unfiltered, count_filtered
+      WHERE subproject_id = '${subprojectId}'
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label`
+    : `
+      WITH
+        count_unfiltered AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}'),
+        count_filtered AS (SELECT count(*) FROM occurrence_imports WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+      SELECT
+        count_unfiltered.count AS count_unfiltered,
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered`
+
+  const res = useLiveQuery(sql)
+
+  const loading = res === undefined
+
+  const navs: NavData = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
@@ -62,13 +86,15 @@ export const useOccurrenceImportsNavData = ({
     urlPath,
     ownUrl,
     label: buildNavLabel({
-      countFiltered: navs.length,
+      countFiltered,
+      countUnfiltered,
       namePlural: 'Occurrence Imports',
       loading,
+      isFiltered,
     }),
     nameSingular: 'Occurrence Import',
     navs,
   }
 
-  return { loading, navData }
+  return { loading, navData, isFiltered }
 }

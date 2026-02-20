@@ -4,6 +4,7 @@ import { createOccurrenceImport } from '../modules/createRows.ts'
 import { useOccurrenceImportsNavData } from '../modules/useOccurrenceImportsNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
@@ -15,7 +16,7 @@ export const OccurrenceImports = () => {
   const navigate = useNavigate()
   const { projectId, subprojectId } = useParams({ from })
 
-  const { loading, navData } = useOccurrenceImportsNavData({
+  const { loading, navData, isFiltered } = useOccurrenceImportsNavData({
     projectId,
     subprojectId,
   })
@@ -39,6 +40,7 @@ export const OccurrenceImports = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {loading ?
