@@ -52,6 +52,7 @@ import { Route as DataFieldsFilterRouteImport } from './routes/data/fields/filte
 import { Route as DataFieldsFieldIdRouteImport } from './routes/data/fields/$fieldId'
 import { Route as DataFieldTypesFilterRouteImport } from './routes/data/field-types/filter'
 import { Route as DataFieldTypesFieldTypeIdRouteImport } from './routes/data/field-types/$fieldTypeId'
+import { Route as DataCrsFilterRouteImport } from './routes/data/crs/filter'
 import { Route as DataCrsCrsIdRouteImport } from './routes/data/crs/$crsId'
 import { Route as DataAccountsAccountIdRouteImport } from './routes/data/accounts/$accountId'
 import { Route as DataProjectsProjectIdRouteRouteImport } from './routes/data/projects/$projectId_/route'
@@ -576,6 +577,11 @@ const DataFieldTypesFieldTypeIdRoute =
     path: '/$fieldTypeId',
     getParentRoute: () => DataFieldTypesRouteRoute,
   } as any)
+const DataCrsFilterRoute = DataCrsFilterRouteImport.update({
+  id: '/filter',
+  path: '/filter',
+  getParentRoute: () => DataCrsRouteRoute,
+} as any)
 const DataCrsCrsIdRoute = DataCrsCrsIdRouteImport.update({
   id: '/$crsId',
   path: '/$crsId',
@@ -3002,6 +3008,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId': typeof DataProjectsProjectIdRouteRouteWithChildren
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
+  '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
   '/data/field-types/filter': typeof DataFieldTypesFilterRoute
   '/data/fields/$fieldId': typeof DataFieldsFieldIdRoute
@@ -3333,6 +3340,7 @@ export interface FileRoutesByTo {
   '/data': typeof DataIndexRoute
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
+  '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
   '/data/field-types/filter': typeof DataFieldTypesFilterRoute
   '/data/fields/$fieldId': typeof DataFieldsFieldIdRoute
@@ -3581,6 +3589,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_': typeof DataProjectsProjectIdRouteRouteWithChildren
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
+  '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
   '/data/field-types/filter': typeof DataFieldTypesFilterRoute
   '/data/fields/$fieldId': typeof DataFieldsFieldIdRoute
@@ -3928,6 +3937,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId'
     | '/data/accounts/$accountId'
     | '/data/crs/$crsId'
+    | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
     | '/data/field-types/filter'
     | '/data/fields/$fieldId'
@@ -4259,6 +4269,7 @@ export interface FileRouteTypes {
     | '/data'
     | '/data/accounts/$accountId'
     | '/data/crs/$crsId'
+    | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
     | '/data/field-types/filter'
     | '/data/fields/$fieldId'
@@ -4506,6 +4517,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_'
     | '/data/accounts/$accountId'
     | '/data/crs/$crsId'
+    | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
     | '/data/field-types/filter'
     | '/data/fields/$fieldId'
@@ -5138,6 +5150,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/field-types/$fieldTypeId'
       preLoaderRoute: typeof DataFieldTypesFieldTypeIdRouteImport
       parentRoute: typeof DataFieldTypesRouteRoute
+    }
+    '/data/crs/filter': {
+      id: '/data/crs/filter'
+      path: '/filter'
+      fullPath: '/data/crs/filter'
+      preLoaderRoute: typeof DataCrsFilterRouteImport
+      parentRoute: typeof DataCrsRouteRoute
     }
     '/data/crs/$crsId': {
       id: '/data/crs/$crsId'
@@ -7264,11 +7283,13 @@ const DataAccountsRouteRouteWithChildren =
 
 interface DataCrsRouteRouteChildren {
   DataCrsCrsIdRoute: typeof DataCrsCrsIdRoute
+  DataCrsFilterRoute: typeof DataCrsFilterRoute
   DataCrsIndexRoute: typeof DataCrsIndexRoute
 }
 
 const DataCrsRouteRouteChildren: DataCrsRouteRouteChildren = {
   DataCrsCrsIdRoute: DataCrsCrsIdRoute,
+  DataCrsFilterRoute: DataCrsFilterRoute,
   DataCrsIndexRoute: DataCrsIndexRoute,
 }
 

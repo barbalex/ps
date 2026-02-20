@@ -4,6 +4,7 @@ import { createCrs } from '../../modules/createRows.ts'
 import { useCrssNavData } from '../../modules/useCrssNavData.ts'
 import { ListHeader } from '../../components/ListHeader.tsx'
 import { Row } from '../../components/shared/Row.tsx'
+import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
@@ -11,7 +12,7 @@ import '../../form.css'
 export const CRSS = () => {
   const navigate = useNavigate()
 
-  const { loading, navData } = useCrssNavData()
+  const { loading, navData, isFiltered } = useCrssNavData()
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
@@ -29,6 +30,7 @@ export const CRSS = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
         info={<Info />}
       />
       <div className="list-container">
