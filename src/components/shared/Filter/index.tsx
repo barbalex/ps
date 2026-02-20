@@ -22,6 +22,17 @@ const getFilterStrings = ({
   projectId,
   tableName,
 }) => {
+  if (tableName === 'users') {
+    filter = filter.map((orFilter) =>
+      Object.fromEntries(
+        Object.entries(orFilter).filter(
+          ([key]) =>
+            key === 'email' || key === 'label' || key.startsWith('data.'),
+        ),
+      ),
+    )
+  }
+
   let whereUnfiltered
   // add parent_id for all filterable tables below subprojects
   if (tableName === 'places') {

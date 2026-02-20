@@ -22,7 +22,16 @@ export const useUsersNavData = () => {
   const [filter] = useAtom(usersFilterAtom)
   const location = useLocation()
 
-  const filterString = filterStringFromFilter(filter)
+  const sanitizedFilter = filter.map((orFilter) =>
+    Object.fromEntries(
+      Object.entries(orFilter).filter(
+        ([key]) =>
+          key === 'email' || key === 'label' || key.startsWith('data.'),
+      ),
+    ),
+  )
+
+  const filterString = filterStringFromFilter(sanitizedFilter)
   const isFiltered = !!filterString
 
   // needs to work not only works for urlPath, for all opened paths!
