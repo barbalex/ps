@@ -98,6 +98,7 @@ import { Route as DataFilesFileIdPreviewIndexRouteImport } from './routes/data/f
 import { Route as DataProjectsProjectIdWmsServicesFilterRouteImport } from './routes/data/projects/$projectId_/wms-services/filter'
 import { Route as DataProjectsProjectIdWmsLayersFilterRouteImport } from './routes/data/projects/$projectId_/wms-layers/filter'
 import { Route as DataProjectsProjectIdWmsLayersWmsLayerIdRouteImport } from './routes/data/projects/$projectId_/wms-layers/$wmsLayerId'
+import { Route as DataProjectsProjectIdWfsServicesFilterRouteImport } from './routes/data/projects/$projectId_/wfs-services/filter'
 import { Route as DataProjectsProjectIdVectorLayersFilterRouteImport } from './routes/data/projects/$projectId_/vector-layers/filter'
 import { Route as DataProjectsProjectIdUnitsFilterRouteImport } from './routes/data/projects/$projectId_/units/filter'
 import { Route as DataProjectsProjectIdSubprojectsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/filter'
@@ -849,6 +850,12 @@ const DataProjectsProjectIdWmsLayersWmsLayerIdRoute =
     id: '/$wmsLayerId',
     path: '/$wmsLayerId',
     getParentRoute: () => DataProjectsProjectIdWmsLayersRouteRoute,
+  } as any)
+const DataProjectsProjectIdWfsServicesFilterRoute =
+  DataProjectsProjectIdWfsServicesFilterRouteImport.update({
+    id: '/filter',
+    path: '/filter',
+    getParentRoute: () => DataProjectsProjectIdWfsServicesRouteRoute,
   } as any)
 const DataProjectsProjectIdVectorLayersFilterRoute =
   DataProjectsProjectIdVectorLayersFilterRouteImport.update({
@@ -3084,6 +3091,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
   '/data/projects/$projectId/units/filter': typeof DataProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
+  '/data/projects/$projectId/wfs-services/filter': typeof DataProjectsProjectIdWfsServicesFilterRoute
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
   '/data/projects/$projectId/wms-services/filter': typeof DataProjectsProjectIdWmsServicesFilterRoute
@@ -3394,6 +3402,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
   '/data/projects/$projectId/units/filter': typeof DataProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
+  '/data/projects/$projectId/wfs-services/filter': typeof DataProjectsProjectIdWfsServicesFilterRoute
   '/data/projects/$projectId/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
   '/data/projects/$projectId/wms-services/filter': typeof DataProjectsProjectIdWmsServicesFilterRoute
@@ -3669,6 +3678,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
   '/data/projects/$projectId_/units/filter': typeof DataProjectsProjectIdUnitsFilterRoute
   '/data/projects/$projectId_/vector-layers/filter': typeof DataProjectsProjectIdVectorLayersFilterRoute
+  '/data/projects/$projectId_/wfs-services/filter': typeof DataProjectsProjectIdWfsServicesFilterRoute
   '/data/projects/$projectId_/wms-layers/$wmsLayerId': typeof DataProjectsProjectIdWmsLayersWmsLayerIdRoute
   '/data/projects/$projectId_/wms-layers/filter': typeof DataProjectsProjectIdWmsLayersFilterRoute
   '/data/projects/$projectId_/wms-services/filter': typeof DataProjectsProjectIdWmsServicesFilterRoute
@@ -4019,6 +4029,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/filter'
     | '/data/projects/$projectId/units/filter'
     | '/data/projects/$projectId/vector-layers/filter'
+    | '/data/projects/$projectId/wfs-services/filter'
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
     | '/data/projects/$projectId/wms-services/filter'
@@ -4329,6 +4340,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/filter'
     | '/data/projects/$projectId/units/filter'
     | '/data/projects/$projectId/vector-layers/filter'
+    | '/data/projects/$projectId/wfs-services/filter'
     | '/data/projects/$projectId/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId/wms-layers/filter'
     | '/data/projects/$projectId/wms-services/filter'
@@ -4603,6 +4615,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/filter'
     | '/data/projects/$projectId_/units/filter'
     | '/data/projects/$projectId_/vector-layers/filter'
+    | '/data/projects/$projectId_/wfs-services/filter'
     | '/data/projects/$projectId_/wms-layers/$wmsLayerId'
     | '/data/projects/$projectId_/wms-layers/filter'
     | '/data/projects/$projectId_/wms-services/filter'
@@ -5497,6 +5510,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/wms-layers/$wmsLayerId'
       preLoaderRoute: typeof DataProjectsProjectIdWmsLayersWmsLayerIdRouteImport
       parentRoute: typeof DataProjectsProjectIdWmsLayersRouteRoute
+    }
+    '/data/projects/$projectId_/wfs-services/filter': {
+      id: '/data/projects/$projectId_/wfs-services/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/wfs-services/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdWfsServicesFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdWfsServicesRouteRoute
     }
     '/data/projects/$projectId_/vector-layers/filter': {
       id: '/data/projects/$projectId_/vector-layers/filter'
@@ -9322,6 +9342,7 @@ const DataProjectsProjectIdWfsServicesWfsServiceIdRouteRouteWithChildren =
 
 interface DataProjectsProjectIdWfsServicesRouteRouteChildren {
   DataProjectsProjectIdWfsServicesWfsServiceIdRouteRoute: typeof DataProjectsProjectIdWfsServicesWfsServiceIdRouteRouteWithChildren
+  DataProjectsProjectIdWfsServicesFilterRoute: typeof DataProjectsProjectIdWfsServicesFilterRoute
   DataProjectsProjectIdWfsServicesIndexRoute: typeof DataProjectsProjectIdWfsServicesIndexRoute
 }
 
@@ -9329,6 +9350,8 @@ const DataProjectsProjectIdWfsServicesRouteRouteChildren: DataProjectsProjectIdW
   {
     DataProjectsProjectIdWfsServicesWfsServiceIdRouteRoute:
       DataProjectsProjectIdWfsServicesWfsServiceIdRouteRouteWithChildren,
+    DataProjectsProjectIdWfsServicesFilterRoute:
+      DataProjectsProjectIdWfsServicesFilterRoute,
     DataProjectsProjectIdWfsServicesIndexRoute:
       DataProjectsProjectIdWfsServicesIndexRoute,
   }

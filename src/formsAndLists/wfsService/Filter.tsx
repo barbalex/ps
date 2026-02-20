@@ -1,9 +1,9 @@
-import { Filter } from '../../components/shared/Filter/index.tsx'
-import { TextField } from '../../components/shared/TextField.tsx'
+import { Filter } from "../../components/shared/Filter/index.tsx";
+import { TextField } from "../../components/shared/TextField.tsx";
 
 type Props = {
-  from: string
-}
+  from: string;
+};
 
 export const WfsServiceFilter = ({ from }: Props) => (
   <Filter from={from}>
@@ -12,16 +12,16 @@ export const WfsServiceFilter = ({ from }: Props) => (
         <TextField
           label="URL"
           name="url"
-          value={row.url ?? ''}
+          value={row.url ?? ""}
           onChange={onChange}
         />
         <TextField
           label="Version"
           name="version"
-          value={row.version ?? ''}
+          value={row.version ?? ""}
           onChange={onChange}
         />
       </>
     )}
   </Filter>
-)
+);

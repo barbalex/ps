@@ -3,8 +3,9 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
+import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { wfsServicesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -24,17 +25,20 @@ type NavDataClosed = {
 
 export const useWfsServicesNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filter] = useAtom(wfsServicesFilterAtom)
   const location = useLocation()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wfs-services']
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
 
   const sql = isOpen
     ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}')
+        count_filtered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         wfs_service_id AS id,
         coalesce(url, wfs_service_id::text) AS label,
@@ -43,12 +47,13 @@ export const useWfsServicesNavData = ({ projectId }: Props) => {
       FROM wfs_services, count_unfiltered, count_filtered
       WHERE
         project_id = '${projectId}'
+        ${isFiltered ? `AND ${filterString}` : ''}
       ORDER BY url, wfs_service_id
     `
     : `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}')
+        count_filtered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
@@ -78,7 +83,7 @@ export const useWfsServicesNavData = ({ projectId }: Props) => {
     ownUrl,
     label: buildNavLabel({
       loading,
-      isFiltered: false,
+      isFiltered,
       countFiltered,
       countUnfiltered,
       namePlural: 'WFS Services',
@@ -87,5 +92,5 @@ export const useWfsServicesNavData = ({ projectId }: Props) => {
     navs,
   }
 
-  return { loading, navData, isFiltered: false }
+  return { loading, navData, isFiltered }
 }
