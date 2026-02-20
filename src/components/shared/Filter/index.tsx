@@ -85,6 +85,13 @@ const getTableName = (urlPath) => {
     // the prefix to the tableName is the grandParent without its last character (s)
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
+  if (tableName === 'users') {
+    const usersIndex = urlPath.lastIndexOf('users')
+    const parentCollection = usersIndex > 1 ? urlPath[usersIndex - 2] : null
+    if (parentCollection === 'projects') tableName = 'project_users'
+    if (parentCollection === 'subprojects') tableName = 'subproject_users'
+    if (parentCollection === 'places') tableName = 'place_users'
+  }
   return tableName
 }
 
@@ -115,7 +122,6 @@ export const Filter = ({ level, from, children }) => {
   // ensure atom exists - got errors when it didn't
   const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
   const [filter] = useAtom(filterAtom)
-  console.log('Filter', { filterAtomName, filter })
 
   const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
     filter,
