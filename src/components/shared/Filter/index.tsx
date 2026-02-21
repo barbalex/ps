@@ -79,6 +79,12 @@ const getFilterStrings = ({
   return { whereUnfilteredString, whereFilteredString }
 }
 
+const normalizeId = (value) => {
+  if (typeof value !== 'string') return value ?? null
+  const trimmed = value.trim()
+  return trimmed === '' ? null : trimmed
+}
+
 const getTitle = ({ tableName, placeNamePlural }) => {
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
@@ -122,7 +128,11 @@ export const Filter = ({
   tableNameOverride,
   filterAtomNameOverride,
 }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+  const params = useParams({ from })
+  const projectId = normalizeId(params?.projectId)
+  const subprojectId = normalizeId(params?.subprojectId)
+  const placeId = normalizeId(params?.placeId)
+  const placeId2 = normalizeId(params?.placeId2)
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 

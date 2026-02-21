@@ -8,13 +8,18 @@ export const WidgetType = ({
   field_type_id = '',
   value,
 }) => {
-  const widgetWhere = `
+  const normalizedFieldTypeId =
+    typeof field_type_id === 'string' ? field_type_id.trim() : field_type_id
+
+  const widgetWhere = normalizedFieldTypeId ?
+      `
     widget_type_id in (
       SELECT widget_type_id
       FROM widgets_for_fields
-      WHERE field_type_id = '${field_type_id}'
+      WHERE field_type_id = '${normalizedFieldTypeId}'
     )
   `
+    : '1 = 0'
 
   return (
     <DropdownField
@@ -27,7 +32,7 @@ export const WidgetType = ({
       validationState={validations?.widget_type_id?.state ?? 'none'}
       validationMessage={
         validations.widget_type_id?.message ??
-        (field_type_id ? undefined : 'Field type required')
+        (normalizedFieldTypeId ? undefined : 'Field type required')
       }
     />
   )
