@@ -160,15 +160,45 @@ export const Filter = ({
     })
   // ensure atom exists - got errors when it didn't
   const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
-  const [filter] = useAtom(filterAtom)
+  const [filter, setFilter] = useAtom(filterAtom)
   const virtualTabValue = filter.length + 1
-  const selectedTabValue = activeTab > filter.length ? 'add' : activeTab
+  const isActiveVirtualTab = activeTab > filter.length
+  const activeRealFilter = !isActiveVirtualTab ? filter[activeTab - 1] : undefined
+  const canAddAnotherFilter =
+    isActiveVirtualTab ||
+    (!!activeRealFilter && Object.keys(activeRealFilter).length > 0)
+  const selectedTabValue =
+    isActiveVirtualTab ? 'add' : activeTab
   const onTabSelect = (e, data) => {
     if (data.value === 'add') {
       setActiveTab(virtualTabValue)
       return
     }
     setActiveTab(Number(data.value))
+  }
+
+  const removeOrFilter = (indexToRemove) => {
+    if (indexToRemove < 0) return
+    if (filter.length <= 1) return
+    const filterToRemove = filter[indexToRemove]
+    if (
+      filterToRemove &&
+      Object.keys(filterToRemove).length > 0 &&
+      !window.confirm('Remove this OR filter?')
+    )
+      return
+
+    const nextFilter = filter.filter((_, index) => index !== indexToRemove)
+    setFilter(nextFilter)
+
+    const removedTabValue = indexToRemove + 1
+    if (activeTab === removedTabValue) {
+      setActiveTab(Math.max(1, removedTabValue - 1))
+      return
+    }
+    if (activeTab > removedTabValue) {
+      setActiveTab(activeTab - 1)
+    }
   }
 
   const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
@@ -244,13 +274,32 @@ export const Filter = ({
                 : `Or filter ${i + 1}`
           return (
             <Tab key={i} value={i + 1} className={styles.tab}>
-              {label}
+              <span className={styles.tabContent}>
+                <span>{label}</span>
+                {filter.length > 1 && (
+                  <span
+                    className={styles.removeTab}
+                    role="button"
+                    aria-label={`Remove ${label}`}
+                    title={`Remove ${label}`}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      event.stopPropagation()
+                      removeOrFilter(i)
+                    }}
+                  >
+                    ×
+                  </span>
+                )}
+              </span>
             </Tab>
           )
         })}
-        <Tab value="add" className={styles.tab}>
-          +
-        </Tab>
+        {canAddAnotherFilter && (
+          <Tab value="add" className={styles.tab}>
+            {isActiveVirtualTab ? 'Or' : '+'}
+          </Tab>
+        )}
       </TabList>
       <OrFilter
         filterName={filterAtomName}

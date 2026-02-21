@@ -8,24 +8,13 @@ export const setNewFilterFromOld = ({
   filterName,
   targetType,
 }) => {
-  // console.log('setNewFilterFromOld 0', {
-  //   name,
-  //   value,
-  //   orFilters,
-  //   orIndex,
-  //   filterName,
-  //   targetType,
-  // })
   const useValueUnchanged =
     ['text', 'email', 'boolean', 'date'].includes(targetType) ||
     typeof value === 'boolean'
   const existingOrFilter = orFilters[orIndex] ?? {}
   const isAppending = orIndex >= orFilters.length
   const newOrFilter = { ...existingOrFilter }
-  // console.log('setNewFilterFromOld 1', {
-  //   existingOrFilter,
-  //   newOrFilter,
-  // })
+
   if (value !== undefined && value !== null && value !== '') {
     newOrFilter[name] = useValueUnchanged
       ? value // numbers get passed as string when coming from options
