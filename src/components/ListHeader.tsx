@@ -4,6 +4,8 @@ interface Props {
   label: string
   nameSingular: string
   addRow?: () => void
+  addRowDisabled?: boolean
+  addRowDisabledReason?: string
   menus?: unknown[]
   info?: unknown
 }
@@ -13,6 +15,8 @@ export const ListHeader = ({
   label,
   nameSingular,
   addRow,
+  addRowDisabled,
+  addRowDisabledReason,
   menus,
   info,
 }: Props) => (
@@ -21,6 +25,8 @@ export const ListHeader = ({
       <h1>{label}</h1>
       <FormMenu
         addRow={addRow}
+        addRowDisabled={addRowDisabled}
+        addRowDisabledReason={addRowDisabledReason}
         nameSingular={nameSingular}
         siblings={menus}
       />

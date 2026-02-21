@@ -32,6 +32,8 @@ export const PlaceLevels = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        addRowDisabled={navs.length >= 2}
+        addRowDisabledReason="Maximum reached: only 2 place levels are allowed"
       />
       <div className="list-container">
         {loading ?

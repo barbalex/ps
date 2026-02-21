@@ -4,6 +4,8 @@ import styles from './index.module.css'
 export const FormHeader = ({
   title,
   addRow,
+  addRowDisabled,
+  addRowDisabledReason,
   deleteRow,
   toNext,
   toPrevious,
@@ -25,6 +27,8 @@ export const FormHeader = ({
       {(addRow || deleteRow || toNext || toPrevious || siblings) && (
         <FormMenu
           addRow={addRow}
+          addRowDisabled={addRowDisabled}
+          addRowDisabledReason={addRowDisabledReason}
           deleteRow={deleteRow}
           toNext={toNext}
           toPrevious={toPrevious}

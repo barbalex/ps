@@ -6,6 +6,8 @@ import { MenuBar } from '../MenuBar/index.tsx'
 
 export const FormMenu = ({
   addRow,
+  addRowDisabled = false,
+  addRowDisabledReason,
   deleteRow,
   toNext,
   toPrevious,
@@ -27,11 +29,18 @@ export const FormMenu = ({
       </Tooltip>
     )}
     {!!addRow && (
-      <Tooltip content={`New ${tableName}`}>
+      <Tooltip
+        content={
+          addRowDisabled && addRowDisabledReason ?
+            addRowDisabledReason
+          : `New ${tableName}`
+        }
+      >
         <Button
           size="medium"
           icon={<FaPlus />}
           onClick={addRow}
+          disabled={addRowDisabled}
         />
       </Tooltip>
     )}

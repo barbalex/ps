@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 
@@ -19,6 +19,11 @@ export const Header = ({ autoFocusRef }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+  const placeLevelsRes = useLiveQuery(
+    `SELECT place_level_id FROM place_levels WHERE project_id = $1`,
+    [projectId],
+  )
+  const rowCount = placeLevelsRes?.rows?.length ?? 0
 
   // Keep a ref to the current placeLevelId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -106,6 +111,8 @@ export const Header = ({ autoFocusRef }: Props) => {
     <FormHeader
       title="Place level"
       addRow={addRow}
+      addRowDisabled={rowCount >= 2}
+      addRowDisabledReason="Maximum reached: only 2 place levels are allowed"
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
