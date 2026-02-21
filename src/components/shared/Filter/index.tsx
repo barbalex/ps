@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { Tab, TabList } from '@fluentui/react-components'
+import {
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  Tab,
+  TabList,
+} from '@fluentui/react-components'
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
@@ -180,13 +188,6 @@ export const Filter = ({
   const removeOrFilter = (indexToRemove) => {
     if (indexToRemove < 0) return
     if (filter.length <= 1) return
-    const filterToRemove = filter[indexToRemove]
-    if (
-      filterToRemove &&
-      Object.keys(filterToRemove).length > 0 &&
-      !window.confirm('Remove this OR filter?')
-    )
-      return
 
     const nextFilter = filter.filter((_, index) => index !== indexToRemove)
     setFilter(nextFilter)
@@ -277,19 +278,48 @@ export const Filter = ({
               <span className={styles.tabContent}>
                 <span>{label}</span>
                 {filter.length > 1 && (
-                  <span
-                    className={styles.removeTab}
-                    role="button"
-                    aria-label={`Remove ${label}`}
-                    title={`Remove ${label}`}
-                    onClick={(event) => {
-                      event.preventDefault()
-                      event.stopPropagation()
-                      removeOrFilter(i)
-                    }}
-                  >
-                    ×
-                  </span>
+                  <Menu openOnHover={false}>
+                    <MenuTrigger disableButtonEnhancement>
+                      <button
+                        type="button"
+                        className={styles.removeTab}
+                        aria-label={`Remove ${label}`}
+                        title={`Remove ${label}`}
+                        onClick={(event) => {
+                          event.preventDefault()
+                          event.stopPropagation()
+                        }}
+                      >
+                        ×
+                      </button>
+                    </MenuTrigger>
+                    <MenuPopover
+                      onClick={(event) => {
+                        event.preventDefault()
+                        event.stopPropagation()
+                      }}
+                    >
+                      <MenuList>
+                        <MenuItem
+                          onClick={(event) => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                            removeOrFilter(i)
+                          }}
+                        >
+                          Yes, remove
+                        </MenuItem>
+                        <MenuItem
+                          onClick={(event) => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                          }}
+                        >
+                          No
+                        </MenuItem>
+                      </MenuList>
+                    </MenuPopover>
+                  </Menu>
                 )}
               </span>
             </Tab>

@@ -14,6 +14,9 @@
 }
 
 .removeTab {
+  border: none;
+  background: transparent;
+  padding: 0;
   cursor: pointer;
   font-weight: 700;
   line-height: 1;
