@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
-import { useLocation, useParams } from '@tanstack/react-router'
+import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { FilterHeader } from './Header.tsx'
@@ -133,10 +133,9 @@ export const Filter = ({
   const subprojectId = normalizeId(params?.subprojectId)
   const placeId = normalizeId(params?.placeId)
   const placeId2 = normalizeId(params?.placeId2)
-  const location = useLocation()
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const fromPath = from?.split('/').filter((p) => p !== '') ?? []
 
-  const inferredTableName = getTableName(urlPath)
+  const inferredTableName = getTableName(fromPath)
   const tableName = tableNameOverride ?? inferredTableName
 
   const resPlaceLevel = useLiveQuery(
