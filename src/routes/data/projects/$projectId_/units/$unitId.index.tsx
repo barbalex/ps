@@ -14,7 +14,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing unitId in route parameters')
     }
     return {
-    navDataFetcher: 'useUnitNavData',
-  }
+      navDataFetcher: 'useUnitNavData',
+    }
   },
 })

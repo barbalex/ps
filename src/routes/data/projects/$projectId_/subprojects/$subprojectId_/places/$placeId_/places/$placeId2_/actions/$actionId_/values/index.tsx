@@ -2,16 +2,12 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { ActionValues } from '../../../../../../../../../../../../../formsAndLists/actionValues.tsx'
 import { NotFound } from '../../../../../../../../../../../../../components/NotFound.tsx'
+const from =
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/values/'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/values/',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <ActionValues from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/values/" />
+  ),
   notFoundComponent: NotFound,
 })
-
-function RouteComponent() {
-  return (
-    <ActionValues from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/values/" />
-  )
-}

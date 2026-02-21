@@ -18,7 +18,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing placeReportId in route parameters')
     }
     return {
-    navDataFetcher: 'usePlaceReportNavData',
-  }
+      navDataFetcher: 'usePlaceReportNavData',
+    }
   },
 })

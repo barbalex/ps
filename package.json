@@ -7,6 +7,7 @@
     "dev": "vite",
     "dev-host": "vite --host",
     "build": "vite build",
+    "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
     "how-to-install-using-sfw": "sfw npm install -f",

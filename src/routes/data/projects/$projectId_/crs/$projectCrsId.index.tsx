@@ -14,7 +14,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing projectCrsId in route parameters')
     }
     return {
-    navDataFetcher: 'useProjectCrsNavData',
-  }
+      navDataFetcher: 'useProjectCrsNavData',
+    }
   },
 })

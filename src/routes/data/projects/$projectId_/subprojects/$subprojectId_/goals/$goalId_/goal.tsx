@@ -1,11 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Goal } from '../../../../../../../../formsAndLists/goal/index.tsx'
+const from =
+  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <Goal from="/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal" />
+  ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -17,13 +19,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing goalId in route parameters')
     }
     return {
-    navDataFetcher: 'useGoalGoalNavData',
-  }
+      navDataFetcher: 'useGoalGoalNavData',
+    }
   },
 })
-
-function RouteComponent() {
-  return (
-    <Goal from="/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal" />
-  )
-}

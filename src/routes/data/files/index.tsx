@@ -5,10 +5,6 @@ import { NotFound } from '../../../components/NotFound.tsx'
 
 const from = '/data/files/'
 export const Route = createFileRoute(from)({
-  component: RouteComponent,
+  component: () => <Files from={from} />,
   notFoundComponent: NotFound,
 })
-
-function RouteComponent() {
-  return <Files from={from} />
-}

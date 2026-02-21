@@ -14,7 +14,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing placeLevelId in route parameters')
     }
     return {
-    navDataFetcher: 'usePlaceLevelNavData',
-  }
+      navDataFetcher: 'usePlaceLevelNavData',
+    }
   },
 })

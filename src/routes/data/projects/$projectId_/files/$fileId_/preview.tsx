@@ -4,12 +4,6 @@ import { FilePreview } from '../../../../../../formsAndLists/filePreview/index.t
 
 const from = '/data/projects/$projectId_/files/$fileId_/preview'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/files/$fileId_/preview',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => <FilePreview from={from} />,
 })
-
-function RouteComponent() {
-  return <FilePreview from={from} />
-}

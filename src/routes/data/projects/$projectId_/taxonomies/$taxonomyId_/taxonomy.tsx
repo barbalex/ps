@@ -1,11 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Taxonomy } from '../../../../../../formsAndLists/taxonomy/index.tsx'
+const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <Taxonomy
+      from={'/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'}
+    />
+  ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -14,17 +17,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing taxonomyId in route parameters')
     }
     return {
-    navDataFetcher: 'useTaxonomyTaxonomyNavData',
-  }
+      navDataFetcher: 'useTaxonomyTaxonomyNavData',
+    }
   },
 })
-
-function RouteComponent() {
-  return (
-    <Taxonomy
-      from={
-        '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
-      }
-    />
-  )
-}

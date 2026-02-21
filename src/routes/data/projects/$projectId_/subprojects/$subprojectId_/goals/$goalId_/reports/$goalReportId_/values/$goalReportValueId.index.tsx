@@ -20,10 +20,12 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing goalReportId in route parameters')
     }
     if (!params.goalReportValueId || params.goalReportValueId === 'undefined') {
-      throw new Error('Invalid or missing goalReportValueId in route parameters')
+      throw new Error(
+        'Invalid or missing goalReportValueId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useGoalReportValueNavData',
-  }
+      navDataFetcher: 'useGoalReportValueNavData',
+    }
   },
 })

@@ -6,10 +6,6 @@ import { NotFound } from '../../../components/NotFound.tsx'
 const from = '/data/fields/'
 
 export const Route = createFileRoute(from)({
-  component: RouteComponent,
+  component: () => <Fields from={from} />,
   notFoundComponent: NotFound,
 })
-
-function RouteComponent() {
-  return <Fields from={from} />
-}

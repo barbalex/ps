@@ -1,11 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { ActionReportValue } from '../../../../../../../../../../../../../formsAndLists/actionReportValue/index.tsx'
+const from =
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/reports/$actionReportId_/values/$actionReportValueId/'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/reports/$actionReportId_/values/$actionReportValueId/',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <ActionReportValue from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/reports/$actionReportId_/values/$actionReportValueId/" />
+  ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -22,17 +24,16 @@ export const Route = createFileRoute(
     if (!params.actionReportId || params.actionReportId === 'undefined') {
       throw new Error('Invalid or missing actionReportId in route parameters')
     }
-    if (!params.actionReportValueId || params.actionReportValueId === 'undefined') {
-      throw new Error('Invalid or missing actionReportValueId in route parameters')
+    if (
+      !params.actionReportValueId ||
+      params.actionReportValueId === 'undefined'
+    ) {
+      throw new Error(
+        'Invalid or missing actionReportValueId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useActionReportValueNavData',
-  }
+      navDataFetcher: 'useActionReportValueNavData',
+    }
   },
 })
-
-function RouteComponent() {
-  return (
-    <ActionReportValue from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/reports/$actionReportId_/values/$actionReportValueId/" />
-  )
-}

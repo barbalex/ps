@@ -17,7 +17,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing taxonId in route parameters')
     }
     return {
-    navDataFetcher: 'useTaxonNavData',
-  }
+      navDataFetcher: 'useTaxonNavData',
+    }
   },
 })

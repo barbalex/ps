@@ -1,11 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { WmsService } from '../../../../../../formsAndLists/wmsService/index.tsx'
+const from =
+  '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <WmsService
+      from={
+        '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
+      }
+    />
+  ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -14,17 +20,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing wmsServiceId in route parameters')
     }
     return {
-    navDataFetcher: 'useWmsServiceWmsServiceNavData',
-  }
+      navDataFetcher: 'useWmsServiceWmsServiceNavData',
+    }
   },
 })
-
-function RouteComponent() {
-  return (
-    <WmsService
-      from={
-        '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
-      }
-    />
-  )
-}

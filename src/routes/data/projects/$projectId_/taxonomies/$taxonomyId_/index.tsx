@@ -1,17 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { TaxonomyList } from '../../../../../../formsAndLists/taxonomy/List.tsx'
+const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/taxonomies/$taxonomyId_/',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => <TaxonomyList from={from} />,
 })
-
-const RouteComponent = () => {
-  return (
-    <TaxonomyList
-      from={'/data/projects/$projectId_/taxonomies/$taxonomyId_/'}
-    />
-  )
-}

@@ -1,15 +1,13 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/taxonomies',
-)({
+export const Route = createFileRoute('/data/projects/$projectId_/taxonomies')({
   component: Outlet,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
     }
     return {
-    navDataFetcher: 'useTaxonomiesNavData',
-  }
+      navDataFetcher: 'useTaxonomiesNavData',
+    }
   },
 })

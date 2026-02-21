@@ -9,7 +9,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing projectId in route parameters')
     }
     return {
-    navDataFetcher: 'useVectorLayersNavData',
-  }
+      navDataFetcher: 'useVectorLayersNavData',
+    }
   },
 })

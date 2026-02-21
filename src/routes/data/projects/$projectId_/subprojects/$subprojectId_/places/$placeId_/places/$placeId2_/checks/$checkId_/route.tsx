@@ -21,7 +21,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing checkId in route parameters')
     }
     return {
-    navDataFetcher: 'useCheckNavData',
-  }
+      navDataFetcher: 'useCheckNavData',
+    }
   },
 })

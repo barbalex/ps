@@ -13,11 +13,16 @@ export const Route = createFileRoute(
     if (!params.subprojectId || params.subprojectId === 'undefined') {
       throw new Error('Invalid or missing subprojectId in route parameters')
     }
-    if (!params.subprojectReportDesignId || params.subprojectReportDesignId === 'undefined') {
-      throw new Error('Invalid or missing subprojectReportDesignId in route parameters')
+    if (
+      !params.subprojectReportDesignId ||
+      params.subprojectReportDesignId === 'undefined'
+    ) {
+      throw new Error(
+        'Invalid or missing subprojectReportDesignId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useSubprojectReportDesignNavData',
-  }
+      navDataFetcher: 'useSubprojectReportDesignNavData',
+    }
   },
 })

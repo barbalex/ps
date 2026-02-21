@@ -12,7 +12,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing wmsServiceId in route parameters')
     }
     return {
-    navDataFetcher: 'useWmsServiceLayersNavData',
-  }
+      navDataFetcher: 'useWmsServiceLayersNavData',
+    }
   },
 })

@@ -18,7 +18,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing placeId2 in route parameters')
     }
     return {
-    navDataFetcher: 'useChecksNavData',
-  }
+      navDataFetcher: 'useChecksNavData',
+    }
   },
 })

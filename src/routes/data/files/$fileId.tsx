@@ -6,7 +6,7 @@ import { NotFound } from '../../../components/NotFound.tsx'
 const from = '/data/files/$fileId'
 
 export const Route = createFileRoute(from)({
-  component: RouteComponent,
+  component: () => <File from={from} />,
   notFoundComponent: NotFound,
   beforeLoad: ({ params }) => {
     if (!params.fileId || params.fileId === 'undefined') {
@@ -17,7 +17,3 @@ export const Route = createFileRoute(from)({
     }
   },
 })
-
-function RouteComponent() {
-  return <File from={from} />
-}

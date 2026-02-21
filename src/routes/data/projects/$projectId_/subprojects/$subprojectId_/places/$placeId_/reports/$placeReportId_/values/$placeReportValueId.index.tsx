@@ -1,11 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { PlaceReportValue } from '../../../../../../../../../../../formsAndLists/placeReportValue/index.tsx'
+const from =
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/values/$placeReportValueId/'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/values/$placeReportValueId/',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <PlaceReportValue from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/values/$placeReportValueId/" />
+  ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -19,17 +21,16 @@ export const Route = createFileRoute(
     if (!params.placeReportId || params.placeReportId === 'undefined') {
       throw new Error('Invalid or missing placeReportId in route parameters')
     }
-    if (!params.placeReportValueId || params.placeReportValueId === 'undefined') {
-      throw new Error('Invalid or missing placeReportValueId in route parameters')
+    if (
+      !params.placeReportValueId ||
+      params.placeReportValueId === 'undefined'
+    ) {
+      throw new Error(
+        'Invalid or missing placeReportValueId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'usePlaceReportValueNavData',
-  }
+      navDataFetcher: 'usePlaceReportValueNavData',
+    }
   },
 })
-
-function RouteComponent() {
-  return (
-    <PlaceReportValue from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/values/$placeReportValueId/" />
-  )
-}

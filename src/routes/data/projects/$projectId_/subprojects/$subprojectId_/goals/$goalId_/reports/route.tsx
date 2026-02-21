@@ -15,7 +15,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing goalId in route parameters')
     }
     return {
-    navDataFetcher: 'useGoalReportsNavData',
-  }
+      navDataFetcher: 'useGoalReportsNavData',
+    }
   },
 })

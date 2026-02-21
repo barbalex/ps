@@ -24,11 +24,16 @@ export const Route = createFileRoute(
     if (!params.subprojectId || params.subprojectId === 'undefined') {
       throw new Error('Invalid or missing subprojectId in route parameters')
     }
-    if (!params.occurrenceImportId || params.occurrenceImportId === 'undefined') {
-      throw new Error('Invalid or missing occurrenceImportId in route parameters')
+    if (
+      !params.occurrenceImportId ||
+      params.occurrenceImportId === 'undefined'
+    ) {
+      throw new Error(
+        'Invalid or missing occurrenceImportId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useOccurrenceImportNavData',
-  }
+      navDataFetcher: 'useOccurrenceImportNavData',
+    }
   },
 })

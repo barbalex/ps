@@ -12,7 +12,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing listId in route parameters')
     }
     return {
-    navDataFetcher: 'useListNavData',
-  }
+      navDataFetcher: 'useListNavData',
+    }
   },
 })

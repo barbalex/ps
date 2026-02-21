@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-import { PersonFilter } from "../../../../../formsAndLists/person/Filter.tsx";
+import { PersonFilter } from '../../../../../formsAndLists/person/Filter.tsx'
 
-const from = "/data/projects/$projectId_/persons/filter";
+const from = '/data/projects/$projectId_/persons/filter'
 
 export const Route = createFileRoute(
-  "/data/projects/$projectId_/persons/filter",
+  '/data/projects/$projectId_/persons/filter',
 )({
   component: () => <PersonFilter from={from} />,
-});
+})

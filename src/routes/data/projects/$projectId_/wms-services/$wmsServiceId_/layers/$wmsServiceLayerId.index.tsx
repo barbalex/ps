@@ -14,10 +14,12 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing wmsServiceId in route parameters')
     }
     if (!params.wmsServiceLayerId || params.wmsServiceLayerId === 'undefined') {
-      throw new Error('Invalid or missing wmsServiceLayerId in route parameters')
+      throw new Error(
+        'Invalid or missing wmsServiceLayerId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useWmsServiceLayerNavData',
-  }
+      navDataFetcher: 'useWmsServiceLayerNavData',
+    }
   },
 })

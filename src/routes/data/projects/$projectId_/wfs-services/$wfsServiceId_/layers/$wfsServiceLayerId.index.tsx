@@ -14,10 +14,12 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing wfsServiceId in route parameters')
     }
     if (!params.wfsServiceLayerId || params.wfsServiceLayerId === 'undefined') {
-      throw new Error('Invalid or missing wfsServiceLayerId in route parameters')
+      throw new Error(
+        'Invalid or missing wfsServiceLayerId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useWfsServiceLayerNavData',
-  }
+      navDataFetcher: 'useWfsServiceLayerNavData',
+    }
   },
 })

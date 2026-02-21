@@ -17,7 +17,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing subprojectUserId in route parameters')
     }
     return {
-    navDataFetcher: 'useSubprojectUserNavData',
-  }
+      navDataFetcher: 'useSubprojectUserNavData',
+    }
   },
 })

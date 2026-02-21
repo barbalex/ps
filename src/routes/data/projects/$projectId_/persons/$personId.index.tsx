@@ -14,7 +14,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing personId in route parameters')
     }
     return {
-    navDataFetcher: 'usePersonNavData',
-  }
+      navDataFetcher: 'usePersonNavData',
+    }
   },
 })

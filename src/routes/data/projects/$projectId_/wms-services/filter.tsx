@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-import { WmsServiceFilter } from "../../../../../formsAndLists/wmsService/Filter.tsx";
+import { WmsServiceFilter } from '../../../../../formsAndLists/wmsService/Filter.tsx'
 
-const from = "/data/projects/$projectId_/wms-services/filter";
+const from = '/data/projects/$projectId_/wms-services/filter'
 
 export const Route = createFileRoute(from)({
   component: () => <WmsServiceFilter from={from} />,
-});
+})

@@ -1,17 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { WfsServiceList } from '../../../../../../formsAndLists/wfsService/List.tsx'
+const from = '/data/projects/$projectId_/wfs-services/$wfsServiceId_/'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/wfs-services/$wfsServiceId_/',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => <WfsServiceList from={from} />,
 })
-
-const RouteComponent = () => {
-  return (
-    <WfsServiceList
-      from={'/data/projects/$projectId_/wfs-services/$wfsServiceId_/'}
-    />
-  )
-}

@@ -20,7 +20,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing chartSubjectId in route parameters')
     }
     return {
-    navDataFetcher: 'useChartSubjectNavData',
-  }
+      navDataFetcher: 'useChartSubjectNavData',
+    }
   },
 })

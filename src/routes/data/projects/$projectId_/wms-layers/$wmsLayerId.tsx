@@ -14,7 +14,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing wmsLayerId in route parameters')
     }
     return {
-    navDataFetcher: 'useWmsLayerNavData',
-  }
+      navDataFetcher: 'useWmsLayerNavData',
+    }
   },
 })

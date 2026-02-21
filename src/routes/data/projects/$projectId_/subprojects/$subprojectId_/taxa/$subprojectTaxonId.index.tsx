@@ -1,11 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { SubprojectTaxon } from '../../../../../../../formsAndLists/subprojectTaxon/index.tsx'
+const from =
+  '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
 
-export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/',
-)({
-  component: RouteComponent,
+export const Route = createFileRoute(from)({
+  component: () => (
+    <SubprojectTaxon from="/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/" />
+  ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -14,16 +16,12 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing subprojectId in route parameters')
     }
     if (!params.subprojectTaxonId || params.subprojectTaxonId === 'undefined') {
-      throw new Error('Invalid or missing subprojectTaxonId in route parameters')
+      throw new Error(
+        'Invalid or missing subprojectTaxonId in route parameters',
+      )
     }
     return {
-    navDataFetcher: 'useSubprojectTaxonNavData',
-  }
+      navDataFetcher: 'useSubprojectTaxonNavData',
+    }
   },
 })
-
-const RouteComponent = () => {
-  return (
-    <SubprojectTaxon from="/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/" />
-  )
-}

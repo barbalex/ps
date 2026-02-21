@@ -12,7 +12,7 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing subprojectId in route parameters')
     }
     return {
-    navDataFetcher: 'useOccurrencesToAssessNavData',
-  }
+      navDataFetcher: 'useOccurrencesToAssessNavData',
+    }
   },
 })
