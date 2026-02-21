@@ -280,18 +280,25 @@ export const Filter = ({
                 {filter.length > 1 && (
                   <Menu openOnHover={false}>
                     <MenuTrigger disableButtonEnhancement>
-                      <button
-                        type="button"
+                      <span
                         className={styles.removeTab}
+                        role="button"
+                        tabIndex={0}
                         aria-label={`Remove ${label}`}
                         title={`Remove ${label}`}
                         onClick={(event) => {
                           event.preventDefault()
                           event.stopPropagation()
                         }}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault()
+                            event.stopPropagation()
+                          }
+                        }}
                       >
                         ×
-                      </button>
+                      </span>
                     </MenuTrigger>
                     <MenuPopover
                       onClick={(event) => {
