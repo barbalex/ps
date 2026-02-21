@@ -23,8 +23,10 @@ const getFilterStrings = ({
   subprojectId,
   tableName,
 }) => {
+  let workingFilter = (filter ?? []).map((orFilter) => ({ ...orFilter }))
+
   if (tableName === 'users') {
-    filter = filter.map((orFilter) =>
+    workingFilter = workingFilter.map((orFilter) =>
       Object.fromEntries(
         Object.entries(orFilter).filter(
           ([key]) =>
@@ -38,40 +40,40 @@ const getFilterStrings = ({
   // add parent_id for all filterable tables below subprojects
   if (tableName === 'places') {
     const parentFilter = { parent_id: placeId ?? null }
-    for (const orFilter of filter) {
+    for (const orFilter of workingFilter) {
       Object.assign(orFilter, parentFilter)
     }
-    if (!filter.length) filter.push(parentFilter)
+    if (!workingFilter.length) workingFilter.push(parentFilter)
     whereUnfiltered = parentFilter
   }
   if (
     ['actions', 'checks', 'place_reports', 'place_users'].includes(tableName)
   ) {
     const placeFilter = { place_id: placeId2 ?? placeId }
-    for (const orFilter of filter) {
+    for (const orFilter of workingFilter) {
       Object.assign(orFilter, placeFilter)
     }
-    if (!filter.length) filter.push(placeFilter)
+    if (!workingFilter.length) workingFilter.push(placeFilter)
     whereUnfiltered = placeFilter
   }
   // tables that need to be filtered by project_id
   if (['fields'].includes(tableName)) {
     const projectFilter = { project_id: projectId ?? null }
-    for (const orFilter of filter) {
+    for (const orFilter of workingFilter) {
       Object.assign(orFilter, projectFilter)
     }
-    if (!filter.length) filter.push(projectFilter)
+    if (!workingFilter.length) workingFilter.push(projectFilter)
     whereUnfiltered = projectFilter
   }
   if (['subproject_taxa'].includes(tableName)) {
     const subprojectFilter = { subproject_id: subprojectId ?? null }
-    for (const orFilter of filter) {
+    for (const orFilter of workingFilter) {
       Object.assign(orFilter, subprojectFilter)
     }
-    if (!filter.length) filter.push(subprojectFilter)
+    if (!workingFilter.length) workingFilter.push(subprojectFilter)
     whereUnfiltered = subprojectFilter
   }
-  const whereFilteredString = filterStringFromFilter(filter)
+  const whereFilteredString = filterStringFromFilter(workingFilter)
   const whereUnfilteredString = whereUnfiltered
     ? orFilterToSql(whereUnfiltered)
     : ''
