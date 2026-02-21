@@ -37,6 +37,13 @@ export const TextField = ({
     }
   }
 
+  const onKeyUp = (event) => {
+    const inFilterForm = !!event?.target?.closest?.('.form-container.filter')
+    if (inFilterForm) {
+      onChangeIn(event)
+    }
+  }
+
   return (
     <Field
       label={label ?? name ?? '(no label provided)'}
@@ -56,6 +63,7 @@ export const TextField = ({
           ref={ref}
           onChange={onChange}
           onKeyPress={onKeyPress}
+          onKeyUp={onKeyUp}
           onBlur={onChangeIn}
           disabled={disabled}
           className={styles.input}

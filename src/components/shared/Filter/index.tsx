@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import {
   Menu,
@@ -159,6 +159,7 @@ export const Filter = ({
   const title = getTitle({ tableName, placeNamePlural })
 
   const [activeTab, setActiveTab] = useState(1)
+  const filterFormContainerRef = useRef<HTMLDivElement | null>(null)
   // add 1 and 2 when below subproject_id
   const filterAtomName =
     filterAtomNameOverride ??
@@ -169,19 +170,27 @@ export const Filter = ({
   // ensure atom exists - got errors when it didn't
   const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
   const [filter, setFilter] = useAtom(filterAtom)
+  const [activeTabHasDraftValue, setActiveTabHasDraftValue] = useState(false)
   const virtualTabValue = filter.length + 1
   const isActiveVirtualTab = activeTab > filter.length
-  const activeRealFilter = !isActiveVirtualTab ? filter[activeTab - 1] : undefined
+  const activeRealFilter = !isActiveVirtualTab
+    ? filter[activeTab - 1]
+    : undefined
+  const activeRealFilterHasPersistedValue =
+    !!activeRealFilter && Object.keys(activeRealFilter).length > 0
   const canAddAnotherFilter =
     isActiveVirtualTab ||
-    (!!activeRealFilter && Object.keys(activeRealFilter).length > 0)
-  const selectedTabValue =
-    isActiveVirtualTab ? 'add' : activeTab
+    activeRealFilterHasPersistedValue ||
+    activeTabHasDraftValue
+  const selectedTabValue = isActiveVirtualTab ? 'add' : activeTab
+
   const onTabSelect = (e, data) => {
     if (data.value === 'add') {
+      setActiveTabHasDraftValue(false)
       setActiveTab(virtualTabValue)
       return
     }
+    setActiveTabHasDraftValue(false)
     setActiveTab(Number(data.value))
   }
 
@@ -194,13 +203,45 @@ export const Filter = ({
 
     const removedTabValue = indexToRemove + 1
     if (activeTab === removedTabValue) {
+      setActiveTabHasDraftValue(false)
       setActiveTab(Math.max(1, removedTabValue - 1))
       return
     }
     if (activeTab > removedTabValue) {
+      setActiveTabHasDraftValue(false)
       setActiveTab(activeTab - 1)
     }
   }
+
+  useEffect(() => {
+    const container = filterFormContainerRef.current
+    if (!container) return
+
+    const updateDraftFromNativeEvent = (event: Event) => {
+      if (isActiveVirtualTab) return
+      const target = event.target as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null
+      if (!target) return
+      if (
+        !(
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement
+        )
+      )
+        return
+      setActiveTabHasDraftValue((target.value ?? '').trim().length > 0)
+    }
+
+    container.addEventListener('input', updateDraftFromNativeEvent, true)
+    container.addEventListener('keyup', updateDraftFromNativeEvent, true)
+
+    return () => {
+      container.removeEventListener('input', updateDraftFromNativeEvent, true)
+      container.removeEventListener('keyup', updateDraftFromNativeEvent, true)
+    }
+  }, [isActiveVirtualTab])
 
   const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
     filter,
@@ -338,12 +379,14 @@ export const Filter = ({
           </Tab>
         )}
       </TabList>
-      <OrFilter
-        filterName={filterAtomName}
-        orFilters={filter}
-        orIndex={activeTab - 1}
-        children={children}
-      />
+      <div ref={filterFormContainerRef}>
+        <OrFilter
+          filterName={filterAtomName}
+          orFilters={filter}
+          orIndex={activeTab - 1}
+          children={children}
+        />
+      </div>
     </div>
   )
 }
