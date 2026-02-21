@@ -19,7 +19,8 @@ export const setNewFilterFromOld = ({
   const useValueUnchanged =
     ['text', 'email', 'boolean', 'date'].includes(targetType) ||
     typeof value === 'boolean'
-  const existingOrFilter = orFilters[orIndex]
+  const existingOrFilter = orFilters[orIndex] ?? {}
+  const isAppending = orIndex >= orFilters.length
   const newOrFilter = { ...existingOrFilter }
   // console.log('setNewFilterFromOld 1', {
   //   existingOrFilter,
@@ -29,9 +30,9 @@ export const setNewFilterFromOld = ({
     newOrFilter[name] = useValueUnchanged
       ? value // numbers get passed as string when coming from options
       : // need to convert them back to numbers
-      !isNaN(value)
-      ? parseFloat(value)
-      : value
+        !isNaN(value)
+        ? parseFloat(value)
+        : value
   } else {
     delete newOrFilter[name]
   }
@@ -44,10 +45,12 @@ export const setNewFilterFromOld = ({
   const newFilterWithEmptys = createNewOrFilters
     ? [newOrFilter]
     : !newOrFilterIsEmpty
-    ? // replace the existing or filter
-      orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
-    : // remove the existing or filter
-      orFilters.filter((f, i) => i !== orIndex)
+      ? isAppending
+        ? [...orFilters, newOrFilter]
+        : // replace the existing or filter
+          orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
+      : // remove the existing or filter
+        orFilters.filter((f, i) => i !== orIndex)
   // console.log('setNewFilterFromOld 5', { newFilterWithEmptys })
   const newFilterWithoutEmptys = newFilterWithEmptys.filter(
     (f) => Object.keys(f).length > 0,

@@ -152,7 +152,6 @@ export const Filter = ({
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
-  const onTabSelect = (e, data) => setActiveTab(data.value)
   const filterAtomName =
     filterAtomNameOverride ??
     filterAtomNameFromTableAndLevel({
@@ -162,6 +161,15 @@ export const Filter = ({
   // ensure atom exists - got errors when it didn't
   const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
   const [filter] = useAtom(filterAtom)
+  const virtualTabValue = filter.length + 1
+  const selectedTabValue = activeTab > filter.length ? 'add' : activeTab
+  const onTabSelect = (e, data) => {
+    if (data.value === 'add') {
+      setActiveTab(virtualTabValue)
+      return
+    }
+    setActiveTab(Number(data.value))
+  }
 
   const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
     filter,
@@ -223,7 +231,7 @@ export const Filter = ({
         filterAtom={filterAtom}
       />
       <TabList
-        selectedValue={activeTab}
+        selectedValue={selectedTabValue}
         onTabSelect={onTabSelect}
         className={styles.tabList}
       >
@@ -240,6 +248,9 @@ export const Filter = ({
             </Tab>
           )
         })}
+        <Tab value="add" className={styles.tab}>
+          +
+        </Tab>
       </TabList>
       <OrFilter
         filterName={filterAtomName}
