@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import Linkify from 'react-linkify'
+import Linkify from 'linkify-react'
 
 import styles from './Layer.module.css'
 
@@ -49,13 +49,7 @@ export const Layer = ({ layerData }) => {
               <div className={styles.label} style={{ backgroundColor }}>
                 {key}
               </div>
-              <Linkify
-                componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a target="blank" href={decoratedHref} key={key}>
-                    {decoratedText}
-                  </a>
-                )}
-              >
+              <Linkify options={{ target: '_blank' }}>
                 <div className={styles.text} style={{ backgroundColor }}>
                   {value}
                 </div>

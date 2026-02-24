@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
-import Linkify from 'react-linkify'
+import Linkify from 'linkify-react'
 
 import styles from './Field.module.css'
 
@@ -71,7 +71,7 @@ export const Field = ({ label, value, index, moveField }) => {
     >
       <div className={styles.label}>{label}</div>
       <div className={styles.value}>
-        <Linkify properties={{ target: '_blank' }}>{value}</Linkify>
+        <Linkify options={{ target: '_blank' }}>{value}</Linkify>
       </div>
     </div>
   )

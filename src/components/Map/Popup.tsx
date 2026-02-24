@@ -1,4 +1,4 @@
-import Linkify from 'react-linkify'
+import Linkify from 'linkify-react'
 
 import styles from './Popup.module.css'
 
@@ -33,13 +33,7 @@ export const Popup = ({
           {ld.properties.map(([key, value], index) => (
             <div className={styles.row} key={`${key}/${index}`}>
               <div className={styles.label}>{`${key}:`}</div>
-              <Linkify
-                componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a target="blank" href={decoratedHref} key={key}>
-                    {decoratedText}
-                  </a>
-                )}
-              >
+              <Linkify options={{ target: '_blank' }}>
                 <div className={styles.value}>{value}</div>
               </Linkify>
             </div>
