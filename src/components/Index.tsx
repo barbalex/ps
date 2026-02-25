@@ -1,5 +1,3 @@
-
-
 import styles from './Index.module.css'
 
 export const Index = () => (
@@ -43,7 +41,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Massnahmen</h3>
-          ...verbessern den Zustand einer Art oder eines Biotops.
+          ...verbessern den Zustand von Populationen oder Biotop-Flächen.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Kontrollen</h3>
@@ -51,8 +49,8 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Berichte</h3>
-          ...beschreiben die Entwick&shy;lung von Populationen, beurteilen den
-          Erfolg der Massnahmen und die Errei&shy;chung der Ziele.
+          ...beschreiben die Entwick&shy;lung, beurteilen den Erfolg der
+          Massnahmen und die Errei&shy;chung der Ziele.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Beobachtungen Dritter</h3>
@@ -64,12 +62,7 @@ export const Index = () => (
           effizient auf Handy, Tablet oder Computer.
         </div>
         <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Bring your own device</h3>
-          Promoting Species funktioniert auf jedem Betriebssystem: Windows,
-          MacOS, Linux, Android, iOS...
-        </div>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Kein Internet? Egal!</h3>
+          <h3 className={styles.cardTitle}>Feldtauglich</h3>
           Sie sind offline? Einfach weiter arbeiten. Sobald Sie wieder online
           sind, werden Ihre Daten synchronisiert.
         </div>
@@ -88,6 +81,11 @@ export const Index = () => (
           Erfassen Sie neue Mitarbeitende mit ihrer Email. Ergänzen Sie diese
           Person bei allen Arten und Biotopen, in denen sie mitarbeiten soll.
           Fertig!
+        </div>
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Bring your own device</h3>
+          Promoting Species funktioniert auf jedem Betriebssystem: Windows,
+          MacOS, Linux, Android, iOS...
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Teamwork</h3>
