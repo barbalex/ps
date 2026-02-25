@@ -65,6 +65,7 @@
     "leaflet-draw": "1.0.4",
     "linkify-react": "4.3.2",
     "linkifyjs": "4.3.2",
+    "pg": "8.19.0",
     "proj4": "2.20.2",
     "proj4leaflet": "1.0.2",
     "react": "19.2.4",
