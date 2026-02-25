@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import { PlacesNode } from './Places.tsx'
@@ -25,7 +24,6 @@ import type Projects from '../../models/public/Projects.ts'
 export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
-  const { user } = useCorbado()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -36,7 +34,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
 
-  // Check if user is account owner for the parent project (auth not yet implemented, assume yes if project exists)
+  // TODO: Check if user is account owner for the parent project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
     `SELECT project_id FROM projects WHERE project_id = $1`,
     [projectId],
@@ -97,15 +95,8 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             childrenCount={0}
             to={`${ownUrl}/subproject`}
           />
-          <PlacesNode
-            projectId={projectId}
-            subprojectId={nav.id}
-            level={5}
-          />
-          <SubprojectReportsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
+          <PlacesNode projectId={projectId} subprojectId={nav.id} level={5} />
+          <SubprojectReportsNode projectId={projectId} subprojectId={nav.id} />
           {showDesigningNodes && (
             <SubprojectReportDesignsNode
               projectId={projectId}
@@ -117,14 +108,8 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             projectId={projectId}
             subprojectId={nav.id}
           />
-          <GoalsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <OccurrenceImportsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
+          <GoalsNode projectId={projectId} subprojectId={nav.id} />
+          <OccurrenceImportsNode projectId={projectId} subprojectId={nav.id} />
           <OccurrencesToAssessNode
             projectId={projectId}
             subprojectId={nav.id}
@@ -133,26 +118,12 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             projectId={projectId}
             subprojectId={nav.id}
           />
-          <SubprojectTaxaNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <SubprojectUsersNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
+          <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
+          <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
           {showFiles && (
-            <FilesNode
-              projectId={projectId}
-              subprojectId={nav.id}
-              level={5}
-            />
+            <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}
-          <ChartsNode
-            projectId={projectId}
-            subprojectId={nav.id}
-            level={5}
-          />
+          <ChartsNode projectId={projectId} subprojectId={nav.id} level={5} />
         </>
       )}
     </>
