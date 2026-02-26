@@ -20,6 +20,7 @@ fastify.route({
   // why is this not /* ?
   url: '/api/auth/*',
   async handler(request, reply) {
+    console.log('Received auth request:', request)
     try {
       // Construct request URL
       const url = new URL(request.url, `http://${request.headers.host}`)
@@ -39,6 +40,7 @@ fastify.route({
 
       // Process authentication request
       const response = await auth.handler(req)
+      console.log('Auth response:', response)
 
       // Forward response to client
       reply.status(response.status)
@@ -57,8 +59,9 @@ fastify.route({
 // Initialize server
 fastify.listen({ port: 3002 }, (err) => {
   if (err) {
+    console.log('Failed to start auth server:', err)
     fastify.log.error(err)
     process.exit(1)
   }
-  console.log('Server running on port 3002')
+  console.log('Auth server running on port 3002')
 })
