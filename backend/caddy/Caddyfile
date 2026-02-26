@@ -11,3 +11,9 @@ auth.promote-species.app {
   }
 }
 
+auth.localhost {
+  reverse_proxy * ps_auth:3002 {
+    header_down Access-Control-Allow-Origin *
+  }
+}
+
