@@ -4,7 +4,9 @@ BEGIN;
 --
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
+  email_verified boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -14,8 +16,25 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
 CREATE INDEX IF NOT EXISTS users_label_idx ON users USING btree(label);
 
-COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
+COMMENT ON COLUMN users.name IS 'Users chosen display name';
+COMMENT ON COLUMN users.email_verified IS 'Whether the users email is verified';
+COMMENT ON COLUMN users.email IS 'Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
+
+--------------------------------------------------------------
+-- sessions
+--
+CREATE TABLE IF NOT EXISTS sessions(
+  session_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  token text DEFAULT NULL,
+  expires_at timestamptz DEFAULT NULL,
+  ip_address text DEFAULT NULL,
+  user_agent text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
 
 --------------------------------------------------------------
 -- accounts
@@ -23,6 +42,12 @@ COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 CREATE TABLE IF NOT EXISTS accounts(
   account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
+  sso_account_id text DEFAULT NULL,
+  provider_id text DEFAULT NULL,
+  access_token text DEFAULT NULL,
+  refresh_token text DEFAULT NULL,
+  access_token_expires_at timestamptz DEFAULT NULL,
+  refresh_token_expires_at timestamptz DEFAULT NULL,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
@@ -42,6 +67,13 @@ CREATE INDEX IF NOT EXISTS accounts_label_idx ON accounts USING btree(label);
 
 COMMENT ON TABLE accounts IS 'Goal: earn money. Separate from users to allow for multiple accounts per user. Enables seeing the account history.';
 COMMENT ON COLUMN accounts.user_id IS 'user that owns the account. null for accounts that are not owned by a user';
+COMMENT ON COLUMN accounts.sso_account_id IS 'The ID of the account as provided by the SSO or equal to userId for credential accounts';
+COMMENT ON COLUMN accounts.provider_id IS 'The ID of the provider';
+COMMENT ON COLUMN accounts.access_token IS 'The access token for the account. Returned by the provider';
+COMMENT ON COLUMN accounts.refresh_token IS 'The refresh token for the account';
+COMMENT ON COLUMN accounts.access_token_expires_at IS 'The time when the access token expires';
+COMMENT ON COLUMN accounts.refresh_token_expires_at IS 'The time when the refresh token expires';
+
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
