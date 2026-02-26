@@ -17,6 +17,7 @@ fastify.register(fastifyCors, {
 // Register authentication endpoint
 fastify.route({
   method: ['GET', 'POST'],
+  // why is this not /* ?
   url: '/api/auth/*',
   async handler(request, reply) {
     try {
