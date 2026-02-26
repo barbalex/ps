@@ -113,7 +113,9 @@ services:
     networks:
       - network
     depends_on:
-      - graphql
+      db:
+        condition: service_healthy
+        restart: true
     restart: always
     # original image downgrades user but that seems not to work
     # see: https://caddy.community/t/basic-docker-compose-setup-failing/6892/7?u=alexander_gabriel
