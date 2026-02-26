@@ -2,6 +2,8 @@ import { betterAuth } from 'better-auth'
 import { Pool } from 'pg'
 
 const DATABASE_URL = import.meta.env.DATABASE_URL
+const GITHUB_CLIENT_ID = import.meta.env.GITHUB_CLIENT_ID
+const GITHUB_CLIENT_SECRET = import.meta.env.GITHUB_CLIENT_SECRET
 
 export const auth = betterAuth({
   database: new Pool({ connectionString: DATABASE_URL }),
@@ -13,6 +15,14 @@ export const auth = betterAuth({
     },
   },
   experimental: { joins: true },
+  emailAndPassword: { enabled: true },
+
+  socialProviders: {
+    github: {
+      clientId: GITHUB_CLIENT_ID as string,
+      clientSecret: GITHUB_CLIENT_SECRET as string,
+    },
+  },
   user: {
     modelName: 'users',
     fields: {
