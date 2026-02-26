@@ -1,0 +1,16 @@
+{
+  "name": "ps_auth",
+  "version": "0.1.0",
+  "description": "auth for ps",
+  "author": "alex@gabriel-software.ch",
+  "main": "server.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "how-to-install-using-sfw": "sfw npm install -f --package-lock-only"
+  },
+  "dependencies": {
+    "better-auth": "1.4.18",
+    "pg": "8.19.0"
+  }
+}
