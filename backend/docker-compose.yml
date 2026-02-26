@@ -74,6 +74,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  auth:
+    build:
+      context: ./auth
+    container_name: ps_auth
+    restart: always
+    env_file:
+      - ./.env
+    expose:
+      - "3002"
+    ports:
+      - "3002:3002"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
   # gbif:
   #   container_name: ps-gbif-1
   #   build:
