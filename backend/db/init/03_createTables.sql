@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS sessions(
   updated_by text DEFAULT NULL
 );
 
+CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON sessions USING btree(user_id);
+
 --------------------------------------------------------------
 -- accounts
 --

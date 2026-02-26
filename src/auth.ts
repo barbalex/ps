@@ -13,6 +13,13 @@ export const auth = betterAuth({
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     },
+    additionalFields: {
+      label: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
+    },
   },
   session: {
     modelName: 'sessions',
@@ -40,6 +47,28 @@ export const auth = betterAuth({
       idToken: 'id_token',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
+    },
+    additionalFields: {
+      type: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
+      period_start: {
+        type: 'date',
+        required: false,
+        input: false,
+      },
+      period_end: {
+        type: 'date',
+        required: false,
+        input: false,
+      },
+      projects_label_by: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
     },
   },
   verification: {
