@@ -1,0 +1,13 @@
+# see: https://caddyserver.com/docs/caddyfile/concepts
+{
+  email alex.barbalex@gmail.com
+  #acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+  #debug
+}
+
+auth.promote-species.app {
+  reverse_proxy * ps_auth:3002 {
+    header_down Access-Control-Allow-Origin *
+  }
+}
+

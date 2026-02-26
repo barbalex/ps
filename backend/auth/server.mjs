@@ -1,7 +1,18 @@
+// https://www.better-auth.com/docs/integrations/fastify
 import Fastify from 'fastify'
+import fastifyCors from '@fastify/cors'
 import { auth } from './auth.mjs' // Your configured Better Auth instance
 
 const fastify = Fastify({ logger: true })
+
+// Configure CORS policies
+fastify.register(fastifyCors, {
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3002',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  maxAge: 86400,
+})
 
 // Register authentication endpoint
 fastify.route({
