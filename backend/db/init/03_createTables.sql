@@ -78,8 +78,7 @@ COMMENT ON COLUMN accounts.access_token_expires_at IS 'The time when the access 
 COMMENT ON COLUMN accounts.refresh_token_expires_at IS 'The time when the refresh token expires';
 COMMENT ON COLUMN accounts.scope IS 'The scope of the account. Returned by the provider';
 COMMENT ON COLUMN accounts.id_token IS 'The ID token for the account. Returned by the provider';
-COMMENT ON COLUMN accounts.password IS 'The password for the account. Only used for credential accounts';
-
+COMMENT ON COLUMN accounts.password IS 'The password of the account. Mainly used for email and password authentication';
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
