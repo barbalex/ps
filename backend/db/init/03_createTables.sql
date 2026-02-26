@@ -83,6 +83,18 @@ COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"?
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
 --------------------------------------------------------------
+-- verifications
+--
+CREATE TABLE IF NOT EXISTS verifications(
+  verification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  identifier text DEFAULT NULL,
+  value text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+--------------------------------------------------------------
 -- projects
 --
 create table if not exists project_types (
