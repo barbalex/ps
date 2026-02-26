@@ -48,6 +48,9 @@ CREATE TABLE IF NOT EXISTS accounts(
   refresh_token text DEFAULT NULL,
   access_token_expires_at timestamptz DEFAULT NULL,
   refresh_token_expires_at timestamptz DEFAULT NULL,
+  scope text DEFAULT NULL,
+  id_token text DEFAULT NULL,
+  password text DEFAULT NULL,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
@@ -73,6 +76,9 @@ COMMENT ON COLUMN accounts.access_token IS 'The access token for the account. Re
 COMMENT ON COLUMN accounts.refresh_token IS 'The refresh token for the account';
 COMMENT ON COLUMN accounts.access_token_expires_at IS 'The time when the access token expires';
 COMMENT ON COLUMN accounts.refresh_token_expires_at IS 'The time when the refresh token expires';
+COMMENT ON COLUMN accounts.scope IS 'The scope of the account. Returned by the provider';
+COMMENT ON COLUMN accounts.id_token IS 'The ID token for the account. Returned by the provider';
+COMMENT ON COLUMN accounts.password IS 'The password for the account. Only used for credential accounts';
 
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
