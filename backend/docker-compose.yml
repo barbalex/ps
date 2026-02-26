@@ -106,34 +106,34 @@ services:
   #     - '7000:7000'
   #   volumes:
   #     - gbif_data:/gbif_data
-  caddy:
-    build:
-      context: ./caddy
-    container_name: ps_caddy
-    networks:
-      - network
-    depends_on:
-      db:
-        condition: service_healthy
-        restart: true
-    restart: always
-    # original image downgrades user but that seems not to work
-    # see: https://caddy.community/t/basic-docker-compose-setup-failing/6892/7?u=alexander_gabriel
-    user: root
-    ports:
-      - "80:80"
-      - "443:443"
-    env_file:
-      - ./.env
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
+  # caddy:
+  #   build:
+  #     context: ./caddy
+  #   container_name: ps_caddy
+  #   networks:
+  #     - network
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #       restart: true
+  #   restart: always
+  #   # original image downgrades user but that seems not to work
+  #   # see: https://caddy.community/t/basic-docker-compose-setup-failing/6892/7?u=alexander_gabriel
+  #   user: root
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #     - caddy_config:/config
 volumes:
   # gbif_data:
   pg_data:
-  caddy_data:
-  caddy_config:
+  # caddy_data:
+  # caddy_config:
 networks:
   network:
     driver: bridge
