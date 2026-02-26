@@ -36,12 +36,23 @@ CREATE TABLE IF NOT EXISTS sessions(
   updated_by text DEFAULT NULL
 );
 
+CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON sessions USING btree(user_id);
+
 --------------------------------------------------------------
 -- accounts
 --
 CREATE TABLE IF NOT EXISTS accounts(
   account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
+  sso_account_id text DEFAULT NULL,
+  provider_id text DEFAULT NULL,
+  access_token text DEFAULT NULL,
+  refresh_token text DEFAULT NULL,
+  access_token_expires_at timestamptz DEFAULT NULL,
+  refresh_token_expires_at timestamptz DEFAULT NULL,
+  scope text DEFAULT NULL,
+  id_token text DEFAULT NULL,
+  password text DEFAULT NULL,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
@@ -61,8 +72,29 @@ CREATE INDEX IF NOT EXISTS accounts_label_idx ON accounts USING btree(label);
 
 COMMENT ON TABLE accounts IS 'Goal: earn money. Separate from users to allow for multiple accounts per user. Enables seeing the account history.';
 COMMENT ON COLUMN accounts.user_id IS 'user that owns the account. null for accounts that are not owned by a user';
+COMMENT ON COLUMN accounts.sso_account_id IS 'The ID of the account as provided by the SSO or equal to userId for credential accounts';
+COMMENT ON COLUMN accounts.provider_id IS 'The ID of the provider';
+COMMENT ON COLUMN accounts.access_token IS 'The access token for the account. Returned by the provider';
+COMMENT ON COLUMN accounts.refresh_token IS 'The refresh token for the account';
+COMMENT ON COLUMN accounts.access_token_expires_at IS 'The time when the access token expires';
+COMMENT ON COLUMN accounts.refresh_token_expires_at IS 'The time when the refresh token expires';
+COMMENT ON COLUMN accounts.scope IS 'The scope of the account. Returned by the provider';
+COMMENT ON COLUMN accounts.id_token IS 'The ID token for the account. Returned by the provider';
+COMMENT ON COLUMN accounts.password IS 'The password of the account. Mainly used for email and password authentication';
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
+
+--------------------------------------------------------------
+-- verifications
+--
+CREATE TABLE IF NOT EXISTS verifications(
+  verification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  identifier text DEFAULT NULL,
+  value text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
 
 --------------------------------------------------------------
 -- projects

@@ -5,6 +5,14 @@ const DATABASE_URL = import.meta.env.DATABASE_URL
 
 export const auth = betterAuth({
   database: new Pool({ connectionString: DATABASE_URL }),
+  advanced: {
+    database: {
+      // https://www.better-auth.com/docs/concepts/database#id-generation
+      // allows your database handle all ID generation
+      generateId: false,
+    },
+  },
+  experimental: { joins: true },
   user: {
     modelName: 'users',
     fields: {
