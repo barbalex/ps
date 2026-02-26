@@ -4,7 +4,9 @@ BEGIN;
 --
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
+  email_verified boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -14,7 +16,9 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
 CREATE INDEX IF NOT EXISTS users_label_idx ON users USING btree(label);
 
-COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
+COMMENT ON COLUMN users.name IS 'Users chosen display name';
+COMMENT ON COLUMN users.email_verified IS 'Whether the users email is verified';
+COMMENT ON COLUMN users.email IS 'Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
 --------------------------------------------------------------
