@@ -54,10 +54,10 @@ fastify.route({
 })
 
 // Initialize server
-fastify.listen({ port: 4000 }, (err) => {
+fastify.listen({ port: 3002 }, (err) => {
   if (err) {
     fastify.log.error(err)
     process.exit(1)
   }
-  console.log('Server running on port 4000')
+  console.log('Server running on port 3002')
 })
