@@ -12,4 +12,21 @@ export const auth = betterAuth({
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   },
+  session: {
+    modelName: 'sessions',
+    id: 'session_id',
+    userId: 'user_id',
+    expiresAt: 'expires_at',
+    ipAddress: 'ip_address',
+    userAgent: 'user_agent',
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  account: {
+    modelName: 'accounts',
+    id: 'account_id',
+    userId: 'user_id',
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
 })

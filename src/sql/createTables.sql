@@ -22,6 +22,21 @@ COMMENT ON COLUMN users.email IS 'Users email address for communication and logi
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
 --------------------------------------------------------------
+-- sessions
+--
+CREATE TABLE IF NOT EXISTS sessions(
+  session_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  token text DEFAULT NULL,
+  expires_at timestamptz DEFAULT NULL,
+  ip_address text DEFAULT NULL,
+  user_agent text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+--------------------------------------------------------------
 -- accounts
 --
 CREATE TABLE IF NOT EXISTS accounts(
