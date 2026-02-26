@@ -20,7 +20,9 @@ export const startSyncing = async () => {
               table: 'users',
               columns: [
                 'user_id',
+                'name',
                 'email',
+                'email_verified',
                 'created_at',
                 'updated_at',
                 'updated_by',
@@ -30,6 +32,14 @@ export const startSyncing = async () => {
           table: 'users',
           primaryKey: ['user_id'],
         },
+        sessions: {
+          shape: {
+            url,
+            params: { table: 'sessions' },
+          },
+          table: 'sessions',
+          primaryKey: ['session_id'],
+        },
         accounts: {
           shape: {
             url,
@@ -37,6 +47,14 @@ export const startSyncing = async () => {
           },
           table: 'accounts',
           primaryKey: ['account_id'],
+        },
+        verifications: {
+          shape: {
+            url,
+            params: { table: 'verifications' },
+          },
+          table: 'verifications',
+          primaryKey: ['verification_id'],
         },
         project_types: {
           shape: {
@@ -528,14 +546,12 @@ export const startSyncing = async () => {
               created_at: change.value.created_at,
               updated_at: change.value.updated_at,
               updated_by: change.value.updated_by,
-              data:
-                !change.value.data ? '{}'
-                : (
-                  typeof change.value.data === 'string' &&
-                  !change.value.data.trim().startsWith('{')
-                ) ?
-                  JSON.stringify(change.value.data)
-                : change.value.data,
+              data: !change.value.data
+                ? '{}'
+                : typeof change.value.data === 'string' &&
+                    !change.value.data.trim().startsWith('{')
+                  ? JSON.stringify(change.value.data)
+                  : change.value.data,
             }
           },
           table: 'goal_reports',
