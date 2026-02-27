@@ -29,6 +29,7 @@ const RouterErrorBoundary = lazy(async () => ({
 // https://tanstack.com/start/latest/docs/framework/react/guide/error-boundaries
 const router = createRouter({
   routeTree,
+  scrollRestoration: true,
   defaultErrorComponent: ({ error }) => <RouterErrorBoundary error={error} />,
 })
 declare module '@tanstack/react-router' {
@@ -77,10 +78,7 @@ export const App = () => {
             ctx-name="uploadcare-uploader"
             ref={uploaderRef}
           ></uc-upload-ctx-provider>
-          <div
-            id="router-container"
-            className={styles.routerContainer}
-          >
+          <div id="router-container" className={styles.routerContainer}>
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProvider router={router} />
             </UploaderContext.Provider>
