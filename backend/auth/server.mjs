@@ -4,10 +4,11 @@ import fastifyCors from '@fastify/cors'
 import { auth } from './auth.mjs' // Your configured Better Auth instance
 
 const fastify = Fastify({ logger: true })
+fastify.register(require('@fastify/websocket'))
 
 // Configure CORS policies
 fastify.register(fastifyCors, {
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3002',
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:5176',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
@@ -18,7 +19,8 @@ fastify.register(fastifyCors, {
 fastify.route({
   method: ['GET', 'POST'],
   // why is this not /* ?
-  url: '/api/auth/*',
+  // url: '/api/auth/*',
+  url: '*',
   async handler(request, reply) {
     console.log('Received auth request:', request)
     try {

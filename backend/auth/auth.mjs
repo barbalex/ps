@@ -15,7 +15,7 @@ export const auth = betterAuth({
     },
   },
   experimental: { joins: true },
-  trustedOrigins: ['http://localhost:3002', 'https://promote-species.app'],
+  trustedOrigins: ['http://localhost:5176', 'https://promote-species.app'],
   emailAndPassword: { enabled: true },
   socialProviders: {
     github: {
