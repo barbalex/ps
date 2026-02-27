@@ -38,6 +38,7 @@
     "@supabase/supabase-js": "2.97.0",
     "@tanstack/react-router": "1.144.0",
     "@tanstack/react-router-devtools": "1.144.0",
+    "@tanstack/react-start": "1.163.2",
     "@tanstack/router-plugin": "1.132.51",
     "@turf/bbox": "7.3.4",
     "@turf/buffer": "7.3.4",
@@ -97,6 +98,7 @@
     "@tanstack/eslint-plugin-router": "1.155.0",
     "@types/leaflet": "1.9.21",
     "@types/leaflet-draw": "1.0.13",
+    "@types/node": "25.3.2",
     "@types/proj4": "2.19.0",
     "@types/proj4leaflet": "1.0.12",
     "@types/react": "19.2.14",
@@ -112,7 +114,9 @@
     "globals": "17.3.0",
     "typescript": "5.9.3",
     "vite": "7.3.1",
-    "vite-plugin-svgr": "4.5.0"
+    "vite-plugin-cjs-interop": "2.4.2",
+    "vite-plugin-svgr": "4.5.0",
+    "vite-tsconfig-paths": "6.1.1"
   },
   "devRemarks": {
     "nothing": "now"

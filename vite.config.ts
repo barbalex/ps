@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite'
+import tsConfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { cjsInterop } from 'vite-plugin-cjs-interop'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,6 +13,11 @@ export default defineConfig({
     host: '0.0.0.0',
   },
   plugins: [
+    cjsInterop({
+      dependencies: ['@fluentui/react-components'],
+    }),
+    tsConfigPaths(),
+    // tanstackStart(),
     TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
     react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
     svgr(),
