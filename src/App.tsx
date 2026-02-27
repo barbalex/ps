@@ -1,5 +1,5 @@
-import { createRef, lazy } from 'react'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { createRef } from 'react'
+import { RouterProvider } from '@tanstack/react-router'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
 import { PGlite } from '@electric-sql/pglite'
@@ -7,6 +7,8 @@ import { electricSync } from '@electric-sql/pglite-sync'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
+
+import { router } from './router.tsx'
 
 // TODO: is this really needed?
 import * as UC from '@uploadcare/file-uploader'
@@ -19,24 +21,6 @@ import { lightTheme } from './modules/theme.ts'
 // import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store, pgliteDbAtom } from './store.ts'
-
-import { routeTree } from './routeTree.gen'
-const RouterErrorBoundary = lazy(async () => ({
-  default: (await import('./components/shared/RouterErrorBoundary.tsx'))
-    .RouterErrorBoundary,
-}))
-// TODO: add defaultErrorComponent
-// https://tanstack.com/start/latest/docs/framework/react/guide/error-boundaries
-const router = createRouter({
-  routeTree,
-  scrollRestoration: true,
-  defaultErrorComponent: ({ error }) => <RouterErrorBoundary error={error} />,
-})
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
-}
 
 const db = await PGlite.create('idb://ps', {
   extensions: {
