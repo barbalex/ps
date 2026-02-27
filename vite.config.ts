@@ -9,7 +9,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 export default defineConfig({
   server: {
     port: 5176,
-    host: '0.0.0.0',
+    // host: '0.0.0.0',
   },
   plugins: [
     tsConfigPaths(),
