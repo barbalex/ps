@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
-import { Tab, TabList } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Tab, TabList } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 

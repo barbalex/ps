@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Combobox as ComboboxComponent,
   Option,
   Field,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 
 export const Combobox = ({
   name,

@@ -1,4 +1,5 @@
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { FaPlus } from 'react-icons/fa'
 import { useAtom } from 'jotai'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'

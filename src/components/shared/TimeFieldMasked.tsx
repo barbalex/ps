@@ -1,5 +1,6 @@
-import { Field } from '@fluentui/react-components'
-import type { InputProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field } = fluentUiReactComponents
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
 import { IMaskInput } from 'react-imask'
 
 export const TimeFieldMasked = (props: InputProps) => {

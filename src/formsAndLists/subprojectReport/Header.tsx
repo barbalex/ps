@@ -1,11 +1,13 @@
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import {
   EyeRegular,
   PrintRegular,
   ArrowLeftRegular,
+
 } from '@fluentui/react-icons'
 import { useRef, useEffect } from 'react'
 

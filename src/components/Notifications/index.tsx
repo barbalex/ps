@@ -1,4 +1,5 @@
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { MdClose as CloseIcon } from 'react-icons/md'
 import { useSetAtom, useAtomValue } from 'jotai'
 

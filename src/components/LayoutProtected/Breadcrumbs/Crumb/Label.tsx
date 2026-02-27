@@ -1,5 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Tooltip } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Tooltip } = fluentUiReactComponents
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 

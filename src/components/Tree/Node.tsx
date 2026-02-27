@@ -3,7 +3,8 @@ import {
   MdExpandMore as OpenWithChildrenIcon,
 } from 'react-icons/md'
 import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { Link } from '@tanstack/react-router'
 import styles from './Node.module.css'
 

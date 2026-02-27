@@ -1,4 +1,5 @@
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Dialog,
   DialogSurface,
   DialogTitle,
@@ -8,7 +9,7 @@ import {
   Button,
   MenuList,
   Checkbox,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 

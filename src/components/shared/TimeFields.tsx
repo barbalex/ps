@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Input, Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Input, Field } = fluentUiReactComponents
 
 import styles from './TimeFields.module.css'
 

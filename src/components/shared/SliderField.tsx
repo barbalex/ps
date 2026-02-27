@@ -1,5 +1,6 @@
-import { Field, Slider, Label } from '@fluentui/react-components'
-import type { InputProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field, Slider, Label } = fluentUiReactComponents
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
 import { useDebouncedCallback } from 'use-debounce'
 
 import styles from './SliderField.module.css'

@@ -1,7 +1,9 @@
 import { useContext, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { MdPreview, MdEditNote } from 'react-icons/md'
+
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 

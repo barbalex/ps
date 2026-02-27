@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
@@ -14,7 +15,7 @@ import {
   Tab,
   TabList,
   SelectTabData,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'

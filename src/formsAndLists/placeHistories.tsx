@@ -2,7 +2,8 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { FaCopy } from 'react-icons/fa'
-import { Button, Tooltip } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Tooltip } = fluentUiReactComponents
 import { uuidv7 } from '@kripod/uuidv7'
 
 import { createPlaceHistory } from '../modules/createRows.ts'

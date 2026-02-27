@@ -1,4 +1,6 @@
-import { Option } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+
+const { Option } = fluentUiReactComponents
 
 export const Options = ({ filter, optionsFiltered }) => {
   if (filter.length < 2) {

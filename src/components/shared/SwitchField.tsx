@@ -1,4 +1,5 @@
-import { Switch, Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Switch, Field } = fluentUiReactComponents
 
 import styles from './SwitchField.module.css'
 

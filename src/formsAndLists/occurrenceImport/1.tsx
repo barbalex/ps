@@ -1,6 +1,7 @@
 import { MdDone } from 'react-icons/md'
 import { useState, useCallback } from 'react'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'

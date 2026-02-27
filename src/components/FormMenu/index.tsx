@@ -1,5 +1,6 @@
 import { FaPlus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
-import { Button, Tooltip } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Tooltip } = fluentUiReactComponents
 
 import { Delete } from './Delete.tsx'
 import { MenuBar } from '../MenuBar/index.tsx'

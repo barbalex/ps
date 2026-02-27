@@ -1,4 +1,5 @@
-import { ToggleButton, Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { ToggleButton, Button } = fluentUiReactComponents
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtom } from 'jotai'

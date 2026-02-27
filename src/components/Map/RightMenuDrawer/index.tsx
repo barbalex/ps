@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
-import { InlineDrawer } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { InlineDrawer } = fluentUiReactComponents
 import { useAtom } from 'jotai'
 
 import { Info } from './Info/index.tsx'

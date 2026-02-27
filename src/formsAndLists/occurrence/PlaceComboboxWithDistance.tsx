@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Combobox, Field, Option } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Combobox, Field, Option } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
+
 import { pointToLineDistance } from '@turf/point-to-line-distance'
 import { distance } from '@turf/distance'
 import { buffer } from '@turf/buffer'

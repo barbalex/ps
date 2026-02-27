@@ -1,4 +1,5 @@
-import { MenuItem } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { MenuItem } = fluentUiReactComponents
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 

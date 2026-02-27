@@ -1,15 +1,17 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { useAtom, useSetAtom } from 'jotai'
+
+const {
   Button,
   Menu,
   MenuTrigger,
   MenuList,
   MenuItem,
   MenuPopover,
-} from '@fluentui/react-components'
-import { useAtom, useSetAtom } from 'jotai'
+} = fluentUiReactComponents
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { makeStyles, Input, Body1, Field } from '@fluentui/react-components'
-import type { InputProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { makeStyles, Input, Body1, Field } = fluentUiReactComponents
+type InputProps = React.ComponentProps<typeof Input>
 
 const useStyles = makeStyles({
   body: { color: 'grey' },

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FaExpandArrowsAlt, FaCompressArrowsAlt } from 'react-icons/fa'
 import screenfull from 'screenfull'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { useSetAtom } from 'jotai'
+
 
 import { addNotificationAtom } from '../../store.ts'
 

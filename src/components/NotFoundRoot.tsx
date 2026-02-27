@@ -1,4 +1,5 @@
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { Link } from '@tanstack/react-router'
 
 import { Header } from './Layout/Header/index.tsx'

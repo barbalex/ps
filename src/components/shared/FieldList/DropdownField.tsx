@@ -1,4 +1,5 @@
-import { Dropdown, Option } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Dropdown, Option } = fluentUiReactComponents
 
 export const DropdownField = ({ options, value, onChange }) => {
   const selectedOptions = options.filter((option) => option === value)

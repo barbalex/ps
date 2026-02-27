@@ -1,9 +1,10 @@
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Button,
   Toolbar,
   ToolbarToggleButton,
   Tooltip,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'

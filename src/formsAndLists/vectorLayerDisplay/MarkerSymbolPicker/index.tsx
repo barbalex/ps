@@ -1,5 +1,6 @@
 import * as icons from 'react-icons/md'
-import type { InputProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
 
 import { Label } from '../../../components/shared/Label.tsx'
 import { Symbol } from './Symbol.tsx'

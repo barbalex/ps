@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { Link, useRouter, useCanGoBack } from '@tanstack/react-router'
 
 import styles from './NotFound.module.css'

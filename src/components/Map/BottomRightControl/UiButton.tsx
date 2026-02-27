@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
-import { Switch } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Switch } = fluentUiReactComponents
 import { useAtom } from 'jotai'
 
 import { mapHideUiAtom } from '../../../store.ts'

@@ -1,5 +1,6 @@
 import { FaTimes } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { IoMdInformationCircleOutline } from 'react-icons/io'
 import { useNavigate, useCanGoBack, useRouter } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'

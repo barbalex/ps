@@ -1,6 +1,8 @@
-import { Dropdown, Field, Option } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Dropdown, Field, Option } = fluentUiReactComponents
 import axios from 'redaxios'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+
 import { useSetAtom } from 'jotai'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'

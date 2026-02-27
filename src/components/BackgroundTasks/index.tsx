@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { Dismiss24Regular } from '@fluentui/react-icons'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'

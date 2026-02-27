@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Input, Field } from '@fluentui/react-components'
-import type { InputProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Input, Field } = fluentUiReactComponents
+type InputProps = React.ComponentProps<typeof Input>
 
 import styles from './TextField.module.css'
 

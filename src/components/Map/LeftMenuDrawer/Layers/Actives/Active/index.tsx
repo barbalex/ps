@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useContext } from 'react'
 import { createPortal } from 'react-dom'
-import { AccordionItem } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { AccordionItem } = fluentUiReactComponents
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview'

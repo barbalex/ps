@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
-import { Button, Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Field } = fluentUiReactComponents
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import styles from './UploadButton.module.css'

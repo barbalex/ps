@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { Button, Spinner } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Spinner } = fluentUiReactComponents
 import {
   MdClose as CloseIcon,
   MdError as ErrorIcon,

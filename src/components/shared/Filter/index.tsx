@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Menu,
   MenuItem,
   MenuList,
@@ -8,7 +9,7 @@ import {
   MenuTrigger,
   Tab,
   TabList,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 

@@ -1,6 +1,7 @@
 import { createRef } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
-import { FluentProvider } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider } from 'jotai'
 import { PGlite } from '@electric-sql/pglite'
 import { electricSync } from '@electric-sql/pglite-sync'

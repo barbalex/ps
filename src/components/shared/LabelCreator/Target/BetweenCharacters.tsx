@@ -1,4 +1,5 @@
-import { Input } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Input } = fluentUiReactComponents
 
 import { TargetElement } from './TargetElements.tsx'
 import { LabelElement } from '../index.tsx'

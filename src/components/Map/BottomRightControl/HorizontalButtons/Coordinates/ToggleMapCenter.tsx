@@ -1,4 +1,5 @@
-import { ToggleButton } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { ToggleButton } = fluentUiReactComponents
 import { MdCenterFocusWeak } from 'react-icons/md'
 import { useAtom } from 'jotai'
 

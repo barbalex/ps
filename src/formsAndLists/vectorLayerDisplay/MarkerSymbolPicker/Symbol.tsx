@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
-import type { InputProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
 
 import styles from './Symbol.module.css'
 

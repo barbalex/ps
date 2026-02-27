@@ -1,4 +1,5 @@
-import { Field, RadioGroup, Radio } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field, RadioGroup, Radio } = fluentUiReactComponents
 import { useResizeDetector } from 'react-resize-detector'
 
 export const RadioGroupFromOptions = (props) => {

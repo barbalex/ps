@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   ToggleButton,
   AccordionHeader,
   AccordionItem,
@@ -7,7 +8,7 @@ import {
   Tab,
   TabList,
   SelectTabData,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { BsSquare } from 'react-icons/bs'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'

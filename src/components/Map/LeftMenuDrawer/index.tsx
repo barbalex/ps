@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
-import { InlineDrawer, Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { InlineDrawer, Button } = fluentUiReactComponents
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { useAnimate } from 'framer-motion'
 import { useAtomValue } from 'jotai'

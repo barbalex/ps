@@ -1,4 +1,5 @@
-import { Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field } = fluentUiReactComponents
 import { TimePicker } from '@fluentui/react-timepicker-compat'
 import dayjs from 'dayjs'
 // import { format } from "@formkit/tempo"

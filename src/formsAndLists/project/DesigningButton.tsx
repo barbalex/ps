@@ -1,5 +1,6 @@
 import { MdEdit, MdEditOff } from 'react-icons/md'
-import { ToggleButton, Tooltip } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { ToggleButton, Tooltip } = fluentUiReactComponents
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'

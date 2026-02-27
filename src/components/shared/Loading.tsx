@@ -1,4 +1,5 @@
-import { Spinner } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Spinner } = fluentUiReactComponents
 
 import styles from './Loading.module.css'
 

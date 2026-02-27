@@ -1,4 +1,5 @@
-import { Checkbox } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Checkbox } = fluentUiReactComponents
 
 import styles from './CheckboxField.module.css'
 

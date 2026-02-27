@@ -1,6 +1,8 @@
-import { Button, Spinner } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Spinner } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+
 
 import { createWfsService } from '../../../modules/createRows.ts'
 import {

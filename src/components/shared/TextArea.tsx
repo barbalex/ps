@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Textarea, Field } from '@fluentui/react-components'
-import type { TextareaProps } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Textarea, Field } = fluentUiReactComponents
+type TextareaProps = React.ComponentProps<typeof Textarea>
 
 import styles from './TextArea.module.css'
 

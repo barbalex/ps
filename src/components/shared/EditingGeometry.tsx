@@ -1,4 +1,5 @@
-import { Field, Textarea } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field, Textarea } = fluentUiReactComponents
 import { useAtom } from 'jotai'
 
 import { SwitchField } from './SwitchField.tsx'

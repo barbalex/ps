@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Droppable } from '@hello-pangea/dnd'
-import { Button, Spinner } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Spinner } = fluentUiReactComponents
 
 import { TargetElements } from './TargetElements.tsx'
 import { LabelElement } from '../index.tsx'

@@ -1,4 +1,5 @@
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Dialog,
   DialogSurface,
   DialogTitle,
@@ -6,7 +7,7 @@ import {
   DialogBody,
   DialogActions,
   Button,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 
 import styles from './DuplicateWarningDialog.module.css'
 

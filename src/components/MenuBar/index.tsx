@@ -6,14 +6,15 @@ import {
   Children,
   cloneElement,
 } from 'react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Button,
   Menu,
   MenuPopover,
   MenuTrigger,
   MenuList,
   Tooltip,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
 

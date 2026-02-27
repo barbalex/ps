@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
-import { Toolbar, ToolbarButton } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Toolbar, ToolbarButton } = fluentUiReactComponents
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { useMap } from 'react-leaflet'
 

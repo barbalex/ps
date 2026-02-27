@@ -1,11 +1,12 @@
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Button,
   Menu,
   MenuTrigger,
   MenuList,
   MenuPopover,
   MenuItemRadio,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'

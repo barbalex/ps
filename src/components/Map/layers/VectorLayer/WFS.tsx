@@ -13,7 +13,8 @@ import reproject from 'reproject'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Dialog,
   DialogSurface,
   DialogTitle,
@@ -21,7 +22,7 @@ import {
   DialogActions,
   DialogContent,
   Button,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'

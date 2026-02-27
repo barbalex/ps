@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { FaUndoAlt } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { useSetAtom } from 'jotai'
 
 import { removeOperationAtom } from '../../store.ts'

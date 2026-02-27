@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Combobox, Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Combobox, Field } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FilteringComboboxOptions } from './options.tsx'

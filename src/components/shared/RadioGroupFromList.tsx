@@ -1,4 +1,5 @@
-import { Field, RadioGroup, Radio } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field, RadioGroup, Radio } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Loading } from './Loading.tsx'

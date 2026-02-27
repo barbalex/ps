@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
-import { Accordion } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Accordion } = fluentUiReactComponents
 import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 

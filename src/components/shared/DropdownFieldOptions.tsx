@@ -1,4 +1,5 @@
-import { Dropdown, Field, Option } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Dropdown, Field, Option } = fluentUiReactComponents
 
 export const DropdownFieldOptions = ({
   name,

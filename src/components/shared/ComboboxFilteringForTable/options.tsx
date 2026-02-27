@@ -1,4 +1,5 @@
-import { Option } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Option } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 export const FilteringComboboxOptions = ({

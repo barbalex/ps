@@ -1,6 +1,7 @@
 import { MdEditOff } from 'react-icons/md'
 import { FaMinus } from 'react-icons/fa'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   Button,
   Menu,
   MenuTrigger,
@@ -8,7 +9,7 @@ import {
   MenuItem,
   MenuPopover,
   MenuGroupHeader,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'

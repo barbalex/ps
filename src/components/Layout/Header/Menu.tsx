@@ -1,4 +1,5 @@
-import { Button } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 import { MdLogin } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
 

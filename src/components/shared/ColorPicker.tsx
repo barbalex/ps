@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
-import { Input, Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Input, Field } = fluentUiReactComponents
 import { useDebouncedCallback } from 'use-debounce'
 
 import styles from './ColorPicker.module.css'

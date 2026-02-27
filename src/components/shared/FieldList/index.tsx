@@ -1,4 +1,5 @@
-import { Field, TagGroup, Tag } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field, TagGroup, Tag } = fluentUiReactComponents
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'

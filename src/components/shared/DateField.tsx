@@ -1,4 +1,5 @@
-import { Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field } = fluentUiReactComponents
 import { DatePicker } from '@fluentui/react-datepicker-compat'
 
 import styles from './DateField.module.css'

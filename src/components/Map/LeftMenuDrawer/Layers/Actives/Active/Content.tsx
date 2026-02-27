@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
   AccordionHeader,
   AccordionPanel,
   Button,
@@ -14,7 +15,7 @@ import {
   TabList,
   SelectTabData,
   Checkbox,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan, TbTarget } from 'react-icons/tb'

@@ -1,4 +1,5 @@
-import { ToolbarToggleButton } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { ToolbarToggleButton } = fluentUiReactComponents
 import { IoMdLocate } from 'react-icons/io'
 import { useAtom } from 'jotai'
 

@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Combobox, Field } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Combobox, Field } = fluentUiReactComponents
 import { useParams } from '@tanstack/react-router'
+
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'

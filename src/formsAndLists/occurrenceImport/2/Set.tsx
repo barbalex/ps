@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, Spinner } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button, Spinner } = fluentUiReactComponents
 import { MdDone } from 'react-icons/md'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 

@@ -1,5 +1,7 @@
 import { FaMinus } from 'react-icons/fa'
-import {
+import * as fluentUiReactComponents from '@fluentui/react-components'
+
+const {
   Button,
   Menu,
   MenuTrigger,
@@ -9,7 +11,7 @@ import {
   MenuGroup,
   MenuGroupHeader,
   Tooltip,
-} from '@fluentui/react-components'
+} = fluentUiReactComponents
 
 export const Delete = ({ deleteRow, tableName }) => (
   <Menu openOnHover={false}>

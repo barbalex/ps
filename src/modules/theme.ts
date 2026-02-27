@@ -1,4 +1,5 @@
-import { createLightTheme, createDarkTheme } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { createLightTheme, createDarkTheme } = fluentUiReactComponents
 
 const brandRamp: BrandVariants = {
   10: '#020400',

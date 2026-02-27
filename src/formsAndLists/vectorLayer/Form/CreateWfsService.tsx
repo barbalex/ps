@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Field, Input } from '@fluentui/react-components'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Field, Input } = fluentUiReactComponents
+
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
