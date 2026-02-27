@@ -3,7 +3,7 @@ import tsConfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+// import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,6 +13,7 @@ export default defineConfig({
   },
   plugins: [
     tsConfigPaths(),
+    // enabling start causes error: https://github.com/TanStack/router/issues/5795#issuecomment-3973127942
     // tanstackStart(),
     TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
     react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
