@@ -5,6 +5,7 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "esnext",
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "types": ["@uploadcare/file-uploader/types/jsx"],
 
     /* Bundler mode */
