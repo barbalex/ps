@@ -14,7 +14,8 @@ export const auth = betterAuth({
       generateId: false,
     },
   },
-  experimental: { joins: true },
+  // causing error thus uncommented
+  // experimental: { joins: true },
   trustedOrigins: ['http://localhost:5176', 'https://promote-species.app'],
   emailAndPassword: { enabled: true },
   socialProviders: {
