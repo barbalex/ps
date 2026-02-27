@@ -4,7 +4,6 @@ import fastifyCors from '@fastify/cors'
 import { auth } from './auth.mjs' // Your configured Better Auth instance
 
 const fastify = Fastify({ logger: true })
-fastify.register(require('@fastify/websocket'))
 
 // Configure CORS policies
 fastify.register(fastifyCors, {
