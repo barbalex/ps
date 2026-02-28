@@ -22,10 +22,10 @@ COMMENT ON COLUMN users.email IS 'Users email address for communication and logi
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
 --------------------------------------------------------------
--- sessions
+-- auth_sessions
 --
-CREATE TABLE IF NOT EXISTS sessions(
-  session_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS auth_sessions(
+  auth_session_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   token text DEFAULT NULL,
   expires_at timestamptz DEFAULT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS sessions(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON sessions USING btree(user_id);
+CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON auth_sessions USING btree(user_id);
 
 --------------------------------------------------------------
 -- auth_accounts
@@ -100,10 +100,10 @@ COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"?
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
 --------------------------------------------------------------
--- verifications
+-- auth_verifications
 --
-CREATE TABLE IF NOT EXISTS verifications(
-  verification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS auth_verifications(
+  auth_verification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   identifier text DEFAULT NULL,
   value text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),

@@ -49,9 +49,9 @@ export const auth = betterAuth({
     },
   },
   session: {
-    modelName: 'sessions',
+    modelName: 'auth_sessions',
     fields: {
-      id: 'session_id',
+      id: 'auth_session_id',
       userId: 'user_id',
       token: 'token',
       expiresAt: 'expires_at',
@@ -87,9 +87,9 @@ export const auth = betterAuth({
     },
   },
   verification: {
-    modelName: 'verifications',
+    modelName: 'auth_verifications',
     fields: {
-      id: 'verification_id',
+      id: 'auth_verification_id',
       identifier: 'identifier',
       value: 'value',
       createdAt: 'created_at',
