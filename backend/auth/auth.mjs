@@ -28,12 +28,19 @@ export const auth = betterAuth({
     modelName: 'users',
     fields: {
       id: 'user_id',
+      name: 'name',
+      email: 'email',
       emailVerified: 'email_verified',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     },
     additionalFields: {
       label: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
+      updated_by: {
         type: 'string',
         required: false,
         input: false,
@@ -45,11 +52,19 @@ export const auth = betterAuth({
     fields: {
       id: 'session_id',
       userId: 'user_id',
+      token: 'token',
       expiresAt: 'expires_at',
       ipAddress: 'ip_address',
       userAgent: 'user_agent',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
+    },
+    additionalFields: {
+      updated_by: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
     },
   },
   account: {
@@ -63,7 +78,9 @@ export const auth = betterAuth({
       refreshToken: 'refresh_token',
       accessTokenExpiresAt: 'access_token_expires_at',
       refreshTokenExpiresAt: 'refresh_token_expires_at',
+      scope: 'scope',
       idToken: 'id_token',
+      password: 'password',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     },
@@ -88,12 +105,24 @@ export const auth = betterAuth({
         required: false,
         input: false,
       },
+      label: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
+      updated_by: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
     },
   },
   verification: {
     modelName: 'verifications',
     fields: {
       id: 'verification_id',
+      identifier: 'identifier',
+      value: 'value',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     },
