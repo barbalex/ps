@@ -8,15 +8,14 @@ import { useSession } from '../modules/authClient.ts'
 export const ProtectedRoute = ({ children }) => {
   // const { loading, isAuthenticated } = useCorbado()
   // console.log('hello ProtectedRoute', { loading, isAuthenticated })
-  const sessionResult = useSession()
-  const { data: session, isPending, error, refetch } = sessionResult
-  console.log('ProtectedRoute, sessionResult:', sessionResult)
+  const { data: session, isPending, error } = useSession()
+  console.log('ProtectedRoute, session data:', { session, isPending, error })
 
   //TODO: get this working again
   if (isPending) return <Loading label="Authenticating" />
 
   // if (!isAuthenticated) return <Auth />
-  // return <Auth />
+  return <Auth />
 
   return children
 }
