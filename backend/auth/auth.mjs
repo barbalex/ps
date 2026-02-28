@@ -10,11 +10,12 @@ export const auth = betterAuth({
   advanced: {
     database: {
       // https://www.better-auth.com/docs/concepts/database#id-generation
-      // allows your database handle all ID generation
+      // allows your database to handle ID generation
       generateId: false,
     },
   },
-  // causing error thus uncommented
+  // joins causing error thus uncommented.
+  // TODO: test later and consider re-enabling if it can be made to work
   // experimental: { joins: true },
   trustedOrigins: ['http://localhost:5176', 'https://promote-species.app'],
   emailAndPassword: { enabled: true },
