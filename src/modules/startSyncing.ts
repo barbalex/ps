@@ -54,7 +54,7 @@ export const startSyncing = async () => {
             params: { table: 'accounts' },
           },
           table: 'accounts',
-          primaryKey: ['ps_account_id'],
+          primaryKey: ['account_id'],
         },
         verifications: {
           shape: {

@@ -75,7 +75,7 @@ COMMENT ON COLUMN auth_accounts.password IS 'The password of the account. Mainly
 -- accounts
 --
 CREATE TABLE IF NOT EXISTS accounts(
-  ps_account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
