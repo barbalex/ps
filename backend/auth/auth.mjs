@@ -27,6 +27,7 @@ export const auth = betterAuth({
   user: {
     modelName: 'users',
     fields: {
+      // do I need to set how the id is generated?
       id: 'user_id',
       name: 'name',
       email: 'email',
@@ -68,9 +69,9 @@ export const auth = betterAuth({
     },
   },
   account: {
-    modelName: 'accounts',
+    modelName: 'auth_accounts',
     fields: {
-      id: 'account_id',
+      id: 'auth_account_id',
       userId: 'user_id',
       accountId: 'sso_account_id',
       providerId: 'provider_id',
@@ -83,38 +84,6 @@ export const auth = betterAuth({
       password: 'password',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
-    },
-    additionalFields: {
-      type: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
-      period_start: {
-        type: 'date',
-        required: false,
-        input: false,
-      },
-      period_end: {
-        type: 'date',
-        required: false,
-        input: false,
-      },
-      projects_label_by: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
-      label: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
-      updated_by: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
     },
   },
   verification: {

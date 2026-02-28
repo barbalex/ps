@@ -40,13 +40,21 @@ export const startSyncing = async () => {
           table: 'sessions',
           primaryKey: ['session_id'],
         },
+        auth_accounts: {
+          shape: {
+            url,
+            params: { table: 'auth_accounts' },
+          },
+          table: 'auth_accounts',
+          primaryKey: ['auth_account_id'],
+        },
         accounts: {
           shape: {
             url,
             params: { table: 'accounts' },
           },
           table: 'accounts',
-          primaryKey: ['account_id'],
+          primaryKey: ['ps_account_id'],
         },
         verifications: {
           shape: {
