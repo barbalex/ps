@@ -41,11 +41,6 @@ export const auth = betterAuth({
         required: false,
         input: false,
       },
-      updated_by: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
     },
   },
   session: {
@@ -59,13 +54,6 @@ export const auth = betterAuth({
       userAgent: 'user_agent',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
-    },
-    additionalFields: {
-      updated_by: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
     },
   },
   account: {

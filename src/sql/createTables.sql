@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS users(
   name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
   email_verified boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
+  -- label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
+  label text default null,
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
@@ -32,8 +32,7 @@ CREATE TABLE IF NOT EXISTS auth_sessions(
   ip_address text DEFAULT NULL,
   user_agent text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON auth_sessions USING btree(user_id);
@@ -107,8 +106,7 @@ CREATE TABLE IF NOT EXISTS auth_verifications(
   identifier text DEFAULT NULL,
   value text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 --------------------------------------------------------------

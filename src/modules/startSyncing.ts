@@ -16,18 +16,7 @@ export const startSyncing = async () => {
         users: {
           shape: {
             url,
-            params: {
-              table: 'users',
-              columns: [
-                'user_id',
-                'name',
-                'email',
-                'email_verified',
-                'created_at',
-                'updated_at',
-                'updated_by',
-              ],
-            },
+            params: { table: 'users' },
           },
           table: 'users',
           primaryKey: ['user_id'],
