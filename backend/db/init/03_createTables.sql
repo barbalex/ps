@@ -8,13 +8,13 @@ CREATE TABLE IF NOT EXISTS users(
   email text UNIQUE DEFAULT NULL,
   email_verified boolean DEFAULT FALSE,
   -- label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
-  label text default null,
+  -- label text default null,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
-CREATE INDEX IF NOT EXISTS users_label_idx ON users USING btree(label);
+-- CREATE INDEX IF NOT EXISTS users_label_idx ON users USING btree(label);
 
 COMMENT ON COLUMN users.name IS 'Users chosen display name';
 COMMENT ON COLUMN users.email_verified IS 'Whether the users email is verified';
@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS auth_verifications(
   auth_verification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   identifier text DEFAULT NULL,
   value text DEFAULT NULL,
+  expires_at timestamptz DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );

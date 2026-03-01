@@ -12,6 +12,7 @@ export const auth = betterAuth({
       // https://www.better-auth.com/docs/concepts/database#id-generation
       // allows your database to handle ID generation
       generateId: false,
+      // experimental: { joins: true },
     },
   },
   // joins causing error thus uncommented.
@@ -81,6 +82,7 @@ export const auth = betterAuth({
       id: 'auth_verification_id',
       identifier: 'identifier',
       value: 'value',
+      expiresAt: 'expires_at',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     },
