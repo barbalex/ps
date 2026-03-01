@@ -19,6 +19,10 @@ export default interface ProjectReportDesigns {
 
   project_id: ProjectsProjectId | null;
 
+  name: string | null;
+
+  label: string | null;
+
   /** JSON design of the project report design. */
   design: unknown | null;
 
@@ -41,6 +45,8 @@ export interface ProjectReportDesignsInitializer {
   account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
+
+  name?: string | null;
 
   /** JSON design of the project report design. */
   design?: unknown | null;
@@ -65,6 +71,8 @@ export interface ProjectReportDesignsMutator {
   account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
+
+  name?: string | null;
 
   /** JSON design of the project report design. */
   design?: unknown | null;

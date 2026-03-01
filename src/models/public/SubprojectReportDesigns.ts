@@ -19,6 +19,10 @@ export default interface SubprojectReportDesigns {
 
   subproject_id: SubprojectsSubprojectId | null;
 
+  name: string | null;
+
+  label: string | null;
+
   /** JSON design of the subproject report. */
   design: unknown | null;
 
@@ -41,6 +45,8 @@ export interface SubprojectReportDesignsInitializer {
   account_id?: AccountsAccountId | null;
 
   subproject_id?: SubprojectsSubprojectId | null;
+
+  name?: string | null;
 
   /** JSON design of the subproject report. */
   design?: unknown | null;
@@ -65,6 +71,8 @@ export interface SubprojectReportDesignsMutator {
   account_id?: AccountsAccountId | null;
 
   subproject_id?: SubprojectsSubprojectId | null;
+
+  name?: string | null;
 
   /** JSON design of the subproject report. */
   design?: unknown | null;

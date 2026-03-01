@@ -26,7 +26,7 @@ export default interface Charts {
 
   place_id: PlacesPlaceId | null;
 
-  /** If has value: the chart shows data of the current year */
+  /** If has value: the chart shows only data of the current year */
   years_current: boolean | null;
 
   /** If has value: the chart shows data of the previous year */
@@ -46,7 +46,7 @@ export default interface Charts {
 
   chart_type: ChartTypesChartType | null;
 
-  title: string | null;
+  name: string | null;
 
   subjects_stacked: boolean | null;
 
@@ -81,8 +81,8 @@ export interface ChartsInitializer {
   place_id?: PlacesPlaceId | null;
 
   /**
-   * If has value: the chart shows data of the current year
-   * Default value: true
+   * If has value: the chart shows only data of the current year
+   * Default value: false
    */
   years_current?: boolean | null;
 
@@ -107,7 +107,7 @@ export interface ChartsInitializer {
   /** Default value: 'Area'::text */
   chart_type?: ChartTypesChartType | null;
 
-  title?: string | null;
+  name?: string | null;
 
   /** Default value: false */
   subjects_stacked?: boolean | null;
@@ -143,7 +143,7 @@ export interface ChartsMutator {
 
   place_id?: PlacesPlaceId | null;
 
-  /** If has value: the chart shows data of the current year */
+  /** If has value: the chart shows only data of the current year */
   years_current?: boolean | null;
 
   /** If has value: the chart shows data of the previous year */
@@ -163,7 +163,7 @@ export interface ChartsMutator {
 
   chart_type?: ChartTypesChartType | null;
 
-  title?: string | null;
+  name?: string | null;
 
   subjects_stacked?: boolean | null;
 

@@ -66,7 +66,7 @@ export interface LayerPresentationsInitializer {
    */
   opacity_percent?: number | null;
 
-  /** Default value: false */
+  /** Default value: true */
   transparent?: boolean | null;
 
   /** Default value: false */

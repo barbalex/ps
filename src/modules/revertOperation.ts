@@ -48,23 +48,24 @@ export const revertOperation = async (o) => {
   try {
     let valuesSql = ``
     Object.keys(draft).forEach((key, index) => {
-      valueSql += `${key} = $${index + 1},`
+      valuesSql += `${key} = $${index + 1},`
     })
+    const draftKeysLength = Object.keys(draft).length
+    const isUsersTable = table === 'users'
     const args = [
       ...Object.keys(draft).map((key) => prev[key]),
       prev.updated_at,
-      prev.updated_by,
+      ...(isUsersTable ? [] : [prev.updated_by]),
       rowId,
     ]
-    const draftKeysLength = Object.keys(draft).length
     await pgliteDb.query(
       `
       UPDATE ${table} 
       SET 
         ${valuesSql} 
-        updated_at = $${draftKeysLength + 1},
-        updated_by: $${draftKeysLength + 2} 
-      WHERE ${rowIdName} = $${draftKeysLength + 3}`,
+        updated_at = $${draftKeysLength + 1}
+        ${isUsersTable ? '' : `, updated_by = $${draftKeysLength + 2}`}
+      WHERE ${rowIdName} = $${isUsersTable ? draftKeysLength + 2 : draftKeysLength + 3}`,
       args,
     )
   } catch (error) {

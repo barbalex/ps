@@ -83,8 +83,6 @@ export interface PlaceHistoriesInitializer {
 
   bbox?: unknown | null;
 
-  label?: string | null;
-
   /** Default value: true */
   files_active_places?: boolean | null;
 
@@ -127,8 +125,6 @@ export interface PlaceHistoriesMutator {
   geometry?: unknown | null;
 
   bbox?: unknown | null;
-
-  label?: string | null;
 
   files_active_places?: boolean | null;
 

@@ -53,18 +53,20 @@ export const executeOperation = async (o) => {
       [column]: newValue,
       ...draft,
       updated_at: time,
-      updated_by: username,
+      // if table = users, do not set updated_by (does not exist)
+      ...(table !== 'users' ? { updated_by: username } : {}),
     })
     // add filtering
     const queryFunction =
-      rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
-      : filter.function === 'eq' ?
-        baseQueryFunction.eq(filter.column, filter.value)
-      : filter.function === 'neq' ?
-        baseQueryFunction.neq(filter.column, filter.value)
-      : filter.function === 'in' ?
-        baseQueryFunction.in(filter.column, filter.value)
-      : baseQueryFunction
+      rowIdName && rowId
+        ? baseQueryFunction.eq(rowIdName, rowId)
+        : filter.function === 'eq'
+          ? baseQueryFunction.eq(filter.column, filter.value)
+          : filter.function === 'neq'
+            ? baseQueryFunction.neq(filter.column, filter.value)
+            : filter.function === 'in'
+              ? baseQueryFunction.in(filter.column, filter.value)
+              : baseQueryFunction
     const { error } = await queryFunction
 
     if (error) throw error
@@ -76,7 +78,8 @@ export const executeOperation = async (o) => {
       ...(column ? { [column]: newValue } : {}),
       ...draft,
       updated_at: time,
-      updated_by: username,
+      // if table = users, do not set updated_by (does not exist)
+      ...(table !== 'users' ? { updated_by: username } : {}),
     })
 
     if (error) throw error
@@ -88,7 +91,8 @@ export const executeOperation = async (o) => {
       ...draft,
       created_at: time,
       updated_at: time,
-      updated_by: username,
+      // if table = users, do not set updated_by (does not exist)
+      ...(table !== 'users' ? { updated_by: username } : {}),
     })
 
     if (error) throw error
@@ -99,7 +103,8 @@ export const executeOperation = async (o) => {
         ...d,
         created_at: time,
         updated_at: time,
-        updated_by: username,
+        // if table = users, do not set updated_by (does not exist)
+        ...(table !== 'users' ? { updated_by: username } : {}),
       })),
     )
 
@@ -110,14 +115,15 @@ export const executeOperation = async (o) => {
     const baseQueryFunction = postgrestClient.from(table).delete()
     // add filtering
     const queryFunction =
-      rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
-      : filter.function === 'eq' ?
-        baseQueryFunction.eq(filter.column, filter.value)
-      : filter.function === 'neq' ?
-        baseQueryFunction.neq(filter.column, filter.value)
-      : filter.function === 'in' ?
-        baseQueryFunction.in(filter.column, filter.value)
-      : baseQueryFunction
+      rowIdName && rowId
+        ? baseQueryFunction.eq(rowIdName, rowId)
+        : filter.function === 'eq'
+          ? baseQueryFunction.eq(filter.column, filter.value)
+          : filter.function === 'neq'
+            ? baseQueryFunction.neq(filter.column, filter.value)
+            : filter.function === 'in'
+              ? baseQueryFunction.in(filter.column, filter.value)
+              : baseQueryFunction
     const { error } = await queryFunction
 
     if (error) throw error

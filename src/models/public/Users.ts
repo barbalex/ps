@@ -11,16 +11,18 @@ export type UsersUserId = string & { __brand: 'public.users' };
 export default interface Users {
   user_id: UsersUserId;
 
-  /** email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
+  /** Users chosen display name */
+  name: string | null;
+
+  /** Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
   email: string | null;
 
-  label: string | null;
+  /** Whether the users email is verified */
+  email_verified: boolean | null;
 
   created_at: Date;
 
   updated_at: Date;
-
-  updated_by: string | null;
 }
 
 /**
@@ -31,16 +33,23 @@ export interface UsersInitializer {
   /** Default value: uuid_generate_v7() */
   user_id?: UsersUserId;
 
-  /** email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
+  /** Users chosen display name */
+  name?: string | null;
+
+  /** Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
   email?: string | null;
+
+  /**
+   * Whether the users email is verified
+   * Default value: false
+   */
+  email_verified?: boolean | null;
 
   /** Default value: now() */
   created_at?: Date;
 
   /** Default value: now() */
   updated_at?: Date;
-
-  updated_by?: string | null;
 }
 
 /**
@@ -50,12 +59,16 @@ export interface UsersInitializer {
 export interface UsersMutator {
   user_id?: UsersUserId;
 
-  /** email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
+  /** Users chosen display name */
+  name?: string | null;
+
+  /** Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
   email?: string | null;
+
+  /** Whether the users email is verified */
+  email_verified?: boolean | null;
 
   created_at?: Date;
 
   updated_at?: Date;
-
-  updated_by?: string | null;
 }
