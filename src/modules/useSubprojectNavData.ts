@@ -37,13 +37,12 @@ type NavData = {
   files_count_filtered?: number | null
   files_count_unfiltered?: number | null
   charts_count?: number | null
-  subproject_report_designs_count?: number | null
 }
 
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [placesFilter] = useAtom(places1FilterAtom)
-  
+
   const placesFilterString = filterStringFromFilter(placesFilter)
   const placesIsFiltered = !!placesFilterString
 
@@ -78,8 +77,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
         files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
-        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}'),
-        subproject_report_designs_count AS (SELECT count(*) FROM subproject_report_designs WHERE subproject_id = '${subprojectId}')
+        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}')
       SELECT
         sp.subproject_id AS id,
         sp.label, 
@@ -99,8 +97,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_users_count.count AS subproject_users_count,
         files_count_unfiltered.count AS files_count_unfiltered,
         files_count_filtered.count AS files_count_filtered,
-        charts_count.count AS charts_count,
-        subproject_report_designs_count.count AS subproject_report_designs_count
+        charts_count.count AS charts_count
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
@@ -119,8 +116,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_users_count,
         files_count_unfiltered,
         files_count_filtered,
-        charts_count,
-        subproject_report_designs_count
+        charts_count
       WHERE sp.subproject_id = '${subprojectId}'`
 
   const res = useLiveQuery(sql)
@@ -172,14 +168,6 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           countFiltered: nav?.subproject_reports_count_filtered ?? 0,
           countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
           namePlural: 'Reports',
-        }),
-      },
-      {
-        id: 'designs',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.subproject_report_designs_count ?? 0,
-          namePlural: 'Report Designs',
         }),
       },
       {

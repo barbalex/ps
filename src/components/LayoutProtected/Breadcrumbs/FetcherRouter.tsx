@@ -866,7 +866,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       )
     }
     case 'useSubprojectReportDesignsNavData': {
-      if (!params.projectId || !params.subprojectId) return null
+      if (!params.projectId) return null
       return (
         <SubprojectReportDesignsFetcher
           params={params}
@@ -877,7 +877,6 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
     case 'useSubprojectReportDesignNavData': {
       if (
         !params.projectId ||
-        !params.subprojectId ||
         !params.subprojectReportDesignId
       )
         return null

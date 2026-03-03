@@ -18,7 +18,7 @@ import type SubprojectReportDesigns from '../../models/public/SubprojectReportDe
 import '@puckeditor/core/puck.css'
 
 export const Form = ({ autoFocusRef, from }) => {
-  const { subprojectReportDesignId, projectId, subprojectId } = useParams({
+  const { subprojectReportDesignId, projectId } = useParams({
     from,
   })
   const addOperation = useSetAtom(addOperationAtom)
@@ -41,11 +41,11 @@ export const Form = ({ autoFocusRef, from }) => {
            FROM chart_subjects cs 
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
-        WHERE c.subproject_id = srd.subproject_id
+        WHERE c.project_id = srd.project_id
         ORDER BY c.name
       ) c) as charts,
       (SELECT data FROM subproject_reports 
-       WHERE subproject_id = srd.subproject_id 
+       WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = srd.project_id)
        ORDER BY year DESC 
        LIMIT 1) as report_data
     FROM subproject_report_designs srd
@@ -70,7 +70,6 @@ export const Form = ({ autoFocusRef, from }) => {
         const data = await buildData({
           chart,
           subjects: chart.subjects,
-          subproject_id: subprojectId,
           project_id: projectId,
         })
         dataMap[chart.chart_id] = data
@@ -79,7 +78,7 @@ export const Form = ({ autoFocusRef, from }) => {
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId, projectId])
+  }, [chartsJson, projectId])
 
   // Build Puck config from fields with actual data
   const components = {}
@@ -171,14 +170,14 @@ export const Form = ({ autoFocusRef, from }) => {
 
     try {
       if (value === true) {
-        // Deactivate all other designs for this subproject first, then activate this one
+        // Deactivate all other designs for this project first, then activate this one
         const prevActive = await db.query<SubprojectReportDesigns>(
-          `SELECT * FROM subproject_report_designs WHERE subproject_id = $1 AND subproject_report_design_id <> $2 AND active = TRUE`,
-          [row.subproject_id, subprojectReportDesignId],
+          `SELECT * FROM subproject_report_designs WHERE project_id = $1 AND subproject_report_design_id <> $2 AND active = TRUE`,
+          [row.project_id, subprojectReportDesignId],
         )
         await db.query(
-          `UPDATE subproject_report_designs SET active = FALSE WHERE subproject_id = $1 AND subproject_report_design_id <> $2`,
-          [row.subproject_id, subprojectReportDesignId],
+          `UPDATE subproject_report_designs SET active = FALSE WHERE project_id = $1 AND subproject_report_design_id <> $2`,
+          [row.project_id, subprojectReportDesignId],
         )
         for (const prevRow of prevActive.rows) {
           addOperation({
