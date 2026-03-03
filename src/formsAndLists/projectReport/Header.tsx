@@ -1,18 +1,40 @@
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
+import {
+  EyeRegular,
+  PrintRegular,
+  ArrowLeftRegular,
+} from '@fluentui/react-icons'
 import { useRef, useEffect } from 'react'
 
 import { createProjectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/reports/$projectReportId/'
-
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef, from }) => {
   const { projectId, projectReportId } = useParams({ from })
   const navigate = useNavigate()
+  const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
+
+  const isPrintView = location.pathname.endsWith('/print')
+
+  const onClickPdf = () =>
+    navigate({
+      to: './print',
+      params: (prev) => prev,
+    })
+
+  const onClickPrint = () => window.print()
+
+  const onClickBack = () =>
+    navigate({
+      to: '..',
+      params: (prev) => prev,
+    })
 
   const db = usePGlite()
 
@@ -48,9 +70,10 @@ export const Header = ({ autoFocusRef }) => {
         [projectReportId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM project_reports WHERE project_report_id = $1`, [
-        projectReportId,
-      ])
+      await db.query(
+        `DELETE FROM project_reports WHERE project_report_id = $1`,
+        [projectReportId],
+      )
       addOperation({
         table: 'project_reports',
         rowIdName: 'project_report_id',
@@ -73,7 +96,9 @@ export const Header = ({ autoFocusRef }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.project_report_id === projectReportIdRef.current)
+      const index = rows.findIndex(
+        (p) => p.project_report_id === projectReportIdRef.current,
+      )
       const next = rows[(index + 1) % len]
       navigate({
         to: `../${next.project_report_id}`,
@@ -95,7 +120,9 @@ export const Header = ({ autoFocusRef }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.project_report_id === projectReportIdRef.current)
+      const index = rows.findIndex(
+        (p) => p.project_report_id === projectReportIdRef.current,
+      )
       const previous = rows[(index + len - 1) % len]
       navigate({
         to: `../${previous.project_report_id}`,
@@ -109,9 +136,22 @@ export const Header = ({ autoFocusRef }) => {
     }
   }
 
+  const siblings = isPrintView ? (
+    <>
+      <Button
+        icon={<ArrowLeftRegular />}
+        onClick={onClickBack}
+        title="Back to report"
+      />
+      <Button icon={<PrintRegular />} onClick={onClickPrint} title="Print" />
+    </>
+  ) : (
+    <Button icon={<EyeRegular />} onClick={onClickPdf} title="Preview report" />
+  )
+
   return (
     <FormHeader
-      title="Project Report"
+      title={isPrintView ? 'Project Report Print Preview' : 'Project Report'}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
@@ -119,6 +159,7 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="project report"
+      siblings={siblings}
     />
   )
 }
