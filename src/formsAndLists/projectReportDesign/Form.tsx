@@ -300,6 +300,36 @@ export const Form = ({ autoFocusRef, from }) => {
                 scrollbarWidth: 'thin',
               }}
             >
+              {fields.length === 0 && (
+                <div
+                  style={{
+                    padding: '6px 8px',
+                    marginBottom: 4,
+                    background: '#fff8e1',
+                    border: '1px solid #ffe082',
+                    borderRadius: 4,
+                    fontSize: '0.82em',
+                    color: '#5d4037',
+                  }}
+                >
+                  No fields yet — add fields to this project first.
+                </div>
+              )}
+              {charts.length === 0 && (
+                <div
+                  style={{
+                    padding: '6px 8px',
+                    marginBottom: 4,
+                    background: '#fff8e1',
+                    border: '1px solid #ffe082',
+                    borderRadius: 4,
+                    fontSize: '0.82em',
+                    color: '#5d4037',
+                  }}
+                >
+                  No charts yet — add charts to this project first.
+                </div>
+              )}
               <Puck.Components />
             </div>
             <div
