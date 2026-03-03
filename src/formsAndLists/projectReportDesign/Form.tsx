@@ -56,8 +56,32 @@ export const Form = ({ autoFocusRef, from }) => {
   // Build Puck config from fields with actual data
   const components = {}
   const categories = {
-    fields: { components: [] },
-    charts: { components: [] },
+    fields: { components: [] as string[] },
+    charts: { components: [] as string[] },
+    subproject_reports: {
+      title: 'Subproject Reports',
+      components: ['SubprojectReports'] as string[],
+    },
+  }
+
+  // SubprojectReports is a single droppable block that renders all subproject reports
+  components['SubprojectReports'] = {
+    label: 'Subproject Reports',
+    fields: {},
+    defaultProps: {},
+    render: () => (
+      <div
+        style={{
+          border: '1px dashed #aaa',
+          borderRadius: 4,
+          padding: 12,
+          color: '#666',
+          fontStyle: 'italic',
+        }}
+      >
+        Subproject reports will be rendered here (one section per subproject)
+      </div>
+    ),
   }
 
   fields.forEach((field) => {
@@ -254,7 +278,7 @@ export const Form = ({ autoFocusRef, from }) => {
           'No more than one design can be active at once'
         }
       />
-      {(fields.length > 0 || charts.length > 0) && (
+      {
         <Puck
           config={config}
           data={row.design ?? { content: [] }}
@@ -304,28 +328,14 @@ export const Form = ({ autoFocusRef, from }) => {
                     zIndex: 1,
                   }}
                 >
-                  Drag fields and charts into the design
+                  Drag fields, charts and subproject reports into the design
                 </div>
               )}
               <Puck.Preview />
             </div>
           </div>
         </Puck>
-      )}
-      {fields.length === 0 && charts.length === 0 && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 60,
-            color: '#999',
-            fontSize: '1.2em',
-          }}
-        >
-          No fields or charts found. Please add fields or charts first.
-        </div>
-      )}
+      }
     </div>
   )
 }

@@ -13,6 +13,7 @@ import { addOperationAtom } from '../../store.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import { SubprojectReportsSection } from './SubprojectReportsSection.tsx'
 import type ProjectReports from '../../models/public/ProjectReports.ts'
 
 import '../../form.css'
@@ -155,6 +156,19 @@ export const ProjectReportPrint = ({ from }) => {
     }
   })
 
+  // SubprojectReports block — renders all subproject reports for this project
+  components['SubprojectReports'] = {
+    label: 'Subproject Reports',
+    fields: {},
+    defaultProps: {},
+    render: () => (
+      <SubprojectReportsSection
+        projectId={projectId}
+        year={row.year ?? null}
+      />
+    ),
+  }
+
   const config = { components }
 
   const onChange = async (e, data) => {
@@ -219,7 +233,7 @@ export const ProjectReportPrint = ({ from }) => {
             validationMessage={validations?.year?.message}
           />
         </div>
-        {design && fields.length > 0 && (
+        {design && (
           <div style={{ marginTop: 20 }}>
             <Render
               config={config}
@@ -227,7 +241,7 @@ export const ProjectReportPrint = ({ from }) => {
             />
           </div>
         )}
-        {(!design || fields.length === 0) && (
+        {!design && (
           <div>No report design found for this project.</div>
         )}
       </div>
