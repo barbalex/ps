@@ -1569,9 +1569,18 @@ export const createSubprojectReportDesign = async ({ subprojectId }) => {
 export const createProjectReportDesign = async ({ projectId }) => {
   const db = store.get(pgliteDbAtom)
   const project_report_design_id = uuidv7()
+
+  // If no project_report_design in this project is active yet, set it active
+  const existingRes = await db.query(
+    `SELECT 1 FROM project_report_designs WHERE project_id = $1 AND active = TRUE LIMIT 1`,
+    [projectId],
+  )
+  const active = existingRes.rows.length === 0
+
   await db.query(
-    `INSERT INTO project_report_designs (project_report_design_id, account_id, project_id) VALUES ($1, $2, $3)`,
-    [project_report_design_id, account_id, projectId],
+    `INSERT INTO project_report_designs (project_report_design_id, account_id, project_id, active) VALUES ($1, $2, $3, $4)
+     ON CONFLICT (project_report_design_id) DO NOTHING`,
+    [project_report_design_id, account_id, projectId, active],
   )
 
   store.set(addOperationAtom, {
@@ -1581,6 +1590,7 @@ export const createProjectReportDesign = async ({ projectId }) => {
       project_report_design_id,
       account_id,
       project_id: projectId,
+      active,
     },
   })
 
