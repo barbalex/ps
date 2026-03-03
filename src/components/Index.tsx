@@ -46,12 +46,12 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Berichte</h3>
-          ...beschreiben die Entwick&shy;lung, beurteilen den Erfolg der
+          ...beschreiben und beurteilen die Entwick&shy;lung, den Erfolg der
           Massnahmen und die Errei&shy;chung der Ziele.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Beobachtungen Dritter</h3>
-          ...prüfen und (Teil-)Popula&shy;tionen zuordnen.
+          ...importieren, prüfen und (Teil-)Popula&shy;tionen zuordnen.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Mobilfähig</h3>
@@ -60,7 +60,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Feldtauglich</h3>
-          Sie sind offline? Einfach weiter arbeiten. Sobald online, werden Ihre
+          Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre
           Daten synchronisiert.
         </div>
         <div className={styles.card}>
@@ -90,7 +90,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Zeitmaschine</h3>
-          Mehrere Mitarbeitende haben aus versehen offline die gleichen Daten
+          Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten
           geändert?
           <br />
           <br />
@@ -114,6 +114,25 @@ export const Index = () => (
           <h3 className={styles.cardTitle}>Open Source</h3>
           Der Code ist offen. Sie können das Projekt jederzeit einsehen,
           mitgestalten, kopieren und selber weiter entwickeln (lassen).
+        </div>
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Hier wird gebaut</h3>
+          Diese App ist noch in Entwicklung. Noch steckt sie voller Fehler.
+          Funktionen werden laufend ergänzt.
+        </div>
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Rückmeldungen erwünscht</h3>
+          Sie dürfen gerne testen und mir Ihre Eindrücke und Wünsche{' '}
+          <a
+            href="mailto:alex@gabriel-software.ch?subject=arten-fördern.ch"
+            target="_blank"
+          >
+            mitteilen
+          </a>
+          .
+          <br />
+          <br />
+          Wichtig: Die Daten werden bei jedem Update gelöscht und neu erstellt.
         </div>
       </div>
     </div>
