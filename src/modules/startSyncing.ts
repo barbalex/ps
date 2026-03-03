@@ -595,6 +595,7 @@ export const startSyncing = async () => {
                 'account_id',
                 'subproject_id',
                 'name',
+                'active',
                 'design',
                 'created_at',
                 'updated_at',
