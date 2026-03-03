@@ -44,7 +44,8 @@ export const SubprojectReportPrint = ({ from }) => {
         ORDER BY c.name
       ) c) as charts,
       (SELECT design FROM subproject_report_designs 
-       WHERE subproject_id = sr.subproject_id 
+       WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id)
+       AND active = true
        LIMIT 1) as design
     FROM subproject_reports sr
     WHERE subproject_report_id = $1`,

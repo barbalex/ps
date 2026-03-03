@@ -9,7 +9,7 @@ import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
-  const { subprojectId, subprojectReportDesignId } = useParams({ from })
+  const { projectId, subprojectReportDesignId } = useParams({ from })
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -22,13 +22,13 @@ export const Header = ({ autoFocusRef, from }) => {
   }, [subprojectReportDesignId])
 
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM subproject_report_designs WHERE subproject_id = '${subprojectId}'`,
+    `SELECT COUNT(*) as count FROM subproject_report_designs WHERE project_id = '${projectId}'`,
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const subproject_report_design_id = await createSubprojectReportDesign({
-      subprojectId,
+      projectId,
     })
     if (!subproject_report_design_id) return
     navigate({
@@ -63,10 +63,10 @@ export const Header = ({ autoFocusRef, from }) => {
         `
           SELECT subproject_report_design_id 
           FROM subproject_report_designs 
-          WHERE subproject_id = $1 
+          WHERE project_id = $1 
           ORDER BY label
         `,
-        [subprojectId],
+        [projectId],
       )
       const designs = res?.rows
       const len = designs.length
@@ -91,10 +91,10 @@ export const Header = ({ autoFocusRef, from }) => {
         `
           SELECT subproject_report_design_id 
           FROM subproject_report_designs 
-          WHERE subproject_id = $1 
+          WHERE project_id = $1 
           ORDER BY label
         `,
-        [subprojectId],
+        [projectId],
       )
       const designs = res?.rows
       const len = designs.length
