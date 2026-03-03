@@ -139,7 +139,7 @@ export const Form = ({ autoFocusRef, from }) => {
             >
               {chart.label}
             </div>
-            {chart.subjects_single === true ?
+            {chart.subjects_single === true ? (
               chart.subjects?.map((subject) => (
                 <SingleChart
                   key={subject.chart_subject_id}
@@ -149,12 +149,13 @@ export const Form = ({ autoFocusRef, from }) => {
                   synchronized={true}
                 />
               ))
-            : <SingleChart
+            ) : (
+              <SingleChart
                 chart={chart}
                 subjects={chart.subjects ?? []}
                 data={data}
               />
-            }
+            )}
           </div>
         )
       },
@@ -297,8 +298,11 @@ export const Form = ({ autoFocusRef, from }) => {
         name="active"
         value={row.active ?? false}
         onChange={onActiveChange}
-        validationState={validations?.active?.state}
-        validationMessage={validations?.active?.message}
+        validationState={validations?.active?.state ?? 'success'}
+        validationMessage={
+          validations?.active?.message ??
+          'No more than one design can be active at once'
+        }
       />
       {(fields.length > 0 || charts.length > 0) && (
         <Puck
