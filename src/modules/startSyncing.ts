@@ -593,7 +593,7 @@ export const startSyncing = async () => {
               columns: [
                 'subproject_report_design_id',
                 'account_id',
-                'subproject_id',
+                'project_id',
                 'name',
                 'active',
                 'design',

@@ -1082,7 +1082,7 @@ COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specifi
 CREATE TABLE IF NOT EXISTS subproject_report_designs(
   subproject_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_report_design_id::text)) STORED,
   active boolean DEFAULT FALSE,
@@ -1090,17 +1090,17 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  CONSTRAINT unique_subproject_report_design_name UNIQUE NULLS NOT DISTINCT(subproject_id, name)
+  CONSTRAINT unique_subproject_report_design_name UNIQUE NULLS NOT DISTINCT(project_id, name)
 );
 
 CREATE INDEX IF NOT EXISTS subproject_report_designs_account_id_idx ON subproject_report_designs USING btree(account_id);
-CREATE INDEX IF NOT EXISTS subproject_report_designs_subproject_id_idx ON subproject_report_designs USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_report_designs_project_id_idx ON subproject_report_designs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS subproject_report_designs_label_idx ON subproject_report_designs USING btree(label);
-CREATE UNIQUE INDEX IF NOT EXISTS subproject_report_designs_one_active_idx ON subproject_report_designs (subproject_id) WHERE active = TRUE;
+CREATE UNIQUE INDEX IF NOT EXISTS subproject_report_designs_one_active_idx ON subproject_report_designs (project_id) WHERE active = TRUE;
 
 COMMENT ON TABLE subproject_report_designs IS 'Design of subproject reports, stored as JSON.';
 COMMENT ON COLUMN subproject_report_designs.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN subproject_report_designs.active IS 'Whether this design is the active one in use. Only one design per subproject may be active. Preset: false.';
+COMMENT ON COLUMN subproject_report_designs.active IS 'Whether this design is the active one in use. Only one design per project may be active. Preset: false.';
 COMMENT ON COLUMN subproject_report_designs.design IS 'JSON design of the subproject report.';
 
 
