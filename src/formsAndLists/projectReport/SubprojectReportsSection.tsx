@@ -31,7 +31,7 @@ const SubprojectReportItem = ({
     `SELECT
       sr.*,
       (SELECT design FROM subproject_report_designs
-       WHERE subproject_id = $1 AND active = true
+       WHERE subproject_id = sr.subproject_id AND active = true
        LIMIT 1) as design,
       (SELECT json_agg(c) FROM (
         SELECT c.chart_id, c.name, c.subjects_single,
@@ -39,7 +39,7 @@ const SubprojectReportItem = ({
            FROM chart_subjects cs
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
-        WHERE c.subproject_id = $1
+        WHERE c.subproject_id = sr.subproject_id
         ORDER BY c.name
       ) c) as charts
     FROM subproject_reports sr
@@ -115,8 +115,10 @@ const SubprojectReportItem = ({
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = (chartDataMap[chart.chart_id] as { data: unknown[]; names: string[] }) ??
-          { data: [], names: [] }
+        const data = (chartDataMap[chart.chart_id] as {
+          data: unknown[]
+          names: string[]
+        }) ?? { data: [], names: [] }
         return (
           <div style={{ marginBottom: 16 }}>
             <div
@@ -124,7 +126,7 @@ const SubprojectReportItem = ({
             >
               {chart.name}
             </div>
-            {chart.subjects_single === true ?
+            {chart.subjects_single === true ? (
               chart.subjects?.map((subject) => (
                 <SingleChart
                   key={subject.chart_subject_id}
@@ -134,12 +136,13 @@ const SubprojectReportItem = ({
                   synchronized={true}
                 />
               ))
-            : <SingleChart
+            ) : (
+              <SingleChart
                 chart={chart}
                 subjects={chart.subjects ?? []}
                 data={data}
               />
-            }
+            )}
           </div>
         )
       },
@@ -149,12 +152,7 @@ const SubprojectReportItem = ({
   const config = { components }
 
   if (design) {
-    return (
-      <Render
-        config={config}
-        data={design}
-      />
-    )
+    return <Render config={config} data={design} />
   }
 
   // Fallback: render fields directly when no design is configured
@@ -191,11 +189,12 @@ export const SubprojectReportsSection = ({
     `SELECT
       sp.subproject_id,
       sp.name as subproject_name,
-      (SELECT json_agg(f ORDER BY f.name) FROM (
+      (SELECT json_agg(f) FROM (
         SELECT name, field_label
         FROM fields
         WHERE table_name = 'subproject_reports'
-          AND project_id = $1
+          AND project_id = sp.project_id
+        ORDER BY name
       ) f) as fields
     FROM subprojects sp
     WHERE sp.project_id = $1
@@ -220,10 +219,7 @@ export const SubprojectReportsSection = ({
   return (
     <div>
       {subprojects.map((sp) => (
-        <div
-          key={sp.subproject_id}
-          style={{ marginBottom: 32 }}
-        >
+        <div key={sp.subproject_id} style={{ marginBottom: 32 }}>
           <h3
             style={{
               borderBottom: '1px solid #ddd',
