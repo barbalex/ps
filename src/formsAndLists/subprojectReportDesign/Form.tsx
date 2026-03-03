@@ -42,6 +42,7 @@ export const Form = ({ autoFocusRef, from }) => {
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
         WHERE c.project_id = srd.project_id
+           OR c.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = srd.project_id)
         ORDER BY c.name
       ) c) as charts,
       (SELECT data FROM subproject_reports 
