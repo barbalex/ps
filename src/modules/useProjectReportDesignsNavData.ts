@@ -13,17 +13,18 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  active: boolean
 }[]
 
 export const useProjectReportDesignsNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const sql =
-    projectId ?
-      `
+  const sql = projectId
+    ? `
     SELECT project_report_design_id as id, 
-           coalesce(name, project_report_design_id::text) as label 
+           coalesce(name, project_report_design_id::text) as label,
+           active
     FROM project_report_designs 
     WHERE project_id = '${projectId}' 
     ORDER BY label`
