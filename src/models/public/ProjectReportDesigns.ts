@@ -23,6 +23,9 @@ export default interface ProjectReportDesigns {
 
   label: string | null;
 
+  /** Whether this design is the active one in use. Only one design per project may be active. Preset: false. */
+  active: boolean | null;
+
   /** JSON design of the project report design. */
   design: unknown | null;
 
@@ -47,6 +50,12 @@ export interface ProjectReportDesignsInitializer {
   project_id?: ProjectsProjectId | null;
 
   name?: string | null;
+
+  /**
+   * Whether this design is the active one in use. Only one design per project may be active. Preset: false.
+   * Default value: false
+   */
+  active?: boolean | null;
 
   /** JSON design of the project report design. */
   design?: unknown | null;
@@ -73,6 +82,9 @@ export interface ProjectReportDesignsMutator {
   project_id?: ProjectsProjectId | null;
 
   name?: string | null;
+
+  /** Whether this design is the active one in use. Only one design per project may be active. Preset: false. */
+  active?: boolean | null;
 
   /** JSON design of the project report design. */
   design?: unknown | null;
