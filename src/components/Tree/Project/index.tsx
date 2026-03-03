@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useCorbado } from '@corbado/react'
 
 import { Node } from '../Node.tsx'
 import { ProjectDesignNode } from '../ProjectDesign.tsx'
@@ -31,7 +30,6 @@ const parentArray = ['data', 'projects']
 export const ProjectNode = ({ nav, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
-  const { user } = useCorbado()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -43,7 +41,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
-  // Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
+  // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
     `SELECT project_id FROM projects WHERE project_id = $1`,
     [nav.id],
@@ -100,23 +98,18 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           />
           <SubprojectsNode projectId={nav.id} />
           <ProjectReportsNode projectId={nav.id} />
+          {showDesigningNodes && (
+            <ProjectReportDesignsNode projectId={nav.id} level={3} />
+          )}
           <PersonsNode projectId={nav.id} />
           <WmsServicesNode projectId={nav.id} />
           <WmsLayersNode projectId={nav.id} />
           <WfsServicesNode projectId={nav.id} />
           <VectorLayersNode projectId={nav.id} />
-          {showFiles && (
-            <FilesNode
-              projectId={nav.id}
-              level={3}
-            />
-          )}
+          {showFiles && <FilesNode projectId={nav.id} level={3} />}
           {showDesigningNodes && (
             <>
-              <ProjectDesignNode
-                projectId={nav.id}
-                level={level + 1}
-              />
+              <ProjectDesignNode projectId={nav.id} level={level + 1} />
               <ProjectUsersNode projectId={nav.id} />
               <ListsNode projectId={nav.id} />
               <TaxonomiesNode projectId={nav.id} />
@@ -124,10 +117,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
               <ProjectCrssNode projectId={nav.id} />
               <PlaceLevelsNode projectId={nav.id} />
               <FieldsNode projectId={nav.id} />
-              <ProjectReportDesignsNode
-                projectId={nav.id}
-                level={3}
-              />
             </>
           )}
         </>
