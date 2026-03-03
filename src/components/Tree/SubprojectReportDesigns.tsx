@@ -8,20 +8,17 @@ import { useSubprojectReportDesignsNavData } from '../../modules/useSubprojectRe
 
 interface Props {
   projectId: string
-  subprojectId: string
   level: number
 }
 
 export const SubprojectReportDesignsNode = ({
   projectId,
-  subprojectId,
   level,
 }: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useSubprojectReportDesignsNavData({
     projectId,
-    subprojectId,
   })
   const {
     label,
@@ -68,7 +65,6 @@ export const SubprojectReportDesignsNode = ({
           <SubprojectReportDesignNode
             key={`${nav.id}-${i}`}
             projectId={projectId}
-            subprojectId={subprojectId}
             nav={nav}
             level={level + 1}
           />

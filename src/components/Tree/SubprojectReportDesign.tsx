@@ -6,12 +6,10 @@ import { Node } from './Node.tsx'
 
 export const SubprojectReportDesignNode = ({
   projectId,
-  subprojectId,
   nav,
-  level = 6,
+  level = 4,
 }: {
   projectId: string
-  subprojectId: string
   nav: { id: string; label: string; active: boolean }
   level?: number
 }) => {
@@ -22,9 +20,7 @@ export const SubprojectReportDesignNode = ({
     'data',
     'projects',
     projectId,
-    'subprojects',
-    subprojectId,
-    'designs',
+    'subproject-designs',
     nav.id,
   ]
   const ownUrl = `/${ownArray.join('/')}`
