@@ -1100,7 +1100,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS subproject_report_designs_one_active_idx ON su
 
 COMMENT ON TABLE subproject_report_designs IS 'Design of subproject reports, stored as JSON.';
 COMMENT ON COLUMN subproject_report_designs.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN subproject_report_designs.active IS 'Whether this design is the active one in use. Only one design per subproject may be active. Preset: false. But: if no design is active, the first one created is active. This is handled via triggers.';
+COMMENT ON COLUMN subproject_report_designs.active IS 'Whether this design is the active one in use. Only one design per subproject may be active. Preset: false.';
 COMMENT ON COLUMN subproject_report_designs.design IS 'JSON design of the subproject report.';
 
 
@@ -1166,6 +1166,7 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_design_id::text)) STORED,
+  active boolean DEFAULT FALSE,
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1176,9 +1177,11 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
 CREATE INDEX IF NOT EXISTS project_report_designs_account_id_idx ON project_report_designs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_report_designs_project_id_idx ON project_report_designs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_report_designs_label_idx ON project_report_designs USING btree(label);
+CREATE UNIQUE INDEX IF NOT EXISTS project_report_designs_one_active_idx ON project_report_designs (project_id) WHERE active = TRUE;
 
 COMMENT ON TABLE project_report_designs IS 'Customizable designs for project reports, stored as JSON.';
 COMMENT ON COLUMN project_report_designs.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN project_report_designs.active IS 'Whether this design is the active one in use. Only one design per project may be active. Preset: false.';
 COMMENT ON COLUMN project_report_designs.design IS 'JSON design of the project report design.';
 
 
