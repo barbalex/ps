@@ -1037,33 +1037,3 @@ CREATE OR REPLACE TRIGGER chart_subjects_label_trigger
 AFTER INSERT OR UPDATE OF value_unit, value_field, value_source, table_name ON chart_subjects
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();
-
--- if a new subproject_report_design is the first for its subproject or none is active yet, set active = true
-CREATE OR REPLACE FUNCTION subproject_report_designs_first_active_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-  existing_count INTEGER;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN NEW;
-  END IF;
-
-  SELECT COUNT(*) INTO existing_count
-  FROM subproject_report_designs
-  WHERE subproject_id = NEW.subproject_id AND active = TRUE;
-
-  IF existing_count = 0 THEN
-    NEW.active := TRUE;
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER subproject_report_designs_first_active_trigger
-BEFORE INSERT ON subproject_report_designs
-FOR EACH ROW
-EXECUTE PROCEDURE subproject_report_designs_first_active_trigger();
