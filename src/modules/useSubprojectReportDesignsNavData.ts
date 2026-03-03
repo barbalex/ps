@@ -14,6 +14,7 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  active: boolean
 }[]
 
 export const useSubprojectReportDesignsNavData = ({
@@ -27,7 +28,8 @@ export const useSubprojectReportDesignsNavData = ({
     subprojectId ?
       `
     SELECT subproject_report_design_id as id, 
-           coalesce(name, subproject_report_design_id::text) as label 
+           coalesce(name, subproject_report_design_id::text) as label,
+           active
     FROM subproject_report_designs 
     WHERE subproject_id = '${subprojectId}' 
     ORDER BY label`

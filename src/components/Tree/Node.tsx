@@ -13,7 +13,7 @@ interface Props {
   isActive: boolean
   isOpen: boolean
   level: number
-  label: string
+  label: string | React.ReactNode
   id: string
   childrenCount: number
   to: string
