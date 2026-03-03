@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 import { Puck, Config } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -163,6 +164,58 @@ export const Form = ({ autoFocusRef, from }) => {
 
   const config: Config = { components, categories }
 
+  const onActiveChange = async (e, data) => {
+    const { value } = getValueFromChange(e, data)
+    if (row.active === value) return
+
+    try {
+      if (value === true) {
+        // Deactivate all other designs for this subproject first, then activate this one
+        const prevActive = await db.query<SubprojectReportDesigns>(
+          `SELECT * FROM subproject_report_designs WHERE subproject_id = $1 AND subproject_report_design_id <> $2 AND active = TRUE`,
+          [row.subproject_id, subprojectReportDesignId],
+        )
+        await db.query(
+          `UPDATE subproject_report_designs SET active = FALSE WHERE subproject_id = $1 AND subproject_report_design_id <> $2`,
+          [row.subproject_id, subprojectReportDesignId],
+        )
+        for (const prevRow of prevActive.rows) {
+          addOperation({
+            table: 'subproject_report_designs',
+            rowIdName: 'subproject_report_design_id',
+            rowId: prevRow.subproject_report_design_id,
+            operation: 'update',
+            draft: { active: false },
+            prev: { ...prevRow },
+          })
+        }
+      }
+      await db.query(
+        `UPDATE subproject_report_designs SET active = $1 WHERE subproject_report_design_id = $2`,
+        [value, subprojectReportDesignId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        active: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { active: _, ...rest } = prev
+      return rest
+    })
+    addOperation({
+      table: 'subproject_report_designs',
+      rowIdName: 'subproject_report_design_id',
+      rowId: row.subproject_report_design_id,
+      operation: 'update',
+      draft: { active: value },
+      prev: { ...row },
+    })
+  }
+
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
@@ -238,6 +291,14 @@ export const Form = ({ autoFocusRef, from }) => {
         ref={autoFocusRef}
         validationState={validations?.name?.state}
         validationMessage={validations?.name?.message}
+      />
+      <SwitchField
+        label="Active"
+        name="active"
+        value={row.active ?? false}
+        onChange={onActiveChange}
+        validationState={validations?.active?.state}
+        validationMessage={validations?.active?.message}
       />
       {(fields.length > 0 || charts.length > 0) && (
         <Puck
