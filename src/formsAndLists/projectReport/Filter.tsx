@@ -8,7 +8,7 @@ type Props = {
 export const ProjectReportFilter = ({ from }: Props) => (
   <Filter from={from}>
     {({ row, onChange, orIndex }) => (
-      <ProjectReportForm row={row} onChange={onChange} orIndex={orIndex} />
+      <ProjectReportForm row={row} onChange={onChange} orIndex={orIndex} from={from} />
     )}
   </Filter>
 );

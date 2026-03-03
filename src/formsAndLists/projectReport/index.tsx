@@ -70,6 +70,7 @@ export const ProjectReport = () => {
           <Form
             onChange={onChange}
             row={row}
+            from={from}
             autoFocusRef={autoFocusRef}
             validations={validations}
           />

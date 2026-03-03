@@ -5,7 +5,14 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const ProjectReportForm = ({ onChange, row, orIndex, autoFocusRef, validations = {} }) => {
+export const ProjectReportForm = ({
+  onChange,
+  row,
+  orIndex,
+  from,
+  autoFocusRef,
+  validations = {},
+}) => {
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
@@ -28,6 +35,7 @@ export const ProjectReportForm = ({ onChange, row, orIndex, autoFocusRef, valida
         id={row.project_report_id}
         data={jsonbData}
         orIndex={orIndex}
+        from={from}
         autoFocus
         ref={autoFocusRef}
       />
