@@ -1038,7 +1038,7 @@ AFTER INSERT OR UPDATE OF value_unit, value_field, value_source, table_name ON c
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();
 
--- if a new subproject_report_design is the first for its subproject, set active = true
+-- if a new subproject_report_design is the first for its subproject or none is active yet, set active = true
 CREATE OR REPLACE FUNCTION subproject_report_designs_first_active_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1053,7 +1053,7 @@ BEGIN
 
   SELECT COUNT(*) INTO existing_count
   FROM subproject_report_designs
-  WHERE subproject_id = NEW.subproject_id;
+  WHERE subproject_id = NEW.subproject_id AND active = TRUE;
 
   IF existing_count = 0 THEN
     NEW.active := TRUE;
