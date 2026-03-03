@@ -71,9 +71,9 @@ export const Jsonb = ({
       WHERE 
         fields.table_name = $1 
         and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
-        ${!isAccountTable ? ` and level = $2` : ''} 
+        ${table === 'places' ? ` and level = $2` : ''} 
       ORDER BY t.ord`
-  const params = isAccountTable ? [table] : [table, placeId2 ? 2 : 1]
+  const params = table === 'places' ? [table, placeId2 ? 2 : 1] : [table]
   const res = useLiveQuery(sql, params)
   const fields: FieldsWithTypes[] = res?.rows ?? []
 
@@ -92,12 +92,7 @@ export const Jsonb = ({
     }
 
     const isFilter = location.pathname.endsWith('filter')
-    const level =
-      table === 'places' ?
-        placeId ? 2
-        : 1
-      : placeId2 ? 2
-      : 1
+    const level = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
 
     if (isFilter) {
       // TODO: wait until new db and it's accessing lib. Then implement these queries
@@ -151,7 +146,7 @@ export const Jsonb = ({
 
   return (
     <>
-      {fields.length > 0 ?
+      {fields.length > 0 ? (
         <WidgetsFromDataFieldsDefined
           key="widgetsFromDataFieldsDefined"
           fields={fields}
@@ -165,7 +160,7 @@ export const Jsonb = ({
           ref={ref}
           from={from}
         />
-      : null}
+      ) : null}
       {dataKeysNotDefined.map((dataKey, index) => (
         <TextField
           key={dataKey}
@@ -181,11 +176,11 @@ export const Jsonb = ({
           // if isHistory, don't warn about undefined fields
           validationState={isHistory ? undefined : 'warning'}
           validationMessage={
-            isHistory ? undefined : (
-              `This field is not defined for this ${
-                isAccountTable ? 'account' : 'project'
-              }`
-            )
+            isHistory
+              ? undefined
+              : `This field is not defined for this ${
+                  isAccountTable ? 'account' : 'project'
+                }`
           }
           autoFocus={autoFocus && index === 0 && fields.length === 0}
         />
