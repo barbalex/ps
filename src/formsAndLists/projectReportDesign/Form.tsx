@@ -27,7 +27,8 @@ export const Form = ({ autoFocusRef, from }) => {
       (SELECT json_agg(f) FROM (
         SELECT field_id, name, field_label, field_type_id, widget_type_id 
         FROM fields 
-        WHERE table_name = 'project_reports' 
+        WHERE table_name = 'project_reports'
+          AND project_id = prd.project_id
         ORDER BY name
       ) f) as fields,
       (SELECT json_agg(c) FROM (
