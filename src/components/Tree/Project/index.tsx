@@ -21,6 +21,7 @@ import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
+import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
@@ -97,10 +98,13 @@ export const ProjectNode = ({ nav, level = 2 }) => {
             to={`${ownUrl}/project`}
           />
           <SubprojectsNode projectId={nav.id} />
-          <ProjectReportsNode projectId={nav.id} />
+          {showDesigningNodes && (
+            <SubprojectReportDesignsNode projectId={nav.id} level={3} />
+          )}
           {showDesigningNodes && (
             <ProjectReportDesignsNode projectId={nav.id} level={3} />
           )}
+          <ProjectReportsNode projectId={nav.id} />
           <PersonsNode projectId={nav.id} />
           <WmsServicesNode projectId={nav.id} />
           <WmsLayersNode projectId={nav.id} />

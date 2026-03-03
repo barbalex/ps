@@ -8,21 +8,20 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from = '/data/projects/$projectId_/subprojects/$subprojectId_/designs/'
+const from = '/data/projects/$projectId_/subproject-designs/'
 
 export const SubprojectReportDesigns = () => {
-  const { projectId, subprojectId } = useParams({ from })
+  const { projectId } = useParams({ from })
   const navigate = useNavigate()
 
   const { loading, navData } = useSubprojectReportDesignsNavData({
     projectId,
-    subprojectId,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     const subproject_report_design_id = await createSubprojectReportDesign({
-      subprojectId,
+      projectId,
     })
     if (!subproject_report_design_id) return
 
@@ -43,22 +42,15 @@ export const SubprojectReportDesigns = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              label={label ?? id}
-              to={id}
-            />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} label={label ?? id} to={id} />
           ))
-        }
+        )}
       </div>
     </div>
   )

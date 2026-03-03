@@ -31,7 +31,7 @@ const SubprojectReportItem = ({
     `SELECT
       sr.*,
       (SELECT design FROM subproject_report_designs
-       WHERE subproject_id = sr.subproject_id AND active = true
+       WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id) AND active = true
        LIMIT 1) as design,
       (SELECT json_agg(c) FROM (
         SELECT c.chart_id, c.name, c.subjects_single,
