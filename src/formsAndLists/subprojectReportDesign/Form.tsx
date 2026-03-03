@@ -279,8 +279,6 @@ export const Form = ({ autoFocusRef, from }) => {
     )
   }
 
-  console.log('Rendering Form with content:', row?.design?.content)
-
   return (
     <div className="form-container">
       <TextField
