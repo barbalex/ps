@@ -134,7 +134,7 @@ export const ProjectReportPrint = ({ from }) => {
             >
               {chart.name}
             </div>
-            {chart.subjects_single === true ?
+            {chart.subjects_single === true ? (
               chart.subjects?.map((subject) => (
                 <SingleChart
                   key={subject.chart_subject_id}
@@ -144,12 +144,13 @@ export const ProjectReportPrint = ({ from }) => {
                   synchronized={true}
                 />
               ))
-            : <SingleChart
+            ) : (
+              <SingleChart
                 chart={chart}
                 subjects={chart.subjects ?? []}
                 data={data}
               />
-            }
+            )}
           </div>
         )
       },
@@ -162,10 +163,7 @@ export const ProjectReportPrint = ({ from }) => {
     fields: {},
     defaultProps: {},
     render: () => (
-      <SubprojectReportsSection
-        projectId={projectId}
-        year={row.year ?? null}
-      />
+      <SubprojectReportsSection projectId={projectId} year={row.year ?? null} />
     ),
   }
 
@@ -205,21 +203,13 @@ export const ProjectReportPrint = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Report"
-        id={projectReportId}
-      />
-    )
+    return <NotFound table="Report" id={projectReportId} />
   }
 
   return (
     <div className="form-outer-container">
       <div className="print-hide">
-        <Header
-          from={from}
-          autoFocusRef={undefined}
-        />
+        <Header from={from} autoFocusRef={undefined} />
       </div>
       <div className="form-container">
         <div className="print-hide">
@@ -233,17 +223,8 @@ export const ProjectReportPrint = ({ from }) => {
             validationMessage={validations?.year?.message}
           />
         </div>
-        {design && (
-          <div style={{ marginTop: 20 }}>
-            <Render
-              config={config}
-              data={design}
-            />
-          </div>
-        )}
-        {!design && (
-          <div>No report design found for this project.</div>
-        )}
+        {design && <Render config={config} data={design} />}
+        {!design && <div>No report design found for this project.</div>}
       </div>
     </div>
   )

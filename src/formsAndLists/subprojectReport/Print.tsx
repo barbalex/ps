@@ -132,7 +132,7 @@ export const SubprojectReportPrint = ({ from }) => {
             >
               {chart.name}
             </div>
-            {chart.subjects_single === true ?
+            {chart.subjects_single === true ? (
               chart.subjects?.map((subject) => (
                 <SingleChart
                   key={subject.chart_subject_id}
@@ -142,12 +142,13 @@ export const SubprojectReportPrint = ({ from }) => {
                   synchronized={true}
                 />
               ))
-            : <SingleChart
+            ) : (
+              <SingleChart
                 chart={chart}
                 subjects={chart.subjects ?? []}
                 data={data}
               />
-            }
+            )}
           </div>
         )
       },
@@ -190,12 +191,7 @@ export const SubprojectReportPrint = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Report"
-        id={subprojectReportId}
-      />
-    )
+    return <NotFound table="Report" id={subprojectReportId} />
   }
 
   return (
@@ -216,12 +212,7 @@ export const SubprojectReportPrint = ({ from }) => {
           />
         </div>
         {design && fields.length > 0 && (
-          <div style={{ marginTop: 20 }}>
-            <Render
-              config={config}
-              data={design}
-            />
-          </div>
+          <Render config={config} data={design} />
         )}
         {(!design || fields.length === 0) && (
           <div>No report design found for this subproject.</div>
