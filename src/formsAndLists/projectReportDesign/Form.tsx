@@ -43,7 +43,11 @@ export const Form = ({ autoFocusRef, from }) => {
       (SELECT data FROM project_reports 
        WHERE project_id = prd.project_id 
        ORDER BY year DESC 
-       LIMIT 1) as report_data
+       LIMIT 1) as report_data,
+      (SELECT EXISTS(
+         SELECT 1 FROM subproject_report_designs 
+         WHERE project_id = prd.project_id AND active = TRUE
+       )) as has_active_subproject_design
     FROM project_report_designs prd
     WHERE project_report_design_id = $1`,
     [projectReportDesignId],
@@ -52,6 +56,7 @@ export const Form = ({ autoFocusRef, from }) => {
   const fields = row?.fields ?? []
   const charts = row?.charts ?? []
   const reportData = row?.report_data ?? {}
+  const hasActiveSubprojectDesign = row?.has_active_subproject_design ?? false
 
   // Build Puck config from fields with actual data
   const components = {}
@@ -328,6 +333,22 @@ export const Form = ({ autoFocusRef, from }) => {
                   }}
                 >
                   No charts yet — add charts to this project first.
+                </div>
+              )}
+              {!hasActiveSubprojectDesign && (
+                <div
+                  style={{
+                    padding: '6px 8px',
+                    marginBottom: 4,
+                    background: '#fff8e1',
+                    border: '1px solid #ffe082',
+                    borderRadius: 4,
+                    fontSize: '0.82em',
+                    color: '#5d4037',
+                  }}
+                >
+                  No active subproject report design — the Subproject Reports
+                  block will be empty.
                 </div>
               )}
               <Puck.Components />
