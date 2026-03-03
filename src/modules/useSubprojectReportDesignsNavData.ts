@@ -8,7 +8,6 @@ import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
-  subprojectId: string
 }
 
 type NavData = {
@@ -19,19 +18,18 @@ type NavData = {
 
 export const useSubprojectReportDesignsNavData = ({
   projectId,
-  subprojectId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
   const sql =
-    subprojectId ?
+    projectId ?
       `
     SELECT subproject_report_design_id as id, 
            coalesce(name, subproject_report_design_id::text) as label,
            active
     FROM subproject_report_designs 
-    WHERE subproject_id = '${subprojectId}' 
+    WHERE project_id = '${projectId}' 
     ORDER BY label`
     : null
 
@@ -44,11 +42,9 @@ export const useSubprojectReportDesignsNavData = ({
     'data',
     'projects',
     projectId,
-    'subprojects',
-    subprojectId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'designs']
+  const ownArray = [...parentArray, 'subproject-designs']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -65,10 +61,10 @@ export const useSubprojectReportDesignsNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: 'Report Designs',
+      namePlural: 'Subproject Report Designs',
       loading,
     }),
-    nameSingular: 'Report Design',
+    nameSingular: 'Subproject Report Design',
     navs,
   }
 

@@ -7,7 +7,6 @@ import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
-  subprojectId: string
   subprojectReportDesignId: string
 }
 
@@ -18,7 +17,6 @@ type NavData = {
 
 export const useSubprojectReportDesignNavData = ({
   projectId,
-  subprojectId,
   subprojectReportDesignId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -37,14 +35,7 @@ export const useSubprojectReportDesignNavData = ({
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
-  const parentArray = [
-    'data',
-    'projects',
-    projectId,
-    'subprojects',
-    subprojectId,
-    'designs',
-  ]
+  const parentArray = ['data', 'projects', projectId, 'subproject-designs']
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, subprojectReportDesignId]
   const ownUrl = `/${ownArray.join('/')}`
