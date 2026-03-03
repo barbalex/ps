@@ -15,7 +15,7 @@ export const ProtectedRoute = ({ children }) => {
   if (isPending) return <Loading label="Authenticating" />
 
   // if (!isAuthenticated) return <Auth />
-  return <Auth />
+  // return <Auth />
 
   return children
 }
