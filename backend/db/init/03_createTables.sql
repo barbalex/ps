@@ -1084,7 +1084,7 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(name, subproject_report_design_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_report_design_id::text)) STORED,
   active boolean DEFAULT FALSE,
   design jsonb DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
