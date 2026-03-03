@@ -16,23 +16,19 @@ export const Index = () => (
       />
     </picture>
     <div className={styles.scrollContainer}>
-      <h6 className={styles.pageTitle}>Bedrohte Arten und Biotope fördern</h6>
+      <h6 className={styles.pageTitle}>Seltene und bedrohte Arten fördern</h6>
       <div className={styles.cardContainer}>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Arten und Biotope</h3>
-          Seltene und bedrohte Arten und Biotope überwachen und fördern.
-        </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Ziele</h3>
           ...beschreiben die gewünschte Entwicklung.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Räume</h3>
-          Arten in Populationen gliedern, Biotope in Flächen.
+          Arten in ihre Populationen gliedern.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Zweistufige Räume</h3>
-          Populationen und Biotopflächen weiter unterteilen.
+          Populationen können in Teil-Populationen gegliedert werden.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Verantwortliche</h3>
@@ -41,11 +37,12 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Massnahmen</h3>
-          ...verbessern den Zustand von Populationen oder Biotop-Flächen.
+          ...verbessern den Zustand von (Teil-)&shy;Popu&shy;lationen.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Kontrollen</h3>
-          ...erfassen den Zustand von Räumen und die Wirkung von Massnahmen.
+          ...erfassen den Zustand von (Teil-)&shy;Popu&shy;lationen und die
+          Wirkung von Massnahmen.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Berichte</h3>
@@ -54,7 +51,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Beobachtungen Dritter</h3>
-          ...prüfen und den Popula&shy;tionen und Biotopen zuordnen.
+          ...prüfen und (Teil-)Popula&shy;tionen zuordnen.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Mobilfähig</h3>
@@ -63,8 +60,8 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Feldtauglich</h3>
-          Sie sind offline? Einfach weiter arbeiten. Sobald Sie wieder online
-          sind, werden Ihre Daten synchronisiert.
+          Sie sind offline? Einfach weiter arbeiten. Sobald online, werden Ihre
+          Daten synchronisiert.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Flexible Konfiguration</h3>
@@ -79,8 +76,7 @@ export const Index = () => (
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Einfaches Onboarding</h3>
           Erfassen Sie neue Mitarbeitende mit ihrer Email. Ergänzen Sie diese
-          Person bei allen Arten und Biotopen, in denen sie mitarbeiten soll.
-          Fertig!
+          Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Bring your own device</h3>
@@ -112,9 +108,7 @@ export const Index = () => (
           </h3>
           Es zahlt, wer Projekte konfiguriert.
           <br />
-          Testen ist gratis.
-          <br />
-          Mitarbeitende zahlen nicht.
+          Testen und mitarbeiten ist gratis.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Open Source</h3>
