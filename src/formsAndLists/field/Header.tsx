@@ -29,7 +29,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const addRow = async () => {
     const id = await createField({ projectId })
     navigate({
-      to: `/data/fields/${id}`,
+      to: `../${id}`,
       params: (prev) => ({ ...prev, fieldId: id }),
     })
     autoFocusRef?.current?.focus()
