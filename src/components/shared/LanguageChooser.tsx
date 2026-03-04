@@ -1,0 +1,46 @@
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const {
+  Menu,
+  MenuTrigger,
+  MenuPopover,
+  MenuList,
+  MenuItem,
+  MenuButton,
+} = fluentUiReactComponents
+import { useAtom } from 'jotai'
+
+import { languageAtom, type Language } from '../../store.ts'
+
+const LANGUAGES: Language[] = ['en', 'de', 'fr', 'it']
+
+export const LanguageChooser = () => {
+  const [language, setLanguage] = useAtom(languageAtom)
+
+  return (
+    <Menu>
+      <MenuTrigger disableButtonEnhancement>
+        <MenuButton
+          size="medium"
+          appearance="transparent"
+          style={{ color: 'white', minWidth: 0 }}
+          title="Choose language"
+        >
+          {language.toUpperCase()}
+        </MenuButton>
+      </MenuTrigger>
+      <MenuPopover>
+        <MenuList>
+          {LANGUAGES.map((lang) => (
+            <MenuItem
+              key={lang}
+              onClick={() => setLanguage(lang)}
+              style={language === lang ? { fontWeight: 'bold' } : undefined}
+            >
+              {lang.toUpperCase()}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </MenuPopover>
+    </Menu>
+  )
+}

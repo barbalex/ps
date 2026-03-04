@@ -44,10 +44,10 @@ export const AppStates = () => {
           validationMessage="If true, desktop navigation will be enforced"
         />
         <SwitchField
-          label="Always show tree"
+          label="Always show navigation tree"
           value={alwaysShowTree}
           onChange={toggleAlwaysShowTree}
-          validationMessage="If true, the tree will always be shown"
+          validationMessage="If true, the navigation tree will always be shown (on mobile it is not very practical)"
         />
         <DbDump />
       </div>

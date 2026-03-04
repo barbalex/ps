@@ -5,6 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 
 import globalStyles from '../../../styles.module.css'
 import styles from './Menu.module.css'
+import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 
 export const Menu = () => {
   const navigate = useNavigate({ from: '/' })
@@ -13,6 +14,7 @@ export const Menu = () => {
 
   return (
     <div className={globalStyles.controls}>
+      <LanguageChooser />
       <Button
         size="medium"
         icon={<MdLogin />}
