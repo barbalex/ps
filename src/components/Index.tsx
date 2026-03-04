@@ -122,7 +122,8 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Rückmeldungen erwünscht</h3>
-          Sie dürfen gerne testen und mir Ihre Eindrücke und Wünsche{' '}
+          Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und
+          Wünsche{' '}
           <a
             href="mailto:alex@gabriel-software.ch?subject=arten-fördern.ch"
             target="_blank"
