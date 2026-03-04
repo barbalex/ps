@@ -118,6 +118,12 @@ export const userEmailAtom = atomWithStorage("userEmailAtom", null);
 export const designingAtom = atomWithStorage("designingAtom", false);
 export const tabsAtom = atomWithStorage("tabsAtom", ["tree", "data"]);
 
+const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const;
+export type Language = (typeof SUPPORTED_LANGUAGES)[number];
+const _navLang = navigator.language.split('-')[0] as Language;
+const _defaultLanguage: Language = SUPPORTED_LANGUAGES.includes(_navLang) ? _navLang : 'de';
+export const languageAtom = atomWithStorage<Language>('language', _defaultLanguage);
+
 // initialSyncing happens on first app load
 // on first app load liveQueries should not run yet, before initial sync is done
 // on later app loads, data exists locally, so liveQueries can run immediately

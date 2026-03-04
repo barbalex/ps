@@ -1,10 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Button,
-  Toolbar,
-  ToolbarToggleButton,
-  Tooltip,
-} = fluentUiReactComponents
+const { Button, Toolbar, ToolbarToggleButton, Tooltip } =
+  fluentUiReactComponents
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
@@ -21,6 +17,7 @@ import globalStyles from '../../../styles.module.css'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
+import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 
 const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -126,21 +123,21 @@ export const Menu = () => {
             <Tooltip content={mapIsActive ? 'Hide Map' : 'Show Map'}>
               <ToolbarToggleButton
                 icon={
-                  !mapIsActive ? undefined
-                  : mapIsMaximized ?
+                  !mapIsActive ? undefined : mapIsMaximized ? (
                     <Tooltip content="Shrink Map">
                       <TbArrowsMinimize
                         onClick={onClickMapView}
                         className={styles.mapIcon}
                       />
                     </Tooltip>
-                  : <Tooltip content="Maximize Map">
+                  ) : (
+                    <Tooltip content="Maximize Map">
                       <TbArrowsMaximize
                         onClick={onClickMapView}
                         className={styles.mapIcon}
                       />
                     </Tooltip>
-
+                  )
                 }
                 iconPosition="after"
                 aria-label="Map"
@@ -169,13 +166,15 @@ export const Menu = () => {
           />
         </Tooltip>
       )}
+      <LanguageChooser />
       <Online />
       <Tooltip
         content={
-          !isAuthenticated ? 'Login'
-          : isHome ?
-            'Enter'
-          : `Logout ${authUser?.email}`
+          !isAuthenticated
+            ? 'Login'
+            : isHome
+              ? 'Enter'
+              : `Logout ${authUser?.email}`
         }
       >
         <Button
