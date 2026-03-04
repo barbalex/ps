@@ -6,11 +6,8 @@ import styles from './index.module.css'
 export const Header = () => (
   <div className={`${styles.container} no-print`}>
     <h1 className={styles.title}>
-      <Link
-        to="/"
-        className={styles.link}
-      >
-        Promoting Species
+      <Link to="/" className={styles.link}>
+        Arten Fördern
       </Link>
     </h1>
     <Menu />

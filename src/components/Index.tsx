@@ -55,7 +55,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Mobilfähig</h3>
-          Promoting Species passt sich jeder Bildschirmgrösse an. Arbeiten Sie
+          arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeiten Sie
           effizient auf Handy, Tablet oder Computer.
         </div>
         <div className={styles.card}>
@@ -65,7 +65,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Flexible Konfiguration</h3>
-          Sie können Promoting Species Ihren eigenen Bedürfnissen anpassen.
+          Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen.
           Vermissen Sie eine Funktion? Ich bin interessiert!
         </div>
         <div className={styles.card}>
@@ -80,7 +80,7 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Bring your own device</h3>
-          Promoting Species funktioniert auf jedem Betriebssystem: Windows,
+          arten-fördern.app funktioniert auf jedem Betriebssystem: Windows,
           MacOS, Linux, Android, iOS...
         </div>
         <div className={styles.card}>

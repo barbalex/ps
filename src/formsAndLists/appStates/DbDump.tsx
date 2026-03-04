@@ -13,7 +13,7 @@ export const DbDump = () => {
   const downloadDump = async () => {
     setDumping(true)
     const dump = await pgDump({ pg: db })
-    fileDownload(dump, `promoting-species.sql`)
+    fileDownload(dump, `arten-fördern.sql`)
     setDumping(false)
   }
 
