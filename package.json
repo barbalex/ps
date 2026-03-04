@@ -11,7 +11,8 @@
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
     "how-to-install-using-sfw": "sfw npm install -f",
-    "ncu using cooldown": "ncu -c 5 -i"
+    "ncu using cooldown": "ncu -c 5 -i",
+    "i18n:extract": "formatjs extract 'src/**/*.tsx' --out-file src/i18n/extracted.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "1.7.7",
@@ -96,6 +97,7 @@
     "@eslint/compat": "2.0.2",
     "@eslint/eslintrc": "3.3.4",
     "@eslint/js": "10.0.1",
+    "@formatjs/cli": "6.13.0",
     "@formatjs/vite-plugin": "1.0.3",
     "@tanstack/eslint-plugin-router": "1.161.4",
     "@types/leaflet": "1.9.21",

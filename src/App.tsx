@@ -10,6 +10,12 @@ import { PGliteProvider } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
 import { IntlProvider } from 'react-intl'
 
+import en from './i18n/en.json'
+import fr from './i18n/fr.json'
+import it from './i18n/it.json'
+
+const messages = { en, fr, it, de: undefined } as const
+
 import { router } from './router.tsx'
 
 // TODO: is this really needed?
@@ -42,16 +48,16 @@ if (import.meta.env.DEV) {
 
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
-  const language = useAtomValue(languageAtom)
+  const language = useAtomValue(languageAtom, { store })
 
   // needed to prevent problems with relaxed durability and closing connections
   // https://github.com/electric-sql/pglite/issues/879#issuecomment-3777577150
   useBeforeunload(() => db.close())
 
   return (
-    <IntlProvider locale={language}>
-      <PGliteProvider db={db}>
-        <JotaiProvider store={store}>
+    <JotaiProvider store={store}>
+      <IntlProvider locale={language} messages={messages[language]}>
+        <PGliteProvider db={db}>
           <FluentProvider theme={lightTheme}>
             <uc-config
               ctx-name="uploadcare-uploader"
@@ -72,8 +78,8 @@ export const App = () => {
               </UploaderContext.Provider>
             </div>
           </FluentProvider>
-        </JotaiProvider>
-      </PGliteProvider>
-    </IntlProvider>
+        </PGliteProvider>
+      </IntlProvider>
+    </JotaiProvider>
   )
 }
