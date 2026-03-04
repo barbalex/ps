@@ -1,3 +1,5 @@
+import { FormattedMessage } from 'react-intl'
+
 import styles from './Index.module.css'
 
 export const Index = () => (
@@ -16,7 +18,9 @@ export const Index = () => (
       />
     </picture>
     <div className={styles.scrollContainer}>
-      <h6 className={styles.pageTitle}>Seltene und bedrohte Arten fördern</h6>
+      <h6 className={styles.pageTitle}>
+        <FormattedMessage defaultMessage="Seltene und bedrohte Arten fördern" />
+      </h6>
       <div className={styles.cardContainer}>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Ziele</h3>
