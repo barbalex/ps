@@ -56,7 +56,14 @@ export const App = () => {
 
   return (
     <JotaiProvider store={store}>
-      <IntlProvider locale={language} messages={messages[language]}>
+      <IntlProvider
+        locale={language}
+        messages={messages[language]}
+        onError={(err) => {
+          if (err.code === 'MISSING_TRANSLATION') return
+          console.error(err)
+        }}
+      >
         <PGliteProvider db={db}>
           <FluentProvider theme={lightTheme}>
             <uc-config

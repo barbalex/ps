@@ -35,6 +35,9 @@
   "H5/rUM": {
     "defaultMessage": "Flexible Konfiguration"
   },
+  "HjZkRK": {
+    "defaultMessage": "...verbessern den Zustand von (Teil-)Populationen."
+  },
   "II20Qf": {
     "defaultMessage": "Verantwortliche"
   },
@@ -65,23 +68,17 @@
   "VXoP2c": {
     "defaultMessage": "Professionelle Konfiguration"
   },
+  "VncgQ7": {
+    "defaultMessage": "...erfassen den Zustand von (Teil-)Populationen und die Wirkung von Massnahmen."
+  },
   "WrtHNX": {
     "defaultMessage": "Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und Wünsche {link}."
-  },
-  "X0GpeP": {
-    "defaultMessage": "...importieren, prüfen und (Teil-)Popula\\u00ADtionen zuordnen."
-  },
-  "X3QMtR": {
-    "defaultMessage": "...beschreiben und beurteilen die Entwick\\u00ADlung, den Erfolg der Massnahmen und die Errei\\u00ADchung der Ziele."
   },
   "Xd0J7Y": {
     "defaultMessage": "Open Source"
   },
   "ZiBLs/": {
     "defaultMessage": "Hier wird gebaut"
-  },
-  "aU2vJ6": {
-    "defaultMessage": "...verbessern den Zustand von (Teil-)\\u00ADPopu\\u00ADlationen."
   },
   "bC0sCs": {
     "defaultMessage": "Mobilfähig"
@@ -101,26 +98,29 @@
   "lXtv80": {
     "defaultMessage": "Räume"
   },
-  "laA4qR": {
-    "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die glei\\u00ADchen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
-  },
   "oPMDm+": {
     "defaultMessage": "Kontrollen"
+  },
+  "pPWZGx": {
+    "defaultMessage": "...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
   },
   "pTRYGx": {
     "defaultMessage": "Erfassen Sie neue Mitarbeitende mit ihrer Email. Ergänzen Sie diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
   },
-  "pbv8SL": {
-    "defaultMessage": "...erfassen den Zustand von (Teil-)\\u00ADPopu\\u00ADlationen und die Wirkung von Massnahmen."
-  },
   "pfBGqS": {
     "defaultMessage": "Feldtauglich"
+  },
+  "rEN8QI": {
+    "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
   },
   "rxRJ6H": {
     "defaultMessage": "Spinnen-Ragwurz"
   },
   "s5Z9mp": {
     "defaultMessage": "Populationen können in Teil-Populationen gegliedert werden."
+  },
+  "sST5WH": {
+    "defaultMessage": "...importieren, prüfen und (Teil-)Populationen zuordnen."
   },
   "yGCUsX": {
     "defaultMessage": "Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet."
