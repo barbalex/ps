@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import tsConfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
+import formatjs from '@formatjs/vite-plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 // import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 
@@ -18,6 +19,10 @@ export default defineConfig({
     // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
     tanstackRouter({ target: 'react', autoCodeSplitting: true }),
     react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
+    formatjs({
+      idInterpolationPattern: '[sha512:contenthash:base64:6]',
+      ast: true,
+    }),
     svgr(),
   ],
   envPrefix: 'ELECTRIC_',

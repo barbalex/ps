@@ -8,6 +8,7 @@ import { electricSync } from '@electric-sql/pglite-sync'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
+import { IntlProvider } from 'react-intl'
 
 import { router } from './router.tsx'
 
@@ -47,29 +48,31 @@ export const App = () => {
   useBeforeunload(() => db.close())
 
   return (
-    <PGliteProvider db={db}>
-      <JotaiProvider store={store}>
-        <FluentProvider theme={lightTheme}>
-          <uc-config
-            ctx-name="uploadcare-uploader"
-            pubkey="db67c21b6d9964e195b8"
-            maxLocalFileSizeBytes="100000000"
-            multiple="false"
-            sourceList="local, camera, dropbox, gdrive, gphotos"
-            useCloudImageEditor="true"
-          ></uc-config>
-          <uc-upload-ctx-provider
-            id="uploaderctx"
-            ctx-name="uploadcare-uploader"
-            ref={uploaderRef}
-          ></uc-upload-ctx-provider>
-          <div id="router-container" className={styles.routerContainer}>
-            <UploaderContext.Provider value={uploaderRef}>
-              <RouterProvider router={router} />
-            </UploaderContext.Provider>
-          </div>
-        </FluentProvider>
-      </JotaiProvider>
-    </PGliteProvider>
+    <IntlProvider locale={navigator.language}>
+      <PGliteProvider db={db}>
+        <JotaiProvider store={store}>
+          <FluentProvider theme={lightTheme}>
+            <uc-config
+              ctx-name="uploadcare-uploader"
+              pubkey="db67c21b6d9964e195b8"
+              maxLocalFileSizeBytes="100000000"
+              multiple="false"
+              sourceList="local, camera, dropbox, gdrive, gphotos"
+              useCloudImageEditor="true"
+            ></uc-config>
+            <uc-upload-ctx-provider
+              id="uploaderctx"
+              ctx-name="uploadcare-uploader"
+              ref={uploaderRef}
+            ></uc-upload-ctx-provider>
+            <div id="router-container" className={styles.routerContainer}>
+              <UploaderContext.Provider value={uploaderRef}>
+                <RouterProvider router={router} />
+              </UploaderContext.Provider>
+            </div>
+          </FluentProvider>
+        </JotaiProvider>
+      </PGliteProvider>
+    </IntlProvider>
   )
 }
