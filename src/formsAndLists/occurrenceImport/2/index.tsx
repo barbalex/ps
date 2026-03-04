@@ -75,7 +75,7 @@ export const Two = ({
         />
 
         <p>
-          The coordinate reference system used by promoting-species.app is
+          The coordinate reference system used by promote-species.app is
           'EPSG:4326', also known as 'WGS 84'.
           <br />
           It is always used in GeoJSON. Though common, thousands of other

@@ -11,6 +11,12 @@ auth.promote-species.app {
   }
 }
 
+auth.arten-fördern.app {
+  reverse_proxy * ps_auth:3002 {
+    header_down Access-Control-Allow-Origin *
+  }
+}
+
 auth.localhost {
   reverse_proxy * ps_auth:3002 {
     header_down Access-Control-Allow-Origin *
