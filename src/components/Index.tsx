@@ -90,8 +90,8 @@ export const Index = () => (
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Zeitmaschine</h3>
-          Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten
-          geändert?
+          Haben mehrere Mitarbeitende aus versehen offline die glei&shy;chen
+          Daten geändert?
           <br />
           <br />
           Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert
