@@ -118,7 +118,8 @@ export const Index = () => (
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Hier wird gebaut</h3>
           Diese App ist noch in Entwicklung. Noch steckt sie voller Fehler.
-          Funktionen werden laufend ergänzt.
+          Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht
+          und neu erstellt.
         </div>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Rückmeldungen erwünscht</h3>
@@ -131,9 +132,6 @@ export const Index = () => (
             mitteilen
           </a>
           .
-          <br />
-          <br />
-          Wichtig: Die Daten werden bei jedem Update gelöscht und neu erstellt.
         </div>
       </div>
     </div>
