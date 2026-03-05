@@ -7,6 +7,7 @@ import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createAction } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -20,6 +21,7 @@ import {
 import type Actions from '../../models/public/Actions.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
+  const { formatMessage } = useIntl()
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/action' ||
@@ -156,7 +158,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Action"
+      title={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
