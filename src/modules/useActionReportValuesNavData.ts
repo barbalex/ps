@@ -80,7 +80,7 @@ export const useActionReportValuesNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Werte' }),
+      namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
       loading,
     }),
     nameSingular: formatMessage({

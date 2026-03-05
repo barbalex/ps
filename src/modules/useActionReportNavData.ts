@@ -96,7 +96,7 @@ export const useActionReportNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.action_report_values_count ?? 0,
-          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Werte' }),
+          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
         }),
       },
     ],

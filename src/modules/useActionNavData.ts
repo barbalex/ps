@@ -100,7 +100,7 @@ export const useActionNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.action_values_count ?? 0,
-          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Werte' }),
+          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
         }),
       },
       {
