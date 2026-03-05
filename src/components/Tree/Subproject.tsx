@@ -17,12 +17,14 @@ import { FilesNode } from './Files.tsx'
 import { ChartsNode } from './Charts.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
+import { treeOpenNodesAtom, designingAtom, languageAtom } from '../../store.ts'
+import { getSubprojectNameSingular } from '../../modules/subprojectNameCols.ts'
 import type Projects from '../../models/public/Projects.ts'
 
 export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
+  const [language] = useAtom(languageAtom)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -84,7 +86,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
       {isOpen && (
         <>
           <Node
-            label={project?.subproject_name_singular || 'Subproject'}
+            label={getSubprojectNameSingular(project as Record<string, unknown>, language) || 'Subproject'}
             level={5}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&

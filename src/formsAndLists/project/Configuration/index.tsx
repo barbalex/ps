@@ -19,6 +19,7 @@ import { NotFound } from '../../../components/NotFound.tsx'
 import { FormHeader } from '../../../components/FormHeader/index.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../../store.ts'
+import { projectTypeNames } from '../../../modules/projectTypeNames.ts'
 import type Projects from '../../../models/public/Projects.ts'
 
 export const Configuration = ({ from }) => {
@@ -37,6 +38,35 @@ export const Configuration = ({ from }) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
+
+    if (name === 'type') {
+      const names = projectTypeNames[value] ?? {}
+      const allData = { type: value, ...names }
+      const setClauses = Object.keys(allData)
+        .map((col, i) => `${col} = $${i + 1}`)
+        .join(', ')
+      try {
+        await db.query(
+          `UPDATE projects SET ${setClauses} WHERE project_id = $${Object.keys(allData).length + 1}`,
+          [...Object.values(allData), projectId],
+        )
+      } catch (error) {
+        setValidations((prev) => ({
+          ...prev,
+          [name]: { state: 'error', message: error.message },
+        }))
+        return
+      }
+      addOperation({
+        table: 'projects',
+        rowIdName: 'project_id',
+        rowId: projectId,
+        operation: 'update',
+        draft: allData,
+        prev: { ...row },
+      })
+      return
+    }
 
     try {
       await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [

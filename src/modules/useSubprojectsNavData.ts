@@ -5,7 +5,8 @@ import { isEqual } from 'es-toolkit'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { subprojectsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { subprojectsFilterAtom, treeOpenNodesAtom, languageAtom } from '../store.ts'
+import { subprojectNameSingularExpr, subprojectNamePluralExpr } from './subprojectNameCols.ts'
 
 type Props = {
   projectId: string
@@ -37,6 +38,7 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const [filter] = useAtom(subprojectsFilterAtom)
+  const [language] = useAtom(languageAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
@@ -48,8 +50,8 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
       SELECT 
         sp.subproject_id AS id,
         sp.label, 
-        p.subproject_name_plural AS name_plural, 
-        p.subproject_name_singular AS name_singular,
+        ${subprojectNamePluralExpr(language, 'p')} AS name_plural, 
+        ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM subprojects sp
@@ -64,7 +66,7 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''} ),
-        names AS (SELECT subproject_name_singular, subproject_name_plural FROM projects WHERE project_id = '${projectId}')
+        names AS (SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular, ${subprojectNamePluralExpr(language)} AS subproject_name_plural FROM projects WHERE project_id = '${projectId}')
       SELECT 
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered,

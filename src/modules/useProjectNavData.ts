@@ -13,9 +13,11 @@ import {
   fieldsFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
+  languageAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { subprojectNameSingularExpr, subprojectNamePluralExpr } from './subprojectNameCols.ts'
 
 type Props = {
   projectId: string
@@ -81,6 +83,7 @@ export const useProjectNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
+  const [language] = useAtom(languageAtom)
 
   const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
   const subprojectsFilterString = filterStringFromFilter(subprojectsFilter)
@@ -123,7 +126,7 @@ export const useProjectNavData = ({
           WITH 
             subprojects_count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
             subprojects_count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${subprojectIsFiltered ? ` AND ${subprojectsFilterString}` : ''} ),
-            subprojects_names AS (SELECT subproject_name_singular, subproject_name_plural FROM projects WHERE project_id = '${projectId}'),
+            subprojects_names AS (SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular, ${subprojectNamePluralExpr(language)} AS subproject_name_plural FROM projects WHERE project_id = '${projectId}'),
             project_reports_count_unfiltered AS (SELECT count(*) FROM project_reports WHERE project_id = '${projectId}'),
             project_reports_count_filtered AS (SELECT count(*) FROM project_reports WHERE project_id = '${projectId}' ${projectReportsIsFiltered ? ` AND ${projectReportsFilterString}` : ''}),
             persons_count_unfiltered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}'),

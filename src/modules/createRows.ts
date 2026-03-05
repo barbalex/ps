@@ -1,6 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
 import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
+import { projectTypeNames } from './projectTypeNames.ts'
 
 const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
 
@@ -29,12 +30,12 @@ export const createProject = async () => {
 
   const project_id = uuidv7()
 
+  // depending on type, names should be Art/Arten (species) or Lebensraum/Lebensräume (biotope) (in each language)
   const data = {
     project_id,
     account_id,
     type: 'species',
-    subproject_name_singular: 'Art',
-    subproject_name_plural: 'Arten',
+    ...projectTypeNames['species'],
     values_on_multiple_levels: 'first',
     multiple_action_values_on_same_level: 'all',
     multiple_check_values_on_same_level: 'last',

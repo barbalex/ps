@@ -8,9 +8,11 @@ import {
   goalsFilterAtom,
   filesFilterAtom,
   treeOpenNodesAtom,
+  languageAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { subprojectNameSingularExpr } from './subprojectNameCols.ts'
 
 type Props = {
   projectId: string
@@ -42,6 +44,7 @@ type NavData = {
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [placesFilter] = useAtom(places1FilterAtom)
+  const [language] = useAtom(languageAtom)
 
   const placesFilterString = filterStringFromFilter(placesFilter)
   const placesIsFiltered = !!placesFilterString
@@ -81,7 +84,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
       SELECT
         sp.subproject_id AS id,
         sp.label, 
-        p.subproject_name_singular AS name_singular,
+        ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
         place_name_plural.name_plural AS place_name_plural,

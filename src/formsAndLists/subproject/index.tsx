@@ -1,14 +1,15 @@
 import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 
 import { Header } from './Header.tsx'
 import { SubprojectForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 import type Subprojects from '../../models/public/Subprojects.ts'
 import type Projects from '../../models/public/Projects.ts'
@@ -23,6 +24,7 @@ type SubprojectWithProjectInfo = Subprojects & {
 export const Subproject = ({ from }) => {
   const { subprojectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [language] = useAtom(languageAtom)
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -31,7 +33,7 @@ export const Subproject = ({ from }) => {
   const res = useLiveQuery(
     `SELECT 
       subprojects.*, 
-      projects.subproject_name_singular 
+      ${subprojectNameSingularExpr(language, 'projects')} AS subproject_name_singular 
     FROM 
       subprojects 
         inner join projects on projects.project_id = subprojects.project_id 

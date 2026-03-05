@@ -1,5 +1,6 @@
 // seems not in use
-import { store, pgliteDbAtom } from '../store.ts'
+import { store, pgliteDbAtom, languageAtom } from '../store.ts'
+import { getSubprojectNamePlural } from './subprojectNameCols.ts'
 
 export const buildNavs = async ({
   table,
@@ -91,7 +92,8 @@ export const buildNavs = async ({
         [projectId],
       )
       const project = projectRes?.rows?.[0]
-      const subprojectName = project?.subproject_name_plural ?? 'Subprojects'
+      const language = store.get(languageAtom)
+      const subprojectName = getSubprojectNamePlural(project, language) ?? 'Subprojects'
 
       return [
         {
