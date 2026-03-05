@@ -6,4 +6,8 @@
   &:hover {
     filter: brightness(85%);
   }
+
+  &:disabled {
+    cursor: default !important;
+  }
 }
