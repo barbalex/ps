@@ -797,23 +797,23 @@ export const startSyncing = async () => {
           table: 'field_sorts',
           primaryKey: ['field_sort_id'],
         },
-        occurrence_imports_geometry_methods: {
+        observation_imports_geometry_methods: {
           shape: {
             url,
             params: {
-              table: 'occurrence_imports_geometry_methods',
+              table: 'observation_imports_geometry_methods',
             },
           },
-          table: 'occurrence_imports_geometry_methods',
+          table: 'observation_imports_geometry_methods',
           primaryKey: ['geometry_method'],
         },
-        occurrence_imports: {
+        observation_imports: {
           shape: {
             url,
             params: {
-              table: 'occurrence_imports',
+              table: 'observation_imports',
               columns: [
-                'occurrence_import_id',
+                'observation_import_id',
                 'account_id',
                 'subproject_id',
                 'created_time',
@@ -838,8 +838,8 @@ export const startSyncing = async () => {
               ],
             },
           },
-          table: 'occurrence_imports',
-          primaryKey: ['occurrence_import_id'],
+          table: 'observation_imports',
+          primaryKey: ['observation_import_id'],
         },
         occurrences: {
           shape: {

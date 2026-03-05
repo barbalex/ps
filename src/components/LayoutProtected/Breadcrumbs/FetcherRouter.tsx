@@ -70,8 +70,8 @@ import { GoalReportFetcher } from './GoalReportFetcher.tsx'
 import { GoalReportReportFetcher } from './GoalReportReportFetcher.tsx'
 import { GoalReportValuesFetcher } from './GoalReportValuesFetcher.tsx'
 import { GoalReportValueFetcher } from './GoalReportValueFetcher.tsx'
-import { OccurrenceImportsFetcher } from './OccurrenceImportsFetcher.tsx'
-import { OccurrenceImportFetcher } from './OccurrenceImportFetcher.tsx'
+import { ObservationImportsFetcher } from './ObservationImportsFetcher.tsx'
+import { ObservationImportFetcher } from './ObservationImportFetcher.tsx'
 import { OccurrencesToAssessFetcher } from './OccurrencesToAssessFetcher.tsx'
 import { OccurrenceToAssessFetcher } from './OccurrenceToAssessFetcher.tsx'
 import { OccurrencesNotToAssignFetcher } from './OccurrencesNotToAssignFetcher.tsx'
@@ -138,77 +138,37 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
       return <DataFetcher {...other} />
     }
     case 'useProjectsNavData': {
-      return (
-        <ProjectsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectsFetcher params={params} {...other} />
     }
     // IMPORTANT: always ensure the necessary params are present before rendering the fetcher, otherwise it will cause errors
     case 'useProjectNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectFetcher params={params} {...other} />
     }
     case 'useProjectProjectNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectProjectFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectProjectFetcher params={params} {...other} />
     }
     case 'useSubprojectsNavData': {
       if (!params.projectId) return null
-      return (
-        <SubprojectsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectsFetcher params={params} {...other} />
     }
     case 'useSubprojectNavData': {
       if (!params.subprojectId || !params.projectId) return null
-      return (
-        <SubprojectFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectFetcher params={params} {...other} />
     }
     case 'usePlacesNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <PlacesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlacesFetcher params={params} {...other} />
     }
     case 'usePlaceNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <PlaceFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceFetcher params={params} {...other} />
     }
     case 'useChecksNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <ChecksFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ChecksFetcher params={params} {...other} />
     }
     case 'useCheckNavData': {
       if (
@@ -218,12 +178,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.checkId
       )
         return null
-      return (
-        <CheckFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CheckFetcher params={params} {...other} />
     }
     case 'useCheckValuesNavData': {
       if (
@@ -233,12 +188,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.checkId
       )
         return null
-      return (
-        <CheckValuesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CheckValuesFetcher params={params} {...other} />
     }
     case 'useCheckValueNavData': {
       if (
@@ -249,12 +199,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.checkValueId
       )
         return null
-      return (
-        <CheckValueFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CheckValueFetcher params={params} {...other} />
     }
     case 'useCheckTaxaNavData': {
       if (
@@ -264,12 +209,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.checkId
       )
         return null
-      return (
-        <CheckTaxaFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CheckTaxaFetcher params={params} {...other} />
     }
     case 'useCheckTaxonNavData': {
       if (
@@ -280,22 +220,12 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.checkTaxonId
       )
         return null
-      return (
-        <CheckTaxonFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CheckTaxonFetcher params={params} {...other} />
     }
     case 'useActionsNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <ActionsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionsFetcher params={params} {...other} />
     }
     case 'useActionNavData': {
       if (
@@ -305,12 +235,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionId
       )
         return null
-      return (
-        <ActionFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionFetcher params={params} {...other} />
     }
     case 'useActionValuesNavData': {
       if (
@@ -320,12 +245,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionId
       )
         return null
-      return (
-        <ActionValuesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionValuesFetcher params={params} {...other} />
     }
     case 'useActionValueNavData': {
       if (
@@ -336,12 +256,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionValueId
       )
         return null
-      return (
-        <ActionValueFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionValueFetcher params={params} {...other} />
     }
     case 'useActionReportsNavData': {
       if (
@@ -351,12 +266,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionId
       )
         return null
-      return (
-        <ActionReportsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionReportsFetcher params={params} {...other} />
     }
     case 'useActionReportNavData': {
       if (
@@ -367,12 +277,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionReportId
       )
         return null
-      return (
-        <ActionReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionReportFetcher params={params} {...other} />
     }
     case 'useActionReportReportNavData': {
       if (
@@ -383,12 +288,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionReportId
       )
         return null
-      return (
-        <ActionReportReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionReportReportFetcher params={params} {...other} />
     }
     case 'useActionReportValuesNavData': {
       if (
@@ -399,12 +299,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionReportId
       )
         return null
-      return (
-        <ActionReportValuesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionReportValuesFetcher params={params} {...other} />
     }
     case 'useActionReportValueNavData': {
       if (
@@ -416,22 +311,12 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.actionReportValueId
       )
         return null
-      return (
-        <ActionReportValueFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ActionReportValueFetcher params={params} {...other} />
     }
     case 'usePlaceReportsNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <PlaceReportsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceReportsFetcher params={params} {...other} />
     }
     case 'usePlaceReportNavData': {
       if (
@@ -441,12 +326,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.placeReportId
       )
         return null
-      return (
-        <PlaceReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceReportFetcher params={params} {...other} />
     }
     case 'usePlaceReportReportNavData': {
       if (
@@ -456,12 +336,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.placeReportId
       )
         return null
-      return (
-        <PlaceReportReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceReportReportFetcher params={params} {...other} />
     }
     case 'usePlaceReportValuesNavData': {
       if (
@@ -471,12 +346,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.placeReportId
       )
         return null
-      return (
-        <PlaceReportValuesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceReportValuesFetcher params={params} {...other} />
     }
     case 'usePlaceReportValueNavData': {
       if (
@@ -487,42 +357,22 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.placeReportValueId
       )
         return null
-      return (
-        <PlaceReportValueFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceReportValueFetcher params={params} {...other} />
     }
     case 'useOccurrencesAssignedNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <OccurrencesAssignedFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <OccurrencesAssignedFetcher params={params} {...other} />
     }
     case 'useOccurrenceAssignedNavData': {
       if (!params.projectId || !params.subprojectId || !params.occurrenceId)
         return null
-      return (
-        <OccurrenceAssignedFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <OccurrenceAssignedFetcher params={params} {...other} />
     }
     case 'usePlaceUsersNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <PlaceUsersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceUsersFetcher params={params} {...other} />
     }
     case 'usePlaceUserNavData': {
       if (
@@ -532,22 +382,12 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.placeUserId
       )
         return null
-      return (
-        <PlaceUserFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceUserFetcher params={params} {...other} />
     }
 
     case 'useSubprojectReportsNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <SubprojectReportsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectReportsFetcher params={params} {...other} />
     }
     case 'useSubprojectReportNavData': {
       if (
@@ -556,21 +396,11 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.subprojectReportId
       )
         return null
-      return (
-        <SubprojectReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectReportFetcher params={params} {...other} />
     }
     case 'useSubprojectHistoriesNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <SubprojectHistoriesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectHistoriesFetcher params={params} {...other} />
     }
     case 'useSubprojectHistoryNavData': {
       if (
@@ -579,22 +409,12 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.subprojectHistoryId
       )
         return null
-      return (
-        <SubprojectHistoryFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectHistoryFetcher params={params} {...other} />
     }
     case 'usePlaceHistoriesNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <PlaceHistoriesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceHistoriesFetcher params={params} {...other} />
     }
     case 'usePlaceHistoryNavData': {
       if (
@@ -604,51 +424,26 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.placeHistoryId
       )
         return null
-      return (
-        <PlaceHistoryFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceHistoryFetcher params={params} {...other} />
     }
     case 'useGoalsNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <GoalsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalsFetcher params={params} {...other} />
     }
     case 'useGoalNavData': {
       if (!params.projectId || !params.subprojectId || !params.goalId)
         return null
-      return (
-        <GoalFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalFetcher params={params} {...other} />
     }
     case 'useGoalGoalNavData': {
       if (!params.projectId || !params.subprojectId || !params.goalId)
         return null
-      return (
-        <GoalGoalFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalGoalFetcher params={params} {...other} />
     }
     case 'useGoalReportsNavData': {
       if (!params.projectId || !params.subprojectId || !params.goalId)
         return null
-      return (
-        <GoalReportsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalReportsFetcher params={params} {...other} />
     }
     case 'useGoalReportNavData': {
       if (
@@ -658,12 +453,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.goalReportId
       )
         return null
-      return (
-        <GoalReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalReportFetcher params={params} {...other} />
     }
     case 'useGoalReportReportNavData': {
       if (
@@ -673,12 +463,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.goalReportId
       )
         return null
-      return (
-        <GoalReportReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalReportReportFetcher params={params} {...other} />
     }
     case 'useGoalReportValuesNavData': {
       if (
@@ -688,12 +473,7 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.goalReportId
       )
         return null
-      return (
-        <GoalReportValuesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalReportValuesFetcher params={params} {...other} />
     }
     case 'useGoalReportValueNavData': {
       if (
@@ -704,65 +484,35 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.goalReportValueId
       )
         return null
-      return (
-        <GoalReportValueFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <GoalReportValueFetcher params={params} {...other} />
     }
-    case 'useOccurrenceImportsNavData': {
+    case 'useObservationImportsNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <OccurrenceImportsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ObservationImportsFetcher params={params} {...other} />
     }
-    case 'useOccurrenceImportNavData': {
+    case 'useObservationImportNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
-        !params.occurrenceImportId
+        !params.observationImportId
       )
         return null
-      return (
-        <OccurrenceImportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ObservationImportFetcher params={params} {...other} />
     }
     case 'useOccurrencesToAssessNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <OccurrencesToAssessFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <OccurrencesToAssessFetcher params={params} {...other} />
     }
     case 'useOccurrenceToAssessNavData': {
       if (!params.projectId || !params.subprojectId || !params.occurrenceId)
         return null
-      return (
-        <OccurrenceToAssessFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <OccurrenceToAssessFetcher params={params} {...other} />
     }
     case 'useOccurrencesNotToAssignNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return (
-        <OccurrencesNotToAssignFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <OccurrencesNotToAssignFetcher params={params} {...other} />
     }
     case 'useOccurrenceNotToAssignNavData': {
       if (
@@ -772,21 +522,11 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.occurrenceId
       )
         return null
-      return (
-        <OccurrenceNotToAssignFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <OccurrenceNotToAssignFetcher params={params} {...other} />
     }
     case 'useSubprojectTaxaNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <SubprojectTaxaFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectTaxaFetcher params={params} {...other} />
     }
     case 'useSubprojectTaxonNavData': {
       if (
@@ -795,60 +535,30 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.subprojectTaxonId
       )
         return null
-      return (
-        <SubprojectTaxonFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectTaxonFetcher params={params} {...other} />
     }
     case 'useSubprojectUsersNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <SubprojectUsersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectUsersFetcher params={params} {...other} />
     }
     case 'useSubprojectUserNavData': {
       if (!params.projectId || !params.subprojectId || !params.subprojectUserId)
         return null
-      return (
-        <SubprojectUserFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectUserFetcher params={params} {...other} />
     }
     case 'useChartsNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return (
-        <ChartsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ChartsFetcher params={params} {...other} />
     }
     case 'useChartNavData': {
       if (!params.projectId || !params.subprojectId || !params.chartId)
         return null
-      return (
-        <ChartFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ChartFetcher params={params} {...other} />
     }
     case 'useChartChartNavData': {
       if (!params.projectId || !params.subprojectId || !params.chartId)
         return null
-      return (
-        <ChartChartFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ChartChartFetcher params={params} {...other} />
     }
     case 'useChartSubjectsNavData': {
       if (
@@ -858,133 +568,59 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.chartId
       )
         return null
-      return (
-        <ChartSubjectsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ChartSubjectsFetcher params={params} {...other} />
     }
     case 'useSubprojectReportDesignsNavData': {
       if (!params.projectId) return null
-      return (
-        <SubprojectReportDesignsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <SubprojectReportDesignsFetcher params={params} {...other} />
     }
     case 'useSubprojectReportDesignNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectReportDesignId
-      )
-        return null
-      return (
-        <SubprojectReportDesignFetcher
-          params={params}
-          {...other}
-        />
-      )
+      if (!params.projectId || !params.subprojectReportDesignId) return null
+      return <SubprojectReportDesignFetcher params={params} {...other} />
     }
     case 'useProjectReportDesignsNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectReportDesignsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectReportDesignsFetcher params={params} {...other} />
     }
     case 'useProjectReportDesignNavData': {
       if (!params.projectId || !params.projectReportDesignId) return null
-      return (
-        <ProjectReportDesignFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectReportDesignFetcher params={params} {...other} />
     }
     case 'useChartSubjectNavData': {
       if (!params.chartId || !params.chartSubjectId) return null
-      return (
-        <ChartSubjectFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ChartSubjectFetcher params={params} {...other} />
     }
     case 'useProjectReportsNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectReportsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectReportsFetcher params={params} {...other} />
     }
     case 'useProjectReportNavData': {
       if (!params.projectId || !params.projectReportId) return null
-      return (
-        <ProjectReportFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectReportFetcher params={params} {...other} />
     }
     case 'usePersonsNavData': {
       if (!params.projectId) return null
-      return (
-        <PersonsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PersonsFetcher params={params} {...other} />
     }
     case 'usePersonNavData': {
       if (!params.projectId || !params.personId) return null
-      return (
-        <PersonFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PersonFetcher params={params} {...other} />
     }
     case 'useWmsServicesNavData': {
       if (!params.projectId) return null
-      return (
-        <WmsServicesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsServicesFetcher params={params} {...other} />
     }
     case 'useWmsServiceNavData': {
       if (!params.projectId || !params.wmsServiceId) return null
-      return (
-        <WmsServiceFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsServiceFetcher params={params} {...other} />
     }
     case 'useWmsServiceWmsServiceNavData': {
       if (!params.projectId || !params.wmsServiceId) return null
-      return (
-        <WmsServiceWmsServiceFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsServiceWmsServiceFetcher params={params} {...other} />
     }
     case 'useWmsServiceLayersNavData': {
       if (!params.projectId || !params.wmsServiceId) return null
-      return (
-        <WmsServiceLayersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsServiceLayersFetcher params={params} {...other} />
     }
     case 'useWmsServiceLayerNavData': {
       if (
@@ -993,48 +629,23 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.wmsServiceLayerId
       )
         return null
-      return (
-        <WmsServiceLayerFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsServiceLayerFetcher params={params} {...other} />
     }
     case 'useWfsServicesNavData': {
       if (!params.projectId) return null
-      return (
-        <WfsServicesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WfsServicesFetcher params={params} {...other} />
     }
     case 'useWfsServiceNavData': {
       if (!params.projectId || !params.wfsServiceId) return null
-      return (
-        <WfsServiceFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WfsServiceFetcher params={params} {...other} />
     }
     case 'useWfsServiceWfsServiceNavData': {
       if (!params.projectId || !params.wfsServiceId) return null
-      return (
-        <WfsServiceWfsServiceFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WfsServiceWfsServiceFetcher params={params} {...other} />
     }
     case 'useWfsServiceLayersNavData': {
       if (!params.projectId || !params.wfsServiceId) return null
-      return (
-        <WfsServiceLayersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WfsServiceLayersFetcher params={params} {...other} />
     }
     case 'useWfsServiceLayerNavData': {
       if (
@@ -1043,66 +654,31 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.wfsServiceLayerId
       )
         return null
-      return (
-        <WfsServiceLayerFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WfsServiceLayerFetcher params={params} {...other} />
     }
     case 'useWmsLayersNavData': {
       if (!params.projectId) return null
-      return (
-        <WmsLayersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsLayersFetcher params={params} {...other} />
     }
     case 'useWmsLayerNavData': {
       if (!params.projectId || !params.wmsLayerId) return null
-      return (
-        <WmsLayerFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WmsLayerFetcher params={params} {...other} />
     }
     case 'useVectorLayersNavData': {
       if (!params.projectId) return null
-      return (
-        <VectorLayersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <VectorLayersFetcher params={params} {...other} />
     }
     case 'useVectorLayerNavData': {
       if (!params.projectId || !params.vectorLayerId) return null
-      return (
-        <VectorLayerFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <VectorLayerFetcher params={params} {...other} />
     }
     case 'useVectorLayerVectorLayerNavData': {
       if (!params.projectId || !params.vectorLayerId) return null
-      return (
-        <VectorLayerVectorLayerFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <VectorLayerVectorLayerFetcher params={params} {...other} />
     }
     case 'useVectorLayerDisplaysNavData': {
       if (!params.projectId || !params.vectorLayerId) return null
-      return (
-        <VectorLayerDisplaysFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <VectorLayerDisplaysFetcher params={params} {...other} />
     }
     case 'useVectorLayerDisplayNavData': {
       if (
@@ -1111,341 +687,151 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         !params.vectorLayerDisplayId
       )
         return null
-      return (
-        <VectorLayerDisplayFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <VectorLayerDisplayFetcher params={params} {...other} />
     }
     case 'useProjectUsersNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectUsersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectUsersFetcher params={params} {...other} />
     }
     case 'useProjectUserNavData': {
       if (!params.projectId || !params.projectUserId) return null
-      return (
-        <ProjectUserFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectUserFetcher params={params} {...other} />
     }
     case 'useListValuesNavData': {
       if (!params.projectId || !params.listId) return null
-      return (
-        <ListValuesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ListValuesFetcher params={params} {...other} />
     }
     case 'useListValueNavData': {
       if (!params.projectId || !params.listId || !params.listValueId)
         return null
-      return (
-        <ListValueFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ListValueFetcher params={params} {...other} />
     }
     case 'useListsNavData': {
       if (!params.projectId) return null
-      return (
-        <ListsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ListsFetcher params={params} {...other} />
     }
     case 'useProjectConfigurationNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectDesignFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectDesignFetcher params={params} {...other} />
     }
     case 'useListNavData': {
       if (!params.projectId || !params.listId) return null
-      return (
-        <ListFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ListFetcher params={params} {...other} />
     }
     case 'useListListNavData': {
       if (!params.projectId || !params.listId) return null
-      return (
-        <ListListFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ListListFetcher params={params} {...other} />
     }
     case 'useTaxonomiesNavData': {
       if (!params.projectId) return null
-      return (
-        <TaxonomiesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <TaxonomiesFetcher params={params} {...other} />
     }
     case 'useTaxonomyNavData': {
       if (!params.projectId || !params.taxonomyId) return null
-      return (
-        <TaxonomyFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <TaxonomyFetcher params={params} {...other} />
     }
     case 'useTaxonomyTaxonomyNavData': {
       if (!params.projectId || !params.taxonomyId) return null
-      return (
-        <TaxonomyTaxonomyFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <TaxonomyTaxonomyFetcher params={params} {...other} />
     }
     case 'useTaxaNavData': {
       if (!params.projectId || !params.taxonomyId) return null
-      return (
-        <TaxaFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <TaxaFetcher params={params} {...other} />
     }
     case 'useTaxonNavData': {
       if (!params.projectId || !params.taxonomyId || !params.taxonId)
         return null
-      return (
-        <TaxonFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <TaxonFetcher params={params} {...other} />
     }
     case 'useUnitsNavData': {
       if (!params.projectId) return null
-      return (
-        <UnitsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <UnitsFetcher params={params} {...other} />
     }
     case 'useUnitNavData': {
       if (!params.projectId || !params.unitId) return null
-      return (
-        <UnitFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <UnitFetcher params={params} {...other} />
     }
     case 'useProjectCrssNavData': {
       if (!params.projectId) return null
-      return (
-        <ProjectCrssFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectCrssFetcher params={params} {...other} />
     }
     case 'useProjectCrsNavData': {
       if (!params.projectId || !params.projectCrsId) return null
-      return (
-        <ProjectCrsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <ProjectCrsFetcher params={params} {...other} />
     }
     case 'usePlaceLevelsNavData': {
       if (!params.projectId) return null
-      return (
-        <PlaceLevelsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceLevelsFetcher params={params} {...other} />
     }
     case 'usePlaceLevelNavData': {
       if (!params.projectId || !params.placeLevelId) return null
-      return (
-        <PlaceLevelFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <PlaceLevelFetcher params={params} {...other} />
     }
     case 'useUsersNavData': {
-      return (
-        <UsersFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <UsersFetcher params={params} {...other} />
     }
     case 'useUserNavData': {
       if (!params.userId) return null
-      return (
-        <UserFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <UserFetcher params={params} {...other} />
     }
     case 'useAccountsNavData': {
-      return (
-        <AccountsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <AccountsFetcher params={params} {...other} />
     }
     case 'useAccountNavData': {
       if (!params.accountId) return null
-      return (
-        <AccountFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <AccountFetcher params={params} {...other} />
     }
     case 'useFieldTypesNavData': {
-      return (
-        <FieldTypesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <FieldTypesFetcher params={params} {...other} />
     }
     case 'useFieldTypeNavData': {
       if (!params.fieldTypeId) return null
-      return (
-        <FieldTypeFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <FieldTypeFetcher params={params} {...other} />
     }
     case 'useWidgetTypesNavData': {
-      return (
-        <WidgetTypesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WidgetTypesFetcher params={params} {...other} />
     }
     case 'useWidgetTypeNavData': {
       if (!params.widgetTypeId) return null
-      return (
-        <WidgetTypeFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WidgetTypeFetcher params={params} {...other} />
     }
     case 'useWidgetsForFieldsNavData': {
       if (!params.projectId) return null
-      return (
-        <WidgetsForFieldsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WidgetsForFieldsFetcher params={params} {...other} />
     }
     case 'useWidgetForFieldNavData': {
       if (!params.widgetForFieldId) return null
-      return (
-        <WidgetForFieldFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <WidgetForFieldFetcher params={params} {...other} />
     }
     case 'useFieldsNavData': {
       if (!params.projectId) return null
-      return (
-        <FieldsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <FieldsFetcher params={params} {...other} />
     }
     case 'useFieldNavData': {
       if (!params.projectId || !params.fieldId) return null
-      return (
-        <FieldFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <FieldFetcher params={params} {...other} />
     }
     case 'useCrssNavData': {
-      return (
-        <CrssFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CrssFetcher params={params} {...other} />
     }
     case 'useCrsNavData': {
       if (!params.crsId) return null
-      return (
-        <CrsFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <CrsFetcher params={params} {...other} />
     }
     case 'useFilesNavData': {
       if (!params.projectId) return null
-      return (
-        <FilesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <FilesFetcher params={params} {...other} />
     }
     case 'useFileNavData': {
       if (!params.projectId || !params.fileId) return null
-      return (
-        <FileFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <FileFetcher params={params} {...other} />
     }
     case 'useMessagesNavData': {
-      return (
-        <MessagesFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <MessagesFetcher params={params} {...other} />
     }
     case 'useMessageNavData': {
       if (!params.messageId) return null
-      return (
-        <MessageFetcher
-          params={params}
-          {...other}
-        />
-      )
+      return <MessageFetcher params={params} {...other} />
     }
     // when using AnyFetcherImporter the query only returns once, not the result
     // so not great

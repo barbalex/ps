@@ -21,8 +21,8 @@ on conflict ("type") do nothing;
 insert into unit_types ("type", sort, updated_by) values ('integer', 1, 'admin'), ('numeric', 2, 'admin'), ('text', 3, 'admin')
 on conflict ("type") do nothing;
 
--- occurrence_imports_geometry_methods
-insert into occurrence_imports_geometry_methods (geometry_method, sort, updated_by) values ('coordinates', 1, 'admin'), ('geojson', 2, 'admin')
+-- observation_imports_geometry_methods
+insert into observation_imports_geometry_methods (geometry_method, sort, updated_by) values ('coordinates', 1, 'admin'), ('geojson', 2, 'admin')
 on conflict (geometry_method) do nothing;
 
 -- vector_layer_types

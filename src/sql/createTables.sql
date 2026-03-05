@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users(
   -- we need language in db to enable triggers updating labels in the right language
   -- example: subproject_names in projects table
   -- problem: to know user, login is needed - but not yet implemented
-  language text DEFAULT 'en',
+  -- language text DEFAULT 'en',
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -1392,25 +1392,25 @@ CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING
 COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name';
 
 --------------------------------------------------------------
---occurrence_imports
+--observation_imports
 --
-create table if not exists occurrence_imports_geometry_methods (
+create table if not exists observation_imports_geometry_methods (
   geometry_method text primary key,
   sort integer default null,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
-CREATE INDEX IF NOT EXISTS occurrence_imports_geometry_methods_sort_idx ON occurrence_imports_geometry_methods USING btree(sort);
+CREATE INDEX IF NOT EXISTS observation_imports_geometry_methods_sort_idx ON observation_imports_geometry_methods USING btree(sort);
 
-CREATE TABLE IF NOT EXISTS occurrence_imports(
-  occurrence_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS observation_imports(
+  observation_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   created_time timestamptz DEFAULT now(),
   inserted_count integer DEFAULT NULL,
   id_field text DEFAULT NULL,
-  geometry_method text DEFAULT NULL REFERENCES occurrence_imports_geometry_methods(geometry_method) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  geometry_method text DEFAULT NULL REFERENCES observation_imports_geometry_methods(geometry_method) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   geojson_geometry_field text DEFAULT NULL,
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
@@ -1418,43 +1418,43 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text), id (required by react-beautiful-dnd)
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
-  previous_import uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  previous_import uuid DEFAULT NULL REFERENCES observation_imports(observation_import_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   download_from_gbif boolean DEFAULT NULL,
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), occurrence_import_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), observation_import_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS occurrence_imports_account_id_idx ON occurrence_imports USING btree(account_id);
-CREATE INDEX IF NOT EXISTS occurrence_imports_subproject_id_idx ON occurrence_imports USING btree(subproject_id);
-CREATE INDEX IF NOT EXISTS occurrence_imports_created_time_idx ON occurrence_imports USING btree(created_time);
-CREATE INDEX IF NOT EXISTS occurrence_imports_previous_import_idx ON occurrence_imports USING btree(previous_import);
-CREATE INDEX IF NOT EXISTS occurrence_imports_label_idx ON occurrence_imports USING btree(label);
+CREATE INDEX IF NOT EXISTS observation_imports_account_id_idx ON observation_imports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS observation_imports_subproject_id_idx ON observation_imports USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS observation_imports_created_time_idx ON observation_imports USING btree(created_time);
+CREATE INDEX IF NOT EXISTS observation_imports_previous_import_idx ON observation_imports USING btree(previous_import);
+CREATE INDEX IF NOT EXISTS observation_imports_label_idx ON observation_imports USING btree(label);
 
-COMMENT ON TABLE occurrence_imports IS 'observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
-COMMENT ON COLUMN occurrence_imports.previous_import IS 'What import does this one update/replace/extend?';
-COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys...';
+COMMENT ON TABLE observation_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+COMMENT ON COLUMN observation_imports.previous_import IS 'What import does this one update/replace/extend?';
+COMMENT ON COLUMN observation_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
 --------------------------------------------------------------
 -- occurrences
 --
--- INSERT INTO occurrence_imports(occurrence_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
+-- INSERT INTO observation_imports(observation_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 -- TODO: need to add place_id. Either here or separate table place_occurrences
 CREATE TABLE IF NOT EXISTS occurrences(
   occurrence_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  occurrence_import_id uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  observation_import_id uuid DEFAULT NULL REFERENCES observation_imports(observation_import_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   not_to_assign boolean DEFAULT FALSE, -- TODO: index?,
   comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
+  id_in_source text DEFAULT NULL, -- extracted from data using observation_import_id.id_field
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using observation_import_id.geometry_method and it's field(s)
   geometry jsonb DEFAULT NULL,
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1463,7 +1463,7 @@ CREATE TABLE IF NOT EXISTS occurrences(
 );
 
 CREATE INDEX IF NOT EXISTS occurrences_account_id_idx ON occurrences USING btree(account_id);
-CREATE INDEX IF NOT EXISTS occurrences_occurrence_import_id_idx ON occurrences USING btree(occurrence_import_id);
+CREATE INDEX IF NOT EXISTS occurrences_observation_import_id_idx ON occurrences USING btree(observation_import_id);
 CREATE INDEX IF NOT EXISTS occurrences_place_id_idx ON occurrences USING btree(place_id);
 CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
 CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
@@ -1471,11 +1471,11 @@ CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
 CREATE INDEX IF NOT EXISTS occurrences_geometry_idx ON occurrences USING gin(geometry);
 
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
-COMMENT ON COLUMN occurrences.place_id IS 'The place this observation is assigned to.';
+COMMENT ON COLUMN occurrences.place_id IS 'The place this occurrence is assigned to.';
 COMMENT ON COLUMN occurrences.id_in_source IS 'Used to replace previously imported occurrences';
-COMMENT ON COLUMN occurrences.geometry IS 'geometry of observation. Extracted from data to show the observation on a map';
+COMMENT ON COLUMN occurrences.geometry IS 'geometry of occurrence. Extracted from data to show the occurrence on a map';
 COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
-COMMENT ON COLUMN occurrences.label IS 'label of observation, used to show it in the UI. Created on import';
+COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
 --------------------------------------------------------------
 -- wms_services

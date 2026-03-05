@@ -238,16 +238,16 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
         ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
         : `occurrences.${displayByProperty}`
     } FROM occurrences 
-    inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
-    inner join subprojects on subprojects.subproject_id = occurrence_imports.subproject_id 
+    inner join observation_imports on observation_imports.observation_import_id = occurrences.observation_import_id 
+    inner join subprojects on subprojects.subproject_id = observation_imports.subproject_id 
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = false and occurrences.place_id IS NULL`,
     occurrences_not_to_assign: `SELECT DISTINCT ${
       propertyIsInData
         ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
         : `occurrences.${displayByProperty}`
     } FROM occurrences 
-    inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
-    inner join subprojects on subprojects.subproject_id = occurrence_imports.subproject_id 
+    inner join observation_imports on observation_imports.observation_import_id = occurrences.observation_import_id 
+    inner join subprojects on subprojects.subproject_id = observation_imports.subproject_id 
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = true`,
   }
 

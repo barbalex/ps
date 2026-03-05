@@ -12,7 +12,7 @@ import { OccurrencesToAssessNode } from './OccurrencesToAssess.tsx'
 import { OccurrencesNotToAssignNode } from './OccurrencesNotToAssign.tsx'
 import { SubprojectTaxaNode } from './SubprojectTaxa.tsx'
 import { SubprojectUsersNode } from './SubprojectUsers.tsx'
-import { OccurrenceImportsNode } from './OccurrenceImports.tsx'
+import { ObservationImportsNode } from './ObservationImports.tsx'
 import { FilesNode } from './Files.tsx'
 import { ChartsNode } from './Charts.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -86,7 +86,12 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
       {isOpen && (
         <>
           <Node
-            label={getSubprojectNameSingular(project as Record<string, unknown>, language) || 'Subproject'}
+            label={
+              getSubprojectNameSingular(
+                project as Record<string, unknown>,
+                language,
+              ) || 'Subproject'
+            }
             level={5}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
@@ -103,7 +108,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             subprojectId={nav.id}
           />
           <GoalsNode projectId={projectId} subprojectId={nav.id} />
-          <OccurrenceImportsNode projectId={projectId} subprojectId={nav.id} />
+          <ObservationImportsNode projectId={projectId} subprojectId={nav.id} />
           <OccurrencesToAssessNode
             projectId={projectId}
             subprojectId={nav.id}

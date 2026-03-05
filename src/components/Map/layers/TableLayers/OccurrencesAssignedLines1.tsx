@@ -29,7 +29,7 @@ export const OccurrencesAssignedLines1 = ({ layerPresentation }) => {
       p.label as place_label,
       p.geometry as place_geometry
     FROM occurrences o
-      INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+      INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
       INNER JOIN places p ON o.place_id = p.place_id
     WHERE 
       o.geometry IS NOT NULL

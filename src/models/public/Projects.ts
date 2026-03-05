@@ -30,6 +30,18 @@ export default interface Projects {
   /** Preset: "Arten" */
   subproject_name_plural: string | null;
 
+  subproject_name_singular_en: string | null;
+
+  subproject_name_plural_en: string | null;
+
+  subproject_name_singular_fr: string | null;
+
+  subproject_name_plural_fr: string | null;
+
+  subproject_name_singular_it: string | null;
+
+  subproject_name_plural_it: string | null;
+
   subproject_order_by: string | null;
 
   /** Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql. */
@@ -110,6 +122,18 @@ export interface ProjectsInitializer {
 
   /** Preset: "Arten" */
   subproject_name_plural?: string | null;
+
+  subproject_name_singular_en?: string | null;
+
+  subproject_name_plural_en?: string | null;
+
+  subproject_name_singular_fr?: string | null;
+
+  subproject_name_plural_fr?: string | null;
+
+  subproject_name_singular_it?: string | null;
+
+  subproject_name_plural_it?: string | null;
 
   subproject_order_by?: string | null;
 
@@ -208,6 +232,18 @@ export interface ProjectsMutator {
 
   /** Preset: "Arten" */
   subproject_name_plural?: string | null;
+
+  subproject_name_singular_en?: string | null;
+
+  subproject_name_plural_en?: string | null;
+
+  subproject_name_singular_fr?: string | null;
+
+  subproject_name_plural_fr?: string | null;
+
+  subproject_name_singular_it?: string | null;
+
+  subproject_name_plural_it?: string | null;
 
   subproject_order_by?: string | null;
 

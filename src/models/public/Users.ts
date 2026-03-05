@@ -20,6 +20,8 @@ export default interface Users {
   /** Whether the users email is verified */
   email_verified: boolean | null;
 
+  label: string | null;
+
   created_at: Date;
 
   updated_at: Date;

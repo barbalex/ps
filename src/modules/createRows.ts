@@ -1634,15 +1634,15 @@ export const createChartSubject = async ({ chartId }) => {
   return chart_subject_id
 }
 
-export const createOccurrenceImport = async ({ subprojectId }) => {
+export const createObservationImport = async ({ subprojectId }) => {
   const db = store.get(pgliteDbAtom)
-  const occurrence_import_id = uuidv7()
+  const observation_import_id = uuidv7()
   const date = new Date()
 
   await db.query(
-    `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (occurrence_import_id) DO NOTHING`,
+    `INSERT INTO observation_imports (observation_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (observation_import_id) DO NOTHING`,
     [
-      occurrence_import_id,
+      observation_import_id,
       '018cf958-27e2-7000-90d3-59f024d467be',
       subprojectId,
       'coordinates',
@@ -1653,10 +1653,10 @@ export const createOccurrenceImport = async ({ subprojectId }) => {
   )
 
   store.set(addOperationAtom, {
-    table: 'occurrence_imports',
+    table: 'observation_imports',
     operation: 'insert',
     draft: {
-      occurrence_import_id,
+      observation_import_id,
       account_id,
       subproject_id: subprojectId,
       geometry_method: 'coordinates',
@@ -1666,13 +1666,13 @@ export const createOccurrenceImport = async ({ subprojectId }) => {
     },
   })
 
-  return occurrence_import_id
+  return observation_import_id
 }
 
 // no insert as this data is inserted in bulk
-export const createOccurrence = ({ occurrenceImportId, data = null }) => ({
+export const createOccurrence = ({ observationImportId, data = null }) => ({
   occurrence_id: uuidv7(),
   account_id,
-  occurrence_import_id: occurrenceImportId,
+  observation_import_id: observationImportId,
   data,
 })

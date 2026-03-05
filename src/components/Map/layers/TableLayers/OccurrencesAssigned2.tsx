@@ -13,7 +13,7 @@ export const OccurrencesAssigned2 = ({ layerPresentation }) => {
     `
     SELECT o.*
     FROM occurrences o
-      INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+      INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
       INNER JOIN places p ON o.place_id = p.place_id
     WHERE oi.subproject_id = $1
       AND p.parent_id IS NOT NULL
