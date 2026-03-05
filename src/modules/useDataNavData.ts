@@ -168,7 +168,6 @@ export const useDataNavData = () => {
     urlPath,
     ownUrl,
     label: formatMessage({ id: 'w63miQ', defaultMessage: 'Daten' }),
-    // nameSingular: 'Project',
     navs: [
       {
         id: 'projects',
@@ -188,7 +187,10 @@ export const useDataNavData = () => {
         label: buildNavLabel({
           loading,
           countFiltered: row?.users_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' }),
+          namePlural: formatMessage({
+            id: 'eZ3yEB',
+            defaultMessage: 'Benutzer',
+          }),
         }),
       },
       {
@@ -196,7 +198,7 @@ export const useDataNavData = () => {
         label: buildNavLabel({
           loading,
           countFiltered: row?.accounts_count_unfiltered ?? 0,
-          namePlural: 'Accounts',
+          namePlural: formatMessage({ id: '/40i9A', defaultMessage: 'Konten' }),
         }),
       },
       ...(designing
@@ -208,7 +210,10 @@ export const useDataNavData = () => {
                 isFiltered: fieldTypesIsFiltered,
                 countFiltered: row?.field_types_count_filtered ?? 0,
                 countUnfiltered: row?.field_types_count_unfiltered ?? 0,
-                namePlural: 'Field Types',
+                namePlural: formatMessage({
+                  id: 'Yx8gIR',
+                  defaultMessage: 'Feld-Typen',
+                }),
               }),
             },
             {
@@ -218,7 +223,10 @@ export const useDataNavData = () => {
                 isFiltered: widgetTypesIsFiltered,
                 countFiltered: row?.widget_types_count_filtered ?? 0,
                 countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
-                namePlural: 'Widget Types',
+                namePlural: formatMessage({
+                  id: 'U55pI0',
+                  defaultMessage: 'Widget-Typen',
+                }),
               }),
             },
             {
@@ -228,7 +236,10 @@ export const useDataNavData = () => {
                 isFiltered: widgetsForFieldsIsFiltered,
                 countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
                 countUnfiltered: row?.widgets_for_fields_count_unfiltered ?? 0,
-                namePlural: 'Widgets For Fields',
+                namePlural: formatMessage({
+                  id: 'bDoJBk',
+                  defaultMessage: 'Widgets für Felder',
+                }),
               }),
             },
             {
@@ -238,7 +249,10 @@ export const useDataNavData = () => {
                 isFiltered: fieldsIsFiltered,
                 countFiltered: row?.fields_count_filtered ?? 0,
                 countUnfiltered: row?.fields_count_unfiltered ?? 0,
-                namePlural: 'Fields',
+                namePlural: formatMessage({
+                  id: 'I+dTZE',
+                  defaultMessage: 'Felder',
+                }),
               }),
             },
             {
@@ -246,7 +260,10 @@ export const useDataNavData = () => {
               label: buildNavLabel({
                 loading,
                 countFiltered: row?.crs_count_unfiltered ?? 0,
-                namePlural: 'CRS',
+                namePlural: formatMessage({
+                  id: 'OzBS9Z',
+                  defaultMessage: 'CRS',
+                }),
               }),
             },
             {
@@ -256,7 +273,10 @@ export const useDataNavData = () => {
                 isFiltered: filesIsFiltered,
                 countFiltered: row?.files_count_filtered ?? 0,
                 countUnfiltered: row?.files_count_unfiltered ?? 0,
-                namePlural: 'Files',
+                namePlural: formatMessage({
+                  id: 'mn58Sh',
+                  defaultMessage: 'Dateien',
+                }),
               }),
             },
             {
@@ -264,7 +284,10 @@ export const useDataNavData = () => {
               label: buildNavLabel({
                 loading,
                 countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
-                namePlural: 'Widgets',
+                namePlural: formatMessage({
+                  id: 'jgOqxt',
+                  defaultMessage: 'Widgets',
+                }),
               }),
             },
           ]
@@ -274,7 +297,10 @@ export const useDataNavData = () => {
         label: buildNavLabel({
           loading,
           countFiltered: row?.messages_count_unfiltered ?? 0,
-          namePlural: 'Messages',
+          namePlural: formatMessage({
+            id: 'vHVPab',
+            defaultMessage: 'Nachrichten',
+          }),
         }),
       },
     ],
