@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import {
   projectsFilterAtom,
@@ -43,6 +44,7 @@ type NavDataFiltered = {
 }
 
 export const useDataNavData = () => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
 
@@ -166,7 +168,7 @@ export const useDataNavData = () => {
     ownArray,
     urlPath,
     ownUrl,
-    label: 'Data',
+    label: formatMessage({ id: 'w63miQ', defaultMessage: 'Daten' }),
     // nameSingular: 'Project',
     navs: [
       {
