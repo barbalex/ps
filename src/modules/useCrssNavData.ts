@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -79,13 +80,13 @@ export const useCrssNavData = () => {
     label: buildNavLabel({
       countFiltered,
       countUnfiltered,
-      namePlural: 'CRS',
+      namePlural: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
       loading,
       isFiltered,
       isLimited,
       limit,
     }),
-    nameSingular: 'CRS',
+    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
     navs,
   }
 

@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -40,6 +41,7 @@ export const useFilesNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = [
     'data',
@@ -134,9 +136,9 @@ export const useFilesNavData = ({
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Files',
+      namePlural: formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' }),
     }),
-    nameSingular: 'File',
+    nameSingular: formatMessage({ id: '9Gu1cL', defaultMessage: 'Datei' }),
     navs,
   }
 
