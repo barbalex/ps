@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -26,6 +27,7 @@ export const useOccurrenceImportsNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(occurrenceImportsFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = [
     'data',
@@ -88,11 +90,11 @@ export const useOccurrenceImportsNavData = ({
     label: buildNavLabel({
       countFiltered,
       countUnfiltered,
-      namePlural: 'Occurrence Imports',
+      namePlural: formatMessage({ id: 'C7apNr', defaultMessage: 'Beobachtungs-Importe' }),
       loading,
       isFiltered,
     }),
-    nameSingular: 'Occurrence Import',
+    nameSingular: formatMessage({ id: 'Orl0K0', defaultMessage: 'Beobachtungs-Import' }),
     navs,
   }
 

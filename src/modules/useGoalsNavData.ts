@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -27,6 +28,7 @@ type NavDataClosed = {
 export const useGoalsNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = [
     'data',
@@ -95,9 +97,9 @@ export const useGoalsNavData = ({ projectId, subprojectId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Goals',
+      namePlural: formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' }),
     }),
-    nameSingular: 'Goal',
+    nameSingular: formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' }),
     navs,
   }
 
