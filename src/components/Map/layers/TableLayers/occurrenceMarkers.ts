@@ -1,4 +1,4 @@
-// Store references to occurrence markers for resetting their positions
+// Store references to observation markers for resetting their positions
 export const occurrenceMarkers = new Map<
   string,
   {
@@ -10,7 +10,7 @@ export const occurrenceMarkers = new Map<
 >()
 
 /**
- * Reset an occurrence marker to its original position
+ * Reset an observation marker to its original position
  * Used when user cancels assignment in the OccurrenceAssignChooser dialog
  */
 export const resetOccurrenceMarkerPosition = (occurrenceId: string) => {

@@ -9,7 +9,7 @@ import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnli
 
 set_cptable(cptable)
 
-// Helper to calculate geometry from occurrence data
+// Helper to calculate geometry from observation data
 const calculateGeometry = (occurrenceData, occurrenceImport, proj4Setup) => {
   if (
     !occurrenceImport.x_coordinate_field ||
@@ -37,7 +37,7 @@ const calculateGeometry = (occurrenceData, occurrenceImport, proj4Setup) => {
   }
 }
 
-// Helper to calculate label from occurrence data
+// Helper to calculate label from observation data
 const calculateLabel = (occurrenceData, labelCreation) => {
   if (
     !labelCreation ||
@@ -128,9 +128,8 @@ export const replaceOccurrences = async ({ file, occurrenceImport, db }) => {
 
         // Insert into database with geometry and label
         for (const occ of occurrences) {
-          const idInSource =
-            occurrenceImport.id_field ?
-              occ.data[occurrenceImport.id_field]
+          const idInSource = occurrenceImport.id_field
+            ? occ.data[occurrenceImport.id_field]
             : null
           const geometry = calculateGeometry(occ.data, occurrenceImport, true)
           const label = calculateLabel(
@@ -168,7 +167,7 @@ export const replaceOccurrences = async ({ file, occurrenceImport, db }) => {
 
         resolve({
           success: true,
-          message: `Successfully replaced ${occurrences.length} occurrence${occurrences.length !== 1 ? 's' : ''}`,
+          message: `Successfully replaced ${occurrences.length} observation${occurrences.length !== 1 ? 's' : ''}`,
         })
       } catch (error) {
         reject(error)
@@ -337,7 +336,7 @@ export const updateAndExtendOccurrences = async ({
 
         resolve({
           success: true,
-          message: `Updated ${updatedCount}, added ${addedCount}, removed ${removedCount} occurrence${updatedCount + addedCount + removedCount !== 1 ? 's' : ''}`,
+          message: `Updated ${updatedCount}, added ${addedCount}, removed ${removedCount} observation${updatedCount + addedCount + removedCount !== 1 ? 's' : ''}`,
         })
       } catch (error) {
         reject(error)

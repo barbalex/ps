@@ -32,11 +32,11 @@ export const updateTableVectorLayerLabels = async ({ project_id }) => {
           break
         case 'occurrences_assigned':
           if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} occurrences assigned`
+            label = `${placeLevel.name_singular} observations assigned`
           break
         case 'occurrences_assigned_lines':
           if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} occurrence assignments lines`
+            label = `${placeLevel.name_singular} observation assignments lines`
           break
       }
       // if label is different, update it

@@ -58,7 +58,7 @@ export const Set = ({ occurrenceImport }: Props) => {
       >
         {`${
           settingGeometries ? 'Setting' : 'Set'
-        } coordinates of ${formatNumber(toSetCount)} occurrence${toSetCount !== 1 ? 's' : ''}`}
+        } coordinates of ${formatNumber(toSetCount)} observation${toSetCount !== 1 ? 's' : ''}`}
       </Button>
       {notification && (
         <div className={styles.notification}>{notification}</div>

@@ -40,7 +40,7 @@ export const Four = ({ occurrenceImport, occurrenceFields, onChange }) => {
         validationMessage={
           <>
             <div>
-              The field that identifies the occurrence inside the data source
+              The field that identifies the observation inside the data source
             </div>
             <div>Needed when same occurrences are imported more than once</div>
             <div>

@@ -105,7 +105,7 @@ export const assignToNearestDroppable = async ({
   // 2.3.2: better but more work:
   //        create convex outline of all places (https://turfjs.org/docs/#convex),
   //        convert that to a line (https://turfjs.org/docs/#polygonToLine),
-  //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
+  //        for every observation find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
   //        choose closest
   //        ISSUE: convex does not work for points are straight lines (https://github.com/Turfjs/turf/issues/2449)
   //        Solution: buffer the feature collection by a millimetre before convexing
@@ -205,7 +205,7 @@ export const assignToNearestDroppable = async ({
       `UPDATE occurrences SET place_id = $1, not_to_assign = $2 WHERE occurrence_id = $3`,
       [place_id, null, occurrenceId],
     )
-    // query occurrence to pass it as prev value
+    // query observation to pass it as prev value
     const occurrenceRes = await db.query(
       `SELECT * FROM occurrences WHERE occurrence_id = $1`,
       [occurrenceId],

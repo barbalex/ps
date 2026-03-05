@@ -29,7 +29,7 @@ export const ClickListener = () => {
     // vector layers are defined on projects
     if (projectId === '99999999-9999-9999-9999-999999999999') return
 
-    // Don't process clicks during or immediately after dragging an occurrence
+    // Don't process clicks during or immediately after dragging an observation
     if (map._isDraggingOccurrence) return
 
     const { lat, lng } = event.latlng

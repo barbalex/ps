@@ -46,9 +46,9 @@ export const OccurenceData = ({ from }) => {
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrenceId],
   )
-  const occurrence: Occurrences | undefined = res?.rows?.[0]
+  const observation: Occurrences | undefined = res?.rows?.[0]
 
-  const rowData = occurrence?.data ?? {}
+  const rowData = observation?.data ?? {}
   const fields = Object.entries(rowData)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([key, value]) => exists(value))
@@ -101,7 +101,7 @@ export const OccurenceData = ({ from }) => {
     />
   )
 
-  if (!occurrence) return <Loading />
+  if (!observation) return <Loading />
   if (!fields || fields.length === 0) return null
 
   // Issue: only one instance of HTML5Backend can be used at a time

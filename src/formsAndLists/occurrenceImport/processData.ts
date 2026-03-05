@@ -45,11 +45,16 @@ const insertOccurrences = async (data, additionalData, db, resolve) => {
   // - show user data rows
   resolve({
     success: true,
-    message: `Successfully imported ${occurrences.length} occurrence${occurrences.length !== 1 ? 's' : ''}`,
+    message: `Successfully imported ${occurrences.length} observation${occurrences.length !== 1 ? 's' : ''}`,
   })
 }
 
-export const processData = async ({ file, additionalData, db, onDuplicatesFound }) => {
+export const processData = async ({
+  file,
+  additionalData,
+  db,
+  onDuplicatesFound,
+}) => {
   if (!file) return { success: false, message: 'No file selected' }
 
   // console.log('processData', { file, additionalData, db })
@@ -76,14 +81,14 @@ export const processData = async ({ file, additionalData, db, onDuplicatesFound 
           const { __rowNum__, ...rest } = d
           return rest
         })
-        
+
         // Check for duplicates
         const duplicateCount = await checkDuplicates(
           db,
           data,
           additionalData.account_id,
         )
-        
+
         if (duplicateCount > 0) {
           // Call the callback to show the dialog
           onDuplicatesFound(
@@ -107,7 +112,7 @@ export const processData = async ({ file, additionalData, db, onDuplicatesFound 
           )
           return
         }
-        
+
         // No duplicates, proceed with import
         await insertOccurrences(data, additionalData, db, resolve)
       } catch (error) {

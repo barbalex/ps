@@ -18,9 +18,10 @@ export const Three = ({ occurrenceImport, occurrenceFields, onChange }) => {
     })
   }
 
-  const buttonLabel = occurrenceCount > 0 
-    ? `Set labels of ${formatNumber(occurrenceCount)} occurrence${occurrenceCount !== 1 ? 's' : ''}`
-    : 'Apply changes'
+  const buttonLabel =
+    occurrenceCount > 0
+      ? `Set labels of ${formatNumber(occurrenceCount)} observation${occurrenceCount !== 1 ? 's' : ''}`
+      : 'Apply changes'
 
   return (
     <LabelCreator

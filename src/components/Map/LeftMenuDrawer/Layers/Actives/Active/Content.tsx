@@ -79,7 +79,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   // Get the layer name for state (same format as in TableLayer)
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
 
-  // Check if this is an occurrence layer
+  // Check if this is an observation layer
   const tableName = layer.own_table_level
     ? `${layer.own_table}${layer.own_table_level}`
     : layer.own_table
@@ -281,7 +281,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     event.stopPropagation()
 
     if (isAssigning) {
-      // Stop assigning: remove occurrence layer from draggable and clear droppable layers
+      // Stop assigning: remove observation layer from draggable and clear droppable layers
       setDraggableLayers(
         draggableLayers.filter((layer) => layer !== layerNameForState),
       )
@@ -290,7 +290,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         droppableLayers.filter((l) => !selectedPlaceLayers.includes(l)),
       )
     } else {
-      // Start assigning: add occurrence layer to draggable and set droppable layers
+      // Start assigning: add observation layer to draggable and set droppable layers
       setDraggableLayers([...draggableLayers, layerNameForState])
       // Add selected place layers to droppable (merge with existing)
       const newDroppableLayers = [

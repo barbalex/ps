@@ -28,12 +28,12 @@ export const PlaceComboboxWithDistance = ({
 }) => {
   const [filter, setFilter] = useState('')
 
-  // Get the occurrence to access its geometry
+  // Get the observation to access its geometry
   const occurrenceRes = useLiveQuery(
     `SELECT geometry FROM occurrences WHERE occurrence_id = $1`,
     [occurrenceId],
   )
-  const occurrence = occurrenceRes?.rows?.[0]
+  const observation = occurrenceRes?.rows?.[0]
 
   // Get all places
   const placesRes = useLiveQuery(
@@ -43,7 +43,7 @@ export const PlaceComboboxWithDistance = ({
 
   // Calculate distances and sort
   const placesWithDistance: PlaceWithDistance[] = useMemo(() => {
-    if (!occurrence?.geometry || places.length === 0) {
+    if (!observation?.geometry || places.length === 0) {
       return places.map((p) => ({
         place_id: p.place_id,
         label: p.label,
@@ -53,11 +53,11 @@ export const PlaceComboboxWithDistance = ({
     }
 
     try {
-      // Get occurrence point - assuming geometry is GeoJSON with coordinates
-      const occGeometry = occurrence.geometry
+      // Get observation point - assuming geometry is GeoJSON with coordinates
+      const occGeometry = observation.geometry
       let occPoint
 
-      // Handle different geometry types for occurrence
+      // Handle different geometry types for observation
       if (occGeometry.type === 'Point') {
         occPoint = point(occGeometry.coordinates)
       } else if (
@@ -144,7 +144,7 @@ export const PlaceComboboxWithDistance = ({
         geometry: p.geometry,
       }))
     }
-  }, [occurrence, places])
+  }, [observation, places])
 
   // Get selected place
   const selectedPlace = useMemo(() => {
@@ -156,9 +156,9 @@ export const PlaceComboboxWithDistance = ({
   const displayValue = useMemo(() => {
     if (!value || !selectedPlace) return ''
     const distanceText =
-      selectedPlace.distance !== null ?
-        ` (${Math.round(selectedPlace.distance)} m)`
-      : ''
+      selectedPlace.distance !== null
+        ? ` (${Math.round(selectedPlace.distance)} m)`
+        : ''
     return `${selectedPlace.label}${distanceText}`
   }, [value, selectedPlace])
 
@@ -207,30 +207,25 @@ export const PlaceComboboxWithDistance = ({
         freeform
         clearable
       >
-        {filteredPlaces.length > 0 ?
+        {filteredPlaces.length > 0 ? (
           filteredPlaces.map((place) => {
             // TODO: distanceText should have thousands separator and be localized
             const distanceText =
-              place.distance !== null ?
-                ` (${Math.round(place.distance).toLocaleString()} m)`
-              : ''
+              place.distance !== null
+                ? ` (${Math.round(place.distance).toLocaleString()} m)`
+                : ''
             return (
-              <Option
-                key={place.place_id}
-                value={place.place_id}
-              >
+              <Option key={place.place_id} value={place.place_id}>
                 {place.label}
                 {distanceText}
               </Option>
             )
           })
-        : <Option
-            key="no-results"
-            value="0"
-          >
+        ) : (
+          <Option key="no-results" value="0">
             No places found
           </Option>
-        }
+        )}
       </Combobox>
     </Field>
   )

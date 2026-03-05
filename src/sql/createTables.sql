@@ -1435,7 +1435,7 @@ CREATE INDEX IF NOT EXISTS occurrence_imports_created_time_idx ON occurrence_imp
 CREATE INDEX IF NOT EXISTS occurrence_imports_previous_import_idx ON occurrence_imports USING btree(previous_import);
 CREATE INDEX IF NOT EXISTS occurrence_imports_label_idx ON occurrence_imports USING btree(label);
 
-COMMENT ON TABLE occurrence_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+COMMENT ON TABLE occurrence_imports IS 'observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 COMMENT ON COLUMN occurrence_imports.previous_import IS 'What import does this one update/replace/extend?';
 COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
@@ -1471,11 +1471,11 @@ CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
 CREATE INDEX IF NOT EXISTS occurrences_geometry_idx ON occurrences USING gin(geometry);
 
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
-COMMENT ON COLUMN occurrences.place_id IS 'The place this occurrence is assigned to.';
+COMMENT ON COLUMN occurrences.place_id IS 'The place this observation is assigned to.';
 COMMENT ON COLUMN occurrences.id_in_source IS 'Used to replace previously imported occurrences';
-COMMENT ON COLUMN occurrences.geometry IS 'geometry of occurrence. Extracted from data to show the occurrence on a map';
+COMMENT ON COLUMN occurrences.geometry IS 'geometry of observation. Extracted from data to show the observation on a map';
 COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
-COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
+COMMENT ON COLUMN occurrences.label IS 'label of observation, used to show it in the UI. Created on import';
 
 --------------------------------------------------------------
 -- wms_services

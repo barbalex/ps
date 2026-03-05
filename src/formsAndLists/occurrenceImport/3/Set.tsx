@@ -29,9 +29,9 @@ export const Set = ({ occurrenceImport }: Props) => {
   const onClick = () => {
     setSettingLabels(true)
     // Don't await - let it run in background
-    setLabels({ 
+    setLabels({
       labelCreation: occurrenceImport.label_creation,
-      occurrenceImportId: occurrenceImport.occurrence_import_id 
+      occurrenceImportId: occurrenceImport.occurrence_import_id,
     }).finally(() => {
       setSettingLabels(false)
     })
@@ -57,7 +57,7 @@ export const Set = ({ occurrenceImport }: Props) => {
         <MdDone className={styles.doneIcon} />
         {`All ${formatNumber(
           occurrences.length,
-        )} occurrence${occurrences.length !== 1 ? 's' : ''} have labels set`}
+        )} observation${occurrences.length !== 1 ? 's' : ''} have labels set`}
       </div>
     )
   }
@@ -71,7 +71,7 @@ export const Set = ({ occurrenceImport }: Props) => {
       >
         {`${
           settingLabels ? 'Setting' : 'Set'
-        } labels of ${formatNumber(toSetCount)} occurrence${toSetCount !== 1 ? 's' : ''}`}
+        } labels of ${formatNumber(toSetCount)} observation${toSetCount !== 1 ? 's' : ''}`}
       </Button>
     </div>
   )
