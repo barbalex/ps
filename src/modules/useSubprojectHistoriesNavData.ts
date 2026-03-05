@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -22,6 +23,7 @@ export const useSubprojectHistoriesNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -65,9 +67,12 @@ export const useSubprojectHistoriesNavData = ({
     label: buildNavLabel({
       loading,
       countFiltered: navs.length,
-      namePlural: 'Histories',
+      namePlural: formatMessage({ id: 'KkLxJl', defaultMessage: 'Geschichte' }),
     }),
-    nameSingular: 'Subproject History',
+    nameSingular: formatMessage({
+      id: 'vyrUXz',
+      defaultMessage: 'Teilprojekt-Geschichte',
+    }),
     navs,
   }
 

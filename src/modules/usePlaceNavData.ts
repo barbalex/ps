@@ -141,8 +141,11 @@ export const usePlaceNavData = ({
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
-  const nameSingular = nav?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
-  const childNamePlural = nav?.child_name_plural ?? formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
+  const nameSingular =
+    nav?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
+  const childNamePlural =
+    nav?.child_name_plural ??
+    formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
 
   const parentArray = [
     'data',
@@ -162,7 +165,9 @@ export const usePlaceNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' }) : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -199,7 +204,10 @@ export const usePlaceNavData = ({
           isFiltered: checksIsFiltered,
           countFiltered: nav?.checks_count_filtered ?? 0,
           countUnfiltered: nav?.checks_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
+          namePlural: formatMessage({
+            id: 'oPMDm+',
+            defaultMessage: 'Kontrollen',
+          }),
         }),
       },
       {
@@ -209,7 +217,10 @@ export const usePlaceNavData = ({
           isFiltered: actionsIsFiltered,
           countFiltered: nav?.actions_count_filtered ?? 0,
           countUnfiltered: nav?.actions_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
+          namePlural: formatMessage({
+            id: 'eJfllL',
+            defaultMessage: 'Massnahmen',
+          }),
         }),
       },
       {
@@ -219,7 +230,10 @@ export const usePlaceNavData = ({
           isFiltered: placeReportsIsFiltered,
           countFiltered: nav?.place_reports_count_filtered ?? 0,
           countUnfiltered: nav?.place_reports_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' }),
+          namePlural: formatMessage({
+            id: 'CiJ0SG',
+            defaultMessage: 'Berichte',
+          }),
         }),
       },
       {
@@ -227,7 +241,10 @@ export const usePlaceNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.occurrences_count ?? 0,
-          namePlural: formatMessage({ id: 'OaXR/X', defaultMessage: 'zugeordnete Beobachtungen' }),
+          namePlural: formatMessage({
+            id: 'OaXR/X',
+            defaultMessage: 'zugeordnete Beobachtungen',
+          }),
         }),
       },
       {
@@ -235,7 +252,10 @@ export const usePlaceNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.place_users_count ?? 0,
-          namePlural: formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' }),
+          namePlural: formatMessage({
+            id: 'eZ3yEB',
+            defaultMessage: 'Benutzer',
+          }),
         }),
       },
       {
@@ -243,7 +263,10 @@ export const usePlaceNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.place_histories_count ?? 0,
-          namePlural: formatMessage({ id: 'KkLxJl', defaultMessage: 'Verläufe' }),
+          namePlural: formatMessage({
+            id: 'KkLxJl',
+            defaultMessage: 'Geschichte',
+          }),
         }),
       },
       {
@@ -253,7 +276,10 @@ export const usePlaceNavData = ({
           isFiltered: filesIsFiltered,
           countFiltered: nav?.files_count_filtered ?? 0,
           countUnfiltered: nav?.files_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' }),
+          namePlural: formatMessage({
+            id: 'mn58Sh',
+            defaultMessage: 'Dateien',
+          }),
         }),
       },
     ],
