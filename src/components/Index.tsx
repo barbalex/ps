@@ -47,7 +47,7 @@ export const Index = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage defaultMessage="Verantwortliche" />
+              <FormattedMessage defaultMessage="Art-Verantwortliche" />
             </h3>
             <FormattedMessage defaultMessage="...beschreiben Räume, organisieren Kontrollen und Massnahmen, analysieren und berichten." />
           </div>
