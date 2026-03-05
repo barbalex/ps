@@ -299,7 +299,7 @@ export const useDataNavData = () => {
           countFiltered: row?.messages_count_unfiltered ?? 0,
           namePlural: formatMessage({
             id: 'vHVPab',
-            defaultMessage: 'Nachrichten',
+            defaultMessage: 'Mitteilungen',
           }),
         }),
       },

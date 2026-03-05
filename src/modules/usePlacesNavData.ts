@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -40,6 +41,7 @@ export const usePlacesNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = [
     'data',
@@ -101,8 +103,8 @@ export const usePlacesNavData = ({
 
   const loading = res === undefined
 
-  const nameSingular = res?.rows?.[0]?.name_singular ?? 'Place'
-  const namePlural = res?.rows?.[0]?.name_plural ?? 'Places'
+  const nameSingular = res?.rows?.[0]?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
+  const namePlural = res?.rows?.[0]?.name_plural ?? formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
 
   const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0

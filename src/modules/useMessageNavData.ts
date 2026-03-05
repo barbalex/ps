@@ -59,7 +59,7 @@ export const useMessageNavData = ({ messageId }: Props) => {
     ownUrl,
     label,
     notFound,
-    nameSingular: formatMessage({ id: 'OFlXRt', defaultMessage: 'Nachricht' }),
+    nameSingular: formatMessage({ id: 'OFlXRt', defaultMessage: 'Mitteilung' }),
   }
 
   return { loading, navData }
