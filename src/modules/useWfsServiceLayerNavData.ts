@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -16,9 +17,14 @@ type NavData = {
   label: string | null
 }
 
-export const useWfsServiceLayerNavData = ({ projectId, wfsServiceId, wfsServiceLayerId }: Props) => {
+export const useWfsServiceLayerNavData = ({
+  projectId,
+  wfsServiceId,
+  wfsServiceLayerId,
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -36,7 +42,14 @@ export const useWfsServiceLayerNavData = ({ projectId, wfsServiceId, wfsServiceL
 
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const parentArray = ['data', 'projects', projectId, 'wfs-services', wfsServiceId, 'layers']
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'wfs-services',
+    wfsServiceId,
+    'layers',
+  ]
   const ownArray = [...parentArray, wfsServiceLayerId]
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
@@ -47,7 +60,9 @@ export const useWfsServiceLayerNavData = ({ projectId, wfsServiceId, wfsServiceL
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -59,7 +74,7 @@ export const useWfsServiceLayerNavData = ({ projectId, wfsServiceId, wfsServiceL
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Layer',
+    nameSingular: formatMessage({ id: 'JY1Jke', defaultMessage: 'Ebene' }),
   }
 
   return { loading, navData }

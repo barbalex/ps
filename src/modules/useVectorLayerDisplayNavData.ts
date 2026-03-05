@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -23,6 +24,7 @@ export const useVectorLayerDisplayNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -55,7 +57,9 @@ export const useVectorLayerDisplayNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -67,7 +71,10 @@ export const useVectorLayerDisplayNavData = ({
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Vector Layer Display',
+    nameSingular: formatMessage({
+      id: 'fhL4R2',
+      defaultMessage: 'Vektor-Ebene-Anzeige',
+    }),
   }
 
   return { loading, navData }
