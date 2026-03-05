@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -15,6 +16,7 @@ type NavData = {
 
 export const useProjectProjectNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
 
   const sql = `
       SELECT
@@ -39,7 +41,9 @@ export const useProjectProjectNavData = ({ projectId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : 'Project'
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })
 
   const navData = {
     isInActiveNodeArray,

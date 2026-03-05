@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -25,6 +26,7 @@ export const usePlaceReportReportNavData = ({
   placeReportId_,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
 
   const projectId = projectId_?.replace(/_/g, '-')
   const subprojectId = subprojectId_?.replace(/_/g, '-')
@@ -61,7 +63,9 @@ export const usePlaceReportReportNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!placeReportQuery && !placeReport
-  const label = notFound ? 'Not Found' : 'Report'
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' })
 
   const navData = {
     isInActiveNodeArray,
