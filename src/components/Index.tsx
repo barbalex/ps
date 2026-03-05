@@ -91,7 +91,19 @@ export const Index = () => {
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Flexible Konfiguration" />
             </h3>
-            <FormattedMessage defaultMessage="Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? Ich bin interessiert!" />
+            <FormattedMessage
+              defaultMessage="Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
+              values={{
+                link: (
+                  <a
+                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.ch"
+                    target="_blank"
+                  >
+                    <FormattedMessage defaultMessage="Ich bin interessiert!" />
+                  </a>
+                ),
+              }}
+            />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>

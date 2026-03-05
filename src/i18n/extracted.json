@@ -2,6 +2,9 @@
   "04Jmk6": {
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
+  "2hj7nH": {
+    "defaultMessage": "Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
+  },
   "2iLc/W": {
     "defaultMessage": "Zweistufige Räume"
   },
@@ -44,9 +47,6 @@
   "KFwvHV": {
     "defaultMessage": "Seltene und bedrohte Arten fördern"
   },
-  "KZSpyy": {
-    "defaultMessage": "Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? Ich bin interessiert!"
-  },
   "L7Xr8Z": {
     "defaultMessage": "Beobachtungen Dritter"
   },
@@ -55,6 +55,9 @@
   },
   "OW3d3V": {
     "defaultMessage": "Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
+  },
+  "OogWmh": {
+    "defaultMessage": "Ich bin interessiert!"
   },
   "Oy8x+u": {
     "defaultMessage": "Bring your own device"
