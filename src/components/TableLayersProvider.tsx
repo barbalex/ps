@@ -23,8 +23,10 @@ export const TableLayersProvider = () => {
   const projects: Projects[] = projectsResult?.rows ?? []
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
-  const occurrenceCountResult = useLiveQuery(`SELECT COUNT(*) FROM occurrences`)
-  const occurrenceCount: number = occurrenceCountResult?.rows?.[0]?.count ?? 0
+  const observationCountResult = useLiveQuery(
+    `SELECT COUNT(*) FROM observations`,
+  )
+  const observationCount: number = observationCountResult?.rows?.[0]?.count ?? 0
 
   const firstRender = useFirstRender()
 
@@ -45,7 +47,7 @@ export const TableLayersProvider = () => {
             level, 
             name_plural, 
             name_singular, 
-            occurrences,
+            observations,
             actions,
             checks
           FROM place_levels 
@@ -56,7 +58,7 @@ export const TableLayersProvider = () => {
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
-        // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
+        // tables: places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
         // 1.1 places1: is always needed
         const places1VectorLayersCount = await db.query(
           `
@@ -100,9 +102,8 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'actions',
             ownTableLevel: 1,
-            label:
-              placeLevel1?.name_singular ?
-                `${placeLevel1.name_singular} Actions`
+            label: placeLevel1?.name_singular
+              ? `${placeLevel1.name_singular} Actions`
               : 'Actions',
             skipOperationQueue: true,
           })
@@ -127,112 +128,113 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'checks',
             ownTableLevel: 1,
-            label:
-              placeLevel1?.name_singular ?
-                `${placeLevel1.name_singular} Checks`
+            label: placeLevel1?.name_singular
+              ? `${placeLevel1.name_singular} Checks`
               : 'Checks',
             skipOperationQueue: true,
           })
         }
 
-        // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
-        if (placeLevel1?.occurrences && occurrenceCount) {
-          const occurrencesVectorLayersCount = await db.query(
+        // 4.1 observations_assigned1 and observations_assigned_lines1: needed if observations exist and placeLevels1 has observations
+        if (placeLevel1?.observations && observationCount) {
+          const observationsVectorLayersCount = await db.query(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
             AND type = 'own'
-            AND own_table = 'occurrences_assigned'
+            AND own_table = 'observations_assigned'
             AND own_table_level = 1
         `,
             [projectId],
           )
-          if (occurrencesVectorLayersCount?.rows?.[0]?.count === 0) {
+          if (observationsVectorLayersCount?.rows?.[0]?.count === 0) {
             await createVectorLayer({
               projectId,
               type: 'own',
-              ownTable: 'occurrences_assigned',
+              ownTable: 'observations_assigned',
               ownTableLevel: 1,
-              label:
-                placeLevel1?.name_singular ?
-                  `${placeLevel1.name_singular} Occurrences Assigned`
-                : 'Occurrences Assigned',
+              label: placeLevel1?.name_singular
+                ? `${placeLevel1.name_singular} Observations Assigned`
+                : 'Observations Assigned',
               skipOperationQueue: true,
             })
           }
 
-          const occurrencesAssignedLinesVectorLayersCount = await db.query(
+          const observationsAssignedLinesVectorLayersCount = await db.query(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
             AND type = 'own'
-            AND own_table = 'occurrences_assigned_lines'
+            AND own_table = 'observations_assigned_lines'
             AND own_table_level = 1
         `,
             [projectId],
           )
-          if (occurrencesAssignedLinesVectorLayersCount?.rows?.[0]?.count === 0) {
+          if (
+            observationsAssignedLinesVectorLayersCount?.rows?.[0]?.count === 0
+          ) {
             await createVectorLayer({
               projectId,
               type: 'own',
-              ownTable: 'occurrences_assigned_lines',
+              ownTable: 'observations_assigned_lines',
               ownTableLevel: 1,
-              label:
-                placeLevel1?.name_singular ?
-                  `${placeLevel1.name_singular} Occurrence Assignments Lines`
-                : 'Occurrence Assignments Lines',
+              label: placeLevel1?.name_singular
+                ? `${placeLevel1.name_singular} Observation Assignments Lines`
+                : 'Observation Assignments Lines',
               skipOperationQueue: true,
             })
           }
         }
 
-        // 5.1 occurrences_to_assess: needed if occurrences exist
-        if (occurrenceCount) {
-          const occurrencesToAssessVectorLayersCount = await db.query(
+        // 5.1 observations_to_assess: needed if observations exist
+        if (observationCount) {
+          const observationsToAssessVectorLayersCount = await db.query(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
             AND type = 'own'
-            AND own_table = 'occurrences_to_assess'
+            AND own_table = 'observations_to_assess'
         `,
             [projectId],
           )
-          if (occurrencesToAssessVectorLayersCount?.rows?.[0]?.count === 0) {
+          if (observationsToAssessVectorLayersCount?.rows?.[0]?.count === 0) {
             await createVectorLayer({
               projectId,
               type: 'own',
-              ownTable: 'occurrences_to_assess',
-              label: 'Occurrences To Assess',
+              ownTable: 'observations_to_assess',
+              label: 'Observations To Assess',
               skipOperationQueue: true,
             })
           }
         }
 
-        // 6.1 occurrences_not_to_assign: needed if occurrences exist
-        if (occurrenceCount) {
-          const occurrencesNotToAssignVectorLayersCount = await db.query(
+        // 6.1 observations_not_to_assign: needed if observations exist
+        if (observationCount) {
+          const observationsNotToAssignVectorLayersCount = await db.query(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
             AND type = 'own'
-            AND own_table = 'occurrences_not_to_assign'
+            AND own_table = 'observations_not_to_assign'
         `,
             [projectId],
           )
-          if (occurrencesNotToAssignVectorLayersCount?.rows?.[0]?.count === 0) {
+          if (
+            observationsNotToAssignVectorLayersCount?.rows?.[0]?.count === 0
+          ) {
             await createVectorLayer({
               projectId,
               type: 'own',
-              ownTable: 'occurrences_not_to_assign',
-              label: 'Occurrences Not To Assign',
+              ownTable: 'observations_not_to_assign',
+              label: 'Observations Not To Assign',
               skipOperationQueue: true,
             })
           }
@@ -284,9 +286,8 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'actions',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Actions`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Actions`
                 : 'Actions',
               skipOperationQueue: true,
             })
@@ -313,65 +314,64 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'checks',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Checks`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Checks`
                 : 'Checks',
               skipOperationQueue: true,
             })
           }
         }
 
-        // 10.1 occurrences_assigned2 and occurrences_assigned_lines2 needed if occurrences exist and placeLevels2 has occurrences
-        if (placeLevel2?.occurrences && occurrenceCount) {
-          const occurrencesAssigned2VectorLayersCount = await db.query(
+        // 10.1 observations_assigned2 and observations_assigned_lines2 needed if observations exist and placeLevels2 has observations
+        if (placeLevel2?.observations && observationCount) {
+          const observationsAssigned2VectorLayersCount = await db.query(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
             AND type = 'own'
-            AND own_table = 'occurrences_assigned'
+            AND own_table = 'observations_assigned'
             AND own_table_level = 2
         `,
             [projectId],
           )
-          if (occurrencesAssigned2VectorLayersCount?.rows?.[0]?.count === 0) {
+          if (observationsAssigned2VectorLayersCount?.rows?.[0]?.count === 0) {
             await createVectorLayer({
               projectId,
               type: 'own',
-              ownTable: 'occurrences_assigned',
+              ownTable: 'observations_assigned',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Occurrences Assigned`
-                : 'Occurrences Assigned',
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Observations Assigned`
+                : 'Observations Assigned',
               skipOperationQueue: true,
             })
           }
 
-          const occurrencesAssignedLines2VectorLayersCount = await db.query(
+          const observationsAssignedLines2VectorLayersCount = await db.query(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
           WHERE 
             project_id = $1
             AND type = 'own'
-            AND own_table = 'occurrences_assigned_lines'
+            AND own_table = 'observations_assigned_lines'
             AND own_table_level = 2
         `,
             [projectId],
           )
-          if (occurrencesAssignedLines2VectorLayersCount?.rows?.[0]?.count === 0) {
+          if (
+            observationsAssignedLines2VectorLayersCount?.rows?.[0]?.count === 0
+          ) {
             await createVectorLayer({
               projectId,
               type: 'own',
-              ownTable: 'occurrences_assigned_lines',
+              ownTable: 'observations_assigned_lines',
               ownTableLevel: 2,
-              label:
-                placeLevel2?.name_singular ?
-                  `${placeLevel2.name_singular} Occurrence Assignments Lines`
-                : 'Occurrence Assignments Lines',
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} Observation Assignments Lines`
+                : 'Observation Assignments Lines',
               skipOperationQueue: true,
             })
           }
@@ -383,7 +383,7 @@ export const TableLayersProvider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     projects.length,
-    occurrenceCount,
+    observationCount,
     initialSyncing,
     sqlInitializing,
     firstRender,

@@ -7,7 +7,7 @@ import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 import { backgroundTasks } from '../../../modules/backgroundTasks.ts'
 
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
-import type Occurrences from '../../../models/public/Occurrences.ts'
+import type Observations from '../../../models/public/Observations.ts'
 
 type Props = {
   observationImport: ObservationImports
@@ -46,18 +46,18 @@ export const setGeometries = async ({
     [observationImport.crs, defs],
   ])
 
-  // const occurrences = observationImport?.occurrences ?? []
+  // const observations = observationImport?.observations ?? []
   const res = await db.query(
-    `SELECT * FROM occurrences WHERE observation_import_id = $1 AND geometry IS NULL`,
+    `SELECT * FROM observations WHERE observation_import_id = $1 AND geometry IS NULL`,
     [observationImport?.observation_import_id],
   )
-  const occurrencesWithoutGeometry: Occurrences[] = res?.rows
+  const observationsWithoutGeometry: Observations[] = res?.rows
 
   // Register background task
   backgroundTasks.add(
     taskId,
     'Setting coordinates',
-    occurrencesWithoutGeometry.length,
+    observationsWithoutGeometry.length,
   )
 
   // Process in batches to allow UI updates
@@ -65,8 +65,8 @@ export const setGeometries = async ({
   let processed = 0
 
   try {
-    for (let i = 0; i < occurrencesWithoutGeometry.length; i += batchSize) {
-      const batch = occurrencesWithoutGeometry.slice(i, i + batchSize)
+    for (let i = 0; i < observationsWithoutGeometry.length; i += batchSize) {
+      const batch = observationsWithoutGeometry.slice(i, i + batchSize)
 
       for (const o of batch) {
         const coordinates = [
@@ -78,13 +78,13 @@ export const setGeometries = async ({
         const myPoint: Point = point(position.reverse())
         const geometry = featureCollection([myPoint])
         await db.query(
-          `UPDATE occurrences SET geometry = $1 WHERE occurrence_id = $2`,
-          [geometry, o.occurrence_id],
+          `UPDATE observations SET geometry = $1 WHERE observation_id = $2`,
+          [geometry, o.observation_id],
         )
         store.set(addOperationAtom, {
-          table: 'occurrences',
-          rowIdName: 'occurrence_id',
-          rowId: o.occurrence_id,
+          table: 'observations',
+          rowIdName: 'observation_id',
+          rowId: o.observation_id,
           operation: 'update',
           draft: { geometry },
           prev: { ...o },

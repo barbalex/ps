@@ -21,7 +21,7 @@ const tablesAbovePlaces = [
   'project_files',
   'subproject_reports',
   'goals',
-  'occurrences',
+  'observations',
   'subproject_taxa',
   'subproject_users',
   'subproject_histories',

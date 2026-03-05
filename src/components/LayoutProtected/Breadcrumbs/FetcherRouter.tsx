@@ -54,8 +54,8 @@ import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { PlaceReportReportFetcher } from './PlaceReportReportFetcher.tsx'
 import { PlaceReportValuesFetcher } from './PlaceReportValuesFetcher.tsx'
 import { PlaceReportValueFetcher } from './PlaceReportValueFetcher.tsx'
-import { OccurrencesAssignedFetcher } from './OccurrencesAssignedFetcher.tsx'
-import { OccurrenceAssignedFetcher } from './OccurrenceAssignedFetcher.tsx'
+import { ObservationsAssignedFetcher } from './ObservationsAssignedFetcher.tsx'
+import { ObservationAssignedFetcher } from './ObservationAssignedFetcher.tsx'
 import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
 import { PlaceUserFetcher } from './PlaceUserFetcher.tsx'
 import { SubprojectReportsFetcher } from './SubprojectReportsFetcher.tsx'
@@ -72,10 +72,10 @@ import { GoalReportValuesFetcher } from './GoalReportValuesFetcher.tsx'
 import { GoalReportValueFetcher } from './GoalReportValueFetcher.tsx'
 import { ObservationImportsFetcher } from './ObservationImportsFetcher.tsx'
 import { ObservationImportFetcher } from './ObservationImportFetcher.tsx'
-import { OccurrencesToAssessFetcher } from './OccurrencesToAssessFetcher.tsx'
-import { OccurrenceToAssessFetcher } from './OccurrenceToAssessFetcher.tsx'
-import { OccurrencesNotToAssignFetcher } from './OccurrencesNotToAssignFetcher.tsx'
-import { OccurrenceNotToAssignFetcher } from './OccurrenceNotToAssignFetcher.tsx'
+import { ObservationsToAssessFetcher } from './ObservationsToAssessFetcher.tsx'
+import { ObservationToAssessFetcher } from './ObservationToAssessFetcher.tsx'
+import { ObservationsNotToAssignFetcher } from './ObservationsNotToAssignFetcher.tsx'
+import { ObservationNotToAssignFetcher } from './ObservationNotToAssignFetcher.tsx'
 import { SubprojectTaxaFetcher } from './SubprojectTaxaFetcher.tsx'
 import { SubprojectTaxonFetcher } from './SubprojectTaxonFetcher.tsx'
 import { SubprojectUsersFetcher } from './SubprojectUsersFetcher.tsx'
@@ -359,15 +359,15 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         return null
       return <PlaceReportValueFetcher params={params} {...other} />
     }
-    case 'useOccurrencesAssignedNavData': {
+    case 'useObservationsAssignedNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return <OccurrencesAssignedFetcher params={params} {...other} />
+      return <ObservationsAssignedFetcher params={params} {...other} />
     }
-    case 'useOccurrenceAssignedNavData': {
-      if (!params.projectId || !params.subprojectId || !params.occurrenceId)
+    case 'useObservationAssignedNavData': {
+      if (!params.projectId || !params.subprojectId || !params.observationId)
         return null
-      return <OccurrenceAssignedFetcher params={params} {...other} />
+      return <ObservationAssignedFetcher params={params} {...other} />
     }
     case 'usePlaceUsersNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
@@ -499,30 +499,30 @@ export const FetcherRouter = ({ fetcherName, ...other }) => {
         return null
       return <ObservationImportFetcher params={params} {...other} />
     }
-    case 'useOccurrencesToAssessNavData': {
+    case 'useObservationsToAssessNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return <OccurrencesToAssessFetcher params={params} {...other} />
+      return <ObservationsToAssessFetcher params={params} {...other} />
     }
-    case 'useOccurrenceToAssessNavData': {
-      if (!params.projectId || !params.subprojectId || !params.occurrenceId)
+    case 'useObservationToAssessNavData': {
+      if (!params.projectId || !params.subprojectId || !params.observationId)
         return null
-      return <OccurrenceToAssessFetcher params={params} {...other} />
+      return <ObservationToAssessFetcher params={params} {...other} />
     }
-    case 'useOccurrencesNotToAssignNavData': {
+    case 'useObservationsNotToAssignNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return <OccurrencesNotToAssignFetcher params={params} {...other} />
+      return <ObservationsNotToAssignFetcher params={params} {...other} />
     }
-    case 'useOccurrenceNotToAssignNavData': {
+    case 'useObservationNotToAssignNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.occurrenceId
+        !params.observationId
       )
         return null
-      return <OccurrenceNotToAssignFetcher params={params} {...other} />
+      return <ObservationNotToAssignFetcher params={params} {...other} />
     }
     case 'useSubprojectTaxaNavData': {
       if (!params.projectId || !params.subprojectId) return null

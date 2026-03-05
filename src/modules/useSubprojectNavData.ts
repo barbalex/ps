@@ -33,8 +33,8 @@ type NavData = {
   goals_count_filtered?: number | null
   goals_count_unfiltered?: number | null
   observation_imports_count?: number | null
-  occurrences_to_assess_count?: number | null
-  occurrences_not_to_assign_count?: number | null
+  observations_to_assess_count?: number | null
+  observations_not_to_assign_count?: number | null
   subproject_taxa_count?: number | null
   subproject_users_count?: number | null
   files_count_filtered?: number | null
@@ -76,8 +76,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         goals_count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
         goals_count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${goalsIsFiltered ? ` AND ${goalsFilterString}` : ''}),
         observation_imports_count AS (SELECT count(*) FROM observation_imports WHERE subproject_id = '${subprojectId}'),
-        occurrences_to_assess_count AS (SELECT count(*) FROM occurrences o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL),
-        occurrences_not_to_assign_count AS (SELECT count(*) FROM occurrences o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
+        observations_to_assess_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL),
+        observations_not_to_assign_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
         subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
         subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
@@ -96,8 +96,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         goals_count_unfiltered.count AS goals_count_unfiltered,
         goals_count_filtered.count AS goals_count_filtered,
         observation_imports_count.count AS observation_imports_count,
-        occurrences_to_assess_count.count AS occurrences_to_assess_count,
-        occurrences_not_to_assign_count.count AS occurrences_not_to_assign_count,
+        observations_to_assess_count.count AS observations_to_assess_count,
+        observations_not_to_assign_count.count AS observations_not_to_assign_count,
         subproject_taxa_count.count AS subproject_taxa_count,
         subproject_users_count.count AS subproject_users_count,
         files_count_unfiltered.count AS files_count_unfiltered,
@@ -115,8 +115,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         goals_count_unfiltered,
         goals_count_filtered,
         observation_imports_count,
-        occurrences_to_assess_count,
-        occurrences_not_to_assign_count,
+        observations_to_assess_count,
+        observations_not_to_assign_count,
         subproject_taxa_count,
         subproject_users_count,
         files_count_unfiltered,
@@ -217,10 +217,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         }),
       },
       {
-        id: 'occurrences-to-assess',
+        id: 'observations-to-assess',
         label: buildNavLabel({
           loading,
-          countFiltered: nav?.occurrences_to_assess_count ?? 0,
+          countFiltered: nav?.observations_to_assess_count ?? 0,
           namePlural: formatMessage({
             id: 'BEylmv',
             defaultMessage: 'zu beurteilende Beobachtungen',
@@ -228,10 +228,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         }),
       },
       {
-        id: 'occurrences-not-to-assign',
+        id: 'observations-not-to-assign',
         label: buildNavLabel({
           loading,
-          countFiltered: nav?.occurrences_not_to_assign_count ?? 0,
+          countFiltered: nav?.observations_not_to_assign_count ?? 0,
           namePlural: formatMessage({
             id: 'slC/ul',
             defaultMessage: 'nicht zuzuordnende Beobachtungen',

@@ -9,7 +9,7 @@ import { ProtectedRoute } from '../ProtectedRoute.tsx'
 import { Header } from './Header/index.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
-import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
+import { ObservationAssignChooser } from '../ObservationAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
 import { PostgrestClientInitator } from '../PostgrestClientInitator.tsx'
 import { ApiDetector } from '../ApiDetector.tsx'
@@ -43,7 +43,7 @@ export const LayoutProtected = () => {
       <ProtectedRoute>
         <TableLayersProvider />
         <OwnVectorLayerPropertiesProvider />
-        <OccurrenceAssignChooser />
+        <ObservationAssignChooser />
         <IsDesktopViewSetter />
         <PostgrestClientInitator />
         <ApiDetector />

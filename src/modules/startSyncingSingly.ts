@@ -30,7 +30,7 @@ const tablesSyncData = [
   //     'checks',
   //     'check_values',
   //     'check_taxa',
-  //     'occurrences',
+  //     'observations',
   //     'created_at',
   //     'updated_at',
   //     'updated_by',
@@ -369,7 +369,7 @@ const tablesSyncData = [
   //   ],
   //   primaryKey: ['observation_import_id'],
   // },
-  // { table: 'occurrences', primaryKey: ['occurrence_id'] },
+  // { table: 'observations', primaryKey: ['observation_id'] },
   // { table: 'wms_services', primaryKey: ['wms_service_id'] },
   // {
   //   table: 'wms_service_layers',

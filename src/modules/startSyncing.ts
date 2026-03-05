@@ -102,7 +102,7 @@ export const startSyncing = async () => {
                 'checks',
                 'check_values',
                 'check_taxa',
-                'occurrences',
+                'observations',
                 'created_at',
                 'updated_at',
                 'updated_by',
@@ -841,15 +841,15 @@ export const startSyncing = async () => {
           table: 'observation_imports',
           primaryKey: ['observation_import_id'],
         },
-        occurrences: {
+        observations: {
           shape: {
             url,
             params: {
-              table: 'occurrences',
+              table: 'observations',
             },
           },
-          table: 'occurrences',
-          primaryKey: ['occurrence_id'],
+          table: 'observations',
+          primaryKey: ['observation_id'],
         },
         wms_services: {
           shape: {

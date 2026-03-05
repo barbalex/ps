@@ -7,7 +7,7 @@ import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOp
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId/'
 
-export const Four = ({ observationImport, occurrenceFields, onChange }) => {
+export const Four = ({ observationImport, observationFields, onChange }) => {
   const { observationImportId, subprojectId } = useParams({ from })
 
   const res = useLiveQuery(
@@ -36,16 +36,16 @@ export const Four = ({ observationImport, occurrenceFields, onChange }) => {
         name="id_field"
         value={observationImport.id_field ?? ''}
         onChange={onChange}
-        options={occurrenceFields}
+        options={observationFields}
         validationMessage={
           <>
             <div>
               The field that identifies the observation inside the data source
             </div>
-            <div>Needed when same occurrences are imported more than once</div>
+            <div>Needed when same observations are imported more than once</div>
             <div>
-              Enables choosing whether to update existing occurrences or replace
-              them
+              Enables choosing whether to update existing observations or
+              replace them
             </div>
           </>
         }
@@ -58,7 +58,7 @@ export const Four = ({ observationImport, occurrenceFields, onChange }) => {
             options={observationImportOptions}
             value={observationImport.previous_import ?? ''}
             onChange={onChange}
-            validationMessage="Have occurrences been previously imported from the same source? If so: choose the previous import. If not: leave empty."
+            validationMessage="Have observations been previously imported from the same source? If so: choose the previous import. If not: leave empty."
           />
         </>
       )}

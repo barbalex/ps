@@ -47,7 +47,7 @@ export const checkDuplicates = async (
     // Query for matching rows
     const query = `
       SELECT COUNT(*) as count 
-      FROM occurrences 
+      FROM observations 
       WHERE account_id = $1 
       AND ${conditions.join(' AND ')}
     `

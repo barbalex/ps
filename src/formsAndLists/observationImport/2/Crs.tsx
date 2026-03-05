@@ -41,14 +41,14 @@ export const Crs = ({
     const defs = resp?.data
     if (!defs) return
 
-    const occurrences = observationImport?.occurrences ?? []
+    const observations = observationImport?.observations ?? []
 
-    if (!occurrences.length) {
-      return setNotification('No occurrences found')
+    if (!observations.length) {
+      return setNotification('No observations found')
     }
-    const occurrencesWithoutGeometry = occurrences.filter((o) => !o.geometry)
-    if (!occurrencesWithoutGeometry.length) {
-      return setNotification('All occurrences have a geometry')
+    const observationsWithoutGeometry = observations.filter((o) => !o.geometry)
+    if (!observationsWithoutGeometry.length) {
+      return setNotification('All observations have a geometry')
     }
   }
 

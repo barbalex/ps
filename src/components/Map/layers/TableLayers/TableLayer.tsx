@@ -12,9 +12,9 @@ import {
   draggableLayersAtom,
   droppableLayersAtom,
   confirmAssigningToSingleTargetAtom,
-  placesToAssignOccurrenceToAtom,
+  placesToAssignObservationToAtom,
 } from '../../../../store.ts'
-import { occurrenceMarkers } from './occurrenceMarkers.ts'
+import { observationMarkers } from './observationMarkers.ts'
 
 export const TableLayer = ({ data, layerPresentation }) => {
   const confirmAssigningToSingleTarget = useAtomValue(
@@ -22,8 +22,8 @@ export const TableLayer = ({ data, layerPresentation }) => {
   )
   const droppableLayers = useAtomValue(droppableLayersAtom)
   const draggableLayers = useAtomValue(draggableLayersAtom)
-  const setPlacesToAssignOccurrenceTo = useSetAtom(
-    placesToAssignOccurrenceToAtom,
+  const setPlacesToAssignObservationTo = useSetAtom(
+    placesToAssignObservationToAtom,
   )
 
   const layer = layerPresentation.vector_layers
@@ -74,7 +74,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
       fc.features
         ?.map(
           (f) =>
-            `${f.properties?.occurrence_id || ''}_${f.properties?.place_id || ''}`,
+            `${f.properties?.observation_id || ''}_${f.properties?.place_id || ''}`,
         )
         .join(','),
     )
@@ -163,7 +163,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                   e.latlng.lng === latlng.lng
                 ) {
                   // Reset drag flag
-                  map._isDraggingOccurrence = false
+                  map._isDraggingObservation = false
                   return
                 }
                 // Stop propagation to prevent click event from opening info sidebar
@@ -178,24 +178,24 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
                 // Keep drag flag set for a short duration to prevent ClickListener from firing
                 setTimeout(() => {
-                  map._isDraggingOccurrence = false
+                  map._isDraggingObservation = false
                 }, 150)
 
                 assignToNearestDroppable({
                   latLng: e.latlng,
-                  occurrenceId: feature.properties?.occurrence_id,
+                  observationId: feature.properties?.observation_id,
                   map,
                   droppableLayers,
                   confirmAssigningToSingleTarget,
-                  setPlacesToAssignOccurrenceTo,
+                  setPlacesToAssignObservationTo,
                 })
               }
 
               clickableCircle.on('mousedown', function () {
                 // Store marker reference and original position for potential reset
-                const occurrenceId = feature.properties?.occurrence_id
-                if (occurrenceId) {
-                  occurrenceMarkers.set(occurrenceId, {
+                const observationId = feature.properties?.observation_id
+                if (observationId) {
+                  observationMarkers.set(observationId, {
                     clickableCircle,
                     visualCircle,
                     marker: null,
@@ -203,7 +203,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                   })
                 }
                 // Set flag to prevent ClickListener from opening info on other layers
-                map._isDraggingOccurrence = true
+                map._isDraggingObservation = true
                 map.dragging.disable()
                 map.on('mousemove', trackCursor)
                 // Attach mouseup to map so it fires regardless of what's under the cursor
@@ -275,9 +275,9 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
           if (isDraggable) {
             // Store marker reference and original position for potential reset
-            const occurrenceId = feature.properties?.occurrence_id
-            if (occurrenceId) {
-              occurrenceMarkers.set(occurrenceId, {
+            const observationId = feature.properties?.observation_id
+            if (observationId) {
+              observationMarkers.set(observationId, {
                 clickableCircle: null,
                 visualCircle: null,
                 marker,
@@ -287,7 +287,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
 
             // Set flag when drag starts
             marker.on('dragstart', () => {
-              map._isDraggingOccurrence = true
+              map._isDraggingObservation = true
             })
 
             marker.on('dragend', (e) => {
@@ -304,15 +304,15 @@ export const TableLayer = ({ data, layerPresentation }) => {
               }, 100)
               // Keep drag flag set for a short duration to prevent ClickListener from firing
               setTimeout(() => {
-                map._isDraggingOccurrence = false
+                map._isDraggingObservation = false
               }, 150)
               assignToNearestDroppable({
                 latLng: position,
-                occurrenceId: marker.feature.properties?.occurrence_id,
+                observationId: marker.feature.properties?.observation_id,
                 map,
                 droppableLayers,
                 confirmAssigningToSingleTarget,
-                setPlacesToAssignOccurrenceTo,
+                setPlacesToAssignObservationTo,
               })
             })
 

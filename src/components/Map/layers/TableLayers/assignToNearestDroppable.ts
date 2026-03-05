@@ -12,15 +12,15 @@ import {
   store,
   pgliteDbAtom,
 } from '../../../../store.ts'
-import { resetOccurrenceMarkerPosition } from './occurrenceMarkers.ts'
+import { resetObservationMarkerPosition } from './observationMarkers.ts'
 
 export const assignToNearestDroppable = async ({
   latLng,
-  occurrenceId,
+  observationId,
   map,
   droppableLayers,
   confirmAssigningToSingleTarget,
-  setPlacesToAssignOccurrenceTo,
+  setPlacesToAssignObservationTo,
 }) => {
   const db = store.get(pgliteDbAtom)
   let latLngPoint
@@ -111,10 +111,10 @@ export const assignToNearestDroppable = async ({
   //        Solution: buffer the feature collection by a millimetre before convexing
   //        alternative solution: https://github.com/Turfjs/turf/issues/1743
   const placeIdsWithDistance = places.map((place) => {
-    const placeContainsOccurrence = idsOfPlacesContainingLatLng.includes(
+    const placeContainsObservation = idsOfPlacesContainingLatLng.includes(
       place.place_id,
     )
-    if (placeContainsOccurrence) {
+    if (placeContainsObservation) {
       return { place_id: place.place_id, distance: 0 }
     }
 
@@ -176,21 +176,21 @@ export const assignToNearestDroppable = async ({
   // })
 
   // Query current assignment to pass to dialog
-  const occurrenceRes = await db.query(
-    `SELECT place_id FROM occurrences WHERE occurrence_id = $1`,
-    [occurrenceId],
+  const observationRes = await db.query(
+    `SELECT place_id FROM observations WHERE observation_id = $1`,
+    [observationId],
   )
-  const currentPlaceId = occurrenceRes?.rows?.[0]?.place_id
+  const currentPlaceId = observationRes?.rows?.[0]?.place_id
 
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // Show dialog to inform user no place found within 20px
-    const placesToAssignOccurrenceTo = {
-      occurrence_id: occurrenceId,
+    const placesToAssignObservationTo = {
+      observation_id: observationId,
       latLng,
       places: [],
       current_place_id: currentPlaceId,
     }
-    setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
+    setPlacesToAssignObservationTo(placesToAssignObservationTo)
     return
   }
 
@@ -202,33 +202,33 @@ export const assignToNearestDroppable = async ({
     const place_id = placeIdsWithMinDistancesSortedByDistance[0]?.place_id
     // 3.2.1: assign to place
     await db.query(
-      `UPDATE occurrences SET place_id = $1, not_to_assign = $2 WHERE occurrence_id = $3`,
-      [place_id, null, occurrenceId],
+      `UPDATE observations SET place_id = $1, not_to_assign = $2 WHERE observation_id = $3`,
+      [place_id, null, observationId],
     )
     // query observation to pass it as prev value
-    const occurrenceRes = await db.query(
-      `SELECT * FROM occurrences WHERE occurrence_id = $1`,
-      [occurrenceId],
+    const observationRes = await db.query(
+      `SELECT * FROM observations WHERE observation_id = $1`,
+      [observationId],
     )
-    const prev = occurrenceRes?.rows?.[0] ?? {}
+    const prev = observationRes?.rows?.[0] ?? {}
     store.set(addOperationAtom, {
-      table: 'occurrences',
-      rowIdName: 'occurrence_id',
-      rowId: occurrenceId,
+      table: 'observations',
+      rowIdName: 'observation_id',
+      rowId: observationId,
       operation: 'update',
       draft: { place_id, not_to_assign: null },
       prev,
     })
 
     // Reset marker to original position
-    resetOccurrenceMarkerPosition(occurrenceId)
+    resetObservationMarkerPosition(observationId)
 
     return
   }
 
   // ask user to choose
-  const placesToAssignOccurrenceTo = {
-    occurrence_id: occurrenceId,
+  const placesToAssignObservationTo = {
+    observation_id: observationId,
     latLng,
     places: placeIdsWithMinDistancesSortedByDistance.map((p) => ({
       ...p,
@@ -236,5 +236,5 @@ export const assignToNearestDroppable = async ({
     })),
     current_place_id: currentPlaceId,
   }
-  setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
+  setPlacesToAssignObservationTo(placesToAssignObservationTo)
 }

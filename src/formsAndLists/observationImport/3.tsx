@@ -4,12 +4,12 @@ import { LabelCreator } from '../../components/shared/LabelCreator/index.tsx'
 import { setLabels } from './3/setLabels.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 
-export const Three = ({ observationImport, occurrenceFields, onChange }) => {
+export const Three = ({ observationImport, observationFields, onChange }) => {
   const res = useLiveQuery(
-    `SELECT COUNT(*) as count FROM occurrences WHERE observation_import_id = $1`,
+    `SELECT COUNT(*) as count FROM observations WHERE observation_import_id = $1`,
     [observationImport?.observation_import_id],
   )
-  const occurrenceCount = res?.rows?.[0]?.count ?? 0
+  const observationCount = res?.rows?.[0]?.count ?? 0
 
   const onApply = async (labelCreation) => {
     await setLabels({
@@ -19,14 +19,14 @@ export const Three = ({ observationImport, occurrenceFields, onChange }) => {
   }
 
   const buttonLabel =
-    occurrenceCount > 0
-      ? `Set labels of ${formatNumber(occurrenceCount)} observation${occurrenceCount !== 1 ? 's' : ''}`
+    observationCount > 0
+      ? `Set labels of ${formatNumber(observationCount)} observation${observationCount !== 1 ? 's' : ''}`
       : 'Apply changes'
 
   return (
     <LabelCreator
       label={observationImport.label_creation}
-      fields={occurrenceFields}
+      fields={observationFields}
       name="label_creation"
       onChange={onChange}
       buttonLabel={buttonLabel}
