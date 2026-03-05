@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -27,9 +28,9 @@ export const useActionValueNavData = ({
   actionId,
   actionValueId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
-
 
   const res = useLiveQuery(
     `
@@ -67,7 +68,9 @@ export const useActionValueNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -79,7 +82,10 @@ export const useActionValueNavData = ({
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Action Value',
+    nameSingular: formatMessage({
+      id: 'spP2/4',
+      defaultMessage: 'Massnahmen-Wert',
+    }),
   }
 
   return { loading, navData }

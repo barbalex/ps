@@ -67,7 +67,7 @@ export const useActionReportReportNavData = ({
 
   const notFound = !!res && !nav
   const label = notFound
-    ? 'Not Found'
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' })
 
   const navData = {

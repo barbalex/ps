@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -28,6 +29,7 @@ export const useActionReportValuesNavData = ({
   actionId,
   actionReportId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -78,10 +80,13 @@ export const useActionReportValuesNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: 'Values',
+      namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Werte' }),
       loading,
     }),
-    nameSingular: 'Action Report Value',
+    nameSingular: formatMessage({
+      id: 'cnqBFZ',
+      defaultMessage: 'Massnahmen-Bericht-Wert',
+    }),
     navs,
   }
 
