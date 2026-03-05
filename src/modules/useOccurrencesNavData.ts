@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -39,11 +40,13 @@ export const useOccurrencesNavData = ({
   const [filterToAssess] = useAtom(occurrencesToAssessFilterAtom)
   const [filterNotToAssign] = useAtom(occurrencesNotToAssignFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
-  const filter =
-    isToAssess ? filterToAssess
-    : isNotToAssign ? filterNotToAssign
-    : []
+  const filter = isToAssess
+    ? filterToAssess
+    : isNotToAssign
+      ? filterNotToAssign
+      : []
   const filterString = filterStringFromFilter(filter, 'o')
   const isFiltered = !!filterString
 
@@ -138,15 +141,33 @@ export const useOccurrencesNavData = ({
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
   const namePlural = isToAssess
-    ? ' Occurrences To Assess'
+    ? formatMessage({
+        id: 'BEylmv',
+        defaultMessage: 'zu beurteilende Beobachtungen',
+      })
     : isNotToAssign
-      ? 'Occurrences Not To Assign'
-      : 'Occurrences Assigned'
+      ? formatMessage({
+          id: 'slC/ul',
+          defaultMessage: 'nicht zuzuordnende Beobachtungen',
+        })
+      : formatMessage({
+          id: 'OaXR/X',
+          defaultMessage: 'zugeordnete Beobachtungen',
+        })
   const nameSingular = isToAssess
-    ? ' Occurrence to assess'
+    ? formatMessage({
+        id: 'tfUHK5',
+        defaultMessage: 'zu beurteilende Beobachtung',
+      })
     : isNotToAssign
-      ? 'Occurrence not to assign'
-      : 'Occurrence assigned'
+      ? formatMessage({
+          id: 'aanYYz',
+          defaultMessage: 'nicht zuzuordnende Beobachtung',
+        })
+      : formatMessage({
+          id: 'gKq4qF',
+          defaultMessage: 'zugeordnete Beobachtung',
+        })
 
   const navData = {
     isInActiveNodeArray,
