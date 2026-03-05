@@ -79,9 +79,11 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
   return (
     <Field
       validationMessage={
-        errorMessage ?
+        errorMessage ? (
           <span style={{ color: 'rgb(196, 49, 75)' }}>{errorMessage}</span>
-        : 'Click to choose or drop a file. Accepts .csv, .tsv, .xlsx, .xls, .ods, .txt.'
+        ) : (
+          'Click to choose or drop a file. Accepts .csv, .tsv, .xlsx, .xls, .ods, .txt.'
+        )
       }
       validationState={errorMessage ? 'error' : 'none'}
     >
@@ -100,13 +102,14 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         style={{
-          backgroundColor:
-            isDragging ? 'rgba(103, 216, 101, 0.2)' : 'transparent',
+          backgroundColor: isDragging
+            ? 'rgba(103, 216, 101, 0.2)'
+            : 'transparent',
           color: successMessage ? 'rgba(38, 82, 37, 0.9)' : undefined,
         }}
         className={styles.button}
       >
-        {successMessage || 'Upload file containing occurrences'}
+        {successMessage || 'Upload file containing observations'}
       </Button>
     </Field>
   )

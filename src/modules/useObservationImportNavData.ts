@@ -17,7 +17,7 @@ type NavData = {
   label: string | null
 }
 
-export const useOccurrenceImportNavData = ({
+export const useObservationImportNavData = ({
   projectId,
   subprojectId,
   observationImportId,
