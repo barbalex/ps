@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -26,6 +27,7 @@ export const useCheckTaxaNavData = ({
   placeId2,
   checkId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -74,10 +76,13 @@ export const useCheckTaxaNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: 'Taxa',
+      namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
       loading,
     }),
-    nameSingular: 'Check Taxon',
+    nameSingular: formatMessage({
+      id: '1kFtKf',
+      defaultMessage: 'Kontroll-Taxon',
+    }),
     navs,
   }
 
