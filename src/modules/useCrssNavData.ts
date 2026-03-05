@@ -25,6 +25,7 @@ export const useCrssNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(crsFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
