@@ -8,7 +8,7 @@ import { electricSync } from '@electric-sql/pglite-sync'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
-import { IntlProvider } from 'react-intl'
+import { IntlProvider, useIntl } from 'react-intl'
 
 import en from './i18n/en.json'
 import fr from './i18n/fr.json'
@@ -28,7 +28,13 @@ import styles from './App.module.css'
 import { lightTheme } from './modules/theme.ts'
 // import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
-import { store, pgliteDbAtom, languageAtom } from './store.ts'
+import { store, pgliteDbAtom, languageAtom, intlAtom } from './store.ts'
+
+const IntlSetter = () => {
+  const intl = useIntl()
+  store.set(intlAtom, intl)
+  return null
+}
 
 const db = await PGlite.create('idb://ps', {
   extensions: {
@@ -74,6 +80,7 @@ export const App = () => {
           console.error(err)
         }}
       >
+        <IntlSetter />
         <PGliteProvider db={db}>
           <FluentProvider theme={lightTheme}>
             <uc-config

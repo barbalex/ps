@@ -1,5 +1,6 @@
 import { createStore, atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import type { IntlShape } from 'react-intl';
 import { constants } from "./modules/constants.ts";
 import { uuidv7 } from "@kripod/uuidv7";
 // import { atom } from 'jotai'
@@ -123,6 +124,7 @@ export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 const _navLang = navigator.language.split('-')[0] as Language;
 const _defaultLanguage: Language = SUPPORTED_LANGUAGES.includes(_navLang) ? _navLang : 'de';
 export const languageAtom = atomWithStorage<Language>('language', _defaultLanguage);
+export const intlAtom = atom<IntlShape | null>(null);
 
 // initialSyncing happens on first app load
 // on first app load liveQueries should not run yet, before initial sync is done
