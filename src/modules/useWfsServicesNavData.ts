@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -27,6 +28,7 @@ export const useWfsServicesNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(wfsServicesFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wfs-services']
@@ -86,9 +88,12 @@ export const useWfsServicesNavData = ({ projectId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'WFS Services',
+      namePlural: formatMessage({
+        id: 'HzltY9',
+        defaultMessage: 'WFS-Dienste',
+      }),
     }),
-    nameSingular: 'WFS Service',
+    nameSingular: formatMessage({ id: 'X88JDr', defaultMessage: 'WFS-Dienst' }),
     navs,
   }
 

@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -26,6 +27,7 @@ type NavDataClosed = {
 export const useWmsLayersNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wms-layers']
@@ -88,9 +90,9 @@ export const useWmsLayersNavData = ({ projectId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'WMS Layers',
+      namePlural: formatMessage({ id: 'IKLYLz', defaultMessage: 'WMS-Ebenen' }),
     }),
-    nameSingular: 'WMS Layer',
+    nameSingular: formatMessage({ id: 'Igo7tK', defaultMessage: 'WMS-Ebene' }),
     navs,
   }
 
