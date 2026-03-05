@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -27,6 +28,7 @@ export const useGoalReportValueNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -63,7 +65,9 @@ export const useGoalReportValueNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -75,7 +79,10 @@ export const useGoalReportValueNavData = ({
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Goal Report Value',
+    nameSingular: formatMessage({
+      id: 'TmPR2+',
+      defaultMessage: 'Ziel-Bericht-Menge',
+    }),
   }
 
   return { loading, navData }
