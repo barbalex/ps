@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -28,6 +29,7 @@ export const useActionNavData = ({
   placeId2,
   actionId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const sql = `
@@ -87,13 +89,16 @@ export const useActionNavData = ({
     label,
     notFound,
     navs: [
-      { id: 'action', label: 'Action' },
+      {
+        id: 'action',
+        label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
+      },
       {
         id: 'values',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.action_values_count ?? 0,
-          namePlural: 'Values',
+          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Werte' }),
         }),
       },
       {
@@ -101,7 +106,10 @@ export const useActionNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.action_reports_count ?? 0,
-          namePlural: 'Reports',
+          namePlural: formatMessage({
+            id: 'CiJ0SG',
+            defaultMessage: 'Berichte',
+          }),
         }),
       },
       {
@@ -109,7 +117,10 @@ export const useActionNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.files_count ?? 0,
-          namePlural: 'Files',
+          namePlural: formatMessage({
+            id: 'mn58Sh',
+            defaultMessage: 'Dateien',
+          }),
         }),
       },
     ],
