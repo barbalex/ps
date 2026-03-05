@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -21,6 +22,7 @@ export const useGoalGoalNavData = ({
   goalId_,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
 
   const projectId = projectId_?.replace(/_/g, '-')
   const subprojectId = subprojectId_?.replace(/_/g, '-')
@@ -68,7 +70,7 @@ export const useGoalGoalNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!goalQuery && !goal
-  const label = notFound ? 'Not Found' : 'Goal'
+  const label = notFound ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' }) : formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' })
 
   const navData = {
     isInActiveNodeArray,

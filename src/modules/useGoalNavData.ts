@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -19,6 +20,7 @@ type NavData = {
 
 export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -57,7 +59,9 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -71,13 +75,19 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
     label,
     notFound,
     navs: [
-      { id: 'goal', label: 'Goal' },
+      {
+        id: 'goal',
+        label: formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' }),
+      },
       {
         id: 'reports',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.goal_reports_count ?? 0,
-          namePlural: 'Goal Reports',
+          namePlural: formatMessage({
+            id: 'SmwFfB',
+            defaultMessage: 'Ziel-Berichte',
+          }),
         }),
       },
     ],
