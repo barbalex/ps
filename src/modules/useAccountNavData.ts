@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import type Accounts from '../models/public/Accounts.ts'
@@ -16,6 +17,7 @@ const parentArray = ['data', 'accounts']
 const parentUrl = `/${parentArray.join('/')}`
 
 export const useAccountNavData = ({ accountId }) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -55,7 +57,7 @@ export const useAccountNavData = ({ accountId }) => {
     urlPath,
     label,
     notFound,
-    nameSingular: 'Account',
+    nameSingular: formatMessage({ id: '9oKaIi', defaultMessage: 'Konto' }),
   }
 
   return { loading, navData }
