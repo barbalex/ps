@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-router'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import globalStyles from '../../../styles.module.css'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
@@ -39,6 +40,7 @@ const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 // TODO:
 // use overflow menu for tabs and app-states
 export const Menu = () => {
+  const intl = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)
   const navigate = useNavigate()
   const canGoBack = useCanGoBack()
@@ -90,9 +92,15 @@ export const Menu = () => {
       >
         {!isHome && (
           <>
-            <Tooltip content={treeIsActive ? 'Hide Tree' : 'Show Tree'}>
+            <Tooltip
+              content={
+                treeIsActive
+                  ? intl.formatMessage({ defaultMessage: 'Baum ausblenden' })
+                  : intl.formatMessage({ defaultMessage: 'Baum einblenden' })
+              }
+            >
               <ToolbarToggleButton
-                aria-label="Tree"
+                aria-label={intl.formatMessage({ defaultMessage: 'Baum' })}
                 name="tabs"
                 value="tree"
                 className={buildToggleClass({
@@ -102,12 +110,18 @@ export const Menu = () => {
                 })}
                 disabled={mapIsMaximized}
               >
-                Tree
+                <FormattedMessage defaultMessage="Baum" />
               </ToolbarToggleButton>
             </Tooltip>
-            <Tooltip content={dataIsActive ? 'Hide Data' : 'Show Data'}>
+            <Tooltip
+              content={
+                dataIsActive
+                  ? intl.formatMessage({ defaultMessage: 'Daten ausblenden' })
+                  : intl.formatMessage({ defaultMessage: 'Daten einblenden' })
+              }
+            >
               <ToolbarToggleButton
-                aria-label="Data"
+                aria-label={intl.formatMessage({ defaultMessage: 'Daten' })}
                 name="tabs"
                 value="data"
                 className={buildToggleClass({
@@ -117,21 +131,35 @@ export const Menu = () => {
                 })}
                 disabled={mapIsMaximized}
               >
-                Data
+                <FormattedMessage defaultMessage="Daten" />
               </ToolbarToggleButton>
             </Tooltip>
-            <Tooltip content={mapIsActive ? 'Hide Map' : 'Show Map'}>
+            <Tooltip
+              content={
+                mapIsActive
+                  ? intl.formatMessage({ defaultMessage: 'Karte ausblenden' })
+                  : intl.formatMessage({ defaultMessage: 'Karte einblenden' })
+              }
+            >
               <ToolbarToggleButton
                 icon={
                   !mapIsActive ? undefined : mapIsMaximized ? (
-                    <Tooltip content="Shrink Map">
+                    <Tooltip
+                      content={intl.formatMessage({
+                        defaultMessage: 'Karte verkleinern',
+                      })}
+                    >
                       <TbArrowsMinimize
                         onClick={onClickMapView}
                         className={styles.mapIcon}
                       />
                     </Tooltip>
                   ) : (
-                    <Tooltip content="Maximize Map">
+                    <Tooltip
+                      content={intl.formatMessage({
+                        defaultMessage: 'Karte maximieren',
+                      })}
+                    >
                       <TbArrowsMaximize
                         onClick={onClickMapView}
                         className={styles.mapIcon}
@@ -140,7 +168,7 @@ export const Menu = () => {
                   )
                 }
                 iconPosition="after"
-                aria-label="Map"
+                aria-label={intl.formatMessage({ defaultMessage: 'Karte' })}
                 name="tabs"
                 value="map"
                 className={buildToggleClass({
@@ -149,14 +177,20 @@ export const Menu = () => {
                   selfIsActive: mapIsActive,
                 })}
               >
-                Map
+                <FormattedMessage defaultMessage="Karte" />
               </ToolbarToggleButton>
             </Tooltip>
           </>
         )}
       </Toolbar>
       {!isHome && (
-        <Tooltip content={isAppStates ? 'Back' : 'Options'}>
+        <Tooltip
+          content={
+            isAppStates
+              ? intl.formatMessage({ defaultMessage: 'Zurück' })
+              : intl.formatMessage({ defaultMessage: 'Optionen' })
+          }
+        >
           <Button
             size="medium"
             icon={<FaCog />}
@@ -171,10 +205,13 @@ export const Menu = () => {
       <Tooltip
         content={
           !isAuthenticated
-            ? 'Login'
+            ? intl.formatMessage({ defaultMessage: 'Anmelden' })
             : isHome
-              ? 'Enter'
-              : `Logout ${authUser?.email}`
+              ? intl.formatMessage({ defaultMessage: 'App öffnen' })
+              : intl.formatMessage(
+                  { defaultMessage: 'Abmelden {email}' },
+                  { email: authUser?.email },
+                )
         }
       >
         <Button
