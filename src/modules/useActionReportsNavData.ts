@@ -83,8 +83,8 @@ export const useActionReportsNavData = ({
       loading,
     }),
     nameSingular: formatMessage({
-      id: 'Z8jucQ',
-      defaultMessage: 'Bericht',
+      id: 'YMGqLf',
+      defaultMessage: 'Massnahmen-Bericht',
     }),
     navs,
   }
