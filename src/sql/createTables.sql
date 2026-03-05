@@ -7,8 +7,11 @@ CREATE TABLE IF NOT EXISTS users(
   name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
   email_verified boolean DEFAULT FALSE,
-  -- label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
-  -- label text default null,
+  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
+  -- we need language in db to enable triggers updating labels in the right language
+  -- example: subproject_names in projects table
+  -- problem: to know user, login is needed - but not yet implemented
+  language text DEFAULT 'en',
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -133,6 +136,12 @@ CREATE TABLE IF NOT EXISTS projects(
   type text DEFAULT NULL references project_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
+  subproject_name_singular_en text DEFAULT NULL,
+  subproject_name_plural_en text DEFAULT NULL,
+  subproject_name_singular_fr text DEFAULT NULL,
+  subproject_name_plural_fr text DEFAULT NULL,
+  subproject_name_singular_it text DEFAULT NULL,
+  subproject_name_plural_it text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
   places_label_by text DEFAULT NULL, -- TODO: jsonb array
   places_order_by text DEFAULT NULL, -- TODO: jsonb array

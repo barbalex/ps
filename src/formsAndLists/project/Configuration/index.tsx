@@ -80,7 +80,7 @@ export const Configuration = ({ from }) => {
       <div className="form-container" role="tabpanel" aria-labelledby="form">
         <Type row={row} onChange={onChange} validations={validations} />
         <TextField
-          label="Name of subproject (singular)"
+          label="Name of subproject in German (singular)"
           name="subproject_name_singular"
           value={row.subproject_name_singular ?? ''}
           onChange={onChange}
@@ -88,12 +88,60 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_singular?.message}
         />
         <TextField
-          label="Name of subproject (plural)"
+          label="Name of subproject in German (plural)"
           name="subproject_name_plural"
           value={row.subproject_name_plural ?? ''}
           onChange={onChange}
           validationState={validations?.subproject_name_plural?.state}
           validationMessage={validations?.subproject_name_plural?.message}
+        />
+        <TextField
+          label="Name of subproject in English (singular)"
+          name="subproject_name_singular_en"
+          value={row.subproject_name_singular_en ?? ''}
+          onChange={onChange}
+          validationState={validations?.subproject_name_singular_en?.state}
+          validationMessage={validations?.subproject_name_singular_en?.message}
+        />
+        <TextField
+          label="Name of subproject in English (plural)"
+          name="subproject_name_plural_en"
+          value={row.subproject_name_plural_en ?? ''}
+          onChange={onChange}
+          validationState={validations?.subproject_name_plural_en?.state}
+          validationMessage={validations?.subproject_name_plural_en?.message}
+        />
+        <TextField
+          label="Name of subproject in French (singular)"
+          name="subproject_name_singular_fr"
+          value={row.subproject_name_singular_fr ?? ''}
+          onChange={onChange}
+          validationState={validations?.subproject_name_singular_fr?.state}
+          validationMessage={validations?.subproject_name_singular_fr?.message}
+        />
+        <TextField
+          label="Name of subproject in French (plural)"
+          name="subproject_name_plural_fr"
+          value={row.subproject_name_plural_fr ?? ''}
+          onChange={onChange}
+          validationState={validations?.subproject_name_plural_fr?.state}
+          validationMessage={validations?.subproject_name_plural_fr?.message}
+        />
+        <TextField
+          label="Name of subproject in Italian (singular)"
+          name="subproject_name_singular_it"
+          value={row.subproject_name_singular_it ?? ''}
+          onChange={onChange}
+          validationState={validations?.subproject_name_singular_it?.state}
+          validationMessage={validations?.subproject_name_singular_it?.message}
+        />
+        <TextField
+          label="Name of subproject in Italian (plural)"
+          name="subproject_name_plural_it"
+          value={row.subproject_name_plural_it ?? ''}
+          onChange={onChange}
+          validationState={validations?.subproject_name_plural_it?.state}
+          validationMessage={validations?.subproject_name_plural_it?.message}
         />
         <TextField
           label="Order subproject by (field name)"
