@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -28,6 +29,7 @@ export const useActionReportNavData = ({
   actionId,
   actionReportId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const sql = `
@@ -83,13 +85,16 @@ export const useActionReportNavData = ({
     label,
     notFound,
     navs: [
-      { id: 'report', label: 'Report' },
+      {
+        id: 'report',
+        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
+      },
       {
         id: 'values',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.action_report_values_count ?? 0,
-          namePlural: 'Values',
+          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Werte' }),
         }),
       },
     ],
