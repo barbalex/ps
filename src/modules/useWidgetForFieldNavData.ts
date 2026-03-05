@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -20,6 +21,7 @@ type NavData = {
 export const useWidgetForFieldNavData = ({ widgetForFieldId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   // needs to work not only works for urlPath, for all opened paths!
 
@@ -45,7 +47,9 @@ export const useWidgetForFieldNavData = ({ widgetForFieldId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -58,7 +62,10 @@ export const useWidgetForFieldNavData = ({ widgetForFieldId }: Props) => {
     urlPath,
     label,
     notFound,
-    nameSingular: 'Widget For Field',
+    nameSingular: formatMessage({
+      id: 'vdqfwK',
+      defaultMessage: 'Widget für Feld',
+    }),
   }
 
   return { loading, navData }
