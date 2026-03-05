@@ -4,12 +4,12 @@
 
 -- Note: updated_at triggers are in 04_triggers_updated_at.sql
 
--- if observation_imports.label_creation is changed, need to update all labels of occurrences
+-- if observation_imports.label_creation is changed, need to update all labels of observations
 CREATE OR REPLACE FUNCTION observation_imports_label_creation_trigger ()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  occurrences_table_exists BOOLEAN;
+  observations_table_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -17,18 +17,18 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  -- Check if occurrences table exists
+  -- Check if observations table exists
   SELECT EXISTS (
     SELECT FROM information_schema.tables 
     WHERE table_schema = 'public' 
-    AND table_name = 'occurrences'
-  ) INTO occurrences_table_exists;
+    AND table_name = 'observations'
+  ) INTO observations_table_exists;
 
-  IF NOT occurrences_table_exists THEN
+  IF NOT observations_table_exists THEN
     RETURN OLD;
   END IF;
 
-  UPDATE occurrences
+  UPDATE observations
     SET
       label = (
         SELECT string_agg (
@@ -38,11 +38,11 @@ BEGIN
             end, 
             ''
           )
-        FROM occurrences o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
-        WHERE o.occurrence_id = occurrences.occurrence_id
-        GROUP BY o.occurrence_id)
+        FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
+        WHERE o.observation_id = observations.observation_id
+        GROUP BY o.observation_id)
     WHERE
-      occurrences.observation_import_id = NEW.observation_import_id;
+      observations.observation_import_id = NEW.observation_import_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -893,7 +893,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE users_subproject_users_label_trigger();
 
 -- on insert vector_layers if type is in:
--- places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
+-- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
 -- create a corresponding vector_layer_display
 CREATE OR REPLACE FUNCTION vector_layers_insert_trigger()
 RETURNS TRIGGER AS $$
@@ -973,7 +973,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE widgets_for_fields_label_trigger();
 
 -- on insert wms_layers if type is in:
--- places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
+-- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
 -- create a corresponding layer_presentation
 CREATE OR REPLACE FUNCTION wms_layers_insert_trigger()
 RETURNS TRIGGER AS $$
