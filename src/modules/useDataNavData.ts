@@ -188,7 +188,7 @@ export const useDataNavData = () => {
         label: buildNavLabel({
           loading,
           countFiltered: row?.users_count_unfiltered ?? 0,
-          namePlural: 'Users',
+          namePlural: formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' }),
         }),
       },
       {
