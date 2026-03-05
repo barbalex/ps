@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -31,6 +32,7 @@ export const useFileNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
   const isPreview = location.pathname.endsWith('/preview')
 
   const res = useLiveQuery(
@@ -69,7 +71,9 @@ export const useFileNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -81,7 +85,7 @@ export const useFileNavData = ({
     ownUrl,
     label,
     notFound,
-    nameSingular: 'File',
+    nameSingular: formatMessage({ id: '9Gu1cL', defaultMessage: 'Datei' }),
   }
 
   return { loading, navData }
