@@ -207,7 +207,7 @@ export const editingActionGeometryAtom = atomWithStorage(
   'editingActionGeometryAtom',
   false,
 )
-// The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2
+// The layers that are currently draggable. Any of: observations-to-assess, observations-not-to-assign, observations-assigned-1, observations-assigned-2
 export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])
 // The layers that are currently droppable (any of: places-1, places-2). Array of layer names in the same format as draggableLayersAtom
 export const droppableLayersAtom = atomWithStorage('droppableLayersAtom', [])
@@ -216,14 +216,14 @@ export const confirmAssigningToSingleTargetAtom = atomWithStorage(
   'confirmAssigningToSingleTargetAtom',
   true,
 )
-// If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, latLng (where marker was dropped, used only for finding nearby places), places (array with: place_id, label, distance), current_place_id (the observation's current assignment, if any)
-export const placesToAssignOccurrenceToAtom = atomWithStorage(
-  'placesToAssignOccurrenceToAtom',
+// If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: observation_id, latLng (where marker was dropped, used only for finding nearby places), places (array with: place_id, label, distance), current_place_id (the observation's current assignment, if any)
+export const placesToAssignObservationToAtom = atomWithStorage(
+  'placesToAssignObservationToAtom',
   null,
 )
 // The order of fields in the observation form. User can change it by drag and drop
-export const occurrenceFieldsSortedAtom = atomWithStorage(
-  'occurrenceFieldsSortedAtom',
+export const observationFieldsSortedAtom = atomWithStorage(
+  'observationFieldsSortedAtom',
   [],
 )
 export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
@@ -293,12 +293,12 @@ export const observationImportsFilterAtom = atomWithStorage(
   'observationImportsFilterAtom',
   [],
 )
-export const occurrencesToAssessFilterAtom = atomWithStorage(
-  'occurrencesToAssessFilterAtom',
+export const observationsToAssessFilterAtom = atomWithStorage(
+  'observationsToAssessFilterAtom',
   [],
 )
-export const occurrencesNotToAssignFilterAtom = atomWithStorage(
-  'occurrencesNotToAssignFilterAtom',
+export const observationsNotToAssignFilterAtom = atomWithStorage(
+  'observationsNotToAssignFilterAtom',
   [],
 )
 export const goalsFilterAtom = atomWithStorage('goalsFilterAtom', [])
@@ -365,8 +365,8 @@ export const filterAtoms = {
   subprojectTaxa: subprojectTaxaFilterAtom,
   charts: chartsFilterAtom,
   observationImports: observationImportsFilterAtom,
-  occurrencesToAssess: occurrencesToAssessFilterAtom,
-  occurrencesNotToAssign: occurrencesNotToAssignFilterAtom,
+  observationsToAssess: observationsToAssessFilterAtom,
+  observationsNotToAssign: observationsNotToAssignFilterAtom,
   goals: goalsFilterAtom,
   users: usersFilterAtom,
   places1: places1FilterAtom,

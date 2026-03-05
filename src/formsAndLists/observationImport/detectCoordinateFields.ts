@@ -22,18 +22,18 @@ const isValidCoordinate = (value: any, type: 'x' | 'y'): boolean => {
  * Samples up to 10 non-null values
  */
 const validateFieldValues = (
-  occurrences: any[],
+  observations: any[],
   fieldName: string,
   type: 'x' | 'y',
 ): boolean => {
-  if (!occurrences || occurrences.length === 0) return false
+  if (!observations || observations.length === 0) return false
 
   let validCount = 0
   let totalChecked = 0
-  const maxSample = Math.min(10, occurrences.length)
+  const maxSample = Math.min(10, observations.length)
 
-  for (let i = 0; i < occurrences.length && totalChecked < maxSample; i++) {
-    const value = occurrences[i]?.data?.[fieldName]
+  for (let i = 0; i < observations.length && totalChecked < maxSample; i++) {
+    const value = observations[i]?.data?.[fieldName]
     if (value !== null && value !== undefined && value !== '') {
       totalChecked++
       if (isValidCoordinate(value, type)) {
@@ -52,7 +52,7 @@ const validateFieldValues = (
  */
 export const detectCoordinateFields = (
   fields: string[],
-  occurrences?: any[],
+  observations?: any[],
 ): { x_coordinate_field: string | null; y_coordinate_field: string | null } => {
   if (!fields || fields.length === 0) {
     return { x_coordinate_field: null, y_coordinate_field: null }
@@ -101,8 +101,8 @@ export const detectCoordinateFields = (
     )
     if (index !== -1) {
       const candidate = fields[index]
-      // If we have occurrences, validate the values
-      if (!occurrences || validateFieldValues(occurrences, candidate, 'x')) {
+      // If we have observations, validate the values
+      if (!observations || validateFieldValues(observations, candidate, 'x')) {
         xField = candidate
         break
       }
@@ -116,8 +116,8 @@ export const detectCoordinateFields = (
     )
     if (index !== -1) {
       const candidate = fields[index]
-      // If we have occurrences, validate the values
-      if (!occurrences || validateFieldValues(occurrences, candidate, 'y')) {
+      // If we have observations, validate the values
+      if (!observations || validateFieldValues(observations, candidate, 'y')) {
         yField = candidate
         break
       }

@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   checks boolean DEFAULT FALSE,
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
-  occurrences boolean DEFAULT FALSE,
+  observations boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (
     CASE
       WHEN (name_short IS NULL AND name_plural IS NULL) THEN place_level_id::text
@@ -241,7 +241,7 @@ COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Prese
 COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
-COMMENT ON COLUMN place_levels.occurrences IS 'Are occurrences used? Preset: true';
+COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 --------------------------------------------------------------
@@ -1435,18 +1435,17 @@ CREATE INDEX IF NOT EXISTS observation_imports_created_time_idx ON observation_i
 CREATE INDEX IF NOT EXISTS observation_imports_previous_import_idx ON observation_imports USING btree(previous_import);
 CREATE INDEX IF NOT EXISTS observation_imports_label_idx ON observation_imports USING btree(label);
 
-COMMENT ON TABLE observation_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+COMMENT ON TABLE observation_imports IS 'observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 COMMENT ON COLUMN observation_imports.previous_import IS 'What import does this one update/replace/extend?';
 COMMENT ON COLUMN observation_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
 --------------------------------------------------------------
--- occurrences
+-- observations
 --
 -- INSERT INTO observation_imports(observation_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
--- TODO: need to add place_id. Either here or separate table place_occurrences
-CREATE TABLE IF NOT EXISTS occurrences(
-  occurrence_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS observations(
+  observation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   observation_import_id uuid DEFAULT NULL REFERENCES observation_imports(observation_import_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1462,20 +1461,20 @@ CREATE TABLE IF NOT EXISTS occurrences(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS occurrences_account_id_idx ON occurrences USING btree(account_id);
-CREATE INDEX IF NOT EXISTS occurrences_observation_import_id_idx ON occurrences USING btree(observation_import_id);
-CREATE INDEX IF NOT EXISTS occurrences_place_id_idx ON occurrences USING btree(place_id);
-CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
-CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
+CREATE INDEX IF NOT EXISTS observations_account_id_idx ON observations USING btree(account_id);
+CREATE INDEX IF NOT EXISTS observations_observation_import_id_idx ON observations USING btree(observation_import_id);
+CREATE INDEX IF NOT EXISTS observations_place_id_idx ON observations USING btree(place_id);
+CREATE INDEX IF NOT EXISTS observations_label_idx ON observations USING btree(label);
+CREATE INDEX IF NOT EXISTS observations_data_idx ON observations USING gin(data);
 -- TODO: switch to gist when postGIS is used
-CREATE INDEX IF NOT EXISTS occurrences_geometry_idx ON occurrences USING gin(geometry);
+CREATE INDEX IF NOT EXISTS observations_geometry_idx ON observations USING gin(geometry);
 
-COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
-COMMENT ON COLUMN occurrences.place_id IS 'The place this occurrence is assigned to.';
-COMMENT ON COLUMN occurrences.id_in_source IS 'Used to replace previously imported occurrences';
-COMMENT ON COLUMN occurrences.geometry IS 'geometry of occurrence. Extracted from data to show the occurrence on a map';
-COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
-COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
+COMMENT ON TABLE observations IS 'observations. Imported for subprojects (species projects) or projects (biotope projects).';
+COMMENT ON COLUMN observations.place_id IS 'The place this observation is assigned to.';
+COMMENT ON COLUMN observations.id_in_source IS 'Used to replace previously imported observations';
+COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from data to show the observation on a map';
+COMMENT ON COLUMN observations.data IS 'data as received from GBIF';
+COMMENT ON COLUMN observations.label IS 'label of observation, used to show it in the UI. Created on import';
 
 --------------------------------------------------------------
 -- wms_services
@@ -1750,7 +1749,7 @@ CREATE INDEX IF NOT EXISTS vector_layer_displays_vector_layer_id_idx ON vector_l
 CREATE INDEX IF NOT EXISTS vector_layer_displays_display_property_value_idx ON vector_layer_displays USING btree(display_property_value);
 CREATE INDEX IF NOT EXISTS vector_layer_displays_label_idx ON vector_layer_displays USING btree(label);
 
-COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and occurrences';
+COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
 COMMENT ON COLUMN vector_layer_displays.display_property_value IS 'Enables styling per property value';
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 COMMENT ON COLUMN vector_layer_displays.marker_size IS 'Size in pixels of the symbol used for the marker. Defaults to 16';

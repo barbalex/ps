@@ -71,7 +71,7 @@ export const PlaceLevel = () => {
         'name_singular',
         'actions',
         'checks',
-        'occurrences',
+        'observations',
       ].includes(name) &&
       row.level &&
       row.project_id
@@ -194,12 +194,12 @@ export const PlaceLevel = () => {
           validationMessage={validations?.check_taxa?.message}
         />
         <SwitchField
-          label="Enable occurrences"
-          name="occurrences"
-          value={row.occurrences ?? false}
+          label="Enable observations"
+          name="observations"
+          value={row.observations ?? false}
           onChange={onChange}
-          validationState={validations?.occurrences?.state}
-          validationMessage={validations?.occurrences?.message}
+          validationState={validations?.observations?.state}
+          validationMessage={validations?.observations?.message}
         />
       </div>
     </div>

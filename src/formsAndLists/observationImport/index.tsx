@@ -44,32 +44,32 @@ export const ObservationImport = () => {
   const observationImport = oIResult?.rows?.[0]
 
   const oResult = useLiveQuery(
-    `SELECT * FROM occurrences WHERE observation_import_id = $1`,
+    `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const occurrences = oResult?.rows ?? []
+  const observations = oResult?.rows ?? []
 
-  const occurrencesWithoutGeometryCountResult = useLiveQuery(
-    `SELECT count(*) FROM occurrences WHERE observation_import_id = $1 AND geometry is null`,
+  const observationsWithoutGeometryCountResult = useLiveQuery(
+    `SELECT count(*) FROM observations WHERE observation_import_id = $1 AND geometry is null`,
     [observationImportId],
   )
-  const occurrencesWithoutGeometryCount =
-    occurrencesWithoutGeometryCountResult?.rows?.[0]?.count ?? 0
+  const observationsWithoutGeometryCount =
+    observationsWithoutGeometryCountResult?.rows?.[0]?.count ?? 0
 
-  const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
+  const observationFields = Object.keys(observations?.[0]?.data ?? {})
 
-  // Auto-detect coordinate fields when occurrences are first loaded
+  // Auto-detect coordinate fields when observations are first loaded
   useEffect(() => {
     if (
       !observationImport ||
-      !occurrenceFields.length ||
+      !observationFields.length ||
       observationImport.x_coordinate_field ||
       observationImport.y_coordinate_field
     ) {
       return
     }
 
-    const detected = detectCoordinateFields(occurrenceFields, occurrences)
+    const detected = detectCoordinateFields(observationFields, observations)
 
     if (detected.x_coordinate_field || detected.y_coordinate_field) {
       const updates = []
@@ -100,7 +100,7 @@ export const ObservationImport = () => {
         setCoordinatesAutoDetected(true)
       }
     }
-  }, [occurrenceFields.length, observationImport?.observation_import_id])
+  }, [observationFields.length, observationImport?.observation_import_id])
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -130,7 +130,7 @@ export const ObservationImport = () => {
     ]
     if (geometryFields.includes(name)) {
       await db.query(
-        `UPDATE occurrences SET geometry = NULL WHERE observation_import_id = $1 AND geometry IS NOT NULL`,
+        `UPDATE observations SET geometry = NULL WHERE observation_import_id = $1 AND geometry IS NOT NULL`,
         [observationImportId],
       )
     }
@@ -155,7 +155,7 @@ export const ObservationImport = () => {
 
   const tab1Style = {
     backgroundColor:
-      observationImport?.name && occurrences.length
+      observationImport?.name && observations.length
         ? 'var(--colorCompoundBrandStrokeHover)'
         : tab === 1
           ? 'black'
@@ -164,13 +164,13 @@ export const ObservationImport = () => {
 
   const tab2Style = {
     backgroundColor:
-      // green if all occurrences have geometry
-      occurrences.length && !occurrencesWithoutGeometryCount
+      // green if all observations have geometry
+      observations.length && !observationsWithoutGeometryCount
         ? 'var(--colorCompoundBrandStrokeHover)'
         : // black if is current
           tab === 2
           ? 'black'
-          : // grey if no occurrences or not current
+          : // grey if no observations or not current
             'grey',
   }
 
@@ -182,7 +182,7 @@ export const ObservationImport = () => {
         : // black if is current
           tab === 3
           ? 'black'
-          : // grey if no occurrences or not current
+          : // grey if no observations or not current
             'grey',
   }
 
@@ -211,7 +211,7 @@ export const ObservationImport = () => {
   if (!oIResult) return <Loading />
 
   if (!observationImport) {
-    return <NotFound table="Occurrence Import" id={observationImportId} />
+    return <NotFound table="Observation Import" id={observationImportId} />
   }
 
   return (
@@ -223,8 +223,8 @@ export const ObservationImport = () => {
       />
       {showPreview && (
         <Preview
-          occurrences={occurrences}
-          occurrenceFields={occurrenceFields}
+          observations={observations}
+          observationFields={observationFields}
         />
       )}
       <TabList selectedValue={tab} onTabSelect={onTabSelect}>
@@ -247,7 +247,7 @@ export const ObservationImport = () => {
               2
             </div>
           }
-          disabled={!occurrences.length}
+          disabled={!observations.length}
         >
           Geometry
         </Tab>
@@ -282,7 +282,7 @@ export const ObservationImport = () => {
             {tab === 1 && (
               <One
                 observationImport={observationImport}
-                occurrences={occurrences}
+                observations={observations}
                 onChange={onChange}
                 validations={validations}
                 autoFocusRef={autoFocusRef}
@@ -292,19 +292,19 @@ export const ObservationImport = () => {
             {tab === 2 && (
               <Two
                 observationImport={observationImport}
-                occurrenceFields={occurrenceFields}
+                observationFields={observationFields}
                 onChange={onChange}
                 validations={validations}
                 coordinatesAutoDetected={coordinatesAutoDetected}
-                occurrencesWithoutGeometryCount={
-                  occurrencesWithoutGeometryCount
+                observationsWithoutGeometryCount={
+                  observationsWithoutGeometryCount
                 }
               />
             )}
             {tab === 3 && (
               <Three
                 observationImport={observationImport}
-                occurrenceFields={occurrenceFields}
+                observationFields={observationFields}
                 onChange={onChange}
                 validations={validations}
               />
@@ -312,7 +312,7 @@ export const ObservationImport = () => {
             {tab === 4 && (
               <Four
                 observationImport={observationImport}
-                occurrenceFields={occurrenceFields}
+                observationFields={observationFields}
                 onChange={onChange}
                 validations={validations}
               />

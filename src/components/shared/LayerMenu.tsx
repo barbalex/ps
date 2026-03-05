@@ -50,7 +50,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const onClickZoomToLayer = async () => {
     // get all geometries from layer
     // first get all places with level
-    // then get all actions/checks/occurrences with place_id
+    // then get all actions/checks/observations with place_id
     let geometries = []
     const placesResult = await db.query(
       `SELECT place_id, geometry FROM places WHERE subproject_id = $1 AND level = $2`,
@@ -73,13 +73,13 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
       )
       const checks = res?.rows
       geometries = checks.map((check) => check.geometry)
-    } else if (table === 'occurrences') {
+    } else if (table === 'observations') {
       const res = await db.query(
-        `SELECT occurrence_id, geometry FROM occurrences WHERE place_id = ANY($1)`,
+        `SELECT observation_id, geometry FROM observations WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const occurrences = res?.rows
-      geometries = occurrences.map((o) => o.geometry)
+      const observations = res?.rows
+      geometries = observations.map((o) => o.geometry)
     }
     // geometries are saved as featureCollections
     // bbox accepts a single feature or a featureCollection

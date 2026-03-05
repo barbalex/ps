@@ -1,7 +1,7 @@
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 import { backgroundTasks } from '../../../modules/backgroundTasks.ts'
 
-import type Occurrences from '../../../models/public/Occurrences.ts'
+import type Observations from '../../../models/public/Observations.ts'
 import type { LabelElement } from '../../../components/shared/LabelCreator/index.tsx'
 
 type Props = {
@@ -21,21 +21,21 @@ export const setLabels = async ({
   }
 
   const res = await db.query(
-    `SELECT * FROM occurrences WHERE observation_import_id = $1`,
+    `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const occurrences: Occurrences[] = res?.rows ?? []
+  const observations: Observations[] = res?.rows ?? []
 
   // Register background task
-  backgroundTasks.add(taskId, 'Setting labels', occurrences.length)
+  backgroundTasks.add(taskId, 'Setting labels', observations.length)
 
   // Process in batches to allow UI updates
   const batchSize = 50
   let processed = 0
 
   try {
-    for (let i = 0; i < occurrences.length; i += batchSize) {
-      const batch = occurrences.slice(i, i + batchSize)
+    for (let i = 0; i < observations.length; i += batchSize) {
+      const batch = observations.slice(i, i + batchSize)
 
       for (const observation of batch) {
         // Build the label from label_creation structure
@@ -49,14 +49,14 @@ export const setLabels = async ({
         const label = labelParts.join('')
 
         await db.query(
-          `UPDATE occurrences SET label = $1 WHERE occurrence_id = $2`,
-          [label, observation.occurrence_id],
+          `UPDATE observations SET label = $1 WHERE observation_id = $2`,
+          [label, observation.observation_id],
         )
 
         store.set(addOperationAtom, {
-          table: 'occurrences',
-          rowIdName: 'occurrence_id',
-          rowId: observation.occurrence_id,
+          table: 'observations',
+          rowIdName: 'observation_id',
+          rowId: observation.observation_id,
           operation: 'update',
           draft: { label },
           prev: { ...observation },

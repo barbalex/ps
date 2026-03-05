@@ -83,10 +83,10 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const tableName = layer.own_table_level
     ? `${layer.own_table}${layer.own_table_level}`
     : layer.own_table
-  const isOccurrenceLayer =
-    tableName === 'occurrences_to_assess' ||
-    tableName === 'occurrences_not_to_assign' ||
-    tableName?.startsWith('occurrences_assigned')
+  const isObservationLayer =
+    tableName === 'observations_to_assess' ||
+    tableName === 'observations_not_to_assign' ||
+    tableName?.startsWith('observations_assigned')
 
   // Check if this is a place layer that's droppable
   const isPlaceLayer = layer.own_table === 'places'
@@ -120,7 +120,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
   // Initialize selectedPlaceLayers from droppableLayers when menu opens
   useEffect(() => {
-    if (!assignMenuOpen || !isOccurrenceLayer) return
+    if (!assignMenuOpen || !isObservationLayer) return
 
     const placeLayerNames = activePlaceLayers
       .map((pl) => pl.label?.replace?.(/ /g, '-')?.toLowerCase?.())
@@ -144,7 +144,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     }
   }, [
     assignMenuOpen,
-    isOccurrenceLayer,
+    isObservationLayer,
     activePlaceLayers,
     droppableLayers,
     selectedPlaceLayers,
@@ -349,10 +349,10 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           [layer.project_id],
         )
         geometries = res?.rows ?? []
-      } else if (tableName?.startsWith('occurrences_assigned')) {
+      } else if (tableName?.startsWith('observations_assigned')) {
         const level = layer.own_table_level
         const res = await db.query(
-          `SELECT o.geometry FROM occurrences o 
+          `SELECT o.geometry FROM observations o 
            INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN places p ON o.place_id = p.place_id 
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
@@ -362,9 +362,9 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           [layer.project_id],
         )
         geometries = res?.rows ?? []
-      } else if (tableName === 'occurrences_to_assess') {
+      } else if (tableName === 'observations_to_assess') {
         const res = await db.query(
-          `SELECT o.geometry FROM occurrences o 
+          `SELECT o.geometry FROM observations o 
            INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -374,9 +374,9 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           [layer.project_id],
         )
         geometries = res?.rows ?? []
-      } else if (tableName === 'occurrences_not_to_assign') {
+      } else if (tableName === 'observations_not_to_assign') {
         const res = await db.query(
-          `SELECT o.geometry FROM occurrences o 
+          `SELECT o.geometry FROM observations o 
            INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -542,7 +542,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           />
           <p className={layerStyles.headerLabel}>{layer.label}</p>
         </div>
-        {isOccurrenceLayer &&
+        {isObservationLayer &&
           (activePlaceLayers.length === 1 ? (
             // Single place layer: just a button, no menu
             <Button
@@ -557,8 +557,8 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
               className={styles.headerButton}
               title={
                 isAssigning
-                  ? 'Stop assigning occurrences'
-                  : 'Assign occurrences by dragging'
+                  ? 'Stop assigning observations'
+                  : 'Assign observations by dragging'
               }
               appearance="subtle"
               size="small"
@@ -588,8 +588,8 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                   className={styles.headerButton}
                   title={
                     isAssigning
-                      ? 'Stop assigning occurrences'
-                      : 'Assign occurrences by dragging'
+                      ? 'Stop assigning observations'
+                      : 'Assign observations by dragging'
                   }
                   appearance="subtle"
                   size="small"
@@ -656,7 +656,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           <Button
             icon={<TbTarget />}
             className={styles.headerButton}
-            title="This layer is a drop target for occurrences"
+            title="This layer is a drop target for observations"
             appearance="subtle"
             size="small"
             as="a"

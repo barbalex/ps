@@ -1,51 +1,51 @@
 import { read, utils, set_cptable } from '@e965/xlsx'
 import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
-import { createOccurrence } from '../../modules/createRows.ts'
+import { createObservation } from '../../modules/createRows.ts'
 import { addOperationAtom, store } from '../../store.ts'
 import { checkDuplicates } from './checkDuplicates.ts'
 
 set_cptable(cptable)
 
-// Helper function to insert occurrences
-const insertOccurrences = async (data, additionalData, db, resolve) => {
-  const occurrences = data.map((dat) =>
-    createOccurrence({
+// Helper function to insert observations
+const insertObservations = async (data, additionalData, db, resolve) => {
+  const observations = data.map((dat) =>
+    createObservation({
       observationImportId: additionalData.observation_import_id,
       data: dat,
     }),
   )
   // TODO:
   // - create chunks of 500 rows
-  const chunked = chunkArrayWithMinSize(occurrences, 500)
+  const chunked = chunkArrayWithMinSize(observations, 500)
   for (const chunk of chunked) {
     const values = chunk
       .map(
         (c) =>
           `('${c.observation_import_id}', '${c.account_id}', '${
-            c.occurrence_id
+            c.observation_id
           }', '${JSON.stringify(c.data)}')`,
       )
       .join(',')
     await db.query(
-      `INSERT INTO occurrences (observation_import_id, account_id, occurrence_id, data) VALUES ${values}`,
+      `INSERT INTO observations (observation_import_id, account_id, observation_id, data) VALUES ${values}`,
     )
   }
   // same for server
   for (const chunk of chunked) {
     store.set(addOperationAtom, {
-      table: 'occurrences',
+      table: 'observations',
       operation: 'insertMany',
       draft: chunk,
     })
   }
-  // - insert data into occurrences table
+  // - insert data into observations table
   // - set observation_imports.created_time
   // - set observation_imports.inserted_count
   // - show user data rows
   resolve({
     success: true,
-    message: `Successfully imported ${occurrences.length} observation${occurrences.length !== 1 ? 's' : ''}`,
+    message: `Successfully imported ${observations.length} observation${observations.length !== 1 ? 's' : ''}`,
   })
 }
 
@@ -97,7 +97,7 @@ export const processData = async ({
             // Continue callback
             async () => {
               try {
-                await insertOccurrences(data, additionalData, db, resolve)
+                await insertObservations(data, additionalData, db, resolve)
               } catch (error) {
                 reject(error)
               }
@@ -114,7 +114,7 @@ export const processData = async ({
         }
 
         // No duplicates, proceed with import
-        await insertOccurrences(data, additionalData, db, resolve)
+        await insertObservations(data, additionalData, db, resolve)
       } catch (error) {
         reject(error)
       }

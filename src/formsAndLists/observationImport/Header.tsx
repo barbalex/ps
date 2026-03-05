@@ -125,7 +125,7 @@ export const Header = ({
 
   return (
     <FormHeader
-      title="Occurrence import"
+      title="Observation import"
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

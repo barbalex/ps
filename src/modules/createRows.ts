@@ -557,7 +557,7 @@ export const createPlaceLevel = async ({ project_id }) => {
   const db = store.get(pgliteDbAtom)
   const place_level_id = uuidv7()
   await db.query(
-    `insert into place_levels (place_level_id, project_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+    `insert into place_levels (place_level_id, project_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, observations) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
     [
       place_level_id,
       project_id,
@@ -589,7 +589,7 @@ export const createPlaceLevel = async ({ project_id }) => {
       checks: true,
       check_values: true,
       check_taxa: true,
-      occurrences: true,
+      observations: true,
     },
   })
 
@@ -1670,8 +1670,8 @@ export const createObservationImport = async ({ subprojectId }) => {
 }
 
 // no insert as this data is inserted in bulk
-export const createOccurrence = ({ observationImportId, data = null }) => ({
-  occurrence_id: uuidv7(),
+export const createObservation = ({ observationImportId, data = null }) => ({
+  observation_id: uuidv7(),
   account_id,
   observation_import_id: observationImportId,
   data,

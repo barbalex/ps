@@ -8,7 +8,7 @@ import { setLabels } from './setLabels.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
 import styles from './Set.module.css'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
-import type Occurrences from '../../../models/public/Occurrences.ts'
+import type Observations from '../../../models/public/Observations.ts'
 
 interface Props {
   observationImport: ObservationImports
@@ -18,13 +18,13 @@ export const Set = ({ observationImport }: Props) => {
   const [settingLabels, setSettingLabels] = useState(false)
 
   const res = useLiveQuery(
-    `SELECT * FROM occurrences WHERE observation_import_id = $1`,
+    `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImport?.observation_import_id],
   )
-  const occurrences: Occurrences[] = res?.rows ?? []
+  const observations: Observations[] = res?.rows ?? []
 
-  const occurrencesWithoutLabel = occurrences.filter((o) => !o.label)
-  const toSetCount = occurrencesWithoutLabel?.length ?? 0
+  const observationsWithoutLabel = observations.filter((o) => !o.label)
+  const toSetCount = observationsWithoutLabel?.length ?? 0
 
   const onClick = () => {
     setSettingLabels(true)
@@ -37,7 +37,7 @@ export const Set = ({ observationImport }: Props) => {
     })
   }
 
-  if (!occurrences.length) return null
+  if (!observations.length) return null
 
   const labelCreation = observationImport?.label_creation
   const hasLabelCreation =
@@ -56,8 +56,8 @@ export const Set = ({ observationImport }: Props) => {
       <div className={styles.allSet}>
         <MdDone className={styles.doneIcon} />
         {`All ${formatNumber(
-          occurrences.length,
-        )} observation${occurrences.length !== 1 ? 's' : ''} have labels set`}
+          observations.length,
+        )} observation${observations.length !== 1 ? 's' : ''} have labels set`}
       </div>
     )
   }

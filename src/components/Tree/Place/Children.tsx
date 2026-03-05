@@ -9,7 +9,7 @@ import { PlaceReportsNode } from '../PlaceReports.tsx'
 import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
 import { PlaceHistoriesNode } from '../PlaceHistories.tsx'
-import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
+import { ObservationsAssignedNode } from '../ObservationsAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
 
@@ -55,7 +55,10 @@ export const PlaceChildren = ({
       <Node
         label={placeLevel?.name_singular ?? 'Place'}
         level={level + 1}
-        isInActiveNodeArray={ownArray.every((part, i) => urlPath[i] === part) && urlPath[ownArray.length] === 'place'}
+        isInActiveNodeArray={
+          ownArray.every((part, i) => urlPath[i] === part) &&
+          urlPath[ownArray.length] === 'place'
+        }
         isActive={isEqual([...ownArray, 'place'], urlPath)}
         childrenCount={0}
         to={`/${ownArray.join('/')}/place`}
@@ -95,8 +98,8 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {!!placeLevel?.occurrences && (
-        <OccurrencesAssignedNode
+      {!!placeLevel?.observations && (
+        <ObservationsAssignedNode
           projectId={projectId}
           subprojectId={subprojectId}
           placeId={placeId}

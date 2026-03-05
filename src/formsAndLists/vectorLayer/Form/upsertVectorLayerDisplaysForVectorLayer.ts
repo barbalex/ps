@@ -217,38 +217,38 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     inner join places on places.place_id = checks.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
-    occurrences_assigned: `SELECT DISTINCT ${
+    observations_assigned: `SELECT DISTINCT ${
       propertyIsInData
-        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-        : `occurrences.${displayByProperty}`
-    } FROM occurrences 
-    inner join places on places.place_id = occurrences.place_id 
+        ? `observations.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `observations.${displayByProperty}`
+    } FROM observations 
+    inner join places on places.place_id = observations.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
-    occurrences_assigned_lines: `SELECT DISTINCT ${
+    observations_assigned_lines: `SELECT DISTINCT ${
       propertyIsInData
-        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-        : `occurrences.${displayByProperty}`
-    } FROM occurrences 
-    inner join places on places.place_id = occurrences.place_id 
+        ? `observations.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `observations.${displayByProperty}`
+    } FROM observations 
+    inner join places on places.place_id = observations.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
-    occurrences_to_assess: `SELECT DISTINCT ${
+    observations_to_assess: `SELECT DISTINCT ${
       propertyIsInData
-        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-        : `occurrences.${displayByProperty}`
-    } FROM occurrences 
-    inner join observation_imports on observation_imports.observation_import_id = occurrences.observation_import_id 
+        ? `observations.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `observations.${displayByProperty}`
+    } FROM observations 
+    inner join observation_imports on observation_imports.observation_import_id = observations.observation_import_id 
     inner join subprojects on subprojects.subproject_id = observation_imports.subproject_id 
-    WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = false and occurrences.place_id IS NULL`,
-    occurrences_not_to_assign: `SELECT DISTINCT ${
+    WHERE subprojects.project_id = '${projectId}' and observations.not_to_assign = false and observations.place_id IS NULL`,
+    observations_not_to_assign: `SELECT DISTINCT ${
       propertyIsInData
-        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
-        : `occurrences.${displayByProperty}`
-    } FROM occurrences 
-    inner join observation_imports on observation_imports.observation_import_id = occurrences.observation_import_id 
+        ? `observations.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `observations.${displayByProperty}`
+    } FROM observations 
+    inner join observation_imports on observation_imports.observation_import_id = observations.observation_import_id 
     inner join subprojects on subprojects.subproject_id = observation_imports.subproject_id 
-    WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = true`,
+    WHERE subprojects.project_id = '${projectId}' and observations.not_to_assign = true`,
   }
 
   // ISSUE 1: Most fields will be on the data property. Some not, i.e. 'name'

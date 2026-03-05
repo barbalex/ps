@@ -8,9 +8,9 @@ import { TextArea } from '../../components/shared/TextArea.tsx'
 import { UploadButton } from '../../components/shared/UploadButton.tsx'
 import { processData } from './processData.ts'
 import {
-  replaceOccurrences,
-  updateAndExtendOccurrences,
-} from './updateOccurrences.ts'
+  replaceObservations,
+  updateAndExtendObservations,
+} from './updateObservations.ts'
 import { DuplicateWarningDialog } from './DuplicateWarningDialog.tsx'
 import { ResultDialog } from './ResultDialog.tsx'
 import { formatNumber } from '../../modules/formatNumber.ts'
@@ -18,7 +18,7 @@ import styles from './1.module.css'
 
 export const One = ({
   observationImport,
-  occurrences,
+  observations,
   onChange,
   validations,
   autoFocusRef,
@@ -81,7 +81,7 @@ export const One = ({
       fileInput.onchange = async (e) => {
         const file = (e.target as HTMLInputElement).files?.[0]
         if (file) {
-          const result = await replaceOccurrences({
+          const result = await replaceObservations({
             file,
             observationImport,
             db,
@@ -124,7 +124,7 @@ export const One = ({
       fileInput.onchange = async (e) => {
         const file = (e.target as HTMLInputElement).files?.[0]
         if (file) {
-          const result = await updateAndExtendOccurrences({
+          const result = await updateAndExtendObservations({
             file,
             observationImport,
             db,
@@ -181,10 +181,10 @@ export const One = ({
           'Please add the correct citation as required by the data provider'
         }
       />
-      {occurrences?.length ? (
+      {observations?.length ? (
         observationImport.id_field ? (
           <div className={styles.updateSection}>
-            <h3>Update existing occurrences</h3>
+            <h3>Update existing observations</h3>
             <div className={styles.updateButtons}>
               <Button
                 appearance="secondary"
@@ -202,18 +202,18 @@ export const One = ({
               </Button>
             </div>
             <p className={styles.updateDescription}>
-              <strong>Replace:</strong> Delete all occurrences and import new
+              <strong>Replace:</strong> Delete all observations and import new
               ones.
               <br />
-              <strong>Update And Extend:</strong> Update existing occurrences,
+              <strong>Update And Extend:</strong> Update existing observations,
               add new ones, and remove missing ones. Assignments (to places) and
               comments will be preserved.
             </p>
           </div>
         ) : (
-          <div className={styles.occurrencesImported}>
+          <div className={styles.observationsImported}>
             <MdDone className={styles.doneIcon} />
-            {`${formatNumber(occurrences.length)} occurrences imported`}
+            {`${formatNumber(observations.length)} observations imported`}
           </div>
         )
       ) : (

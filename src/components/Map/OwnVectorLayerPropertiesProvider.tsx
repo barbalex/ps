@@ -82,42 +82,42 @@ export const OwnVectorLayerPropertiesProvider = () => {
     [resChecks2Fields],
   )
 
-  // occurrences-assigned
-  // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on occurrences, not fields...
+  // observations-assigned
+  // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on observations, not fields...
   // TODO: level 1/2 i.e. query where place_id has level 1/2
-  const resOccurrencesAssignedFields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NOT NULL`,
+  const resObservationsAssignedFields = useLiveQuery(
+    `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NOT NULL`,
     [project_id],
   )
-  const occurrencesAssignedFields = useMemo(
-    () => resOccurrencesAssignedFields?.rows?.map((field) => field.name) ?? [],
-    [resOccurrencesAssignedFields],
+  const observationsAssignedFields = useMemo(
+    () => resObservationsAssignedFields?.rows?.map((field) => field.name) ?? [],
+    [resObservationsAssignedFields],
   )
 
-  const occurrencesAssignedLinesProperties = useMemo(
-    () => ['occurrence_label', 'place_label', 'occurrence_id', 'place_id'],
+  const observationsAssignedLinesProperties = useMemo(
+    () => ['observation_label', 'place_label', 'observation_id', 'place_id'],
     [],
   )
 
-  // occurrences-to-assess
-  const resOccurrencesToAssessFields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+  // observations-to-assess
+  const resObservationsToAssessFields = useLiveQuery(
+    `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
     [project_id],
   )
-  const occurrencesToAssessFields = useMemo(
-    () => resOccurrencesToAssessFields?.rows?.map((field) => field.name) ?? [],
-    [resOccurrencesToAssessFields],
+  const observationsToAssessFields = useMemo(
+    () => resObservationsToAssessFields?.rows?.map((field) => field.name) ?? [],
+    [resObservationsToAssessFields],
   )
 
-  // occurrences-not-to-assign
-  const resOccurrencesNotToAssignFields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
+  // observations-not-to-assign
+  const resObservationsNotToAssignFields = useLiveQuery(
+    `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
     [project_id],
   )
-  const occurrencesNotToAssignFields = useMemo(
+  const observationsNotToAssignFields = useMemo(
     () =>
-      resOccurrencesNotToAssignFields?.rows?.map((field) => field.name) ?? [],
-    [resOccurrencesNotToAssignFields],
+      resObservationsNotToAssignFields?.rows?.map((field) => field.name) ?? [],
+    [resObservationsNotToAssignFields],
   )
 
   // this is how to do when extracting properties from a json field:
@@ -297,84 +297,84 @@ export const OwnVectorLayerPropertiesProvider = () => {
           })
         }
       }
-      // occurrences-assigned
-      if (vectorLayer.own_table === 'occurrences_assigned') {
-        if (!isEqual(vectorLayer.properties, occurrencesAssignedFields)) {
+      // observations-assigned
+      if (vectorLayer.own_table === 'observations_assigned') {
+        if (!isEqual(vectorLayer.properties, observationsAssignedFields)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
-            [occurrencesAssignedFields, vectorLayer.vector_layer_id],
+            [observationsAssignedFields, vectorLayer.vector_layer_id],
           )
           addOperation({
             table: 'vector_layers',
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            draft: { properties: occurrencesAssignedFields },
+            draft: { properties: observationsAssignedFields },
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             vectorLayerId: vectorLayer.vector_layer_id,
-            properties: occurrencesAssignedFields,
+            properties: observationsAssignedFields,
           })
         }
       }
-      // occurrences-assigned-lines
-      if (vectorLayer.own_table === 'occurrences_assigned_lines') {
+      // observations-assigned-lines
+      if (vectorLayer.own_table === 'observations_assigned_lines') {
         if (
-          !isEqual(vectorLayer.properties, occurrencesAssignedLinesProperties)
+          !isEqual(vectorLayer.properties, observationsAssignedLinesProperties)
         ) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
-            [occurrencesAssignedLinesProperties, vectorLayer.vector_layer_id],
+            [observationsAssignedLinesProperties, vectorLayer.vector_layer_id],
           )
           addOperation({
             table: 'vector_layers',
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            draft: { properties: occurrencesAssignedLinesProperties },
+            draft: { properties: observationsAssignedLinesProperties },
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             vectorLayerId: vectorLayer.vector_layer_id,
-            properties: occurrencesAssignedLinesProperties,
+            properties: observationsAssignedLinesProperties,
           })
         }
       }
-      // occurrences-to-assess
-      if (vectorLayer.own_table === 'occurrences_to_assess') {
-        if (!isEqual(vectorLayer.properties, occurrencesToAssessFields)) {
+      // observations-to-assess
+      if (vectorLayer.own_table === 'observations_to_assess') {
+        if (!isEqual(vectorLayer.properties, observationsToAssessFields)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
-            [occurrencesToAssessFields, vectorLayer.vector_layer_id],
+            [observationsToAssessFields, vectorLayer.vector_layer_id],
           )
           addOperation({
             table: 'vector_layers',
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            draft: { properties: occurrencesToAssessFields },
+            draft: { properties: observationsToAssessFields },
             prev: { ...vectorLayer },
           })
           completeVectorLayerDisplaysForLayerWithProperties({
             vectorLayerId: vectorLayer.vector_layer_id,
-            properties: occurrencesToAssessFields,
+            properties: observationsToAssessFields,
           })
         }
       }
-      // occurrences-not-to-assign
-      if (vectorLayer.own_table === 'occurrences_not_to_assign') {
-        if (!isEqual(vectorLayer.properties, occurrencesNotToAssignFields)) {
+      // observations-not-to-assign
+      if (vectorLayer.own_table === 'observations_not_to_assign') {
+        if (!isEqual(vectorLayer.properties, observationsNotToAssignFields)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
-            [occurrencesNotToAssignFields, vectorLayer.vector_layer_id],
+            [observationsNotToAssignFields, vectorLayer.vector_layer_id],
           )
           addOperation({
             table: 'vector_layers',
             rowIdName: 'vector_layer_id',
             rowId: vectorLayer.vector_layer_id,
             operation: 'update',
-            draft: { properties: occurrencesNotToAssignFields },
+            draft: { properties: observationsNotToAssignFields },
             prev: { ...vectorLayer },
           })
         }
@@ -386,10 +386,10 @@ export const OwnVectorLayerPropertiesProvider = () => {
     checks1Properties,
     checks2Properties,
     db,
-    occurrencesAssignedFields,
-    occurrencesAssignedLinesProperties,
-    occurrencesNotToAssignFields,
-    occurrencesToAssessFields,
+    observationsAssignedFields,
+    observationsAssignedLinesProperties,
+    observationsNotToAssignFields,
+    observationsToAssessFields,
     places1Properties,
     places2Properties,
     project_id,

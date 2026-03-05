@@ -8,8 +8,8 @@ import { PlacesNode } from './Places.tsx'
 import { SubprojectReportsNode } from './SubprojectReports.tsx'
 import { SubprojectHistoriesNode } from './SubprojectHistories.tsx'
 import { GoalsNode } from './Goals.tsx'
-import { OccurrencesToAssessNode } from './OccurrencesToAssess.tsx'
-import { OccurrencesNotToAssignNode } from './OccurrencesNotToAssign.tsx'
+import { ObservationsToAssessNode } from './ObservationsToAssess.tsx'
+import { ObservationsNotToAssignNode } from './ObservationsNotToAssign.tsx'
 import { SubprojectTaxaNode } from './SubprojectTaxa.tsx'
 import { SubprojectUsersNode } from './SubprojectUsers.tsx'
 import { ObservationImportsNode } from './ObservationImports.tsx'
@@ -109,11 +109,11 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
           />
           <GoalsNode projectId={projectId} subprojectId={nav.id} />
           <ObservationImportsNode projectId={projectId} subprojectId={nav.id} />
-          <OccurrencesToAssessNode
+          <ObservationsToAssessNode
             projectId={projectId}
             subprojectId={nav.id}
           />
-          <OccurrencesNotToAssignNode
+          <ObservationsNotToAssignNode
             projectId={projectId}
             subprojectId={nav.id}
           />

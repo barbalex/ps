@@ -30,7 +30,7 @@ export const ClickListener = () => {
     if (projectId === '99999999-9999-9999-9999-999999999999') return
 
     // Don't process clicks during or immediately after dragging an observation
-    if (map._isDraggingOccurrence) return
+    if (map._isDraggingObservation) return
 
     const { lat, lng } = event.latlng
     const zoom = map.getZoom()
@@ -95,7 +95,7 @@ export const ClickListener = () => {
         )
 
         const sortRank = (key) => {
-          if (key.startsWith('occurrence_')) return 1
+          if (key.startsWith('observation_')) return 1
           if (key.startsWith('place_')) return 2
           return 3
         }

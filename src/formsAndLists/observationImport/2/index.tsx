@@ -6,11 +6,11 @@ import styles from './index.module.css'
 
 export const Two = ({
   observationImport,
-  occurrenceFields,
+  observationFields,
   onChange,
   validations,
   coordinatesAutoDetected,
-  occurrencesWithoutGeometryCount,
+  observationsWithoutGeometryCount,
 }) => (
   <>
     <GeometryMethod
@@ -24,7 +24,7 @@ export const Two = ({
         name="geojson_geometry_field"
         value={observationImport.geojson_geometry_field ?? ''}
         onChange={onChange}
-        options={occurrenceFields}
+        options={observationFields}
         validationState={validations?.geojson_geometry_field?.state}
         validationMessage={
           validations?.geojson_geometry_field?.message ??
@@ -40,7 +40,7 @@ export const Two = ({
             <br />
             Please verify the selected fields and check that the coordinate
             values are correct.
-            {occurrencesWithoutGeometryCount > 0 && (
+            {observationsWithoutGeometryCount > 0 && (
               <>
                 <br />
                 Then set the coordinates by clicking the button at the bottom of
@@ -54,7 +54,7 @@ export const Two = ({
           name="x_coordinate_field"
           value={observationImport.x_coordinate_field ?? ''}
           onChange={onChange}
-          options={occurrenceFields}
+          options={observationFields}
           validationState={validations?.x_coordinate_field?.state}
           validationMessage={
             validations?.x_coordinate_field?.message ??
@@ -66,7 +66,7 @@ export const Two = ({
           name="y_coordinate_field"
           value={observationImport.y_coordinate_field ?? ''}
           onChange={onChange}
-          options={occurrenceFields}
+          options={observationFields}
           validationState={validations?.y_coordinate_field?.state}
           validationMessage={
             validations?.y_coordinate_field?.message ??
@@ -81,7 +81,7 @@ export const Two = ({
           It is always used in GeoJSON. Though common, thousands of other
           coordinate reference systems exist.
           <br />
-          If the occurrences coordinates are in 'EPSG:4326', no action is
+          If the observations coordinates are in 'EPSG:4326', no action is
           needed. If not, they must be converted.
         </p>
         {/* TODO: use a virtualized combobox solution, maybe like in apflora? */}

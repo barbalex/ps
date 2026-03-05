@@ -8,7 +8,7 @@ import { setGeometries } from './setGeometries.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
 import styles from './Set.module.css'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
-import type Occurrences from '../../../models/public/Occurrences.ts'
+import type Observations from '../../../models/public/Observations.ts'
 
 interface Props {
   observationImport: ObservationImports
@@ -19,14 +19,14 @@ export const Set = ({ observationImport }: Props) => {
   const [settingGeometries, setSettingGeometries] = useState(false)
 
   const res = useLiveQuery(
-    `SELECT * FROM occurrences WHERE observation_import_id = $1`,
+    `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImport?.observation_import_id],
   )
-  const occurrences: Occurrences[] = res?.rows ?? []
+  const observations: Observations[] = res?.rows ?? []
 
-  const occurrencesWithoutGeometry = occurrences.filter((o) => !o.geometry)
+  const observationsWithoutGeometry = observations.filter((o) => !o.geometry)
 
-  const toSetCount = occurrencesWithoutGeometry?.length ?? 0
+  const toSetCount = observationsWithoutGeometry?.length ?? 0
 
   const onClick = () => {
     setSettingGeometries(true)
@@ -36,15 +36,15 @@ export const Set = ({ observationImport }: Props) => {
     })
   }
 
-  if (!occurrences.length) return null
+  if (!observations.length) return null
 
   if (toSetCount === 0) {
     return (
       <div className={styles.allSet}>
         <MdDone className={styles.doneIcon} />
         {`All ${formatNumber(
-          occurrences.length,
-        )} occurrences's geometries are set`}
+          observations.length,
+        )} observations's geometries are set`}
       </div>
     )
   }

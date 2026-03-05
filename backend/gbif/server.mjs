@@ -1,4 +1,4 @@
-// in pg need to run: gbif_occurrences_downloads_update_notification.sql to create notifications
+// in pg need to run: gbif_observations_downloads_update_notification.sql to create notifications
 // connect to the postgreSQL database
 // listen to changes in observation_imports
 // also: on startup, search for any downloads that haven't been processed yet
@@ -33,13 +33,13 @@
 //       }
 //     }
 // 3.  send the request to the GBIF API, receiving the download key:
-//     curl --include --user userName:PASSWORD --header "Content-Type: application/json" --data @query.json https://api.gbif.org/v1/occurrence/download/request
+//     curl --include --user userName:PASSWORD --header "Content-Type: application/json" --data @query.json https://api.gbif.org/v1/observation/download/request
 // 4.  update the returned download_key in the database (in case this continues after the server restarts)
 // 5.  repeatedly query the download key until the download is ready (SUCCEEDED)
-//     curl -Ss https://api.gbif.org/v1/occurrence/download/0001005-130906152512535
+//     curl -Ss https://api.gbif.org/v1/observation/download/0001005-130906152512535
 //     if an error is returned: if key is no more valid, begin again at step 2. Else write error to database
 // 6.  download and store the file in a local folder:
-//     curl --location --remote-name https://api.gbif.org/occurrence/download/request/0001005-130906152512535.zip
+//     curl --location --remote-name https://api.gbif.org/observation/download/request/0001005-130906152512535.zip
 // 7.  open the .csv file and read the data (needs lots of memory? can this be streamed?)
 //     https://stackoverflow.com/a/30097538/712005
 //     https://www.bezkoder.com/node-js-csv-postgresql/
