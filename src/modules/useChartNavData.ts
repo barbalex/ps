@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -22,6 +23,7 @@ export const useChartNavData = ({
   subprojectId,
   chartId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const sql = `
@@ -57,7 +59,9 @@ export const useChartNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -71,13 +75,16 @@ export const useChartNavData = ({
     label,
     notFound,
     navs: [
-      { id: 'chart', label: 'Chart' },
+      {
+        id: 'chart',
+        label: formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' }),
+      },
       {
         id: 'subjects',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.chart_subjects_count ?? 0,
-          namePlural: 'Subjects',
+          namePlural: formatMessage({ id: 'gzT26p', defaultMessage: 'Themen' }),
         }),
       },
     ],
