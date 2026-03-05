@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -19,6 +20,7 @@ type NavData = {
 export const useProjectReportDesignsNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const sql = projectId
     ? `
@@ -54,10 +56,16 @@ export const useProjectReportDesignsNavData = ({ projectId }: Props) => {
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: 'Report Designs',
+      namePlural: formatMessage({
+        id: 'rImbPW',
+        defaultMessage: 'Bericht-Designs',
+      }),
       loading,
     }),
-    nameSingular: 'Report Design',
+    nameSingular: formatMessage({
+      id: '0GEEdp',
+      defaultMessage: 'Bericht-Design',
+    }),
     navs,
   }
 
