@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -28,7 +29,7 @@ type Props = {
   forBreadcrumb?: boolean
 }
 
-const getNavData = ({ res, isOpen, loading, isFiltered }) => {
+const getNavData = ({ res, isOpen, loading, isFiltered, formatMessage }) => {
   const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
@@ -51,15 +52,16 @@ const getNavData = ({ res, isOpen, loading, isFiltered }) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Projects',
+      namePlural: formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' }),
     }),
-    nameSingular: 'Project',
+    nameSingular: formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' }),
     navs,
   }
 }
 
 export const useProjectsNavData = (params?: Props) => {
   const forBreadcrumb = params?.forBreadcrumb ?? false
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -106,7 +108,13 @@ export const useProjectsNavData = (params?: Props) => {
 
   const loading = res === undefined
 
-  const navData = getNavData({ res, isOpen, loading, isFiltered })
+  const navData = getNavData({
+    res,
+    isOpen,
+    loading,
+    isFiltered,
+    formatMessage,
+  })
 
   return { loading, navData, isFiltered }
 }

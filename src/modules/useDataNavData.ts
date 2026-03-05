@@ -2,7 +2,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
-
 import {
   projectsFilterAtom,
   fieldTypesFilterAtom,
@@ -178,7 +177,10 @@ export const useDataNavData = () => {
           isFiltered: projectIsFiltered,
           countFiltered: row?.projects_count_filtered ?? 0,
           countUnfiltered: row?.projects_count_unfiltered ?? 0,
-          namePlural: 'Projects',
+          namePlural: formatMessage({
+            id: 'x9x+dX',
+            defaultMessage: 'Projekte',
+          }),
         }),
       },
       {
