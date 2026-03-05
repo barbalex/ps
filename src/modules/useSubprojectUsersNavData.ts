@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -26,6 +27,7 @@ export const useSubprojectUsersNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(subprojectUsersFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const filterString = filterStringFromFilter(filter, 'subproject_users')
   const isFiltered = !!filterString
@@ -95,10 +97,10 @@ export const useSubprojectUsersNavData = ({
       loading,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Users',
+      namePlural: formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' }),
       isFiltered,
     }),
-    nameSingular: 'Subproject User',
+    nameSingular: formatMessage({ id: '1M9eWP', defaultMessage: 'Teilprojekt-Benutzer' }),
     navs,
   }
 

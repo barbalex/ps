@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -26,6 +27,7 @@ export const useSubprojectTaxaNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(subprojectTaxaFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
@@ -91,9 +93,12 @@ export const useSubprojectTaxaNavData = ({
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Taxa',
+      namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
     }),
-    nameSingular: 'Subproject Taxon',
+    nameSingular: formatMessage({
+      id: '86d76W',
+      defaultMessage: 'Teilprojekt-Taxon',
+    }),
     navs,
   }
 
