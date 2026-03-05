@@ -29,12 +29,6 @@ export const Index = () => {
         <div className={styles.cardContainer}>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage defaultMessage="Ziele" />
-            </h3>
-            <FormattedMessage defaultMessage="...beschreiben die gewünschte Entwicklung." />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Räume" />
             </h3>
             <FormattedMessage defaultMessage="Arten in ihre Populationen gliedern." />
@@ -44,6 +38,12 @@ export const Index = () => {
               <FormattedMessage defaultMessage="Zweistufige Räume" />
             </h3>
             <FormattedMessage defaultMessage="Populationen können in Teil-Populationen gegliedert werden." />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage defaultMessage="Ziele" />
+            </h3>
+            <FormattedMessage defaultMessage="...beschreiben die gewünschte Entwicklung der Populationen." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
