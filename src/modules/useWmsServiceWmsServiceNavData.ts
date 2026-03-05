@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -21,6 +22,7 @@ export const useWmsServiceWmsServiceNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const sql = `
       SELECT
@@ -35,7 +37,13 @@ export const useWmsServiceWmsServiceNavData = ({
 
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const parentArray = ['data', 'projects', projectId, 'wms-services', wmsServiceId]
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'wms-services',
+    wmsServiceId,
+  ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'wms-service']
   const ownUrl = `/${ownArray.join('/')}`
@@ -45,7 +53,9 @@ export const useWmsServiceWmsServiceNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : 'WMS Service'
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : formatMessage({ id: 'GXBidE', defaultMessage: 'WMS-Dienst' })
 
   const navData = {
     isInActiveNodeArray,
