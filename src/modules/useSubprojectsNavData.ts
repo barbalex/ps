@@ -2,11 +2,19 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { subprojectsFilterAtom, treeOpenNodesAtom, languageAtom } from '../store.ts'
-import { subprojectNameSingularExpr, subprojectNamePluralExpr } from './subprojectNameCols.ts'
+import {
+  subprojectsFilterAtom,
+  treeOpenNodesAtom,
+  languageAtom,
+} from '../store.ts'
+import {
+  subprojectNameSingularExpr,
+  subprojectNamePluralExpr,
+} from './subprojectNameCols.ts'
 
 type Props = {
   projectId: string
@@ -31,6 +39,7 @@ type NavDataClosed = {
 export const useSubprojectsNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'subprojects']
@@ -88,8 +97,12 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
-  const namePlural = navs[0]?.name_plural || 'Subprojects'
-  const nameSingular = navs[0]?.name_singular || 'Subproject'
+  const namePlural =
+    navs[0]?.name_plural ||
+    formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' })
+  const nameSingular =
+    navs[0]?.name_singular ||
+    formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
 
   const navData = {
     isInActiveNodeArray,

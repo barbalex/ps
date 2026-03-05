@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import {
   subprojectsFilterAtom,
@@ -17,7 +18,10 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { subprojectNameSingularExpr, subprojectNamePluralExpr } from './subprojectNameCols.ts'
+import {
+  subprojectNameSingularExpr,
+  subprojectNamePluralExpr,
+} from './subprojectNameCols.ts'
 
 type Props = {
   projectId: string
@@ -82,6 +86,7 @@ export const useProjectNavData = ({
   forBreadcrumb = false,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const [language] = useAtom(languageAtom)
 
@@ -241,7 +246,9 @@ export const useProjectNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -257,7 +264,10 @@ export const useProjectNavData = ({
     navs: forBreadcrumb
       ? []
       : [
-          { id: 'project', label: 'Project' },
+          {
+            id: 'project',
+            label: formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' }),
+          },
           {
             id: 'subprojects',
             label: buildNavLabel({
@@ -265,7 +275,9 @@ export const useProjectNavData = ({
               isFiltered: subprojectIsFiltered,
               countFiltered: nav?.subprojects_count_filtered ?? 0,
               countUnfiltered: nav?.subprojects_count_unfiltered ?? 0,
-              namePlural: nav?.subprojects_name_plural ?? 'Subprojects',
+              namePlural:
+                nav?.subprojects_name_plural ??
+                formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }),
             }),
           },
           {
@@ -275,7 +287,10 @@ export const useProjectNavData = ({
               isFiltered: projectReportsIsFiltered,
               countFiltered: nav?.project_reports_count_filtered ?? 0,
               countUnfiltered: nav?.project_reports_count_unfiltered ?? 0,
-              namePlural: 'Reports',
+              namePlural: formatMessage({
+                id: 'CiJ0SG',
+                defaultMessage: 'Berichte',
+              }),
             }),
           },
           {
@@ -285,7 +300,10 @@ export const useProjectNavData = ({
               isFiltered: personsIsFiltered,
               countFiltered: nav?.persons_count_filtered ?? 0,
               countUnfiltered: nav?.persons_count_unfiltered ?? 0,
-              namePlural: 'Persons',
+              namePlural: formatMessage({
+                id: 'bbjyW2',
+                defaultMessage: 'Personen',
+              }),
             }),
           },
           {
@@ -293,7 +311,10 @@ export const useProjectNavData = ({
             label: buildNavLabel({
               loading,
               countFiltered: nav?.wms_services_count_unfiltered ?? 0,
-              namePlural: 'WMS Services',
+              namePlural: formatMessage({
+                id: '0pm66C',
+                defaultMessage: 'WMS-Dienste',
+              }),
             }),
           },
           {
@@ -303,7 +324,10 @@ export const useProjectNavData = ({
               isFiltered: wmsLayersIsFiltered,
               countFiltered: nav?.wms_layers_count_filtered ?? 0,
               countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
-              namePlural: 'WMS Layers',
+              namePlural: formatMessage({
+                id: 'IKLYLz',
+                defaultMessage: 'WMS-Ebenen',
+              }),
             }),
           },
           {
@@ -311,7 +335,10 @@ export const useProjectNavData = ({
             label: buildNavLabel({
               loading,
               countFiltered: nav?.wfs_services_count_unfiltered ?? 0,
-              namePlural: 'WFS Services',
+              namePlural: formatMessage({
+                id: 'HzltY9',
+                defaultMessage: 'WFS-Dienste',
+              }),
             }),
           },
           {
@@ -321,21 +348,30 @@ export const useProjectNavData = ({
               isFiltered: vectorLayersIsFiltered,
               countFiltered: nav?.vector_layers_count_filtered ?? 0,
               countUnfiltered: nav?.vector_layers_count_unfiltered ?? 0,
-              namePlural: 'Vector Layers',
+              namePlural: formatMessage({
+                id: 'nauDh5',
+                defaultMessage: 'Vektor-Ebenen',
+              }),
             }),
           },
           ...(designing
             ? [
                 {
                   id: 'configuration',
-                  label: 'Project Configuration',
+                  label: formatMessage({
+                    id: 'qyfs2A',
+                    defaultMessage: 'Projekt-Konfiguration',
+                  }),
                 },
                 {
                   id: 'users',
                   label: buildNavLabel({
                     loading,
                     countFiltered: nav?.project_users_count_unfiltered ?? 0,
-                    namePlural: 'Users',
+                    namePlural: formatMessage({
+                      id: 'eZ3yEB',
+                      defaultMessage: 'Benutzer',
+                    }),
                   }),
                 },
                 {
@@ -345,7 +381,10 @@ export const useProjectNavData = ({
                     isFiltered: listsIsFiltered,
                     countFiltered: nav?.lists_count_filtered ?? 0,
                     countUnfiltered: nav?.lists_count_unfiltered ?? 0,
-                    namePlural: 'Lists',
+                    namePlural: formatMessage({
+                      id: 'zhvWvI',
+                      defaultMessage: 'Listen',
+                    }),
                   }),
                 },
                 {
@@ -353,7 +392,10 @@ export const useProjectNavData = ({
                   label: buildNavLabel({
                     loading,
                     countFiltered: nav?.taxonomies_count_unfiltered ?? 0,
-                    namePlural: 'Taxonomies',
+                    namePlural: formatMessage({
+                      id: 'noT0gR',
+                      defaultMessage: 'Taxonomien',
+                    }),
                   }),
                 },
                 {
@@ -363,7 +405,10 @@ export const useProjectNavData = ({
                     isFiltered: unitsIsFiltered,
                     countFiltered: nav?.units_count_filtered ?? 0,
                     countUnfiltered: nav?.units_count_unfiltered ?? 0,
-                    namePlural: 'Units',
+                    namePlural: formatMessage({
+                      id: 'nVkh0Z',
+                      defaultMessage: 'Einheiten',
+                    }),
                   }),
                 },
                 {
@@ -371,7 +416,10 @@ export const useProjectNavData = ({
                   label: buildNavLabel({
                     loading,
                     countFiltered: nav?.project_crs_count_unfiltered ?? 0,
-                    namePlural: 'CRS',
+                    namePlural: formatMessage({
+                      id: 'OzBS9Z',
+                      defaultMessage: 'CRS',
+                    }),
                   }),
                 },
                 {
@@ -379,7 +427,10 @@ export const useProjectNavData = ({
                   label: buildNavLabel({
                     loading,
                     countFiltered: nav?.place_levels_count_unfiltered ?? 0,
-                    namePlural: 'Place Levels',
+                    namePlural: formatMessage({
+                      id: 'aYuCCc',
+                      defaultMessage: 'Ort-Stufen',
+                    }),
                   }),
                 },
                 {
@@ -389,7 +440,10 @@ export const useProjectNavData = ({
                     isFiltered: fieldsIsFiltered,
                     countFiltered: nav?.fields_count_filtered ?? 0,
                     countUnfiltered: nav?.fields_count_unfiltered ?? 0,
-                    namePlural: 'Fields',
+                    namePlural: formatMessage({
+                      id: 'I+dTZE',
+                      defaultMessage: 'Felder',
+                    }),
                   }),
                 },
               ]

@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import {
   places1FilterAtom,
@@ -43,6 +44,7 @@ type NavData = {
 
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
   const [placesFilter] = useAtom(places1FilterAtom)
   const [language] = useAtom(languageAtom)
 
@@ -126,7 +128,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const subprojectNameSingular = nav?.name_singular ?? 'Subproject'
+  const subprojectNameSingular =
+    nav?.name_singular ??
+    formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
 
   const parentArray = ['data', 'projects', projectId, 'subprojects']
   const parentUrl = `/${parentArray.join('/')}`
@@ -138,7 +142,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !loading && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -160,7 +166,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           isFiltered: placesIsFiltered,
           countFiltered: nav?.places_count_filtered ?? 0,
           countUnfiltered: nav?.places_count_unfiltered ?? 0,
-          namePlural: nav?.place_name_plural ?? 'Places',
+          namePlural:
+            nav?.place_name_plural ??
+            formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
         }),
       },
       {
@@ -170,7 +178,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           isFiltered: subprojectReportsIsFiltered,
           countFiltered: nav?.subproject_reports_count_filtered ?? 0,
           countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
-          namePlural: 'Reports',
+          namePlural: formatMessage({
+            id: 'CiJ0SG',
+            defaultMessage: 'Berichte',
+          }),
         }),
       },
       {
@@ -178,7 +189,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.subproject_histories_count ?? 0,
-          namePlural: 'Histories',
+          namePlural: formatMessage({
+            id: 'KkLxJl',
+            defaultMessage: 'Geschichte',
+          }),
         }),
       },
       {
@@ -188,7 +202,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           isFiltered: goalsIsFiltered,
           countFiltered: nav?.goals_count_filtered ?? 0,
           countUnfiltered: nav?.goals_count_unfiltered ?? 0,
-          namePlural: 'Goals',
+          namePlural: formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' }),
         }),
       },
       {
@@ -196,7 +210,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.occurrence_imports_count ?? 0,
-          namePlural: 'Occurrence Imports',
+          namePlural: formatMessage({
+            id: 'C7apNr',
+            defaultMessage: 'Beobachtungs-Importe',
+          }),
         }),
       },
       {
@@ -204,7 +221,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.occurrences_to_assess_count ?? 0,
-          namePlural: 'Occurrences To Assess',
+          namePlural: formatMessage({
+            id: 'BEylmv',
+            defaultMessage: 'zu beurteilende Beobachtungen',
+          }),
         }),
       },
       {
@@ -212,7 +232,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.occurrences_not_to_assign_count ?? 0,
-          namePlural: 'Occurrences Not To Assign',
+          namePlural: formatMessage({
+            id: 'slC/ul',
+            defaultMessage: 'nicht zuzuordnende Beobachtungen',
+          }),
         }),
       },
       {
@@ -220,7 +243,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.subproject_taxa_count ?? 0,
-          namePlural: 'Taxa',
+          namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
         }),
       },
       {
@@ -228,7 +251,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.subproject_users_count ?? 0,
-          namePlural: 'Users',
+          namePlural: formatMessage({
+            id: 'eZ3yEB',
+            defaultMessage: 'Benutzer',
+          }),
         }),
       },
       {
@@ -238,7 +264,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           isFiltered: filesIsFiltered,
           countFiltered: nav?.files_count_filtered ?? 0,
           countUnfiltered: nav?.files_count_unfiltered ?? 0,
-          namePlural: 'Files',
+          namePlural: formatMessage({
+            id: 'mn58Sh',
+            defaultMessage: 'Dateien',
+          }),
         }),
       },
       {
@@ -246,7 +275,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.charts_count ?? 0,
-          namePlural: 'Charts',
+          namePlural: formatMessage({
+            id: 'ZPEO8P',
+            defaultMessage: 'Diagramme',
+          }),
         }),
       },
     ],
