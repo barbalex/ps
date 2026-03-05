@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -27,6 +28,7 @@ export const useChartsNavData = ({
   placeId,
   placeId2,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(chartsFilterAtom)
   const location = useLocation()
@@ -114,11 +116,11 @@ export const useChartsNavData = ({
     label: buildNavLabel({
       countFiltered,
       countUnfiltered,
-      namePlural: 'Charts',
+      namePlural: formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' }),
       loading,
       isFiltered,
     }),
-    nameSingular: 'Chart',
+    nameSingular: formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' }),
     navs,
   }
 
