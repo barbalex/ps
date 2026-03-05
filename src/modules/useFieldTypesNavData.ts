@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -27,6 +28,7 @@ type NavDataClosed = {
 export const useFieldTypesNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -85,9 +87,9 @@ export const useFieldTypesNavData = () => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Field Types',
+      namePlural: formatMessage({ id: 'Yx8gIR', defaultMessage: 'Feld-Typen' }),
     }),
-    nameSingular: 'Field Type',
+    nameSingular: formatMessage({ id: 'LTiTmL', defaultMessage: 'Feld-Typ' }),
     navs,
   }
 
