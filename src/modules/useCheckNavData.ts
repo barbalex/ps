@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -28,6 +29,7 @@ export const useCheckNavData = ({
   placeId2,
   checkId,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const sql = `
@@ -72,7 +74,9 @@ export const useCheckNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -86,13 +90,16 @@ export const useCheckNavData = ({
     label,
     notFound,
     navs: [
-      { id: 'check', label: 'check' },
+      {
+        id: 'check',
+        label: formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' }),
+      },
       {
         id: 'values',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.check_values_count ?? 0,
-          namePlural: 'Values',
+          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
         }),
       },
       {
@@ -100,7 +107,7 @@ export const useCheckNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.check_taxa_count ?? 0,
-          namePlural: 'Taxa',
+          namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
         }),
       },
       {
@@ -108,7 +115,10 @@ export const useCheckNavData = ({
         label: buildNavLabel({
           loading,
           countFiltered: nav?.files_count ?? 0,
-          namePlural: 'Files',
+          namePlural: formatMessage({
+            id: 'mn58Sh',
+            defaultMessage: 'Dateien',
+          }),
         }),
       },
     ],
