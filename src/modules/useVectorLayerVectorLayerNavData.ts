@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -19,6 +20,7 @@ export const useVectorLayerVectorLayerNavData = ({
   vectorLayerId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
 
   const sql = `
       SELECT
@@ -33,7 +35,13 @@ export const useVectorLayerVectorLayerNavData = ({
 
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const parentArray = ['data', 'projects', projectId, 'vector-layers', vectorLayerId]
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'vector-layers',
+    vectorLayerId,
+  ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'vector-layer']
   const ownUrl = `/${ownArray.join('/')}`
@@ -43,7 +51,9 @@ export const useVectorLayerVectorLayerNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : 'Layer'
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : formatMessage({ id: 'JY1Jke', defaultMessage: 'Ebene' })
 
   const navData = {
     isInActiveNodeArray,

@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -21,6 +22,7 @@ export const useWfsServiceWfsServiceNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const sql = `
       SELECT
@@ -35,7 +37,13 @@ export const useWfsServiceWfsServiceNavData = ({
 
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const parentArray = ['data', 'projects', projectId, 'wfs-services', wfsServiceId]
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'wfs-services',
+    wfsServiceId,
+  ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'wfs-service']
   const ownUrl = `/${ownArray.join('/')}`
@@ -45,7 +53,9 @@ export const useWfsServiceWfsServiceNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : 'WFS Service'
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : formatMessage({ id: 'X88JDr', defaultMessage: 'WFS-Dienst' })
 
   const navData = {
     isInActiveNodeArray,
