@@ -2,6 +2,7 @@ import { useLiveQuery } from "@electric-sql/pglite-react";
 import { useAtom } from "jotai";
 import { useLocation } from "@tanstack/react-router";
 import { isEqual } from "es-toolkit";
+import { useIntl } from 'react-intl';
 
 import { filterStringFromFilter } from "./filterStringFromFilter.ts";
 import { buildNavLabel } from "./buildNavLabel.ts";
@@ -27,6 +28,7 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom);
   const [filter] = useAtom(wmsServicesFilterAtom);
   const location = useLocation();
+  const { formatMessage } = useIntl();
 
   const parentArray = ["data", "projects", projectId];
   const ownArray = [...parentArray, "wms-services"];
@@ -86,9 +88,9 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: "WMS Services",
+      namePlural: formatMessage({ id: '0pm66C', defaultMessage: 'WMS-Dienste' }),
     }),
-    nameSingular: "WMS Service",
+    nameSingular: formatMessage({ id: 'GXBidE', defaultMessage: 'WMS-Dienst' }),
     navs,
   };
 
