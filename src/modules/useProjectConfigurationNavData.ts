@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -11,6 +12,7 @@ type Props = {
 export const useProjectConfigurationNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'configuration']
@@ -31,8 +33,14 @@ export const useProjectConfigurationNavData = ({ projectId }: Props) => {
     ownArray,
     urlPath,
     ownUrl,
-    label: 'Project Configuration',
-    nameSingular: 'Project Configuration',
+    label: formatMessage({
+      id: 'qyfs2A',
+      defaultMessage: 'Projekt-Konfiguration',
+    }),
+    nameSingular: formatMessage({
+      id: 'qyfs2A',
+      defaultMessage: 'Projekt-Konfiguration',
+    }),
   }
 
   return { navData }
