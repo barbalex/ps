@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -20,6 +21,7 @@ type NavData = {
 export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -50,7 +52,9 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -62,15 +66,18 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Taxonomy',
+    nameSingular: formatMessage({ id: '6MNIJU', defaultMessage: 'Taxonomie' }),
     navs: [
-      { id: 'taxonomy', label: 'Taxonomy' },
+      {
+        id: 'taxonomy',
+        label: formatMessage({ id: '6MNIJU', defaultMessage: 'Taxonomie' }),
+      },
       {
         id: 'taxa',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.taxa_count_unfiltered ?? 0,
-          namePlural: 'Taxa',
+          namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
         }),
       },
     ],

@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -20,6 +21,7 @@ type NavData = {
 export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -51,7 +53,9 @@ export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -63,15 +67,18 @@ export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
     ownUrl,
     label,
     notFound,
-    nameSingular: 'WMS Service',
+    nameSingular: formatMessage({ id: 'GXBidE', defaultMessage: 'WMS-Dienst' }),
     navs: [
-      { id: 'wms-service', label: 'WMS Service' },
+      {
+        id: 'wms-service',
+        label: formatMessage({ id: 'GXBidE', defaultMessage: 'WMS-Dienst' }),
+      },
       {
         id: 'layers',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.layers_count_unfiltered ?? 0,
-          namePlural: 'Layers',
+          namePlural: formatMessage({ id: 'SmuSBE', defaultMessage: 'Ebenen' }),
         }),
       },
     ],

@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -20,6 +21,7 @@ type NavData = {
 export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -51,7 +53,7 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' }) : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -63,15 +65,15 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Vector Layer',
+    nameSingular: formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' }),
     navs: [
-      { id: 'vector-layer', label: 'Vector Layer' },
+      { id: 'vector-layer', label: formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' }) },
       {
         id: 'displays',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.vector_layer_displays_count_unfiltered ?? 0,
-          namePlural: 'Display',
+          namePlural: formatMessage({ id: 'yM1M0B', defaultMessage: 'Anzeigen' }),
         }),
       },
     ],
