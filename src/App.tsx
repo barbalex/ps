@@ -1,4 +1,4 @@
-import { createRef } from 'react'
+import { createRef, useEffect } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
@@ -49,6 +49,16 @@ if (import.meta.env.DEV) {
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
   const language = useAtomValue(languageAtom, { store })
+
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      de: 'Arten fördern',
+      en: 'Promote Species',
+      fr: 'Promouvoir les espèces',
+      it: 'Promuovere le specie',
+    }
+    document.title = titles[language] ?? 'Arten fördern'
+  }, [language])
 
   // needed to prevent problems with relaxed durability and closing connections
   // https://github.com/electric-sql/pglite/issues/879#issuecomment-3777577150
