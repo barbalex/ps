@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
@@ -22,6 +23,7 @@ export const useVectorLayerDisplaysNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -63,10 +65,13 @@ export const useVectorLayerDisplaysNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: 'Displays',
+      namePlural: formatMessage({ id: 'yM1M0B', defaultMessage: 'Anzeigen' }),
       loading,
     }),
-    nameSingular: 'Vector Layer Display',
+    nameSingular: formatMessage({
+      id: 'fhL4R2',
+      defaultMessage: 'Vektor-Ebene-Anzeige',
+    }),
     navs,
   }
 

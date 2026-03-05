@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -22,6 +23,7 @@ export const useTaxonomiesNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(taxonomiesFilterAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
@@ -80,10 +82,10 @@ export const useTaxonomiesNavData = ({ projectId }: Props) => {
       loading,
       countFiltered,
       countUnfiltered,
-      namePlural: 'Taxonomies',
+      namePlural: formatMessage({ id: 'noT0gR', defaultMessage: 'Taxonomien' }),
       isFiltered,
     }),
-    nameSingular: 'Taxonomy',
+    nameSingular: formatMessage({ id: '6MNIJU', defaultMessage: 'Taxonomie' }),
     navs,
   }
 
