@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -18,6 +19,7 @@ type NavData = {
 }
 
 export const useCrsNavData = ({ crsId }: Props) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
@@ -43,7 +45,9 @@ export const useCrsNavData = ({ crsId }: Props) => {
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -56,7 +60,7 @@ export const useCrsNavData = ({ crsId }: Props) => {
     urlPath,
     label,
     notFound,
-    nameSingular: 'CRS',
+    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
   }
 
   return { loading, navData }
