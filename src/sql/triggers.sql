@@ -4,8 +4,8 @@
 
 -- Note: updated_at triggers are in 04_triggers_updated_at.sql
 
--- if occurrence_imports.label_creation is changed, need to update all labels of occurrences
-CREATE OR REPLACE FUNCTION occurrence_imports_label_creation_trigger ()
+-- if observation_imports.label_creation is changed, need to update all labels of occurrences
+CREATE OR REPLACE FUNCTION observation_imports_label_creation_trigger ()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -38,19 +38,19 @@ BEGIN
             end, 
             ''
           )
-        FROM occurrences o INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        FROM occurrences o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
         WHERE o.occurrence_id = occurrences.occurrence_id
         GROUP BY o.occurrence_id)
     WHERE
-      occurrences.occurrence_import_id = NEW.occurrence_import_id;
+      occurrences.observation_import_id = NEW.observation_import_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER occurrence_imports_label_creation_trigger
-AFTER update OF label_creation ON occurrence_imports
+CREATE OR REPLACE TRIGGER observation_imports_label_creation_trigger
+AFTER update OF label_creation ON observation_imports
 FOR EACH ROW
-EXECUTE PROCEDURE occurrence_imports_label_creation_trigger();
+EXECUTE PROCEDURE observation_imports_label_creation_trigger();
 
 -- if accounts.projects_label_by is changed, need to update all labels of projects
 CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()

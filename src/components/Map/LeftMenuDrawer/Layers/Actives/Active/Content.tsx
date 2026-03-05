@@ -353,7 +353,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         const level = layer.own_table_level
         const res = await db.query(
           `SELECT o.geometry FROM occurrences o 
-           INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id 
+           INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN places p ON o.place_id = p.place_id 
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -365,7 +365,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       } else if (tableName === 'occurrences_to_assess') {
         const res = await db.query(
           `SELECT o.geometry FROM occurrences o 
-           INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id 
+           INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
            AND o.place_id IS NULL
@@ -377,7 +377,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       } else if (tableName === 'occurrences_not_to_assign') {
         const res = await db.query(
           `SELECT o.geometry FROM occurrences o 
-           INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id 
+           INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
            AND o.place_id IS NULL

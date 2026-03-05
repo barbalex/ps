@@ -338,13 +338,13 @@ const tablesSyncData = [
   // },
   // { table: 'field_sorts', primaryKey: ['field_sort_id'] },
   // {
-  //   table: 'occurrence_imports_geometry_methods',
+  //   table: 'observation_imports_geometry_methods',
   //   primaryKey: ['geometry_method'],
   // },
   // {
-  //   table: 'occurrence_imports',
+  //   table: 'observation_imports',
   //   columns: [
-  //     'occurrence_import_id',
+  //     'observation_import_id',
   //     'account_id',
   //     'subproject_id',
   //     'created_time',
@@ -367,7 +367,7 @@ const tablesSyncData = [
   //     'updated_at',
   //     'updated_by',
   //   ],
-  //   primaryKey: ['occurrence_import_id'],
+  //   primaryKey: ['observation_import_id'],
   // },
   // { table: 'occurrences', primaryKey: ['occurrence_id'] },
   // { table: 'wms_services', primaryKey: ['wms_service_id'] },

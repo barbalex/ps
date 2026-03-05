@@ -289,8 +289,8 @@ export const subprojectTaxaFilterAtom = atomWithStorage(
   [],
 )
 export const chartsFilterAtom = atomWithStorage('chartsFilterAtom', [])
-export const occurrenceImportsFilterAtom = atomWithStorage(
-  'occurrenceImportsFilterAtom',
+export const observationImportsFilterAtom = atomWithStorage(
+  'observationImportsFilterAtom',
   [],
 )
 export const occurrencesToAssessFilterAtom = atomWithStorage(
@@ -364,7 +364,7 @@ export const filterAtoms = {
   subprojectUsers: subprojectUsersFilterAtom,
   subprojectTaxa: subprojectTaxaFilterAtom,
   charts: chartsFilterAtom,
-  occurrenceImports: occurrenceImportsFilterAtom,
+  observationImports: observationImportsFilterAtom,
   occurrencesToAssess: occurrencesToAssessFilterAtom,
   occurrencesNotToAssign: occurrencesNotToAssignFilterAtom,
   goals: goalsFilterAtom,

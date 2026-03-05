@@ -88,13 +88,13 @@ export const useOccurrencesNavData = ({
       count_unfiltered AS (
         SELECT count(*)
         FROM occurrences o
-        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
         WHERE ${baseFilter}
       ),
       count_filtered AS (
         SELECT count(*)
         FROM occurrences o
-        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
         WHERE ${baseFilter}
         ${isFiltered ? ` AND ${filterString}` : ''}
       )
@@ -104,7 +104,7 @@ export const useOccurrencesNavData = ({
       count_unfiltered.count AS count_unfiltered,
       count_filtered.count AS count_filtered
     FROM occurrences o
-      INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id,
+      INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id,
       count_unfiltered,
       count_filtered
     WHERE ${baseFilter}
@@ -115,13 +115,13 @@ export const useOccurrencesNavData = ({
       count_unfiltered AS (
         SELECT count(*)
         FROM occurrences o
-        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
         WHERE ${baseFilter}
       ),
       count_filtered AS (
         SELECT count(*)
         FROM occurrences o
-        INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
         WHERE ${baseFilter}
         ${isFiltered ? ` AND ${filterString}` : ''}
       )
