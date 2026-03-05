@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
 
@@ -29,6 +30,7 @@ export const usePlaceReportValueNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -67,7 +69,9 @@ export const usePlaceReportValueNavData = ({
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? 'Not Found' : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -79,7 +83,10 @@ export const usePlaceReportValueNavData = ({
     ownUrl,
     label,
     notFound,
-    nameSingular: 'Place Report Value',
+    nameSingular: formatMessage({
+      id: 'yWJLBx',
+      defaultMessage: 'Ort-Bericht-Menge',
+    }),
   }
 
   return { loading, navData }
