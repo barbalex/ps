@@ -108,6 +108,7 @@ services:
   #     - '7000:7000'
   #   volumes:
   #     - gbif_data:/gbif_data
+  # WE SHOULD USE CADDY to cache requests, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
   # caddy:
   #   build:
   #     context: ./caddy
