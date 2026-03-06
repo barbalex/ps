@@ -51,11 +51,6 @@ export const DrawControlComponent = ({
   editingAction,
 }) => {
   const map = useMap()
-  console.log('DrawControlComponent', {
-    editingPlace,
-    editingCheck,
-    editingAction,
-  })
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -80,14 +75,21 @@ export const DrawControlComponent = ({
 
       const bbox = getBbox(featureCollection)
 
+      // query previous geometry for the operation log
+      const prevRes = await db.query(
+        `SELECT geometry, bbox FROM ${tableName} WHERE ${activeIdName} = $1`,
+        [activeId],
+      )
+      const row = prevRes?.rows?.[0] ?? {}
+
       db.query(
         `UPDATE ${tableName} SET geometry = $1, bbox = $2 WHERE ${activeIdName} = $3`,
         [featureCollection, bbox, activeId],
       )
       addOperation({
         table: tableName,
-        rowIdName: 'project_id',
-        rowId: projectId,
+        rowIdName: activeIdName,
+        rowId: activeId,
         operation: 'update',
         draft: { geometry: featureCollection, bbox },
         prev: { ...row },
