@@ -15,7 +15,7 @@ export const ApiDetector = () => {
   const pollingIdRef = useRef<NodeJS.Timeout | null>(null)
 
   useBeforeunload(() => {
-    console.log('ApiDetector unmounting, stopping API polling')
+    console.log('ApiDetector stopping API polling')
     isActiveRef.current = false
     if (pollingIdRef.current) {
       clearInterval(pollingIdRef.current)

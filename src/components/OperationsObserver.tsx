@@ -8,7 +8,7 @@ export const OperationsObserver = () => {
   const unobserveRef = useRef({ current: null as null | (() => void) })
 
   useBeforeunload(() => {
-    console.log('OperationsObserver unmounting, unobserving operations')
+    console.log('OperationsObserver stopping observation of operations')
     unobserveRef.current?.()
     unobserveRef.current = null
   })

@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useMap } from 'react-leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useBeforeunload } from 'react-beforeunload'
 
 import {
   mapBoundsAtom,
@@ -20,6 +21,16 @@ export const BoundsListener = () => {
   const setMapZoom = useSetAtom(mapZoomAtom)
   const map = useMap()
 
+  const onMoveOrZoomRef = useRef(null as null | (() => void))
+  const onMoveEndOrZoomEndRef = useRef(null as null | (() => void))
+  useBeforeunload(() => {
+    console.log('Map BoundsListener removing map event listeners')
+    map.off('move', onMoveOrZoomRef.current)
+    map.off('zoom', onMoveOrZoomRef.current)
+    map.off('moveend', onMoveEndOrZoomEndRef.current)
+    map.off('zoomend', onMoveEndOrZoomEndRef.current)
+  })
+
   useEffect(() => {
     if (mapBounds) map.fitBounds(mapBounds)
   }, [map, mapBounds])
@@ -27,7 +38,7 @@ export const BoundsListener = () => {
   useEffect(() => {
     let isInitializing = true
 
-    const updateBounds = () => {
+    const onMoveOrZoom = () => {
       const bounds = map.getBounds()
       const southWest = bounds.getSouthWest()
       const northEast = bounds.getNorthEast()
@@ -38,6 +49,13 @@ export const BoundsListener = () => {
         neLng: northEast.lng,
       })
     }
+    onMoveOrZoomRef.current = onMoveOrZoom
+
+    const onMoveEndOrZoomEnd = () => {
+      onMoveOrZoom()
+      saveCenterAndZoom()
+    }
+    onMoveEndOrZoomEndRef.current = onMoveEndOrZoomEnd
 
     const saveCenterAndZoom = () => {
       if (isInitializing) return
@@ -79,26 +97,13 @@ export const BoundsListener = () => {
       }, 500)
     })
 
-    updateBounds()
+    onMoveOrZoom()
 
     // Set up event listeners to save on user interaction
-    map.on('move', updateBounds)
-    map.on('zoom', updateBounds)
-    map.on('moveend', () => {
-      updateBounds()
-      saveCenterAndZoom()
-    })
-    map.on('zoomend', () => {
-      updateBounds()
-      saveCenterAndZoom()
-    })
-
-    return () => {
-      map.off('move', updateBounds)
-      map.off('zoom', updateBounds)
-      map.off('moveend')
-      map.off('zoomend')
-    }
+    map.on('move', onMoveOrZoom)
+    map.on('zoom', onMoveOrZoom)
+    map.on('moveend', onMoveEndOrZoomEnd)
+    map.on('zoomend', onMoveEndOrZoomEnd)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, setMapViewportBounds, setMapCenter, setMapZoom])
 
