@@ -25,10 +25,10 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
   })
   const [size, setSize] = useState(isNarrow ? 500 : 380)
   // when width falls below 40, set sidebarSize to 5
-  // TODO: only react to dragend?
   useEffect(() => {
     if ((isNarrow && ownHeight <= 40) || (!isNarrow && ownWidth <= 40)) {
-      setSize(5)
+      const id = requestAnimationFrame(() => setSize(5))
+      return () => cancelAnimationFrame(id)
     }
   }, [isNarrow, ownHeight, ownWidth])
 
@@ -97,7 +97,7 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
   useEffect(() => {
     if (isResizing) return
     if (wasResizing.current) return
-    // if mapHideUi is true, we dont want to animate as the element does not exist
+    // if mapHideUi is true, we don't want to animate as the element does not exist
     if (mapHideUi) return
     // This "li" selector will only select children
     // of the element that receives `scope`.
