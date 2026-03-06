@@ -52,6 +52,7 @@ export const RightMenuDrawer = ({ isNarrow }) => {
     }
 
     return () => {
+      // using useBeforeunload changed the behavior negatively
       document
         ?.getElementsByClassName('map-container')?.[0]
         ?.classList.remove('row-resize', 'col-resize')
@@ -66,6 +67,7 @@ export const RightMenuDrawer = ({ isNarrow }) => {
     window.addEventListener('mouseleave', stopResizing)
 
     return () => {
+      // using useBeforeunload changed the behavior negatively
       cancelAnimationFrame(animationFrame.current)
       window.removeEventListener('mousemove', resize)
       window.removeEventListener('mouseup', stopResizing)
