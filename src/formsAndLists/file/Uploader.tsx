@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useBeforeunload } from 'react-beforeunload'
 
 // css is needed
 // not using the rest of react-uploader though
@@ -127,14 +128,17 @@ export const Uploader = ({ from }) => {
     [],
   )
 
+  useBeforeunload(() => {
+    console.log('Uploader unmounting, removing event listeners')
+    const ctx = uploaderCtx?.current
+    ctx.removeEventListener('file-upload-success', onUploadSuccessDebounced)
+    ctx.removeEventListener('file-upload-failed', onUploadFailed)
+  })
+
   useEffect(() => {
     const ctx = uploaderCtx?.current
     ctx.addEventListener('file-upload-success', onUploadSuccessDebounced)
     ctx.addEventListener('file-upload-failed', onUploadFailed)
-    return () => {
-      ctx.removeEventListener('file-upload-success', onUploadSuccessDebounced)
-      ctx.removeEventListener('file-upload-failed', onUploadFailed)
-    }
   }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
   // docs: https://uploadcare.com/docs/file-uploader
