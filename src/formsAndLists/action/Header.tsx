@@ -117,9 +117,8 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = actions[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.action_id}/action`
+        to: isForm
+          ? `../../${previous.action_id}/action`
           : `../${previous.action_id}`,
         params: (prev) => ({ ...prev, actionId: previous.action_id }),
       })
@@ -141,7 +140,7 @@ export const Header = ({ autoFocusRef, from }) => {
       [actionId],
     )
     const geometry: Actions['geometry'] | undefined = res?.rows?.[0]?.geometry
-    if (!geometry) return alertNoGeometry()
+    if (!geometry || geometry.features.length === 0) return alertNoGeometry()
 
     // 1. show map if not happening
     if (!tabs.includes('map')) {
