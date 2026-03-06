@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Marker, Popup, useMap } from 'react-leaflet'
 import { MdCenterFocusWeak } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
+import { useBeforeunload } from 'react-beforeunload'
 
 import styles from './CenterMarker.module.css'
 
@@ -18,6 +19,11 @@ export const CenterMarker = () => {
     setCenter(center)
   }, [map])
 
+  useBeforeunload(() => {
+    console.log('CenterMarker removing map event listener')
+    map.off('move', setCenterFromMap)
+  })
+
   useEffect(() => {
     if (center) return
     setCenterFromMap()
@@ -25,10 +31,6 @@ export const CenterMarker = () => {
 
   useEffect(() => {
     map.on('move', setCenterFromMap)
-
-    return () => {
-      map.off('move', setCenterFromMap)
-    }
   }, [map, setCenterFromMap])
 
   if (!center) return null

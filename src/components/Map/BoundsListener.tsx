@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useMap } from 'react-leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
@@ -21,14 +21,40 @@ export const BoundsListener = () => {
   const setMapZoom = useSetAtom(mapZoomAtom)
   const map = useMap()
 
-  const onMoveOrZoomRef = useRef(null as null | (() => void))
-  const onMoveEndOrZoomEndRef = useRef(null as null | (() => void))
+  const onMoveOrZoom = useCallback(() => {
+    const bounds = map.getBounds()
+    const southWest = bounds.getSouthWest()
+    const northEast = bounds.getNorthEast()
+    setMapViewportBounds({
+      swLat: southWest.lat,
+      swLng: southWest.lng,
+      neLat: northEast.lat,
+      neLng: northEast.lng,
+    })
+  }, [map, setMapViewportBounds])
+
+  const isInitializingRef = useRef(true)
+  const saveCenterAndZoom = useCallback(() => {
+    if (isInitializingRef.current) return
+
+    const center = map.getCenter()
+    const zoom = map.getZoom()
+    // Save to persisting atoms
+    setMapCenter([center.lat, center.lng])
+    setMapZoom(zoom)
+  }, [map, setMapCenter, setMapZoom])
+
+  const onMoveEndOrZoomEnd = useCallback(() => {
+    onMoveOrZoom()
+    saveCenterAndZoom()
+  }, [onMoveOrZoom, saveCenterAndZoom])
+
   useBeforeunload(() => {
     console.log('Map BoundsListener removing map event listeners')
-    map.off('move', onMoveOrZoomRef.current)
-    map.off('zoom', onMoveOrZoomRef.current)
-    map.off('moveend', onMoveEndOrZoomEndRef.current)
-    map.off('zoomend', onMoveEndOrZoomEndRef.current)
+    map.off('move', onMoveOrZoom)
+    map.off('zoom', onMoveOrZoom)
+    map.off('moveend', onMoveEndOrZoomEnd)
+    map.off('zoomend', onMoveEndOrZoomEnd)
   })
 
   useEffect(() => {
@@ -36,36 +62,7 @@ export const BoundsListener = () => {
   }, [map, mapBounds])
 
   useEffect(() => {
-    let isInitializing = true
-
-    const onMoveOrZoom = () => {
-      const bounds = map.getBounds()
-      const southWest = bounds.getSouthWest()
-      const northEast = bounds.getNorthEast()
-      setMapViewportBounds({
-        swLat: southWest.lat,
-        swLng: southWest.lng,
-        neLat: northEast.lat,
-        neLng: northEast.lng,
-      })
-    }
-    onMoveOrZoomRef.current = onMoveOrZoom
-
-    const onMoveEndOrZoomEnd = () => {
-      onMoveOrZoom()
-      saveCenterAndZoom()
-    }
-    onMoveEndOrZoomEndRef.current = onMoveEndOrZoomEnd
-
-    const saveCenterAndZoom = () => {
-      if (isInitializing) return
-
-      const center = map.getCenter()
-      const zoom = map.getZoom()
-      // Save to atoms (which persist to localStorage via atomWithStorage)
-      setMapCenter([center.lat, center.lng])
-      setMapZoom(zoom)
-    }
+    isInitializingRef.current = true
 
     // Restore view from atoms immediately when map is ready
     map.whenReady(() => {
@@ -93,7 +90,7 @@ export const BoundsListener = () => {
 
       // Mark initialization as complete after enough time
       setTimeout(() => {
-        isInitializing = false
+        isInitializingRef.current = false
       }, 500)
     })
 
@@ -104,8 +101,17 @@ export const BoundsListener = () => {
     map.on('zoom', onMoveOrZoom)
     map.on('moveend', onMoveEndOrZoomEnd)
     map.on('zoomend', onMoveEndOrZoomEnd)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, setMapViewportBounds, setMapCenter, setMapZoom])
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    map,
+    setMapViewportBounds,
+    setMapCenter,
+    setMapZoom,
+    onMoveOrZoom,
+    onMoveEndOrZoomEnd,
+    storedCenter,
+    storedZoom,
+  ])
 
   return null
 }
