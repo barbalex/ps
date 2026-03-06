@@ -321,6 +321,11 @@ html {
     user-select: none !important;
   }
 
+  /* Push the top-left draw toolbar down so it isn't hidden behind the sidebar toggle button */
+  .leaflet-top.leaflet-left {
+    top: 30px;
+  }
+
   .leaflet-div-icon {
     background: rgba(0, 0, 0, 0);
     border: none;
