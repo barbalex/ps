@@ -110,9 +110,8 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const previous = checks[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.check_id}/check`
+        to: isForm
+          ? `../../${previous.check_id}/check`
           : `../${previous.check_id}`,
         params: (prev) => ({ ...prev, checkId: previous.check_id }),
       })
@@ -134,7 +133,7 @@ export const Header = ({ autoFocusRef, from }) => {
     ])
     const check: Checks | undefined = res?.rows?.[0]
     const geometry = check?.geometry
-    if (!geometry) return alertNoGeometry()
+    if (!geometry || geometry.features.length === 0) return alertNoGeometry()
 
     // 1. show map if not happening
     if (!tabs.includes('map')) setTabs([...tabs, 'map'])
