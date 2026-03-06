@@ -92,7 +92,7 @@ export const PVLGeom = ({ layer, display }) => {
   )
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
 
-  useMapEvent('dragend zoomend ', () => {
+  useMapEvent('dragend zoomend', () => {
     fetchDataDebounced({ bounds: map.getBounds() })
   })
 
