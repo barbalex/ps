@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
+import { useBeforeunload } from 'react-beforeunload'
 
 import { isOnline } from '../modules/isOnline.ts'
 import { onlineAtom, shortTermOnlineAtom } from '../store.ts'
@@ -10,11 +11,21 @@ export const ApiDetector = () => {
   const [online, setOnline] = useAtom(onlineAtom)
   const [shortTermOnline, setShortTermOnline] = useAtom(shortTermOnlineAtom)
 
+  const isActiveRef = useRef(true)
+  const pollingIdRef = useRef<NodeJS.Timeout | null>(null)
+
+  useBeforeunload(() => {
+    console.log('ApiDetector unmounting, stopping API polling')
+    isActiveRef.current = false
+    if (pollingIdRef.current) {
+      clearInterval(pollingIdRef.current)
+    }
+  })
+
   useEffect(() => {
-    let isActive = true
-    const pollingId = setInterval(() => {
+    pollingIdRef.current = setInterval(() => {
       isOnline().then((nowOnline) => {
-        if (!isActive) return
+        if (!isActiveRef.current) return
 
         if (online !== nowOnline) {
           setOnline(nowOnline)
@@ -24,11 +35,6 @@ export const ApiDetector = () => {
         }
       })
     }, pollInterval)
-
-    return () => {
-      isActive = false
-      clearInterval(pollingId)
-    }
   }, [online, setOnline, setShortTermOnline, shortTermOnline])
 
   return null
