@@ -9,7 +9,10 @@ import styles from './CenterMarker.module.css'
 export const CenterMarker = () => {
   const map = useMap()
 
-  const [center, setCenter] = useState(null)
+  const [center, setCenter] = useState(() => {
+    if (!map) return null
+    return map.getBounds().getCenter()
+  })
 
   const setCenterFromMap = useCallback(() => {
     if (!map) return
@@ -19,19 +22,14 @@ export const CenterMarker = () => {
     setCenter(center)
   }, [map])
 
+  useEffect(() => {
+    map.on('move', setCenterFromMap)
+  }, [map, setCenterFromMap])
+
   useBeforeunload(() => {
     console.log('CenterMarker removing map event listener')
     map.off('move', setCenterFromMap)
   })
-
-  useEffect(() => {
-    if (center) return
-    setCenterFromMap()
-  }, [center, map, setCenterFromMap])
-
-  useEffect(() => {
-    map.on('move', setCenterFromMap)
-  }, [map, setCenterFromMap])
 
   if (!center) return null
 
