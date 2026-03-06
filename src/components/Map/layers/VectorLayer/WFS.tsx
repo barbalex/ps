@@ -200,6 +200,7 @@ export const WFS = ({ layer, layerPresentation }) => {
       wfsService.version,
     ],
   )
+
   useEffect(() => {
     const handleMoveEnd = () => {
       fetchData()
@@ -222,6 +223,7 @@ export const WFS = ({ layer, layerPresentation }) => {
       map.off('zoomend', handleZoomEnd)
     }
   }, [fetchData, map])
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
