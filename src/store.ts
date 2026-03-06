@@ -207,6 +207,13 @@ export const editingActionGeometryAtom = atomWithStorage(
   'editingActionGeometryAtom',
   false,
 )
+// True when any geometry is being edited on the map
+export const drawingOnMapAtom = atom(
+  (get) =>
+    !!get(editingPlaceGeometryAtom) ||
+    !!get(editingCheckGeometryAtom) ||
+    !!get(editingActionGeometryAtom),
+)
 // The layers that are currently draggable. Any of: observations-to-assess, observations-not-to-assign, observations-assigned-1, observations-assigned-2
 export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])
 // The layers that are currently droppable (any of: places-1, places-2). Array of layer names in the same format as draggableLayersAtom

@@ -44,12 +44,18 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext =
   'Punkte ziehen, um Umriss(e) zu verändern'
 L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
 
+// TODO: useMapEvents
 export const DrawControlComponent = ({
   editingPlace,
   editingCheck,
   editingAction,
 }) => {
   const map = useMap()
+  console.log('DrawControlComponent', {
+    editingPlace,
+    editingCheck,
+    editingAction,
+  })
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)

@@ -11,12 +11,14 @@ import {
   mapInfoAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
+  drawingOnMapAtom,
 } from '../../../store.ts'
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
   const wmsLayersFilter = useAtomValue(wmsLayersFilterAtom)
   const vectorLayersFilter = useAtomValue(vectorLayersFilterAtom)
+  const drawingOnMap = useAtomValue(drawingOnMapAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -31,6 +33,9 @@ export const ClickListener = () => {
 
     // Don't process clicks during or immediately after dragging an observation
     if (map._isDraggingObservation) return
+
+    // Don't process clicks when a geometry is being drawn/edited on the map
+    if (drawingOnMap) return
 
     const { lat, lng } = event.latlng
     const zoom = map.getZoom()
