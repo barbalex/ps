@@ -7,14 +7,8 @@ import {
   cloneElement,
 } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Button,
-  Menu,
-  MenuPopover,
-  MenuTrigger,
-  MenuList,
-  Tooltip,
-} = fluentUiReactComponents
+const { Button, Menu, MenuPopover, MenuTrigger, MenuList, Tooltip } =
+  fluentUiReactComponents
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
 
@@ -45,10 +39,11 @@ export const MenuBar = ({
     }
     // add 12px for margin and border width to props.width
     const widths = visibleChildren.map((c) =>
-      c.props.width ?
-        addMargin ? c.props.width + 12
-        : c.props.width
-      : buttonWidth,
+      c.props.width
+        ? addMargin
+          ? c.props.width + 12
+          : c.props.width
+        : buttonWidth,
     )
     return { visibleChildren, widths }
   }, [addMargin, children])
@@ -69,22 +64,22 @@ export const MenuBar = ({
 
     const titleWidth = titleComponentWidth ?? 0
     const spaceForButtonsAndMenus = containerWidth - titleWidth
-    const widthOfAllPassedInButtons =
-      widths ?
-        widths.reduce((acc, w) => acc + w, 0)
+    const widthOfAllPassedInButtons = widths
+      ? widths.reduce((acc, w) => acc + w, 0)
       : visibleChildren.length * buttonWidth
     const needMenu = widthOfAllPassedInButtons > spaceForButtonsAndMenus
-    const spaceForButtons =
-      needMenu ? spaceForButtonsAndMenus - buttonWidth : spaceForButtonsAndMenus
+    const spaceForButtons = needMenu
+      ? spaceForButtonsAndMenus - buttonWidth
+      : spaceForButtonsAndMenus
     // sum widths fitting into spaceForButtons
     const newButtons = []
     const newMenus = []
     let widthSum = 0
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [index, child] of Children.toArray(visibleChildren).entries()) {
-      const width =
-        child.props.width ?
-          addMargin ? child.props.width + 12
+      const width = child.props.width
+        ? addMargin
+          ? child.props.width + 12
           : child.props.width
         : buttonWidth
       if (widthSum + width > spaceForButtons) {
@@ -167,13 +162,10 @@ export const MenuBar = ({
       // console.log('MenuBar.useEffect, observer.disconnect')
       observer.disconnect()
     }
-  }, [rerenderer, checkOverflowDebounced])
+  }, [rerenderer, checkOverflowDebounced, outerContainerRef])
 
   return (
-    <div
-      ref={outerContainerRef}
-      className={styles.measuredOuterContainer}
-    >
+    <div ref={outerContainerRef} className={styles.measuredOuterContainer}>
       {titleComponent}
       <div
         style={{
