@@ -11,10 +11,10 @@ const { Button, Menu, MenuPopover, MenuTrigger, MenuList, Tooltip } =
   fluentUiReactComponents
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
+import { useBeforeunload } from 'react-beforeunload'
 
 import globalStyles from '../../styles.module.css'
 import styles from './index.module.css'
-import { check } from 'better-auth'
 
 // TODO: check if still used
 export const buttonWidth = 32
@@ -155,6 +155,11 @@ export const MenuBar = ({
     [checkOverflowDebounced],
   )
 
+  useBeforeunload(() => {
+    console.log('MenuBar disconnecting resize observer')
+    observer.disconnect()
+  })
+
   const previousWidthRef = useRef(null)
   useEffect(() => {
     if (!outerContainerRef.current) {
@@ -163,11 +168,6 @@ export const MenuBar = ({
     }
 
     observer.observe(outerContainerRef.current)
-
-    return () => {
-      // console.log('MenuBar.useEffect, observer.disconnect')
-      observer.disconnect()
-    }
   }, [rerenderer, observer, outerContainerRef])
 
   return (
