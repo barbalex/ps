@@ -74,8 +74,9 @@ export const Header = ({
 
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
-      to:
-        isForm ? `../../${place.place_id}/place` : `../${place.place_id}/place`,
+      to: isForm
+        ? `../../${place.place_id}/place`
+        : `../${place.place_id}/place`,
       params: (prev) => ({
         ...prev,
         [idName]: place.place_id,
@@ -156,9 +157,8 @@ export const Header = ({
       const previous = placeIds[(index + len - 1) % len]
       const idName = placeId2 ? 'placeId2' : 'placeId'
       navigate({
-        to:
-          isForm ?
-            `../../${previous.place_id}/place`
+        to: isForm
+          ? `../../${previous.place_id}/place`
           : `../${previous.place_id}`,
         params: (prev) => ({
           ...prev,
@@ -183,7 +183,7 @@ export const Header = ({
       [placeId2 ?? placeId],
     )
     const geometry: Places['geometry'] | undefined = res?.rows?.[0]?.geometry
-    if (!geometry) {
+    if (!geometry || geometry.features.length === 0) {
       return alertNoGeometry()
     }
 
