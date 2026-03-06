@@ -1,11 +1,8 @@
-import * as stores from '../store.ts'
-
 export const setNewFilterFromOld = ({
   name,
   value,
   orFilters,
   orIndex,
-  filterName,
   targetType,
 }) => {
   const useValueUnchanged =
@@ -45,10 +42,5 @@ export const setNewFilterFromOld = ({
     (f) => Object.keys(f).length > 0,
   )
   // console.log('setNewFilterFromOld 6', { newFilterWithoutEmptys })
-  const filterAtom = stores[filterName]
-  try {
-    stores.store.set(filterAtom, newFilterWithoutEmptys)
-  } catch (error) {
-    console.log('OrFilter, error updating app state:', error)
-  }
+  return newFilterWithoutEmptys
 }

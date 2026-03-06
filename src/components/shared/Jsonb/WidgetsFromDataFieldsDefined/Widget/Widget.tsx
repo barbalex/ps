@@ -40,6 +40,14 @@ export const Widget = ({
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
 
+  const filterLevel = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
+  const filterAtomName = filterAtomNameFromTableAndLevel({
+    table,
+    level: filterLevel,
+  })
+  const filterAtom = stores[filterAtomName] ?? stores.projectsFilterAtom
+  const setFilter = useSetAtom(filterAtom)
+
   const onChange = async (e, dataReturned) => {
     const { name, value } = getValueFromChange(e, dataReturned)
     // return if value has not changed
@@ -57,18 +65,16 @@ export const Widget = ({
     const isFilter = location.pathname.endsWith('filter')
 
     if (isFilter) {
-      const level = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
-      const filterName = filterAtomNameFromTableAndLevel({ table, level })
-      const filterAtom = stores[filterName]
       const orFilters = store.get(filterAtom)
-      return setNewFilterFromOld({
+      const newFilter = setNewFilterFromOld({
         name: `data.${name}`,
         value: val[name],
         orFilters,
         orIndex,
-        filterName,
         targetType: field.field_type,
       })
+      setFilter(newFilter)
+      return
     }
 
     const prevRes = await db.query(

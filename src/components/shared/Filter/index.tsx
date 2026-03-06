@@ -1,17 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
-  Tab,
-  TabList,
-} = fluentUiReactComponents
+const { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Tab, TabList } =
+  fluentUiReactComponents
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
+import { useBeforeunload } from 'react-beforeunload'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
@@ -214,11 +208,8 @@ export const Filter = ({
     }
   }
 
-  useEffect(() => {
-    const container = filterFormContainerRef.current
-    if (!container) return
-
-    const updateDraftFromNativeEvent = (event: Event) => {
+  const updateDraftFromNativeEvent = useCallback(
+    (event: Event) => {
       if (isActiveVirtualTab) return
       const target = event.target as
         | HTMLInputElement
@@ -233,16 +224,25 @@ export const Filter = ({
       )
         return
       setActiveTabHasDraftValue((target.value ?? '').trim().length > 0)
-    }
+    },
+    [isActiveVirtualTab],
+  )
+
+  useBeforeunload(() => {
+    const container = filterFormContainerRef.current
+    if (!container) return
+
+    container.removeEventListener('input', updateDraftFromNativeEvent, true)
+    container.removeEventListener('keyup', updateDraftFromNativeEvent, true)
+  })
+
+  useEffect(() => {
+    const container = filterFormContainerRef.current
+    if (!container) return
 
     container.addEventListener('input', updateDraftFromNativeEvent, true)
     container.addEventListener('keyup', updateDraftFromNativeEvent, true)
-
-    return () => {
-      container.removeEventListener('input', updateDraftFromNativeEvent, true)
-      container.removeEventListener('keyup', updateDraftFromNativeEvent, true)
-    }
-  }, [isActiveVirtualTab])
+  }, [updateDraftFromNativeEvent])
 
   const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
     filter,

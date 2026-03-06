@@ -14,6 +14,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import globalStyles from '../../styles.module.css'
 import styles from './index.module.css'
+import { check } from 'better-auth'
 
 // TODO: check if still used
 export const buttonWidth = 32
@@ -117,44 +118,49 @@ export const MenuBar = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rerenderer, children])
 
+  // set up a resize observer for the container
+  const observer = useMemo(
+    () =>
+      new ResizeObserver((entries) => {
+        // there is only a single entry...
+        for (const entry of entries) {
+          const width = entry.contentRect.width
+
+          // only go on if enough time has past since the last measurement (prevent unnecessary rerenders)
+          const currentTime = Date.now()
+          const timeSinceLastMeasurement =
+            currentTime - previousMeasurementTimeRef.current
+          if (timeSinceLastMeasurement < 300) {
+            // console.log('MenuBar.resizeObserver, not enough time has passed')
+            return
+          }
+
+          // only go on if the width has changed enough (prevent unnecessary rerenders)
+          // this is the reason for not using react-resize-detector
+          previousMeasurementTimeRef.current = currentTime
+          const percentageChanged = Math.abs(
+            ((width - previousWidthRef.current) / width) * 100,
+          )
+          const shouldCheckOverflow = Math.abs(percentageChanged) > 1
+          if (!shouldCheckOverflow) {
+            // console.log('MenuBar.resizeObserver, not enough change')
+            return
+          }
+
+          previousWidthRef.current = width
+          // console.log('MenuBar.resizeObserver, calling checkOverflowDebounced')
+          checkOverflowDebounced()
+        }
+      }),
+    [checkOverflowDebounced],
+  )
+
   const previousWidthRef = useRef(null)
   useEffect(() => {
     if (!outerContainerRef.current) {
       // console.log('MenuBar.useEffect, no containerRef')
       return
     }
-    // set up a resize observer for the container
-    const observer = new ResizeObserver((entries) => {
-      // there is only a single entry...
-      for (const entry of entries) {
-        const width = entry.contentRect.width
-
-        // only go on if enough time has past since the last measurement (prevent unnecessary rerenders)
-        const currentTime = Date.now()
-        const timeSinceLastMeasurement =
-          currentTime - previousMeasurementTimeRef.current
-        if (timeSinceLastMeasurement < 300) {
-          // console.log('MenuBar.resizeObserver, not enough time has passed')
-          return
-        }
-
-        // only go on if the width has changed enough (prevent unnecessary rerenders)
-        // this is the reason for not using react-resize-detector
-        previousMeasurementTimeRef.current = currentTime
-        const percentageChanged = Math.abs(
-          ((width - previousWidthRef.current) / width) * 100,
-        )
-        const shouldCheckOverflow = Math.abs(percentageChanged) > 1
-        if (!shouldCheckOverflow) {
-          // console.log('MenuBar.resizeObserver, not enough change')
-          return
-        }
-
-        previousWidthRef.current = width
-        // console.log('MenuBar.resizeObserver, calling checkOverflowDebounced')
-        checkOverflowDebounced()
-      }
-    })
 
     observer.observe(outerContainerRef.current)
 
@@ -162,7 +168,7 @@ export const MenuBar = ({
       // console.log('MenuBar.useEffect, observer.disconnect')
       observer.disconnect()
     }
-  }, [rerenderer, checkOverflowDebounced, outerContainerRef])
+  }, [rerenderer, observer, outerContainerRef])
 
   return (
     <div ref={outerContainerRef} className={styles.measuredOuterContainer}>
