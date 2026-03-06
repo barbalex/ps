@@ -23,19 +23,19 @@ export const DrawControl = () => {
     .pathname.split('/')
     .filter((p) => !!p)
 
-  const lastPathElement = pathArray.at(-1)
+  const lastTwoElements = pathArray.slice(-2).join('/')
 
-  if (!lastPathElement) return null
+  if (!lastTwoElements) return null
 
-  if (lastPathElement === editingPlaceGeometry) {
+  if (lastTwoElements === `${editingPlaceGeometry}/place`) {
     return <DrawControlComponent editingPlace={editingPlaceGeometry} />
   }
 
-  if (lastPathElement === editingCheckGeometry) {
+  if (lastTwoElements === `${editingCheckGeometry}/check`) {
     return <DrawControlComponent editingCheck={editingCheckGeometry} />
   }
 
-  if (lastPathElement === editingActionGeometry) {
+  if (lastTwoElements === `${editingActionGeometry}/action`) {
     return <DrawControlComponent editingAction={editingActionGeometry} />
   }
 

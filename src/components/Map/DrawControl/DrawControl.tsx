@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import { useMap } from 'react-leaflet'
+import { useMap, useMapEvents } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -57,16 +57,20 @@ export const DrawControlComponent = ({
   const onEdit = useCallback(
     async (featureCollection) => {
       const activeId = editingPlace ?? editingCheck ?? editingAction
-      const activeIdName =
-        editingPlace ? 'place_id'
-        : editingCheck ? 'check_id'
-        : editingAction ? 'action_id'
-        : null
-      const tableName =
-        editingPlace ? 'places'
-        : editingCheck ? 'checks'
-        : editingAction ? 'actions'
-        : null
+      const activeIdName = editingPlace
+        ? 'place_id'
+        : editingCheck
+          ? 'check_id'
+          : editingAction
+            ? 'action_id'
+            : null
+      const tableName = editingPlace
+        ? 'places'
+        : editingCheck
+          ? 'checks'
+          : editingAction
+            ? 'actions'
+            : null
 
       const bbox = getBbox(featureCollection)
 
