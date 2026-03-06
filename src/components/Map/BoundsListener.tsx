@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react'
-import { useMap } from 'react-leaflet'
+import { useMap, useMapEvents } from 'react-leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
 
@@ -49,12 +49,12 @@ export const BoundsListener = () => {
     saveCenterAndZoom()
   }, [onMoveOrZoom, saveCenterAndZoom])
 
-  useBeforeunload(() => {
-    console.log('Map BoundsListener removing map event listeners')
-    map.off('move', onMoveOrZoom)
-    map.off('zoom', onMoveOrZoom)
-    map.off('moveend', onMoveEndOrZoomEnd)
-    map.off('zoomend', onMoveEndOrZoomEnd)
+  // Set up event listeners to save on user interaction
+  useMapEvents({
+    move: onMoveOrZoom,
+    zoom: onMoveOrZoom,
+    moveend: onMoveEndOrZoomEnd,
+    zoomend: onMoveEndOrZoomEnd,
   })
 
   useEffect(() => {
@@ -95,22 +95,14 @@ export const BoundsListener = () => {
     })
 
     onMoveOrZoom()
-
-    // Set up event listeners to save on user interaction
-    map.on('move', onMoveOrZoom)
-    map.on('zoom', onMoveOrZoom)
-    map.on('moveend', onMoveEndOrZoomEnd)
-    map.on('zoomend', onMoveEndOrZoomEnd)
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     map,
     setMapViewportBounds,
     setMapCenter,
     setMapZoom,
-    onMoveOrZoom,
-    onMoveEndOrZoomEnd,
     storedCenter,
     storedZoom,
+    onMoveOrZoom,
   ])
 
   return null
