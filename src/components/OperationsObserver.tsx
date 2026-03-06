@@ -1,17 +1,20 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useBeforeunload } from 'react-beforeunload'
 
 import { observeOperations } from '../modules/observeOperations.ts'
 import { store } from '../store.ts'
 
 export const OperationsObserver = () => {
-  useEffect(() => {
-    // console.log('OperationsObserver observing operations')
-    const unobserve = observeOperations(store)
+  const unobserveRef = useRef({ current: null as null | (() => void) })
 
-    return () => {
-      console.log('OperationsObserver unobserving operations')
-      unobserve()
-    }
+  useBeforeunload(() => {
+    console.log('OperationsObserver unmounting, unobserving operations')
+    unobserveRef.current?.()
+    unobserveRef.current = null
+  })
+
+  useEffect(() => {
+    unobserveRef.current = observeOperations(store)
   }, [])
 
   return null
