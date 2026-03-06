@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Tab, TabList } =
   fluentUiReactComponents
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
-import { useBeforeunload } from 'react-beforeunload'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
@@ -154,7 +153,6 @@ export const Filter = ({
   const title = getTitle({ tableName, placeNamePlural })
 
   const [activeTab, setActiveTab] = useState(1)
-  const filterFormContainerRef = useRef<HTMLDivElement | null>(null)
   // add 1 and 2 when below subproject_id
   const filterAtomName =
     filterAtomNameOverride ??
@@ -163,9 +161,16 @@ export const Filter = ({
       level,
     })
   // ensure atom exists - got errors when it didn't
-  const filterAtom = stores[filterAtomName] ?? projectsFilterAtom
+  // Re-derive filterAtomName if resolution failed (e.g. places without level prop)
+  const resolvedFilterAtomName =
+    stores[filterAtomName] != null
+      ? filterAtomName
+      : filterAtomNameFromTableAndLevel({
+          table: tableName,
+          level: placeId ? 2 : 1,
+        })
+  const filterAtom = stores[resolvedFilterAtomName] ?? projectsFilterAtom
   const [filter, setFilter] = useAtom(filterAtom)
-  const [activeTabHasDraftValue, setActiveTabHasDraftValue] = useState(false)
   const virtualTabValue = filter.length + 1
   const isActiveVirtualTab = activeTab > filter.length
   const activeRealFilter = !isActiveVirtualTab
@@ -174,18 +179,14 @@ export const Filter = ({
   const activeRealFilterHasPersistedValue =
     !!activeRealFilter && Object.keys(activeRealFilter).length > 0
   const canAddAnotherFilter =
-    isActiveVirtualTab ||
-    activeRealFilterHasPersistedValue ||
-    activeTabHasDraftValue
+    isActiveVirtualTab || activeRealFilterHasPersistedValue
   const selectedTabValue = isActiveVirtualTab ? 'add' : activeTab
 
   const onTabSelect = (e, data) => {
     if (data.value === 'add') {
-      setActiveTabHasDraftValue(false)
       setActiveTab(virtualTabValue)
       return
     }
-    setActiveTabHasDraftValue(false)
     setActiveTab(Number(data.value))
   }
 
@@ -198,51 +199,13 @@ export const Filter = ({
 
     const removedTabValue = indexToRemove + 1
     if (activeTab === removedTabValue) {
-      setActiveTabHasDraftValue(false)
       setActiveTab(Math.max(1, removedTabValue - 1))
       return
     }
     if (activeTab > removedTabValue) {
-      setActiveTabHasDraftValue(false)
       setActiveTab(activeTab - 1)
     }
   }
-
-  const updateDraftFromNativeEvent = useCallback(
-    (event: Event) => {
-      if (isActiveVirtualTab) return
-      const target = event.target as
-        | HTMLInputElement
-        | HTMLTextAreaElement
-        | null
-      if (!target) return
-      if (
-        !(
-          target instanceof HTMLInputElement ||
-          target instanceof HTMLTextAreaElement
-        )
-      )
-        return
-      setActiveTabHasDraftValue((target.value ?? '').trim().length > 0)
-    },
-    [isActiveVirtualTab],
-  )
-
-  useBeforeunload(() => {
-    const container = filterFormContainerRef.current
-    if (!container) return
-
-    container.removeEventListener('input', updateDraftFromNativeEvent, true)
-    container.removeEventListener('keyup', updateDraftFromNativeEvent, true)
-  })
-
-  useEffect(() => {
-    const container = filterFormContainerRef.current
-    if (!container) return
-
-    container.addEventListener('input', updateDraftFromNativeEvent, true)
-    container.addEventListener('keyup', updateDraftFromNativeEvent, true)
-  }, [updateDraftFromNativeEvent])
 
   const { whereUnfilteredString, whereFilteredString } = getFilterStrings({
     filter,
@@ -266,19 +229,17 @@ export const Filter = ({
   // })
 
   const sql = `
-      SELECT 
+      SELECT
         (
           SELECT count(*)
           FROM ${tableName}
           ${whereFilteredString ? ` WHERE ${whereFilteredString} ` : ''}
-      ) as filtered_count,
-      (
-        SELECT count(*)
-        FROM ${tableName}
-        ${whereUnfilteredString ? ` WHERE ${whereUnfilteredString} ` : ''}
-      ) as total_count  
-      FROM ${tableName}
-      limit 1
+        ) as filtered_count,
+        (
+          SELECT count(*)
+          FROM ${tableName}
+          ${whereUnfilteredString ? ` WHERE ${whereUnfilteredString} ` : ''}
+        ) as total_count
     `
   const res = useLiveQuery(sql)
   const isLoading = res === undefined
@@ -380,11 +341,11 @@ export const Filter = ({
           </Tab>
         )}
       </TabList>
-      <div ref={filterFormContainerRef}>
+      <div>
         <OrFilter
-          filterName={filterAtomName}
           orFilters={filter}
           orIndex={activeTab - 1}
+          onFilterChange={setFilter}
           children={children}
         />
       </div>
