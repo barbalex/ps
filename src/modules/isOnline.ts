@@ -2,6 +2,9 @@ import axios from 'redaxios'
 
 import { constants } from './constants.ts'
 
+// we are testing if data can be WRITTEN to the backend here
+// to test if data can be synced FROM the backend, we would have to query the electric endpoint instead
+// see: https://electric-sql.com/docs/guides/deployment#health-checks
 const postgrestUri = constants.getPostgrestUri()
 const timeout = 5000
 
