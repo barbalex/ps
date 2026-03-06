@@ -1,4 +1,4 @@
-# TODO: use gbif, electric and postgresql in the same docker-compose file
+# TODO: for production, enable caddy
 name: "ps"
 services:
   db:
@@ -50,7 +50,7 @@ services:
         condition: service_healthy
         restart: true
   postgrest:
-    container_name: postgrest
+    container_name: ps_postgrest
     image: postgrest/postgrest:latest
     ports:
       - 3001:3000

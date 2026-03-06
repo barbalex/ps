@@ -4,7 +4,7 @@ export const constants = {
   mobileViewMaxWidth: 999,
   getPostgrestUri: () =>
     window?.location?.hostname === 'localhost'
-      ? `http://${window.location.hostname}:3001`
+      ? `http://localhost:3001`
       : 'https://api.arten-fördern.app',
   getElectricUri: () =>
     window?.location?.hostname === 'localhost'
@@ -12,6 +12,6 @@ export const constants = {
       : 'https://electric.arten-fördern.app/v1/shape',
   getAppUri: () =>
     window?.location?.hostname === 'localhost'
-      ? `http://${window.location.hostname}`
+      ? `http://localhost`
       : `https://${window.location.hostname}`,
 }

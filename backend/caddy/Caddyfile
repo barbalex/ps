@@ -1,15 +1,16 @@
 # see: https://caddyserver.com/docs/caddyfile/concepts
+# TODO: adjust for production
 {
   email alex.barbalex@gmail.com
   #acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
   #debug
 }
 
-auth.promote-species.app {
-  reverse_proxy * ps_auth:3002 {
-    header_down Access-Control-Allow-Origin *
-  }
-}
+# auth.promote-species.app {
+#   reverse_proxy * ps_auth:3002 {
+#     header_down Access-Control-Allow-Origin *
+#   }
+# }
 
 auth.arten-fördern.app {
   reverse_proxy * ps_auth:3002 {
@@ -17,8 +18,16 @@ auth.arten-fördern.app {
   }
 }
 
-auth.localhost {
-  reverse_proxy * ps_auth:3002 {
+# use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
+# https://electric-sql.com/docs/api/http#caching
+sync.arten-fördern.app {
+  reverse_proxy * ps_electric:3000 {
+    header_down Access-Control-Allow-Origin *
+  }
+}
+
+api.arten-fördern.app {
+  reverse_proxy * ps_postgrest:3001 {
     header_down Access-Control-Allow-Origin *
   }
 }
