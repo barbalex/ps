@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Combobox as ComboboxComponent,
-  Option,
-  Field,
-} = fluentUiReactComponents
+const { Combobox: ComboboxComponent, Option, Field } = fluentUiReactComponents
 
 export const Combobox = ({
   name,
@@ -43,11 +39,7 @@ export const Combobox = ({
         freeform
       >
         {options.map((value) => (
-          <Option
-            key={value}
-            text={value}
-            value={value}
-          />
+          <Option key={value} text={value} value={value} />
         ))}
       </ComboboxComponent>
     </Field>
