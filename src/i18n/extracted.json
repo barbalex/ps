@@ -2,6 +2,12 @@
   "04Jmk6": {
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
+  "1uPFgu": {
+    "defaultMessage": "Baum"
+  },
+  "1yf63B": {
+    "defaultMessage": "...beschreiben die gewünschte Entwicklung der (Teil-)Populationen."
+  },
   "2hj7nH": {
     "defaultMessage": "Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
   },
@@ -11,11 +17,20 @@
   "3srcwg": {
     "defaultMessage": "Ziele"
   },
-  "50HLLw": {
-    "defaultMessage": "...beschreiben Räume, organisieren Kontrollen und Massnahmen, analysieren und berichten."
-  },
   "6ddsDI": {
     "defaultMessage": "Ihre Daten gehören Ihnen"
+  },
+  "74x/v0": {
+    "defaultMessage": "Populationen in Teil-Populationen gliedern (fakultativ)."
+  },
+  "788tpA": {
+    "defaultMessage": "Arten fördern"
+  },
+  "7zeTqY": {
+    "defaultMessage": "Karte verkleinern"
+  },
+  "9E6xFT": {
+    "defaultMessage": "Karte ausblenden"
   },
   "9KB+sP": {
     "defaultMessage": "mitteilen"
@@ -29,11 +44,29 @@
   "9ZCq87": {
     "defaultMessage": "Es zahlt, wer Projekte konfiguriert.{br}Testen und mitarbeiten ist gratis."
   },
+  "9oKaIi": {
+    "defaultMessage": "Konto"
+  },
+  "9rPzs2": {
+    "defaultMessage": "Optionen"
+  },
+  "BNlEeN": {
+    "defaultMessage": "...beschreiben (Teil-)Populationen, organisieren Kontrollen und Massnahmen, analysieren und berichten."
+  },
   "CHlBuE": {
     "defaultMessage": "arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeiten Sie effizient auf Handy, Tablet oder Computer."
   },
+  "CT67xT": {
+    "defaultMessage": "Baum ausblenden"
+  },
   "CiJ0SG": {
     "defaultMessage": "Berichte"
+  },
+  "CxtPgu": {
+    "defaultMessage": "Karte einblenden"
+  },
+  "FJVXzQ": {
+    "defaultMessage": "Daten einblenden"
   },
   "H5/rUM": {
     "defaultMessage": "Flexible Konfiguration"
@@ -41,8 +74,8 @@
   "HjZkRK": {
     "defaultMessage": "...verbessern den Zustand von (Teil-)Populationen."
   },
-  "II20Qf": {
-    "defaultMessage": "Verantwortliche"
+  "IBnz5i": {
+    "defaultMessage": "Karte maximieren"
   },
   "KFwvHV": {
     "defaultMessage": "Seltene und bedrohte Arten fördern"
@@ -50,8 +83,14 @@
   "L7Xr8Z": {
     "defaultMessage": "Beobachtungen Dritter"
   },
-  "ODZ5x7": {
-    "defaultMessage": "...beschreiben die gewünschte Entwicklung."
+  "M8TMJe": {
+    "defaultMessage": "Zurück"
+  },
+  "NkWsj+": {
+    "defaultMessage": "Karte"
+  },
+  "OJ8aZD": {
+    "defaultMessage": "Abmelden {email}"
   },
   "OW3d3V": {
     "defaultMessage": "Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
@@ -62,8 +101,14 @@
   "Oy8x+u": {
     "defaultMessage": "Bring your own device"
   },
+  "SGl8EX": {
+    "defaultMessage": "Anmelden"
+  },
   "SLjrHl": {
     "defaultMessage": "Zeitmaschine"
+  },
+  "Sa/aX1": {
+    "defaultMessage": "Daten ausblenden"
   },
   "VP9dXS": {
     "defaultMessage": "Einfaches Onboarding"
@@ -80,6 +125,9 @@
   "Xd0J7Y": {
     "defaultMessage": "Open Source"
   },
+  "YMGqLf": {
+    "defaultMessage": "Massnahmen-Bericht"
+  },
   "ZiBLs/": {
     "defaultMessage": "Hier wird gebaut"
   },
@@ -89,14 +137,17 @@
   "eJfllL": {
     "defaultMessage": "Massnahmen"
   },
-  "flT9HK": {
-    "defaultMessage": "Arten in Populationen gliedern."
-  },
   "gjvJCk": {
     "defaultMessage": "arten-fördern.app funktioniert auf jedem Betriebssystem: Windows, MacOS, Linux, Android, iOS..."
   },
   "iaro8o": {
     "defaultMessage": "Teamwork"
+  },
+  "jcW44N": {
+    "defaultMessage": "App öffnen"
+  },
+  "lOK5dy": {
+    "defaultMessage": "Arten in Populationen gliedern."
   },
   "lXtv80": {
     "defaultMessage": "Räume"
@@ -119,11 +170,20 @@
   "rxRJ6H": {
     "defaultMessage": "Spinnen-Ragwurz"
   },
-  "s5Z9mp": {
-    "defaultMessage": "Populationen können in Teil-Populationen gegliedert werden."
+  "ryVgK4": {
+    "defaultMessage": "Baum einblenden"
   },
   "sST5WH": {
     "defaultMessage": "...importieren, prüfen und (Teil-)Populationen zuordnen."
+  },
+  "sY7iHm": {
+    "defaultMessage": "Art-Verantwortliche Fachpersonen"
+  },
+  "upa2nh": {
+    "defaultMessage": "Massnahme"
+  },
+  "w63miQ": {
+    "defaultMessage": "Daten"
   },
   "yGCUsX": {
     "defaultMessage": "Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet."

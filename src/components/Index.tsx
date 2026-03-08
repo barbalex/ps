@@ -37,19 +37,19 @@ export const Index = () => {
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Zweistufige Räume" />
             </h3>
-            <FormattedMessage defaultMessage="Populationen können in Teil-Populationen gegliedert werden." />
+            <FormattedMessage defaultMessage="Populationen in Teil-Populationen gliedern (fakultativ)." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Ziele" />
             </h3>
-            <FormattedMessage defaultMessage="...beschreiben die gewünschte Entwicklung der Populationen." />
+            <FormattedMessage defaultMessage="...beschreiben die gewünschte Entwicklung der (Teil-)Populationen." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Art-Verantwortliche Fachpersonen" />
             </h3>
-            <FormattedMessage defaultMessage="...beschreiben Räume, organisieren Kontrollen und Massnahmen, analysieren und berichten." />
+            <FormattedMessage defaultMessage="...beschreiben (Teil-)Populationen, organisieren Kontrollen und Massnahmen, analysieren und berichten." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
@@ -109,7 +109,19 @@ export const Index = () => {
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Professionelle Konfiguration" />
             </h3>
-            <FormattedMessage defaultMessage="Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet." />
+            <FormattedMessage
+              defaultMessage="Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet. Profitieren Sie von {link}."
+              values={{
+                link: (
+                  <a
+                    href="https://gabriel-software.ch/kontakt/"
+                    target="_blank"
+                  >
+                    <FormattedMessage defaultMessage="meiner Naturschutz- und Software-Erfahrung" />
+                  </a>
+                ),
+              }}
+            />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
