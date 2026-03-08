@@ -31,7 +31,7 @@ export const Index = () => {
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Räume" />
             </h3>
-            <FormattedMessage defaultMessage="Arten in ihre Populationen gliedern." />
+            <FormattedMessage defaultMessage="Arten in Populationen gliedern." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
