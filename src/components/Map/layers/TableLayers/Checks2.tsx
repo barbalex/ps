@@ -11,7 +11,7 @@ export const Checks2 = ({ layerPresentation }) => {
     FROM checks 
       INNER JOIN places ON checks.place_id = places.place_id
     WHERE 
-      geometry IS NOT NULL
+      checks.geometry IS NOT NULL
       AND places.parent_id IS NOT NULL`,
     undefined,
   )

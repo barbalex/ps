@@ -317,7 +317,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       if (tableName?.startsWith('places')) {
         const level = layer.own_table_level
         const res = await db.query(
-          `SELECT geometry FROM places p 
+          `SELECT p.geometry FROM places p 
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
            AND p.geometry IS NOT NULL
