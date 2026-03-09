@@ -79,8 +79,8 @@ export const Map = () => {
         >
           {mapIsLocating && <LocationMarker />}
           <ClickListener />
-          <DrawControl />
           <Layers />
+          <DrawControl />
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}

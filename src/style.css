@@ -374,6 +374,22 @@ html {
   }
 }
 
+/* When leaflet-draw is active (drawing, editing, deleting):
+   - suppress pointer-events on all SVG paths/circles so they don't block
+     leaflet-draw's _mouseMarker from receiving clicks
+   - set crosshair cursor to override .leaflet-interactive's pointer cursor */
+.map-container.leaflet-draw-active {
+  cursor: crosshair !important;
+
+  .leaflet-overlay-pane svg path,
+  .leaflet-overlay-pane svg circle,
+  .leaflet-marker-pane .clickable-hitbox,
+  .leaflet-marker-pane .draggable-hitbox {
+    pointer-events: none !important;
+    cursor: crosshair !important;
+  }
+}
+
 .map-container.col-resize {
   cursor: col-resize;
 }

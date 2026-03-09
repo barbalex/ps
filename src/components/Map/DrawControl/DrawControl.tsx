@@ -179,11 +179,6 @@ export const DrawControlComponent = ({
         polyline: true,
         circle: true,
         circlemarker: false,
-        // activating the rectangle drawing tool seems o.k. (cursor changes to +).
-        // but after a click what seems to be a single or maybe double point has been drawn and a popup next to the cursor says 'Release mouse to finish drawing'.
-        // There is an error: Uncaught ReferenceError: type is not defined
-        // This is a known leaflet-draw bug where the rectangle's tooltip calls readableArea which references an undefined type variable.
-        // The fix is to disable the area display on the rectangle tooltip with showArea: false.
         rectangle: { showArea: false },
       },
       edit: {
@@ -191,6 +186,26 @@ export const DrawControlComponent = ({
       },
     })
     map.addControl(drawControlFull)
+
+    // During any leaflet-draw action (draw, edit, delete):
+    // 1. Set crosshair cursor (L.Draw.Polyline/Polygon don't set it themselves)
+    // 2. Add a CSS class to the map container that forces pointer-events: none
+    //    on all non-interactive overlayPane SVG so:
+    //    - the _mouseMarker can capture clicks for polygon/line vertices
+    //    - the hand cursor from .leaflet-interactive is suppressed during edit/delete
+    const onDrawingActive = () => {
+      map.getContainer().classList.add('leaflet-draw-active')
+    }
+    const onDrawingInactive = () => {
+      map.getContainer().classList.remove('leaflet-draw-active')
+    }
+
+    map.on('draw:drawstart', onDrawingActive)
+    map.on('draw:drawstop', onDrawingInactive)
+    map.on('draw:editstart', onDrawingActive)
+    map.on('draw:editstop', onDrawingInactive)
+    map.on('draw:deletestart', onDrawingActive)
+    map.on('draw:deletestop', onDrawingInactive)
 
     const onDrawCreated = (e) => {
       let layer = e.layer
@@ -221,6 +236,13 @@ export const DrawControlComponent = ({
       map.off('draw:created', onDrawCreated)
       map.off('draw:edited', onDrawEdited)
       map.off('draw:deleted', onDrawDeleted)
+      map.off('draw:drawstart', onDrawingActive)
+      map.off('draw:drawstop', onDrawingInactive)
+      map.off('draw:editstart', onDrawingActive)
+      map.off('draw:editstop', onDrawingInactive)
+      map.off('draw:deletestart', onDrawingActive)
+      map.off('draw:deletestop', onDrawingInactive)
+      map.getContainer().classList.remove('leaflet-draw-active')
     }
   }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
 
