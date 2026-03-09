@@ -159,7 +159,10 @@ export const DrawControlComponent = ({
         const geometry = result?.rows?.[0]?.geometry
         if (geometry && drawLayer) {
           try {
-            L.geoJSON(geometry).eachLayer((layer) => {
+            L.geoJSON(geometry, {
+              pointToLayer: (_feature, latlng) =>
+                L.circleMarker(latlng, EDITING_STYLE),
+            }).eachLayer((layer) => {
               applyEditingStyle(layer)
               drawLayer.addLayer(layer)
             })
@@ -190,8 +193,15 @@ export const DrawControlComponent = ({
     map.addControl(drawControlFull)
 
     const onDrawCreated = (e) => {
-      applyEditingStyle(e.layer)
-      drawLayer.addLayer(e.layer)
+      let layer = e.layer
+      // L.Marker doesn't support setStyle; replace with a circleMarker so
+      // the orange edit style (and its revert) works uniformly for all types.
+      if (layer instanceof L.Marker) {
+        layer = L.circleMarker(layer.getLatLng(), EDITING_STYLE)
+      } else {
+        applyEditingStyle(layer)
+      }
+      drawLayer.addLayer(layer)
       onEdit(drawLayer.toGeoJSON())
     }
     map.on('draw:created', onDrawCreated)
