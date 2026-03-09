@@ -1,12 +1,11 @@
 import { Fragment } from 'react'
 import Linkify from 'linkify-react'
 import { useNavigate } from '@tanstack/react-router'
-import { useSetAtom, useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
 import { MdOpenInNew, MdEdit } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 
@@ -19,6 +18,8 @@ import {
 } from '../../../../store.ts'
 import { boundsFromBbox } from '../../../../modules/boundsFromBbox.ts'
 import styles from './Layer.module.css'
+
+const { Button } = fluentUiReactComponents
 
 export const Layer = ({ layerData }) => {
   const {
@@ -41,9 +42,15 @@ export const Layer = ({ layerData }) => {
   const navigate = useNavigate()
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
-  const setEditingPlaceGeometry = useSetAtom(editingPlaceGeometryAtom)
-  const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
-  const setEditingActionGeometry = useSetAtom(editingActionGeometryAtom)
+  const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
+    editingPlaceGeometryAtom,
+  )
+  const [editingCheckGeometry, setEditingCheckGeometry] = useAtom(
+    editingCheckGeometryAtom,
+  )
+  const [editingActionGeometry, setEditingActionGeometry] = useAtom(
+    editingActionGeometryAtom,
+  )
 
   const onNavigate = async () => {
     if (!ownTable || !ownId) return
@@ -152,15 +159,37 @@ export const Layer = ({ layerData }) => {
     setMapBounds(bounds)
   }
 
-  const onEdit = () => {
+  const isEditing =
+    (ownTable === 'place' && editingPlaceGeometry === ownId) ||
+    (ownTable === 'check' && editingCheckGeometry === ownId) ||
+    (ownTable === 'action' && editingActionGeometry === ownId)
+
+  const onEdit = async () => {
     if (!ownTable || !ownId) return
-    if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-    if (ownTable === 'place') setEditingPlaceGeometry(ownId)
-    else if (ownTable === 'check') setEditingCheckGeometry(ownId)
-    else if (ownTable === 'action') setEditingActionGeometry(ownId)
+    if (ownTable === 'place') {
+      setEditingPlaceGeometry(isEditing ? null : ownId)
+    } else if (ownTable === 'check') {
+      setEditingCheckGeometry(isEditing ? null : ownId)
+    } else if (ownTable === 'action') {
+      setEditingActionGeometry(isEditing ? null : ownId)
+    }
+    if (!isEditing) {
+      if (!tabs.includes('map')) setTabs([...tabs, 'map'])
+      await onNavigate()
+    }
   }
 
   // console.log('Map Info Drawer Layer', { label, properties, html, json, text })
+
+  const editButton = ownTable ? (
+    <Button
+      size="small"
+      icon={<MdEdit />}
+      onClick={onEdit}
+      title={isEditing ? 'Stop editing geometry' : 'Edit geometry on map'}
+      appearance={isEditing ? 'primary' : 'secondary'}
+    />
+  ) : null
 
   if (text) {
     return (
@@ -168,9 +197,19 @@ export const Layer = ({ layerData }) => {
         <div className={styles.title}>{titleToShow}</div>
         {ownTable && (
           <div className={styles.buttons}>
-            <Button size="small" icon={<MdOpenInNew />} onClick={onNavigate} title="Navigate to" />
-            <Button size="small" icon={<TbZoomScan />} onClick={onZoomTo} title="Zoom to on map" />
-            <Button size="small" icon={<MdEdit />} onClick={onEdit} title="Edit geometry on map" />
+            <Button
+              size="small"
+              icon={<MdOpenInNew />}
+              onClick={onNavigate}
+              title="Navigate to"
+            />
+            <Button
+              size="small"
+              icon={<TbZoomScan />}
+              onClick={onZoomTo}
+              title="Zoom to on map"
+            />
+            {editButton}
           </div>
         )}
         <div className={styles.text}>{text}</div>
@@ -184,9 +223,19 @@ export const Layer = ({ layerData }) => {
         <div className={styles.title}>{titleToShow}</div>
         {ownTable && (
           <div className={styles.buttons}>
-            <Button size="small" icon={<MdOpenInNew />} onClick={onNavigate} title="Navigate to" />
-            <Button size="small" icon={<TbZoomScan />} onClick={onZoomTo} title="Zoom to on map" />
-            <Button size="small" icon={<MdEdit />} onClick={onEdit} title="Edit geometry on map" />
+            <Button
+              size="small"
+              icon={<MdOpenInNew />}
+              onClick={onNavigate}
+              title="Navigate to"
+            />
+            <Button
+              size="small"
+              icon={<TbZoomScan />}
+              onClick={onZoomTo}
+              title="Zoom to on map"
+            />
+            {editButton}
           </div>
         )}
         <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
@@ -200,9 +249,19 @@ export const Layer = ({ layerData }) => {
         <div className={styles.title}>{titleToShow}</div>
         {ownTable && (
           <div className={styles.buttons}>
-            <Button size="small" icon={<MdOpenInNew />} onClick={onNavigate} title="Navigate to" />
-            <Button size="small" icon={<TbZoomScan />} onClick={onZoomTo} title="Zoom to on map" />
-            <Button size="small" icon={<MdEdit />} onClick={onEdit} title="Edit geometry on map" />
+            <Button
+              size="small"
+              icon={<MdOpenInNew />}
+              onClick={onNavigate}
+              title="Navigate to"
+            />
+            <Button
+              size="small"
+              icon={<TbZoomScan />}
+              onClick={onZoomTo}
+              title="Zoom to on map"
+            />
+            {editButton}
           </div>
         )}
         <div dangerouslySetInnerHTML={{ __html: html }} />
@@ -215,9 +274,19 @@ export const Layer = ({ layerData }) => {
       <div className={styles.title}>{titleToShow}</div>
       {ownTable && (
         <div className={styles.buttons}>
-          <Button size="small" icon={<MdOpenInNew />} onClick={onNavigate} title="Navigate to" />
-          <Button size="small" icon={<TbZoomScan />} onClick={onZoomTo} title="Zoom to on map" />
-          <Button size="small" icon={<MdEdit />} onClick={onEdit} title="Edit geometry on map" />
+          <Button
+            size="small"
+            icon={<MdOpenInNew />}
+            onClick={onNavigate}
+            title="Navigate to"
+          />
+          <Button
+            size="small"
+            icon={<TbZoomScan />}
+            onClick={onZoomTo}
+            title="Zoom to on map"
+          />
+          {editButton}
         </div>
       )}
       <div className={styles.propertyList}>
