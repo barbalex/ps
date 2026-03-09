@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
+import { useState, useRef } from 'react'
+import { GeoJSON, useMapEvent, useMapEvents, useMap } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
@@ -51,6 +51,18 @@ export const TableLayer = ({ data, layerPresentation }) => {
   const map: Map = useMap()
   const [zoom, setZoom] = useState(map.getZoom())
   useMapEvent('zoomend', () => setZoom(map.getZoom()))
+
+  // Holds the per-feature callbacks for an active observation drag.
+  // map.on('mousemove') / map.on('mouseup') are replaced by delegating
+  // through this ref from component-level useMapEvents handlers.
+  const draggingRef = useRef<{
+    trackCursor: (e: L.LeafletMouseEvent) => void
+    handleMouseUp: (e: L.LeafletMouseEvent) => void
+  } | null>(null)
+  useMapEvents({
+    mousemove: (e) => draggingRef.current?.trackCursor(e as L.LeafletMouseEvent),
+    mouseup: (e) => draggingRef.current?.handleMouseUp(e as L.LeafletMouseEvent),
+  })
 
   if (!firstDisplay) return null
   if (!layer) return null
@@ -144,18 +156,16 @@ export const TableLayer = ({ data, layerPresentation }) => {
               // see: https://stackoverflow.com/a/43417693/712005
 
               // extract trackCursor as a function so this specific
-              // "mousemove" listener can be removed on "mouseup" versus
-              // all listeners if we were to use map.off("mousemove")
+              // drag can be cancelled by clearing draggingRef
               const trackCursor = (e) => {
                 clickableCircle.setLatLng(e.latlng)
                 visualCircle.setLatLng(e.latlng)
               }
 
-              // Define mouseup handler that will be attached to map
+              // Define mouseup handler; registered via component-level useMapEvents
               const handleMouseUp = (e) => {
                 map.dragging.enable()
-                map.off('mousemove', trackCursor)
-                map.off('mouseup', handleMouseUp)
+                draggingRef.current = null
 
                 // only assign if the marker has moved
                 if (
@@ -205,9 +215,7 @@ export const TableLayer = ({ data, layerPresentation }) => {
                 // Set flag to prevent ClickListener from opening info on other layers
                 map._isDraggingObservation = true
                 map.dragging.disable()
-                map.on('mousemove', trackCursor)
-                // Attach mouseup to map so it fires regardless of what's under the cursor
-                map.on('mouseup', handleMouseUp)
+                draggingRef.current = { trackCursor, handleMouseUp }
               })
 
               // Prevent click event immediately after drag

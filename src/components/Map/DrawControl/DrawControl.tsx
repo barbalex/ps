@@ -1,8 +1,8 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import { useMap } from 'react-leaflet'
+import { useMap, useMapEvents } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -76,13 +76,13 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext =
   'Punkte ziehen, um Umriss(e) zu verändern'
 L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
 
-// TODO: useMapEvents
 export const DrawControlComponent = ({
   editingPlace,
   editingCheck,
   editingAction,
 }) => {
   const map = useMap()
+  const drawLayerRef = useRef<L.FeatureGroup | null>(null)
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -139,6 +139,7 @@ export const DrawControlComponent = ({
     const drawLayer = new L.FeatureGroup()
     map.addLayer(drawLayer)
     _persistentDrawLayer = drawLayer
+    drawLayerRef.current = drawLayer
 
     // Load existing geometry from DB into the draw layer (so it is visible and editable)
     const activeId = editingPlace ?? editingCheck ?? editingAction
@@ -187,28 +188,36 @@ export const DrawControlComponent = ({
     })
     map.addControl(drawControlFull)
 
-    // During any leaflet-draw action (draw, edit, delete):
-    // 1. Set crosshair cursor (L.Draw.Polyline/Polygon don't set it themselves)
-    // 2. Add a CSS class to the map container that forces pointer-events: none
-    //    on all non-interactive overlayPane SVG so:
-    //    - the _mouseMarker can capture clicks for polygon/line vertices
-    //    - the hand cursor from .leaflet-interactive is suppressed during edit/delete
-    const onDrawingActive = () => {
-      map.getContainer().classList.add('leaflet-draw-active')
-    }
-    const onDrawingInactive = () => {
+    return () => {
+      // Keep drawLayer on the map so drawn geometry stays visible after
+      // drawing mode is deactivated. It will be removed on the next mount.
+      // Revert orange editing style back to default.
+      drawLayer.eachLayer(revertEditingStyle)
+      map.removeControl(drawControlFull)
       map.getContainer().classList.remove('leaflet-draw-active')
     }
+  }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
 
-    map.on('draw:drawstart', onDrawingActive)
-    map.on('draw:drawstop', onDrawingInactive)
-    map.on('draw:editstart', onDrawingActive)
-    map.on('draw:editstop', onDrawingInactive)
-    map.on('draw:deletestart', onDrawingActive)
-    map.on('draw:deletestop', onDrawingInactive)
-
-    const onDrawCreated = (e) => {
-      let layer = e.layer
+  // During any leaflet-draw action (draw, edit, delete) add a CSS class so
+  // pointer-events on overlayPane SVG paths are suppressed — this lets the
+  // leaflet-draw _mouseMarker capture vertex clicks for polygon/line drawing
+  // and prevents the hand cursor from interfering during edit/delete.
+  // useMapEvents auto-removes these listeners when the component unmounts.
+  useMapEvents({
+    'draw:drawstart': () =>
+      map.getContainer().classList.add('leaflet-draw-active'),
+    'draw:drawstop': () =>
+      map.getContainer().classList.remove('leaflet-draw-active'),
+    'draw:editstart': () =>
+      map.getContainer().classList.add('leaflet-draw-active'),
+    'draw:editstop': () =>
+      map.getContainer().classList.remove('leaflet-draw-active'),
+    'draw:deletestart': () =>
+      map.getContainer().classList.add('leaflet-draw-active'),
+    'draw:deletestop': () =>
+      map.getContainer().classList.remove('leaflet-draw-active'),
+    'draw:created': (e) => {
+      let layer = (e as unknown as L.DrawEvents.Created).layer
       // L.Marker doesn't support setStyle; replace with a circleMarker so
       // the orange edit style (and its revert) works uniformly for all types.
       if (layer instanceof L.Marker) {
@@ -216,35 +225,12 @@ export const DrawControlComponent = ({
       } else {
         applyEditingStyle(layer)
       }
-      drawLayer.addLayer(layer)
-      onEdit(drawLayer.toGeoJSON())
-    }
-    map.on('draw:created', onDrawCreated)
-
-    const onDrawEdited = () => onEdit(drawLayer.toGeoJSON())
-    map.on('draw:edited', onDrawEdited)
-
-    const onDrawDeleted = () => onEdit(drawLayer.toGeoJSON())
-    map.on('draw:deleted', onDrawDeleted)
-
-    return () => {
-      // Keep drawLayer on the map so drawn geometry stays visible after
-      // drawing mode is deactivated. It will be removed on the next mount.
-      // Revert orange editing style back to default.
-      drawLayer.eachLayer(revertEditingStyle)
-      map.removeControl(drawControlFull)
-      map.off('draw:created', onDrawCreated)
-      map.off('draw:edited', onDrawEdited)
-      map.off('draw:deleted', onDrawDeleted)
-      map.off('draw:drawstart', onDrawingActive)
-      map.off('draw:drawstop', onDrawingInactive)
-      map.off('draw:editstart', onDrawingActive)
-      map.off('draw:editstop', onDrawingInactive)
-      map.off('draw:deletestart', onDrawingActive)
-      map.off('draw:deletestop', onDrawingInactive)
-      map.getContainer().classList.remove('leaflet-draw-active')
-    }
-  }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
+      drawLayerRef.current?.addLayer(layer)
+      onEdit(drawLayerRef.current?.toGeoJSON())
+    },
+    'draw:edited': () => onEdit(drawLayerRef.current?.toGeoJSON()),
+    'draw:deleted': () => onEdit(drawLayerRef.current?.toGeoJSON()),
+  } as L.LeafletEventHandlerFnMap)
 
   return null
 }

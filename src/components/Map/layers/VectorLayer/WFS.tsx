@@ -2,7 +2,7 @@
  * Not sure if this is ever used - data should always be downloaded
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { GeoJSON, useMap } from 'react-leaflet'
+import { GeoJSON, useMap, useMapEvents } from 'react-leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
@@ -201,28 +201,14 @@ export const WFS = ({ layer, layerPresentation }) => {
     ],
   )
 
-  useEffect(() => {
-    const handleMoveEnd = () => {
-      fetchData()
-    }
-    const handleDragEnd = () => {
-      fetchData()
-    }
-    const handleZoomEnd = () => {
+  useMapEvents({
+    moveend: () => fetchData(),
+    dragend: () => fetchData(),
+    zoomend: () => {
       setZoom(map.getZoom())
       fetchData()
-    }
-
-    map.on('moveend', handleMoveEnd)
-    map.on('dragend', handleDragEnd)
-    map.on('zoomend', handleZoomEnd)
-
-    return () => {
-      map.off('moveend', handleMoveEnd)
-      map.off('dragend', handleDragEnd)
-      map.off('zoomend', handleZoomEnd)
-    }
-  }, [fetchData, map])
+    },
+  })
 
   useEffect(() => {
     fetchData()
