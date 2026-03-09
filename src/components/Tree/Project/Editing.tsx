@@ -59,13 +59,14 @@ export const Editing = ({ projectId }) => {
         size="small"
         icon={
           designing ? (
-            <MdEdit className={styles.svg} />
-          ) : (
             <MdEditOff className={styles.svg} />
+          ) : (
+            <MdEdit className={styles.svg} />
           )
         }
         onClick={onClick}
         className={styles.button}
+        appearance={designing ? 'primary' : 'secondary'}
       />
     </Tooltip>
   )

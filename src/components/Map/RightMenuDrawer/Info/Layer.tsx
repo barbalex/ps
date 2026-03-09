@@ -6,7 +6,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-import { MdOpenInNew, MdEdit } from 'react-icons/md'
+import { MdOpenInNew, MdEdit, MdEditOff } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 
 import {
@@ -184,7 +184,7 @@ export const Layer = ({ layerData }) => {
   const editButton = ownTable ? (
     <Button
       size="small"
-      icon={<MdEdit />}
+      icon={isEditing ? <MdEditOff /> : <MdEdit />}
       onClick={onEdit}
       title={isEditing ? 'Stop editing geometry' : 'Edit geometry on map'}
       appearance={isEditing ? 'primary' : 'secondary'}

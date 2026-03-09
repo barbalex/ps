@@ -36,12 +36,15 @@ export const DesigningButton = () => {
       <Button
         size="small"
         icon={
-          designing ?
+          designing ? (
+            <MdEditOff className={styles.svg} />
+          ) : (
             <MdEdit className={styles.svg} />
-          : <MdEditOff className={styles.svg} />
+          )
         }
         onClick={onClick}
         className={styles.button}
+        appearance={designing ? 'primary' : 'secondary'}
       />
     </Tooltip>
   )
