@@ -111,6 +111,12 @@ export const DrawControlComponent = ({
         polyline: true,
         circle: true,
         circlemarker: false,
+        // activating the rectangle drawing tool seems o.k. (cursor changes to +).
+        // but after a click what seems to be a single or maybe double point has been drawn and a popup next to the cursor says 'Release mouse to finish drawing'.
+        // There is an error: Uncaught ReferenceError: type is not defined
+        // This is a known leaflet-draw bug where the rectangle's tooltip calls readableArea which references an undefined type variable.
+        // The fix is to disable the area display on the rectangle tooltip with showArea: false.
+        rectangle: { showArea: false },
       },
       edit: {
         featureGroup: drawLayer,
