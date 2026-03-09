@@ -124,10 +124,42 @@ export const ClickListener = () => {
             return [key, value]
           })
 
+        const featureProps = layer.feature.properties
+        let ownTable: 'place' | 'check' | 'action' | undefined
+        let ownId: string | undefined
+        let ownPlaceId: string | undefined
+        let ownSubprojectId: string | undefined
+        let ownParentId: string | undefined
+
+        if (featureProps?.check_id) {
+          ownTable = 'check'
+          ownId = featureProps.check_id
+          ownPlaceId = featureProps.place_id
+        } else if (featureProps?.action_id) {
+          ownTable = 'action'
+          ownId = featureProps.action_id
+          ownPlaceId = featureProps.place_id
+        } else if (featureProps?.place_id) {
+          ownTable = 'place'
+          ownId = featureProps.place_id
+          ownSubprojectId = featureProps.subproject_id
+          ownParentId = featureProps.parent_id ?? undefined
+        }
+
         mapInfo.layers.push({
           label: layer.vectorLayerLabel || 'Unknown Layer',
-          featureLabel: layer.feature.properties?.label || 'Feature',
+          featureLabel: featureProps?.label || 'Feature',
           properties,
+          ...(ownTable
+            ? {
+                ownTable,
+                ownId,
+                ownPlaceId,
+                ownSubprojectId,
+                ownParentId,
+                projectId,
+              }
+            : {}),
         })
       }
     })

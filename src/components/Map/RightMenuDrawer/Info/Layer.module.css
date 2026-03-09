@@ -43,3 +43,10 @@
   color: rgba(0, 0, 0, 0.5);
   border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: 4px 10px 6px 10px;
+}
