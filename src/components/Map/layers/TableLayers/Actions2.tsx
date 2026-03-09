@@ -11,7 +11,7 @@ export const Actions2 = ({ layerPresentation }) => {
     FROM actions
       INNER JOIN places ON actions.place_id = places.place_id
     WHERE 
-      geometry IS NOT NULL
+      actions.geometry IS NOT NULL
       AND places.parent_id IS NOT NULL
   `,
     undefined,
@@ -27,6 +27,7 @@ export const Actions2 = ({ layerPresentation }) => {
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
+    if (!data) return geometry
     geometry.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created

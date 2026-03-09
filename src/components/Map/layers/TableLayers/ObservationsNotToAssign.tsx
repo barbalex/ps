@@ -32,6 +32,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
     // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
+    if (!data) return geometry
     geometry.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created

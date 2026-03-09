@@ -26,6 +26,7 @@ export const Actions1 = ({ layerPresentation }) => {
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
+    if (!data) return geometry
     geometry.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created
