@@ -27,15 +27,27 @@ export const DrawControl = () => {
 
   if (!lastTwoElements) return null
 
-  if (lastTwoElements === `${editingPlaceGeometry}/place`) {
+  const last = pathArray[pathArray.length - 1]
+  const secondToLast = pathArray[pathArray.length - 2]
+
+  if (
+    lastTwoElements === `${editingPlaceGeometry}/place` ||
+    (secondToLast === 'places' && last === editingPlaceGeometry)
+  ) {
     return <DrawControlComponent editingPlace={editingPlaceGeometry} />
   }
 
-  if (lastTwoElements === `${editingCheckGeometry}/check`) {
+  if (
+    lastTwoElements === `${editingCheckGeometry}/check` ||
+    (secondToLast === 'checks' && last === editingCheckGeometry)
+  ) {
     return <DrawControlComponent editingCheck={editingCheckGeometry} />
   }
 
-  if (lastTwoElements === `${editingActionGeometry}/action`) {
+  if (
+    lastTwoElements === `${editingActionGeometry}/action` ||
+    (secondToLast === 'actions' && last === editingActionGeometry)
+  ) {
     return <DrawControlComponent editingAction={editingActionGeometry} />
   }
 

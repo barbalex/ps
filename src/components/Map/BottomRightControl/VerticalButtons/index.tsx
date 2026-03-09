@@ -5,6 +5,7 @@ import { FaMinus, FaPlus } from 'react-icons/fa'
 import { useMap } from 'react-leaflet'
 
 import { LocatingButton } from './LocatingButton.tsx'
+import { EditingGeometryButton } from './EditingGeometryButton.tsx'
 import styles from './index.module.css'
 
 export const VerticalButtons = () => {
@@ -30,6 +31,7 @@ export const VerticalButtons = () => {
         aria-label="vertical toolbar"
         className={styles.toolbar}
       >
+        <EditingGeometryButton />
         <LocatingButton />
         <ToolbarButton
           name="zoom_in"
