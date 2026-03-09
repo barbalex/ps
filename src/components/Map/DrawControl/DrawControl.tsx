@@ -13,6 +13,34 @@ import { addOperationAtom } from '../../../store.ts'
 // stays visible on the map after drawing mode is deactivated.
 let _persistentDrawLayer: L.FeatureGroup | null = null
 
+// Style applied to the editable geometry so it stands out from the rest of the layer.
+const EDITING_STYLE: L.PathOptions = {
+  color: 'orange',
+  fillColor: 'orange',
+  fillOpacity: 0.2,
+  weight: 3,
+}
+
+// Leaflet default path style — used to revert when editing mode ends.
+const DEFAULT_STYLE: L.PathOptions = {
+  color: '#3388ff',
+  fillColor: '#3388ff',
+  fillOpacity: 0.2,
+  weight: 3,
+}
+
+const applyEditingStyle = (layer: L.Layer) => {
+  if (typeof (layer as L.Path).setStyle === 'function') {
+    ;(layer as L.Path).setStyle(EDITING_STYLE)
+  }
+}
+
+const revertEditingStyle = (layer: L.Layer) => {
+  if (typeof (layer as L.Path).setStyle === 'function') {
+    ;(layer as L.Path).setStyle(DEFAULT_STYLE)
+  }
+}
+
 L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
 L.drawLocal.draw.toolbar.buttons.rectangle =
   'Rechteck(e) zeichnen, um zu filtern'
@@ -131,7 +159,10 @@ export const DrawControlComponent = ({
         const geometry = result?.rows?.[0]?.geometry
         if (geometry && drawLayer) {
           try {
-            L.geoJSON(geometry).eachLayer((layer) => drawLayer.addLayer(layer))
+            L.geoJSON(geometry).eachLayer((layer) => {
+              applyEditingStyle(layer)
+              drawLayer.addLayer(layer)
+            })
           } catch {
             // ignore invalid geometry
           }
@@ -159,6 +190,7 @@ export const DrawControlComponent = ({
     map.addControl(drawControlFull)
 
     const onDrawCreated = (e) => {
+      applyEditingStyle(e.layer)
       drawLayer.addLayer(e.layer)
       onEdit(drawLayer.toGeoJSON())
     }
@@ -173,6 +205,8 @@ export const DrawControlComponent = ({
     return () => {
       // Keep drawLayer on the map so drawn geometry stays visible after
       // drawing mode is deactivated. It will be removed on the next mount.
+      // Revert orange editing style back to default.
+      drawLayer.eachLayer(revertEditingStyle)
       map.removeControl(drawControlFull)
       map.off('draw:created', onDrawCreated)
       map.off('draw:edited', onDrawEdited)
