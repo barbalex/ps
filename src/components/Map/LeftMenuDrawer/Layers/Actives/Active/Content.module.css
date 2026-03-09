@@ -13,6 +13,7 @@
   min-width: auto;
   width: 32px;
   padding: 0;
+  align-self: center;
 
   &:hover {
     background-color: var(--colorNeutralBackground1Hover);

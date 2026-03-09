@@ -1,13 +1,19 @@
 .fui-AccordionHeader__button {
   padding-left: 6px !important;
-  --fui-AccordionHeader__expandIcon--width: 32px !important;
+  --fui-AccordionHeader__expandIcon--width: 35px !important;
 }
 
 .fui-AccordionHeader__button .fui-AccordionHeader__expandIconWrapper {
-  width: 32px !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
-  flex: 0 0 32px !important;
+  width: 35px !important;
+  min-width: 35px !important;
+  max-width: 35px !important;
+  flex: 0 0 35px !important;
+}
+
+.fui-AccordionHeader__button .fui-AccordionHeader__expandIcon {
+  width: 35px !important;
+  min-width: 35px !important;
+  max-width: 35px !important;
 }
 
 /* ensure checkbox stays vertically centered when text breaks */
