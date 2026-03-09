@@ -2,12 +2,16 @@ import { useEffect, useCallback } from 'react'
 import 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import { useMap, useMapEvents } from 'react-leaflet'
+import { useMap } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { addOperationAtom } from '../../../store.ts'
+
+// Persists the draw layer across component unmounts so drawn geometry
+// stays visible on the map after drawing mode is deactivated.
+let _persistentDrawLayer: L.FeatureGroup | null = null
 
 L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
 L.drawLocal.draw.toolbar.buttons.rectangle =
@@ -99,12 +103,42 @@ export const DrawControlComponent = ({
   )
 
   useEffect(() => {
-    // solution to allow only one geometry to be drawn
-    // see: https://github.com/Leaflet/Leaflet.draw/issues/315#issuecomment-500246272
+    // Remove any previously persisted draw layer (from a prior entity or session)
+    if (_persistentDrawLayer && map.hasLayer(_persistentDrawLayer)) {
+      map.removeLayer(_persistentDrawLayer)
+    }
+
     const drawLayer = new L.FeatureGroup()
     map.addLayer(drawLayer)
-    // TODO: if row has geometry, add it
-    // like this?: drawLayer.addLayer(e.layer)
+    _persistentDrawLayer = drawLayer
+
+    // Load existing geometry from DB into the draw layer (so it is visible and editable)
+    const activeId = editingPlace ?? editingCheck ?? editingAction
+    const activeIdName = editingPlace
+      ? 'place_id'
+      : editingCheck
+        ? 'check_id'
+        : 'action_id'
+    const tableName = editingPlace
+      ? 'places'
+      : editingCheck
+        ? 'checks'
+        : 'actions'
+    if (activeId) {
+      db.query(`SELECT geometry FROM ${tableName} WHERE ${activeIdName} = $1`, [
+        activeId,
+      ]).then((result) => {
+        const geometry = result?.rows?.[0]?.geometry
+        if (geometry && drawLayer) {
+          try {
+            L.geoJSON(geometry).eachLayer((layer) => drawLayer.addLayer(layer))
+          } catch {
+            // ignore invalid geometry
+          }
+        }
+      })
+    }
+
     const drawControlFull = new L.Control.Draw({
       draw: {
         marker: true,
@@ -137,14 +171,14 @@ export const DrawControlComponent = ({
     map.on('draw:deleted', onDrawDeleted)
 
     return () => {
-      map.removeLayer(drawLayer)
+      // Keep drawLayer on the map so drawn geometry stays visible after
+      // drawing mode is deactivated. It will be removed on the next mount.
       map.removeControl(drawControlFull)
-      // map.removeControl(drawControlEditOnly)
       map.off('draw:created', onDrawCreated)
       map.off('draw:edited', onDrawEdited)
       map.off('draw:deleted', onDrawDeleted)
     }
-  }, [map, onEdit])
+  }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
 
   return null
 }
