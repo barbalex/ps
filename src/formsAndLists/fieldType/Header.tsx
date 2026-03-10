@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createFieldType } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -10,6 +11,7 @@ import { addOperationAtom } from '../../store.ts'
 const from = '/data/field-types/$fieldTypeId'
 
 export const Header = ({ autoFocusRef }) => {
+  const { formatMessage } = useIntl()
   const { fieldTypeId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -97,7 +99,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Field type"
+      title={formatMessage({ id: 'LTiTmL', defaultMessage: 'Feld-Typ' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
