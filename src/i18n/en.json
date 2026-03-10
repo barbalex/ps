@@ -169,5 +169,12 @@
   "XkV5yZ": "Name",
   "Pq7nWk": "Sort value",
   "Rm4jTs": "Comment",
-  "NdL8pA": "Needs a list"
+  "NdL8pA": "Needs a list",
+  "Tb8kLm": "Table",
+  "Lv9nRx": "Level",
+  "Fl3jPw": "Label",
+  "Ps5mVn": "Preset value",
+  "Ob2kQz": "Obsolete",
+  "Qr6tBm": "If obsolete, existing data is shown but this field will not be available in new records",
+  "Rq3wXp": "Required"
 }

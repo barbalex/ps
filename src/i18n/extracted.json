@@ -208,5 +208,26 @@
   },
   "NdL8pA": {
     "defaultMessage": "Benötigt eine Liste"
+  },
+  "Tb8kLm": {
+    "defaultMessage": "Tabelle"
+  },
+  "Lv9nRx": {
+    "defaultMessage": "Ort-Stufe"
+  },
+  "Fl3jPw": {
+    "defaultMessage": "Bezeichnung"
+  },
+  "Ps5mVn": {
+    "defaultMessage": "Standardwert"
+  },
+  "Ob2kQz": {
+    "defaultMessage": "Obsolet"
+  },
+  "Qr6tBm": {
+    "defaultMessage": "Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datens\u00e4tzen nicht zur Verf\u00fcgung"
+  },
+  "Rq3wXp": {
+    "defaultMessage": "Pflichtfeld"
   }
 }

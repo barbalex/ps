@@ -1,4 +1,5 @@
 import { useParams } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
@@ -39,6 +40,7 @@ export const FieldForm = ({
   from,
 }) => {
   const { projectId } = useParams({ from })
+  const { formatMessage } = useIntl()
 
   const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
 
@@ -47,7 +49,7 @@ export const FieldForm = ({
       {!isInForm && (
         <>
           <DropdownFieldSimpleOptions
-            label="Table"
+            label={formatMessage({ id: 'Tb8kLm', defaultMessage: 'Tabelle' })}
             name="table_name"
             value={row.table_name ?? ''}
             onChange={onChange}
@@ -57,11 +59,16 @@ export const FieldForm = ({
             validationState={validations?.table_name?.state}
             validationMessage={
               validations.table_name?.message ??
-              (row.table_name ? undefined : 'Required')
+              (row.table_name
+                ? undefined
+                : formatMessage({
+                    id: 'Rq3wXp',
+                    defaultMessage: 'Pflichtfeld',
+                  }))
             }
           />
           <TextField
-            label="Level"
+            label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Ort-Stufe' })}
             name="level"
             value={row.level}
             type="number"
@@ -72,17 +79,20 @@ export const FieldForm = ({
         </>
       )}
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
         validationState={validations?.name?.state}
         validationMessage={
-          validations.name?.message ?? (row.name ? undefined : 'Required')
+          validations.name?.message ??
+          (row.name
+            ? undefined
+            : formatMessage({ id: 'Rq3wXp', defaultMessage: 'Pflichtfeld' }))
         }
       />
       <TextField
-        label="Label"
+        label={formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
         name="field_label"
         value={row.field_label ?? ''}
         onChange={onChange}
@@ -90,7 +100,7 @@ export const FieldForm = ({
         validationMessage={validations?.field_label?.message}
       />
       <DropdownField
-        label="Type"
+        label={formatMessage({ id: 'LTiTmL', defaultMessage: 'Feld-Typ' })}
         name="field_type_id"
         table="field_types"
         orderBy="sort, name"
@@ -110,7 +120,7 @@ export const FieldForm = ({
       />
       {widgetNeedsList && (
         <DropdownField
-          label="List"
+          label={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
           name="list_id"
           table="lists"
           value={row.list_id ?? ''}
@@ -120,7 +130,7 @@ export const FieldForm = ({
         />
       )}
       <TextField
-        label="Preset value"
+        label={formatMessage({ id: 'Ps5mVn', defaultMessage: 'Standardwert' })}
         name="preset"
         value={row.preset ?? ''}
         onChange={onChange}
@@ -128,7 +138,7 @@ export const FieldForm = ({
         validationMessage={validations?.preset?.message}
       />
       <SwitchField
-        label="Obsolete"
+        label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}
         name="obsolete"
         value={row.obsolete ?? false}
         type="number"
@@ -136,7 +146,11 @@ export const FieldForm = ({
         validationState={validations?.obsolete?.state}
         validationMessage={
           validations.obsolete?.message ??
-          'If obsolete, existing data is shown but this field will not be available in new records'
+          formatMessage({
+            id: 'Qr6tBm',
+            defaultMessage:
+              'Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datensätzen nicht zur Verfügung',
+          })
         }
       />
     </>
