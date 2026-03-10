@@ -1,6 +1,7 @@
 import { FaPlus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Tooltip } = fluentUiReactComponents
+import { useIntl } from 'react-intl'
 
 import { Delete } from './Delete.tsx'
 import { MenuBar } from '../MenuBar/index.tsx'
@@ -16,50 +17,56 @@ export const FormMenu = ({
   toPreviousDisabled = false,
   tableName = '',
   siblings,
-}) => (
-  <MenuBar>
-    {!!siblings && siblings}
-    {!!toPrevious && (
-      <Tooltip content={`Previous ${tableName}`}>
-        <Button
-          size="medium"
-          icon={<FaChevronLeft />}
-          onClick={toPrevious}
-          disabled={toPreviousDisabled}
-        />
-      </Tooltip>
-    )}
-    {!!addRow && (
-      <Tooltip
-        content={
-          addRowDisabled && addRowDisabledReason ?
-            addRowDisabledReason
-          : `New ${tableName}`
-        }
-      >
-        <Button
-          size="medium"
-          icon={<FaPlus />}
-          onClick={addRow}
-          disabled={addRowDisabled}
-        />
-      </Tooltip>
-    )}
-    {!!deleteRow && (
-      <Delete
-        deleteRow={deleteRow}
-        tableName={tableName}
-      />
-    )}
-    {!!toNext && (
-      <Tooltip content={`Next ${tableName}`}>
-        <Button
-          size="medium"
-          icon={<FaChevronRight />}
-          onClick={toNext}
-          disabled={toNextDisabled}
-        />
-      </Tooltip>
-    )}
-  </MenuBar>
-)
+}) => {
+  const { formatMessage } = useIntl()
+
+  return (
+    <MenuBar>
+      {!!siblings && siblings}
+      {!!toPrevious && (
+        <Tooltip
+          content={formatMessage({ id: 'Wn2kTv', defaultMessage: 'vorherig' })}
+        >
+          <Button
+            size="medium"
+            icon={<FaChevronLeft />}
+            onClick={toPrevious}
+            disabled={toPreviousDisabled}
+          />
+        </Tooltip>
+      )}
+      {!!addRow && (
+        <Tooltip
+          content={
+            addRowDisabled && addRowDisabledReason
+              ? addRowDisabledReason
+              : formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
+          }
+        >
+          <Button
+            size="medium"
+            icon={<FaPlus />}
+            onClick={addRow}
+            disabled={addRowDisabled}
+          />
+        </Tooltip>
+      )}
+      {!!deleteRow && <Delete deleteRow={deleteRow} tableName={tableName} />}
+      {!!toNext && (
+        <Tooltip
+          content={formatMessage({
+            id: 'Xm4pLq',
+            defaultMessage: 'n\u00e4chst',
+          })}
+        >
+          <Button
+            size="medium"
+            icon={<FaChevronRight />}
+            onClick={toNext}
+            disabled={toNextDisabled}
+          />
+        </Tooltip>
+      )}
+    </MenuBar>
+  )
+}

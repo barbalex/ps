@@ -1,5 +1,6 @@
 import { FaMinus } from 'react-icons/fa'
 import * as fluentUiReactComponents from '@fluentui/react-components'
+import { useIntl } from 'react-intl'
 
 const {
   Button,
@@ -13,24 +14,28 @@ const {
   Tooltip,
 } = fluentUiReactComponents
 
-export const Delete = ({ deleteRow, tableName }) => (
-  <Menu openOnHover={false}>
-    <MenuTrigger>
-      <Tooltip content={`Delete ${tableName}`}>
-        <Button
-          size="medium"
-          icon={<FaMinus />}
-        />
-      </Tooltip>
-    </MenuTrigger>
-    <MenuPopover>
-      <MenuList>
-        <MenuGroup>
-          <MenuGroupHeader>Delete?</MenuGroupHeader>
-          <MenuItem onClick={deleteRow}>Yes</MenuItem>
-          <MenuItem>No</MenuItem>
-        </MenuGroup>
-      </MenuList>
-    </MenuPopover>
-  </Menu>
-)
+export const Delete = ({ deleteRow, tableName }) => {
+  const { formatMessage } = useIntl()
+
+  return (
+    <Menu openOnHover={false}>
+      <MenuTrigger>
+        <Tooltip content={formatMessage({ id: 'Zv6sNt', defaultMessage: 'l\u00f6schen' })}>
+          <Button
+            size="medium"
+            icon={<FaMinus />}
+          />
+        </Tooltip>
+      </MenuTrigger>
+      <MenuPopover>
+        <MenuList>
+          <MenuGroup>
+            <MenuGroupHeader>{formatMessage({ id: 'Au7tOu', defaultMessage: 'L\u00f6schen?' })}</MenuGroupHeader>
+            <MenuItem onClick={deleteRow}>{formatMessage({ id: 'Bv8uPv', defaultMessage: 'Ja' })}</MenuItem>
+            <MenuItem>{formatMessage({ id: 'Cw9vQw', defaultMessage: 'Nein' })}</MenuItem>
+          </MenuGroup>
+        </MenuList>
+      </MenuPopover>
+    </Menu>
+  )
+}
