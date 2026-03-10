@@ -11,6 +11,7 @@ import { addOperationAtom } from '../../store.ts'
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
   from: string
+  // label is passed in from List
   label?: string
 }
 
