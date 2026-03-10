@@ -250,5 +250,20 @@
   },
   "Cw9vQw": {
     "defaultMessage": "Nein"
+  },
+  "OzBS9Z": {
+    "defaultMessage": "CRS"
+  },
+  "Dx2eAf": {
+    "defaultMessage": "Dies ist eine (hoffentlich) vollst\u00e4ndige Liste der Koordinatenreferenzsysteme."
+  },
+  "Ey3fBg": {
+    "defaultMessage": "Sie k\u00f6nnen zu Projekten hinzugef\u00fcgt werden."
+  },
+  "Fz4gCh": {
+    "defaultMessage": "Code"
+  },
+  "Gv5hDi": {
+    "defaultMessage": "Proj4-Wert"
   }
 }

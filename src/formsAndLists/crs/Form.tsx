@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -20,6 +21,7 @@ export const Component = () => {
   const { crsId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM crs WHERE crs_id = $1`, [crsId])
@@ -66,7 +68,7 @@ export const Component = () => {
   return (
     <>
       <TextField
-        label="Code"
+        label={formatMessage({ id: 'Fz4gCh', defaultMessage: 'Code' })}
         name="code"
         type="code"
         value={row.code ?? ''}
@@ -75,7 +77,7 @@ export const Component = () => {
         validationMessage={validations?.code?.message}
       />
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         type="name"
         value={row.name ?? ''}
@@ -84,7 +86,7 @@ export const Component = () => {
         validationMessage={validations?.name?.message}
       />
       <TextArea
-        label="Proj4 Value"
+        label={formatMessage({ id: 'Gv5hDi', defaultMessage: 'Proj4-Wert' })}
         name="proj4"
         type="proj4"
         value={row.proj4 ?? ''}
