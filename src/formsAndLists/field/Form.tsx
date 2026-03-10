@@ -136,7 +136,7 @@ export const FieldForm = ({
         validationState={validations?.obsolete?.state}
         validationMessage={
           validations.obsolete?.message ??
-          'If obsolete, existing data is shown but this field will not be available for new records'
+          'If obsolete, existing data is shown but this field will not be available in new records'
         }
       />
     </>
