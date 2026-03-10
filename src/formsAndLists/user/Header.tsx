@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -10,6 +11,7 @@ import { userIdAtom, addOperationAtom } from '../../store.ts'
 const from = '/data/users/$userId'
 
 export const Header = ({ autoFocusRef }) => {
+  const { formatMessage } = useIntl()
   const setUserId = useSetAtom(userIdAtom)
   const { userId } = useParams({ from })
   const navigate = useNavigate()
@@ -82,7 +84,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="User"
+      title={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
