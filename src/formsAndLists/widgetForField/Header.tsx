@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createWidgetForField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -10,6 +11,7 @@ import { addOperationAtom } from '../../store.ts'
 const from = '/data/widgets-for-fields/$widgetForFieldId'
 
 export const Header = ({ autoFocusRef }) => {
+  const { formatMessage } = useIntl()
   const { widgetForFieldId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -104,7 +106,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Widget for field"
+      title={formatMessage({ id: 'vdqfwK', defaultMessage: 'Widget für Feld' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
