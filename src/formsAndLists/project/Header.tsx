@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -16,6 +17,7 @@ interface Props {
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
 export const Header = ({ autoFocusRef, from, label }: Props) => {
+  const { formatMessage } = useIntl()
   const isForm = from === '/data/projects/$projectId_/project'
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
@@ -76,8 +78,9 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       const index = rows.findIndex((p) => p.project_id === projectIdRef.current)
       const next = rows[(index + 1) % len]
       navigate({
-        to:
-          isForm ? `../../${next.project_id}/project` : `../${next.project_id}`,
+        to: isForm
+          ? `../../${next.project_id}/project`
+          : `../${next.project_id}`,
         params: { projectId: next.project_id },
       })
     } catch (error) {
@@ -95,9 +98,8 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       const index = rows.findIndex((p) => p.project_id === projectIdRef.current)
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.project_id}/project`
+        to: isForm
+          ? `../../${previous.project_id}/project`
           : `../${previous.project_id}`,
         params: { projectId: previous.project_id },
       })
@@ -108,7 +110,9 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
 
   return (
     <FormHeader
-      title={label ?? 'Project'}
+      title={
+        label ?? formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })
+      }
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
