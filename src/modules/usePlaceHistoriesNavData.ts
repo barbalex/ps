@@ -80,7 +80,7 @@ export const usePlaceHistoriesNavData = ({
     }),
     nameSingular: formatMessage({
       id: 'rdKbTc',
-      defaultMessage: 'Ort-Geschichte',
+      defaultMessage: 'Raum-Geschichte',
     }),
     navs,
   }

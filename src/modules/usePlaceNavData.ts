@@ -142,10 +142,10 @@ export const usePlaceNavData = ({
 
   const nav: NavData | undefined = res?.rows?.[0]
   const nameSingular =
-    nav?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
+    nav?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Raum' })
   const childNamePlural =
     nav?.child_name_plural ??
-    formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
+    formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' })
 
   const parentArray = [
     'data',

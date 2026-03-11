@@ -85,7 +85,7 @@ export const usePlaceReportValueNavData = ({
     notFound,
     nameSingular: formatMessage({
       id: 'yWJLBx',
-      defaultMessage: 'Ort-Bericht-Menge',
+      defaultMessage: 'Raum-Bericht-Menge',
     }),
   }
 

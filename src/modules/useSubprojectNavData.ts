@@ -168,7 +168,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           countUnfiltered: nav?.places_count_unfiltered ?? 0,
           namePlural:
             nav?.place_name_plural ??
-            formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
+            formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
         }),
       },
       {

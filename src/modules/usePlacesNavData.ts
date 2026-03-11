@@ -103,8 +103,12 @@ export const usePlacesNavData = ({
 
   const loading = res === undefined
 
-  const nameSingular = res?.rows?.[0]?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
-  const namePlural = res?.rows?.[0]?.name_plural ?? formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
+  const nameSingular =
+    res?.rows?.[0]?.name_singular ??
+    formatMessage({ id: 'TZgWxf', defaultMessage: 'Raum' })
+  const namePlural =
+    res?.rows?.[0]?.name_plural ??
+    formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' })
 
   const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0

@@ -59,7 +59,7 @@ export const usePlaceLevelNavData = ({ projectId, placeLevelId }: Props) => {
     ownUrl,
     label,
     notFound,
-    nameSingular: formatMessage({ id: 'Lf+2pw', defaultMessage: 'Ort-Stufe' }),
+    nameSingular: formatMessage({ id: 'Lf+2pw', defaultMessage: 'Raum-Stufe' }),
   }
 
   return { loading, navData }
