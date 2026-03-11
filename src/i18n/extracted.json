@@ -1,4 +1,7 @@
 {
+  "+EKK8l": {
+    "defaultMessage": "Population"
+  },
   "/WXiU2": {
     "defaultMessage": "Vorheriges Jahr"
   },
@@ -14,8 +17,14 @@
   "20y992": {
     "defaultMessage": "Endet"
   },
+  "2ACjNy": {
+    "defaultMessage": "Populations-Bericht-Menge"
+  },
   "2D6IvE": {
     "defaultMessage": "Grösse"
+  },
+  "2RuOwq": {
+    "defaultMessage": "Populations-Geschichte"
   },
   "2hj7nH": {
     "defaultMessage": "Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
@@ -113,6 +122,9 @@
   "Dx2eAf": {
     "defaultMessage": "Dies ist eine (hoffentlich) vollständige Liste der Koordinatenreferenzsysteme."
   },
+  "Eb7rX4": {
+    "defaultMessage": "Populationen"
+  },
   "Ey3fBg": {
     "defaultMessage": "Sie können zu Projekten hinzugefügt werden."
   },
@@ -121,6 +133,9 @@
   },
   "Fl3jPw": {
     "defaultMessage": "Bezeichnung"
+  },
+  "FndrDp": {
+    "defaultMessage": "Lebensraum"
   },
   "Fz4gCh": {
     "defaultMessage": "Code"
@@ -159,7 +174,7 @@
     "defaultMessage": "Feld-Typ"
   },
   "Lv9nRx": {
-    "defaultMessage": "Ort-Stufe"
+    "defaultMessage": "Raum-Stufe"
   },
   "M8TMJe": {
     "defaultMessage": "Zurück"
@@ -203,6 +218,9 @@
   "Ps5mVn": {
     "defaultMessage": "Standardwert"
   },
+  "QZiK3y": {
+    "defaultMessage": "Lebensraum-Geschichte"
+  },
   "Qr6tBm": {
     "defaultMessage": "Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datensätzen nicht zur Verfügung"
   },
@@ -221,11 +239,17 @@
   "Sa/aX1": {
     "defaultMessage": "Daten ausblenden"
   },
+  "SmpPB8": {
+    "defaultMessage": "Teil-Populationen"
+  },
+  "T3cW7G": {
+    "defaultMessage": "Teil-Populations-Geschichte"
+  },
   "TVoh4o": {
     "defaultMessage": "Filter verlassen"
   },
   "TZgWxf": {
-    "defaultMessage": "Ort"
+    "defaultMessage": "Raum"
   },
   "Tb8kLm": {
     "defaultMessage": "Tabelle"
@@ -247,6 +271,9 @@
   },
   "WrtHNX": {
     "defaultMessage": "Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und Wünsche {link}."
+  },
+  "XVWX78": {
+    "defaultMessage": "Teil-Population"
   },
   "Xd0J7Y": {
     "defaultMessage": "Open Source"
@@ -356,11 +383,17 @@
   "ryVgK4": {
     "defaultMessage": "Baum einblenden"
   },
+  "sH1lgT": {
+    "defaultMessage": "Lebensräume"
+  },
   "sST5WH": {
     "defaultMessage": "...importieren, prüfen und (Teil-)Populationen zuordnen."
   },
   "sY7iHm": {
     "defaultMessage": "Art-Verantwortliche Fachpersonen"
+  },
+  "t3dC5V": {
+    "defaultMessage": "Lebensraum-Bericht-Menge"
   },
   "upa2nh": {
     "defaultMessage": "Massnahme"
@@ -373,6 +406,9 @@
   },
   "xGLUF7": {
     "defaultMessage": "Nächste Jahresgruppe"
+  },
+  "xJlIXz": {
+    "defaultMessage": "Teil-Populations-Bericht-Menge"
   },
   "xTeBn/": {
     "defaultMessage": "Typ"
