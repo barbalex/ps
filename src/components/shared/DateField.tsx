@@ -1,6 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field } = fluentUiReactComponents
 import { DatePicker } from '@fluentui/react-datepicker-compat'
+import { useIntl } from 'react-intl'
 
 import styles from './DateField.module.css'
 
@@ -16,6 +17,7 @@ export const DateField = ({
   button,
 }) => {
   // console.log('DateField', { value, label, name })
+  const { formatMessage } = useIntl()
 
   return (
     <Field
@@ -25,7 +27,7 @@ export const DateField = ({
     >
       <div className={styles.row}>
         <DatePicker
-          placeholder="Select a date or click to write..."
+          placeholder={formatMessage({ id: 'Hs0f0A', defaultMessage: 'Datum wählen oder tippen...' })}
           name={name}
           value={value}
           onChange={onChange}
