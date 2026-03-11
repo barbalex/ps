@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createPlaceLevel } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -17,6 +18,7 @@ export const Header = ({ autoFocusRef }: Props) => {
   const { projectId, placeLevelId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const placeLevelsRes = useLiveQuery(
@@ -112,7 +114,7 @@ export const Header = ({ autoFocusRef }: Props) => {
       title="Place level"
       addRow={addRow}
       addRowDisabled={rowCount >= 2}
-      addRowDisabledReason="Maximum reached: only 2 place levels are allowed"
+      addRowDisabledReason={formatMessage({ id: 'HmFNdU', defaultMessage: 'Maximum erreicht: nur 2 Raum-Stufen sind erlaubt' })}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}

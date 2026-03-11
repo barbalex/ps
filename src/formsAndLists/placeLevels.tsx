@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { createPlaceLevel } from '../modules/createRows.ts'
 import { usePlaceLevelsNavData } from '../modules/usePlaceLevelsNavData.ts'
@@ -12,6 +13,7 @@ const from = '/data/projects/$projectId_/place-levels/'
 export const PlaceLevels = () => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   const { loading, navData } = usePlaceLevelsNavData({ projectId })
   const { navs, label, nameSingular } = navData
@@ -33,7 +35,7 @@ export const PlaceLevels = () => {
         nameSingular={nameSingular}
         addRow={add}
         addRowDisabled={navs.length >= 2}
-        addRowDisabledReason="Maximum reached: only 2 place levels are allowed"
+        addRowDisabledReason={formatMessage({ id: 'HmFNdU', defaultMessage: 'Maximum erreicht: nur 2 Raum-Stufen sind erlaubt' })}
       />
       <div className="list-container">
         {loading ?

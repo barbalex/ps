@@ -110,9 +110,6 @@
   "DIgaIu": {
     "defaultMessage": "Mimetype"
   },
-  "DQ73WF": {
-    "defaultMessage": "{place}-Bericht-Menge"
-  },
   "Dx2eAf": {
     "defaultMessage": "Dies ist eine (hoffentlich) vollständige Liste der Koordinatenreferenzsysteme."
   },
@@ -139,6 +136,9 @@
   },
   "HjZkRK": {
     "defaultMessage": "...verbessern den Zustand von (Teil-)Populationen."
+  },
+  "HmFNdU": {
+    "defaultMessage": "Maximum erreicht: nur 2 Raum-Stufen sind erlaubt"
   },
   "Hs0f0A": {
     "defaultMessage": "Datum wählen oder tippen..."
@@ -364,9 +364,6 @@
   },
   "sY7iHm": {
     "defaultMessage": "Art-Verantwortliche Fachpersonen"
-  },
-  "tnPosW": {
-    "defaultMessage": "{place}-Geschichte"
   },
   "upa2nh": {
     "defaultMessage": "Massnahme"
