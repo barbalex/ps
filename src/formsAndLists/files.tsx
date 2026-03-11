@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { FaPlus } from 'react-icons/fa'
+import { useIntl } from 'react-intl'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -32,6 +33,7 @@ export const Files = ({
   const { navs, label, nameSingular } = navData
 
   const uploaderCtx = useContext(UploaderContext)
+  const { formatMessage } = useIntl()
   const api = uploaderCtx?.current?.getAPI?.()
   const onClickAdd = () => api?.initFlow?.()
 
@@ -42,24 +44,23 @@ export const Files = ({
       <ListHeader
         label={label}
         nameSingular={nameSingular}
-        menus={
-          [
-            <FilterButton key="filter" isFiltered={isFiltered} />,
-            <Button
-              key="add"
-              size="medium"
-              title="add File"
-              icon={<FaPlus />}
-              onClick={onClickAdd}
-            />,
-          ]
-        }
+        menus={[
+          <FilterButton key="filter" isFiltered={isFiltered} />,
+          <Button
+            key="add"
+            size="medium"
+            title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+            icon={<FaPlus />}
+            onClick={onClickAdd}
+          />,
+        ]}
       />
       <div className="list-container">
         <Uploader />
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label, url, mimetype }) => {
+        ) : (
+          navs.map(({ id, label, url, mimetype }) => {
             let imgSrc = undefined
             if (
               (mimetype?.includes?.('image') || mimetype?.includes?.('pdf')) &&
@@ -78,7 +79,7 @@ export const Files = ({
               />
             )
           })
-        }
+        )}
       </div>
     </div>
   )
