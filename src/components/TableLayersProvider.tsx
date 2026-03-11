@@ -1,10 +1,15 @@
 import { useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { createVectorLayer } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
-import { initialSyncingAtom, sqlInitializingAtom } from '../store.ts'
+import {
+  initialSyncingAtom,
+  sqlInitializingAtom,
+  languageAtom,
+} from '../store.ts'
 import type Projects from '../models/public/Projects.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
@@ -14,6 +19,8 @@ import type Projects from '../models/public/Projects.ts'
 export const TableLayersProvider = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
+  const [language] = useAtom(languageAtom)
+  const { formatMessage } = useIntl()
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -45,8 +52,8 @@ export const TableLayersProvider = () => {
           `
           SELECT 
             level, 
-            name_plural, 
-            name_singular, 
+            name_plural_${language}, 
+            name_singular_${language}, 
             observations,
             actions,
             checks
@@ -58,6 +65,10 @@ export const TableLayersProvider = () => {
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
+        const pl1Singular = placeLevel1?.[`name_singular_${language}`]
+        const pl1Plural = placeLevel1?.[`name_plural_${language}`]
+        const pl2Singular = placeLevel2?.[`name_singular_${language}`]
+        const pl2Plural = placeLevel2?.[`name_plural_${language}`]
         // tables: places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
         // 1.1 places1: is always needed
         const places1VectorLayersCount = await db.query(
@@ -78,7 +89,9 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'places',
             ownTableLevel: 1,
-            label: placeLevel1?.name_plural ?? 'Places',
+            label:
+              pl1Plural ??
+              formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
             skipOperationQueue: true,
           })
         }
@@ -102,9 +115,12 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'actions',
             ownTableLevel: 1,
-            label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} Actions`
-              : 'Actions',
+            label: pl1Singular
+              ? formatMessage(
+                  { id: '1noM6i', defaultMessage: '{place}-Massnahmen' },
+                  { place: pl1Singular },
+                )
+              : formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
             skipOperationQueue: true,
           })
         }
@@ -128,9 +144,12 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'checks',
             ownTableLevel: 1,
-            label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} Checks`
-              : 'Checks',
+            label: pl1Singular
+              ? formatMessage(
+                  { id: 'WJk01v', defaultMessage: '{place}-Kontrollen' },
+                  { place: pl1Singular },
+                )
+              : formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
             skipOperationQueue: true,
           })
         }
@@ -155,9 +174,18 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned',
               ownTableLevel: 1,
-              label: placeLevel1?.name_singular
-                ? `${placeLevel1.name_singular} Observations Assigned`
-                : 'Observations Assigned',
+              label: pl1Singular
+                ? formatMessage(
+                    {
+                      id: '5xrddR',
+                      defaultMessage: '{place}-Beobachtungen zugewiesen',
+                    },
+                    { place: pl1Singular },
+                  )
+                : formatMessage({
+                    id: 'OaXR/X',
+                    defaultMessage: 'Beobachtungen zugewiesen',
+                  }),
               skipOperationQueue: true,
             })
           }
@@ -182,9 +210,26 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned_lines',
               ownTableLevel: 1,
-              label: placeLevel1?.name_singular
-                ? `${placeLevel1.name_singular} Observation Assignments Lines`
-                : 'Observation Assignments Lines',
+              label: pl1Singular
+                ? formatMessage(
+                    {
+                      id: '3aMKkP',
+                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
+                    },
+                    { place: pl1Singular },
+                  )
+                : formatMessage(
+                    {
+                      id: '3aMKkP',
+                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
+                    },
+                    {
+                      place: formatMessage({
+                        id: 'h5g7Kk',
+                        defaultMessage: 'Räume',
+                      }),
+                    },
+                  ),
               skipOperationQueue: true,
             })
           }
@@ -208,7 +253,10 @@ export const TableLayersProvider = () => {
               projectId,
               type: 'own',
               ownTable: 'observations_to_assess',
-              label: 'Observations To Assess',
+              label: formatMessage({
+                id: 'aeUjud',
+                defaultMessage: 'Zu beurteilende Beobachtungen',
+              }),
               skipOperationQueue: true,
             })
           }
@@ -234,7 +282,10 @@ export const TableLayersProvider = () => {
               projectId,
               type: 'own',
               ownTable: 'observations_not_to_assign',
-              label: 'Observations Not To Assign',
+              label: formatMessage({
+                id: '3oZh5s',
+                defaultMessage: 'Nicht zuzuweisende Beobachtungen',
+              }),
               skipOperationQueue: true,
             })
           }
@@ -260,7 +311,9 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'places',
               ownTableLevel: 2,
-              label: placeLevel2?.name_plural ?? 'Places',
+              label:
+                pl2Plural ??
+                formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
               skipOperationQueue: true,
             })
           }
@@ -286,9 +339,12 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'actions',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Actions`
-                : 'Actions',
+              label: pl2Singular
+                ? formatMessage(
+                    { id: '1noM6i', defaultMessage: '{place}-Massnahmen' },
+                    { place: pl2Singular },
+                  )
+                : formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
               skipOperationQueue: true,
             })
           }
@@ -314,9 +370,12 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'checks',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Checks`
-                : 'Checks',
+              label: pl2Singular
+                ? formatMessage(
+                    { id: 'WJk01v', defaultMessage: '{place}-Kontrollen' },
+                    { place: pl2Singular },
+                  )
+                : formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
               skipOperationQueue: true,
             })
           }
@@ -342,9 +401,18 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Observations Assigned`
-                : 'Observations Assigned',
+              label: pl2Singular
+                ? formatMessage(
+                    {
+                      id: '5xrddR',
+                      defaultMessage: '{place}-Beobachtungen zugewiesen',
+                    },
+                    { place: pl2Singular },
+                  )
+                : formatMessage({
+                    id: 'OaXR/X',
+                    defaultMessage: 'Beobachtungen zugewiesen',
+                  }),
               skipOperationQueue: true,
             })
           }
@@ -369,9 +437,26 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned_lines',
               ownTableLevel: 2,
-              label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} Observation Assignments Lines`
-                : 'Observation Assignments Lines',
+              label: pl2Singular
+                ? formatMessage(
+                    {
+                      id: '3aMKkP',
+                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
+                    },
+                    { place: pl2Singular },
+                  )
+                : formatMessage(
+                    {
+                      id: '3aMKkP',
+                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
+                    },
+                    {
+                      place: formatMessage({
+                        id: 'h5g7Kk',
+                        defaultMessage: 'Räume',
+                      }),
+                    },
+                  ),
               skipOperationQueue: true,
             })
           }

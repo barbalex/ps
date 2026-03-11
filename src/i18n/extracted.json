@@ -5,6 +5,9 @@
   "04Jmk6": {
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
+  "1noM6i": {
+    "defaultMessage": "{place}-Massnahmen"
+  },
   "1uPFgu": {
     "defaultMessage": "Baum"
   },
@@ -26,11 +29,20 @@
   "2sWIxu": {
     "defaultMessage": "Heute"
   },
+  "3aMKkP": {
+    "defaultMessage": "{place}-Beobachtungs-Zuordnungslinien"
+  },
+  "3oZh5s": {
+    "defaultMessage": "Nicht zuzuweisende Beobachtungen"
+  },
   "3srcwg": {
     "defaultMessage": "Ziele"
   },
   "4+BE1s": {
     "defaultMessage": "Liste"
+  },
+  "5xrddR": {
+    "defaultMessage": "{place}-Beobachtungen zugewiesen"
   },
   "61ELuB": {
     "defaultMessage": "Feld"
@@ -185,6 +197,9 @@
   "OW3d3V": {
     "defaultMessage": "Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
   },
+  "OaXR/X": {
+    "defaultMessage": "Beobachtungen zugewiesen"
+  },
   "Ob2kQz": {
     "defaultMessage": "Obsolet"
   },
@@ -245,6 +260,9 @@
   "VncgQ7": {
     "defaultMessage": "...erfassen den Zustand von (Teil-)Populationen und die Wirkung von Massnahmen."
   },
+  "WJk01v": {
+    "defaultMessage": "{place}-Kontrollen"
+  },
   "Wn2kTv": {
     "defaultMessage": "vorherig"
   },
@@ -287,6 +305,12 @@
   "Zv6sNt": {
     "defaultMessage": "löschen"
   },
+  "aP5Ov5": {
+    "defaultMessage": "Zu bewertende Beobachtungen"
+  },
+  "aeUjud": {
+    "defaultMessage": "Zu beurteilende Beobachtungen"
+  },
   "bC0sCs": {
     "defaultMessage": "Mobilfähig"
   },
@@ -307,6 +331,9 @@
   },
   "gxCh0c": {
     "defaultMessage": "Teilprojekt"
+  },
+  "h5g7Kk": {
+    "defaultMessage": "Räume"
   },
   "hIsRqy": {
     "defaultMessage": "Designen starten"
