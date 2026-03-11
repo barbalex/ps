@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -25,6 +26,7 @@ export const File = ({ from }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -121,7 +123,7 @@ export const File = ({ from }) => {
           )}
         {/* TODO: remove all id fields from form after implementing files everywhere */}
         <DropdownField
-          label="Project"
+          label={formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })}
           name="project_id"
           table="projects"
           value={row.project_id ?? ''}
@@ -130,7 +132,7 @@ export const File = ({ from }) => {
           validationMessage={validations?.project_id?.message}
         />
         <DropdownField
-          label="Subproject"
+          label={formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}
           name="subproject_id"
           table="subprojects"
           where={`project_id ${row?.project_id ? `= '${row.project_id}'` : 'IS NULL'}`}
@@ -140,7 +142,7 @@ export const File = ({ from }) => {
           validationMessage={validations?.subproject_id?.message}
         />
         <DropdownField
-          label="Place"
+          label={formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}
           name="place_id"
           table="places"
           where={`subproject_id ${row?.subproject_id ? `= '${row?.subproject_id}'` : 'IS NULL'}`}
@@ -150,7 +152,7 @@ export const File = ({ from }) => {
           validationMessage={validations?.place_id?.message}
         />
         <DropdownField
-          label="Action"
+          label={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
           name="action_id"
           table="actions"
           where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
@@ -160,7 +162,7 @@ export const File = ({ from }) => {
           validationMessage={validations?.action_id?.message}
         />
         <DropdownField
-          label="Check"
+          label={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
           name="check_id"
           table="checks"
           where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
@@ -169,15 +171,31 @@ export const File = ({ from }) => {
           validationState={validations?.check_id?.state}
           validationMessage={validations?.check_id?.message}
         />
-        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
-        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
         <TextFieldInactive
-          label="Mimetype"
+          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
+          name="name"
+          value={row.name ?? ''}
+        />
+        <TextFieldInactive
+          label={formatMessage({ id: '2D6IvE', defaultMessage: 'Grösse' })}
+          name="size"
+          value={row.size ?? ''}
+        />
+        <TextFieldInactive
+          label={formatMessage({ id: 'DIgaIu', defaultMessage: 'Mimetype' })}
           name="mimetype"
           value={row.mimetype ?? ''}
         />
-        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
-        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
+        <TextFieldInactive
+          label={formatMessage({ id: 'TpzCEx', defaultMessage: 'Url' })}
+          name="url"
+          value={row.url ?? ''}
+        />
+        <TextFieldInactive
+          label={formatMessage({ id: 'gw/Eg0', defaultMessage: 'Uuid' })}
+          name="uuid"
+          value={row.uuid ?? ''}
+        />
         <Jsonb
           table="files"
           idField="file_id"

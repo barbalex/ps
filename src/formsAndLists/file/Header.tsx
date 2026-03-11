@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { MdPreview, MdEditNote } from 'react-icons/md'
+import { useIntl } from 'react-intl'
 
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -25,6 +26,7 @@ export const Header = ({ row, previewRef, from }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
+  const { formatMessage } = useIntl()
   const addOperation = useSetAtom(addOperationAtom)
 
   const onClickPreview = () => {
@@ -144,7 +146,11 @@ export const Header = ({ row, previewRef, from }) => {
 
   return (
     <FormHeader
-      title={isPreview ? `File: ${row?.label ?? ''}` : 'File'}
+      title={
+        isPreview
+          ? formatMessage({ id: 'ndNatR', defaultMessage: 'Datei: {label}' }, { label: row?.label ?? '' })
+          : formatMessage({ id: '9Gu1cL', defaultMessage: 'Datei' })
+      }
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
@@ -153,7 +159,11 @@ export const Header = ({ row, previewRef, from }) => {
       siblings={
         <>
           <Button
-            title={isPreview ? 'View form' : 'View file'}
+            title={
+              isPreview
+                ? formatMessage({ id: '9NCbxo', defaultMessage: 'Formular anzeigen' })
+                : formatMessage({ id: 'OOvRTo', defaultMessage: 'Datei anzeigen' })
+            }
             icon={isPreview ? <MdEditNote /> : <MdPreview />}
             onClick={onClickPreview}
           />
