@@ -8,6 +8,9 @@
   "1yf63B": {
     "defaultMessage": "...beschreiben die gewünschte Entwicklung der (Teil-)Populationen."
   },
+  "20y992": {
+    "defaultMessage": "Endet"
+  },
   "2D6IvE": {
     "defaultMessage": "Grösse"
   },
@@ -40,6 +43,9 @@
   },
   "7zeTqY": {
     "defaultMessage": "Karte verkleinern"
+  },
+  "88zF4u": {
+    "defaultMessage": "Beginnt"
   },
   "9E6xFT": {
     "defaultMessage": "Karte ausblenden"
@@ -293,6 +299,9 @@
   "oPMDm+": {
     "defaultMessage": "Kontrollen"
   },
+  "p61gsZ": {
+    "defaultMessage": "Enddatum muss nach dem Startdatum liegen"
+  },
   "pPWZGx": {
     "defaultMessage": "...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
   },
@@ -328,6 +337,9 @@
   },
   "w63miQ": {
     "defaultMessage": "Daten"
+  },
+  "xTeBn/": {
+    "defaultMessage": "Typ"
   },
   "yoo7JY": {
     "defaultMessage": "Der Code ist offen. Sie können das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."

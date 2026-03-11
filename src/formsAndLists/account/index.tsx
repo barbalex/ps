@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
@@ -22,6 +23,7 @@ export const Account = () => {
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM accounts WHERE account_id = $1`, [
@@ -44,7 +46,7 @@ export const Account = () => {
           ...prev,
           [name]: {
             state: 'error',
-            message: 'End date must be after start date',
+            message: formatMessage({ id: 'p61gsZ', defaultMessage: 'Enddatum muss nach dem Startdatum liegen' }),
           },
         }))
         return
@@ -101,7 +103,7 @@ export const Account = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <DropdownField
-          label="User"
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
           table="users"
           value={row.user_id ?? ''}
@@ -112,7 +114,7 @@ export const Account = () => {
           validationMessage={validations?.user_id?.message}
         />
         <RadioGroupField
-          label="Type"
+          label={formatMessage({ id: 'xTeBn/', defaultMessage: 'Typ' })}
           name="type"
           list={['trial', 'free', 'basic', 'premium']}
           value={row.type ?? ''}
@@ -121,7 +123,7 @@ export const Account = () => {
           validationMessage={validations?.type?.message}
         />
         <DateField
-          label="Starts"
+          label={formatMessage({ id: '88zF4u', defaultMessage: 'Beginnt' })}
           name="period_start"
           value={row.period_start}
           onChange={onChange}
@@ -129,7 +131,7 @@ export const Account = () => {
           validationMessage={validations?.period_start?.message}
         />
         <DateField
-          label="Ends"
+          label={formatMessage({ id: '20y992', defaultMessage: 'Endet' })}
           name="period_end"
           value={row.period_end}
           onChange={onChange}
