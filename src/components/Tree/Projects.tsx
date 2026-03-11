@@ -56,7 +56,7 @@ export const ProjectsNode = () => {
         to={ownUrl}
         toParams={undefined}
         onClickButton={onClickButton}
-        sibling={<DesigningButton />}
+        sibling={<DesigningButton inTree />}
       />
       {showNavs &&
         navs.map((nav, i) => (
