@@ -5,6 +5,8 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
+import { useIntl } from 'react-intl'
+
 import { designingAtom } from '../../store.ts'
 
 export const DesigningButton = () => {
@@ -18,6 +20,7 @@ export const DesigningButton = () => {
   const projectCount = resultProjects?.rows?.[0]?.project_count ?? 0
   const userMayDesign = projectCount > 0
 
+  const { formatMessage } = useIntl()
   const onClickDesigning = () => setDesigning(!designing)
 
   // Return early after all hooks have been called
@@ -26,7 +29,9 @@ export const DesigningButton = () => {
   return (
     <Tooltip
       content={
-        designing ? 'Designing projects. Click to stop' : 'Start designing'
+        designing
+          ? formatMessage({ id: 'G3GlSA', defaultMessage: 'Projekte designen. Klicken zum Beenden' })
+          : formatMessage({ id: 'hIsRqy', defaultMessage: 'Designen starten' })
       }
     >
       <ToggleButton
