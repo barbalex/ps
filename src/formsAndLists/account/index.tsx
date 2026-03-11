@@ -46,7 +46,10 @@ export const Account = () => {
           ...prev,
           [name]: {
             state: 'error',
-            message: formatMessage({ id: 'p61gsZ', defaultMessage: 'Enddatum muss nach dem Startdatum liegen' }),
+            message: formatMessage({
+              id: 'p61gsZ',
+              defaultMessage: 'Enddatum muss nach dem Startdatum liegen',
+            }),
           },
         }))
         return
@@ -90,14 +93,10 @@ export const Account = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Account"
-        id={accountId}
-      />
-    )
+    return <NotFound table="Account" id={accountId} />
   }
 
+  // TODO: translate account types
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
