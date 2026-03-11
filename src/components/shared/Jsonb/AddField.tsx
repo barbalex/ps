@@ -3,6 +3,7 @@ const { Button } = fluentUiReactComponents
 import { FaPlus } from 'react-icons/fa'
 import { useAtom } from 'jotai'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { createField } from '../../../modules/createRows.ts'
 import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
@@ -21,6 +22,7 @@ export const AddField = ({ tableName, level, from }) => {
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const addRow = async () => {
     const isAccountTable = accountTables.includes(tableName)
@@ -40,10 +42,10 @@ export const AddField = ({ tableName, level, from }) => {
       size="medium"
       icon={<FaPlus />}
       onClick={addRow}
-      title="Add Field"
+      title={formatMessage({ id: 'lWQzTz', defaultMessage: 'Feld hinzufügen' })}
       className={styles.button}
     >
-      Add Field
+      {formatMessage({ id: 'lWQzTz', defaultMessage: 'Feld hinzufügen' })}
     </Button>
   )
 }
