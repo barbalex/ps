@@ -3,6 +3,7 @@ const { Button } = fluentUiReactComponents
 import { MdEdit } from 'react-icons/md'
 import { useAtom } from 'jotai'
 import { useNavigate, useLocation } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { designingAtom } from '../../../../store.ts'
 
@@ -10,6 +11,7 @@ export const EditField = ({ fieldId }) => {
   const [designing] = useAtom(designingAtom)
   const navigate = useNavigate()
   const location = useLocation()
+  const { formatMessage } = useIntl()
 
   const onClick = () => navigate({ search: { editingField: fieldId } })
 
@@ -21,7 +23,7 @@ export const EditField = ({ fieldId }) => {
       size="medium"
       icon={<MdEdit />}
       onClick={onClick}
-      title="Edit Field"
+      title={formatMessage({ id: '72yYP5', defaultMessage: 'Feld bearbeiten' })}
     />
   )
 }

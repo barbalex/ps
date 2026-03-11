@@ -13,6 +13,7 @@ const {
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { FieldFormFetchingOwnData } from '../../formsAndLists/field/FormFetchingOwnData.tsx'
 import { addOperationAtom } from '../../store.ts'
@@ -22,6 +23,7 @@ export const FieldFormInForm = ({ field }) => {
   const navigate = useNavigate()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const onClickDelete = () => {
     db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])
@@ -43,27 +45,25 @@ export const FieldFormInForm = ({ field }) => {
   return (
     <div className={styles.container}>
       <div className={styles.titleRow}>
-        <h2 className={styles.title}>{`Editing Field ${
-          fieldLabel ? `'${fieldLabel}'` : ''
-        }`}</h2>
+        <h2 className={styles.title}>{`${formatMessage({ id: '72yYP5', defaultMessage: 'Feld bearbeiten' })}${fieldLabel ? ` '${fieldLabel}'` : ''}`}</h2>
         <div className={styles.menu}>
           <Menu>
             <MenuTrigger disableButtonEnhancement>
-              <Button size="medium" icon={<FaMinus />} title="Delete" />
+              <Button size="medium" icon={<FaMinus />} title={formatMessage({ id: 'Zv6sNt', defaultMessage: 'löschen' })} />
             </MenuTrigger>
 
             <MenuPopover>
               <MenuList>
-                <MenuGroupHeader>Delete this field?</MenuGroupHeader>
-                <MenuItem onClick={onClickDelete}>Yes </MenuItem>
-                <MenuItem>Noooooo!</MenuItem>
+                <MenuGroupHeader>{formatMessage({ id: 'Au7tOu', defaultMessage: 'Löschen?' })}</MenuGroupHeader>
+                <MenuItem onClick={onClickDelete}>{formatMessage({ id: 'Bv8uPv', defaultMessage: 'Ja' })}</MenuItem>
+                <MenuItem>{formatMessage({ id: 'Cw9vQw', defaultMessage: 'Nein' })}</MenuItem>
               </MenuList>
             </MenuPopover>
           </Menu>
           <Button
             size="medium"
             icon={<MdEditOff />}
-            title="Stop editing"
+            title={formatMessage({ id: 'd9gLtS', defaultMessage: 'Bearbeitung beenden' })}
             onClick={onClickStopEditing}
           />
         </div>
