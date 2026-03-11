@@ -130,10 +130,8 @@
   "h5g7Kk": "Spazi",
   "Lf+2pw": "Livello dello spazio",
   "aYuCCc": "Livelli dello spazio",
-  "rdKbTc": "Storico dello spazio",
   "KkLxJl": "Storico",
   "GzqqXj": "Rapporto del posto",
-  "yWJLBx": "Valore del rapporto dello spazio",
   "x2bRco": "Utente del posto",
   "qyfs2A": "Configurazione del progetto",
   "bB0++E": "Rapporto di progetto",
@@ -222,10 +220,6 @@
   "SmpPB8": "Sotto-popolazioni",
   "FndrDp": "Habitat",
   "sH1lgT": "Habitat",
-  "2RuOwq": "Storico della popolazione",
-  "T3cW7G": "Storico della sotto-popolazione",
-  "QZiK3y": "Storico dell'habitat",
-  "2ACjNy": "Valore del rapporto della popolazione",
-  "xJlIXz": "Valore del rapporto della sotto-popolazione",
-  "t3dC5V": "Valore del rapporto dell'habitat"
+  "tnPosW": "Storico di {place}",
+  "DQ73WF": "Valore del rapporto di {place}"
 }

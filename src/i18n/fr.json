@@ -130,10 +130,8 @@
   "h5g7Kk": "Espaces",
   "Lf+2pw": "Niveau d'espace",
   "aYuCCc": "Niveaux d'espace",
-  "rdKbTc": "Historique d'espace",
   "KkLxJl": "Historique",
   "GzqqXj": "Rapport de lieu",
-  "yWJLBx": "Valeur de rapport d'espace",
   "x2bRco": "Utilisateur du lieu",
   "qyfs2A": "Configuration du projet",
   "bB0++E": "Rapport de projet",
@@ -222,10 +220,6 @@
   "SmpPB8": "Sous-populations",
   "FndrDp": "Habitat",
   "sH1lgT": "Habitats",
-  "2RuOwq": "Historique de la population",
-  "T3cW7G": "Historique de la sous-population",
-  "QZiK3y": "Historique de l'habitat",
-  "2ACjNy": "Valeur de rapport de la population",
-  "xJlIXz": "Valeur de rapport de la sous-population",
-  "t3dC5V": "Valeur de rapport de l'habitat"
+  "tnPosW": "Historique de {place}",
+  "DQ73WF": "Valeur de rapport de {place}"
 }

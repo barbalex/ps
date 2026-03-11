@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { getPlaceFallbackNames } from './placeNameFallback.ts'
 import {
   places1FilterAtom,
   places2FilterAtom,
@@ -101,14 +102,20 @@ export const usePlacesNavData = ({
     `
   const res = useLiveQuery(sql)
 
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
+  const level = placeId ? 2 : 1
+  const fallbackNames = getPlaceFallbackNames(projectType, level, formatMessage)
+
   const loading = res === undefined
 
   const nameSingular =
-    res?.rows?.[0]?.name_singular ??
-    formatMessage({ id: 'TZgWxf', defaultMessage: 'Raum' })
+    res?.rows?.[0]?.name_singular ?? fallbackNames.singular
   const namePlural =
-    res?.rows?.[0]?.name_plural ??
-    formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' })
+    res?.rows?.[0]?.name_plural ?? fallbackNames.plural
 
   const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0

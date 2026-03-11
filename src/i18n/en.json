@@ -130,10 +130,8 @@
   "h5g7Kk": "Spaces",
   "Lf+2pw": "Space Level",
   "aYuCCc": "Space Levels",
-  "rdKbTc": "Space History",
   "KkLxJl": "History",
   "GzqqXj": "Place Report",
-  "yWJLBx": "Space Report Value",
   "x2bRco": "Place User",
   "qyfs2A": "Project Configuration",
   "bB0++E": "Project Report",
@@ -222,10 +220,6 @@
   "SmpPB8": "Sub-populations",
   "FndrDp": "Habitat",
   "sH1lgT": "Habitats",
-  "2RuOwq": "Population History",
-  "T3cW7G": "Sub-population History",
-  "QZiK3y": "Habitat History",
-  "2ACjNy": "Population Report Value",
-  "xJlIXz": "Sub-population Report Value",
-  "t3dC5V": "Habitat Report Value"
+  "tnPosW": "{place} History",
+  "DQ73WF": "{place} Report Value"
 }

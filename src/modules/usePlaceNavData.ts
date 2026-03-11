@@ -16,6 +16,7 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { getPlaceFallbackNames } from './placeNameFallback.ts'
 
 type Props = {
   projectId: string
@@ -140,12 +141,22 @@ export const usePlaceNavData = ({
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
+  const currentLevel: 1 | 2 = placeId2 ? 2 : 1
+  const fallbackCurrent = getPlaceFallbackNames(
+    projectType,
+    currentLevel,
+    formatMessage,
+  )
+  const fallbackChild = getPlaceFallbackNames(projectType, 2, formatMessage)
+
   const nav: NavData | undefined = res?.rows?.[0]
-  const nameSingular =
-    nav?.name_singular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Raum' })
-  const childNamePlural =
-    nav?.child_name_plural ??
-    formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' })
+  const nameSingular = nav?.name_singular ?? fallbackCurrent.singular
+  const childNamePlural = nav?.child_name_plural ?? fallbackChild.plural
 
   const parentArray = [
     'data',
