@@ -5,6 +5,7 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
+import { getPlaceReportValueNameSingular } from './placeNameFallback.ts'
 
 type Props = {
   projectId: string
@@ -31,6 +32,13 @@ export const usePlaceReportValueNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
+  const level: 1 | 2 = placeId2 ? 2 : 1
+
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
 
   const res = useLiveQuery(
     `
@@ -83,10 +91,7 @@ export const usePlaceReportValueNavData = ({
     ownUrl,
     label,
     notFound,
-    nameSingular: formatMessage({
-      id: 'yWJLBx',
-      defaultMessage: 'Raum-Bericht-Menge',
-    }),
+    nameSingular: getPlaceReportValueNameSingular(projectType, level, formatMessage),
   }
 
   return { loading, navData }

@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
+import { getPlaceReportValueNameSingular } from './placeNameFallback.ts'
 
 type Props = {
   projectId: string
@@ -30,6 +31,13 @@ export const usePlaceReportValuesNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
+  const level: 1 | 2 = placeId2 ? 2 : 1
+
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
 
   const res = useLiveQuery(
     `
@@ -79,10 +87,11 @@ export const usePlaceReportValuesNavData = ({
       namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
       loading,
     }),
-    nameSingular: formatMessage({
-      id: 'yWJLBx',
-      defaultMessage: 'Raum-Bericht-Menge',
-    }),
+    nameSingular: getPlaceReportValueNameSingular(
+      projectType,
+      level,
+      formatMessage,
+    ),
     navs,
   }
 

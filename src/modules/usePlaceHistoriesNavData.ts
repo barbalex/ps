@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
+import { getPlaceHistoryNameSingular } from './placeNameFallback.ts'
 
 type Props = {
   projectId: string
@@ -30,6 +31,13 @@ export const usePlaceHistoriesNavData = ({
   const { formatMessage } = useIntl()
 
   const effectivePlaceId = placeId2 ?? placeId
+  const level: 1 | 2 = placeId2 ? 2 : 1
+
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
 
   const res = useLiveQuery(
     `
@@ -78,10 +86,11 @@ export const usePlaceHistoriesNavData = ({
       countFiltered: navs.length,
       namePlural: formatMessage({ id: 'KkLxJl', defaultMessage: 'Geschichte' }),
     }),
-    nameSingular: formatMessage({
-      id: 'rdKbTc',
-      defaultMessage: 'Raum-Geschichte',
-    }),
+    nameSingular: getPlaceHistoryNameSingular(
+      projectType,
+      level,
+      formatMessage,
+    ),
     navs,
   }
 

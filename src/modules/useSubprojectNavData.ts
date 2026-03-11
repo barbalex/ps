@@ -14,6 +14,7 @@ import {
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { subprojectNameSingularExpr } from './subprojectNameCols.ts'
+import { getPlaceFallbackNames } from './placeNameFallback.ts'
 
 type Props = {
   projectId: string
@@ -128,6 +129,12 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
 
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
+
   const subprojectNameSingular =
     nav?.name_singular ??
     formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
@@ -168,7 +175,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           countUnfiltered: nav?.places_count_unfiltered ?? 0,
           namePlural:
             nav?.place_name_plural ??
-            formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
+            getPlaceFallbackNames(projectType, 1, formatMessage).plural,
         }),
       },
       {
