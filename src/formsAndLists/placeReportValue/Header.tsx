@@ -2,15 +2,32 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createPlaceReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
+import { getPlaceReportValueNameSingular } from '../../modules/placeNameFallback.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { placeReportId, placeReportValueId } = useParams({ from })
+  const { projectId, placeId2, placeReportId, placeReportValueId } = useParams({
+    from,
+  })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
+
+  const projectTypeRes = useLiveQuery(
+    `SELECT type FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type
+  const level: 1 | 2 = placeId2 ? 2 : 1
+  const title = getPlaceReportValueNameSingular(
+    projectType,
+    level,
+    formatMessage,
+  )
 
   const db = usePGlite()
 
@@ -113,7 +130,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Place Report Value"
+      title={title}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
