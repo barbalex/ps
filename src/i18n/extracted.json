@@ -17,6 +17,12 @@
   "3srcwg": {
     "defaultMessage": "Ziele"
   },
+  "4+BE1s": {
+    "defaultMessage": "Liste"
+  },
+  "61ELuB": {
+    "defaultMessage": "Feld"
+  },
   "6ddsDI": {
     "defaultMessage": "Ihre Daten gehören Ihnen"
   },
@@ -47,11 +53,20 @@
   "9oKaIi": {
     "defaultMessage": "Konto"
   },
+  "9oUdHT": {
+    "defaultMessage": "Widget-Typ"
+  },
   "9rPzs2": {
     "defaultMessage": "Optionen"
   },
+  "Au7tOu": {
+    "defaultMessage": "Löschen?"
+  },
   "BNlEeN": {
     "defaultMessage": "...beschreiben (Teil-)Populationen, organisieren Kontrollen und Massnahmen, analysieren und berichten."
+  },
+  "Bv8uPv": {
+    "defaultMessage": "Ja"
   },
   "CHlBuE": {
     "defaultMessage": "arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeiten Sie effizient auf Handy, Tablet oder Computer."
@@ -62,17 +77,38 @@
   "CiJ0SG": {
     "defaultMessage": "Berichte"
   },
+  "Cw9vQw": {
+    "defaultMessage": "Nein"
+  },
   "CxtPgu": {
     "defaultMessage": "Karte einblenden"
   },
+  "Dx2eAf": {
+    "defaultMessage": "Dies ist eine (hoffentlich) vollständige Liste der Koordinatenreferenzsysteme."
+  },
+  "Ey3fBg": {
+    "defaultMessage": "Sie können zu Projekten hinzugefügt werden."
+  },
   "FJVXzQ": {
     "defaultMessage": "Daten einblenden"
+  },
+  "Fl3jPw": {
+    "defaultMessage": "Bezeichnung"
+  },
+  "Fz4gCh": {
+    "defaultMessage": "Code"
+  },
+  "Gv5hDi": {
+    "defaultMessage": "Proj4-Wert"
   },
   "H5/rUM": {
     "defaultMessage": "Flexible Konfiguration"
   },
   "HjZkRK": {
     "defaultMessage": "...verbessern den Zustand von (Teil-)Populationen."
+  },
+  "HsHmZy": {
+    "defaultMessage": "Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet. Profitieren Sie von {link}."
   },
   "IBnz5i": {
     "defaultMessage": "Karte maximieren"
@@ -83,8 +119,17 @@
   "L7Xr8Z": {
     "defaultMessage": "Beobachtungen Dritter"
   },
+  "LTiTmL": {
+    "defaultMessage": "Feld-Typ"
+  },
+  "Lv9nRx": {
+    "defaultMessage": "Ort-Stufe"
+  },
   "M8TMJe": {
     "defaultMessage": "Zurück"
+  },
+  "NdL8pA": {
+    "defaultMessage": "Benötigt eine Liste"
   },
   "NkWsj+": {
     "defaultMessage": "Karte"
@@ -95,11 +140,32 @@
   "OW3d3V": {
     "defaultMessage": "Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
   },
+  "Ob2kQz": {
+    "defaultMessage": "Obsolet"
+  },
   "OogWmh": {
     "defaultMessage": "Ich bin interessiert!"
   },
   "Oy8x+u": {
     "defaultMessage": "Bring your own device"
+  },
+  "OzBS9Z": {
+    "defaultMessage": "CRS"
+  },
+  "Pq7nWk": {
+    "defaultMessage": "Sortier-Reihenfolge"
+  },
+  "Ps5mVn": {
+    "defaultMessage": "Standardwert"
+  },
+  "Qr6tBm": {
+    "defaultMessage": "Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datensätzen nicht zur Verfügung"
+  },
+  "Rm4jTs": {
+    "defaultMessage": "Bemerkungen"
+  },
+  "Rq3wXp": {
+    "defaultMessage": "Pflichtfeld"
   },
   "SGl8EX": {
     "defaultMessage": "Anmelden"
@@ -110,6 +176,12 @@
   "Sa/aX1": {
     "defaultMessage": "Daten ausblenden"
   },
+  "TVoh4o": {
+    "defaultMessage": "Filter verlassen"
+  },
+  "Tb8kLm": {
+    "defaultMessage": "Tabelle"
+  },
   "VP9dXS": {
     "defaultMessage": "Einfaches Onboarding"
   },
@@ -119,23 +191,47 @@
   "VncgQ7": {
     "defaultMessage": "...erfassen den Zustand von (Teil-)Populationen und die Wirkung von Massnahmen."
   },
+  "Wn2kTv": {
+    "defaultMessage": "vorherig"
+  },
   "WrtHNX": {
     "defaultMessage": "Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und Wünsche {link}."
   },
   "Xd0J7Y": {
     "defaultMessage": "Open Source"
   },
+  "XkV5yZ": {
+    "defaultMessage": "Name"
+  },
+  "Xm4pLq": {
+    "defaultMessage": "nächst"
+  },
+  "XrRHLB": {
+    "defaultMessage": "Filter bearbeiten"
+  },
+  "YCQ66b": {
+    "defaultMessage": "meiner Naturschutz- und Software-Erfahrung"
+  },
   "YMGqLf": {
     "defaultMessage": "Massnahmen-Bericht"
   },
+  "Yt5rMs": {
+    "defaultMessage": "neu"
+  },
   "ZiBLs/": {
     "defaultMessage": "Hier wird gebaut"
+  },
+  "Zv6sNt": {
+    "defaultMessage": "löschen"
   },
   "bC0sCs": {
     "defaultMessage": "Mobilfähig"
   },
   "eJfllL": {
     "defaultMessage": "Massnahmen"
+  },
+  "fz2AhZ": {
+    "defaultMessage": "Projekt"
   },
   "gjvJCk": {
     "defaultMessage": "arten-fördern.app funktioniert auf jedem Betriebssystem: Windows, MacOS, Linux, Android, iOS..."
@@ -164,6 +260,9 @@
   "pfBGqS": {
     "defaultMessage": "Feldtauglich"
   },
+  "qyI8KV": {
+    "defaultMessage": "Benutzer"
+  },
   "rEN8QI": {
     "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
   },
@@ -182,11 +281,11 @@
   "upa2nh": {
     "defaultMessage": "Massnahme"
   },
+  "vdqfwK": {
+    "defaultMessage": "Widget für Feld"
+  },
   "w63miQ": {
     "defaultMessage": "Daten"
-  },
-  "yGCUsX": {
-    "defaultMessage": "Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet."
   },
   "yoo7JY": {
     "defaultMessage": "Der Code ist offen. Sie können das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
@@ -196,74 +295,5 @@
   },
   "zq+cvN": {
     "defaultMessage": "Diese App ist noch in Entwicklung. Noch steckt sie voller Fehler. Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht und neu erstellt."
-  },
-  "XkV5yZ": {
-    "defaultMessage": "Name"
-  },
-  "Pq7nWk": {
-    "defaultMessage": "Sortier-Reihenfolge"
-  },
-  "Rm4jTs": {
-    "defaultMessage": "Bemerkungen"
-  },
-  "NdL8pA": {
-    "defaultMessage": "Benötigt eine Liste"
-  },
-  "Tb8kLm": {
-    "defaultMessage": "Tabelle"
-  },
-  "Lv9nRx": {
-    "defaultMessage": "Ort-Stufe"
-  },
-  "Fl3jPw": {
-    "defaultMessage": "Bezeichnung"
-  },
-  "Ps5mVn": {
-    "defaultMessage": "Standardwert"
-  },
-  "Ob2kQz": {
-    "defaultMessage": "Obsolet"
-  },
-  "Qr6tBm": {
-    "defaultMessage": "Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datens\u00e4tzen nicht zur Verf\u00fcgung"
-  },
-  "Rq3wXp": {
-    "defaultMessage": "Pflichtfeld"
-  },
-  "Wn2kTv": {
-    "defaultMessage": "vorherig"
-  },
-  "Xm4pLq": {
-    "defaultMessage": "n\u00e4chst"
-  },
-  "Yt5rMs": {
-    "defaultMessage": "neu"
-  },
-  "Zv6sNt": {
-    "defaultMessage": "l\u00f6schen"
-  },
-  "Au7tOu": {
-    "defaultMessage": "L\u00f6schen?"
-  },
-  "Bv8uPv": {
-    "defaultMessage": "Ja"
-  },
-  "Cw9vQw": {
-    "defaultMessage": "Nein"
-  },
-  "OzBS9Z": {
-    "defaultMessage": "CRS"
-  },
-  "Dx2eAf": {
-    "defaultMessage": "Dies ist eine (hoffentlich) vollst\u00e4ndige Liste der Koordinatenreferenzsysteme."
-  },
-  "Ey3fBg": {
-    "defaultMessage": "Sie k\u00f6nnen zu Projekten hinzugef\u00fcgt werden."
-  },
-  "Fz4gCh": {
-    "defaultMessage": "Code"
-  },
-  "Gv5hDi": {
-    "defaultMessage": "Proj4-Wert"
   }
 }
