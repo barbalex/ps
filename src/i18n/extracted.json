@@ -1,4 +1,7 @@
 {
+  "/WXiU2": {
+    "defaultMessage": "Vorheriges Jahr"
+  },
   "04Jmk6": {
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
@@ -19,6 +22,9 @@
   },
   "2iLc/W": {
     "defaultMessage": "Zweistufige Räume"
+  },
+  "2sWIxu": {
+    "defaultMessage": "Heute"
   },
   "3srcwg": {
     "defaultMessage": "Ziele"
@@ -137,6 +143,9 @@
   "IBnz5i": {
     "defaultMessage": "Karte maximieren"
   },
+  "IhOrKh": {
+    "defaultMessage": "Vorherige Jahresgruppe"
+  },
   "KFwvHV": {
     "defaultMessage": "Seltene und bedrohte Arten fördern"
   },
@@ -158,6 +167,9 @@
   "NkWsj+": {
     "defaultMessage": "Karte"
   },
+  "NpMe6e": {
+    "defaultMessage": "Nächster Monat"
+  },
   "OJ8aZD": {
     "defaultMessage": "Abmelden {email}"
   },
@@ -178,6 +190,9 @@
   },
   "OzBS9Z": {
     "defaultMessage": "CRS"
+  },
+  "PK3h1Q": {
+    "defaultMessage": "Vorheriger Monat"
   },
   "Pq7nWk": {
     "defaultMessage": "Sortier-Reihenfolge"
@@ -248,11 +263,17 @@
   "YMGqLf": {
     "defaultMessage": "Massnahmen-Bericht"
   },
+  "Yp0iTR": {
+    "defaultMessage": "Nächstes Jahr"
+  },
   "Yt5rMs": {
     "defaultMessage": "neu"
   },
   "ZCwpER": {
     "defaultMessage": "Kontrolle"
+  },
+  "ZSShqa": {
+    "defaultMessage": "Schliessen"
   },
   "ZiBLs/": {
     "defaultMessage": "Hier wird gebaut"
@@ -280,6 +301,9 @@
   },
   "gxCh0c": {
     "defaultMessage": "Teilprojekt"
+  },
+  "i43yle": {
+    "defaultMessage": "markiert"
   },
   "iaro8o": {
     "defaultMessage": "Teamwork"
@@ -340,6 +364,9 @@
   },
   "w63miQ": {
     "defaultMessage": "Daten"
+  },
+  "xGLUF7": {
+    "defaultMessage": "Nächste Jahresgruppe"
   },
   "xTeBn/": {
     "defaultMessage": "Typ"
