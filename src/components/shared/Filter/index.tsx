@@ -8,7 +8,7 @@ import { useAtom } from 'jotai'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
-import { projectsFilterAtom } from '../../../store.ts'
+import { projectsFilterAtom, languageAtom } from '../../../store.ts'
 import { OrFilter } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
@@ -133,6 +133,7 @@ export const Filter = ({
   filterAtomNameOverride,
 }) => {
   const params = useParams({ from })
+  const [language] = useAtom(languageAtom)
   const projectId = normalizeId(params?.projectId)
   const subprojectId = normalizeId(params?.subprojectId)
   const placeId = normalizeId(params?.placeId)
@@ -147,8 +148,8 @@ export const Filter = ({
     [projectId, placeId ? 2 : 1],
   )
   const placeLevel: PlaceLevels = resPlaceLevel?.rows?.[0]
-  // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
-  const placeNamePlural = placeLevel?.name_plural ?? 'Places'
+  // const placeNameSingular = placeLevel?.[`name_singular_${language}`] ?? 'Place'
+  const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
 
   const title = getTitle({ tableName, placeNamePlural })
 

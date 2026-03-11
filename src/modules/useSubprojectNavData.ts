@@ -70,7 +70,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
       WITH 
         places_count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL),
         places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL ${placesIsFiltered ? ` AND ${placesFilterString}` : ''} ),
-        place_name_plural AS (SELECT name_plural FROM place_levels WHERE project_id = '${projectId}' AND level = 1),
+        place_name_plural AS (SELECT name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' AND level = 1),
         subproject_reports_count_unfiltered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}'),
         subproject_reports_count_filtered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}' ${subprojectReportsIsFiltered ? ` AND ${subprojectReportsFilterString}` : ''}),
         subproject_histories_count AS (SELECT count(*) FROM subproject_histories WHERE subproject_id = '${subprojectId}'),
@@ -90,7 +90,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
-        place_name_plural.name_plural AS place_name_plural,
+        place_name_plural.name_plural_${language} AS place_name_plural,
         subproject_reports_count_unfiltered.count AS subproject_reports_count_unfiltered,
         subproject_reports_count_filtered.count AS subproject_reports_count_filtered,
         subproject_histories_count.count AS subproject_histories_count,

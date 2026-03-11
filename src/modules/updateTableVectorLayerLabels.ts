@@ -1,7 +1,8 @@
-import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
+import { addOperationAtom, store, pgliteDbAtom, languageAtom } from '../store.ts'
 
 export const updateTableVectorLayerLabels = async ({ project_id }) => {
   const db = store.get(pgliteDbAtom)
+  const language = store.get(languageAtom)
   const plRes = await db.query(
     `SELECT * FROM place_levels WHERE project_id = $1`,
     [project_id],
@@ -20,23 +21,23 @@ export const updateTableVectorLayerLabels = async ({ project_id }) => {
       let label
       switch (vl.own_table) {
         case 'places':
-          label = placeLevel.name_plural
+          label = placeLevel[`name_plural_${language}`]
           break
         case 'actions':
-          if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} actions`
+          if (placeLevel[`name_singular_${language}`])
+            label = `${placeLevel[`name_singular_${language}`]} actions`
           break
         case 'checks':
-          if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} checks`
+          if (placeLevel[`name_singular_${language}`])
+            label = `${placeLevel[`name_singular_${language}`]} checks`
           break
         case 'observations_assigned':
-          if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} observations assigned`
+          if (placeLevel[`name_singular_${language}`])
+            label = `${placeLevel[`name_singular_${language}`]} observations assigned`
           break
         case 'observations_assigned_lines':
-          if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} observation assignments lines`
+          if (placeLevel[`name_singular_${language}`])
+            label = `${placeLevel[`name_singular_${language}`]} observation assignments lines`
           break
       }
       // if label is different, update it

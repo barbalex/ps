@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -11,7 +11,7 @@ import { Header } from './Header.tsx'
 import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
 import type PlaceLevels from '../../models/public/PlaceLevels.ts'
 
 import '../../form.css'
@@ -21,6 +21,7 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [language] = useAtom(languageAtom)
 
   const [validations, setValidations] = useState({})
 
@@ -67,8 +68,8 @@ export const PlaceLevel = () => {
     if (
       row &&
       [
-        'name_plural',
-        'name_singular',
+        `name_plural_${language}`,
+        `name_singular_${language}`,
         'actions',
         'checks',
         'observations',
@@ -105,29 +106,29 @@ export const PlaceLevel = () => {
         />
         <TextField
           label="Name (singular)"
-          name="name_singular"
-          value={row.name_singular ?? ''}
+          name={`name_singular_${language}`}
+          value={row[`name_singular_${language}`] ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations?.name_singular?.state}
-          validationMessage={validations?.name_singular?.message}
+          validationState={validations?.[`name_singular_${language}`]?.state}
+          validationMessage={validations?.[`name_singular_${language}`]?.message}
         />
         <TextField
           label="Name (plural)"
-          name="name_plural"
-          value={row.name_plural ?? ''}
+          name={`name_plural_${language}`}
+          value={row[`name_plural_${language}`] ?? ''}
           onChange={onChange}
-          validationState={validations?.name_plural?.state}
-          validationMessage={validations?.name_plural?.message}
+          validationState={validations?.[`name_plural_${language}`]?.state}
+          validationMessage={validations?.[`name_plural_${language}`]?.message}
         />
         <TextField
           label="Name (short)"
-          name="name_short"
-          value={row.name_short ?? ''}
+          name={`name_short_${language}`}
+          value={row[`name_short_${language}`] ?? ''}
           onChange={onChange}
-          validationState={validations?.name_short?.state}
-          validationMessage={validations?.name_short?.message}
+          validationState={validations?.[`name_short_${language}`]?.state}
+          validationMessage={validations?.[`name_short_${language}`]?.message}
         />
         <SwitchField
           label="Enable reports"

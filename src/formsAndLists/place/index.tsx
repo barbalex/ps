@@ -1,14 +1,14 @@
 import { useRef, useState } from 'react'
 import { useParams, useSearch } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 
 import { Header } from './Header.tsx'
 import { PlaceForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
 import type Places from '../../models/public/Places.ts'
 
 import '../../form.css'
@@ -18,6 +18,7 @@ export const Place = ({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
   const { onlyForm } = useSearch({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [language] = useAtom(languageAtom)
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -38,8 +39,8 @@ export const Place = ({ from }) => {
     `
     SELECT 
       place_level_id, 
-      name_singular, 
-      name_plural 
+      name_singular_${language}, 
+      name_plural_${language} 
     FROM place_levels 
     WHERE 
       project_id = $1 
@@ -47,8 +48,8 @@ export const Place = ({ from }) => {
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevels = nameRes?.rows ?? []
-  const nameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
-  const namePlural = placeLevels?.[0]?.name_plural ?? 'Places'
+  const nameSingular = placeLevels?.[0]?.[`name_singular_${language}`] ?? 'Place'
+  const namePlural = placeLevels?.[0]?.[`name_plural_${language}`] ?? 'Places'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)

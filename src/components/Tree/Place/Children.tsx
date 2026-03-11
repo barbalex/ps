@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
+import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
 import { ChecksNode } from '../Checks.tsx'
@@ -12,6 +13,7 @@ import { PlaceHistoriesNode } from '../PlaceHistories.tsx'
 import { ObservationsAssignedNode } from '../ObservationsAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
+import { languageAtom } from '../../../store.ts'
 
 // TODO: add charts?
 export const PlaceChildren = ({
@@ -22,6 +24,7 @@ export const PlaceChildren = ({
   level,
 }) => {
   // const level = placeId2 ? 8 : 6
+  const [language] = useAtom(languageAtom)
 
   // query from place_level what children to show
   const resPlaceLevels = useLiveQuery(
@@ -53,7 +56,7 @@ export const PlaceChildren = ({
   return (
     <>
       <Node
-        label={placeLevel?.name_singular ?? 'Place'}
+        label={placeLevel?.[`name_singular_${language}`] ?? 'Place'}
         level={level + 1}
         isInActiveNodeArray={
           ownArray.every((part, i) => urlPath[i] === part) &&

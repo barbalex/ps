@@ -11,6 +11,7 @@ import {
   places1FilterAtom,
   places2FilterAtom,
   treeOpenNodesAtom,
+  languageAtom,
 } from '../store.ts'
 
 type Props = {
@@ -41,6 +42,7 @@ export const usePlacesNavData = ({
   placeId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -69,14 +71,14 @@ export const usePlacesNavData = ({
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
         } ${isFiltered ? ` AND ${filterString}` : ''}),
-        names AS (SELECT name_singular, name_plural FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
+        names AS (SELECT name_singular_${language}, name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
       SELECT
         place_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered,
-        names.name_singular AS name_singular,
-        names.name_plural AS name_plural
+        names.name_singular_${language} AS name_singular,
+        names.name_plural_${language} AS name_plural
       FROM places, count_unfiltered, count_filtered, names
       WHERE 
         places.subproject_id = '${subprojectId}'
@@ -92,12 +94,12 @@ export const usePlacesNavData = ({
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
         } ${isFiltered ? ` AND ${filterString}` : ''}),
-        names AS (SELECT name_singular, name_plural FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
+        names AS (SELECT name_singular_${language}, name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered,
-        names.name_singular AS name_singular,
-        names.name_plural AS name_plural
+        names.name_singular_${language} AS name_singular,
+        names.name_plural_${language} AS name_plural
       FROM count_unfiltered, count_filtered, names
     `
   const res = useLiveQuery(sql)

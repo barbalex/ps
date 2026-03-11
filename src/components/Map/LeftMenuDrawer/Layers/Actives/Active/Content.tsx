@@ -45,6 +45,7 @@ import {
   mapViewportBoundsAtom,
   draggableLayersAtom,
   droppableLayersAtom,
+  languageAtom,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
@@ -62,6 +63,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   )
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
   const [droppableLayers, setDroppableLayers] = useAtom(droppableLayersAtom)
+  const language = useAtomValue(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -100,7 +102,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     `
     SELECT 
       vl.*,
-      pl.name_plural
+      pl.name_plural_${language} AS name_plural
     FROM vector_layers vl
     LEFT JOIN place_levels pl ON vl.own_table_level = pl.level AND vl.project_id = pl.project_id
     INNER JOIN layer_presentations lp 

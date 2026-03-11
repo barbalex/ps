@@ -13,6 +13,7 @@ import {
   placeReports2FilterAtom,
   filesFilterAtom,
   treeOpenNodesAtom,
+  languageAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
@@ -52,6 +53,7 @@ export const usePlaceNavData = ({
   placeId2,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
 
   const [placesFilter] = useAtom(places1FilterAtom)
@@ -82,8 +84,8 @@ export const usePlaceNavData = ({
 
   const sql = `
       WITH
-        names AS (SELECT name_singular FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
-        child_names as (SELECT name_plural FROM place_levels WHERE project_id = '${projectId}' AND level = 2),
+        names AS (SELECT name_singular_${language} FROM place_levels WHERE project_id = '${projectId}' AND level = ${placeId2 ? 2 : 1}),
+        child_names as (SELECT name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' AND level = 2),
         places_count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
         }),
@@ -104,8 +106,8 @@ export const usePlaceNavData = ({
       SELECT
         place_id AS id,
         label,
-        names.name_singular AS name_singular,
-        child_names.name_plural AS child_name_plural,
+        names.name_singular_${language} AS name_singular,
+        child_names.name_plural_${language} AS child_name_plural,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
         checks_count_unfiltered.count AS checks_count_unfiltered,
