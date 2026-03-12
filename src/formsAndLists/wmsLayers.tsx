@@ -21,7 +21,7 @@ export const WmsLayers = () => {
     const wmsLayerId = await createWmsLayer({ projectId })
     if (!wmsLayerId) return
     await navigate({
-      to: '/data/projects/$projectId_/wms-layers/$wmsLayerId',
+      to: `/data/projects/${projectId}/wms-layers/${wmsLayerId}`,
       params: { projectId, wmsLayerId },
     })
   }
@@ -35,16 +35,13 @@ export const WmsLayers = () => {
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              to={id}
-              label={label ?? id}
-            />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} to={id} label={label ?? id} />
           ))
-        }
+        )}
       </div>
     </div>
   )
