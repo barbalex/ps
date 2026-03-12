@@ -1,14 +1,46 @@
+import { useIntl } from 'react-intl'
+
 import styles from './Info.module.css'
 
-export const Info = () => (
-  <div
-    className={styles.container}
-    tabIndex={-1}
-  >
-    <p>You can add multiple CRS.</p>
-    <p>One of them can be set as the map presentation crs.</p>
-    <p>It will be used to show coordinates in the map.</p>
-    <p>Users can choose in the map one of the CRS'es you add here.</p>
-    <p>If no CRS is selected, WGS84 will be used by default.</p>
-  </div>
-)
+export const Info = () => {
+  const { formatMessage } = useIntl()
+
+  return (
+    <div className={styles.container} tabIndex={-1}>
+      <p>
+        {formatMessage({
+          id: 'Ac1BdE',
+          defaultMessage: 'Sie können mehrere CRS hinzufügen.',
+        })}
+      </p>
+      <p>
+        {formatMessage({
+          id: 'Fh2GiJ',
+          defaultMessage:
+            'Eines davon kann als Darstellungs-CRS der Karte festgelegt werden.',
+        })}
+      </p>
+      <p>
+        {formatMessage({
+          id: 'Kn3OpQ',
+          defaultMessage:
+            'Es wird verwendet, um Koordinaten in der Karte anzuzeigen.',
+        })}
+      </p>
+      <p>
+        {formatMessage({
+          id: 'Ru4StV',
+          defaultMessage:
+            'Benutzer können in der Karte eines der hier hinzugefügten CRS auswählen.',
+        })}
+      </p>
+      <p>
+        {formatMessage({
+          id: 'Wx5YzA',
+          defaultMessage:
+            'Wenn kein CRS ausgewählt ist, wird standardmäßig WGS84 verwendet.',
+        })}
+      </p>
+    </div>
+  )
+}
