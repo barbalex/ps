@@ -1,4 +1,5 @@
 import { useParams } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { useListNavData } from '../../modules/useListNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -8,13 +9,14 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 export const ListList = ({ from }) => {
   const { projectId, listId } = useParams({ from })
+  const { formatMessage } = useIntl()
   const { loading, navData } = useListNavData({ projectId, listId })
   const { navs, label, notFound } = navData
 
   if (notFound) {
     return (
       <NotFound
-        table="List"
+        table={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
         id={listId}
       />
     )
@@ -22,21 +24,15 @@ export const ListList = ({ from }) => {
 
   return (
     <div className="list-view">
-      <Header
-        from={from}
-        label={label}
-      />
+      <Header from={from} label={label} />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map((nav) => (
-            <Row
-              key={nav.id}
-              label={nav.label ?? nav.id}
-              to={nav.id}
-            />
+        ) : (
+          navs.map((nav) => (
+            <Row key={nav.id} label={nav.label ?? nav.id} to={nav.id} />
           ))
-        }
+        )}
       </div>
     </div>
   )

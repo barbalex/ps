@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -22,6 +24,7 @@ export const ListForm = ({
   orIndex,
   autoFocusRef,
 }: Props) => {
+  const { formatMessage } = useIntl()
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
@@ -30,7 +33,7 @@ export const ListForm = ({
   return (
     <>
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
@@ -47,7 +50,7 @@ export const ListForm = ({
         orIndex={orIndex}
       />
       <SwitchField
-        label="Obsolete"
+        label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}
         name="obsolete"
         value={row.obsolete}
         onChange={onChange}

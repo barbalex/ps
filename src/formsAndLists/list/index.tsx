@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -19,6 +20,7 @@ export const List = ({ from }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(`SELECT * FROM lists WHERE list_id = $1`, [listId])
   const row: Lists | undefined = res?.rows?.[0]
@@ -59,17 +61,21 @@ export const List = ({ from }) => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
             row={row}
             autoFocusRef={autoFocusRef}
             validations={validations}
           />
-        : <NotFound table="List" id={listId} />
-        }
+        ) : (
+          <NotFound
+            table={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
+            id={listId}
+          />
+        )}
       </div>
     </div>
   )
