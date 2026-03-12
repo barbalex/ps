@@ -97,7 +97,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'X88JDr', defaultMessage: 'WFS-Service' })}
+      title={formatMessage({ id: 'X88JDr', defaultMessage: 'WFS-Dienst' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

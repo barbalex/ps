@@ -82,7 +82,7 @@ export const WfsService = ({ from }: Props) => {
           <NotFound
             table={formatMessage({
               id: 'X88JDr',
-              defaultMessage: 'WFS-Service',
+              defaultMessage: 'WFS-Dienst',
             })}
             id={wfsServiceId}
           />
