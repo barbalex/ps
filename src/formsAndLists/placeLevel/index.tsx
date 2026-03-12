@@ -95,7 +95,7 @@ export const PlaceLevel = () => {
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Raum-Stufe' })}
+        table={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Ort-Stufe' })}
         id={placeLevelId}
       />
     )
@@ -108,7 +108,7 @@ export const PlaceLevel = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <RadioGroupField
-          label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Raum-Stufe' })}
+          label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Ort-Stufe' })}
           name="level"
           list={[1, 2]}
           value={row.level ?? ''}

@@ -32,10 +32,10 @@ export const getPlaceFallbackNames = (
       plural: formatMessage({ id: 'sH1lgT', defaultMessage: 'Lebensräume' }),
     }
   }
-  // unknown project type → generic Raum
+  // unknown project type → generic Ort
   return {
-    singular: formatMessage({ id: 'TZgWxf', defaultMessage: 'Raum' }),
-    plural: formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
+    singular: formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' }),
+    plural: formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
   }
 }
 

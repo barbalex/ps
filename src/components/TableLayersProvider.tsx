@@ -91,7 +91,7 @@ export const TableLayersProvider = () => {
             ownTableLevel: 1,
             label:
               pl1Plural ??
-              formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
+              formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
             skipOperationQueue: true,
           })
         }
@@ -226,7 +226,7 @@ export const TableLayersProvider = () => {
                     {
                       place: formatMessage({
                         id: 'h5g7Kk',
-                        defaultMessage: 'Räume',
+                        defaultMessage: 'Orte',
                       }),
                     },
                   ),
@@ -313,7 +313,7 @@ export const TableLayersProvider = () => {
               ownTableLevel: 2,
               label:
                 pl2Plural ??
-                formatMessage({ id: 'h5g7Kk', defaultMessage: 'Räume' }),
+                formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
               skipOperationQueue: true,
             })
           }
@@ -453,7 +453,7 @@ export const TableLayersProvider = () => {
                     {
                       place: formatMessage({
                         id: 'h5g7Kk',
-                        defaultMessage: 'Räume',
+                        defaultMessage: 'Orte',
                       }),
                     },
                   ),

@@ -142,7 +142,7 @@ export const File = ({ from }) => {
           validationMessage={validations?.subproject_id?.message}
         />
         <DropdownField
-          label={formatMessage({ id: 'TZgWxf', defaultMessage: 'Raum' })}
+          label={formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}
           name="place_id"
           table="places"
           where={`subproject_id ${row?.subproject_id ? `= '${row?.subproject_id}'` : 'IS NULL'}`}

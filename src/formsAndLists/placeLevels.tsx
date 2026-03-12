@@ -35,7 +35,7 @@ export const PlaceLevels = () => {
         nameSingular={nameSingular}
         addRow={add}
         addRowDisabled={navs.length >= 2}
-        addRowDisabledReason={formatMessage({ id: 'HmFNdU', defaultMessage: 'Maximum erreicht: nur 2 Raum-Stufen sind erlaubt' })}
+        addRowDisabledReason={formatMessage({ id: 'HmFNdU', defaultMessage: 'Maximum erreicht: nur 2 Ort-Stufen sind erlaubt' })}
       />
       <div className="list-container">
         {loading ?

@@ -57,11 +57,11 @@ export const usePlaceLevelsNavData = ({ projectId }: Props) => {
       countFiltered: navs.length,
       namePlural: formatMessage({
         id: 'aYuCCc',
-        defaultMessage: 'Raum-Stufen',
+        defaultMessage: 'Ort-Stufen',
       }),
       loading,
     }),
-    nameSingular: formatMessage({ id: 'Lf+2pw', defaultMessage: 'Raum-Stufe' }),
+    nameSingular: formatMessage({ id: 'Lf+2pw', defaultMessage: 'Ort-Stufe' }),
     navs,
   }
 

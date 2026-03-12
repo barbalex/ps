@@ -68,7 +68,7 @@ export const FieldForm = ({
             }
           />
           <TextField
-            label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Raum-Stufe' })}
+            label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Ort-Stufe' })}
             name="level"
             value={row.level}
             type="number"

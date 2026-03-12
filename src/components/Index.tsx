@@ -29,13 +29,13 @@ export const Index = () => {
         <div className={styles.cardContainer}>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage defaultMessage="Räume" />
+              <FormattedMessage defaultMessage="Orte" />
             </h3>
             <FormattedMessage defaultMessage="Arten in Populationen gliedern." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage defaultMessage="Zweistufige Räume" />
+              <FormattedMessage defaultMessage="Zweistufige Orte" />
             </h3>
             <FormattedMessage defaultMessage="Populationen in Teil-Populationen gliedern (fakultativ)." />
           </div>
@@ -154,7 +154,7 @@ export const Index = () => {
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Ihre Daten gehören Ihnen" />
             </h3>
-            <FormattedMessage defaultMessage="100% Ihrer Daten werden auf Ihr Gerät synchronisiert. Sie können jederzeit exportiert werden." />
+            <FormattedMessage defaultMessage="Alle Ihre Daten werden auf Ihr Gerät synchronisiert. Sie können jederzeit exportiert werden." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
@@ -175,7 +175,7 @@ export const Index = () => {
             <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Hier wird gebaut" />
             </h3>
-            <FormattedMessage defaultMessage="Diese App ist noch in Entwicklung. Noch steckt sie voller Fehler. Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht und neu erstellt." />
+            <FormattedMessage defaultMessage="Diese App ist in Entwicklung. Noch steckt sie voller Fehler. Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht und neu erstellt." />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>

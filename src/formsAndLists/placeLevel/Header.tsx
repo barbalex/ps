@@ -111,14 +111,14 @@ export const Header = ({ autoFocusRef }: Props) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Raum-Stufe' })}
+      title={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Ort-Stufe' })}
       addRow={addRow}
       addRowDisabled={rowCount >= 2}
-      addRowDisabledReason={formatMessage({ id: 'HmFNdU', defaultMessage: 'Maximum erreicht: nur 2 Raum-Stufen sind erlaubt' })}
+      addRowDisabledReason={formatMessage({ id: 'HmFNdU', defaultMessage: 'Maximum erreicht: nur 2 Ort-Stufen sind erlaubt' })}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Raum-Stufe' })}
+      tableName={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Ort-Stufe' })}
     />
   )
 }

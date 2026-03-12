@@ -429,7 +429,7 @@ export const useProjectNavData = ({
                     countFiltered: nav?.place_levels_count_unfiltered ?? 0,
                     namePlural: formatMessage({
                       id: 'aYuCCc',
-                      defaultMessage: 'Raum-Stufen',
+                      defaultMessage: 'Ort-Stufen',
                     }),
                   }),
                 },
