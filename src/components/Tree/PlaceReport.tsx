@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 
@@ -19,6 +20,12 @@ export const PlaceReportNode = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
+
+  const resPlaceLevel = useLiveQuery(
+    `SELECT report_values FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -79,14 +86,16 @@ export const PlaceReportNode = ({
             isActive={isEqual(urlPath, [...ownArray, 'report'])}
             to={`${ownUrl}/report`}
           />
-          <PlaceReportValuesNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            placeId={placeId}
-            placeId2={placeId2}
-            placeReportId={nav.id}
-            level={level + 1}
-          />
+          {placeLevel?.report_values !== false && (
+            <PlaceReportValuesNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              placeReportId={nav.id}
+              level={level + 1}
+            />
+          )}
         </>
       )}
     </>

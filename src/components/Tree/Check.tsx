@@ -24,12 +24,16 @@ export const CheckNode = ({
   const navigate = useNavigate()
 
   // need project to know whether to show files
-  const resProject = useLiveQuery(
-    `SELECT project_id, files_active_checks FROM projects WHERE project_id = $1`,
-    [projectId],
+  const res = useLiveQuery(
+    `SELECT p.files_active_checks, pl.check_values, pl.check_taxa
+     FROM projects p
+     LEFT JOIN place_levels pl ON pl.project_id = p.project_id
+     WHERE p.project_id = $1 AND (pl.level IS NULL OR pl.level = $2)`,
+    [projectId, placeId2 ? 2 : 1],
   )
-  const project = resProject?.rows?.[0]
-  const showFiles = project?.files_active_checks ?? false
+  const row = res?.rows?.[0]
+  const showFiles = row?.files_active_checks ?? false
+  const placeLevel = row
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -93,22 +97,26 @@ export const CheckNode = ({
             childrenCount={0}
             to={`${ownUrl}/check`}
           />
-          <CheckValuesNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            placeId={placeId}
-            placeId2={placeId2}
-            checkId={nav.id}
-            level={level + 1}
-          />
-          <CheckTaxaNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            placeId={placeId}
-            placeId2={placeId2}
-            checkId={nav.id}
-            level={level + 1}
-          />
+          {placeLevel?.check_values !== false && (
+            <CheckValuesNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              checkId={nav.id}
+              level={level + 1}
+            />
+          )}
+          {placeLevel?.check_taxa !== false && (
+            <CheckTaxaNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              checkId={nav.id}
+              level={level + 1}
+            />
+          )}
           {showFiles && (
             <FilesNode
               projectId={projectId}
