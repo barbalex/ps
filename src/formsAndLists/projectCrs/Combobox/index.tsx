@@ -74,9 +74,9 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
 
   return (
     <Field
-      label={formatMessage({ id: 'Zy6AbC', defaultMessage: 'CRS auswählen' })}
+      label={formatMessage({ id: 'Zy6AbC', defaultMessage: 'KBS auswählen' })}
       validationState="none"
-      validationMessage={formatMessage({ id: 'Bd7CeD', defaultMessage: "Tippen um aus > 10'000 CRS-Optionen zu filtern" })}
+      validationMessage={formatMessage({ id: 'Bd7CeD', defaultMessage: "Tippen um aus > 10'000 KBS-Optionen zu filtern" })}
     >
       <Combobox
         value={filter}

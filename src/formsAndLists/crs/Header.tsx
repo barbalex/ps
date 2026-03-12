@@ -89,7 +89,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' })}
+      title={formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

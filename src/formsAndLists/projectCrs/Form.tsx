@@ -161,7 +161,10 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         validationMessage={validations?.proj4?.message}
       />
       <CheckboxField
-        label={formatMessage({ id: 'Kl0MnN', defaultMessage: 'Als Darstellungs-CRS der Karte festlegen' })}
+        label={formatMessage({
+          id: 'Kl0MnN',
+          defaultMessage: 'Als Darstellungs-KBS der Karte festlegen',
+        })}
         name="map_presentation_crs"
         value={row.project_map_presentation_crs === row.code}
         onChange={onChangeMapPresentation}

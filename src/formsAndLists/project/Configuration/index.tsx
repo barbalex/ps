@@ -298,13 +298,13 @@ export const Configuration = ({ from }) => {
           <TextFieldInactive
             label={formatMessage({
               id: 'gO1PqR',
-              defaultMessage: 'Karten-Präsentations-CRS',
+              defaultMessage: 'Karten-Präsentations-KBS',
             })}
             name="map_presentation_crs"
             value={row.map_presentation_crs ?? 'EPSG:4326'}
             validationMessage={formatMessage({
               id: 'hS2TuV',
-              defaultMessage: 'Wähle ein CRS in der CRS-Liste',
+              defaultMessage: 'Wähle ein KBS in der KBS-Liste',
             })}
           />
           <Divider />

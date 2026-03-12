@@ -10,7 +10,7 @@ export const Info = () => {
       <p>
         {formatMessage({
           id: 'Ac1BdE',
-          defaultMessage: 'Sie können mehrere CRS hinzufügen.',
+          defaultMessage: 'Sie können mehrere KBS hinzufügen.',
         })}
       </p>
       <p>

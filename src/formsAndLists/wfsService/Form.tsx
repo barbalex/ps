@@ -56,7 +56,7 @@ export const WfsServiceForm = ({
         tabIndex={-1}
       />
       <TextField
-        label={formatMessage({ id: 'Ab1CdE', defaultMessage: 'Standard-CRS' })}
+        label={formatMessage({ id: 'Ab1CdE', defaultMessage: 'Standard-KBS' })}
         name="default_crs"
         value={row.default_crs ?? ''}
         readOnly
