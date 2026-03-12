@@ -22,14 +22,41 @@ export default interface PlaceLevels {
   /** level of place: 1, 2 */
   level: number | null;
 
-  /** Preset: "Population" */
-  name_singular: string | null;
+  /** German singular name. Preset: "Population" */
+  name_singular_de: string | null;
 
-  /** Preset: "Populationen" */
-  name_plural: string | null;
+  /** German plural name. Preset: "Populationen" */
+  name_plural_de: string | null;
 
-  /** Preset: "Pop" */
-  name_short: string | null;
+  /** German short name. Preset: "Pop" */
+  name_short_de: string | null;
+
+  /** English singular name. Preset: "Population" */
+  name_singular_en: string | null;
+
+  /** English plural name. Preset: "Populations" */
+  name_plural_en: string | null;
+
+  /** English short name. Preset: "Pop" */
+  name_short_en: string | null;
+
+  /** French singular name. Preset: "Population" */
+  name_singular_fr: string | null;
+
+  /** French plural name. Preset: "Populations" */
+  name_plural_fr: string | null;
+
+  /** French short name. Preset: "Pop" */
+  name_short_fr: string | null;
+
+  /** Italian singular name. Preset: "Popolazione" */
+  name_singular_it: string | null;
+
+  /** Italian plural name. Preset: "Popolazioni" */
+  name_plural_it: string | null;
+
+  /** Italian short name. Preset: "Pop" */
+  name_short_it: string | null;
 
   /** Are reports used? Preset: true */
   reports: boolean | null;
@@ -55,8 +82,8 @@ export default interface PlaceLevels {
   /** Are check taxa used? Preset: true */
   check_taxa: boolean | null;
 
-  /** Are occurrences used? Preset: true */
-  occurrences: boolean | null;
+  /** Are observations used? Preset: true */
+  observations: boolean | null;
 
   label: string | null;
 
@@ -86,14 +113,41 @@ export interface PlaceLevelsInitializer {
    */
   level?: number | null;
 
-  /** Preset: "Population" */
-  name_singular?: string | null;
+  /** German singular name. Preset: "Population" */
+  name_singular_de?: string | null;
 
-  /** Preset: "Populationen" */
-  name_plural?: string | null;
+  /** German plural name. Preset: "Populationen" */
+  name_plural_de?: string | null;
 
-  /** Preset: "Pop" */
-  name_short?: string | null;
+  /** German short name. Preset: "Pop" */
+  name_short_de?: string | null;
+
+  /** English singular name. Preset: "Population" */
+  name_singular_en?: string | null;
+
+  /** English plural name. Preset: "Populations" */
+  name_plural_en?: string | null;
+
+  /** English short name. Preset: "Pop" */
+  name_short_en?: string | null;
+
+  /** French singular name. Preset: "Population" */
+  name_singular_fr?: string | null;
+
+  /** French plural name. Preset: "Populations" */
+  name_plural_fr?: string | null;
+
+  /** French short name. Preset: "Pop" */
+  name_short_fr?: string | null;
+
+  /** Italian singular name. Preset: "Popolazione" */
+  name_singular_it?: string | null;
+
+  /** Italian plural name. Preset: "Popolazioni" */
+  name_plural_it?: string | null;
+
+  /** Italian short name. Preset: "Pop" */
+  name_short_it?: string | null;
 
   /**
    * Are reports used? Preset: true
@@ -144,10 +198,10 @@ export interface PlaceLevelsInitializer {
   check_taxa?: boolean | null;
 
   /**
-   * Are occurrences used? Preset: true
+   * Are observations used? Preset: true
    * Default value: false
    */
-  occurrences?: boolean | null;
+  observations?: boolean | null;
 
   /** Default value: now() */
   created_at?: Date;
@@ -173,14 +227,41 @@ export interface PlaceLevelsMutator {
   /** level of place: 1, 2 */
   level?: number | null;
 
-  /** Preset: "Population" */
-  name_singular?: string | null;
+  /** German singular name. Preset: "Population" */
+  name_singular_de?: string | null;
 
-  /** Preset: "Populationen" */
-  name_plural?: string | null;
+  /** German plural name. Preset: "Populationen" */
+  name_plural_de?: string | null;
 
-  /** Preset: "Pop" */
-  name_short?: string | null;
+  /** German short name. Preset: "Pop" */
+  name_short_de?: string | null;
+
+  /** English singular name. Preset: "Population" */
+  name_singular_en?: string | null;
+
+  /** English plural name. Preset: "Populations" */
+  name_plural_en?: string | null;
+
+  /** English short name. Preset: "Pop" */
+  name_short_en?: string | null;
+
+  /** French singular name. Preset: "Population" */
+  name_singular_fr?: string | null;
+
+  /** French plural name. Preset: "Populations" */
+  name_plural_fr?: string | null;
+
+  /** French short name. Preset: "Pop" */
+  name_short_fr?: string | null;
+
+  /** Italian singular name. Preset: "Popolazione" */
+  name_singular_it?: string | null;
+
+  /** Italian plural name. Preset: "Popolazioni" */
+  name_plural_it?: string | null;
+
+  /** Italian short name. Preset: "Pop" */
+  name_short_it?: string | null;
 
   /** Are reports used? Preset: true */
   reports?: boolean | null;
@@ -206,8 +287,8 @@ export interface PlaceLevelsMutator {
   /** Are check taxa used? Preset: true */
   check_taxa?: boolean | null;
 
-  /** Are occurrences used? Preset: true */
-  occurrences?: boolean | null;
+  /** Are observations used? Preset: true */
+  observations?: boolean | null;
 
   created_at?: Date;
 

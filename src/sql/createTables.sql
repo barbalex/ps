@@ -193,12 +193,21 @@ COMMENT ON TABLE projects IS 'Goal: manage projects';
 --
 CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  account_id uuid DEFAULT NULL,
+  project_id uuid DEFAULT NULL,
   level integer DEFAULT 1,
-  name_singular text DEFAULT NULL,
-  name_plural text DEFAULT NULL,
-  name_short text DEFAULT NULL,
+  name_singular_de text DEFAULT NULL,
+  name_plural_de text DEFAULT NULL,
+  name_short_de text DEFAULT NULL,
+  name_singular_en text DEFAULT NULL,
+  name_plural_en text DEFAULT NULL,
+  name_short_en text DEFAULT NULL,
+  name_singular_fr text DEFAULT NULL,
+  name_plural_fr text DEFAULT NULL,
+  name_short_fr text DEFAULT NULL,
+  name_singular_it text DEFAULT NULL,
+  name_plural_it text DEFAULT NULL,
+  name_short_it text DEFAULT NULL,
   reports boolean DEFAULT FALSE,
   report_values boolean DEFAULT FALSE,
   actions boolean DEFAULT FALSE,
@@ -210,10 +219,10 @@ CREATE TABLE IF NOT EXISTS place_levels(
   observations boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (
     CASE
-      WHEN (name_short IS NULL AND name_plural IS NULL) THEN place_level_id::text
-      WHEN name_plural IS NULL THEN level::text || '.' || name_short
-      WHEN name_short IS NULL THEN level::text || '.' || name_plural
-      ELSE level::text || '.' || name_plural
+      WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
+      WHEN name_plural_de IS NULL THEN level::text || '.' || name_short_de
+      WHEN name_short_de IS NULL THEN level::text || '.' || name_plural_de
+      ELSE level::text || '.' || name_plural_de
     END
   ) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -225,14 +234,14 @@ CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btr
 CREATE INDEX IF NOT EXISTS place_levels_project_id_idx ON place_levels USING btree(project_id);
 CREATE INDEX IF NOT EXISTS place_levels_level_idx ON place_levels USING btree(level);
 -- TODO: needed?
-CREATE INDEX IF NOT EXISTS place_levels_name_singular_idx ON place_levels USING btree(name_singular);
+CREATE INDEX IF NOT EXISTS place_levels_name_singular_de_idx ON place_levels USING btree(name_singular_de);
 CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(label);
 
 COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
-COMMENT ON COLUMN place_levels.name_singular IS 'Preset: "Population"';
-COMMENT ON COLUMN place_levels.name_plural IS 'Preset: "Populationen"';
-COMMENT ON COLUMN place_levels.name_short IS 'Preset: "Pop"';
+COMMENT ON COLUMN place_levels.name_singular_de IS 'Preset: "Population"';
+COMMENT ON COLUMN place_levels.name_plural_de IS 'Preset: "Populationen"';
+COMMENT ON COLUMN place_levels.name_short_de IS 'Preset: "Pop"';
 COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: true';
 COMMENT ON COLUMN place_levels.report_values IS 'Are report values used? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';

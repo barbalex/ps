@@ -10,7 +10,7 @@ export type ObservationImportsObservationImportId = string & { __brand: 'public.
 
 /**
  * Represents the table public.observation_imports
- * occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
+ * observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
  */
 export default interface ObservationImports {
   observation_import_id: ObservationImportsObservationImportId;
@@ -64,7 +64,7 @@ export default interface ObservationImports {
 
 /**
  * Represents the initializer for the table public.observation_imports
- * occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
+ * observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
  */
 export interface ObservationImportsInitializer {
   /** Default value: uuid_generate_v7() */
@@ -121,7 +121,7 @@ export interface ObservationImportsInitializer {
 
 /**
  * Represents the mutator for the table public.observation_imports
- * occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
+ * observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
  */
 export interface ObservationImportsMutator {
   observation_import_id?: ObservationImportsObservationImportId;

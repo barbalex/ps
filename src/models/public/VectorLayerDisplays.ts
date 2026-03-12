@@ -13,7 +13,7 @@ export type VectorLayerDisplaysVectorLayerDisplayId = string & { __brand: 'publi
 
 /**
  * Represents the table public.vector_layer_displays
- * Goal: manage all map related properties of vector layers including places, actions, checks and occurrences
+ * Goal: manage all map related properties of vector layers including places, actions, checks and observations
  */
 export default interface VectorLayerDisplays {
   vector_layer_display_id: VectorLayerDisplaysVectorLayerDisplayId;
@@ -79,7 +79,7 @@ export default interface VectorLayerDisplays {
 
 /**
  * Represents the initializer for the table public.vector_layer_displays
- * Goal: manage all map related properties of vector layers including places, actions, checks and occurrences
+ * Goal: manage all map related properties of vector layers including places, actions, checks and observations
  */
 export interface VectorLayerDisplaysInitializer {
   /** Default value: uuid_generate_v7() */
@@ -175,7 +175,7 @@ export interface VectorLayerDisplaysInitializer {
 
 /**
  * Represents the mutator for the table public.vector_layer_displays
- * Goal: manage all map related properties of vector layers including places, actions, checks and occurrences
+ * Goal: manage all map related properties of vector layers including places, actions, checks and observations
  */
 export interface VectorLayerDisplaysMutator {
   vector_layer_display_id?: VectorLayerDisplaysVectorLayerDisplayId;
