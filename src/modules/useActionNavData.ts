@@ -55,6 +55,12 @@ export const useActionNavData = ({
 
   const nav: NavData | undefined = res?.rows?.[0]
 
+  const resPlaceLevel = useLiveQuery(
+    `SELECT action_values, action_reports FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
+
   const parentArray = [
     'data',
     'projects',
@@ -95,25 +101,36 @@ export const useActionNavData = ({
         id: 'action',
         label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
       },
-      {
-        id: 'values',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.action_values_count ?? 0,
-          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
-        }),
-      },
-      {
-        id: 'reports',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.action_reports_count ?? 0,
-          namePlural: formatMessage({
-            id: 'CiJ0SG',
-            defaultMessage: 'Berichte',
-          }),
-        }),
-      },
+      ...(placeLevel?.action_values !== false
+        ? [
+            {
+              id: 'values',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.action_values_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'Xuj/Gy',
+                  defaultMessage: 'Mengen',
+                }),
+              }),
+            },
+          ]
+        : []),
+      ...(placeLevel?.action_reports !== false
+        ? [
+            {
+              id: 'reports',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.action_reports_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'CiJ0SG',
+                  defaultMessage: 'Berichte',
+                }),
+              }),
+            },
+          ]
+        : []),
       {
         id: 'files',
         label: buildNavLabel({

@@ -54,6 +54,12 @@ export const useCheckNavData = ({
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
 
+  const resPlaceLevel = useLiveQuery(
+    `SELECT check_values, check_taxa FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
+
   const parentArray = [
     'data',
     'projects',
@@ -94,22 +100,36 @@ export const useCheckNavData = ({
         id: 'check',
         label: formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' }),
       },
-      {
-        id: 'values',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.check_values_count ?? 0,
-          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
-        }),
-      },
-      {
-        id: 'taxa',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.check_taxa_count ?? 0,
-          namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
-        }),
-      },
+      ...(placeLevel?.check_values !== false
+        ? [
+            {
+              id: 'values',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.check_values_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'Xuj/Gy',
+                  defaultMessage: 'Mengen',
+                }),
+              }),
+            },
+          ]
+        : []),
+      ...(placeLevel?.check_taxa !== false
+        ? [
+            {
+              id: 'taxa',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.check_taxa_count ?? 0,
+                namePlural: formatMessage({
+                  id: '7sVbg1',
+                  defaultMessage: 'Taxa',
+                }),
+              }),
+            },
+          ]
+        : []),
       {
         id: 'files',
         label: buildNavLabel({

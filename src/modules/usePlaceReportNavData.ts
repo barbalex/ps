@@ -47,6 +47,12 @@ export const usePlaceReportNavData = ({
 
   const nav: NavData | undefined = res?.rows?.[0]
 
+  const resPlaceLevel = useLiveQuery(
+    `SELECT report_values FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
+
   const parentArray = [
     'data',
     'projects',
@@ -87,14 +93,21 @@ export const usePlaceReportNavData = ({
         id: 'report',
         label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
       },
-      {
-        id: 'values',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.place_report_values_count ?? 0,
-          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
-        }),
-      },
+      ...(placeLevel?.report_values !== false
+        ? [
+            {
+              id: 'values',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.place_report_values_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'Xuj/Gy',
+                  defaultMessage: 'Mengen',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 
