@@ -120,6 +120,13 @@ export const PlaceLevel = () => {
         <Section
           title={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         >
+          <p>
+            {formatMessage({
+              id: 'nP8QrS',
+              defaultMessage:
+                'Hier wird der Name für diese Ort-Stufe definiert. Damit er überall korrekt angezeigt werden kann, sollte er mehrfach definiert werden: Einzahl, Mehrzahl, Kurzform. Und in allen verwendeten Sprachen. Fehlt eine Sprache, wird Deutsch verwendet.',
+            })}
+          </p>
           <TextField
             label={formatMessage({
               id: 'bT3YsO',
