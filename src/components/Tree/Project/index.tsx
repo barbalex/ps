@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { Node } from '../Node.tsx'
 import { ProjectDesignNode } from '../ProjectDesign.tsx'
@@ -31,6 +32,7 @@ const parentArray = ['data', 'projects']
 export const ProjectNode = ({ nav, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
+  const { formatMessage } = useIntl()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -87,7 +89,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
       {isOpen && (
         <>
           <Node
-            label="Project"
+            label={formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })}
             level={3}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&

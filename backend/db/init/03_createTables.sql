@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS projects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type text DEFAULT NULL references project_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
+  type text DEFAULT 'species' references project_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_name_singular_en text DEFAULT NULL,
