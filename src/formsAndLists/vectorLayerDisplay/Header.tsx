@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
@@ -13,7 +14,6 @@ import {
 export const Header = ({
   vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
   autoFocusRef,
-  from,
 }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
@@ -49,6 +49,7 @@ export const Header = ({
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   const addRow = async () => {
     const id = await createVectorLayerDisplay({ vectorLayerId })
@@ -159,7 +160,10 @@ export const Header = ({
 
   return (
     <FormHeader
-      title="Vector Layer Display"
+      title={formatMessage({
+        id: 'fhL4R2',
+        defaultMessage: 'Vektor-Ebenen-Darstellung',
+      })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

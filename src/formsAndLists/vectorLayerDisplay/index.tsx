@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 // import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
@@ -42,6 +43,7 @@ export const VectorLayerDisplay = ({
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -88,7 +90,10 @@ export const VectorLayerDisplay = ({
   if (!row) {
     return (
       <NotFound
-        table="Vector Layer Display"
+        table={formatMessage({
+          id: 'fhL4R2',
+          defaultMessage: 'Vektor-Ebenen-Darstellung',
+        })}
         id={vectorLayerDisplayId}
       />
     )
@@ -110,14 +115,14 @@ export const VectorLayerDisplay = ({
           vectorLayerDisplayId={vectorLayerDisplayId}
         />
         <div className="form-container">
-          <MarkerType
-            onChange={onChange}
-            row={row}
-          />
+          <MarkerType onChange={onChange} row={row} />
           {row.marker_type === 'circle' && (
             <TextField
               name="circle_marker_radius"
-              label="Kreis-Radius in Bild-Punkten"
+              label={formatMessage({
+                id: 'Ab5CdE',
+                defaultMessage: 'Kreis-Radius in Bild-Punkten',
+              })}
               value={row.circle_marker_radius}
               onChange={onChange}
               type="number"
@@ -133,7 +138,10 @@ export const VectorLayerDisplay = ({
               />
               <TextField
                 name="marker_size"
-                label="Symbol: Grösse (in Bild-Punkten)"
+                label={formatMessage({
+                  id: 'Bc6DeF',
+                  defaultMessage: 'Symbol: Grösse (in Bild-Punkten)',
+                })}
                 value={row.marker_size}
                 onChange={onChange}
                 type="number"
@@ -144,31 +152,34 @@ export const VectorLayerDisplay = ({
           )}
           <ColorPicker
             key={`${row.vector_layer_display_id}/color`}
-            label="Linien und Punkte: Farbe"
+            label={formatMessage({
+              id: 'Cd7EfG',
+              defaultMessage: 'Linien und Punkte: Farbe',
+            })}
             onChange={onChange}
             color={row.color}
             name="color"
           />
           <TextField
             name="weight"
-            label="Linien: Breite (in Bild-Punkten)"
+            label={formatMessage({
+              id: 'De8FgH',
+              defaultMessage: 'Linien: Breite (in Bild-Punkten)',
+            })}
             value={row.weight}
             onChange={onChange}
             type="number"
             validationMessage={validations?.weight?.message}
             validationState={validations?.weight?.state}
           />
-          <LineCap
-            onChange={onChange}
-            row={row}
-          />
-          <LineJoin
-            onChange={onChange}
-            row={row}
-          />
+          <LineCap onChange={onChange} row={row} />
+          <LineJoin onChange={onChange} row={row} />
           <TextField
             name="dash_array"
-            label="Linien: Dash-Array"
+            label={formatMessage({
+              id: 'Gh1IjK',
+              defaultMessage: 'Linien: Dash-Array',
+            })}
             value={row.dash_array}
             onChange={onChange}
             validationMessage={validations?.dash_array?.message}
@@ -176,14 +187,20 @@ export const VectorLayerDisplay = ({
           />
           <TextField
             name="dash_offset"
-            label="Linien: Dash-Offset"
+            label={formatMessage({
+              id: 'Hi2JkL',
+              defaultMessage: 'Linien: Dash-Offset',
+            })}
             value={row.dash_offset}
             onChange={onChange}
             validationMessage={validations?.dash_offset?.message}
             validationState={validations?.dash_offset?.state}
           />
           <SwitchField
-            label="(Umriss-)Linien zeichnen (Polygone und Kreise)"
+            label={formatMessage({
+              id: 'Ij3KlM',
+              defaultMessage: 'Umriss-Linien zeichnen (Polygone und Kreise)',
+            })}
             name="stroke"
             value={row.stroke}
             onChange={onChange}
@@ -191,7 +208,10 @@ export const VectorLayerDisplay = ({
             validationState={validations?.stroke?.state}
           />
           <SwitchField
-            label="Flächen füllen"
+            label={formatMessage({
+              id: 'Jk4LmN',
+              defaultMessage: 'Flächen füllen',
+            })}
             name="fill"
             value={row.fill}
             onChange={onChange}
@@ -200,13 +220,19 @@ export const VectorLayerDisplay = ({
           />
           <ColorPicker
             id={`${row.id}/fill_color`}
-            label="Füllung: Farbe"
+            label={formatMessage({
+              id: 'Kl5MnO',
+              defaultMessage: 'Füllung: Farbe',
+            })}
             name="fill_color"
             onChange={onChange}
             color={row.fill_color}
           />
           <SliderFieldWithInput
-            label="Fill: Opacity (%)"
+            label={formatMessage({
+              id: 'Lm6NoP',
+              defaultMessage: 'Füllung: Deckkraft (%)',
+            })}
             name="fill_opacity_percent"
             value={row.fill_opacity_percent ?? ''}
             onChange={onChange}
@@ -214,10 +240,7 @@ export const VectorLayerDisplay = ({
             min={0}
             step={5}
           />
-          <FillRule
-            onChange={onChange}
-            row={row}
-          />
+          <FillRule onChange={onChange} row={row} />
         </div>
       </div>
     </ErrorBoundary>
