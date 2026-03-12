@@ -99,6 +99,9 @@ export const ProjectNode = ({ nav, level = 2 }) => {
             childrenCount={0}
             to={`${ownUrl}/project`}
           />
+          {showDesigningNodes && (
+            <ProjectDesignNode projectId={nav.id} level={level + 1} />
+          )}
           <SubprojectsNode projectId={nav.id} />
           {showDesigningNodes && (
             <SubprojectReportDesignsNode projectId={nav.id} level={3} />
@@ -115,7 +118,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {showFiles && <FilesNode projectId={nav.id} level={3} />}
           {showDesigningNodes && (
             <>
-              <ProjectDesignNode projectId={nav.id} level={level + 1} />
               <ProjectUsersNode projectId={nav.id} />
               <ListsNode projectId={nav.id} />
               <TaxonomiesNode projectId={nav.id} />

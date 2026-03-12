@@ -268,6 +268,17 @@ export const useProjectNavData = ({
             id: 'project',
             label: formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' }),
           },
+          ...(designing
+            ? [
+                {
+                  id: 'configuration',
+                  label: formatMessage({
+                    id: 'qyfs2A',
+                    defaultMessage: 'Projekt-Konfiguration',
+                  }),
+                },
+              ]
+            : []),
           {
             id: 'subprojects',
             label: buildNavLabel({
@@ -356,13 +367,6 @@ export const useProjectNavData = ({
           },
           ...(designing
             ? [
-                {
-                  id: 'configuration',
-                  label: formatMessage({
-                    id: 'qyfs2A',
-                    defaultMessage: 'Projekt-Konfiguration',
-                  }),
-                },
                 {
                   id: 'users',
                   label: buildNavLabel({
