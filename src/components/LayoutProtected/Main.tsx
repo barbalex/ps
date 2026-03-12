@@ -22,22 +22,37 @@ export const Main = () => {
 
   if (onlyForm) return <Outlet />
 
+  const treeVisible = !mapMaximizedAndVisible && tabs.includes('tree')
+  const dataVisible = !mapMaximizedAndVisible && tabs.includes('data')
+  const mapVisible = tabs.includes('map')
+  const visibleCount = [treeVisible, dataVisible, mapVisible].filter(
+    Boolean,
+  ).length
+  const treeIsFirstOfTwo = treeVisible && visibleCount === 2
+
   // the classNames are used to style the allotment panes
   // especially to hide others when only the Outlet is printed
   return (
     <div className={styles.container}>
       <Allotment>
-        {!mapMaximizedAndVisible && tabs.includes('tree') && (
-          <div className="allotment-tree">
-            <Tree />
-          </div>
-        )}
-        {!mapMaximizedAndVisible && tabs.includes('data') && (
+        {treeVisible &&
+          (treeIsFirstOfTwo ? (
+            <Allotment.Pane minSize={380} preferredSize="33%">
+              <div className="allotment-tree">
+                <Tree />
+              </div>
+            </Allotment.Pane>
+          ) : (
+            <div className="allotment-tree">
+              <Tree />
+            </div>
+          ))}
+        {dataVisible && (
           <div className="allotment-data">
             <Outlet />
           </div>
         )}
-        {tabs.includes('map') && (
+        {mapVisible && (
           <div className="allotment-map">
             <MapContainer />
           </div>
