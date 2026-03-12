@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -19,6 +20,7 @@ export const Taxon = () => {
   const { taxonId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -61,7 +63,12 @@ export const Taxon = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Taxon" id={taxonId} />
+    return (
+      <NotFound
+        table={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
+        id={taxonId}
+      />
+    )
   }
 
   return (
@@ -69,7 +76,7 @@ export const Taxon = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextField
-          label="Name"
+          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
           name="name"
           value={row.name ?? ''}
           onChange={onChange}
@@ -79,7 +86,10 @@ export const Taxon = () => {
           validationMessage={validations?.name?.message}
         />
         <TextField
-          label="ID in source"
+          label={formatMessage({
+            id: 'Fi9JkL',
+            defaultMessage: 'ID in Quelle',
+          })}
           name="id_in_source"
           value={row.id_in_source ?? ''}
           onChange={onChange}
@@ -87,7 +97,7 @@ export const Taxon = () => {
           validationMessage={validations?.id_in_source?.message}
         />
         <TextField
-          label="Url"
+          label={formatMessage({ id: 'TpzCEx', defaultMessage: 'Url' })}
           name="url"
           type="url"
           value={row.url ?? ''}
