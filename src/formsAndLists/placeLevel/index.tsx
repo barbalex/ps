@@ -109,6 +109,13 @@ export const PlaceLevel = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
+        <SectionDescription marginTop={-10}>
+          {formatMessage({
+            id: 'pR0UwN',
+            defaultMessage:
+              'Es können ein oder zwei Ort-Stufen definiert werden. Beispiel für Arten: Population/Teil-Population.',
+          })}
+        </SectionDescription>
         <RadioGroupField
           label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Ort-Stufe' })}
           name="level"

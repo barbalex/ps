@@ -5,6 +5,6 @@ import styles from './Section.module.css'
 export const Section = ({ title, children }) => (
   <section>
     <h2 className={styles.title}>{title}</h2>
-    {children}
+    <div className={styles.children}>{children}</div>
   </section>
 )

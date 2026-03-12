@@ -10,3 +10,9 @@
   z-index: 1;
   user-select: none;
 }
+
+.children {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
