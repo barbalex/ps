@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createUnit } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -13,6 +14,7 @@ export const Header = ({ autoFocusRef }) => {
   const { projectId, unitId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -99,7 +101,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Unit"
+      title={formatMessage({ id: 'sTk6C3', defaultMessage: 'Einheit' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
