@@ -10,7 +10,6 @@ import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
-import type Projects from '../../models/public/Projects.ts'
 
 export const ActionNode = ({
   projectId,
@@ -24,13 +23,15 @@ export const ActionNode = ({
   const location = useLocation()
   const navigate = useNavigate()
 
-  // need project to know whether to show files
-  const resProject = useLiveQuery(
-    `SELECT * FROM projects WHERE project_id = $1`,
-    [projectId],
+  const res = useLiveQuery(
+    `SELECT p.files_active_actions, pl.action_values, pl.action_reports
+     FROM projects p
+     LEFT JOIN place_levels pl ON pl.project_id = p.project_id
+     WHERE p.project_id = $1 AND (pl.level IS NULL OR pl.level = $2)`,
+    [projectId, placeId2 ? 2 : 1],
   )
-  const project: Projects = resProject?.rows?.[0]
-  const showFiles = project?.files_active_actions ?? false
+  const row = res?.rows?.[0]
+  const showFiles = row?.files_active_actions ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -92,22 +93,26 @@ export const ActionNode = ({
             childrenCount={0}
             to={`${ownUrl}/action`}
           />
-          <ActionValuesNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            placeId={placeId}
-            placeId2={placeId2}
-            actionId={nav.id}
-            level={level + 1}
-          />
-          <ActionReportsNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            placeId={placeId}
-            placeId2={placeId2}
-            actionId={nav.id}
-            level={level + 1}
-          />
+          {row?.action_values !== false && (
+            <ActionValuesNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              actionId={nav.id}
+              level={level + 1}
+            />
+          )}
+          {row?.action_reports !== false && (
+            <ActionReportsNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              actionId={nav.id}
+              level={level + 1}
+            />
+          )}
           {showFiles && (
             <FilesNode
               projectId={projectId}
