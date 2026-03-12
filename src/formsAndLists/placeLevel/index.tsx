@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -11,7 +11,7 @@ import { Header } from './Header.tsx'
 import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { addOperationAtom } from '../../store.ts'
 import type PlaceLevels from '../../models/public/PlaceLevels.ts'
 
 import '../../form.css'
@@ -21,7 +21,6 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
-  const [language] = useAtom(languageAtom)
 
   const [validations, setValidations] = useState({})
 
@@ -64,12 +63,12 @@ export const PlaceLevel = () => {
       draft: { [name]: value },
       prev: { ...row },
     })
-    // if name_plural was changed, need to update the label of corresponding vector layers
+    // if name fields changed, need to update the label of corresponding vector layers
     if (
       row &&
       [
-        `name_plural_${language}`,
-        `name_singular_${language}`,
+        'name_plural_de', 'name_plural_en', 'name_plural_fr', 'name_plural_it',
+        'name_singular_de', 'name_singular_en', 'name_singular_fr', 'name_singular_it',
         'actions',
         'checks',
         'observations',
@@ -105,30 +104,102 @@ export const PlaceLevel = () => {
           validationMessage={validations?.level?.message}
         />
         <TextField
-          label="Name (singular)"
-          name={`name_singular_${language}`}
-          value={row[`name_singular_${language}`] ?? ''}
+          label="Name in German (singular)"
+          name="name_singular_de"
+          value={row.name_singular_de ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations?.[`name_singular_${language}`]?.state}
-          validationMessage={validations?.[`name_singular_${language}`]?.message}
+          validationState={validations?.name_singular_de?.state}
+          validationMessage={validations?.name_singular_de?.message}
         />
         <TextField
-          label="Name (plural)"
-          name={`name_plural_${language}`}
-          value={row[`name_plural_${language}`] ?? ''}
+          label="Name in German (plural)"
+          name="name_plural_de"
+          value={row.name_plural_de ?? ''}
           onChange={onChange}
-          validationState={validations?.[`name_plural_${language}`]?.state}
-          validationMessage={validations?.[`name_plural_${language}`]?.message}
+          validationState={validations?.name_plural_de?.state}
+          validationMessage={validations?.name_plural_de?.message}
         />
         <TextField
-          label="Name (short)"
-          name={`name_short_${language}`}
-          value={row[`name_short_${language}`] ?? ''}
+          label="Name in German (short)"
+          name="name_short_de"
+          value={row.name_short_de ?? ''}
           onChange={onChange}
-          validationState={validations?.[`name_short_${language}`]?.state}
-          validationMessage={validations?.[`name_short_${language}`]?.message}
+          validationState={validations?.name_short_de?.state}
+          validationMessage={validations?.name_short_de?.message}
+        />
+        <TextField
+          label="Name in English (singular)"
+          name="name_singular_en"
+          value={row.name_singular_en ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_singular_en?.state}
+          validationMessage={validations?.name_singular_en?.message}
+        />
+        <TextField
+          label="Name in English (plural)"
+          name="name_plural_en"
+          value={row.name_plural_en ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_plural_en?.state}
+          validationMessage={validations?.name_plural_en?.message}
+        />
+        <TextField
+          label="Name in English (short)"
+          name="name_short_en"
+          value={row.name_short_en ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_short_en?.state}
+          validationMessage={validations?.name_short_en?.message}
+        />
+        <TextField
+          label="Name in French (singular)"
+          name="name_singular_fr"
+          value={row.name_singular_fr ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_singular_fr?.state}
+          validationMessage={validations?.name_singular_fr?.message}
+        />
+        <TextField
+          label="Name in French (plural)"
+          name="name_plural_fr"
+          value={row.name_plural_fr ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_plural_fr?.state}
+          validationMessage={validations?.name_plural_fr?.message}
+        />
+        <TextField
+          label="Name in French (short)"
+          name="name_short_fr"
+          value={row.name_short_fr ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_short_fr?.state}
+          validationMessage={validations?.name_short_fr?.message}
+        />
+        <TextField
+          label="Name in Italian (singular)"
+          name="name_singular_it"
+          value={row.name_singular_it ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_singular_it?.state}
+          validationMessage={validations?.name_singular_it?.message}
+        />
+        <TextField
+          label="Name in Italian (plural)"
+          name="name_plural_it"
+          value={row.name_plural_it ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_plural_it?.state}
+          validationMessage={validations?.name_plural_it?.message}
+        />
+        <TextField
+          label="Name in Italian (short)"
+          name="name_short_it"
+          value={row.name_short_it ?? ''}
+          onChange={onChange}
+          validationState={validations?.name_short_it?.state}
+          validationMessage={validations?.name_short_it?.message}
         />
         <SwitchField
           label="Enable reports"
