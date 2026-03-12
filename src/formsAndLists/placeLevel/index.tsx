@@ -271,12 +271,19 @@ export const PlaceLevel = () => {
           />
         </Section>
         <Section
-          title={formatMessage({ id: 'yR6TsL', defaultMessage: 'Funktionen' })}
+          title={formatMessage({ id: 'yR6TsL', defaultMessage: 'Fähigkeiten' })}
         >
+          <SectionDescription>
+            {formatMessage({
+              id: 'qS1VxO',
+              defaultMessage:
+                'Sie können die folgenden Fähigkeiten (de-)aktivieren. Deaktivierte nicht zur Verfügung, vereinfachen dafür die Benutzeroberfläche.',
+            })}
+          </SectionDescription>
           <SwitchField
             label={formatMessage({
               id: 'nF5KeA',
-              defaultMessage: 'Berichte aktivieren',
+              defaultMessage: 'Berichte',
             })}
             name="reports"
             value={row.reports ?? false}
@@ -287,7 +294,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'oG6LfB',
-              defaultMessage: 'Bericht-Mengen aktivieren',
+              defaultMessage: 'Bericht-Mengen',
             })}
             name="report_values"
             value={row.report_values ?? false}
@@ -298,7 +305,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'pH7MgC',
-              defaultMessage: 'Massnahmen aktivieren',
+              defaultMessage: 'Massnahmen',
             })}
             name="actions"
             value={row.actions ?? false}
@@ -309,7 +316,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'qI8NhD',
-              defaultMessage: 'Massnahmen-Mengen aktivieren',
+              defaultMessage: 'Massnahmen-Mengen',
             })}
             name="action_values"
             value={row.action_values ?? false}
@@ -320,7 +327,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'rJ9OiE',
-              defaultMessage: 'Massnahmenberichte aktivieren',
+              defaultMessage: 'Massnahmenberichte',
             })}
             name="action_reports"
             value={row.action_reports ?? false}
@@ -331,7 +338,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'sK0PjF',
-              defaultMessage: 'Kontrollen aktivieren',
+              defaultMessage: 'Kontrollen',
             })}
             name="checks"
             value={row.checks ?? false}
@@ -342,7 +349,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'tL1QkG',
-              defaultMessage: 'Kontroll-Mengen aktivieren',
+              defaultMessage: 'Kontroll-Mengen',
             })}
             name="check_values"
             value={row.check_values ?? false}
@@ -353,7 +360,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'uM2RlH',
-              defaultMessage: 'Kontroll-Taxa aktivieren',
+              defaultMessage: 'Kontroll-Taxa',
             })}
             name="check_taxa"
             value={row.check_taxa ?? false}
@@ -364,7 +371,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'vN3SmI',
-              defaultMessage: 'Beobachtungen aktivieren',
+              defaultMessage: 'Beobachtungen',
             })}
             name="observations"
             value={row.observations ?? false}
