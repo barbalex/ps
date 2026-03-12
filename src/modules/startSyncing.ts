@@ -894,6 +894,7 @@ export const startSyncing = async () => {
             url,
             params: {
               table: 'wfs_services',
+              // TODO: need to add all columns except label, because label is generated
             },
           },
           table: 'wfs_services',
