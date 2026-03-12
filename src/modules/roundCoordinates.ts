@@ -8,3 +8,9 @@ export const round = (num) => {
   // round to 7 decimal places
   return Math.round(num * 10000000) / 10000000
 }
+
+export const formatCoordinate = (num) => {
+  if (num === undefined || num === null) return undefined
+  // Use apostrophe as thousands separator
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'")
+}

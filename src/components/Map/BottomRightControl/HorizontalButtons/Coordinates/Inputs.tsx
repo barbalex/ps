@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
+import { formatCoordinate } from '../../../../../modules/roundCoordinates.ts'
 import styles from './Inputs.module.css'
 
 export const Inputs = ({
@@ -11,6 +12,7 @@ export const Inputs = ({
   const map = useMap()
 
   const [coordinates, setCoordinates] = useState(coordsIn)
+  const [focused, setFocused] = useState<'x' | 'y' | null>(null)
   // update coordinates when coordsIn changes
   useEffect(() => {
     setCoordinates(coordsIn)
@@ -24,6 +26,7 @@ export const Inputs = ({
   }
 
   const onBlur = () => {
+    setFocused(null)
     const [x, y] = epsgTo4326({
       x: coordinates.x,
       y: coordinates.y,
@@ -45,8 +48,9 @@ export const Inputs = ({
       <input
         type="text"
         name="x"
-        value={coordinates?.x ?? '...'}
+        value={focused === 'x' ? (coordinates?.x ?? '') : (formatCoordinate(coordinates?.x) ?? '...')}
         className={`${styles.input} ${styles.alignRight}`}
+        onFocus={() => setFocused('x')}
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -55,8 +59,9 @@ export const Inputs = ({
       <input
         type="text"
         name="y"
-        value={coordinates?.y ?? '...'}
+        value={focused === 'y' ? (coordinates?.y ?? '') : (formatCoordinate(coordinates?.y) ?? '...')}
         className={`${styles.input} ${styles.alignLeft}`}
+        onFocus={() => setFocused('y')}
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}

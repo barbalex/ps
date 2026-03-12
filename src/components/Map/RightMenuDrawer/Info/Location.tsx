@@ -1,5 +1,5 @@
 import { epsgFrom4326 } from '../../../../modules/epsgFrom4326.ts'
-import { round } from '../../../../modules/roundCoordinates.ts'
+import { round, formatCoordinate } from '../../../../modules/roundCoordinates.ts'
 import styles from './Location.module.css'
 
 export const Location = ({
@@ -22,13 +22,13 @@ export const Location = ({
       <h3 className={styles.title}>Location</h3>
       <div className={styles.grid}>
         <span className={styles.label}>WGS84</span>
-        <span className={styles.value}>{wgsLng}</span>
-        <span className={styles.value}>{wgsLat}</span>
+        <span className={styles.value}>{formatCoordinate(wgsLng)}</span>
+        <span className={styles.value}>{formatCoordinate(wgsLat)}</span>
         {projectMapPresentationCrs && (
           <>
             <span className={styles.label}>{projectMapPresentationCrs}</span>
-            <span className={styles.value}>{round(x)}</span>
-            <span className={styles.value}>{round(y)}</span>
+            <span className={styles.value}>{formatCoordinate(round(x))}</span>
+            <span className={styles.value}>{formatCoordinate(round(y))}</span>
           </>
         )}
       </div>
