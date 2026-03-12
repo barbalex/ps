@@ -11,6 +11,7 @@ import { ComboboxFilteringOptions } from './Combobox/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 import type ProjectCrs from '../../models/public/ProjectCrs.ts'
@@ -124,6 +125,13 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
 
   return (
     <>
+      <SectionDescription>
+        {formatMessage({
+          id: 'Op6QrS',
+          defaultMessage:
+            'Ein Koordinatenreferenzsystem (CRS) legt fest, wie Koordinaten auf der Erde verortet werden.',
+        })}
+      </SectionDescription>
       <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
       <TextField
         label={formatMessage({ id: 'Fz4gCh', defaultMessage: 'Code' })}
