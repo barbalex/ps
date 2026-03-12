@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS projects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type text DEFAULT NULL references project_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
+  type text DEFAULT 'species' references project_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_name_singular_en text DEFAULT NULL,
@@ -204,18 +204,18 @@ CREATE TABLE IF NOT EXISTS place_levels(
   name_singular_it text DEFAULT NULL,
   name_plural_it text DEFAULT NULL,
   name_short_it text DEFAULT NULL,
-  reports boolean DEFAULT FALSE,
-  report_values boolean DEFAULT FALSE,
-  actions boolean DEFAULT FALSE,
-  action_values boolean DEFAULT FALSE,
-  action_reports boolean DEFAULT FALSE,
-  checks boolean DEFAULT FALSE,
-  check_values boolean DEFAULT FALSE,
-  check_taxa boolean DEFAULT FALSE,
-  observations boolean DEFAULT FALSE,
-  place_files boolean DEFAULT FALSE,
-  action_files boolean DEFAULT FALSE,
-  check_files boolean DEFAULT FALSE,
+  reports boolean DEFAULT TRUE,
+  report_values boolean DEFAULT TRUE,
+  actions boolean DEFAULT TRUE,
+  action_values boolean DEFAULT TRUE,
+  action_reports boolean DEFAULT TRUE,
+  checks boolean DEFAULT TRUE,
+  check_values boolean DEFAULT TRUE,
+  check_taxa boolean DEFAULT TRUE,
+  observations boolean DEFAULT TRUE,
+  place_files boolean DEFAULT TRUE,
+  action_files boolean DEFAULT TRUE,
+  check_files boolean DEFAULT TRUE,
   label text GENERATED ALWAYS AS (
     CASE
       WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
@@ -607,7 +607,6 @@ CREATE TABLE IF NOT EXISTS places(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL,
-  files_active_places boolean DEFAULT TRUE,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -630,7 +629,6 @@ COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN places.since IS 'start year of place';
 COMMENT ON COLUMN places.until IS 'end year of place';
 COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
-COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
@@ -653,7 +651,6 @@ CREATE TABLE IF NOT EXISTS place_histories(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (COALESCE(year::text, place_history_id::text)) STORED,
-  files_active_places boolean DEFAULT TRUE,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
