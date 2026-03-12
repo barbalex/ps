@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createListValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -13,6 +14,7 @@ export const Header = ({ autoFocusRef }) => {
   const { listId, listValueId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -102,7 +104,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="List Value"
+      title={formatMessage({ id: 'QMOyrE', defaultMessage: 'Listen-Wert' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -22,6 +23,7 @@ export const ListValue = () => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `SELECT * FROM list_values WHERE list_value_id = $1`,
@@ -70,7 +72,7 @@ export const ListValue = () => {
         : row ?
           <>
             <TextField
-              label="Value"
+              label={formatMessage({ id: 'ejuFAr', defaultMessage: 'Wert' })}
               name="value"
               value={row.value ?? ''}
               onChange={onChange}
@@ -80,7 +82,7 @@ export const ListValue = () => {
               validationMessage={validations?.value?.message}
             />
             <SwitchField
-              label="Obsolete"
+              label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}
               name="obsolete"
               value={row.obsolete}
               onChange={onChange}
@@ -89,7 +91,7 @@ export const ListValue = () => {
             />
           </>
         : <NotFound
-            table="List Value"
+            table={formatMessage({ id: 'QMOyrE', defaultMessage: 'Listen-Wert' })}
             id={listValueId}
           />
         }
