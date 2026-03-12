@@ -1,7 +1,5 @@
 import styles from './SectionDescription.module.css'
 
-export const SectionDescription = ({ children, marginTop = 0 }) => (
-  <p className={styles.description} style={{ marginTop }}>
-    {children}
-  </p>
+export const SectionDescription = ({ children }) => (
+  <p className={styles.description}>{children}</p>
 )
