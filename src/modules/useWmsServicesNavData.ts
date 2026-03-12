@@ -1,46 +1,46 @@
-import { useLiveQuery } from "@electric-sql/pglite-react";
-import { useAtom } from "jotai";
-import { useLocation } from "@tanstack/react-router";
-import { isEqual } from "es-toolkit";
-import { useIntl } from 'react-intl';
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtom } from 'jotai'
+import { useLocation } from '@tanstack/react-router'
+import { isEqual } from 'es-toolkit'
+import { useIntl } from 'react-intl'
 
-import { filterStringFromFilter } from "./filterStringFromFilter.ts";
-import { buildNavLabel } from "./buildNavLabel.ts";
-import { wmsServicesFilterAtom, treeOpenNodesAtom } from "../store.ts";
+import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
+import { wmsServicesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
-  projectId: string;
-};
+  projectId: string
+}
 
 type NavDataOpen = {
-  id: string;
-  label: string;
-  count_unfiltered?: number;
-  count_filtered?: number;
-}[];
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
 
 type NavDataClosed = {
-  count_unfiltered: number;
-  count_filtered: number;
-}[];
+  count_unfiltered: number
+  count_filtered: number
+}[]
 
 export const useWmsServicesNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom);
-  const [filter] = useAtom(wmsServicesFilterAtom);
-  const location = useLocation();
-  const { formatMessage } = useIntl();
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filter] = useAtom(wmsServicesFilterAtom)
+  const location = useLocation()
+  const { formatMessage } = useIntl()
 
-  const parentArray = ["data", "projects", projectId];
-  const ownArray = [...parentArray, "wms-services"];
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray));
-  const filterString = filterStringFromFilter(filter);
-  const isFiltered = !!filterString;
+  const parentArray = ['data', 'projects', projectId]
+  const ownArray = [...parentArray, 'wms-services']
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
 
   const sql = isOpen
     ? `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ""})
+        count_filtered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         wms_service_id AS id,
         label,
@@ -49,31 +49,31 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
       FROM wms_services, count_unfiltered, count_filtered
       WHERE
         project_id = '${projectId}'
-        ${isFiltered ? `AND ${filterString}` : ""}
+        ${isFiltered ? `AND ${filterString}` : ''}
       ORDER BY url, wms_service_id
     `
     : `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ""})
+        count_filtered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered
-    `;
-  const res = useLiveQuery(sql);
+    `
+  const res = useLiveQuery(sql)
 
-  const loading = res === undefined;
+  const loading = res === undefined
 
-  const navs: NavDataOpen | NavDataClosed = res?.rows ?? [];
-  const countUnfiltered = navs[0]?.count_unfiltered ?? 0;
-  const countFiltered = navs[0]?.count_filtered ?? 0;
+  const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
+  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
+  const countFiltered = navs[0]?.count_filtered ?? 0
 
-  const parentUrl = `/${parentArray.join("/")}`;
-  const ownUrl = `/${ownArray.join("/")}`;
-  const urlPath = location.pathname.split("/").filter((p) => p !== "");
-  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part);
-  const isActive = isEqual(urlPath, ownArray);
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownUrl = `/${ownArray.join('/')}`
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   const navData = {
     isInActiveNodeArray,
@@ -88,11 +88,14 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: formatMessage({ id: '0pm66C', defaultMessage: 'WMS-Dienste' }),
+      namePlural: formatMessage({
+        id: '0pm66C',
+        defaultMessage: 'WMS-Dienste',
+      }),
     }),
     nameSingular: formatMessage({ id: 'GXBidE', defaultMessage: 'WMS-Dienst' }),
     navs,
-  };
+  }
 
-  return { loading, navData, isFiltered };
-};
+  return { loading, navData, isFiltered }
+}
