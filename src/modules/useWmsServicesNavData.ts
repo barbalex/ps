@@ -43,7 +43,7 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
         count_filtered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ""})
       SELECT
         wms_service_id AS id,
-        coalesce(url, wms_service_id::text) AS label,
+        label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM wms_services, count_unfiltered, count_filtered

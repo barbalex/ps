@@ -27,7 +27,7 @@ export const useWmsServiceWmsServiceNavData = ({
   const sql = `
       SELECT
         wms_service_id AS id,
-        coalesce(url, wms_service_id::text) AS label
+        label
       FROM 
         wms_services
       WHERE 

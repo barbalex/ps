@@ -29,7 +29,7 @@ export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
       layers_count AS (SELECT COUNT(*) AS count FROM wms_service_layers WHERE wms_service_id = '${wmsServiceId}')
     SELECT
       wms_service_id AS id,
-      coalesce(url, wms_service_id::text) AS label,
+      label,
       layers_count.count AS layers_count_unfiltered
     FROM
       wms_services, 
