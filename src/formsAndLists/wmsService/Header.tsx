@@ -2,6 +2,8 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
+import { useIntl } from 'react-intl'
+
 import { createWmsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
@@ -12,8 +14,10 @@ interface Props {
 }
 
 export const Header = ({ autoFocusRef, from }: Props) => {
+  const { formatMessage } = useIntl()
   const isForm =
-    from === '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
+    from ===
+    '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
   const { projectId, wmsServiceId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -53,7 +57,9 @@ export const Header = ({ autoFocusRef, from }: Props) => {
         [wmsServiceId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM wms_services WHERE wms_service_id = $1`, [wmsServiceId])
+      await db.query(`DELETE FROM wms_services WHERE wms_service_id = $1`, [
+        wmsServiceId,
+      ])
       addOperation({
         table: 'wms_services',
         rowIdName: 'wms_service_id',
@@ -71,7 +77,9 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     const next = rows[(ownIndex + 1) % len]
     if (!next) return
     navigate({
-      to: isForm ? `../../${next.wms_service_id}/wms-service` : `../${next.wms_service_id}/wms-service`,
+      to: isForm
+        ? `../../${next.wms_service_id}/wms-service`
+        : `../${next.wms_service_id}/wms-service`,
       params: (prev) => ({ ...prev, wmsServiceId: next.wms_service_id }),
     })
   }
@@ -80,14 +88,16 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     const previous = rows[(ownIndex + len - 1) % len]
     if (!previous) return
     navigate({
-      to: isForm ? `../../${previous.wms_service_id}/wms-service` : `../${previous.wms_service_id}/wms-service`,
+      to: isForm
+        ? `../../${previous.wms_service_id}/wms-service`
+        : `../${previous.wms_service_id}/wms-service`,
       params: (prev) => ({ ...prev, wmsServiceId: previous.wms_service_id }),
     })
   }
 
   return (
     <FormHeader
-      title="WMS Service"
+      title={formatMessage({ id: 'Pq4RsT', defaultMessage: 'WMS-Dienst' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

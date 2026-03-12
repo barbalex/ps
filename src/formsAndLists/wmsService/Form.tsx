@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { FetchWmsCapabilities } from '../wmsLayer/Form/CreateWmsService/FetchWmsCapabilities.tsx'
 
@@ -10,6 +11,7 @@ export const WmsServiceForm = ({
   row,
   autoFocusRef,
 }) => {
+  const { formatMessage } = useIntl()
   const [fetching, setFetching] = useState(false)
 
   // Create a wmsLayer-like object that the existing FetchWmsCapabilities expects
@@ -40,25 +42,25 @@ export const WmsServiceForm = ({
         />
       </div>
       <TextField
-        label="Version"
+        label={formatMessage({ id: 'Yz9AbC', defaultMessage: 'Version' })}
         name="version"
         value={row.version ?? ''}
         readOnly
       />
       <TextField
-        label="Image Format"
+        label={formatMessage({ id: 'Rs6TuV', defaultMessage: 'Bildformat' })}
         name="image_format"
         value={row.image_format ?? ''}
         readOnly
       />
       <TextField
-        label="Info Format"
+        label={formatMessage({ id: 'Za0BcD', defaultMessage: 'Info-Format' })}
         name="info_format"
         value={row.info_format ?? ''}
         readOnly
       />
       <TextField
-        label="Default CRS"
+        label={formatMessage({ id: 'Ab1CdE', defaultMessage: 'Standard-KBS' })}
         name="default_crs"
         value={row.default_crs ?? ''}
         readOnly

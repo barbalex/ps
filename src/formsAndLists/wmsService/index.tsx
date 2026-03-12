@@ -3,6 +3,8 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useState } from 'react'
 import { useSetAtom } from 'jotai'
 
+import { useIntl } from 'react-intl'
+
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -18,6 +20,7 @@ interface Props {
 }
 
 export const WmsService = ({ from }: Props) => {
+  const { formatMessage } = useIntl()
   const { wmsServiceId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
@@ -25,9 +28,10 @@ export const WmsService = ({ from }: Props) => {
 
   const db = usePGlite()
 
-  const res = useLiveQuery(`SELECT * FROM wms_services WHERE wms_service_id = $1`, [
-    wmsServiceId,
-  ])
+  const res = useLiveQuery(
+    `SELECT * FROM wms_services WHERE wms_service_id = $1`,
+    [wmsServiceId],
+  )
   const row: WmsServices | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
@@ -36,10 +40,10 @@ export const WmsService = ({ from }: Props) => {
     if (row[name] === value) return
 
     try {
-      await db.query(`UPDATE wms_services SET ${name} = $1 WHERE wms_service_id = $2`, [
-        value,
-        wmsServiceId,
-      ])
+      await db.query(
+        `UPDATE wms_services SET ${name} = $1 WHERE wms_service_id = $2`,
+        [value, wmsServiceId],
+      )
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
@@ -64,22 +68,26 @@ export const WmsService = ({ from }: Props) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
             validations={validations}
             row={row}
             autoFocusRef={autoFocusRef}
           />
-        : <NotFound table="WMS Service" id={wmsServiceId} />
-        }
+        ) : (
+          <NotFound
+            table={formatMessage({
+              id: 'Pq4RsT',
+              defaultMessage: 'WMS-Dienst',
+            })}
+            id={wmsServiceId}
+          />
+        )}
       </div>
     </div>
   )

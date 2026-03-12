@@ -4,6 +4,8 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 
 
+import { useIntl } from 'react-intl'
+
 import { createWmsService } from '../../../../modules/createRows.ts'
 import {
   addOperationAtom,
@@ -22,6 +24,7 @@ export const FetchWmsCapabilities = ({
   fetching,
   setFetching,
 }) => {
+  const { formatMessage } = useIntl()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
@@ -278,8 +281,8 @@ export const FetchWmsCapabilities = ({
       disabled={!url}
     >
       {fetching ?
-        `Loading Capabilities (${wmsServiceLayersCount})`
-      : `Fetch Capabilities`}
+        formatMessage({ id: 'Eh4FiK', defaultMessage: 'Fähigkeiten werden geladen ({count})' }, { count: wmsServiceLayersCount })
+      : formatMessage({ id: 'Dg3EhJ', defaultMessage: 'Fähigkeiten laden' })}
     </Button>
   )
 }
