@@ -1,11 +1,13 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 const from = '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId/'
 
 export const Header = () => {
+  const { formatMessage } = useIntl()
   const { wmsServiceId, wmsServiceLayerId } = useParams({ from })
   const navigate = useNavigate()
 
@@ -47,7 +49,7 @@ export const Header = () => {
 
   return (
     <FormHeader
-      title="WMS Service Layer"
+      title={formatMessage({ id: 'Mn1OpQ', defaultMessage: 'WMS-Dienst-Ebene' })}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
