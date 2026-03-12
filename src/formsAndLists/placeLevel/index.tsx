@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { Section } from '../../components/shared/Section.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
@@ -116,239 +117,247 @@ export const PlaceLevel = () => {
           validationState={validations?.level?.state}
           validationMessage={validations?.level?.message}
         />
-        <TextField
-          label={formatMessage({
-            id: 'bT3YsO',
-            defaultMessage: 'Name auf Deutsch (Einzahl)',
-          })}
-          name="name_singular_de"
-          value={row.name_singular_de ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.name_singular_de?.state}
-          validationMessage={validations?.name_singular_de?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'cU4ZtP',
-            defaultMessage: 'Name auf Deutsch (Mehrzahl)',
-          })}
-          name="name_plural_de"
-          value={row.name_plural_de ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_plural_de?.state}
-          validationMessage={validations?.name_plural_de?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'dV5AuQ',
-            defaultMessage: 'Name auf Deutsch (Kurzform)',
-          })}
-          name="name_short_de"
-          value={row.name_short_de ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_short_de?.state}
-          validationMessage={validations?.name_short_de?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'eW6BvR',
-            defaultMessage: 'Name auf Englisch (Einzahl)',
-          })}
-          name="name_singular_en"
-          value={row.name_singular_en ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_singular_en?.state}
-          validationMessage={validations?.name_singular_en?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'fX7CwS',
-            defaultMessage: 'Name auf Englisch (Mehrzahl)',
-          })}
-          name="name_plural_en"
-          value={row.name_plural_en ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_plural_en?.state}
-          validationMessage={validations?.name_plural_en?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'gY8DxT',
-            defaultMessage: 'Name auf Englisch (Kurzform)',
-          })}
-          name="name_short_en"
-          value={row.name_short_en ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_short_en?.state}
-          validationMessage={validations?.name_short_en?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'hZ9EyU',
-            defaultMessage: 'Name auf Französisch (Einzahl)',
-          })}
-          name="name_singular_fr"
-          value={row.name_singular_fr ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_singular_fr?.state}
-          validationMessage={validations?.name_singular_fr?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'iA0FzV',
-            defaultMessage: 'Name auf Französisch (Mehrzahl)',
-          })}
-          name="name_plural_fr"
-          value={row.name_plural_fr ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_plural_fr?.state}
-          validationMessage={validations?.name_plural_fr?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'jB1GaW',
-            defaultMessage: 'Name auf Französisch (Kurzform)',
-          })}
-          name="name_short_fr"
-          value={row.name_short_fr ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_short_fr?.state}
-          validationMessage={validations?.name_short_fr?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'kC2HbX',
-            defaultMessage: 'Name auf Italienisch (Einzahl)',
-          })}
-          name="name_singular_it"
-          value={row.name_singular_it ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_singular_it?.state}
-          validationMessage={validations?.name_singular_it?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'lD3IcY',
-            defaultMessage: 'Name auf Italienisch (Mehrzahl)',
-          })}
-          name="name_plural_it"
-          value={row.name_plural_it ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_plural_it?.state}
-          validationMessage={validations?.name_plural_it?.message}
-        />
-        <TextField
-          label={formatMessage({
-            id: 'mE4JdZ',
-            defaultMessage: 'Name auf Italienisch (Kurzform)',
-          })}
-          name="name_short_it"
-          value={row.name_short_it ?? ''}
-          onChange={onChange}
-          validationState={validations?.name_short_it?.state}
-          validationMessage={validations?.name_short_it?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'nF5KeA',
-            defaultMessage: 'Berichte aktivieren',
-          })}
-          name="reports"
-          value={row.reports ?? false}
-          onChange={onChange}
-          validationState={validations?.reports?.state}
-          validationMessage={validations?.reports?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'oG6LfB',
-            defaultMessage: 'Bericht-Mengen aktivieren',
-          })}
-          name="report_values"
-          value={row.report_values ?? false}
-          onChange={onChange}
-          validationState={validations?.report_values?.state}
-          validationMessage={validations?.report_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'pH7MgC',
-            defaultMessage: 'Massnahmen aktivieren',
-          })}
-          name="actions"
-          value={row.actions ?? false}
-          onChange={onChange}
-          validationState={validations?.actions?.state}
-          validationMessage={validations?.actions?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'qI8NhD',
-            defaultMessage: 'Massnahmen-Mengen aktivieren',
-          })}
-          name="action_values"
-          value={row.action_values ?? false}
-          onChange={onChange}
-          validationState={validations?.action_values?.state}
-          validationMessage={validations?.action_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'rJ9OiE',
-            defaultMessage: 'Massnahmenberichte aktivieren',
-          })}
-          name="action_reports"
-          value={row.action_reports ?? false}
-          onChange={onChange}
-          validationState={validations?.action_reports?.state}
-          validationMessage={validations?.action_reports?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'sK0PjF',
-            defaultMessage: 'Kontrollen aktivieren',
-          })}
-          name="checks"
-          value={row.checks ?? false}
-          onChange={onChange}
-          validationState={validations?.checks?.state}
-          validationMessage={validations?.checks?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'tL1QkG',
-            defaultMessage: 'Kontroll-Mengen aktivieren',
-          })}
-          name="check_values"
-          value={row.check_values ?? false}
-          onChange={onChange}
-          validationState={validations?.check_values?.state}
-          validationMessage={validations?.check_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'uM2RlH',
-            defaultMessage: 'Kontroll-Taxa aktivieren',
-          })}
-          name="check_taxa"
-          value={row.check_taxa ?? false}
-          onChange={onChange}
-          validationState={validations?.check_taxa?.state}
-          validationMessage={validations?.check_taxa?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'vN3SmI',
-            defaultMessage: 'Beobachtungen aktivieren',
-          })}
-          name="observations"
-          value={row.observations ?? false}
-          onChange={onChange}
-          validationState={validations?.observations?.state}
-          validationMessage={validations?.observations?.message}
-        />
+        <Section
+          title={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
+        >
+          <TextField
+            label={formatMessage({
+              id: 'bT3YsO',
+              defaultMessage: 'Name auf Deutsch (Einzahl)',
+            })}
+            name="name_singular_de"
+            value={row.name_singular_de ?? ''}
+            onChange={onChange}
+            autoFocus
+            ref={autoFocusRef}
+            validationState={validations?.name_singular_de?.state}
+            validationMessage={validations?.name_singular_de?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'cU4ZtP',
+              defaultMessage: 'Name auf Deutsch (Mehrzahl)',
+            })}
+            name="name_plural_de"
+            value={row.name_plural_de ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_plural_de?.state}
+            validationMessage={validations?.name_plural_de?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'dV5AuQ',
+              defaultMessage: 'Name auf Deutsch (Kurzform)',
+            })}
+            name="name_short_de"
+            value={row.name_short_de ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_short_de?.state}
+            validationMessage={validations?.name_short_de?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'eW6BvR',
+              defaultMessage: 'Name auf Englisch (Einzahl)',
+            })}
+            name="name_singular_en"
+            value={row.name_singular_en ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_singular_en?.state}
+            validationMessage={validations?.name_singular_en?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'fX7CwS',
+              defaultMessage: 'Name auf Englisch (Mehrzahl)',
+            })}
+            name="name_plural_en"
+            value={row.name_plural_en ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_plural_en?.state}
+            validationMessage={validations?.name_plural_en?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'gY8DxT',
+              defaultMessage: 'Name auf Englisch (Kurzform)',
+            })}
+            name="name_short_en"
+            value={row.name_short_en ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_short_en?.state}
+            validationMessage={validations?.name_short_en?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'hZ9EyU',
+              defaultMessage: 'Name auf Französisch (Einzahl)',
+            })}
+            name="name_singular_fr"
+            value={row.name_singular_fr ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_singular_fr?.state}
+            validationMessage={validations?.name_singular_fr?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'iA0FzV',
+              defaultMessage: 'Name auf Französisch (Mehrzahl)',
+            })}
+            name="name_plural_fr"
+            value={row.name_plural_fr ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_plural_fr?.state}
+            validationMessage={validations?.name_plural_fr?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'jB1GaW',
+              defaultMessage: 'Name auf Französisch (Kurzform)',
+            })}
+            name="name_short_fr"
+            value={row.name_short_fr ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_short_fr?.state}
+            validationMessage={validations?.name_short_fr?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'kC2HbX',
+              defaultMessage: 'Name auf Italienisch (Einzahl)',
+            })}
+            name="name_singular_it"
+            value={row.name_singular_it ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_singular_it?.state}
+            validationMessage={validations?.name_singular_it?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'lD3IcY',
+              defaultMessage: 'Name auf Italienisch (Mehrzahl)',
+            })}
+            name="name_plural_it"
+            value={row.name_plural_it ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_plural_it?.state}
+            validationMessage={validations?.name_plural_it?.message}
+          />
+          <TextField
+            label={formatMessage({
+              id: 'mE4JdZ',
+              defaultMessage: 'Name auf Italienisch (Kurzform)',
+            })}
+            name="name_short_it"
+            value={row.name_short_it ?? ''}
+            onChange={onChange}
+            validationState={validations?.name_short_it?.state}
+            validationMessage={validations?.name_short_it?.message}
+          />
+        </Section>
+        <Section
+          title={formatMessage({ id: 'yR6TsL', defaultMessage: 'Funktionen' })}
+        >
+          <SwitchField
+            label={formatMessage({
+              id: 'nF5KeA',
+              defaultMessage: 'Berichte aktivieren',
+            })}
+            name="reports"
+            value={row.reports ?? false}
+            onChange={onChange}
+            validationState={validations?.reports?.state}
+            validationMessage={validations?.reports?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'oG6LfB',
+              defaultMessage: 'Bericht-Mengen aktivieren',
+            })}
+            name="report_values"
+            value={row.report_values ?? false}
+            onChange={onChange}
+            validationState={validations?.report_values?.state}
+            validationMessage={validations?.report_values?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'pH7MgC',
+              defaultMessage: 'Massnahmen aktivieren',
+            })}
+            name="actions"
+            value={row.actions ?? false}
+            onChange={onChange}
+            validationState={validations?.actions?.state}
+            validationMessage={validations?.actions?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'qI8NhD',
+              defaultMessage: 'Massnahmen-Mengen aktivieren',
+            })}
+            name="action_values"
+            value={row.action_values ?? false}
+            onChange={onChange}
+            validationState={validations?.action_values?.state}
+            validationMessage={validations?.action_values?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'rJ9OiE',
+              defaultMessage: 'Massnahmenberichte aktivieren',
+            })}
+            name="action_reports"
+            value={row.action_reports ?? false}
+            onChange={onChange}
+            validationState={validations?.action_reports?.state}
+            validationMessage={validations?.action_reports?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'sK0PjF',
+              defaultMessage: 'Kontrollen aktivieren',
+            })}
+            name="checks"
+            value={row.checks ?? false}
+            onChange={onChange}
+            validationState={validations?.checks?.state}
+            validationMessage={validations?.checks?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'tL1QkG',
+              defaultMessage: 'Kontroll-Mengen aktivieren',
+            })}
+            name="check_values"
+            value={row.check_values ?? false}
+            onChange={onChange}
+            validationState={validations?.check_values?.state}
+            validationMessage={validations?.check_values?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'uM2RlH',
+              defaultMessage: 'Kontroll-Taxa aktivieren',
+            })}
+            name="check_taxa"
+            value={row.check_taxa ?? false}
+            onChange={onChange}
+            validationState={validations?.check_taxa?.state}
+            validationMessage={validations?.check_taxa?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'vN3SmI',
+              defaultMessage: 'Beobachtungen aktivieren',
+            })}
+            name="observations"
+            value={row.observations ?? false}
+            onChange={onChange}
+            validationState={validations?.observations?.state}
+            validationMessage={validations?.observations?.message}
+          />
+        </Section>
       </div>
     </div>
   )
