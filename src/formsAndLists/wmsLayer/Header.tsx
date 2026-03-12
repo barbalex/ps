@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createWmsLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -10,6 +11,7 @@ import { addOperationAtom } from '../../store.ts'
 export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -92,7 +94,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="WMS Layer"
+      title={formatMessage({ id: 'Igo7tK', defaultMessage: 'WMS-Ebene' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

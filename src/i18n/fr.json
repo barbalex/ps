@@ -356,5 +356,14 @@
   "Yz9AbC": "Version",
   "Za0BcD": "Format info",
   "Ab1CdE": "CRS par défaut",
-  "Cb1DcE": "Couche de service WFS"
+  "Cb1DcE": "Couche de service WFS",
+  "Dc2EfG": "Couche WMS",
+  "Ed3FgH": "Service de carte web (WMS)",
+  "Fe4GhI": "Couche",
+  "Gf5HiJ": "Ajouter un service de carte web (WMS)",
+  "Hg6IjK": "URL invalide",
+  "Ih7JkL": "L'URL de base du WMS",
+  "Ji8KlM": "Entrez l'URL de base du WMS. Ensuite, les capacités peuvent être chargées et une couche sélectionnée.",
+  "Kj9LmN": "Aucun WMS trouvé. Vous pouvez en ajouter un.",
+  "Lk0MnO": "Choisissez parmi un WMS configuré. Ou ajoutez-en un nouveau."
 }

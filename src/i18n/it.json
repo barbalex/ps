@@ -356,5 +356,14 @@
   "Yz9AbC": "Versione",
   "Za0BcD": "Formato info",
   "Ab1CdE": "CRS predefinito",
-  "Cb1DcE": "Livello servizio WFS"
+  "Cb1DcE": "Livello servizio WFS",
+  "Dc2EfG": "Livello WMS",
+  "Ed3FgH": "Servizio di mappe web (WMS)",
+  "Fe4GhI": "Livello",
+  "Gf5HiJ": "Aggiunge servizio di mappe web (WMS)",
+  "Hg6IjK": "URL non valido",
+  "Ih7JkL": "L'URL base del WMS",
+  "Ji8KlM": "Inserisci l'URL base del WMS. Poi le capacità possono essere caricate e un livello selezionato.",
+  "Kj9LmN": "Nessun WMS trovato. Puoi aggiungerne uno.",
+  "Lk0MnO": "Scegli da un WMS configurato. O aggiungine uno nuovo."
 }

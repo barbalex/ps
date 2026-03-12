@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -20,6 +21,7 @@ export const WmsLayer = () => {
   })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -74,7 +76,7 @@ export const WmsLayer = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="WMS Layer" id={wmsLayerId} />
+    return <NotFound table={formatMessage({ id: 'Igo7tK', defaultMessage: 'WMS-Ebene' })} id={wmsLayerId} />
   }
 
   // console.log('hello WmsLayer, row:', row)

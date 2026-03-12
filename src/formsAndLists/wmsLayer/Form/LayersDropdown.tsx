@@ -2,6 +2,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option } = fluentUiReactComponents
 import axios from 'redaxios'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { useSetAtom } from 'jotai'
 
@@ -24,6 +25,7 @@ type ResData = Pick<
 export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -139,7 +141,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
     }
   }
 
-  const labelWithCount = options?.length ? `Layer (${options.length})` : 'Layer'
+  const labelWithCount = options?.length ? `${formatMessage({ id: 'Fe4GhI', defaultMessage: 'Ebene' })} (${options.length})` : formatMessage({ id: 'Fe4GhI', defaultMessage: 'Ebene' })
 
   return (
     <Field

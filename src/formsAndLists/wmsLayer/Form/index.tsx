@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
@@ -11,11 +13,12 @@ import '../../../form.css'
 export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
   // TODO: implement later
   const isOffline = false
+  const { formatMessage } = useIntl()
 
   return (
     <>
       <DropdownField
-        label="Web Map Service (WMS)"
+        label={formatMessage({ id: 'Ed3FgH', defaultMessage: 'Web Map Service (WMS)' })}
         name="wms_service_id"
         labelField="url"
         table="wms_services"
@@ -27,10 +30,10 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
         validationMessage={
           validations.wms_service_id?.message ??
           (row.wms_service_id ? '' : (
-            'Choose from a configured WMS. Or add a new one.'
+            formatMessage({ id: 'Lk0MnO', defaultMessage: 'Aus einem konfigurierten WMS wählen. Oder einen neuen hinzufügen.' })
           ))
         }
-        noDataMessage="No WMS found. You can add one."
+        noDataMessage={formatMessage({ id: 'Kj9LmN', defaultMessage: 'Kein WMS gefunden. Sie können einen hinzufügen.' })}
         hideWhenNoData={true}
       />
       <CreateWmsService wmsLayer={row} />
@@ -44,7 +47,7 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
         isFilter) && (
         <>
           <TextField
-            label="Label"
+            label={formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
             name="label"
             value={row.label ?? ''}
             onChange={onChange}

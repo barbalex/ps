@@ -356,5 +356,14 @@
   "Yz9AbC": "Version",
   "Za0BcD": "Info format",
   "Ab1CdE": "Default CRS",
-  "Cb1DcE": "WFS Service Layer"
+  "Cb1DcE": "WFS Service Layer",
+  "Dc2EfG": "WMS Layer",
+  "Ed3FgH": "Web Map Service (WMS)",
+  "Fe4GhI": "Layer",
+  "Gf5HiJ": "Add Web Map Service (WMS)",
+  "Hg6IjK": "Invalid URL",
+  "Ih7JkL": "The base URL of the WMS",
+  "Ji8KlM": "Enter the base URL of the WMS. Then capabilities can be loaded and a layer selected.",
+  "Kj9LmN": "No WMS found. You can add one.",
+  "Lk0MnO": "Choose from a configured WMS. Or add a new one."
 }

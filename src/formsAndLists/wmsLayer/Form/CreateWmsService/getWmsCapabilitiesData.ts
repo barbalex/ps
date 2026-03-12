@@ -67,24 +67,26 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
   }
 
   const newServiceData = { ...service, ...serviceData }
+  // exclude generated columns that cannot be updated explicitly
+  const { label: _label, ...updatableServiceData } = newServiceData
 
-  if (Object.keys(newServiceData).length) {
-    const columns = Object.keys(newServiceData).join(',')
-    const values = Object.values(newServiceData)
+  if (Object.keys(updatableServiceData).length) {
+    const columns = Object.keys(updatableServiceData).join(',')
+    const values = Object.values(updatableServiceData)
       .map((_, i) => `$${i + 1}`)
       .join(',')
     await db.query(
       `UPDATE wms_services SET (${columns}) = (${values}) WHERE wms_service_id = $${
-        Object.values(newServiceData).length + 1
+        Object.values(updatableServiceData).length + 1
       }`,
-      [...Object.values(newServiceData), service.wms_service_id],
+      [...Object.values(updatableServiceData), service.wms_service_id],
     )
     store.set(addOperationAtom, {
       table: 'wms_services',
       rowIdName: 'wms_service_id',
       rowId: service.wms_service_id,
       operation: 'update',
-      draft: newServiceData,
+      draft: updatableServiceData,
     })
   }
   // let user choose from layers
