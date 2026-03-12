@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -21,6 +22,7 @@ export const Taxonomy = ({ from }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -64,7 +66,7 @@ export const Taxonomy = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Taxonomy" id={taxonomyId} />
+    return <NotFound table={formatMessage({ id: '6MNIJU', defaultMessage: 'Taxonomie' })} id={taxonomyId} />
   }
 
   return (
@@ -72,7 +74,7 @@ export const Taxonomy = ({ from }) => {
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <TextField
-          label="Name"
+          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
           name="name"
           value={row.name ?? ''}
           onChange={onChange}
@@ -83,7 +85,7 @@ export const Taxonomy = ({ from }) => {
         />
         <Type row={row} onChange={onChange} validations={validations} />
         <TextField
-          label="Url"
+          label={formatMessage({ id: 'TpzCEx', defaultMessage: 'Url' })}
           name="url"
           type="url"
           value={row.url ?? ''}
@@ -98,7 +100,7 @@ export const Taxonomy = ({ from }) => {
           data={row.data ?? {}}
         />
         <SwitchField
-          label="Obsolete"
+          label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}
           name="obsolete"
           value={row.obsolete ?? false}
           onChange={onChange}
