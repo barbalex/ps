@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { createWfsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -19,6 +20,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
+  const { formatMessage } = useIntl()
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM wfs_services WHERE project_id = '${projectId}'`,
@@ -75,9 +77,8 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     const next = rows[(ownIndex + 1) % len]
     if (!next) return
     navigate({
-      to:
-        isForm ?
-          `../../${next.wfs_service_id}/wfs-service`
+      to: isForm
+        ? `../../${next.wfs_service_id}/wfs-service`
         : `../${next.wfs_service_id}/wfs-service`,
       params: (prev) => ({ ...prev, wfsServiceId: next.wfs_service_id }),
     })
@@ -87,9 +88,8 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     const previous = rows[(ownIndex + len - 1) % len]
     if (!previous) return
     navigate({
-      to:
-        isForm ?
-          `../../${previous.wfs_service_id}/wfs-service`
+      to: isForm
+        ? `../../${previous.wfs_service_id}/wfs-service`
         : `../${previous.wfs_service_id}/wfs-service`,
       params: (prev) => ({ ...prev, wfsServiceId: previous.wfs_service_id }),
     })
@@ -97,7 +97,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
 
   return (
     <FormHeader
-      title="WFS Service"
+      title={formatMessage({ id: 'X88JDr', defaultMessage: 'WFS-Service' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

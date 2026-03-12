@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { FetchWfsCapabilities } from '../vectorLayer/Form/FetchWfsCapabilities.tsx'
 
@@ -11,6 +12,7 @@ export const WfsServiceForm = ({
   autoFocusRef,
 }) => {
   const [fetching, setFetching] = useState(false)
+  const { formatMessage } = useIntl()
 
   // Create a vectorLayer-like object that the existing FetchWfsCapabilities expects
   const vectorLayerForFetch = {
@@ -22,7 +24,7 @@ export const WfsServiceForm = ({
   return (
     <>
       <TextField
-        label="URL"
+        label={formatMessage({ id: 'Yb8ZcE', defaultMessage: 'URL' })}
         name="url"
         value={row.url ?? ''}
         onChange={onChange}
@@ -40,21 +42,21 @@ export const WfsServiceForm = ({
         />
       </div>
       <TextField
-        label="Version"
+        label={formatMessage({ id: 'Yz9AbC', defaultMessage: 'Version' })}
         name="version"
         value={row.version ?? ''}
         readOnly
         tabIndex={-1}
       />
       <TextField
-        label="Info Format"
+        label={formatMessage({ id: 'Za0BcD', defaultMessage: 'Info-Format' })}
         name="info_format"
         value={row.info_format ?? ''}
         readOnly
         tabIndex={-1}
       />
       <TextField
-        label="Default CRS"
+        label={formatMessage({ id: 'Ab1CdE', defaultMessage: 'Standard-CRS' })}
         name="default_crs"
         value={row.default_crs ?? ''}
         readOnly

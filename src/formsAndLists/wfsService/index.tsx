@@ -2,6 +2,7 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useState } from 'react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -22,6 +23,7 @@ export const WfsService = ({ from }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -65,25 +67,26 @@ export const WfsService = ({ from }: Props) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
             validations={validations}
             row={row}
             autoFocusRef={autoFocusRef}
           />
-        : <NotFound
-            table="WFS Service"
+        ) : (
+          <NotFound
+            table={formatMessage({
+              id: 'X88JDr',
+              defaultMessage: 'WFS-Service',
+            })}
             id={wfsServiceId}
           />
-        }
+        )}
       </div>
     </div>
   )
