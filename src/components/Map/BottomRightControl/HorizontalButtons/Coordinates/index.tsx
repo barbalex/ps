@@ -45,7 +45,7 @@ export const CoordinatesControl = () => {
   const projectMapPresentationCrs = project?.map_presentation_crs
 
   const resProjectCrs = useLiveQuery(
-    `SELECT project_crs_id,code FROM project_crs WHERE project_id = $1`,
+    `SELECT project_crs_id, code, proj4 FROM project_crs WHERE project_id = $1`,
     [projectId],
   )
   const projectCrs: ProjectCrs[] = resProjectCrs?.rows ?? []
