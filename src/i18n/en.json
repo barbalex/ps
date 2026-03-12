@@ -293,5 +293,13 @@
   "Zy6AbC": "Choose a CRS",
   "Bd7CeD": "Type to filter from > 10'000 CRS options",
   "Ef8FgG": "Type 2 or more characters to filter",
-  "Hi9IjJ": "No value found containing \u201c{filter}\u201d."
+  "Hi9IjJ": "No value found containing “{filter}”.",
+  "Xa1BcD": "Use for action values",
+  "Yb2CdE": "Use for action report values",
+  "Zc3DeF": "Use for check values",
+  "Ad4EfG": "Use for place report values",
+  "Be5FgH": "Use for goal report values",
+  "Cf6GhI": "Use for subproject taxa",
+  "Dg7HiJ": "Use for check taxa",
+  "Eh8IjK": "Summable"
 }

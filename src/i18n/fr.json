@@ -293,5 +293,13 @@
   "Zy6AbC": "Choisir un CRS",
   "Bd7CeD": "Tapez pour filtrer parmi > 10'000 options CRS",
   "Ef8FgG": "Tapez 2 caractères ou plus pour filtrer",
-  "Hi9IjJ": "Aucune valeur trouvée contenant \u00ab\u00a0{filter}\u00a0\u00bb."
+  "Hi9IjJ": "Aucune valeur trouvée contenant « {filter} ».",
+  "Xa1BcD": "Utiliser pour les valeurs de mesure",
+  "Yb2CdE": "Utiliser pour les valeurs de rapport de mesure",
+  "Zc3DeF": "Utiliser pour les valeurs de contrôle",
+  "Ad4EfG": "Utiliser pour les valeurs de rapport de lieu",
+  "Be5FgH": "Utiliser pour les valeurs de rapport d'objectif",
+  "Cf6GhI": "Utiliser pour les taxons de sous-projet",
+  "Dg7HiJ": "Utiliser pour les taxons de contrôle",
+  "Eh8IjK": "Sommable"
 }
