@@ -148,6 +148,12 @@ export const usePlaceNavData = ({
     [projectId],
   )
   const projectType = projectTypeRes?.rows?.[0]?.type
+
+  const resPlaceLevel = useLiveQuery(
+    `SELECT place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
   const currentLevel: 1 | 2 = placeId2 ? 2 : 1
   const fallbackCurrent = getPlaceFallbackNames(
     projectType,
@@ -282,19 +288,23 @@ export const usePlaceNavData = ({
           }),
         }),
       },
-      {
-        id: 'files',
-        label: buildNavLabel({
-          loading,
-          isFiltered: filesIsFiltered,
-          countFiltered: nav?.files_count_filtered ?? 0,
-          countUnfiltered: nav?.files_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'mn58Sh',
-            defaultMessage: 'Dateien',
-          }),
-        }),
-      },
+      ...(placeLevel?.place_files !== false
+        ? [
+            {
+              id: 'files',
+              label: buildNavLabel({
+                loading,
+                isFiltered: filesIsFiltered,
+                countFiltered: nav?.files_count_filtered ?? 0,
+                countUnfiltered: nav?.files_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'mn58Sh',
+                  defaultMessage: 'Dateien',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 

@@ -55,7 +55,7 @@ export const useCheckNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_values, check_taxa FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_values, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -130,17 +130,21 @@ export const useCheckNavData = ({
             },
           ]
         : []),
-      {
-        id: 'files',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.files_count ?? 0,
-          namePlural: formatMessage({
-            id: 'mn58Sh',
-            defaultMessage: 'Dateien',
-          }),
-        }),
-      },
+      ...(placeLevel?.check_files !== false
+        ? [
+            {
+              id: 'files',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.files_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'mn58Sh',
+                  defaultMessage: 'Dateien',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 

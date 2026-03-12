@@ -282,30 +282,6 @@ export const Configuration = ({ from }) => {
             validationState={validations?.files_active_subprojects?.state}
             validationMessage={validations?.files_active_subprojects?.message}
           />
-          <CheckboxField
-            label="Places"
-            name="files_active_places"
-            value={row.files_active_places ?? false}
-            onChange={onChange}
-            validationState={validations?.files_active_places?.state}
-            validationMessage={validations?.files_active_places?.message}
-          />
-          <CheckboxField
-            label="Actions"
-            name="files_active_actions"
-            value={row.files_active_actions ?? false}
-            onChange={onChange}
-            validationState={validations?.files_active_actions?.state}
-            validationMessage={validations?.files_active_actions?.message}
-          />
-          <CheckboxField
-            label="Checks"
-            name="files_active_checks"
-            value={row.files_active_checks ?? false}
-            onChange={onChange}
-            validationState={validations?.files_active_checks?.state}
-            validationMessage={validations?.files_active_checks?.message}
-          />
         </div>
       </div>
     </div>

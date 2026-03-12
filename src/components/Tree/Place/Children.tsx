@@ -33,13 +33,8 @@ export const PlaceChildren = ({
   )
   const placeLevel: PlaceLevels = resPlaceLevels?.rows?.[0]
 
-  // need project to know whether to show files
-  const resProject = useLiveQuery(
-    `SELECT project_id, files_active_places FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const project = resProject?.rows?.[0]
-  const showFiles = project?.files_active_places ?? false
+  // need place_level to know whether to show files
+  const showFiles = placeLevel?.place_files !== false
 
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

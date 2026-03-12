@@ -379,6 +379,39 @@ export const PlaceLevel = () => {
             validationState={validations?.observations?.state}
             validationMessage={validations?.observations?.message}
           />
+          <SwitchField
+            label={formatMessage({
+              id: 'aB1CdE',
+              defaultMessage: 'Ort-Dateien',
+            })}
+            name="place_files"
+            value={row.place_files ?? false}
+            onChange={onChange}
+            validationState={validations?.place_files?.state}
+            validationMessage={validations?.place_files?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'fG2HiJ',
+              defaultMessage: 'Massnahmen-Dateien',
+            })}
+            name="action_files"
+            value={row.action_files ?? false}
+            onChange={onChange}
+            validationState={validations?.action_files?.state}
+            validationMessage={validations?.action_files?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'kL3MnO',
+              defaultMessage: 'Kontroll-Dateien',
+            })}
+            name="check_files"
+            value={row.check_files ?? false}
+            onChange={onChange}
+            validationState={validations?.check_files?.state}
+            validationMessage={validations?.check_files?.message}
+          />
         </Section>
       </div>
     </div>

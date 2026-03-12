@@ -25,14 +25,13 @@ export const CheckNode = ({
 
   // need project to know whether to show files
   const res = useLiveQuery(
-    `SELECT p.files_active_checks, pl.check_values, pl.check_taxa
-     FROM projects p
-     LEFT JOIN place_levels pl ON pl.project_id = p.project_id
-     WHERE p.project_id = $1 AND (pl.level IS NULL OR pl.level = $2)`,
+    `SELECT check_files, check_values, check_taxa
+     FROM place_levels
+     WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
   )
   const row = res?.rows?.[0]
-  const showFiles = row?.files_active_checks ?? false
+  const showFiles = row?.check_files !== false
   const placeLevel = row
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

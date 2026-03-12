@@ -157,9 +157,6 @@ CREATE TABLE IF NOT EXISTS projects(
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
-  files_active_places boolean DEFAULT TRUE,
-  files_active_actions boolean DEFAULT TRUE,
-  files_active_checks boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -182,9 +179,6 @@ COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use 
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
-COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in table places. Preset: true';
-COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in table actions. Preset: true';
-COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
 COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
@@ -210,15 +204,18 @@ CREATE TABLE IF NOT EXISTS place_levels(
   name_singular_it text DEFAULT NULL,
   name_plural_it text DEFAULT NULL,
   name_short_it text DEFAULT NULL,
-  reports boolean DEFAULT FALSE,
-  report_values boolean DEFAULT FALSE,
-  actions boolean DEFAULT FALSE,
-  action_values boolean DEFAULT FALSE,
-  action_reports boolean DEFAULT FALSE,
-  checks boolean DEFAULT FALSE,
-  check_values boolean DEFAULT FALSE,
-  check_taxa boolean DEFAULT FALSE,
-  observations boolean DEFAULT FALSE,
+  reports boolean DEFAULT TRUE,
+  report_values boolean DEFAULT TRUE,
+  actions boolean DEFAULT TRUE,
+  action_values boolean DEFAULT TRUE,
+  action_reports boolean DEFAULT TRUE,
+  checks boolean DEFAULT TRUE,
+  check_values boolean DEFAULT TRUE,
+  check_taxa boolean DEFAULT TRUE,
+  observations boolean DEFAULT TRUE,
+  place_files boolean DEFAULT TRUE,
+  action_files boolean DEFAULT TRUE,
+  check_files boolean DEFAULT TRUE,
   label text GENERATED ALWAYS AS (
     CASE
       WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
@@ -262,6 +259,9 @@ COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
+COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
+COMMENT ON COLUMN place_levels.action_files IS 'Are files used for actions on this level? Preset: false';
+COMMENT ON COLUMN place_levels.check_files IS 'Are files used for checks on this level? Preset: false';
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 --------------------------------------------------------------
@@ -607,7 +607,6 @@ CREATE TABLE IF NOT EXISTS places(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL,
-  files_active_places boolean DEFAULT TRUE,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -630,7 +629,6 @@ COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN places.since IS 'start year of place';
 COMMENT ON COLUMN places.until IS 'end year of place';
 COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
-COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
@@ -653,7 +651,6 @@ CREATE TABLE IF NOT EXISTS place_histories(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (COALESCE(year::text, place_history_id::text)) STORED,
-  files_active_places boolean DEFAULT TRUE,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,

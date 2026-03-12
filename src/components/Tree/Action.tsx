@@ -24,14 +24,13 @@ export const ActionNode = ({
   const navigate = useNavigate()
 
   const res = useLiveQuery(
-    `SELECT p.files_active_actions, pl.action_values, pl.action_reports
-     FROM projects p
-     LEFT JOIN place_levels pl ON pl.project_id = p.project_id
-     WHERE p.project_id = $1 AND (pl.level IS NULL OR pl.level = $2)`,
+    `SELECT action_files, action_values, action_reports
+     FROM place_levels
+     WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
   )
   const row = res?.rows?.[0]
-  const showFiles = row?.files_active_actions ?? false
+  const showFiles = row?.action_files !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [

@@ -515,7 +515,6 @@ export const startSyncing = async () => {
                 'data',
                 'geometry',
                 'bbox',
-                'files_active_places',
                 'created_at',
                 'updated_at',
                 'updated_by',

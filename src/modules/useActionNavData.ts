@@ -56,7 +56,7 @@ export const useActionNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT action_values, action_reports FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_values, action_reports, action_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -131,17 +131,21 @@ export const useActionNavData = ({
             },
           ]
         : []),
-      {
-        id: 'files',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.files_count ?? 0,
-          namePlural: formatMessage({
-            id: 'mn58Sh',
-            defaultMessage: 'Dateien',
-          }),
-        }),
-      },
+      ...(placeLevel?.action_files !== false
+        ? [
+            {
+              id: 'files',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.files_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'mn58Sh',
+                  defaultMessage: 'Dateien',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 

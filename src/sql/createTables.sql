@@ -157,9 +157,6 @@ CREATE TABLE IF NOT EXISTS projects(
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
-  files_active_places boolean DEFAULT TRUE,
-  files_active_actions boolean DEFAULT TRUE,
-  files_active_checks boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -182,19 +179,18 @@ COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use 
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
-COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in table places. Preset: true';
-COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in table actions. Preset: true';
-COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
 COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
 --------------------------------------------------------------
 -- place_levels
 --
+-- TODO: we need a language setting for the user in the db
+-- to set the label in triggers according to it
 CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL,
-  project_id uuid DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
   name_singular_de text DEFAULT NULL,
   name_plural_de text DEFAULT NULL,
@@ -217,6 +213,9 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
   observations boolean DEFAULT FALSE,
+  place_files boolean DEFAULT FALSE,
+  action_files boolean DEFAULT FALSE,
+  check_files boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (
     CASE
       WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
@@ -239,9 +238,18 @@ CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(la
 
 COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
-COMMENT ON COLUMN place_levels.name_singular_de IS 'Preset: "Population"';
-COMMENT ON COLUMN place_levels.name_plural_de IS 'Preset: "Populationen"';
-COMMENT ON COLUMN place_levels.name_short_de IS 'Preset: "Pop"';
+COMMENT ON COLUMN place_levels.name_singular_de IS 'German singular name. Preset: "Population"';
+COMMENT ON COLUMN place_levels.name_plural_de IS 'German plural name. Preset: "Populationen"';
+COMMENT ON COLUMN place_levels.name_short_de IS 'German short name. Preset: "Pop"';
+COMMENT ON COLUMN place_levels.name_singular_en IS 'English singular name. Preset: "Population"';
+COMMENT ON COLUMN place_levels.name_plural_en IS 'English plural name. Preset: "Populations"';
+COMMENT ON COLUMN place_levels.name_short_en IS 'English short name. Preset: "Pop"';
+COMMENT ON COLUMN place_levels.name_singular_fr IS 'French singular name. Preset: "Population"';
+COMMENT ON COLUMN place_levels.name_plural_fr IS 'French plural name. Preset: "Populations"';
+COMMENT ON COLUMN place_levels.name_short_fr IS 'French short name. Preset: "Pop"';
+COMMENT ON COLUMN place_levels.name_singular_it IS 'Italian singular name. Preset: "Popolazione"';
+COMMENT ON COLUMN place_levels.name_plural_it IS 'Italian plural name. Preset: "Popolazioni"';
+COMMENT ON COLUMN place_levels.name_short_it IS 'Italian short name. Preset: "Pop"';
 COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: true';
 COMMENT ON COLUMN place_levels.report_values IS 'Are report values used? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
@@ -251,6 +259,9 @@ COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
+COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
+COMMENT ON COLUMN place_levels.action_files IS 'Are files used for actions on this level? Preset: false';
+COMMENT ON COLUMN place_levels.check_files IS 'Are files used for checks on this level? Preset: false';
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 --------------------------------------------------------------
