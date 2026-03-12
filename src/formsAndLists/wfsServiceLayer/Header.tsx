@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
@@ -9,6 +10,7 @@ const from =
 export const Header = () => {
   const { wfsServiceId, wfsServiceLayerId } = useParams({ from })
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM wfs_service_layers WHERE wfs_service_id = $1`,
@@ -56,7 +58,7 @@ export const Header = () => {
 
   return (
     <FormHeader
-      title="WFS Service Layer"
+      title={formatMessage({ id: 'Cb1DcE', defaultMessage: 'WFS-Dienst-Ebene' })}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}

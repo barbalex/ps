@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -14,6 +15,7 @@ const from =
 
 export const WfsServiceLayer = () => {
   const { wfsServiceLayerId } = useParams({ from })
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `SELECT * FROM wfs_service_layers WHERE wfs_service_layer_id = $1`,
@@ -25,7 +27,7 @@ export const WfsServiceLayer = () => {
   if (row === null)
     return (
       <NotFound
-        table="WFS Service Layer"
+        table={formatMessage({ id: 'Cb1DcE', defaultMessage: 'WFS-Dienst-Ebene' })}
         id={wfsServiceLayerId}
       />
     )
