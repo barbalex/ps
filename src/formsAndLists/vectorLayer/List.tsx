@@ -1,4 +1,5 @@
 import { useParams } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { useVectorLayerNavData } from '../../modules/useVectorLayerNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -8,6 +9,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 export const VectorLayerList = ({ from }) => {
   const { projectId, vectorLayerId } = useParams({ from })
+  const { formatMessage } = useIntl()
   const { loading, navData } = useVectorLayerNavData({
     projectId,
     vectorLayerId,
@@ -17,7 +19,7 @@ export const VectorLayerList = ({ from }) => {
   if (notFound) {
     return (
       <NotFound
-        table="Vector Layer"
+        table={formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' })}
         id={vectorLayerId}
       />
     )

@@ -2,7 +2,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-
+import { useIntl } from 'react-intl'
 
 import { createWfsService } from '../../../modules/createRows.ts'
 import {
@@ -23,6 +23,7 @@ export const FetchWfsCapabilities = ({
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const updateNotification = useSetAtom(updateNotificationAtom)
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `SELECT count(*) FROM wfs_service_layers WHERE wfs_service_id = $1`,
@@ -139,9 +140,15 @@ export const FetchWfsCapabilities = ({
         cursor: !url || fetching ? 'not-allowed' : 'pointer',
       }}
     >
-      {fetching ?
-        `Loading Capabilities (${wfsServiceLayersCount})`
-      : `Fetch Capabilities`}
+      {fetching
+        ? formatMessage(
+            { id: 'Eh4FiK', defaultMessage: 'Fähigkeiten laden ({count})' },
+            { count: wfsServiceLayersCount },
+          )
+        : formatMessage({
+            id: 'Dg3EhJ',
+            defaultMessage: 'Fähigkeiten abrufen',
+          })}
     </Button>
   )
 }

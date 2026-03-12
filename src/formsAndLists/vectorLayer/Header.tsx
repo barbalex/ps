@@ -3,16 +3,11 @@ import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useAtom, useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
-const {
-  Button,
-  Menu,
-  MenuTrigger,
-  MenuList,
-  MenuItem,
-  MenuPopover,
-} = fluentUiReactComponents
-import { usePGlite } from '@electric-sql/pglite-react'
+const { Button, Menu, MenuTrigger, MenuList, MenuItem, MenuPopover } =
+  fluentUiReactComponents
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 
 import { createVectorLayer } from '../../modules/createRows.ts'
@@ -22,6 +17,7 @@ import {
   draggableLayersAtom,
   droppableLayersAtom,
   addOperationAtom,
+  languageAtom,
 } from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
@@ -37,8 +33,25 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, vectorLayerId } = useParams({ from })
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
 
   const db = usePGlite()
+
+  const resPlaceLevel1 = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 AND level = 1`,
+    [projectId],
+  )
+  const resPlaceLevel2 = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 AND level = 2`,
+    [projectId],
+  )
+  const places1Name =
+    resPlaceLevel1?.rows?.[0]?.[`name_plural_${language}`] ??
+    formatMessage({ id: 'Jm3KnP', defaultMessage: 'Orte 1' })
+  const places2Name =
+    resPlaceLevel2?.rows?.[0]?.[`name_plural_${language}`] ??
+    formatMessage({ id: 'Kn4LoQ', defaultMessage: 'Orte 2' })
 
   // Keep a ref to the current vectorLayerId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -200,7 +213,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
 
   return (
     <FormHeader
-      title="Vector Layer"
+      title={formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
@@ -212,7 +225,10 @@ export const Header = ({ autoFocusRef, row, from }) => {
             size="medium"
             icon={<TreasureMapLinePulsating />}
             onClick={onClickToggleAssign}
-            title="Stop assigning"
+            title={formatMessage({
+              id: 'Il2JmO',
+              defaultMessage: 'Zuweisung stoppen',
+            })}
           />
         ) : (
           <Menu>
@@ -220,13 +236,20 @@ export const Header = ({ autoFocusRef, row, from }) => {
               <Button
                 size="medium"
                 icon={<TreasureMapLine />}
-                title="Start assigning"
+                title={formatMessage({
+                  id: 'Hk1IlN',
+                  defaultMessage: 'Zuweisung starten',
+                })}
               />
             </MenuTrigger>
             <MenuPopover>
               <MenuList>
-                <MenuItem onClick={onClickAssignToPlaces1}>Places 1</MenuItem>
-                <MenuItem onClick={onClickAssignToPlaces2}>Places 2</MenuItem>
+                <MenuItem onClick={onClickAssignToPlaces1}>
+                  {places1Name}
+                </MenuItem>
+                <MenuItem onClick={onClickAssignToPlaces2}>
+                  {places2Name}
+                </MenuItem>
               </MenuList>
             </MenuPopover>
           </Menu>

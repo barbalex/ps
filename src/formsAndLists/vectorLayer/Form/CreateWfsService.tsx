@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, Input } = fluentUiReactComponents
-
+import { useIntl } from 'react-intl'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
@@ -10,8 +10,8 @@ import styles from './CreateWfsService.module.css'
 export const CreateWfsService = ({ vectorLayer }) => {
   const [url, setUrl] = useState('')
   const onChange = (e) => setUrl(e.target.value)
-
   const [fetching, setFetching] = useState(false)
+  const { formatMessage } = useIntl()
   // TODO: when fetching ends, set focus to LayerDropdown
 
   if (vectorLayer.wfs_service_id && !fetching) return null
@@ -20,24 +20,45 @@ export const CreateWfsService = ({ vectorLayer }) => {
 
   return (
     <div>
-      <h2 className={styles.title}>Add Web Feature Service (WFS)</h2>
+      <h2 className={styles.title}>
+        {formatMessage({
+          id: 'Gl5HjM',
+          defaultMessage: 'Web Feature Service (WFS) hinzufügen',
+        })}
+      </h2>
       <div className={styles.row}>
         <Field
-          label="URL"
+          label={formatMessage({ id: 'Yb8ZcE', defaultMessage: 'URL' })}
           value={url}
           onChange={onChange}
-          validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
+          validationMessage={
+            urlIsInvalid
+              ? formatMessage({ id: 'Zc9AdF', defaultMessage: 'Ungültige URL' })
+              : ''
+          }
           validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
             urlIsInvalid ? (
               ''
             ) : url ? (
-              'The base url of the WFS'
+              formatMessage({
+                id: 'Ad0BeG',
+                defaultMessage: 'Die Basis-URL des WFS',
+              })
             ) : (
               <>
-                <p className={styles.hintP}>Enter the base url of the WFS.</p>
                 <p className={styles.hintP}>
-                  Then capabilities can be loaded and a layer selected.
+                  {formatMessage({
+                    id: 'Be1CfH',
+                    defaultMessage: 'Die Basis-URL des WFS eingeben.',
+                  })}
+                </p>
+                <p className={styles.hintP}>
+                  {formatMessage({
+                    id: 'Cf2DgI',
+                    defaultMessage:
+                      'Dann können Fähigkeiten geladen und eine Ebene ausgewählt werden.',
+                  })}
                 </p>
               </>
             )

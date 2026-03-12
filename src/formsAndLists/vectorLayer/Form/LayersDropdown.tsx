@@ -2,13 +2,14 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-
+import { useIntl } from 'react-intl'
 
 import { addOperationAtom } from '../../../store.ts'
 
 export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
@@ -47,7 +48,10 @@ export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
     })
   }
 
-  const labelWithCount = options?.length ? `Layer (${options.length})` : 'Layer'
+  const layerLabel = formatMessage({ id: 'JY1Jke', defaultMessage: 'Ebene' })
+  const labelWithCount = options?.length
+    ? `${layerLabel} (${options.length})`
+    : layerLabel
 
   return (
     <Field
@@ -65,10 +69,7 @@ export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
       >
         {options.map((option) => {
           return (
-            <Option
-              key={option.value}
-              value={option.value}
-            >
+            <Option key={option.value} value={option.value}>
               {option.label}
             </Option>
           )

@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
@@ -19,10 +21,11 @@ export const VectorLayerForm = ({
   isFilter,
   from,
 }) => {
+  const { formatMessage } = useIntl()
   return (
     <>
       <DropdownFieldSimpleOptions
-        label="Type"
+        label={formatMessage({ id: 'xTeBn/', defaultMessage: 'Typ' })}
         name="type"
         options={vectorLayerTypes}
         value={row.type ?? ''}
@@ -31,7 +34,10 @@ export const VectorLayerForm = ({
       {row?.type === 'wfs' && (
         <>
           <DropdownField
-            label="Web Feature Service (WFS)"
+            label={formatMessage({
+              id: 'Lo5MpR',
+              defaultMessage: 'Web Feature Service (WFS)',
+            })}
             name="wfs_service_id"
             labelField="url"
             table="wfs_services"
@@ -40,11 +46,18 @@ export const VectorLayerForm = ({
             onChange={onChange}
             autoFocus={true}
             validationMessage={
-              row.wfs_service_id ? '' : (
-                'Choose from a configured WFS. Or add a new one.'
-              )
+              row.wfs_service_id
+                ? ''
+                : formatMessage({
+                    id: 'Mp6NqS',
+                    defaultMessage:
+                      'Aus einem konfigurierten WFS wählen. Oder einen neuen hinzufügen.',
+                  })
             }
-            noDataMessage="No WFS found. You can add one."
+            noDataMessage={formatMessage({
+              id: 'Nq7OrT',
+              defaultMessage: 'Kein WFS gefunden. Sie können einen hinzufügen.',
+            })}
             hideWhenNoData={true}
           />
           {!row.wfs_service_id && <CreateWfsService vectorLayer={row} />}
@@ -52,18 +65,27 @@ export const VectorLayerForm = ({
             <LayersDropdown
               vectorLayer={row}
               validationMessage={
-                row.wfs_service_layer_name ? '' : 'Select a layer'
+                row.wfs_service_layer_name
+                  ? ''
+                  : formatMessage({
+                      id: 'Or8PsU',
+                      defaultMessage: 'Eine Ebene auswählen',
+                    })
               }
             />
           )}
         </>
       )}
       {row?.type === 'upload' && <div>TODO: Upload</div>}
+      {/* Label fields - shared pattern */}
       {row?.type === 'wfs' &&
         row?.wfs_service_id &&
         row.wfs_service_layer_name && (
           <TextField
-            label="Label"
+            label={formatMessage({
+              id: 'XkV5yZ',
+              defaultMessage: 'Name',
+            })}
             name="label"
             value={row.label ?? ''}
             onChange={onChange}
@@ -73,7 +95,7 @@ export const VectorLayerForm = ({
         )}
       {row?.type === 'own' && (
         <TextField
-          label="Label"
+          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
           name="label"
           value={row.label ?? ''}
           onChange={onChange}
@@ -83,54 +105,76 @@ export const VectorLayerForm = ({
       )}
       {!['wfs', 'upload', 'own'].includes(row.type) && (
         <>
-          {isFilter ?
+          {isFilter ? (
             <TextField
-              label="Label"
+              label={formatMessage({
+                id: 'Fl3jPw',
+                defaultMessage: 'Bezeichnung',
+              })}
               name="label"
               value={row.label ?? ''}
               onChange={onChange}
               validationMessage={validations?.label?.message}
               validationState={validations?.label?.state}
             />
-          : <TextFieldInactive
-              label="Label"
+          ) : (
+            <TextFieldInactive
+              label={formatMessage({
+                id: 'Fl3jPw',
+                defaultMessage: 'Bezeichnung',
+              })}
               name="label"
               value={row.label}
             />
-          }
+          )}
         </>
       )}
-      <Property
-        vectorLayer={row}
-        from={from}
-      />
+      <Property vectorLayer={row} from={from} />
       <TextField
-        label="Max number of features"
+        label={formatMessage({
+          id: 'Ps9QtV',
+          defaultMessage: 'Max. Anzahl Objekte',
+        })}
         name="max_features"
         value={row.max_features ?? ''}
         onChange={onChange}
         type="number"
-        validationMessage="Drawing too many features can crash the app"
+        validationMessage={formatMessage({
+          id: 'Qt0RuW',
+          defaultMessage: 'Zu viele Objekte können die App zum Absturz bringen',
+        })}
       />
       {row?.type === 'upload' && (
         <>
           <TextFieldInactive
-            label="Feature count"
+            label={formatMessage({
+              id: 'Ru1SvX',
+              defaultMessage: 'Anzahl Objekte',
+            })}
             name="feature_count"
             value={row.feature_count}
           />
           <TextFieldInactive
-            label="Point count"
+            label={formatMessage({
+              id: 'Sv2TwY',
+              defaultMessage: 'Anzahl Punkte',
+            })}
             name="point_count"
             value={row.point_count}
           />
           <TextFieldInactive
-            label="Line count"
+            label={formatMessage({
+              id: 'Tw3UxZ',
+              defaultMessage: 'Anzahl Linien',
+            })}
             name="line_count"
             value={row.line_count}
           />
           <TextFieldInactive
-            label="Polygon count"
+            label={formatMessage({
+              id: 'Ux4VyA',
+              defaultMessage: 'Anzahl Polygone',
+            })}
             name="polygon_count"
             value={row.polygon_count}
           />

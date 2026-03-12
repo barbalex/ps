@@ -1,6 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -11,6 +12,7 @@ import { addOperationAtom } from '../../../store.ts'
 export const Property = ({ vectorLayer, from }) => {
   const { projectId, vectorLayerId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const table = vectorLayer?.own_table
   const level = vectorLayer?.own_table_level
@@ -69,9 +71,16 @@ export const Property = ({ vectorLayer, from }) => {
   if (!options.length) {
     return (
       <TextField
-        label="Display by"
-        placeholder="no fields found"
-        hint="For every unique value of this field, a map display will be generated"
+        label={formatMessage({ id: 'Vy5WzB', defaultMessage: 'Anzeigen nach' })}
+        placeholder={formatMessage({
+          id: 'Xa7YbD',
+          defaultMessage: 'keine Felder gefunden',
+        })}
+        hint={formatMessage({
+          id: 'Wz6XaC',
+          defaultMessage:
+            'Für jeden eindeutigen Wert dieses Felds wird eine Kartenanzeige generiert',
+        })}
         disabled
       />
     )
@@ -79,12 +88,16 @@ export const Property = ({ vectorLayer, from }) => {
 
   return (
     <DropdownFieldOptions
-      label="Display by"
+      label={formatMessage({ id: 'Vy5WzB', defaultMessage: 'Anzeigen nach' })}
       name="display_by_property"
       value={vectorLayer.display_by_property}
       onChange={onChange}
       options={options}
-      validationMessage="For every unique value of this field, a map display will be generated"
+      validationMessage={formatMessage({
+        id: 'Wz6XaC',
+        defaultMessage:
+          'Für jeden eindeutigen Wert dieses Felds wird eine Kartenanzeige generiert',
+      })}
     />
   )
 }
