@@ -107,6 +107,15 @@ export const Index = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
+              <FormattedMessage id="wO4TnJ" defaultMessage="Biotope fördern" />
+            </h3>
+            <FormattedMessage
+              id="xP5UoK"
+              defaultMessage="arten-fördern.app kann auch Biotope: als Orte anlegen, Ziele definieren, Massnahmen und Kontrollen organisieren, analysieren und berichten."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
               <FormattedMessage defaultMessage="Professionelle Konfiguration" />
             </h3>
             <FormattedMessage
