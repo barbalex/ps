@@ -117,7 +117,7 @@ export const PlaceLevel = () => {
           })}
         </SectionDescription>
         <RadioGroupField
-          label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Ort-Stufe' })}
+          label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Stufe' })}
           name="level"
           list={[1, 2]}
           value={row.level ?? ''}
