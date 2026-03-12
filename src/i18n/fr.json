@@ -285,8 +285,7 @@
   "HsHmZy": "Je serai heureux de vous aider avec la configuration initiale afin que votre équipe puisse travailler aussi efficacement que possible. Profitez de {link}.",
   "YCQ66b": "mon expérience en conservation de la nature et en logiciels",
   "Ac1BdE": "Vous pouvez ajouter plusieurs CRS.",
-  "Fh2GiJ": "L'un d'eux peut être défini comme CRS de présentation de la carte.",
-  "Kn3OpQ": "Il sera utilisé pour afficher les coordonnées sur la carte.",
+  "Kn3OpQ": "L'un d'eux est utilisé pour afficher les coordonnées sur la carte.",
   "Ru4StV": "Les utilisateurs peuvent choisir dans la carte l'un des CRS que vous ajoutez ici.",
   "Wx5YzA": "Si aucun CRS n'est sélectionné, WGS84 sera utilisé par défaut."
 }

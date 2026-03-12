@@ -285,8 +285,7 @@
   "HsHmZy": "I'm happy to help you with the initial configuration so your team can work as efficiently as possible. Benefit from {link}.",
   "YCQ66b": "my nature conservation and software experience",
   "Ac1BdE": "You can add multiple CRS.",
-  "Fh2GiJ": "One of them can be set as the map presentation CRS.",
-  "Kn3OpQ": "It will be used to show coordinates in the map.",
+  "Kn3OpQ": "One of them is used to show coordinates in the map.",
   "Ru4StV": "Users can choose in the map one of the CRS'es you add here.",
   "Wx5YzA": "If no CRS is selected, WGS84 will be used by default."
 }

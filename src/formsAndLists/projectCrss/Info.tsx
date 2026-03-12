@@ -15,16 +15,9 @@ export const Info = () => {
       </p>
       <p>
         {formatMessage({
-          id: 'Fh2GiJ',
-          defaultMessage:
-            'Eines davon kann als Darstellungs-CRS der Karte festgelegt werden.',
-        })}
-      </p>
-      <p>
-        {formatMessage({
           id: 'Kn3OpQ',
           defaultMessage:
-            'Es wird verwendet, um Koordinaten in der Karte anzuzeigen.',
+            'Eines davon wird verwendet, um Koordinaten in der Karte anzuzeigen.',
         })}
       </p>
       <p>
