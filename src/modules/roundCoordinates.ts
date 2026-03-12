@@ -1,4 +1,5 @@
 export const round = (num) => {
+  if (!Number.isFinite(num)) return undefined
   const integerLength = Math.floor(num).toString().length
   if (integerLength > 6) {
     // if > 6 places before the comma: return as integer
