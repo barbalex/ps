@@ -29,7 +29,7 @@ export const useWfsServiceNavData = ({ projectId, wfsServiceId }) => {
       layers_count AS (SELECT COUNT(*) AS count FROM wfs_service_layers WHERE wfs_service_id = '${wfsServiceId}')
     SELECT
       wfs_service_id AS id,
-      coalesce(url, wfs_service_id::text) AS label,
+      label,
       layers_count.count AS layers_count_unfiltered
     FROM
       wfs_services, 

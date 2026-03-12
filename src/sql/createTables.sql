@@ -1576,6 +1576,7 @@ CREATE TABLE IF NOT EXISTS wfs_services(
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
   info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL, -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+  label text GENERATED ALWAYS AS (coalesce(nullif(url, ''), wfs_service_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1584,6 +1585,7 @@ CREATE TABLE IF NOT EXISTS wfs_services(
 CREATE INDEX IF NOT EXISTS wfs_services_account_id_idx ON wfs_services USING btree(account_id);
 CREATE INDEX IF NOT EXISTS wfs_services_project_id_idx ON wfs_services USING btree(project_id);
 CREATE INDEX IF NOT EXISTS wfs_services_url_idx ON wfs_services USING btree(url);
+CREATE INDEX IF NOT EXISTS wfs_services_label_idx ON wfs_services USING btree(label);
 
 COMMENT ON TABLE wfs_services IS 'A layer of a WFS service.';
 COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbox calls have to be made in';
