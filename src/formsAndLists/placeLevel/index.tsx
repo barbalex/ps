@@ -138,7 +138,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'bT3YsO',
-              defaultMessage: 'Name auf Deutsch (Einzahl)',
+              defaultMessage: 'Deutsch (Einzahl)',
             })}
             name="name_singular_de"
             value={row.name_singular_de ?? ''}
@@ -151,7 +151,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'cU4ZtP',
-              defaultMessage: 'Name auf Deutsch (Mehrzahl)',
+              defaultMessage: 'Deutsch (Mehrzahl)',
             })}
             name="name_plural_de"
             value={row.name_plural_de ?? ''}
@@ -162,7 +162,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'dV5AuQ',
-              defaultMessage: 'Name auf Deutsch (Kurzform)',
+              defaultMessage: 'Deutsch (Kurzform)',
             })}
             name="name_short_de"
             value={row.name_short_de ?? ''}
@@ -173,7 +173,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'eW6BvR',
-              defaultMessage: 'Name auf Englisch (Einzahl)',
+              defaultMessage: 'Englisch (Einzahl)',
             })}
             name="name_singular_en"
             value={row.name_singular_en ?? ''}
@@ -184,7 +184,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'fX7CwS',
-              defaultMessage: 'Name auf Englisch (Mehrzahl)',
+              defaultMessage: 'Englisch (Mehrzahl)',
             })}
             name="name_plural_en"
             value={row.name_plural_en ?? ''}
@@ -195,7 +195,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'gY8DxT',
-              defaultMessage: 'Name auf Englisch (Kurzform)',
+              defaultMessage: 'Englisch (Kurzform)',
             })}
             name="name_short_en"
             value={row.name_short_en ?? ''}
@@ -206,7 +206,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'hZ9EyU',
-              defaultMessage: 'Name auf Französisch (Einzahl)',
+              defaultMessage: 'Französisch (Einzahl)',
             })}
             name="name_singular_fr"
             value={row.name_singular_fr ?? ''}
@@ -217,7 +217,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'iA0FzV',
-              defaultMessage: 'Name auf Französisch (Mehrzahl)',
+              defaultMessage: 'Französisch (Mehrzahl)',
             })}
             name="name_plural_fr"
             value={row.name_plural_fr ?? ''}
@@ -228,7 +228,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'jB1GaW',
-              defaultMessage: 'Name auf Französisch (Kurzform)',
+              defaultMessage: 'Französisch (Kurzform)',
             })}
             name="name_short_fr"
             value={row.name_short_fr ?? ''}
@@ -239,7 +239,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'kC2HbX',
-              defaultMessage: 'Name auf Italienisch (Einzahl)',
+              defaultMessage: 'Italienisch (Einzahl)',
             })}
             name="name_singular_it"
             value={row.name_singular_it ?? ''}
@@ -250,7 +250,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'lD3IcY',
-              defaultMessage: 'Name auf Italienisch (Mehrzahl)',
+              defaultMessage: 'Italienisch (Mehrzahl)',
             })}
             name="name_plural_it"
             value={row.name_plural_it ?? ''}
@@ -261,7 +261,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'mE4JdZ',
-              defaultMessage: 'Name auf Italienisch (Kurzform)',
+              defaultMessage: 'Italienisch (Kurzform)',
             })}
             name="name_short_it"
             value={row.name_short_it ?? ''}
