@@ -895,7 +895,17 @@ export const startSyncing = async () => {
             params: {
               table: 'wfs_services',
               columns: [
-                'wfs_service_id,account_id,project_id,url,version,info_formats,info_format,default_crs,created_at,updated_at,updated_by',
+                'wfs_service_id',
+                'account_id',
+                'project_id',
+                'url',
+                'version',
+                'info_formats',
+                'info_format',
+                'default_crs',
+                'created_at',
+                'updated_at',
+                'updated_by',
               ],
             },
           },
