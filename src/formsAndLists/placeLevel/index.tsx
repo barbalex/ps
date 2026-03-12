@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -21,6 +22,7 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const [validations, setValidations] = useState({})
 
@@ -67,8 +69,14 @@ export const PlaceLevel = () => {
     if (
       row &&
       [
-        'name_plural_de', 'name_plural_en', 'name_plural_fr', 'name_plural_it',
-        'name_singular_de', 'name_singular_en', 'name_singular_fr', 'name_singular_it',
+        'name_plural_de',
+        'name_plural_en',
+        'name_plural_fr',
+        'name_plural_it',
+        'name_singular_de',
+        'name_singular_en',
+        'name_singular_fr',
+        'name_singular_it',
         'actions',
         'checks',
         'observations',
@@ -85,7 +93,12 @@ export const PlaceLevel = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Place Level" id={placeLevelId} />
+    return (
+      <NotFound
+        table={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Raum-Stufe' })}
+        id={placeLevelId}
+      />
+    )
   }
 
   // console.log('place level', row)
@@ -95,7 +108,7 @@ export const PlaceLevel = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <RadioGroupField
-          label="Level"
+          label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Raum-Stufe' })}
           name="level"
           list={[1, 2]}
           value={row.level ?? ''}
@@ -104,7 +117,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.level?.message}
         />
         <TextField
-          label="Name in German (singular)"
+          label={formatMessage({
+            id: 'bT3YsO',
+            defaultMessage: 'Name auf Deutsch (Einzahl)',
+          })}
           name="name_singular_de"
           value={row.name_singular_de ?? ''}
           onChange={onChange}
@@ -114,7 +130,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_singular_de?.message}
         />
         <TextField
-          label="Name in German (plural)"
+          label={formatMessage({
+            id: 'cU4ZtP',
+            defaultMessage: 'Name auf Deutsch (Mehrzahl)',
+          })}
           name="name_plural_de"
           value={row.name_plural_de ?? ''}
           onChange={onChange}
@@ -122,7 +141,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_plural_de?.message}
         />
         <TextField
-          label="Name in German (short)"
+          label={formatMessage({
+            id: 'dV5AuQ',
+            defaultMessage: 'Name auf Deutsch (Kurzform)',
+          })}
           name="name_short_de"
           value={row.name_short_de ?? ''}
           onChange={onChange}
@@ -130,7 +152,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_short_de?.message}
         />
         <TextField
-          label="Name in English (singular)"
+          label={formatMessage({
+            id: 'eW6BvR',
+            defaultMessage: 'Name auf Englisch (Einzahl)',
+          })}
           name="name_singular_en"
           value={row.name_singular_en ?? ''}
           onChange={onChange}
@@ -138,7 +163,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_singular_en?.message}
         />
         <TextField
-          label="Name in English (plural)"
+          label={formatMessage({
+            id: 'fX7CwS',
+            defaultMessage: 'Name auf Englisch (Mehrzahl)',
+          })}
           name="name_plural_en"
           value={row.name_plural_en ?? ''}
           onChange={onChange}
@@ -146,7 +174,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_plural_en?.message}
         />
         <TextField
-          label="Name in English (short)"
+          label={formatMessage({
+            id: 'gY8DxT',
+            defaultMessage: 'Name auf Englisch (Kurzform)',
+          })}
           name="name_short_en"
           value={row.name_short_en ?? ''}
           onChange={onChange}
@@ -154,7 +185,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_short_en?.message}
         />
         <TextField
-          label="Name in French (singular)"
+          label={formatMessage({
+            id: 'hZ9EyU',
+            defaultMessage: 'Name auf Französisch (Einzahl)',
+          })}
           name="name_singular_fr"
           value={row.name_singular_fr ?? ''}
           onChange={onChange}
@@ -162,7 +196,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_singular_fr?.message}
         />
         <TextField
-          label="Name in French (plural)"
+          label={formatMessage({
+            id: 'iA0FzV',
+            defaultMessage: 'Name auf Französisch (Mehrzahl)',
+          })}
           name="name_plural_fr"
           value={row.name_plural_fr ?? ''}
           onChange={onChange}
@@ -170,7 +207,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_plural_fr?.message}
         />
         <TextField
-          label="Name in French (short)"
+          label={formatMessage({
+            id: 'jB1GaW',
+            defaultMessage: 'Name auf Französisch (Kurzform)',
+          })}
           name="name_short_fr"
           value={row.name_short_fr ?? ''}
           onChange={onChange}
@@ -178,7 +218,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_short_fr?.message}
         />
         <TextField
-          label="Name in Italian (singular)"
+          label={formatMessage({
+            id: 'kC2HbX',
+            defaultMessage: 'Name auf Italienisch (Einzahl)',
+          })}
           name="name_singular_it"
           value={row.name_singular_it ?? ''}
           onChange={onChange}
@@ -186,7 +229,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_singular_it?.message}
         />
         <TextField
-          label="Name in Italian (plural)"
+          label={formatMessage({
+            id: 'lD3IcY',
+            defaultMessage: 'Name auf Italienisch (Mehrzahl)',
+          })}
           name="name_plural_it"
           value={row.name_plural_it ?? ''}
           onChange={onChange}
@@ -194,7 +240,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_plural_it?.message}
         />
         <TextField
-          label="Name in Italian (short)"
+          label={formatMessage({
+            id: 'mE4JdZ',
+            defaultMessage: 'Name auf Italienisch (Kurzform)',
+          })}
           name="name_short_it"
           value={row.name_short_it ?? ''}
           onChange={onChange}
@@ -202,7 +251,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.name_short_it?.message}
         />
         <SwitchField
-          label="Enable reports"
+          label={formatMessage({
+            id: 'nF5KeA',
+            defaultMessage: 'Berichte aktivieren',
+          })}
           name="reports"
           value={row.reports ?? false}
           onChange={onChange}
@@ -210,7 +262,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.reports?.message}
         />
         <SwitchField
-          label="Enable report values"
+          label={formatMessage({
+            id: 'oG6LfB',
+            defaultMessage: 'Bericht-Mengen aktivieren',
+          })}
           name="report_values"
           value={row.report_values ?? false}
           onChange={onChange}
@@ -218,7 +273,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.report_values?.message}
         />
         <SwitchField
-          label="Enable actions"
+          label={formatMessage({
+            id: 'pH7MgC',
+            defaultMessage: 'Massnahmen aktivieren',
+          })}
           name="actions"
           value={row.actions ?? false}
           onChange={onChange}
@@ -226,7 +284,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.actions?.message}
         />
         <SwitchField
-          label="Enable action values"
+          label={formatMessage({
+            id: 'qI8NhD',
+            defaultMessage: 'Massnahmen-Mengen aktivieren',
+          })}
           name="action_values"
           value={row.action_values ?? false}
           onChange={onChange}
@@ -234,7 +295,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.action_values?.message}
         />
         <SwitchField
-          label="Enable action reports"
+          label={formatMessage({
+            id: 'rJ9OiE',
+            defaultMessage: 'Massnahmenberichte aktivieren',
+          })}
           name="action_reports"
           value={row.action_reports ?? false}
           onChange={onChange}
@@ -242,7 +306,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.action_reports?.message}
         />
         <SwitchField
-          label="Enable checks"
+          label={formatMessage({
+            id: 'sK0PjF',
+            defaultMessage: 'Kontrollen aktivieren',
+          })}
           name="checks"
           value={row.checks ?? false}
           onChange={onChange}
@@ -250,7 +317,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.checks?.message}
         />
         <SwitchField
-          label="Enable check values"
+          label={formatMessage({
+            id: 'tL1QkG',
+            defaultMessage: 'Kontroll-Mengen aktivieren',
+          })}
           name="check_values"
           value={row.check_values ?? false}
           onChange={onChange}
@@ -258,7 +328,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.check_values?.message}
         />
         <SwitchField
-          label="Enable check taxa"
+          label={formatMessage({
+            id: 'uM2RlH',
+            defaultMessage: 'Kontroll-Taxa aktivieren',
+          })}
           name="check_taxa"
           value={row.check_taxa ?? false}
           onChange={onChange}
@@ -266,7 +339,10 @@ export const PlaceLevel = () => {
           validationMessage={validations?.check_taxa?.message}
         />
         <SwitchField
-          label="Enable observations"
+          label={formatMessage({
+            id: 'vN3SmI',
+            defaultMessage: 'Beobachtungen aktivieren',
+          })}
           name="observations"
           value={row.observations ?? false}
           onChange={onChange}
