@@ -1170,6 +1170,7 @@ CREATE TABLE IF NOT EXISTS project_report_subdesigns(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   design jsonb DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_subdesign_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1177,6 +1178,7 @@ CREATE TABLE IF NOT EXISTS project_report_subdesigns(
 
 CREATE INDEX IF NOT EXISTS project_report_subdesigns_account_id_idx ON project_report_subdesigns USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_report_subdesigns_project_id_idx ON project_report_subdesigns USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_report_subdesigns_label_idx ON project_report_subdesigns USING btree(label);
 
 COMMENT ON TABLE project_report_subdesigns IS 'Customizable subdesigns for project reports, stored as JSON.';
 COMMENT ON COLUMN project_report_subdesigns.account_id IS 'redundant account_id enhances data safety';
@@ -1507,6 +1509,7 @@ CREATE TABLE IF NOT EXISTS wms_services(
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
   info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL, -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+  label text GENERATED ALWAYS AS (coalesce(nullif(url, ''), wms_service_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1515,6 +1518,7 @@ CREATE TABLE IF NOT EXISTS wms_services(
 CREATE INDEX IF NOT EXISTS wms_services_account_id_idx ON wms_services USING btree(account_id);
 CREATE INDEX IF NOT EXISTS wms_services_project_id_idx ON wms_services USING btree(project_id);
 CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url);
+CREATE INDEX IF NOT EXISTS wms_services_label_idx ON wms_services USING btree(label);
 
 --------------------------------------------------------------
 -- wms_service_layers

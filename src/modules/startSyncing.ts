@@ -666,6 +666,26 @@ export const startSyncing = async () => {
           table: 'project_report_designs',
           primaryKey: ['project_report_design_id'],
         },
+        project_report_subdesigns: {
+          shape: {
+            url,
+            params: {
+              table: 'project_report_subdesigns',
+              columns: [
+                'project_report_subdesign_id',
+                'account_id',
+                'project_id',
+                'name',
+                'design',
+                'created_at',
+                'updated_at',
+                'updated_by',
+              ],
+            },
+          },
+          table: 'project_report_subdesigns',
+          primaryKey: ['project_report_subdesign_id'],
+        },
         files: {
           shape: {
             url,
@@ -864,6 +884,21 @@ export const startSyncing = async () => {
             url,
             params: {
               table: 'wms_services',
+              columns: [
+                'wms_service_id',
+                'account_id',
+                'project_id',
+                'url',
+                'image_formats',
+                'image_format',
+                'version',
+                'info_formats',
+                'info_format',
+                'default_crs',
+                'created_at',
+                'updated_at',
+                'updated_by',
+              ],
             },
           },
           table: 'wms_services',
