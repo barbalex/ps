@@ -6,6 +6,9 @@ export const epsgFrom4326 = ({
   projectMapPresentationCrs,
   crs,
 }) => {
+  if (!Number.isFinite(xPassed) || !Number.isFinite(yPassed)) {
+    return [xPassed, yPassed]
+  }
   if (!projectMapPresentationCrs || projectMapPresentationCrs === 'EPSG:4326') {
     return [xPassed, yPassed]
   }

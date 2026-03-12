@@ -13,3 +13,21 @@
   margin: 0;
   font-size: small;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: max-content 1fr 1fr;
+  column-gap: 10px;
+  row-gap: 2px;
+  font-size: small;
+}
+
+.label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
