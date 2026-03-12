@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Combobox, Field } = fluentUiReactComponents
 import { useParams } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -17,6 +18,7 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
   const db = usePGlite()
   const { projectCrsId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const [filter, setFilter] = useState('')
   const [crs, setCrs] = useState([])
@@ -72,9 +74,9 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
 
   return (
     <Field
-      label="Choose a CRS"
+      label={formatMessage({ id: 'Zy6AbC', defaultMessage: 'CRS auswählen' })}
       validationState="none"
-      validationMessage="Type to filter from > 10'000 crs options"
+      validationMessage={formatMessage({ id: 'Bd7CeD', defaultMessage: "Tippen um aus > 10'000 CRS-Optionen zu filtern" })}
     >
       <Combobox
         value={filter}

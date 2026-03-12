@@ -287,5 +287,10 @@
   "Ac1BdE": "Vous pouvez ajouter plusieurs CRS.",
   "Kn3OpQ": "L'un d'eux est utilisé pour afficher les coordonnées sur la carte.",
   "Ru4StV": "Les utilisateurs peuvent choisir dans la carte l'un des CRS que vous ajoutez ici.",
-  "Wx5YzA": "Si aucun CRS n'est sélectionné, WGS84 sera utilisé par défaut."
+  "Wx5YzA": "Si aucun CRS n'est sélectionné, WGS84 sera utilisé par défaut.",
+  "Kl0MnN": "Définir comme CRS de présentation de la carte",
+  "Zy6AbC": "Choisir un CRS",
+  "Bd7CeD": "Tapez pour filtrer parmi > 10'000 options CRS",
+  "Ef8FgG": "Tapez 2 caractères ou plus pour filtrer",
+  "Hi9IjJ": "Aucune valeur trouvée contenant \u00ab\u00a0{filter}\u00a0\u00bb."
 }

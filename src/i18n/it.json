@@ -287,5 +287,10 @@
   "Ac1BdE": "È possibile aggiungere più CRS.",
   "Kn3OpQ": "Uno di essi viene utilizzato per mostrare le coordinate sulla mappa.",
   "Ru4StV": "Gli utenti possono scegliere nella mappa uno dei CRS aggiunti qui.",
-  "Wx5YzA": "Se non è selezionato alcun CRS, verrà utilizzato WGS84 per impostazione predefinita."
+  "Wx5YzA": "Se non è selezionato alcun CRS, verrà utilizzato WGS84 per impostazione predefinita.",
+  "Kl0MnN": "Imposta come CRS di presentazione della mappa",
+  "Zy6AbC": "Scegli un CRS",
+  "Bd7CeD": "Digita per filtrare tra > 10'000 opzioni CRS",
+  "Ef8FgG": "Digita 2 o più caratteri per filtrare",
+  "Hi9IjJ": "Nessun valore trovato contenente \u201c{filter}\u201d."
 }

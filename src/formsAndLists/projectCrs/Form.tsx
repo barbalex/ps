@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -30,6 +31,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -124,7 +126,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
     <>
       <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
       <TextField
-        label="Code"
+        label={formatMessage({ id: 'Fz4gCh', defaultMessage: 'Code' })}
         name="code"
         type="code"
         value={row.code ?? ''}
@@ -133,7 +135,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         validationMessage={validations?.code?.message}
       />
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         type="name"
         value={row.name ?? ''}
@@ -142,7 +144,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         validationMessage={validations?.name?.message}
       />
       <TextArea
-        label="Proj4 Value"
+        label={formatMessage({ id: 'Gv5hDi', defaultMessage: 'Proj4-Wert' })}
         name="proj4"
         type="proj4"
         value={row.proj4 ?? ''}
@@ -151,7 +153,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         validationMessage={validations?.proj4?.message}
       />
       <CheckboxField
-        label="Set as Map Presentation CRS"
+        label={formatMessage({ id: 'Kl0MnN', defaultMessage: 'Als Darstellungs-CRS der Karte festlegen' })}
         name="map_presentation_crs"
         value={row.project_map_presentation_crs === row.code}
         onChange={onChangeMapPresentation}
