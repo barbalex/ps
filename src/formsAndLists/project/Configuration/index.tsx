@@ -13,6 +13,8 @@ import { CheckboxField } from '../../../components/shared/CheckboxField.tsx'
 import { LabelBy } from '../../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../../components/shared/SwitchField.tsx'
+import { Section } from '../../../components/shared/Section.tsx'
+import { SectionDescription } from '../../../components/shared/SectionDescription.tsx'
 import { Type } from './Type.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
@@ -108,7 +110,11 @@ export const Configuration = ({ from }) => {
     <div className="form-outer-container">
       <FormHeader title="Project configuration" />
       <div className="form-container" role="tabpanel" aria-labelledby="form">
+        <SectionDescription marginTop={-10}>
+          {'Arten wählen, um deren (Teil-)Populationen zu bearbeiten. Biotope für (Teil-)Biotope bzw. Lebensräume'}
+        </SectionDescription>
         <Type row={row} onChange={onChange} validations={validations} />
+        <Section title="Teil-Projekt-Name">
         <TextField
           label="Name of subproject in German (singular)"
           name="subproject_name_singular"
@@ -173,6 +179,8 @@ export const Configuration = ({ from }) => {
           validationState={validations?.subproject_name_plural_it?.state}
           validationMessage={validations?.subproject_name_plural_it?.message}
         />
+        </Section>
+        <Section title="Weitere Einstellungen">
         <TextField
           label="Order subproject by (field name)"
           name="subproject_order_by"
@@ -283,6 +291,7 @@ export const Configuration = ({ from }) => {
             validationMessage={validations?.files_active_subprojects?.message}
           />
         </div>
+        </Section>
       </div>
     </div>
   )
