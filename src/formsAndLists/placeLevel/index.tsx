@@ -277,7 +277,7 @@ export const PlaceLevel = () => {
             {formatMessage({
               id: 'qS1VxO',
               defaultMessage:
-                'Sie können die folgenden Fähigkeiten (de-)aktivieren. Deaktivierte stehen nicht zur Verfügung, vereinfachen dafür die Benutzeroberfläche.',
+                'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren vereinfacht die Benutzeroberfläche.',
             })}
           </SectionDescription>
           <SwitchField
