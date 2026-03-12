@@ -165,7 +165,7 @@
   "IKLYLz": "Couches WMS",
   "XkV5yZ": "Nom",
   "pR0UwN": "Un ou deux niveaux de lieu peuvent être définis. Exemple pour les espèces: Population/Sous-population.",
-  "nP8QrS": "Ici le nom de ce niveau de lieu est défini. Pour qu'il puisse s'afficher correctement partout, il doit être défini plusieurs fois: singulier, pluriel, forme courte. Et dans toutes les langues utilisées. Si une langue manque, l'allemand est utilisé.",
+  "nP8QrS": "Ici le nom de ce niveau de lieu est défini. Pour qu'il puisse s'afficher correctement partout, il faut le singulier, le pluriel et la forme courte, dans toutes les langues utilisées. Si une langue manque, l'allemand est utilisé.",
   "yR6TsL": "Capacités",
   "qS1VxO": "Vous pouvez activer ou désactiver les capacités suivantes selon vos besoins. Désactiver celles qui ne sont pas utilisées simplifie l'interface utilisateur.",
   "Pq7nWk": "Ordre de tri",

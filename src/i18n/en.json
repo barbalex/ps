@@ -165,7 +165,7 @@
   "IKLYLz": "WMS Layers",
   "XkV5yZ": "Name",
   "pR0UwN": "One or two place levels can be defined. Example for species: Population/Sub-population.",
-  "nP8QrS": "Here the name for this place level is defined. So that it can be displayed correctly everywhere, it should be defined multiple times: singular, plural, short form. And in all languages used. If a language is missing, German is used.",
+  "nP8QrS": "Here the name for this place level is defined. So that it can be displayed correctly everywhere, singular, plural and short form are needed, in all languages used. If a language is missing, German is used.",
   "yR6TsL": "Capabilities",
   "qS1VxO": "You can enable or disable the following capabilities as needed. Disabling unused ones simplifies the user interface.",
   "Pq7nWk": "Sort value",

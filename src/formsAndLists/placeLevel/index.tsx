@@ -132,7 +132,7 @@ export const PlaceLevel = () => {
             {formatMessage({
               id: 'nP8QrS',
               defaultMessage:
-                'Hier wird der Name für diese Ort-Stufe definiert. Damit er überall korrekt angezeigt werden kann, sollte er mehrfach definiert werden: Einzahl, Mehrzahl, Kurzform. Und in allen verwendeten Sprachen. Fehlt eine Sprache, wird Deutsch verwendet.',
+                'Hier wird der Name für diese Ort-Stufe definiert. Damit er überall korrekt angezeigt werden kann, braucht es Einzahl, Mehrzahl und Kurzform, in allen verwendeten Sprachen. Fehlt eine Sprache, wird Deutsch verwendet.',
             })}
           </SectionDescription>
           <TextField
