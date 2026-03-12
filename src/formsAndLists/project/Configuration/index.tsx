@@ -4,6 +4,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Label, Divider } = fluentUiReactComponents
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
@@ -27,6 +28,7 @@ import type Projects from '../../../models/public/Projects.ts'
 export const Configuration = ({ from }) => {
   const { projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
 
   const db = usePGlite()
@@ -103,20 +105,20 @@ export const Configuration = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Project" id={projectId} />
+    return <NotFound table={formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })} id={projectId} />
   }
 
   return (
     <div className="form-outer-container">
-      <FormHeader title="Project configuration" />
+      <FormHeader title={formatMessage({ id: 'zM4NoP', defaultMessage: 'Projekt-Konfiguration' })} />
       <div className="form-container" role="tabpanel" aria-labelledby="form">
         <SectionDescription marginTop={-10}>
-          {'Arten wählen, um deren (Teil-)Populationen zu bearbeiten. Biotope für (Teil-)Biotope bzw. Lebensräume'}
+          {formatMessage({ id: 'oT4UvW', defaultMessage: 'Arten wählen, um deren (Teil-)Populationen zu bearbeiten. Biotope für (Teil-)Biotope bzw. Lebensräume' })}
         </SectionDescription>
         <Type row={row} onChange={onChange} validations={validations} />
-        <Section title="Teil-Projekt-Name">
+        <Section title={formatMessage({ id: 'aQ5RsT', defaultMessage: 'Teil-Projekt-Name' })}>
         <TextField
-          label="Name of subproject in German (singular)"
+          label={formatMessage({ id: 'bT3YsO', defaultMessage: 'Deutsch (Einzahl)' })}
           name="subproject_name_singular"
           value={row.subproject_name_singular ?? ''}
           onChange={onChange}
@@ -124,7 +126,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_singular?.message}
         />
         <TextField
-          label="Name of subproject in German (plural)"
+          label={formatMessage({ id: 'cU4ZtP', defaultMessage: 'Deutsch (Mehrzahl)' })}
           name="subproject_name_plural"
           value={row.subproject_name_plural ?? ''}
           onChange={onChange}
@@ -132,7 +134,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_plural?.message}
         />
         <TextField
-          label="Name of subproject in English (singular)"
+          label={formatMessage({ id: 'eW6BvR', defaultMessage: 'Englisch (Einzahl)' })}
           name="subproject_name_singular_en"
           value={row.subproject_name_singular_en ?? ''}
           onChange={onChange}
@@ -140,7 +142,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_singular_en?.message}
         />
         <TextField
-          label="Name of subproject in English (plural)"
+          label={formatMessage({ id: 'fX7CwS', defaultMessage: 'Englisch (Mehrzahl)' })}
           name="subproject_name_plural_en"
           value={row.subproject_name_plural_en ?? ''}
           onChange={onChange}
@@ -148,7 +150,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_plural_en?.message}
         />
         <TextField
-          label="Name of subproject in French (singular)"
+          label={formatMessage({ id: 'hZ9EyU', defaultMessage: 'Französisch (Einzahl)' })}
           name="subproject_name_singular_fr"
           value={row.subproject_name_singular_fr ?? ''}
           onChange={onChange}
@@ -156,7 +158,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_singular_fr?.message}
         />
         <TextField
-          label="Name of subproject in French (plural)"
+          label={formatMessage({ id: 'iA0FzV', defaultMessage: 'Französisch (Mehrzahl)' })}
           name="subproject_name_plural_fr"
           value={row.subproject_name_plural_fr ?? ''}
           onChange={onChange}
@@ -164,7 +166,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_plural_fr?.message}
         />
         <TextField
-          label="Name of subproject in Italian (singular)"
+          label={formatMessage({ id: 'kC2HbX', defaultMessage: 'Italienisch (Einzahl)' })}
           name="subproject_name_singular_it"
           value={row.subproject_name_singular_it ?? ''}
           onChange={onChange}
@@ -172,7 +174,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_singular_it?.message}
         />
         <TextField
-          label="Name of subproject in Italian (plural)"
+          label={formatMessage({ id: 'lD3IcY', defaultMessage: 'Italienisch (Mehrzahl)' })}
           name="subproject_name_plural_it"
           value={row.subproject_name_plural_it ?? ''}
           onChange={onChange}
@@ -180,9 +182,9 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_name_plural_it?.message}
         />
         </Section>
-        <Section title="Weitere Einstellungen">
+        <Section title={formatMessage({ id: 'bU6VwX', defaultMessage: 'Weitere Einstellungen' })}>
         <TextField
-          label="Order subproject by (field name)"
+          label={formatMessage({ id: 'cY7ZaB', defaultMessage: 'Teilprojekt sortieren nach (Feldname)' })}
           name="subproject_order_by"
           value={row.subproject_order_by ?? ''}
           onChange={onChange}
@@ -190,7 +192,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.subproject_order_by?.message}
         />
         <LabelBy
-          label="Goal reports labelled by"
+          label={formatMessage({ id: 'dC8DeF', defaultMessage: 'Berichte beschriften nach' })}
           name="goal_reports_label_by"
           table="goal_reports"
           value={row.goal_reports_label_by ?? ''}
@@ -201,7 +203,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.goal_reports_label_by?.message}
         />
         <LabelBy
-          label="Places labelled by"
+          label={formatMessage({ id: 'eG9HiJ', defaultMessage: 'Orte beschriften nach' })}
           name="places_label_by"
           table="places"
           value={row.places_label_by ?? ''}
@@ -212,7 +214,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.places_label_by?.message}
         />
         <FieldList
-          label="Places ordered by"
+          label={formatMessage({ id: 'fK0LmN', defaultMessage: 'Orte sortieren nach' })}
           name="places_order_by"
           table="projects"
           fieldsTable="places"
@@ -221,15 +223,15 @@ export const Configuration = ({ from }) => {
           from={from}
         />
         <TextFieldInactive
-          label="Map Presentation CRS"
+          label={formatMessage({ id: 'gO1PqR', defaultMessage: 'Karten-Präsentations-CRS' })}
           name="map_presentation_crs"
           value={row.map_presentation_crs ?? 'EPSG:4326'}
-          validationMessage="Choose a CRS in the CRS List"
+          validationMessage={formatMessage({ id: 'hS2TuV', defaultMessage: 'Wähle ein CRS in der CRS-Liste' })}
         />
         <Divider />
-        <Label>{`Value(s) to use in reports when:`}</Label>
+        <Label>{formatMessage({ id: 'iW3XyZ', defaultMessage: 'Wert(e) für Berichte wenn:' })}</Label>
         <RadioGroupField
-          label="...values exist on multiple place levels"
+          label={formatMessage({ id: 'jA4BeC', defaultMessage: '...Werte auf mehreren Ort-Stufen' })}
           name="values_on_multiple_levels"
           list={['first', 'second', 'all']}
           value={row.values_on_multiple_levels ?? ''}
@@ -238,7 +240,7 @@ export const Configuration = ({ from }) => {
           validationMessage={validations?.values_on_multiple_levels?.message}
         />
         <RadioGroupField
-          label="...multiple action values exist on the same place level"
+          label={formatMessage({ id: 'kD5EfG', defaultMessage: '...mehrere Massnahmen-Mengen auf gleicher Ort-Stufe' })}
           name="multiple_action_values_on_same_level"
           list={['first', 'last', 'all']}
           value={row.multiple_action_values_on_same_level ?? ''}
@@ -251,7 +253,7 @@ export const Configuration = ({ from }) => {
           }
         />
         <RadioGroupField
-          label="...multiple check Values exist on the same place level"
+          label={formatMessage({ id: 'lH6IjK', defaultMessage: '...mehrere Kontroll-Mengen auf gleicher Ort-Stufe' })}
           name="multiple_check_values_on_same_level"
           list={['first', 'last', 'all']}
           value={row.multiple_check_values_on_same_level ?? ''}
@@ -266,16 +268,16 @@ export const Configuration = ({ from }) => {
         <Divider />
         <div className="checkboxfield-list">
           <SwitchField
-            label="Save files locally to be available offline"
+            label={formatMessage({ id: 'mL7MnO', defaultMessage: 'Dateien lokal speichern (offline verfügbar)' })}
             name="files_offline"
             value={row.files_offline}
             onChange={onChange}
             validationState={validations?.files_offline?.state}
             validationMessage={validations?.files_offline?.message}
           />
-          <Label>Enable uploading files to:</Label>
+          <Label>{formatMessage({ id: 'nO8PqR', defaultMessage: 'Dateien hochladen aktivieren für:' })}</Label>
           <CheckboxField
-            label="Projects"
+            label={formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}
             name="files_active_projects"
             value={row.files_active_projects ?? false}
             onChange={onChange}
@@ -283,7 +285,7 @@ export const Configuration = ({ from }) => {
             validationMessage={validations?.files_active_projects?.message}
           />
           <CheckboxField
-            label="Subprojects"
+            label={formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' })}
             name="files_active_subprojects"
             value={row.files_active_subprojects ?? false}
             onChange={onChange}
