@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createProjectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -13,6 +14,7 @@ export const Header = ({ autoFocusRef }) => {
   const { projectId, projectUserId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -109,7 +111,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Project User"
+      title={formatMessage({ id: 'gi+ubY', defaultMessage: 'Projekt-Benutzer' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
