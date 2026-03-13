@@ -403,6 +403,72 @@
   "bCDgHi": {
     "defaultMessage": "Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzuf\u00fcgen."
   },
+  "bCFiJk": {
+    "defaultMessage": "Allgemeine Einstellungen"
+  },
+  "bCGjKl": {
+    "defaultMessage": "Daten / Subjekt-Darstellung"
+  },
+  "bCHkLm": {
+    "defaultMessage": "Diagramm-Typ"
+  },
+  "bCIlMn": {
+    "defaultMessage": "W\u00e4hlen Sie den anzuzeigenden Diagramm-Typ"
+  },
+  "bCJmNo": {
+    "defaultMessage": "Aktuelles Jahr"
+  },
+  "bCKnOp": {
+    "defaultMessage": "Das Diagramm zeigt Daten des aktuellen Jahres"
+  },
+  "bCLoQr": {
+    "defaultMessage": "Vorheriges Jahr"
+  },
+  "bCMpRs": {
+    "defaultMessage": "Das Diagramm zeigt Daten des vorherigen Jahres"
+  },
+  "bCNqSt": {
+    "defaultMessage": "Bestimmtes Jahr"
+  },
+  "bCOrTu": {
+    "defaultMessage": "Das Diagramm zeigt Daten des eingegebenen Jahres"
+  },
+  "bCPsUv": {
+    "defaultMessage": "Letzte X Jahre"
+  },
+  "bCQtVw": {
+    "defaultMessage": "Das Diagramm zeigt h\u00f6chstens die letzten x Jahre (x = eingegebener Wert)"
+  },
+  "bCRuWx": {
+    "defaultMessage": "Seit"
+  },
+  "bCSvXy": {
+    "defaultMessage": "Das Diagramm zeigt Daten seit dem eingegebenen Jahr"
+  },
+  "bCTwYz": {
+    "defaultMessage": "Bis"
+  },
+  "bCUxZa": {
+    "defaultMessage": "Das Diagramm zeigt Daten bis zum eingegebenen Jahr"
+  },
+  "bCVyAb": {
+    "defaultMessage": "Subjekte stapeln?"
+  },
+  "bCWzBc": {
+    "defaultMessage": "Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, \u00fcberlagern sie sich"
+  },
+  "bCXaBd": {
+    "defaultMessage": "Subjekte in separaten Diagrammen darstellen?"
+  },
+  "bCYbCe": {
+    "defaultMessage": "Wenn deaktiviert, werden Subjekte in einem einzigen Diagramm dargestellt"
+  },
+  "bCZcDf": {
+    "defaultMessage": "Bei mehreren Subjekten: Anteil als Prozent anzeigen?"
+  },
+  "bDaDgE": {
+    "defaultMessage": "Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte f\u00fcr jedes Jahr Werte haben"
+  },
   "d9gLtS": {
     "defaultMessage": "Bearbeitung beenden"
   },

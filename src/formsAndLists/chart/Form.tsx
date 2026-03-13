@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -23,6 +24,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   const { chartId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
@@ -273,7 +275,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
 
   return (
     <div className="form-container">
-      <Section title="General settings">
+      <Section title={formatMessage({ id: 'bCFiJk', defaultMessage: 'Allgemeine Einstellungen' })}>
         <ChartType
           onChange={onChange}
           row={row}
@@ -281,7 +283,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validations={validations}
         />
         <TextField
-          label="Name"
+          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
           name="name"
           value={row.name}
           onChange={onChange}
@@ -289,31 +291,31 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationMessage={validations?.name?.message}
         />
       </Section>
-      <Section title="Data / Subjects presentation">
+      <Section title={formatMessage({ id: 'bCGjKl', defaultMessage: 'Daten / Subjekt-Darstellung' })}>
         <SwitchField
-          label="Current"
+          label={formatMessage({ id: 'bCJmNo', defaultMessage: 'Aktuelles Jahr' })}
           name="years_current"
           value={row.years_current ?? false}
           onChange={onChange}
           validationState={validations?.years_current?.state}
           validationMessage={
             validations.years_current?.message ??
-            'The chart shows data of the current year'
+            formatMessage({ id: 'bCKnOp', defaultMessage: 'Das Diagramm zeigt Daten des aktuellen Jahres' })
           }
         />
         <SwitchField
-          label="Previous"
+          label={formatMessage({ id: 'bCLoQr', defaultMessage: 'Vorheriges Jahr' })}
           name="years_previous"
           value={row.years_previous ?? false}
           onChange={onChange}
           validationState={validations?.years_previous?.state}
           validationMessage={
             validations.years_previous?.message ??
-            'The chart shows data of the previous year'
+            formatMessage({ id: 'bCMpRs', defaultMessage: 'Das Diagramm zeigt Daten des vorherigen Jahres' })
           }
         />
         <TextField
-          label="Specific"
+          label={formatMessage({ id: 'bCNqSt', defaultMessage: 'Bestimmtes Jahr' })}
           name="years_specific"
           value={row.years_specific}
           type="number"
@@ -321,11 +323,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_specific?.state}
           validationMessage={
             validations.years_specific?.message ??
-            'The chart shows data of the specific year entered'
+            formatMessage({ id: 'bCOrTu', defaultMessage: 'Das Diagramm zeigt Daten des eingegebenen Jahres' })
           }
         />
         <TextField
-          label="Last X"
+          label={formatMessage({ id: 'bCPsUv', defaultMessage: 'Letzte X Jahre' })}
           name="years_last_x"
           value={row.years_last_x}
           type="number"
@@ -333,11 +335,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_last_x?.state}
           validationMessage={
             validations.years_last_x?.message ??
-            'The chart shows no more than the last x years (x = value entered)'
+            formatMessage({ id: 'bCQtVw', defaultMessage: 'Das Diagramm zeigt höchstens die letzten x Jahre (x = eingegebener Wert)' })
           }
         />
         <TextField
-          label="Since"
+          label={formatMessage({ id: 'bCRuWx', defaultMessage: 'Seit' })}
           name="years_since"
           value={row.years_since}
           type="number"
@@ -345,11 +347,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_since?.state}
           validationMessage={
             validations.years_since?.message ??
-            'The chart shows data since the year entered'
+            formatMessage({ id: 'bCSvXy', defaultMessage: 'Das Diagramm zeigt Daten seit dem eingegebenen Jahr' })
           }
         />
         <TextField
-          label="Until"
+          label={formatMessage({ id: 'bCTwYz', defaultMessage: 'Bis' })}
           name="years_until"
           value={row.years_until}
           type="number"
@@ -357,42 +359,42 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_until?.state}
           validationMessage={
             validations.years_until?.message ??
-            'The chart shows data until the year entered'
+            formatMessage({ id: 'bCUxZa', defaultMessage: 'Das Diagramm zeigt Daten bis zum eingegebenen Jahr' })
           }
         />
       </Section>
-      <Section title="Data / Subjects presentation">
+      <Section title={formatMessage({ id: 'bCGjKl', defaultMessage: 'Daten / Subjekt-Darstellung' })}>
         <SwitchField
-          label="Stack subjects?"
+          label={formatMessage({ id: 'bCVyAb', defaultMessage: 'Subjekte stapeln?' })}
           name="subjects_stacked"
           value={row.subjects_stacked}
           onChange={onChange}
           validationState={validations?.subjects_stacked?.state}
           validationMessage={
             validations.subjects_stacked?.message ??
-            'When true, subjects graphs will be stacked. If false, they will be drawn covering each other'
+            formatMessage({ id: 'bCWzBc', defaultMessage: 'Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, überlagern sie sich' })
           }
         />
         <SwitchField
-          label="Draw subjects in separate charts?"
+          label={formatMessage({ id: 'bCXaBd', defaultMessage: 'Subjekte in separaten Diagrammen darstellen?' })}
           name="subjects_single"
           value={row.subjects_single}
           onChange={onChange}
           validationState={validations?.subjects_single?.state}
           validationMessage={
             validations.subjects_single?.message ??
-            'When false, subjects will be drawn in a single graph'
+            formatMessage({ id: 'bCYbCe', defaultMessage: 'Wenn deaktiviert, werden Subjekte in einem einzigen Diagramm dargestellt' })
           }
         />
         <SwitchField
-          label="When multiple subjects exist: show their share as percentage?"
+          label={formatMessage({ id: 'bCZcDf', defaultMessage: 'Bei mehreren Subjekten: Anteil als Prozent anzeigen?' })}
           name="percent"
           value={row.percent}
           onChange={onChange}
           validationState={validations?.percent?.state}
           validationMessage={
             validations.percent?.message ??
-            'You will see the percentage of every subject, totalling 100%. This only works well when subjects have values for every year'
+            formatMessage({ id: 'bDaDgE', defaultMessage: 'Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben' })
           }
         />
       </Section>

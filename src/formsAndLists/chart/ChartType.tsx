@@ -1,9 +1,11 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIsFirstRender } from '@uidotdev/usehooks'
+import { useIntl } from 'react-intl'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
 export const ChartType = ({ onChange, validations, row, ref }) => {
+  const { formatMessage } = useIntl()
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT chart_type FROM chart_types order by sort, chart_type`,
@@ -13,7 +15,7 @@ export const ChartType = ({ onChange, validations, row, ref }) => {
 
   return (
     <RadioGroupField
-      label="Chart Type"
+      label={formatMessage({ id: 'bCHkLm', defaultMessage: 'Diagramm-Typ' })}
       name="chart_type"
       list={list}
       isLoading={isLoading}
@@ -23,7 +25,7 @@ export const ChartType = ({ onChange, validations, row, ref }) => {
       validationState={validations?.chart_type?.state}
       validationMessage={
         validations.chart_type?.message ??
-        'Choose what type of chart you want to display'
+        formatMessage({ id: 'bCIlMn', defaultMessage: 'Wählen Sie den anzuzeigenden Diagramm-Typ' })
       }
       ref={ref}
     />
