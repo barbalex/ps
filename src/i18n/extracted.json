@@ -388,6 +388,15 @@
   "bCAdEf": {
     "defaultMessage": "Berichte"
   },
+  "bCBeFg": {
+    "defaultMessage": "Subprojekt-Bericht Design"
+  },
+  "bCCfGh": {
+    "defaultMessage": "Felder und Diagramme in das Design ziehen"
+  },
+  "bCDgHi": {
+    "defaultMessage": "Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzuf\u00fcgen."
+  },
   "d9gLtS": {
     "defaultMessage": "Bearbeitung beenden"
   },

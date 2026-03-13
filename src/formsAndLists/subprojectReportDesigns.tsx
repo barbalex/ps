@@ -25,12 +25,6 @@ export const SubprojectReportDesigns = () => {
     })
     if (!subproject_report_design_id) return
 
-    console.log(
-      'Navigating to new subproject report design with id:',
-      subproject_report_design_id,
-    )
-    // TODO: this looks perfect. But: in the url projectId_ and subprojectId_ are lost (undefined) and the app crashes. Why?
-
     navigate({
       to: subproject_report_design_id,
       params: (prev) => ({

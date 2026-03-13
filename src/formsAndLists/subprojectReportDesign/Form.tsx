@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 import { Puck, Config } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -9,7 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 
@@ -24,6 +25,8 @@ export const Form = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
   const [chartDataMap, setChartDataMap] = useState({})
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -84,8 +87,14 @@ export const Form = ({ autoFocusRef, from }) => {
   // Build Puck config from fields with actual data
   const components = {}
   const categories = {
-    fields: { components: [] },
-    charts: { components: [] },
+    fields: {
+      title: formatMessage({ id: 'bC8AbC', defaultMessage: 'Felder' }),
+      components: [],
+    },
+    charts: {
+      title: formatMessage({ id: 'bC9BcD', defaultMessage: 'Diagramme' }),
+      components: [],
+    },
   }
 
   fields.forEach((field) => {
@@ -282,7 +291,7 @@ export const Form = ({ autoFocusRef, from }) => {
   return (
     <div className="form-container">
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
@@ -292,18 +301,19 @@ export const Form = ({ autoFocusRef, from }) => {
         validationMessage={validations?.name?.message}
       />
       <SwitchField
-        label="Active"
+        label={formatMessage({ id: 'bB8NpQ', defaultMessage: 'Aktiv' })}
         name="active"
         value={row.active ?? false}
         onChange={onActiveChange}
         validationState={validations?.active?.state ?? 'success'}
         validationMessage={
           validations?.active?.message ??
-          'No more than one design can be active at once'
+          formatMessage({ id: 'bB9OrS', defaultMessage: 'Es kann immer nur ein Design aktiv sein' })
         }
       />
       {(fields.length > 0 || charts.length > 0) && (
         <Puck
+          key={language}
           config={config}
           data={row.design ?? { content: [] }}
           onChange={onPuckChange}
@@ -352,7 +362,7 @@ export const Form = ({ autoFocusRef, from }) => {
                     zIndex: 1,
                   }}
                 >
-                  Drag fields and charts into the design
+                  {formatMessage({ id: 'bCCfGh', defaultMessage: 'Felder und Diagramme in das Design ziehen' })}
                 </div>
               )}
               <Puck.Preview />
@@ -371,7 +381,7 @@ export const Form = ({ autoFocusRef, from }) => {
             fontSize: '1.2em',
           }}
         >
-          No fields or charts found. Please add fields or charts first.
+          {formatMessage({ id: 'bCDgHi', defaultMessage: 'Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzufügen.' })}
         </div>
       )}
     </div>
