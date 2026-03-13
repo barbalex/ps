@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -23,6 +24,7 @@ export const SubprojectUser = () => {
   const { subprojectUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -75,7 +77,7 @@ export const SubprojectUser = () => {
         : row ?
           <>
             <DropdownField
-              label="User"
+              label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
               name="user_id"
               table="users"
               value={row.user_id ?? ''}
@@ -86,7 +88,7 @@ export const SubprojectUser = () => {
               validationMessage={validations?.user_id?.message}
             />
             <RadioGroupField
-              label="Role"
+              label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
               name="role"
               list={userRoles}
               value={row.role ?? ''}

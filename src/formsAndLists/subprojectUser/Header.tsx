@@ -1,19 +1,31 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom, useAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createSubprojectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
 
 export const Header = ({ autoFocusRef }) => {
-  const { subprojectId, subprojectUserId } = useParams({ from })
+  const { projectId, subprojectId, subprojectUserId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+
+  const projectRes = useLiveQuery(
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = '${projectId}'`,
+  )
+  const subprojectNameSingular = projectRes?.rows?.[0]?.subproject_name_singular
+  const title = subprojectNameSingular
+    ? `${subprojectNameSingular}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+    : formatMessage({ id: '1M9eWP', defaultMessage: 'Teilprojekt-Benutzer' })
 
   const db = usePGlite()
 
@@ -112,7 +124,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Subproject User"
+      title={title}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
