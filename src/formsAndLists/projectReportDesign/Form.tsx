@@ -63,8 +63,14 @@ export const Form = ({ autoFocusRef, from }) => {
   // Build Puck config from fields with actual data
   const components = {}
   const categories = {
-    fields: { components: [] as string[] },
-    charts: { components: [] as string[] },
+    fields: {
+      title: formatMessage({ id: 'bC8AbC', defaultMessage: 'Felder' }),
+      components: [] as string[],
+    },
+    charts: {
+      title: formatMessage({ id: 'bC9BcD', defaultMessage: 'Diagramme' }),
+      components: [] as string[],
+    },
     subproject_reports: {
       title: formatMessage({
         id: 'bC1tUv',
