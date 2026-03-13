@@ -3,6 +3,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
 import { MdDone } from 'react-icons/md'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { setGeometries } from './setGeometries.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
@@ -17,6 +18,7 @@ interface Props {
 export const Set = ({ observationImport }: Props) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `SELECT * FROM observations WHERE observation_import_id = $1`,
@@ -42,9 +44,7 @@ export const Set = ({ observationImport }: Props) => {
     return (
       <div className={styles.allSet}>
         <MdDone className={styles.doneIcon} />
-        {`All ${formatNumber(
-          observations.length,
-        )} observations's geometries are set`}
+        {formatMessage({ id: 'sGAlSt', defaultMessage: 'Alle {count} Geometrien der Beobachtungen sind gesetzt' }, { count: formatNumber(observations.length) })}
       </div>
     )
   }
@@ -56,9 +56,9 @@ export const Set = ({ observationImport }: Props) => {
         icon={settingGeometries ? <Spinner size="tiny" /> : null}
         className={styles.setButton}
       >
-        {`${
-          settingGeometries ? 'Setting' : 'Set'
-        } coordinates of ${formatNumber(toSetCount)} observation${toSetCount !== 1 ? 's' : ''}`}
+        {settingGeometries
+          ? formatMessage({ id: 'sCdStg', defaultMessage: 'Koordinaten von {count} Beobachtungen werden gesetzt' }, { count: formatNumber(toSetCount) })
+          : formatMessage({ id: 'sCdSet', defaultMessage: 'Koordinaten von {count} Beobachtungen setzen' }, { count: formatNumber(toSetCount) })}
       </Button>
       {notification && (
         <div className={styles.notification}>{notification}</div>

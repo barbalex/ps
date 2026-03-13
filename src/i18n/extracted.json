@@ -826,5 +826,86 @@
   },
   "mRw0sX": {
     "defaultMessage": "und {count} weitere Zeilen..."
+  },
+  "gJsFld": {
+    "defaultMessage": "GeoJSON-Feld"
+  },
+  "gJsVld": {
+    "defaultMessage": "Welches Feld enthält die GeoJSON-Geometrien?"
+  },
+  "aCdDet": {
+    "defaultMessage": "✓ Koordinatenfelder automatisch erkannt"
+  },
+  "aCdVfy": {
+    "defaultMessage": "Bitte die ausgewählten Felder überprüfen und sicherstellen, dass die Koordinatenwerte korrekt sind."
+  },
+  "aCdBtn": {
+    "defaultMessage": "Dann die Koordinaten per Klick auf den Button am Ende der Seite setzen."
+  },
+  "xCdFld": {
+    "defaultMessage": "X-Koordinaten-Feld"
+  },
+  "xCdVld": {
+    "defaultMessage": "Welches Feld enthält die X-Koordinaten? Dies sollte der Breitengrad sein."
+  },
+  "yCdFld": {
+    "defaultMessage": "Y-Koordinaten-Feld"
+  },
+  "yCdVld": {
+    "defaultMessage": "Welches Feld enthält die Y-Koordinaten? Dies sollte der Längengrad sein."
+  },
+  "cRsEp1": {
+    "defaultMessage": "Das von promote-species.app verwendete Koordinaten-Bezugs-System ist 'EPSG:4326', auch bekannt als 'WGS 84'."
+  },
+  "cRsEp2": {
+    "defaultMessage": "Es wird immer in GeoJSON verwendet. Obwohl es weit verbreitet ist, existieren tausende weitere Koordinaten-Bezugs-Systeme."
+  },
+  "cRsEp3": {
+    "defaultMessage": "Wenn die Beobachtungskoordinaten in 'EPSG:4326' vorliegen, ist keine Aktion erforderlich. Andernfalls müssen sie konvertiert werden."
+  },
+  "gMtLbl": {
+    "defaultMessage": "Wie sind die Geometrien in den Daten enthalten?"
+  },
+  "gMtVld": {
+    "defaultMessage": "GeoJSON und Koordinatenfelder werden unterstützt"
+  },
+  "cRsLbl": {
+    "defaultMessage": "Im importierten Datensatz verwendetes Koordinaten-Bezugs-System"
+  },
+  "cRsSee": {
+    "defaultMessage": "Siehe"
+  },
+  "cRsOrL": {
+    "defaultMessage": "oder"
+  },
+  "cRsFrL": {
+    "defaultMessage": "für eine Liste von EPSG-Codes und deren Beschreibungen."
+  },
+  "cRsExm": {
+    "defaultMessage": "Ein gültiges Beispiel ist:"
+  },
+  "cRsRef": {
+    "defaultMessage": "'EPSG:2056',"
+  },
+  "cRsUsS": {
+    "defaultMessage": "das in der Schweiz verwendet wird."
+  },
+  "cRsNfd": {
+    "defaultMessage": "Keine Definitionen für das Koordinaten-Bezugs-System '{crs}' gefunden"
+  },
+  "cRsNoO": {
+    "defaultMessage": "Keine Beobachtungen gefunden"
+  },
+  "cRsAlG": {
+    "defaultMessage": "Alle Beobachtungen haben eine Geometrie"
+  },
+  "sGAlSt": {
+    "defaultMessage": "Alle {count} Geometrien der Beobachtungen sind gesetzt"
+  },
+  "sCdSet": {
+    "defaultMessage": "Koordinaten von {count} Beobachtungen setzen"
+  },
+  "sCdStg": {
+    "defaultMessage": "Koordinaten von {count} Beobachtungen werden gesetzt"
   }
 }

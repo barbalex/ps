@@ -1,9 +1,11 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIsFirstRender } from '@uidotdev/usehooks'
+import { useIntl } from 'react-intl'
 
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 
 export const GeometryMethod = ({ onChange, validations, row }) => {
+  const { formatMessage } = useIntl()
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
     `SELECT geometry_method FROM observation_imports_geometry_methods order by sort, geometry_method`,
@@ -13,7 +15,7 @@ export const GeometryMethod = ({ onChange, validations, row }) => {
 
   return (
     <RadioGroupField
-      label="How are the geometries contained in the data"
+      label={formatMessage({ id: 'gMtLbl', defaultMessage: 'Wie sind die Geometrien in den Daten enthalten?' })}
       name="geometry_method"
       list={geometryMethods}
       isLoading={isLoading}
@@ -22,7 +24,7 @@ export const GeometryMethod = ({ onChange, validations, row }) => {
       validationState={validations?.geometry_method?.state}
       validationMessage={
         validations?.geometry_method?.message ??
-        'GeoJSON and Coordinate Fields are supported'
+        formatMessage({ id: 'gMtVld', defaultMessage: 'GeoJSON und Koordinatenfelder werden unterstützt' })
       }
     />
   )

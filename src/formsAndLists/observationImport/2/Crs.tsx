@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'redaxios'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
@@ -11,6 +12,7 @@ export const Crs = ({
   validations,
 }) => {
   const [notification, setNotification] = useState()
+  const { formatMessage } = useIntl()
 
   const onChange: TextField['props']['onChange'] = (e, data) => {
     onChangePassed(e, data)
@@ -34,7 +36,14 @@ export const Crs = ({
       if (error.status === 404) {
         // Tell user that the crs is not found
         return setNotification(
-          `No definitions were found for crs '${observationImport.crs}'`,
+          formatMessage(
+            {
+              id: 'cRsNfd',
+              defaultMessage:
+                "Keine Definitionen für das Koordinaten-Bezugs-System '{crs}' gefunden",
+            },
+            { crs: observationImport.crs },
+          ),
         )
       }
     }
@@ -44,18 +53,32 @@ export const Crs = ({
     const observations = observationImport?.observations ?? []
 
     if (!observations.length) {
-      return setNotification('No observations found')
+      return setNotification(
+        formatMessage({
+          id: 'cRsNoO',
+          defaultMessage: 'Keine Beobachtungen gefunden',
+        }),
+      )
     }
     const observationsWithoutGeometry = observations.filter((o) => !o.geometry)
     if (!observationsWithoutGeometry.length) {
-      return setNotification('All observations have a geometry')
+      return setNotification(
+        formatMessage({
+          id: 'cRsAlG',
+          defaultMessage: 'Alle Beobachtungen haben eine Geometrie',
+        }),
+      )
     }
   }
 
   return (
     <>
       <TextField
-        label="Coordinate reference system used in the imported data"
+        label={formatMessage({
+          id: 'cRsLbl',
+          defaultMessage:
+            'Im importierten Datensatz verwendetes Koordinaten-Bezugs-System',
+        })}
         name="crs"
         value={observationImport.crs ?? ''}
         onChange={onChange}
@@ -65,25 +88,38 @@ export const Crs = ({
           validations?.crs?.message ?? (
             <>
               <div>
-                See{' '}
+                {formatMessage({ id: 'cRsSee', defaultMessage: 'Siehe' })}{' '}
                 <a href="https://epsg.org/home.html" target="_blank">
                   https://epsg.org
                 </a>{' '}
-                or{' '}
+                {formatMessage({ id: 'cRsOrL', defaultMessage: 'oder' })}{' '}
                 <a href="https://spatialreference.org" target="_blank">
                   https://spatialreference.org
                 </a>{' '}
-                for a list of EPSG codes and their descriptions.
+                {formatMessage({
+                  id: 'cRsFrL',
+                  defaultMessage:
+                    'für eine Liste von EPSG-Codes und deren Beschreibungen.',
+                })}
               </div>
               <div>
-                A valid example is: 'EPSG:2056',{' '}
+                {formatMessage({
+                  id: 'cRsExm',
+                  defaultMessage: 'Ein gültiges Beispiel ist:',
+                })}{' '}
                 <a
                   href="https://spatialreference.org/ref/epsg/2056/"
                   target="_blank"
                 >
-                  the reference system
+                  {formatMessage({
+                    id: 'cRsRef',
+                    defaultMessage: "'EPSG:2056',",
+                  })}
                 </a>{' '}
-                used in Switzerland.
+                {formatMessage({
+                  id: 'cRsUsS',
+                  defaultMessage: 'das in der Schweiz verwendet wird.',
+                })}
               </div>
               {notification && (
                 <div className={styles.notification}>{notification}</div>
