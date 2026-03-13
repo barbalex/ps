@@ -1,6 +1,5 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, RadioGroup, Radio } = fluentUiReactComponents
-import { useResizeDetector } from 'react-resize-detector'
 
 import { Loading } from './Loading.tsx'
 
@@ -18,17 +17,9 @@ export const RadioGroupField = (props) => {
     disabled = false,
     replaceUnderscoreInLabel = false,
     labelMap = {},
+    layout = 'vertical',
     ref,
   } = props
-
-  const { width, ref: widthRef } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
-
-  const verticalLayout = !!width && width < 800
 
   const onClick = (e) => {
     const valueChoosen = e.target.value
@@ -44,10 +35,9 @@ export const RadioGroupField = (props) => {
       label={label ?? '(no label provided)'}
       validationMessage={validationMessage}
       validationState={validationState}
-      ref={widthRef}
     >
       <RadioGroup
-        layout={verticalLayout ? 'vertical' : 'horizontal'}
+        layout={layout}
         name={name}
         value={value}
         appearance="underline"
