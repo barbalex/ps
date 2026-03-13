@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createProjectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -11,6 +12,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, projectReportDesignId } = useParams({ from })
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -108,6 +110,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
+      title={formatMessage({ id: 'bB7MnO', defaultMessage: 'Projekt-Bericht Design' })}
       tableName="Project Report Design"
       addRow={addRow}
       deleteRow={deleteRow}
