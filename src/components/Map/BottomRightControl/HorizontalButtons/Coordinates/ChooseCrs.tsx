@@ -11,6 +11,7 @@ import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { addOperationAtom } from '../../../../../store.ts'
 import type ProjectCrs from '../../../../../models/public/ProjectCrs.ts'
@@ -23,6 +24,7 @@ export const ChooseCrs = () => {
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const resProjectCrs = useLiveQuery(
     `SELECT * FROM project_crs WHERE project_id = $1`,
@@ -67,8 +69,8 @@ export const ChooseCrs = () => {
       <MenuTrigger disableButtonEnhancement>
         <Button
           icon={<BsGlobe2 />}
-          aria-label="Choose CRS (Coordinate Reference System)"
-          title="Choose CRS (Coordinate Reference System)"
+          aria-label={formatMessage({ id: 'Qb3CdE', defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)' })}
+          title={formatMessage({ id: 'Qb3CdE', defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)' })}
           size="small"
         />
       </MenuTrigger>

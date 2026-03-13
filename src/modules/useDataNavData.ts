@@ -262,7 +262,7 @@ export const useDataNavData = () => {
                 countFiltered: row?.crs_count_unfiltered ?? 0,
                 namePlural: formatMessage({
                   id: 'OzBS9Z',
-                  defaultMessage: 'CRS',
+                  defaultMessage: 'KBS',
                 }),
               }),
             },

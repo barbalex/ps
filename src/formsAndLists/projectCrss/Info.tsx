@@ -24,14 +24,14 @@ export const Info = () => {
         {formatMessage({
           id: 'Ru4StV',
           defaultMessage:
-            'Benutzer können in der Karte eines der hier hinzugefügten CRS auswählen.',
+            'Benutzer können in der Karte eines der hier hinzugefügten KBS auswählen.',
         })}
       </p>
       <p>
         {formatMessage({
           id: 'Wx5YzA',
           defaultMessage:
-            'Wenn kein CRS ausgewählt ist, wird standardmäßig WGS84 verwendet.',
+            'Wenn kein KBS ausgewählt ist, wird standardmäßig WGS84 verwendet.',
         })}
       </p>
     </div>

@@ -105,7 +105,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="CRS"
+      title="KBS"
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

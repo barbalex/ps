@@ -210,7 +210,7 @@
     "defaultMessage": "Bring your own device"
   },
   "OzBS9Z": {
-    "defaultMessage": "CRS"
+    "defaultMessage": "KBS"
   },
   "Pa0bCd": {
     "defaultMessage": "KBS = Koordinaten-Bezugs-System"
@@ -223,6 +223,9 @@
   },
   "Ps5mVn": {
     "defaultMessage": "Standardwert"
+  },
+  "Qb3CdE": {
+    "defaultMessage": "KBS auswählen (Koordinaten-Bezugs-System)"
   },
   "Qr6tBm": {
     "defaultMessage": "Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datensätzen nicht zur Verfügung"

@@ -61,7 +61,7 @@ export const useProjectCrsNavData = ({ projectId, projectCrsId }: Props) => {
     ownUrl,
     label,
     notFound,
-    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
+    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' }),
   }
 
   return { loading, navData }

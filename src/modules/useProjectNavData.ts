@@ -422,7 +422,7 @@ export const useProjectNavData = ({
                     countFiltered: nav?.project_crs_count_unfiltered ?? 0,
                     namePlural: formatMessage({
                       id: 'OzBS9Z',
-                      defaultMessage: 'CRS',
+                      defaultMessage: 'KBS',
                     }),
                   }),
                 },

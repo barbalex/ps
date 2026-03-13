@@ -60,7 +60,7 @@ export const useCrsNavData = ({ crsId }: Props) => {
     urlPath,
     label,
     notFound,
-    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
+    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' }),
   }
 
   return { loading, navData }
