@@ -1,20 +1,33 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createSubprojectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectReportDesignId } = useParams({ from })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
 
   const db = usePGlite()
+
+  const projectRes = useLiveQuery(
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = '${projectId}'`,
+  )
+  const subprojectNameSingular = projectRes?.rows?.[0]?.subproject_name_singular
+  const title = subprojectNameSingular
+    ? `${subprojectNameSingular}-${formatMessage({ id: 'bCEhIj', defaultMessage: 'Bericht Design' })}`
+    : formatMessage({
+        id: 'bCBeFg',
+        defaultMessage: 'Subprojekt-Bericht Design',
+      })
 
   // Keep a ref to the current subprojectReportDesignId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -117,7 +130,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'bCBeFg', defaultMessage: 'Subprojekt-Bericht Design' })}
+      title={title}
       tableName="Subproject Report Design"
       addRow={addRow}
       deleteRow={deleteRow}
