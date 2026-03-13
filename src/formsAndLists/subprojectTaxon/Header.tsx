@@ -1,19 +1,32 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createSubprojectTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
 
 export const Header = ({ autoFocusRef }) => {
-  const { subprojectId, subprojectTaxonId } = useParams({ from })
+  const { projectId, subprojectId, subprojectTaxonId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+
+  const projectRes = useLiveQuery(
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = '${projectId}'`,
+  )
+  const subprojectNameSingular = projectRes?.rows?.[0]?.subproject_name_singular
+  const title =
+    subprojectNameSingular ?
+      `${subprojectNameSingular}-${formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}`
+    : formatMessage({ id: '86d76W', defaultMessage: 'Teilprojekt-Taxon' })
 
   const db = usePGlite()
 
@@ -119,7 +132,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Subproject Taxon"
+      title={title}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

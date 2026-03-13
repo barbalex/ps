@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
@@ -20,6 +21,7 @@ export const SubprojectTaxon = ({ from }) => {
   const { subprojectTaxonId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -74,7 +76,7 @@ export const SubprojectTaxon = ({ from }) => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <ComboboxFilteringForTable
-          label="Taxon"
+          label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
           name="taxon_id"
           table="taxa"
           include={taxaInclude}
