@@ -10,7 +10,8 @@ export const Info = () => {
       <p>
         {formatMessage({
           id: 'Ac1BdE',
-          defaultMessage: 'Sie können mehrere Koordinaten-Bezugs-Systeme hinzufügen.',
+          defaultMessage:
+            'Sie können mehrere Koordinaten-Bezugs-Systeme hinzufügen.',
         })}
       </p>
       <p>
@@ -31,7 +32,7 @@ export const Info = () => {
         {formatMessage({
           id: 'Wx5YzA',
           defaultMessage:
-            'Wenn kein KBS ausgewählt ist, wird standardmäßig WGS84 verwendet.',
+            'Wenn kein KBS ausgewählt ist, wird standardmässig WGS84 verwendet.',
         })}
       </p>
     </div>

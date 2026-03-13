@@ -558,10 +558,22 @@
     "defaultMessage": "Kontrollwerte"
   },
   "bEeEjJ": {
-    "defaultMessage": "Ma\u00dfnahmen"
+    "defaultMessage": "Massnahmen"
   },
   "bEfFkK": {
-    "defaultMessage": "Ma\u00dfnahmenwerte"
+    "defaultMessage": "Massnahmenwerte"
+  },
+  "bEgGlL": {
+    "defaultMessage": "{place}-Kontrollen"
+  },
+  "bEhHmM": {
+    "defaultMessage": "{place}-Kontroll-Mengen"
+  },
+  "bEiInN": {
+    "defaultMessage": "{place}-Massnahmen"
+  },
+  "bEjJoO": {
+    "defaultMessage": "{place}-Massnahmen-Mengen"
   },
   "jmuVHU": {
     "defaultMessage": "Diagramm-Thema"

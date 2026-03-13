@@ -10,7 +10,6 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Table } from './Table.tsx'
-import { Level } from './Level.tsx'
 import { ValueSource } from './ValueSource.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
@@ -95,11 +94,6 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           onChange={onChange}
           row={row}
           ref={autoFocusRef}
-          validations={validations}
-        />
-        <Level
-          onChange={onChange}
-          row={row}
           validations={validations}
         />
         <TextField
