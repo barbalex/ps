@@ -9,6 +9,7 @@ import {
   ArrowLeftRegular,
 } from '@fluentui/react-icons'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createProjectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -19,6 +20,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const isPrintView = location.pathname.endsWith('/print')
 
@@ -141,17 +143,17 @@ export const Header = ({ autoFocusRef, from }) => {
       <Button
         icon={<ArrowLeftRegular />}
         onClick={onClickBack}
-        title="Back to report"
+        title={formatMessage({ id: 'bB3EfG', defaultMessage: 'Zum Bericht zurück' })}
       />
-      <Button icon={<PrintRegular />} onClick={onClickPrint} title="Print" />
+      <Button icon={<PrintRegular />} onClick={onClickPrint} title={formatMessage({ id: 'bB5IjK', defaultMessage: 'Drucken' })} />
     </>
   ) : (
-    <Button icon={<EyeRegular />} onClick={onClickPdf} title="Preview report" />
+    <Button icon={<EyeRegular />} onClick={onClickPdf} title={formatMessage({ id: 'bB2DeF', defaultMessage: 'Bericht-Vorschau' })} />
   )
 
   return (
     <FormHeader
-      title={isPrintView ? 'Project Report Print Preview' : 'Project Report'}
+      title={isPrintView ? formatMessage({ id: 'bB1CdE', defaultMessage: 'Projekt-Bericht Druckvorschau' }) : formatMessage({ id: 'bB0++E', defaultMessage: 'Projekt-Bericht' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
