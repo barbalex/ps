@@ -263,7 +263,7 @@ export const One = ({
               {formatMessage({
                 id: 'uPaNTx',
                 defaultMessage:
-                  'Bestehende Beobachtungen aktualisieren, neue hinzufügen und fehlende entfernen. Zuweisungen und Kommentare werden beibehalten.'
+                  'Bestehende Beobachtungen aktualisieren, neue hinzufügen und fehlende entfernen. Zuweisungen und Kommentare werden beibehalten.',
               })}
             </p>
           </div>
