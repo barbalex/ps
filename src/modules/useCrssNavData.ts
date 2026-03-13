@@ -81,13 +81,13 @@ export const useCrssNavData = () => {
     label: buildNavLabel({
       countFiltered,
       countUnfiltered,
-      namePlural: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
+      namePlural: formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' }),
       loading,
       isFiltered,
       isLimited,
       limit,
     }),
-    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
+    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' }),
     navs,
   }
 

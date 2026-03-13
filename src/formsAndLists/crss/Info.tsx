@@ -7,8 +7,19 @@ export function Info() {
 
   return (
     <div className={styles.container} tabIndex={-1}>
-      <p>{formatMessage({ id: 'Dx2eAf', defaultMessage: 'Dies ist eine (hoffentlich) vollständige Liste der Koordinatenreferenzsysteme.' })}</p>
-      <p>{formatMessage({ id: 'Ey3fBg', defaultMessage: 'Sie können zu Projekten hinzugefügt werden.' })}</p>
+      <p>
+        {formatMessage({
+          id: 'Dx2eAf',
+          defaultMessage:
+            'Dies ist eine (hoffentlich) vollständige Liste der Koordinaten-Bezugs-Systeme.',
+        })}
+      </p>
+      <p>
+        {formatMessage({
+          id: 'Ey3fBg',
+          defaultMessage: 'Sie können zu Projekten hinzugefügt werden.',
+        })}
+      </p>
     </div>
   )
 }

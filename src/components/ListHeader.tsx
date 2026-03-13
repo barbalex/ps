@@ -1,8 +1,10 @@
 import { FormMenu } from './FormMenu/index.tsx'
+import { SectionDescription } from './shared/SectionDescription.tsx'
 
 interface Props {
   label: string
   nameSingular: string
+  description?: string
   addRow?: () => void
   addRowDisabled?: boolean
   addRowDisabledReason?: string
@@ -14,6 +16,7 @@ interface Props {
 export const ListHeader = ({
   label,
   nameSingular,
+  description,
   addRow,
   addRowDisabled,
   addRowDisabledReason,
@@ -31,6 +34,11 @@ export const ListHeader = ({
         siblings={menus}
       />
     </div>
+    {description && (
+      <div style={{ padding: '0 10px' }}>
+        <SectionDescription>{description}</SectionDescription>
+      </div>
+    )}
     {info && info}
   </>
 )
