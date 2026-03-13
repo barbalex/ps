@@ -11,6 +11,7 @@ import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Table } from './Table.tsx'
 import { ValueSource } from './ValueSource.tsx'
+import { Field } from './Field.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type ChartSubjects from '../../models/public/ChartSubjects.ts'
@@ -109,20 +110,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         <ValueSource onChange={onChange} row={row} validations={validations} />
         {row.calc_method && row.calc_method !== 'count_rows' && (
           <>
-            <TextField
-              label={formatMessage({ id: 'bDiLoM', defaultMessage: 'Feld' })}
-              name="field"
-              value={row.field}
-              onChange={onChange}
-              validationState={validations?.field?.state}
-              validationMessage={
-                validations.field?.message ??
-                formatMessage({
-                  id: 'bDjMpN',
-                  defaultMessage: 'Der Name des Felds',
-                })
-              }
-            />
+            <Field onChange={onChange} row={row} validations={validations} />
             <TextField
               label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
               name="value_unit"
