@@ -1023,10 +1023,10 @@ BEGIN
   UPDATE chart_subjects 
   SET label = 
     case 
-      when NEW.value_field is not null then
-        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.value_source, ''), '(no source)') || ', ' || NEW.value_field || ', ' || coalesce(unit_name, '(no unit)')
+      when NEW.field is not null then
+        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.calc_method, ''), '(no source)') || ', ' || NEW.field || ', ' || coalesce(unit_name, '(no unit)')
       else 
-        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.value_source, ''), '(no source)')
+        coalesce(NULLIF(NEW.table_name, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.calc_method, ''), '(no source)')
     end
   WHERE chart_subjects.chart_subject_id = NEW.chart_subject_id;
   RETURN NEW;
@@ -1034,6 +1034,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER chart_subjects_label_trigger
-AFTER INSERT OR UPDATE OF value_unit, value_field, value_source, table_name ON chart_subjects
+AFTER INSERT OR UPDATE OF value_unit, field, calc_method, table_name ON chart_subjects
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();

@@ -61,9 +61,9 @@ on conflict (table_name) do nothing;
 insert into chart_subject_table_levels (level, updated_by) values (1, 'admin'), (2, 'admin')
 on conflict (level) do nothing;
 
--- chart_subject_value_sources
-insert into chart_subject_value_sources (value_source, sort, updated_by) values ('count_rows', 1, 'admin'), ('count_rows_by_distinct_field_values', 2, 'admin'), ('sum_values_of_field', 3, 'admin')
-on conflict (value_source) do nothing;
+-- chart_subject_calc_methods
+insert into chart_subject_calc_methods (calc_method, sort, updated_by) values ('count_rows', 1, 'admin'), ('count_rows_by_distinct_field_values', 2, 'admin'), ('sum_values_of_field', 3, 'admin')
+on conflict (calc_method) do nothing;
 
 -- chart_subject_types
 insert into chart_subject_types ("type", sort, updated_by) values ('linear', 1, 'admin'), ('monotone', 2, 'admin')

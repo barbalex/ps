@@ -17,10 +17,10 @@ export const ValueSource = ({ onChange, row, validations }) => {
   const { formatMessage } = useIntl()
   const isFirstRender = useIsFirstRender()
   const res = useLiveQuery(
-    `SELECT value_source FROM chart_subject_value_sources order by sort, value_source`,
+    `SELECT calc_method FROM chart_subject_calc_methods order by sort, calc_method`,
   )
   const isLoading = isFirstRender && res === undefined
-  const list = res?.rows.map((row) => row.value_source) ?? []
+  const list = res?.rows.map((row) => row.calc_method) ?? []
 
   const labelMap = Object.fromEntries(
     Object.entries(labelMessages).map(([k, v]) => [k, formatMessage(v)]),
@@ -32,14 +32,14 @@ export const ValueSource = ({ onChange, row, validations }) => {
         id: 'bDgJmK',
         defaultMessage: 'Berechnungsmethode',
       })}
-      name="value_source"
+      name="calc_method"
       list={list}
       isLoading={isLoading}
-      value={row.value_source ?? ''}
+      value={row.calc_method ?? ''}
       onChange={onChange}
       labelMap={labelMap}
-      validationState={validations?.value_source?.state}
-      validationMessage={validations.value_source?.message}
+      validationState={validations?.calc_method?.state}
+      validationMessage={validations.calc_method?.message}
     />
   )
 }

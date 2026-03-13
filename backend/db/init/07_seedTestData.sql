@@ -10176,7 +10176,7 @@ INSERT INTO charts(account_id, subproject_id, chart_id, chart_type, name, years_
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018e0434-030d-7451-a1fe-b9bb917a8c4c', 'Area', 'Populations', 5),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', 'Area', 'Subpopulations', 5);
 -- chartSubjects
-INSERT INTO chart_subjects(account_id, chart_id, chart_subject_id, table_name, table_level, name, value_source, type, stroke, fill, connect_nulls) values 
+INSERT INTO chart_subjects(account_id, chart_id, chart_subject_id, table_name, table_level, name, calc_method, type, stroke, fill, connect_nulls) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', 1, 'Number of Checks', 'count_rows', 'monotone', '#FF0000', '#ffffff', true),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', 1, 'Number of Actions', 'count_rows', 'monotone', '#008000', '#ffffff', true),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0434-030d-7451-a1fe-b9bb917a8c4c', '018e0434-f652-7905-9872-345f9d53d164', 'places', 1, 'Number of Populations', 'count_rows', 'monotone', '#008000', '#008000', true),

@@ -1892,14 +1892,14 @@ create table if not exists chart_subject_table_levels (
   updated_by text DEFAULT NULL
 );
 
-create table if not exists chart_subject_value_sources (
-  value_source text primary key,
+create table if not exists chart_subject_calc_methods (
+  calc_method text primary key,
   sort integer default null,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
-CREATE INDEX IF NOT EXISTS chart_subject_value_sources_sort_idx ON chart_subject_value_sources USING btree(sort);
+CREATE INDEX IF NOT EXISTS chart_subject_calc_methods_sort_idx ON chart_subject_calc_methods USING btree(sort);
 
 create table if not exists chart_subject_types (
   type text primary key,
@@ -1917,8 +1917,8 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   table_name text DEFAULT NULL REFERENCES chart_subject_table_names(table_name) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_level integer DEFAULT 1 REFERENCES chart_subject_table_levels(level) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- not relevant for subprojects 
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
-  value_source text DEFAULT NULL REFERENCES chart_subject_value_sources(value_source) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, --how to source the value
-  value_field text DEFAULT NULL, -- field to be used for value_source
+  calc_method text DEFAULT NULL REFERENCES chart_subject_calc_methods(calc_method) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, --how to source the value
+  field text DEFAULT NULL, -- field to be used for calc_method
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1938,7 +1938,7 @@ CREATE INDEX IF NOT EXISTS chart_subjects_account_id_idx ON chart_subjects USING
 CREATE INDEX IF NOT EXISTS chart_subjects_chart_id_idx ON chart_subjects USING btree(chart_id);
 CREATE INDEX IF NOT EXISTS chart_subjects_table_name_idx ON chart_subjects USING btree(table_name);
 CREATE INDEX IF NOT EXISTS chart_subjects_table_level_idx ON chart_subjects USING btree(table_level);
-CREATE INDEX IF NOT EXISTS chart_subjects_value_field_idx ON chart_subjects USING btree(value_field);
+CREATE INDEX IF NOT EXISTS chart_subjects_field_idx ON chart_subjects USING btree(field);
 CREATE INDEX IF NOT EXISTS chart_subjects_value_unit_idx ON chart_subjects USING btree(value_unit);
 CREATE INDEX IF NOT EXISTS chart_subjects_label_idx ON chart_subjects USING btree(label);
 
@@ -1947,8 +1947,8 @@ COMMENT ON COLUMN chart_subjects.account_id IS 'redundant account_id enhances da
 COMMENT ON COLUMN chart_subjects.table_name IS 'The table to be used as data source';
 COMMENT ON COLUMN chart_subjects.table_level IS 'The level of the table to be used as data source. 1 or 2 (not relevant for subprojects)';
 COMMENT ON COLUMN chart_subjects.table_filter IS 'A filter that is applied to the table';
-COMMENT ON COLUMN chart_subjects.value_source IS 'How to source the value';
-COMMENT ON COLUMN chart_subjects.value_field IS 'Field to be used for value_source';
+COMMENT ON COLUMN chart_subjects.calc_method IS 'How to source the value';
+COMMENT ON COLUMN chart_subjects.field IS 'Field to be used for calc_method';
 COMMENT ON COLUMN chart_subjects.value_unit IS 'Needed for action_values, check_values';
 COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';

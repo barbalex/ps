@@ -18,7 +18,7 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
   const dataPerSubject = {}
 
   for (const subject of subjects) {
-    switch (subject.value_source) {
+    switch (subject.calc_method) {
       case 'count_rows': {
         switch (subject.table_name) {
           case 'places': {

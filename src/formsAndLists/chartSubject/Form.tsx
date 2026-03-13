@@ -107,16 +107,16 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           }
         />
         <ValueSource onChange={onChange} row={row} validations={validations} />
-        {row.value_source && row.value_source !== 'count_rows' && (
+        {row.calc_method && row.calc_method !== 'count_rows' && (
           <>
             <TextField
               label={formatMessage({ id: 'bDiLoM', defaultMessage: 'Feld' })}
-              name="value_field"
-              value={row.value_field}
+              name="field"
+              value={row.field}
               onChange={onChange}
-              validationState={validations?.value_field?.state}
+              validationState={validations?.field?.state}
               validationMessage={
-                validations.value_field?.message ??
+                validations.field?.message ??
                 formatMessage({
                   id: 'bDjMpN',
                   defaultMessage: 'Der Name des Felds',

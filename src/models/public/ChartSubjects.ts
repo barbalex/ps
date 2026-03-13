@@ -5,7 +5,7 @@ import type { AccountsAccountId } from './Accounts';
 import type { ChartsChartId } from './Charts';
 import type { ChartSubjectTableNamesTableName } from './ChartSubjectTableNames';
 import type { ChartSubjectTableLevelsLevel } from './ChartSubjectTableLevels';
-import type { ChartSubjectValueSourcesValueSource } from './ChartSubjectValueSources';
+import type { ChartSubjectCalcMethodsCalcMethod } from './ChartSubjectCalcMethods';
 import type { UnitsUnitId } from './Units';
 import type { ChartSubjectTypesType } from './ChartSubjectTypes';
 
@@ -34,10 +34,10 @@ export default interface ChartSubjects {
   table_filter: unknown | null;
 
   /** How to source the value */
-  value_source: ChartSubjectValueSourcesValueSource | null;
+  calc_method: ChartSubjectCalcMethodsCalcMethod | null;
 
-  /** Field to be used for value_source */
-  value_field: string | null;
+  /** Field to be used for calc_method */
+  field: string | null;
 
   /** Needed for action_values, check_values */
   value_unit: UnitsUnitId | null;
@@ -93,10 +93,10 @@ export interface ChartSubjectsInitializer {
   table_filter?: unknown | null;
 
   /** How to source the value */
-  value_source?: ChartSubjectValueSourcesValueSource | null;
+  calc_method?: ChartSubjectCalcMethodsCalcMethod | null;
 
-  /** Field to be used for value_source */
-  value_field?: string | null;
+  /** Field to be used for calc_method */
+  field?: string | null;
 
   /** Needed for action_values, check_values */
   value_unit?: UnitsUnitId | null;
@@ -153,10 +153,10 @@ export interface ChartSubjectsMutator {
   table_filter?: unknown | null;
 
   /** How to source the value */
-  value_source?: ChartSubjectValueSourcesValueSource | null;
+  calc_method?: ChartSubjectCalcMethodsCalcMethod | null;
 
-  /** Field to be used for value_source */
-  value_field?: string | null;
+  /** Field to be used for calc_method */
+  field?: string | null;
 
   /** Needed for action_values, check_values */
   value_unit?: UnitsUnitId | null;

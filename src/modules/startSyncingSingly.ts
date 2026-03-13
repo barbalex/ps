@@ -504,8 +504,8 @@ const tablesSyncData = [
   //   primaryKey: ['level'],
   // },
   // {
-  //   table: 'chart_subject_value_sources',
-  //   primaryKey: ['value_source'],
+  //   table: 'chart_subject_calc_methods',
+  //   primaryKey: ['calc_method'],
   // },
   // {
   //   table: 'chart_subject_types',

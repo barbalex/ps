@@ -1157,15 +1157,15 @@ export const startSyncing = async () => {
           table: 'chart_subject_table_levels',
           primaryKey: ['level'],
         },
-        chart_subject_value_sources: {
+        chart_subject_calc_methods: {
           shape: {
             url,
             params: {
-              table: 'chart_subject_value_sources',
+              table: 'chart_subject_calc_methods',
             },
           },
-          table: 'chart_subject_value_sources',
-          primaryKey: ['value_source'],
+          table: 'chart_subject_calc_methods',
+          primaryKey: ['calc_method'],
         },
         chart_subject_types: {
           shape: {
