@@ -31,7 +31,7 @@ export const useChartChartNavData = ({
   const sql = `
       SELECT
         chart_id AS id,
-        title AS label
+        name AS label
       FROM 
         charts
       WHERE 
