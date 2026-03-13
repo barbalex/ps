@@ -216,7 +216,7 @@ export const ProjectReportPrint = ({ from }) => {
       <div className="form-container">
         <div className="print-hide">
           <TextField
-            label="Year"
+            label={formatMessage({ id: 'bB4FgH', defaultMessage: 'Jahr' })}
             name="year"
             type="number"
             value={row.year ?? ''}
