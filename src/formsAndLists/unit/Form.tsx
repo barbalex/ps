@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 
 import '../../form.css'
@@ -133,9 +134,11 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
             })
           }
         />
-        <TextField
+        <DropdownField
           label={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
           name="list_id"
+          table="lists"
+          where={`project_id = '${row.project_id}'`}
           value={row.list_id ?? ''}
           onChange={onChange}
           validationState={validations?.list_id?.state}
