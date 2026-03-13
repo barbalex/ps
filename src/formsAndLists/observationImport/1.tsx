@@ -2,6 +2,7 @@ import { MdDone } from 'react-icons/md'
 import { useState, useCallback } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -24,6 +25,7 @@ export const One = ({
   autoFocusRef,
   db,
 }) => {
+  const { formatMessage } = useIntl()
   const [duplicateDialogData, setDuplicateDialogData] = useState<{
     duplicateCount: number
     totalCount: number
@@ -88,13 +90,19 @@ export const One = ({
           })
           if (result.success) {
             setResultDialogData({
-              title: 'Replace Successful',
+              title: formatMessage({
+                id: 'rPsUcc',
+                defaultMessage: 'Ersetzen erfolgreich',
+              }),
               message: result.message,
               isError: false,
             })
           } else {
             setResultDialogData({
-              title: 'Replace Failed',
+              title: formatMessage({
+                id: 'rPsFai',
+                defaultMessage: 'Ersetzen fehlgeschlagen',
+              }),
               message: result.message,
               isError: true,
             })
@@ -106,8 +114,16 @@ export const One = ({
     } catch (error) {
       console.error('Replace error:', error)
       setResultDialogData({
-        title: 'Replace Failed',
-        message: error.message || 'An unexpected error occurred',
+        title: formatMessage({
+          id: 'rPsFai',
+          defaultMessage: 'Ersetzen fehlgeschlagen',
+        }),
+        message:
+          error.message ||
+          formatMessage({
+            id: 'anUnEx',
+            defaultMessage: 'Ein Fehler ist aufgetreten',
+          }),
         isError: true,
       })
       setIsProcessing(false)
@@ -131,13 +147,19 @@ export const One = ({
           })
           if (result.success) {
             setResultDialogData({
-              title: 'Update Successful',
+              title: formatMessage({
+                id: 'uPsUcc',
+                defaultMessage: 'Aktualisierung erfolgreich',
+              }),
               message: result.message,
               isError: false,
             })
           } else {
             setResultDialogData({
-              title: 'Update Failed',
+              title: formatMessage({
+                id: 'uPsFai',
+                defaultMessage: 'Aktualisierung fehlgeschlagen',
+              }),
               message: result.message,
               isError: true,
             })
@@ -149,8 +171,16 @@ export const One = ({
     } catch (error) {
       console.error('Update and extend error:', error)
       setResultDialogData({
-        title: 'Update Failed',
-        message: error.message || 'An unexpected error occurred',
+        title: formatMessage({
+          id: 'uPsFai',
+          defaultMessage: 'Aktualisierung fehlgeschlagen',
+        }),
+        message:
+          error.message ||
+          formatMessage({
+            id: 'anUnEx',
+            defaultMessage: 'Ein Fehler ist aufgetreten',
+          }),
         isError: true,
       })
       setIsProcessing(false)
@@ -160,7 +190,7 @@ export const One = ({
   return (
     <>
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         type="name"
         value={observationImport.name ?? ''}
@@ -171,49 +201,82 @@ export const One = ({
         validationMessage={validations?.name?.message}
       />
       <TextArea
-        label="Attribution"
+        label={formatMessage({ id: 'aTr0bt', defaultMessage: 'Quellenangabe' })}
         name="attribution"
         value={observationImport.attribution ?? ''}
         onChange={onChange}
         validationState={validations?.attribution?.state}
         validationMessage={
           validations?.attribution?.message ??
-          'Please add the correct citation as required by the data provider'
+          formatMessage({
+            id: 'aTr9Vm',
+            defaultMessage:
+              'Bitte die korrekte Quellenangabe gemäss Anforderungen des Datenanbieters hinzufügen',
+          })
         }
       />
       {observations?.length ? (
         observationImport.id_field ? (
           <div className={styles.updateSection}>
-            <h3>Update existing observations</h3>
+            <h3>
+              {formatMessage({
+                id: 'uPx0bO',
+                defaultMessage: 'Bestehende Beobachtungen aktualisieren',
+              })}
+            </h3>
             <div className={styles.updateButtons}>
               <Button
                 appearance="secondary"
                 onClick={handleReplace}
                 disabled={isProcessing}
               >
-                Replace
+                {formatMessage({ id: 'rP0bTn', defaultMessage: 'Ersetzen' })}
               </Button>
               <Button
                 appearance="primary"
                 onClick={handleUpdateAndExtend}
                 disabled={isProcessing}
               >
-                Update And Extend
+                {formatMessage({
+                  id: 'uPaNeX',
+                  defaultMessage: 'Aktualisieren und erweitern',
+                })}
               </Button>
             </div>
             <p className={styles.updateDescription}>
-              <strong>Replace:</strong> Delete all observations and import new
-              ones.
+              <strong>
+                {formatMessage({ id: 'rP0bTn', defaultMessage: 'Ersetzen' })}:
+              </strong>{' '}
+              {formatMessage({
+                id: 'dLa0Ob',
+                defaultMessage:
+                  'Alle Beobachtungen löschen und neue importieren.',
+              })}
               <br />
-              <strong>Update And Extend:</strong> Update existing observations,
-              add new ones, and remove missing ones. Assignments (to places) and
-              comments will be preserved.
+              <strong>
+                {formatMessage({
+                  id: 'uPaNeX',
+                  defaultMessage: 'Aktualisieren und erweitern',
+                })}
+                :
+              </strong>{' '}
+              {formatMessage({
+                id: 'uPaNTx',
+                defaultMessage:
+                  'Bestehende Beobachtungen aktualisieren, neue hinzufügen und fehlende entfernen. Zuweisungen und Kommentare werden beibehalten.'
+              })}
             </p>
           </div>
         ) : (
           <div className={styles.observationsImported}>
             <MdDone className={styles.doneIcon} />
-            {`${formatNumber(observations.length)} observations imported`}
+            {formatMessage(
+              {
+                id: 'oImprt',
+                defaultMessage: '{count} Beobachtungen importiert',
+              },
+              { count: formatNumber(observations.length) },
+            )}
           </div>
         )
       ) : (

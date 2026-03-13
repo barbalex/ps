@@ -736,5 +736,83 @@
   },
   "zq+cvN": {
     "defaultMessage": "Diese App ist in Entwicklung. Noch steckt sie voller Fehler. Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht und neu erstellt."
+  },
+  "aTr0bt": {
+    "defaultMessage": "Quellenangabe"
+  },
+  "aTr9Vm": {
+    "defaultMessage": "Bitte die korrekte Quellenangabe gemäss Anforderungen des Datenanbieters hinzufügen"
+  },
+  "anUnEx": {
+    "defaultMessage": "Ein Fehler ist aufgetreten"
+  },
+  "cLcHDr": {
+    "defaultMessage": "Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt."
+  },
+  "dLa0Ob": {
+    "defaultMessage": "Alle Beobachtungen löschen und neue importieren."
+  },
+  "dupCnl": {
+    "defaultMessage": "Import abbrechen"
+  },
+  "dupCnt": {
+    "defaultMessage": "Import fortsetzen"
+  },
+  "dupDtct": {
+    "defaultMessage": "Doppelte Daten erkannt"
+  },
+  "dupPrc": {
+    "defaultMessage": "Möchten Sie mit dem Import trotzdem fortfahren?"
+  },
+  "dupWrg": {
+    "defaultMessage": "Warnung:"
+  },
+  "dupWrn": {
+    "defaultMessage": "{duplicateCount} von {totalCount} Zeilen scheinen bereits in der Datenbank zu existieren (exakte Übereinstimmung bei allen Datenfeldern)."
+  },
+  "fIuPSu": {
+    "defaultMessage": "Datei erfolgreich hochgeladen"
+  },
+  "gEo0mY": {
+    "defaultMessage": "Geometrie"
+  },
+  "iDnt0f": {
+    "defaultMessage": "Identifikation"
+  },
+  "oImprt": {
+    "defaultMessage": "{count} Beobachtungen importiert"
+  },
+  "rP0bTn": {
+    "defaultMessage": "Ersetzen"
+  },
+  "rPsFai": {
+    "defaultMessage": "Ersetzen fehlgeschlagen"
+  },
+  "rPsUcc": {
+    "defaultMessage": "Ersetzen erfolgreich"
+  },
+  "uPaNTx": {
+    "defaultMessage": "Bestehende Beobachtungen aktualisieren, neue hinzufügen und fehlende entfernen. Zuweisungen und Kommentare werden beibehalten."
+  },
+  "uPaNeX": {
+    "defaultMessage": "Aktualisieren und erweitern"
+  },
+  "uPsFai": {
+    "defaultMessage": "Aktualisierung fehlgeschlagen"
+  },
+  "uPsUcc": {
+    "defaultMessage": "Aktualisierung erfolgreich"
+  },
+  "uPx0bO": {
+    "defaultMessage": "Bestehende Beobachtungen aktualisieren"
+  },
+  "uPlBTx": {
+    "defaultMessage": "Datei mit Beobachtungen hochladen"
+  },
+  "vPr8Hi": {
+    "defaultMessage": "Vorschau ausblenden"
+  },
+  "vPr9Sh": {
+    "defaultMessage": "Vorschau anzeigen"
   }
 }

@@ -4,6 +4,7 @@ const { Button } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createObservationImport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -26,6 +27,7 @@ export const Header = ({
   const { subprojectId, observationImportId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -125,7 +127,10 @@ export const Header = ({
 
   return (
     <FormHeader
-      title="Observation import"
+      title={formatMessage({
+        id: 'Orl0K0',
+        defaultMessage: 'Beobachtungs-Import',
+      })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
@@ -147,7 +152,17 @@ export const Header = ({
               </svg>
             )
           }
-          title={showPreview ? 'Hide preview' : 'Show preview'}
+          title={
+            showPreview
+              ? formatMessage({
+                  id: 'vPr8Hi',
+                  defaultMessage: 'Vorschau ausblenden',
+                })
+              : formatMessage({
+                  id: 'vPr9Sh',
+                  defaultMessage: 'Vorschau anzeigen',
+                })
+          }
           onClick={onClickPreview}
         />
       }

@@ -4,6 +4,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Tab, TabList } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { detectCoordinateFields } from './detectCoordinateFields.ts'
@@ -28,6 +29,7 @@ export const ObservationImport = () => {
   const navigate = useNavigate()
   const { observationImportTab: tab } = useSearch({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const [showPreview, setShowPreview] = useState(true)
   const [validations, setValidations] = useState({})
@@ -202,7 +204,7 @@ export const ObservationImport = () => {
   // 4. label: choose how to create label from fields
   // 5. identification: choose id field, previous import and how to extend it
   // - stepper titles begin with a number in a circle
-  // - completed steps: circle is gren
+  // - completed steps: circle is green
   // - uncompleted steps: circle is grey, title is normal
   // - current step: circle is blue, title is bold
   // - the next stepper can not be accessed before the previous is completed
@@ -237,7 +239,7 @@ export const ObservationImport = () => {
             </div>
           }
         >
-          Data
+          {formatMessage({ id: 'bDbEhF', defaultMessage: 'Daten' })}
         </Tab>
         <Tab
           id="2"
@@ -249,7 +251,7 @@ export const ObservationImport = () => {
           }
           disabled={!observations.length}
         >
-          Geometry
+          {formatMessage({ id: 'gEo0mY', defaultMessage: 'Geometrie' })}
         </Tab>
         <Tab
           id="3"
@@ -260,7 +262,7 @@ export const ObservationImport = () => {
             </div>
           }
         >
-          Label
+          {formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
         </Tab>
         <Tab
           id="4"
@@ -271,7 +273,7 @@ export const ObservationImport = () => {
             </div>
           }
         >
-          Identification
+          {formatMessage({ id: 'iDnt0f', defaultMessage: 'Identifikation' })}
         </Tab>
       </TabList>
       <div className="form-container">

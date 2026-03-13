@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Field } = fluentUiReactComponents
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import styles from './UploadButton.module.css'
 
@@ -10,6 +11,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -28,10 +30,10 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     try {
       const result = await processData({ file, additionalData, db })
       if (result?.success) {
-        setSuccessMessage(result.message || 'File uploaded successfully')
+        setSuccessMessage(result.message || formatMessage({ id: 'fIuPSu', defaultMessage: 'Datei erfolgreich hochgeladen' }))
       }
     } catch (error) {
-      setErrorMessage(error.message || 'Failed to process file')
+      setErrorMessage(error.message || formatMessage({ id: 'anUnEx', defaultMessage: 'Ein Fehler ist aufgetreten' }))
     }
   }
 
@@ -69,10 +71,10 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     try {
       const result = await processData({ file, additionalData, db })
       if (result?.success) {
-        setSuccessMessage(result.message || 'File uploaded successfully')
+        setSuccessMessage(result.message || formatMessage({ id: 'fIuPSu', defaultMessage: 'Datei erfolgreich hochgeladen' }))
       }
     } catch (error) {
-      setErrorMessage(error.message || 'Failed to process file')
+      setErrorMessage(error.message || formatMessage({ id: 'anUnEx', defaultMessage: 'Ein Fehler ist aufgetreten' }))
     }
   }
 
@@ -82,7 +84,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         errorMessage ? (
           <span style={{ color: 'rgb(196, 49, 75)' }}>{errorMessage}</span>
         ) : (
-          'Click to choose or drop a file. Accepts .csv, .tsv, .xlsx, .xls, .ods, .txt.'
+          formatMessage({ id: 'cLcHDr', defaultMessage: 'Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt.' })
         )
       }
       validationState={errorMessage ? 'error' : 'none'}
@@ -109,7 +111,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         }}
         className={styles.button}
       >
-        {successMessage || 'Upload file containing observations'}
+        {successMessage || formatMessage({ id: 'uPlBTx', defaultMessage: 'Datei mit Beobachtungen hochladen' })}
       </Button>
     </Field>
   )
