@@ -28,7 +28,7 @@ export const RadioGroupField = (props) => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  const verticalLayout = !!width && width < 700
+  const verticalLayout = !!width && width < 800
 
   const onClick = (e) => {
     const valueChoosen = e.target.value
