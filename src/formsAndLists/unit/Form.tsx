@@ -28,7 +28,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Xa1BcD',
-            defaultMessage: 'Für Massnahmen-Mengen verwenden',
+            defaultMessage: 'Massnahmen-Mengen',
           })}
           name="use_for_action_values"
           value={row.use_for_action_values ?? false}
@@ -39,7 +39,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Yb2CdE',
-            defaultMessage: 'Für Massnahmen-Berichte-Mengen verwenden',
+            defaultMessage: 'Massnahmen-Berichte-Mengen',
           })}
           name="use_for_action_report_values"
           value={row.use_for_action_report_values ?? false}
@@ -50,7 +50,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Zc3DeF',
-            defaultMessage: 'Für Kontroll-Mengen verwenden',
+            defaultMessage: 'Kontroll-Mengen',
           })}
           name="use_for_check_values"
           value={row.use_for_check_values ?? false}
@@ -61,7 +61,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Ad4EfG',
-            defaultMessage: 'Für Ort-Bericht-Mengen verwenden',
+            defaultMessage: 'Ort-Bericht-Mengen',
           })}
           name="use_for_place_report_values"
           value={row.use_for_place_report_values ?? false}
@@ -72,7 +72,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Be5FgH',
-            defaultMessage: 'Für Ziel-Bericht-Mengen verwenden',
+            defaultMessage: 'Ziel-Bericht-Mengen',
           })}
           name="use_for_goal_report_values"
           value={row.use_for_goal_report_values ?? false}
@@ -83,7 +83,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Cf6GhI',
-            defaultMessage: 'Für Teilprojekt-Taxa verwenden',
+            defaultMessage: 'Teilprojekt-Taxa',
           })}
           name="use_for_subproject_taxa"
           value={row.use_for_subproject_taxa ?? false}
@@ -94,7 +94,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Dg7HiJ',
-            defaultMessage: 'Für Kontroll-Taxa verwenden',
+            defaultMessage: 'Kontroll-Taxa',
           })}
           name="use_for_check_taxa"
           value={row.use_for_check_taxa ?? false}
