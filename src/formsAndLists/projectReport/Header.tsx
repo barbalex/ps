@@ -143,17 +143,38 @@ export const Header = ({ autoFocusRef, from }) => {
       <Button
         icon={<ArrowLeftRegular />}
         onClick={onClickBack}
-        title={formatMessage({ id: 'bB3EfG', defaultMessage: 'Zum Bericht zurück' })}
+        title={formatMessage({
+          id: 'bB3EfG',
+          defaultMessage: 'Zurück zum Bericht',
+        })}
       />
-      <Button icon={<PrintRegular />} onClick={onClickPrint} title={formatMessage({ id: 'bB5IjK', defaultMessage: 'Drucken' })} />
+      <Button
+        icon={<PrintRegular />}
+        onClick={onClickPrint}
+        title={formatMessage({ id: 'bB5IjK', defaultMessage: 'Drucken' })}
+      />
     </>
   ) : (
-    <Button icon={<EyeRegular />} onClick={onClickPdf} title={formatMessage({ id: 'bB2DeF', defaultMessage: 'Bericht-Vorschau' })} />
+    <Button
+      icon={<EyeRegular />}
+      onClick={onClickPdf}
+      title={formatMessage({
+        id: 'bB2DeF',
+        defaultMessage: 'Bericht-Vorschau',
+      })}
+    />
   )
 
   return (
     <FormHeader
-      title={isPrintView ? formatMessage({ id: 'bB1CdE', defaultMessage: 'Projekt-Bericht Druckvorschau' }) : formatMessage({ id: 'bB0++E', defaultMessage: 'Projekt-Bericht' })}
+      title={
+        isPrintView
+          ? formatMessage({
+              id: 'bB1CdE',
+              defaultMessage: 'Projekt-Bericht Druckvorschau',
+            })
+          : formatMessage({ id: 'bB0++E', defaultMessage: 'Projekt-Bericht' })
+      }
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
