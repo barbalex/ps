@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
@@ -13,6 +15,7 @@ export const ProjectForm = ({
   from,
   autoFocusRef,
 }) => {
+  const { formatMessage } = useIntl()
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
@@ -21,7 +24,7 @@ export const ProjectForm = ({
   return (
     <>
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
@@ -31,7 +34,7 @@ export const ProjectForm = ({
         validationMessage={validations?.name?.message}
       />
       <TextField
-        label="Label"
+        label={formatMessage({ id: 'XlAbCd', defaultMessage: 'Bezeichnung' })}
         name="label"
         value={row.label ?? ''}
         onChange={onChange}
