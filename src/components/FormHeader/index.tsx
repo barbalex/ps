@@ -1,8 +1,10 @@
 import { FormMenu } from '../FormMenu/index.tsx'
+import { SectionDescription } from '../shared/SectionDescription.tsx'
 import styles from './index.module.css'
 
 export const FormHeader = ({
   title,
+  description,
   addRow,
   addRowDisabled,
   addRowDisabledReason,
@@ -39,5 +41,10 @@ export const FormHeader = ({
         />
       )}
     </div>
+    {description && (
+      <div style={{ padding: '10px 10px 0 10px' }}>
+        <SectionDescription>{description}</SectionDescription>
+      </div>
+    )}
   </>
 )
