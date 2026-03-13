@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -27,6 +28,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   const { chartSubjectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -81,14 +83,14 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   return (
     <div className="form-container">
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         value={row.name}
         onChange={onChange}
         validationState={validations?.name?.state}
         validationMessage={validations?.name?.message}
       />
-      <Section title="Data">
+      <Section title={formatMessage({ id: 'bDbEhF', defaultMessage: 'Daten' })}>
         <Table
           onChange={onChange}
           row={row}
@@ -101,13 +103,12 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validations={validations}
         />
         <TextField
-          label="TODO: table filter"
+          label={formatMessage({ id: 'bDvYbZ', defaultMessage: 'Filter' })}
           name="table_filter"
           value={row.table_filter}
-          type="number"
           onChange={onChange}
           validationState={validations?.table_filter?.state}
-          validationMessage={validations?.table_filter?.message}
+          validationMessage={validations?.table_filter?.message ?? formatMessage({ id: 'bDwZcA', defaultMessage: 'TODO: Ein Filter, der auf die Tabelle angewendet wird' })}
         />
         <ValueSource
           onChange={onChange}
@@ -117,17 +118,18 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         {row.value_source && row.value_source !== 'count_rows' && (
           <>
             <TextField
-              label="Value Field"
+              label={formatMessage({ id: 'bDiLoM', defaultMessage: 'Wertfeld' })}
               name="value_field"
               value={row.value_field}
               onChange={onChange}
               validationState={validations?.value_field?.state}
               validationMessage={
-                validations.value_field?.message ?? 'The name of the field'
+                validations.value_field?.message ??
+                formatMessage({ id: 'bDjMpN', defaultMessage: 'Der Name des Felds' })
               }
             />
             <TextField
-              label="TODO: Value: Unit"
+              label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
               name="value_unit"
               value={row.value_unit}
               type="number"
@@ -138,9 +140,9 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           </>
         )}
       </Section>
-      <Section title="Display">
+      <Section title={formatMessage({ id: 'bDlOrP', defaultMessage: 'Darstellung' })}>
         <TextField
-          label="Sort"
+          label={formatMessage({ id: 'bDmPsQ', defaultMessage: 'Sortierung' })}
           name="sort"
           value={row.sort}
           type="number"
@@ -148,24 +150,24 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationState={validations?.sort?.state}
           validationMessage={
             validations.sort?.message ??
-            'Subjects are sorted by this value if set. Else by their name'
+            formatMessage({ id: 'bDnQtR', defaultMessage: 'Themen werden nach diesem Wert sortiert, sofern gesetzt. Sonst nach Name' })
           }
         />
         <SwitchField
-          label="Connect missing data"
+          label={formatMessage({ id: 'bDoRuS', defaultMessage: 'Fehlende Daten verbinden' })}
           name="connect_nulls"
           value={row.connect_nulls}
           onChange={onChange}
           validationState={validations?.connect_nulls?.state}
           validationMessage={
             validations.connect_nulls?.message ??
-            'If true, a line is drawn even when some data points are missing'
+            formatMessage({ id: 'bDpSvT', defaultMessage: 'Wenn aktiviert, wird auch bei fehlenden Datenpunkten eine Linie gezeichnet' })
           }
         />
       </Section>
-      <Section title="Styling">
+      <Section title={formatMessage({ id: 'bDqTwU', defaultMessage: 'Styling' })}>
         <TextField
-          label="Stroke"
+          label={formatMessage({ id: 'bDrUxV', defaultMessage: 'Linienfarbe' })}
           name="stroke"
           value={row.stroke}
           type="color"
@@ -174,7 +176,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationMessage={validations?.stroke?.message}
         />
         <TextField
-          label="Fill"
+          label={formatMessage({ id: 'bDsVyW', defaultMessage: 'F\u00fcllfarbe' })}
           name="fill"
           value={row.fill}
           type="color"
@@ -183,14 +185,14 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationMessage={validations?.fill?.message}
         />
         <SwitchField
-          label="Fill is graded"
+          label={formatMessage({ id: 'bDtWzX', defaultMessage: 'F\u00fcllung mit Verlauf' })}
           name="fill_graded"
           value={row.fill_graded}
           onChange={onChange}
           validationState={validations?.fill_graded?.state}
           validationMessage={
             validations.fill_graded?.message ??
-            'If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap'
+            formatMessage({ id: 'bDuXaY', defaultMessage: 'Wenn aktiviert, wird die Fl\u00e4che mit einem Verlauf gef\u00fcllt. Hilfreich wenn mehrere Themen sich \u00fcberlagern' })
           }
         />
       </Section>

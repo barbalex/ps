@@ -17,6 +17,7 @@ export const RadioGroupField = (props) => {
     autoFocus,
     disabled = false,
     replaceUnderscoreInLabel = false,
+    labelMap = {},
     ref,
   } = props
 
@@ -27,7 +28,7 @@ export const RadioGroupField = (props) => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  const verticalLayout = !!width && width < 500
+  const verticalLayout = !!width && width < 700
 
   const onClick = (e) => {
     const valueChoosen = e.target.value
@@ -52,14 +53,16 @@ export const RadioGroupField = (props) => {
         appearance="underline"
         disabled={disabled}
       >
-        {isLoading ?
+        {isLoading ? (
           <Loading alignLeft={true} />
-        : <>
+        ) : (
+          <>
             {list.map((val, index) => (
               <Radio
                 key={val}
                 label={
-                  replaceUnderscoreInLabel ? val.replaceAll('_', ' ') : val
+                  labelMap[val] ??
+                  (replaceUnderscoreInLabel ? val.replaceAll('_', ' ') : val)
                 }
                 value={val}
                 onClick={onClick}
@@ -68,7 +71,7 @@ export const RadioGroupField = (props) => {
               />
             ))}
           </>
-        }
+        )}
       </RadioGroup>
     </Field>
   )

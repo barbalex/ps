@@ -361,7 +361,8 @@
   },
   "bC0sCs": {
     "defaultMessage": "Mobilfähig"
-  },  "bC1tUv": {
+  },
+  "bC1tUv": {
     "defaultMessage": "Subprojekt-Berichte"
   },
   "bC2uVw": {
@@ -468,6 +469,102 @@
   },
   "bDaDgE": {
     "defaultMessage": "Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte f\u00fcr jedes Jahr Werte haben"
+  },
+  "bDbEhF": {
+    "defaultMessage": "Daten"
+  },
+  "bDcFiG": {
+    "defaultMessage": "Tabelle"
+  },
+  "bDdGjH": {
+    "defaultMessage": "W\u00e4hlen Sie die Tabelle, aus der Daten geladen werden"
+  },
+  "bDeHkI": {
+    "defaultMessage": "Stufe"
+  },
+  "bDfIlJ": {
+    "defaultMessage": "Ebene der Orte und der zugeh\u00f6rigen Kontrollen und Massnahmen"
+  },
+  "bDgJmK": {
+    "defaultMessage": "Berechnungsmethode"
+  },
+  "bDhKnL": {
+    "defaultMessage": "Wie die Daten berechnet werden"
+  },
+  "bDiLoM": {
+    "defaultMessage": "Wertfeld"
+  },
+  "bDjMpN": {
+    "defaultMessage": "Der Name des Felds"
+  },
+  "bDkNqO": {
+    "defaultMessage": "Einheit"
+  },
+  "bDlOrP": {
+    "defaultMessage": "Darstellung"
+  },
+  "bDmPsQ": {
+    "defaultMessage": "Sortierung"
+  },
+  "bDnQtR": {
+    "defaultMessage": "Themen werden nach diesem Wert sortiert, sofern gesetzt. Sonst nach Name"
+  },
+  "bDoRuS": {
+    "defaultMessage": "Fehlende Daten verbinden"
+  },
+  "bDpSvT": {
+    "defaultMessage": "Wenn aktiviert, wird auch bei fehlenden Datenpunkten eine Linie gezeichnet"
+  },
+  "bDqTwU": {
+    "defaultMessage": "Styling"
+  },
+  "bDrUxV": {
+    "defaultMessage": "Linienfarbe"
+  },
+  "bDsVyW": {
+    "defaultMessage": "F\u00fcllfarbe"
+  },
+  "bDtWzX": {
+    "defaultMessage": "F\u00fcllung mit Verlauf"
+  },
+  "bDuXaY": {
+    "defaultMessage": "Wenn aktiviert, wird die Fl\u00e4che mit einem Verlauf gef\u00fcllt. Hilfreich wenn mehrere Themen sich \u00fcberlagern"
+  },
+  "bDvYbZ": {
+    "defaultMessage": "Filter"
+  },
+  "bDwZcA": {
+    "defaultMessage": "TODO: Ein Filter, der auf die Tabelle angewendet wird"
+  },
+  "bDxAbB": {
+    "defaultMessage": "Zeilen z\u00e4hlen"
+  },
+  "bDyCcD": {
+    "defaultMessage": "Zeilen nach eindeutigen Feldwerten z\u00e4hlen"
+  },
+  "bDzDeE": {
+    "defaultMessage": "Feldwerte summieren"
+  },
+  "bEaAfF": {
+    "defaultMessage": "Teilprojekte"
+  },
+  "bEbBgG": {
+    "defaultMessage": "Orte"
+  },
+  "bEcChH": {
+    "defaultMessage": "Kontrollen"
+  },
+  "bEdDiI": {
+    "defaultMessage": "Kontrollwerte"
+  },
+  "bEeEjJ": {
+    "defaultMessage": "Ma\u00dfnahmen"
+  },
+  "bEfFkK": {
+    "defaultMessage": "Ma\u00dfnahmenwerte"
+  },
+  "jmuVHU": {
+    "defaultMessage": "Diagramm-Thema"
   },
   "d9gLtS": {
     "defaultMessage": "Bearbeitung beenden"

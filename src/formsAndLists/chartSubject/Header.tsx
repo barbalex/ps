@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -12,6 +13,7 @@ const from =
 
 // TODO: if not editing, hide add and remove buttons
 export const Header = ({ autoFocusRef }) => {
+  const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -100,7 +102,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title="Chart Subject"
+      title={formatMessage({ id: 'jmuVHU', defaultMessage: 'Diagramm-Thema' })}
       addRow={designing ? addRow : undefined}
       deleteRow={designing ? deleteRow : undefined}
       toNext={toNext}
