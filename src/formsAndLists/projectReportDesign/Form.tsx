@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 import { Puck, Config } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -19,6 +20,7 @@ export const Form = ({ autoFocusRef, from }) => {
   const { projectReportDesignId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -64,14 +66,20 @@ export const Form = ({ autoFocusRef, from }) => {
     fields: { components: [] as string[] },
     charts: { components: [] as string[] },
     subproject_reports: {
-      title: 'Subproject Reports',
+      title: formatMessage({
+        id: 'bC1tUv',
+        defaultMessage: 'Subprojekt-Berichte',
+      }),
       components: ['SubprojectReports'] as string[],
     },
   }
 
   // SubprojectReports is a single droppable block that renders all subproject reports
   components['SubprojectReports'] = {
-    label: 'Subproject Reports',
+    label: formatMessage({
+      id: 'bC1tUv',
+      defaultMessage: 'Subprojekt-Berichte',
+    }),
     fields: {},
     defaultProps: {},
     render: () => (
@@ -84,7 +92,11 @@ export const Form = ({ autoFocusRef, from }) => {
           fontStyle: 'italic',
         }}
       >
-        Subproject reports will be rendered here (one section per subproject)
+        {formatMessage({
+          id: 'bC2uVw',
+          defaultMessage:
+            'Subprojekt-Berichte werden hier gerendert (ein Abschnitt pro Subprojekt)',
+        })}
       </div>
     ),
   }
@@ -140,7 +152,11 @@ export const Form = ({ autoFocusRef, from }) => {
               {chart.label}
             </div>
             <div style={{ color: '#999', fontStyle: 'italic' }}>
-              Chart data available in report view
+              {formatMessage({
+                id: 'bC3vWx',
+                defaultMessage:
+                  'Diagramm-Daten sind in der Berichtsansicht verfügbar',
+              })}
             </div>
           </div>
         )
@@ -263,7 +279,7 @@ export const Form = ({ autoFocusRef, from }) => {
   return (
     <div className="form-container">
       <TextField
-        label="Name"
+        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
@@ -273,14 +289,17 @@ export const Form = ({ autoFocusRef, from }) => {
         validationMessage={validations?.name?.message}
       />
       <SwitchField
-        label="Active"
+        label={formatMessage({ id: 'bB8NpQ', defaultMessage: 'Aktiv' })}
         name="active"
         value={row.active ?? false}
         onChange={onActiveChange}
         validationState={validations?.active?.state ?? 'success'}
         validationMessage={
           validations?.active?.message ??
-          'No more than one design can be active at once'
+          formatMessage({
+            id: 'bB9OrS',
+            defaultMessage: 'Es kann immer nur ein Design aktiv sein',
+          })
         }
       />
       {
@@ -317,7 +336,11 @@ export const Form = ({ autoFocusRef, from }) => {
                     color: '#5d4037',
                   }}
                 >
-                  No fields yet — add fields to this project first.
+                  {formatMessage({
+                    id: 'bC4wXy',
+                    defaultMessage:
+                      'Noch keine Felder — zuerst Felder zu diesem Projekt hinzufügen.',
+                  })}
                 </div>
               )}
               {charts.length === 0 && (
@@ -332,7 +355,11 @@ export const Form = ({ autoFocusRef, from }) => {
                     color: '#5d4037',
                   }}
                 >
-                  No charts yet — add charts to this project first.
+                  {formatMessage({
+                    id: 'bC5xYz',
+                    defaultMessage:
+                      'Noch keine Diagramme — zuerst Diagramme zu diesem Projekt hinzufügen.',
+                  })}
                 </div>
               )}
               {!hasActiveSubprojectDesign && (
@@ -347,8 +374,11 @@ export const Form = ({ autoFocusRef, from }) => {
                     color: '#5d4037',
                   }}
                 >
-                  No active subproject report design — the Subproject Reports
-                  block will be empty.
+                  {formatMessage({
+                    id: 'bC6yZa',
+                    defaultMessage:
+                      "Kein aktives Subprojekt-Bericht-Design — der Block 'Subprojekt-Berichte' wird leer sein.",
+                  })}
                 </div>
               )}
               <Puck.Components />
@@ -379,7 +409,11 @@ export const Form = ({ autoFocusRef, from }) => {
                     zIndex: 1,
                   }}
                 >
-                  Drag fields, charts and subproject reports into the design
+                  {formatMessage({
+                    id: 'bC7zaB',
+                    defaultMessage:
+                      'Felder, Diagramme und Subprojekt-Berichte in das Design ziehen',
+                  })}
                 </div>
               )}
               <Puck.Preview />

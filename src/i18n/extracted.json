@@ -350,10 +350,35 @@
   "bB7MnO": {
     "defaultMessage": "Projekt-Bericht Design"
   },
+  "bB8NpQ": {
+    "defaultMessage": "Aktiv"
+  },
+  "bB9OrS": {
+    "defaultMessage": "Es kann immer nur ein Design aktiv sein"
+  },
   "bC0sCs": {
     "defaultMessage": "Mobilfähig"
+  },  "bC1tUv": {
+    "defaultMessage": "Subprojekt-Berichte"
   },
-  "d9gLtS": {
+  "bC2uVw": {
+    "defaultMessage": "Subprojekt-Berichte werden hier gerendert (ein Abschnitt pro Subprojekt)"
+  },
+  "bC3vWx": {
+    "defaultMessage": "Diagramm-Daten sind in der Berichtsansicht verf\u00fcgbar"
+  },
+  "bC4wXy": {
+    "defaultMessage": "Noch keine Felder \u2014 zuerst Felder zu diesem Projekt hinzuf\u00fcgen."
+  },
+  "bC5xYz": {
+    "defaultMessage": "Noch keine Diagramme \u2014 zuerst Diagramme zu diesem Projekt hinzuf\u00fcgen."
+  },
+  "bC6yZa": {
+    "defaultMessage": "Kein aktives Subprojekt-Bericht-Design \u2014 der Block 'Subprojekt-Berichte' wird leer sein."
+  },
+  "bC7zaB": {
+    "defaultMessage": "Felder, Diagramme und Subprojekt-Berichte in das Design ziehen"
+  },  "d9gLtS": {
     "defaultMessage": "Bearbeitung beenden"
   },
   "eJfllL": {
