@@ -1,18 +1,20 @@
+import { useIntl } from 'react-intl'
 import styles from './Preview.module.css'
 
 export const Preview = ({ observations, observationFields }) => {
+  const { formatMessage } = useIntl()
   if (!observations) {
-    return <div className={styles.emptyContainer}>loading preview...</div>
+    return <div className={styles.emptyContainer}>{formatMessage({ id: 'lPrW0d', defaultMessage: 'Vorschau wird geladen...' })}</div>
   }
   if (!observations.length) {
-    return <div className={styles.emptyContainer}>no data to preview</div>
+    return <div className={styles.emptyContainer}>{formatMessage({ id: 'nDt0Pr', defaultMessage: 'Keine Daten für die Vorschau' })}</div>
   }
   const observationFieldsWithLabel = ['label', ...observationFields]
 
   return (
     <div className={styles.container}>
       <table
-        aria-label="Preview"
+        aria-label={formatMessage({ id: 'prVw0A', defaultMessage: 'Vorschau' })}
         className={styles.table}
         width={observationFieldsWithLabel.length * 60}
       >
@@ -41,7 +43,7 @@ export const Preview = ({ observations, observationFields }) => {
                 colSpan={observationFieldsWithLabel.length}
                 className={styles.bodyCell}
               >
-                and {observations.length - 50} more rows...
+                {formatMessage({ id: 'mRw0sX', defaultMessage: 'und {count} weitere Zeilen...' }, { count: observations.length - 50 })}
               </td>
             </tr>
           )}

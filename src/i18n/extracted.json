@@ -814,5 +814,17 @@
   },
   "vPr9Sh": {
     "defaultMessage": "Vorschau anzeigen"
+  },
+  "lPrW0d": {
+    "defaultMessage": "Vorschau wird geladen..."
+  },
+  "nDt0Pr": {
+    "defaultMessage": "Keine Daten für die Vorschau"
+  },
+  "prVw0A": {
+    "defaultMessage": "Vorschau"
+  },
+  "mRw0sX": {
+    "defaultMessage": "und {count} weitere Zeilen..."
   }
 }
