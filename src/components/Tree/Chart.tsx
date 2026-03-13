@@ -7,7 +7,7 @@ import { Node } from './Node.tsx'
 import { ChartSubjectsNode } from './ChartSubjects.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { designingAtom, treeOpenNodesAtom } from '../../store.ts'
 
 export const ChartNode = ({
   projectId,
@@ -18,6 +18,7 @@ export const ChartNode = ({
   level = 2,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [designing] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
@@ -78,6 +79,21 @@ export const ChartNode = ({
             isActive={isEqual(urlPath, [...ownArray, 'chart'])}
             to={`${ownUrl}/chart`}
           />
+          {designing && (
+            <Node
+              label={formatMessage({
+                id: 'bEtTyY',
+                defaultMessage: 'Einstellungen',
+              })}
+              level={level + 1}
+              isInActiveNodeArray={
+                ownArray.every((part, i) => urlPath[i] === part) &&
+                urlPath[ownArray.length] === 'settings'
+              }
+              isActive={isEqual(urlPath, [...ownArray, 'settings'])}
+              to={`${ownUrl}/settings`}
+            />
+          )}
           <ChartSubjectsNode
             projectId={projectId}
             subprojectId={subprojectId}

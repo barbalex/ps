@@ -29,9 +29,12 @@ const getFilter = ({ placeId, placeId2, projectId, subprojectId }) => {
 
 export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
-  const isForm =
+  const isDetailView =
     from ===
-    '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
+      '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart' ||
+    from ===
+      '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/settings'
+  const subRoute = from.endsWith('/settings') ? 'settings' : 'chart'
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
@@ -49,14 +52,18 @@ export const Header = ({ autoFocusRef, from }) => {
   }, [chartId])
 
   const addRow = async () => {
-    const idToAdd =
-      placeId2 ? { placeId: placeId2 }
-      : placeId ? { placeId }
-      : subprojectId ? { subprojectId }
-      : { projectId }
+    const idToAdd = placeId2
+      ? { placeId: placeId2 }
+      : placeId
+        ? { placeId }
+        : subprojectId
+          ? { subprojectId }
+          : { projectId }
     const chart_id = await createChart(idToAdd)
     navigate({
-      to: isForm ? `../../${chart_id}/chart` : `../${chart_id}/chart`,
+      to: isDetailView
+        ? `../../${chart_id}/${subRoute}`
+        : `../${chart_id}/settings`,
       params: (prev) => ({ ...prev, chartId: chart_id }),
     })
     autoFocusRef?.current?.focus()
@@ -75,7 +82,7 @@ export const Header = ({ autoFocusRef, from }) => {
       operation: 'delete',
       prev,
     })
-    navigate({ to: isForm ? `../..` : `..` })
+    navigate({ to: isDetailView ? `../..` : `..` })
   }
 
   const { filterField, filterValue } = getFilter({
@@ -100,7 +107,9 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = rows.findIndex((p) => p.chart_id === chartIdRef.current)
     const next = rows[(index + 1) % len]
     navigate({
-      to: isForm ? `../../${next.chart_id}/chart` : `../${next.chart_id}`,
+      to: isDetailView
+        ? `../../${next.chart_id}/${subRoute}`
+        : `../${next.chart_id}`,
       params: (prev) => ({ ...prev, chartId: next.chart_id }),
     })
   }
@@ -115,8 +124,9 @@ export const Header = ({ autoFocusRef, from }) => {
     const index = rows.findIndex((p) => p.chart_id === chartIdRef.current)
     const previous = rows[(index + len - 1) % len]
     navigate({
-      to:
-        isForm ? `../../${previous.chart_id}/chart` : `../${previous.chart_id}`,
+      to: isDetailView
+        ? `../../${previous.chart_id}/${subRoute}`
+        : `../${previous.chart_id}`,
       params: (prev) => ({ ...prev, chartId: previous.chart_id }),
     })
   }

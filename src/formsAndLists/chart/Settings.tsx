@@ -1,20 +1,17 @@
 import { useRef } from 'react'
 
 import { Header } from './Header.tsx'
-import { Chart as ChartComponent } from './Chart/index.tsx'
+import { Form } from './Form.tsx'
 
 import '../../form.css'
 
-export const Chart = ({ from }) => {
+export const ChartSettings = ({ from }) => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
-      <ChartComponent from={from} />
+      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Form autoFocusRef={autoFocusRef} from={from} />
     </div>
   )
 }
