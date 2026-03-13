@@ -56,10 +56,10 @@ export const useProjectCrssNavData = ({ projectId }: Props) => {
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
-      namePlural: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
+      namePlural: formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' }),
       loading,
     }),
-    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'CRS' }),
+    nameSingular: formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' }),
     navs,
   }
 
