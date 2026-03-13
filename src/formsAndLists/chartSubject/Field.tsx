@@ -67,7 +67,7 @@ export const Field = ({ onChange, row, validations }) => {
 
   const fields = row.table_name ? (fieldsByTable[row.table_name] ?? []) : []
 
-  // Nothing to show if the table has no recognised fields
+  // Nothing to show if the table has no recognized fields
   if (!fields.length) return null
 
   const labelMap = Object.fromEntries(
