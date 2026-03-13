@@ -13,7 +13,7 @@ export const Syncer = () => {
 
   // somehow returning in useEffect didn't work
   useBeforeunload(() => {
-    console.log('Unsubscribing from sync')
+    // console.log('Unsubscribing from sync')
     syncRef.current?.unsubscribe?.()
     syncRef.current = null
   })

@@ -156,7 +156,7 @@ export const MenuBar = ({
   )
 
   useBeforeunload(() => {
-    console.log('MenuBar disconnecting resize observer')
+    // console.log('MenuBar disconnecting resize observer')
     observer.disconnect()
   })
 
