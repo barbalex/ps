@@ -1,6 +1,4 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Tooltip } = fluentUiReactComponents
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 
@@ -45,29 +43,21 @@ export const Label = ({ navData, outerContainerRef, labelStyle, ref }) => {
     // })
   }
 
-  const label =
-    linksToSomewhereElse ?
-      <Link
-        className="crumb-label-link"
-        to={navData.ownUrl}
-        onClick={onClick}
-        ref={ref}
-        style={labelStyle}
-      >
-        {navData.labelShort ?? navData.label}
-      </Link>
-    : <div
-        className="crumb-label-text"
-        ref={ref}
-        style={labelStyle}
-      >
-        {navData.labelShort ?? navData.label}
-      </div>
-
-  // tooltip can mess with touch, so hide it on touch devices
-  if (!matchMedia('(pointer: coarse)').matches) {
-    return <Tooltip content={navData.label}>{label}</Tooltip>
-  }
+  const label = linksToSomewhereElse ? (
+    <Link
+      className="crumb-label-link"
+      to={navData.ownUrl}
+      onClick={onClick}
+      ref={ref}
+      style={labelStyle}
+    >
+      {navData.labelShort ?? navData.label}
+    </Link>
+  ) : (
+    <div className="crumb-label-text" ref={ref} style={labelStyle}>
+      {navData.labelShort ?? navData.label}
+    </div>
+  )
 
   return label
 }
