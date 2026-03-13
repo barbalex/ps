@@ -575,6 +575,60 @@
   "bEjJoO": {
     "defaultMessage": "{place}-Massnahmen-Mengen"
   },
+  "bEkKpP": {
+    "defaultMessage": "Startjahr"
+  },
+  "bElLqQ": {
+    "defaultMessage": "\u00dcbergeordneter Ort"
+  },
+  "bEmMrR": {
+    "defaultMessage": "Seit wann existiert dieser Ort? (Jahr)"
+  },
+  "bEnNsS": {
+    "defaultMessage": "Bis wann existierte dieser Ort? (Jahr)"
+  },
+  "bEoOtT": {
+    "defaultMessage": "Datum"
+  },
+  "bEpPuU": {
+    "defaultMessage": "Relevant f\u00fcr Berichte"
+  },
+  "bEqQvV": {
+    "defaultMessage": "Wert (ganzzahlig)"
+  },
+  "bErRwW": {
+    "defaultMessage": "Wert (numerisch)"
+  },
+  "bEsSxX": {
+    "defaultMessage": "Wert (Text)"
+  },
+  "bEkKpP": {
+    "defaultMessage": "Startjahr"
+  },
+  "bElLqQ": {
+    "defaultMessage": "\u00dcbergeordneter Ort"
+  },
+  "bEmMrR": {
+    "defaultMessage": "Seit wann existiert dieser Ort? (Jahr)"
+  },
+  "bEnNsS": {
+    "defaultMessage": "Bis wann existierte dieser Ort? (Jahr)"
+  },
+  "bEoOtT": {
+    "defaultMessage": "Datum"
+  },
+  "bEpPuU": {
+    "defaultMessage": "Relevant f\u00fcr Berichte"
+  },
+  "bEqQvV": {
+    "defaultMessage": "Wert (ganzzahlig)"
+  },
+  "bErRwW": {
+    "defaultMessage": "Wert (numerisch)"
+  },
+  "bEsSxX": {
+    "defaultMessage": "Wert (Text)"
+  },
   "jmuVHU": {
     "defaultMessage": "Diagramm-Thema"
   },
