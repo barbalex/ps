@@ -71,12 +71,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Chart Subject"
-        id={chartSubjectId}
-      />
-    )
+    return <NotFound table="Chart Subject" id={chartSubjectId} />
   }
 
   return (
@@ -102,24 +97,30 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           value={row.table_filter}
           onChange={onChange}
           validationState={validations?.table_filter?.state}
-          validationMessage={validations?.table_filter?.message ?? formatMessage({ id: 'bDwZcA', defaultMessage: 'TODO: Ein Filter, der auf die Tabelle angewendet wird' })}
+          validationMessage={
+            validations?.table_filter?.message ??
+            formatMessage({
+              id: 'bDwZcA',
+              defaultMessage:
+                'TODO: Ein Filter, der auf die Tabelle angewendet wird',
+            })
+          }
         />
-        <ValueSource
-          onChange={onChange}
-          row={row}
-          validations={validations}
-        />
+        <ValueSource onChange={onChange} row={row} validations={validations} />
         {row.value_source && row.value_source !== 'count_rows' && (
           <>
             <TextField
-              label={formatMessage({ id: 'bDiLoM', defaultMessage: 'Wertfeld' })}
+              label={formatMessage({ id: 'bDiLoM', defaultMessage: 'Feld' })}
               name="value_field"
               value={row.value_field}
               onChange={onChange}
               validationState={validations?.value_field?.state}
               validationMessage={
                 validations.value_field?.message ??
-                formatMessage({ id: 'bDjMpN', defaultMessage: 'Der Name des Felds' })
+                formatMessage({
+                  id: 'bDjMpN',
+                  defaultMessage: 'Der Name des Felds',
+                })
               }
             />
             <TextField
@@ -134,7 +135,9 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           </>
         )}
       </Section>
-      <Section title={formatMessage({ id: 'bDlOrP', defaultMessage: 'Darstellung' })}>
+      <Section
+        title={formatMessage({ id: 'bDlOrP', defaultMessage: 'Darstellung' })}
+      >
         <TextField
           label={formatMessage({ id: 'bDmPsQ', defaultMessage: 'Sortierung' })}
           name="sort"
@@ -144,22 +147,35 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationState={validations?.sort?.state}
           validationMessage={
             validations.sort?.message ??
-            formatMessage({ id: 'bDnQtR', defaultMessage: 'Themen werden nach diesem Wert sortiert, sofern gesetzt. Sonst nach Name' })
+            formatMessage({
+              id: 'bDnQtR',
+              defaultMessage:
+                'Themen werden nach diesem Wert sortiert, sofern gesetzt. Sonst nach Name',
+            })
           }
         />
         <SwitchField
-          label={formatMessage({ id: 'bDoRuS', defaultMessage: 'Fehlende Daten verbinden' })}
+          label={formatMessage({
+            id: 'bDoRuS',
+            defaultMessage: 'Fehlende Daten verbinden',
+          })}
           name="connect_nulls"
           value={row.connect_nulls}
           onChange={onChange}
           validationState={validations?.connect_nulls?.state}
           validationMessage={
             validations.connect_nulls?.message ??
-            formatMessage({ id: 'bDpSvT', defaultMessage: 'Wenn aktiviert, wird auch bei fehlenden Datenpunkten eine Linie gezeichnet' })
+            formatMessage({
+              id: 'bDpSvT',
+              defaultMessage:
+                'Wenn aktiviert, wird auch bei fehlenden Datenpunkten eine Linie gezeichnet',
+            })
           }
         />
       </Section>
-      <Section title={formatMessage({ id: 'bDqTwU', defaultMessage: 'Styling' })}>
+      <Section
+        title={formatMessage({ id: 'bDqTwU', defaultMessage: 'Styling' })}
+      >
         <TextField
           label={formatMessage({ id: 'bDrUxV', defaultMessage: 'Linienfarbe' })}
           name="stroke"
@@ -170,7 +186,10 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationMessage={validations?.stroke?.message}
         />
         <TextField
-          label={formatMessage({ id: 'bDsVyW', defaultMessage: 'F\u00fcllfarbe' })}
+          label={formatMessage({
+            id: 'bDsVyW',
+            defaultMessage: 'F\u00fcllfarbe',
+          })}
           name="fill"
           value={row.fill}
           type="color"
@@ -179,14 +198,21 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
           validationMessage={validations?.fill?.message}
         />
         <SwitchField
-          label={formatMessage({ id: 'bDtWzX', defaultMessage: 'F\u00fcllung mit Verlauf' })}
+          label={formatMessage({
+            id: 'bDtWzX',
+            defaultMessage: 'F\u00fcllung mit Verlauf',
+          })}
           name="fill_graded"
           value={row.fill_graded}
           onChange={onChange}
           validationState={validations?.fill_graded?.state}
           validationMessage={
             validations.fill_graded?.message ??
-            formatMessage({ id: 'bDuXaY', defaultMessage: 'Wenn aktiviert, wird die Fl\u00e4che mit einem Verlauf gef\u00fcllt. Hilfreich wenn mehrere Themen sich \u00fcberlagern' })
+            formatMessage({
+              id: 'bDuXaY',
+              defaultMessage:
+                'Wenn aktiviert, wird die Fl\u00e4che mit einem Verlauf gef\u00fcllt. Hilfreich wenn mehrere Themen sich \u00fcberlagern',
+            })
           }
         />
       </Section>
