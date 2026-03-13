@@ -179,6 +179,7 @@
   "Qr1StU": "Butt (abrupt)",
   "Qr6tBm": "If obsolete, existing data is shown but this field will not be available in new records",
   "Rc5DeF": "Use for",
+  "Eh9JkL": "Whether values of this unit can be summed. If not summable, distribution of count per value will be shown.",
   "Rd6EfG": "Further settings",
   "Qt0RuW": "Drawing too many features can crash the app",
   "Rm4jTs": "Comment",

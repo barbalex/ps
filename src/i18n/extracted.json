@@ -236,6 +236,9 @@
   "Rc5DeF": {
     "defaultMessage": "Verwenden für"
   },
+  "Eh9JkL": {
+    "defaultMessage": "Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt."
+  },
   "Rd6EfG": {
     "defaultMessage": "Weitere Einstellungen"
   },

@@ -116,7 +116,14 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
           value={row.summable ?? false}
           onChange={onChange}
           validationState={validations?.summable?.state}
-          validationMessage={validations?.summable?.message}
+          validationMessage={
+            validations?.summable?.message ??
+            formatMessage({
+              id: 'Eh9JkL',
+              defaultMessage:
+                'Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt.',
+            })
+          }
         />
         <TextField
           label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
