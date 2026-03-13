@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { Render } from '@puckeditor/core'
+import { useIntl } from 'react-intl'
 
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -24,6 +25,7 @@ export const ProjectReportPrint = ({ from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
   const [chartDataMap, setChartDataMap] = useState({})
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -224,7 +226,7 @@ export const ProjectReportPrint = ({ from }) => {
           />
         </div>
         {design && <Render config={config} data={design} />}
-        {!design && <div>No report design found for this project.</div>}
+        {!design && <div>{formatMessage({ id: 'bB6JkL', defaultMessage: 'Kein Berichts-Design für dieses Projekt gefunden.' })}</div>}
       </div>
     </div>
   )
