@@ -39,7 +39,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         <SwitchField
           label={formatMessage({
             id: 'Yb2CdE',
-            defaultMessage: 'Massnahmen-Berichte-Mengen',
+            defaultMessage: 'Massnahmen-Bericht-Mengen',
           })}
           name="use_for_action_report_values"
           value={row.use_for_action_report_values ?? false}
