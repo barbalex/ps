@@ -221,6 +221,9 @@
   "Pq7nWk": {
     "defaultMessage": "Sortier-Reihenfolge"
   },
+  "Pq8RsT": {
+    "defaultMessage": "Standardmässig wird nach Name sortiert. Das können Sie mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt."
+  },
   "Ps5mVn": {
     "defaultMessage": "Standardwert"
   },

@@ -22,7 +22,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.name?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Xa1BcD', defaultMessage: 'Für Massnahmen-Mengen verwenden' })}
+        label={formatMessage({
+          id: 'Xa1BcD',
+          defaultMessage: 'Für Massnahmen-Mengen verwenden',
+        })}
         name="use_for_action_values"
         value={row.use_for_action_values ?? false}
         onChange={onChange}
@@ -30,7 +33,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.use_for_action_values?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Yb2CdE', defaultMessage: 'Für Massnahmen-Berichte-Mengen verwenden' })}
+        label={formatMessage({
+          id: 'Yb2CdE',
+          defaultMessage: 'Für Massnahmen-Berichte-Mengen verwenden',
+        })}
         name="use_for_action_report_values"
         value={row.use_for_action_report_values ?? false}
         onChange={onChange}
@@ -38,7 +44,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.use_for_action_report_values?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Zc3DeF', defaultMessage: 'Für Kontroll-Mengen verwenden' })}
+        label={formatMessage({
+          id: 'Zc3DeF',
+          defaultMessage: 'Für Kontroll-Mengen verwenden',
+        })}
         name="use_for_check_values"
         value={row.use_for_check_values ?? false}
         onChange={onChange}
@@ -46,7 +55,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.use_for_check_values?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Ad4EfG', defaultMessage: 'Für Ort-Bericht-Mengen verwenden' })}
+        label={formatMessage({
+          id: 'Ad4EfG',
+          defaultMessage: 'Für Ort-Bericht-Mengen verwenden',
+        })}
         name="use_for_place_report_values"
         value={row.use_for_place_report_values ?? false}
         onChange={onChange}
@@ -54,7 +66,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.use_for_place_report_values?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Be5FgH', defaultMessage: 'Für Ziel-Bericht-Mengen verwenden' })}
+        label={formatMessage({
+          id: 'Be5FgH',
+          defaultMessage: 'Für Ziel-Bericht-Mengen verwenden',
+        })}
         name="use_for_goal_report_values"
         value={row.use_for_goal_report_values ?? false}
         onChange={onChange}
@@ -62,7 +77,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.use_for_goal_report_values?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Cf6GhI', defaultMessage: 'Für Teilprojekt-Taxa verwenden' })}
+        label={formatMessage({
+          id: 'Cf6GhI',
+          defaultMessage: 'Für Teilprojekt-Taxa verwenden',
+        })}
         name="use_for_subproject_taxa"
         value={row.use_for_subproject_taxa ?? false}
         onChange={onChange}
@@ -70,7 +88,10 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationMessage={validations?.use_for_subproject_taxa?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'Dg7HiJ', defaultMessage: 'Für Kontroll-Taxa verwenden' })}
+        label={formatMessage({
+          id: 'Dg7HiJ',
+          defaultMessage: 'Für Kontroll-Taxa verwenden',
+        })}
         name="use_for_check_taxa"
         value={row.use_for_check_taxa ?? false}
         onChange={onChange}
@@ -92,7 +113,14 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         value={row.sort ?? ''}
         onChange={onChange}
         validationState={validations?.sort?.state}
-        validationMessage={validations?.sort?.message}
+        validationMessage={
+          validations?.sort?.message ??
+          formatMessage({
+            id: 'Pq8RsT',
+            defaultMessage:
+              'Standardmässig wird nach Name sortiert. Das können Sie mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt.',
+          })
+        }
       />
       <TextField
         label={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
