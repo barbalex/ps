@@ -362,7 +362,7 @@
     "defaultMessage": "Subprojekt-Berichte"
   },
   "bC2uVw": {
-    "defaultMessage": "Subprojekt-Berichte werden hier gerendert (ein Abschnitt pro Subprojekt)"
+    "defaultMessage": "{name} werden hier gerendert (ein Abschnitt pro Subprojekt)"
   },
   "bC3vWx": {
     "defaultMessage": "Diagramm-Daten sind in der Berichtsansicht verf\u00fcgbar"
@@ -384,6 +384,9 @@
   },
   "bC9BcD": {
     "defaultMessage": "Diagramme"
+  },
+  "bCAdEf": {
+    "defaultMessage": "Berichte"
   },
   "d9gLtS": {
     "defaultMessage": "Bearbeitung beenden"

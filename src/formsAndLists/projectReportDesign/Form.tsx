@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import { Puck, Config } from '@puckeditor/core'
 
@@ -10,7 +10,8 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 import type ProjectReportDesigns from '../../models/public/ProjectReportDesigns.ts'
 
@@ -21,11 +22,13 @@ export const Form = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
 
   const db = usePGlite()
   const res = useLiveQuery(
     `SELECT 
       prd.*,
+      (SELECT ${subprojectNameSingularExpr(language, '')} FROM projects WHERE project_id = prd.project_id) AS subproject_name_singular,
       (SELECT json_agg(f) FROM (
         SELECT field_id, name, field_label, field_type_id, widget_type_id 
         FROM fields 
@@ -59,6 +62,9 @@ export const Form = ({ autoFocusRef, from }) => {
   const charts = row?.charts ?? []
   const reportData = row?.report_data ?? {}
   const hasActiveSubprojectDesign = row?.has_active_subproject_design ?? false
+  const subprojectNameSingular = row?.subproject_name_singular
+    ? `${row.subproject_name_singular}-${formatMessage({ id: 'bCAdEf', defaultMessage: 'Berichte' })}`
+    : formatMessage({ id: 'bC1tUv', defaultMessage: 'Subprojekt-Berichte' })
 
   // Build Puck config from fields with actual data
   const components = {}
@@ -72,20 +78,14 @@ export const Form = ({ autoFocusRef, from }) => {
       components: [] as string[],
     },
     subproject_reports: {
-      title: formatMessage({
-        id: 'bC1tUv',
-        defaultMessage: 'Subprojekt-Berichte',
-      }),
+      title: subprojectNameSingular,
       components: ['SubprojectReports'] as string[],
     },
   }
 
   // SubprojectReports is a single droppable block that renders all subproject reports
   components['SubprojectReports'] = {
-    label: formatMessage({
-      id: 'bC1tUv',
-      defaultMessage: 'Subprojekt-Berichte',
-    }),
+    label: subprojectNameSingular,
     fields: {},
     defaultProps: {},
     render: () => (
@@ -98,11 +98,14 @@ export const Form = ({ autoFocusRef, from }) => {
           fontStyle: 'italic',
         }}
       >
-        {formatMessage({
-          id: 'bC2uVw',
-          defaultMessage:
-            'Subprojekt-Berichte werden hier gerendert (ein Abschnitt pro Subprojekt)',
-        })}
+        {formatMessage(
+          {
+            id: 'bC2uVw',
+            defaultMessage:
+              '{name} werden hier gerendert (ein Abschnitt pro Subprojekt)',
+          },
+          { name: subprojectNameSingular },
+        )}
       </div>
     ),
   }
@@ -310,6 +313,7 @@ export const Form = ({ autoFocusRef, from }) => {
       />
       {
         <Puck
+          key={language}
           config={config}
           data={row.design ?? { content: [] }}
           onChange={onPuckChange}
