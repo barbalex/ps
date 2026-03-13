@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { ChartSubjectsNode } from './ChartSubjects.tsx'
@@ -17,6 +18,7 @@ export const ChartNode = ({
   level = 2,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -54,7 +56,7 @@ export const ChartNode = ({
   return (
     <>
       <Node
-        label={nav.lbael}
+        label={nav.label}
         id={nav.id}
         level={level}
         isOpen={isOpen}
@@ -67,7 +69,7 @@ export const ChartNode = ({
       {isOpen && (
         <>
           <Node
-            label="Chart"
+            label={formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
