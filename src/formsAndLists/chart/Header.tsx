@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -27,6 +28,7 @@ const getFilter = ({ placeId, placeId2, projectId, subprojectId }) => {
 }
 
 export const Header = ({ autoFocusRef, from }) => {
+  const { formatMessage } = useIntl()
   const isForm =
     from ===
     '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
@@ -121,7 +123,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Chart"
+      title={formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' })}
       addRow={designing ? addRow : undefined}
       deleteRow={designing ? deleteRow : undefined}
       toNext={toNext}

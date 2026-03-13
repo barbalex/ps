@@ -1851,7 +1851,7 @@ CREATE TABLE IF NOT EXISTS charts(
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (COALESCE(name, chart_id::text)) STORED,
+  label text GENERATED ALWAYS AS (COALESCE(NULLIF(name, ''), chart_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
