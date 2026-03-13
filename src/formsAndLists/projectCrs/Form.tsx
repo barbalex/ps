@@ -129,7 +129,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
         {formatMessage({
           id: 'Op6QrS',
           defaultMessage:
-            'Ein Koordinatenreferenzsystem (CRS) legt fest, wie Koordinaten auf der Erde verortet werden.',
+            'Ein Koordinaten-Bezugs-System legt fest, wie Koordinaten auf der Erde verortet werden.',
         })}
       </SectionDescription>
       <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
