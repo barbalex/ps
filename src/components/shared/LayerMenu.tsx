@@ -21,6 +21,18 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const { formatMessage } = useIntl()
 
+  const tableLabelMessages: Record<
+    string,
+    { id: string; defaultMessage: string }
+  > = {
+    actions: { id: 'bEeEjJ', defaultMessage: 'Massnahmen' },
+    checks: { id: 'bEcChH', defaultMessage: 'Kontrollen' },
+    places: { id: 'bEbBgG', defaultMessage: 'Orte' },
+  }
+  const tableLabel = tableLabelMessages[table]
+    ? formatMessage(tableLabelMessages[table])
+    : table
+
   const { projectId, subprojectId } = useParams({ from })
 
   const db = usePGlite()
@@ -136,14 +148,14 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
                   id: 'bCLmNo',
                   defaultMessage: '{places}-Ebene aus Karte entfernen',
                 },
-                { places: placeNamePlural ?? table },
+                { places: placeNamePlural ?? tableLabel },
               )
             : formatMessage(
                 {
                   id: 'bCKlMn',
                   defaultMessage: '{places}-Ebene in Karte anzeigen',
                 },
-                { places: placeNamePlural ?? table },
+                { places: placeNamePlural ?? tableLabel },
               )
         }
       />
@@ -153,7 +165,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
         onClick={onClickZoomToLayer}
         title={formatMessage(
           { id: 'bCMnOp', defaultMessage: 'Auf {places} in Karte zoomen' },
-          { places: placeNamePlural ?? table },
+          { places: placeNamePlural ?? tableLabel },
         )}
       />
       {/* <Button
