@@ -545,5 +545,8 @@
   "bCGhIj": "Anteprima di stampa del rapporto",
   "bCHiJk": "Anteprima di stampa del rapporto di sottoprogetto",
   "bCIjKl": "Nessun modello di rapporto trovato. Devi prima creare un Design del rapporto {subproject}.",
-  "bCJkLm": "Design del rapporto"
+  "bCJkLm": "Design del rapporto",
+  "bCKlMn": "Mostra il livello {places} sulla mappa",
+  "bCLmNo": "Rimuovi il livello {places} dalla mappa",
+  "bCMnOp": "Ingrandisci {places} sulla mappa"
 }

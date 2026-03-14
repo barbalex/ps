@@ -9,6 +9,7 @@ import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom, addOperationAtom } from '../../store.ts'
@@ -17,6 +18,7 @@ import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const { projectId, subprojectId } = useParams({ from })
 
@@ -117,15 +119,24 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
         onClick={onClickShowLayer}
         title={
           showLayer
-            ? `Show ${placeNamePlural ?? table} layer in map`
-            : `Remove ${placeNamePlural ?? table} layer from map`
+            ? formatMessage(
+                { id: 'bCLmNo', defaultMessage: '{places}-Ebene aus Karte entfernen' },
+                { places: placeNamePlural ?? table },
+              )
+            : formatMessage(
+                { id: 'bCKlMn', defaultMessage: '{places}-Ebene in Karte anzeigen' },
+                { places: placeNamePlural ?? table },
+              )
         }
       />
       <Button
         size="medium"
         icon={<TbZoomScan />}
         onClick={onClickZoomToLayer}
-        title={`Zoom to ${placeNamePlural ?? table} in map`}
+        title={formatMessage(
+          { id: 'bCMnOp', defaultMessage: 'Auf {places} in Karte zoomen' },
+          { places: placeNamePlural ?? table },
+        )}
       />
       {/* <Button
         size="medium"

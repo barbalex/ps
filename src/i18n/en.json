@@ -571,5 +571,8 @@
   "bCGhIj": "Report Print Preview",
   "bCHiJk": "Subproject Report Print Preview",
   "bCIjKl": "No report design found. You must first create a {subproject} Report Design.",
-  "bCJkLm": "Report Designs"
+  "bCJkLm": "Report Designs",
+  "bCKlMn": "Show {places} layer in map",
+  "bCLmNo": "Remove {places} layer from map",
+  "bCMnOp": "Zoom to {places} in map"
 }

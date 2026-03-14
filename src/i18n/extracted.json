@@ -1021,5 +1021,14 @@
   },
   "bCJkLm": {
     "defaultMessage": "Bericht-Designs"
+  },
+  "bCKlMn": {
+    "defaultMessage": "{places}-Ebene in Karte anzeigen"
+  },
+  "bCLmNo": {
+    "defaultMessage": "{places}-Ebene aus Karte entfernen"
+  },
+  "bCMnOp": {
+    "defaultMessage": "Auf {places} in Karte zoomen"
   }
 }
