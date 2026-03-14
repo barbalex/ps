@@ -553,5 +553,7 @@
   "bCOpQr": "Nessuna voce {table} trovata. Aggiungerne prima una.",
   "bCPrSt": "{label} non può essere modificato",
   "bCQuRv": "(nessuna etichetta)",
-  "bCRvSw": "Utente del luogo"
+  "bCRvSw": "Utente del luogo",
+  "bCSwTx": "Rapporto",
+  "bCTxUy": "Rapporto del luogo"
 }

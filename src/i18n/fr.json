@@ -553,5 +553,7 @@
   "bCOpQr": "Aucune entrée {table} trouvée. Veuillez d'abord en ajouter une.",
   "bCPrSt": "{label} ne peut pas être modifié",
   "bCQuRv": "(aucun label)",
-  "bCRvSw": "Utilisateur de lieu"
+  "bCRvSw": "Utilisateur de lieu",
+  "bCSwTx": "Rapport",
+  "bCTxUy": "Rapport de lieu"
 }

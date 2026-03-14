@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createPlaceReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const isForm =
@@ -18,6 +19,8 @@ export const Header = ({ autoFocusRef, from }) => {
   })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
 
   const db = usePGlite()
 
@@ -28,10 +31,20 @@ export const Header = ({ autoFocusRef, from }) => {
     placeReportIdRef.current = placeReportId
   }, [placeReportId])
 
-  const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM place_reports WHERE place_id = '${placeId2 ?? placeId}'`,
+  const combinedRes = useLiveQuery(
+    `SELECT
+      pl.name_singular_${language} AS name_singular,
+      (SELECT COUNT(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}') AS count
+    FROM place_levels pl
+    WHERE pl.project_id = $1 AND pl.level = $2`,
+    [projectId, placeId2 ? 2 : 1],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const nameSingular = combinedRes?.rows?.[0]?.name_singular as string | undefined
+  const rowCount = combinedRes?.rows?.[0]?.count ?? 2
+
+  const title = nameSingular
+    ? `${nameSingular}-${formatMessage({ id: 'bCSwTx', defaultMessage: 'Bericht' })}`
+    : formatMessage({ id: 'bCTxUy', defaultMessage: 'Ort-Bericht' })
 
   const addRow = async () => {
     const id = await createPlaceReport({
@@ -125,7 +138,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Place Report"
+      title={title}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
