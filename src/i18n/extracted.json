@@ -955,5 +955,35 @@
   },
   "bChrPh": {
     "defaultMessage": "Beliebigen Text eingeben"
+  },
+  "bgTkSlb": {
+    "defaultMessage": "Setze Beschriftungen"
+  },
+  "bgTkScr": {
+    "defaultMessage": "Setze Koordinaten"
+  },
+  "bgTkCmp": {
+    "defaultMessage": "✓ Abgeschlossen"
+  },
+  "bgTkErr": {
+    "defaultMessage": "✗ Fehler"
+  },
+  "bgTkImp": {
+    "defaultMessage": "Importiere Beobachtungen"
+  },
+  "bgTkRpl": {
+    "defaultMessage": "Ersetze Beobachtungen"
+  },
+  "bgTkUpd": {
+    "defaultMessage": "Aktualisiere Beobachtungen"
+  },
+  "oBsImpM": {
+    "defaultMessage": "{count} Beobachtungen importiert"
+  },
+  "oBsRplM": {
+    "defaultMessage": "{count} Beobachtungen ersetzt"
+  },
+  "oBsUpdM": {
+    "defaultMessage": "Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}"
   }
 }

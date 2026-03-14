@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { Dismiss24Regular } from '@fluentui/react-icons'
+import { useIntl } from 'react-intl'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import { formatNumber } from '../../modules/formatNumber.ts'
 import styles from './BackgroundTasks.module.css'
 
 export const BackgroundTasks = () => {
   const [tasks, setTasks] = useState(() => backgroundTasks.getAll())
+  const { formatMessage } = useIntl()
 
   useEffect(() => {
     const unsubscribe = backgroundTasks.subscribe(() => {
@@ -27,9 +29,9 @@ export const BackgroundTasks = () => {
             <div className={styles.taskRight}>
               <span className={styles.taskProgress}>
                 {task.status === 'completed' ? (
-                  '✓ Complete'
+                  formatMessage({ id: 'bgTkCmp', defaultMessage: '✓ Abgeschlossen' })
                 ) : task.status === 'error' ? (
-                  '✗ Error'
+                  formatMessage({ id: 'bgTkErr', defaultMessage: '✗ Fehler' })
                 ) : (
                   `${formatNumber(task.progress)} / ${formatNumber(task.total)}`
                 )}

@@ -1,4 +1,9 @@
-import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
+import {
+  addOperationAtom,
+  store,
+  pgliteDbAtom,
+  intlAtom,
+} from '../../../store.ts'
 import { backgroundTasks } from '../../../modules/backgroundTasks.ts'
 
 import type Observations from '../../../models/public/Observations.ts'
@@ -14,6 +19,7 @@ export const setLabels = async ({
   observationImportId,
 }: Props) => {
   const db = store.get(pgliteDbAtom)
+  const intl = store.get(intlAtom)
   const taskId = `set-labels-${observationImportId}`
 
   if (!labelCreation || !Array.isArray(labelCreation)) {
@@ -27,7 +33,14 @@ export const setLabels = async ({
   const observations: Observations[] = res?.rows ?? []
 
   // Register background task
-  backgroundTasks.add(taskId, 'Setting labels', observations.length)
+  backgroundTasks.add(
+    taskId,
+    intl?.formatMessage({
+      id: 'bgTkSlb',
+      defaultMessage: 'Setze Beschriftungen',
+    }) ?? 'Setze Beschriftungen',
+    observations.length,
+  )
 
   // Process in batches to allow UI updates
   const batchSize = 50

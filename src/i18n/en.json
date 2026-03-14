@@ -540,5 +540,15 @@
   "fLdSep": "Separating text / characters",
   "fLdAny": "Any text",
   "bChrSp": "Separator (any text)",
-  "bChrPh": "Enter any text"
+  "bChrPh": "Enter any text",
+  "bgTkSlb": "Setting labels",
+  "bgTkScr": "Setting coordinates",
+  "bgTkCmp": "✓ Complete",
+  "bgTkErr": "✗ Error",
+  "bgTkImp": "Importing observations",
+  "bgTkRpl": "Replacing observations",
+  "bgTkUpd": "Updating observations",
+  "oBsImpM": "{count} observations imported",
+  "oBsRplM": "{count} observations replaced",
+  "oBsUpdM": "Updated: {updated}, added: {added}, removed: {removed}"
 }

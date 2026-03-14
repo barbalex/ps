@@ -2,7 +2,8 @@ import { read, utils, set_cptable } from '@e965/xlsx'
 import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createObservation } from '../../modules/createRows.ts'
-import { addOperationAtom, store } from '../../store.ts'
+import { addOperationAtom, store, intlAtom } from '../../store.ts'
+import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import { checkDuplicates } from './checkDuplicates.ts'
 
 set_cptable(cptable)
@@ -15,38 +16,59 @@ const insertObservations = async (data, additionalData, db, resolve) => {
       data: dat,
     }),
   )
-  // TODO:
-  // - create chunks of 500 rows
+
+  const intl = store.get(intlAtom)
+  const taskId = `import-observations-${additionalData.observation_import_id}`
+  backgroundTasks.add(
+    taskId,
+    intl?.formatMessage({
+      id: 'bgTkImp',
+      defaultMessage: 'Importiere Beobachtungen',
+    }) ?? 'Importiere Beobachtungen',
+    observations.length,
+  )
+
   const chunked = chunkArrayWithMinSize(observations, 500)
-  for (const chunk of chunked) {
-    const values = chunk
-      .map(
-        (c) =>
-          `('${c.observation_import_id}', '${c.account_id}', '${
-            c.observation_id
-          }', '${JSON.stringify(c.data)}')`,
+  let processed = 0
+  try {
+    for (const chunk of chunked) {
+      const values = chunk
+        .map(
+          (c) =>
+            `('${c.observation_import_id}', '${c.account_id}', '${
+              c.observation_id
+            }', '${JSON.stringify(c.data)}')`,
+        )
+        .join(',')
+      await db.query(
+        `INSERT INTO observations (observation_import_id, account_id, observation_id, data) VALUES ${values}`,
       )
-      .join(',')
-    await db.query(
-      `INSERT INTO observations (observation_import_id, account_id, observation_id, data) VALUES ${values}`,
-    )
-  }
-  // same for server
-  for (const chunk of chunked) {
-    store.set(addOperationAtom, {
-      table: 'observations',
-      operation: 'insertMany',
-      draft: chunk,
+      processed += chunk.length
+      backgroundTasks.updateProgress(taskId, processed)
+      // Allow UI to update between chunks
+      await new Promise((r) => setTimeout(r, 0))
+    }
+    // same for server
+    for (const chunk of chunked) {
+      store.set(addOperationAtom, {
+        table: 'observations',
+        operation: 'insertMany',
+        draft: chunk,
+      })
+    }
+    backgroundTasks.complete(taskId)
+    resolve({
+      success: true,
+      message:
+        intl?.formatMessage(
+          { id: 'oBsImpM', defaultMessage: '{count} Beobachtungen importiert' },
+          { count: observations.length },
+        ) ?? `${observations.length} Beobachtungen importiert`,
     })
+  } catch (error) {
+    backgroundTasks.error(taskId, error.message)
+    throw error
   }
-  // - insert data into observations table
-  // - set observation_imports.created_time
-  // - set observation_imports.inserted_count
-  // - show user data rows
-  resolve({
-    success: true,
-    message: `Successfully imported ${observations.length} observation${observations.length !== 1 ? 's' : ''}`,
-  })
 }
 
 export const processData = async ({

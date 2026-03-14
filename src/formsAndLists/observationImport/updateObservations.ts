@@ -4,8 +4,9 @@ import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 import axios from 'redaxios'
 import { createObservation } from '../../modules/createRows.ts'
-import { addOperationAtom, store } from '../../store.ts'
+import { addOperationAtom, store, intlAtom } from '../../store.ts'
 import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
+import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 
 set_cptable(cptable)
 
@@ -94,6 +95,9 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
     const reader = new FileReader()
 
     reader.onload = async () => {
+      const intl = store.get(intlAtom)
+      const taskId = `import-replace-${observationImport.observation_import_id}`
+      let taskStarted = false
       try {
         const fileAsArrayBuffer = reader.result
         const workbook = read(fileAsArrayBuffer, {
@@ -126,7 +130,15 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
           }),
         )
 
+        backgroundTasks.add(
+          taskId,
+          intl?.formatMessage({ id: 'bgTkRpl', defaultMessage: 'Ersetze Beobachtungen' }) ?? 'Ersetze Beobachtungen',
+          observations.length,
+        )
+        taskStarted = true
+
         // Insert into database with geometry and label
+        let processed = 0
         for (const occ of observations) {
           const idInSource = observationImport.id_field
             ? occ.data[observationImport.id_field]
@@ -149,6 +161,11 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
               label,
             ],
           )
+          processed++
+          backgroundTasks.updateProgress(taskId, processed)
+          if (processed % 50 === 0) {
+            await new Promise((r) => setTimeout(r, 0))
+          }
         }
 
         // Sync to server
@@ -165,11 +182,17 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
           draft: observations,
         })
 
+        backgroundTasks.complete(taskId)
         resolve({
           success: true,
-          message: `Successfully replaced ${observations.length} observation${observations.length !== 1 ? 's' : ''}`,
+          message:
+            intl?.formatMessage(
+              { id: 'oBsRplM', defaultMessage: '{count} Beobachtungen ersetzt' },
+              { count: observations.length },
+            ) ?? `${observations.length} Beobachtungen ersetzt`,
         })
       } catch (error) {
+        if (taskStarted) backgroundTasks.error(taskId, error.message)
         reject(error)
       }
     }
@@ -197,6 +220,9 @@ export const updateAndExtendObservations = async ({
     const reader = new FileReader()
 
     reader.onload = async () => {
+      const intl = store.get(intlAtom)
+      const taskId = `import-update-${observationImport.observation_import_id}`
+      let taskStarted = false
       try {
         const fileAsArrayBuffer = reader.result
         const workbook = read(fileAsArrayBuffer, {
@@ -244,7 +270,15 @@ export const updateAndExtendObservations = async ({
         let addedCount = 0
         let removedCount = 0
 
+        backgroundTasks.add(
+          taskId,
+          intl?.formatMessage({ id: 'bgTkUpd', defaultMessage: 'Aktualisiere Beobachtungen' }) ?? 'Aktualisiere Beobachtungen',
+          newDataMap.size,
+        )
+        taskStarted = true
+
         // Update existing and add new
+        let processed = 0
         for (const [idInSource, newData] of newDataMap.entries()) {
           const existing = existingMap.get(idInSource)
 
@@ -315,6 +349,12 @@ export const updateAndExtendObservations = async ({
               draft: { ...newOcc, geometry, label },
             })
           }
+
+          processed++
+          backgroundTasks.updateProgress(taskId, processed)
+          if (processed % 50 === 0) {
+            await new Promise((r) => setTimeout(r, 0))
+          }
         }
 
         // Remove observations not in new data
@@ -335,11 +375,17 @@ export const updateAndExtendObservations = async ({
           }
         }
 
+        backgroundTasks.complete(taskId)
         resolve({
           success: true,
-          message: `Updated ${updatedCount}, added ${addedCount}, removed ${removedCount} observation${updatedCount + addedCount + removedCount !== 1 ? 's' : ''}`,
+          message:
+            intl?.formatMessage(
+              { id: 'oBsUpdM', defaultMessage: 'Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}' },
+              { updated: updatedCount, added: addedCount, removed: removedCount },
+            ) ?? `Aktualisiert: ${updatedCount}, hinzugefügt: ${addedCount}, entfernt: ${removedCount}`,
         })
       } catch (error) {
+        if (taskStarted) backgroundTasks.error(taskId, error.message)
         reject(error)
       }
     }

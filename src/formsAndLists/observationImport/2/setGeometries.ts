@@ -3,7 +3,7 @@ import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
-import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
+import { addOperationAtom, store, pgliteDbAtom, intlAtom } from '../../../store.ts'
 import { backgroundTasks } from '../../../modules/backgroundTasks.ts'
 
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
@@ -19,6 +19,7 @@ export const setGeometries = async ({
   setNotification,
 }: Props) => {
   const db = store.get(pgliteDbAtom)
+  const intl = store.get(intlAtom)
   const taskId = `set-geometries-${observationImport.observation_import_id}`
 
   const system = observationImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
@@ -56,7 +57,7 @@ export const setGeometries = async ({
   // Register background task
   backgroundTasks.add(
     taskId,
-    'Setting coordinates',
+    intl?.formatMessage({ id: 'bgTkScr', defaultMessage: 'Setze Koordinaten' }) ?? 'Setze Koordinaten',
     observationsWithoutGeometry.length,
   )
 
