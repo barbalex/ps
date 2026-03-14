@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -21,6 +22,7 @@ export const Observation = ({ from }) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -126,7 +128,7 @@ export const Observation = ({ from }) => {
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <SwitchField
-          label="Not to assign"
+          label={formatMessage({ id: 'obs0Nta', defaultMessage: 'Nicht zuzuordnen' })}
           name="not_to_assign"
           value={row.not_to_assign}
           onChange={onChange}
@@ -143,7 +145,7 @@ export const Observation = ({ from }) => {
           validationMessage={validations?.place_id?.message}
         />
         <TextArea
-          label="Comment"
+          label={formatMessage({ id: 'obs0Cmt', defaultMessage: 'Kommentar' })}
           name="comment"
           value={row.comment ?? ''}
           onChange={onChange}

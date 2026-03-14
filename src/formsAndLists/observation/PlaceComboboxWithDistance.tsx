@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Combobox, Field, Option } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { pointToLineDistance } from '@turf/point-to-line-distance'
 import { distance } from '@turf/distance'
@@ -27,6 +28,7 @@ export const PlaceComboboxWithDistance = ({
   validationMessage,
 }) => {
   const [filter, setFilter] = useState('')
+  const { formatMessage } = useIntl()
 
   // Get the observation to access its geometry
   const observationRes = useLiveQuery(
@@ -191,7 +193,7 @@ export const PlaceComboboxWithDistance = ({
 
   return (
     <Field
-      label="Place"
+      label={formatMessage({ id: 'obs0Plc', defaultMessage: 'Standort' })}
       validationState={validationState}
       validationMessage={validationMessage}
     >
@@ -223,7 +225,7 @@ export const PlaceComboboxWithDistance = ({
           })
         ) : (
           <Option key="no-results" value="0">
-            No places found
+            {formatMessage({ id: 'obs0Npf', defaultMessage: 'Keine Standorte gefunden' })}
           </Option>
         )}
       </Combobox>

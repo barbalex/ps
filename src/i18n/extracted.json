@@ -1001,5 +1001,27 @@
     "defaultMessage": "Vorheriger Import"
   },
   "pvImpVl": {
-    "defaultMessage": "Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import ausw\u00e4hlen. Falls nein: leer lassen."  }
+    "defaultMessage": "Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import ausw\u00e4hlen. Falls nein: leer lassen."
+  },
+  "obs0Hdr": {
+    "defaultMessage": "Beobachtung"
+  },
+  "obs0Nta": {
+    "defaultMessage": "Nicht zuzuordnen"
+  },
+  "obs0Cmt": {
+    "defaultMessage": "Kommentar"
+  },
+  "obs0Plc": {
+    "defaultMessage": "Standort"
+  },
+  "obs0Npf": {
+    "defaultMessage": "Keine Standorte gefunden"
+  },
+  "obs0Raw": {
+    "defaultMessage": "Rohdaten"
+  },
+  "obs0Dnd": {
+    "defaultMessage": "Felder per Drag-and-Drop sortieren"
+  }
 }

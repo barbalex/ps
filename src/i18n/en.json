@@ -556,5 +556,12 @@
   "iDFdV2": "Needed when same observations are imported more than once",
   "iDFdV3": "Enables choosing whether to update existing observations or replace them",
   "pvImpLb": "Previous import",
-  "pvImpVl": "Have observations been previously imported from the same source? If so: choose the previous import. If not: leave empty."
+  "pvImpVl": "Have observations been previously imported from the same source? If so: choose the previous import. If not: leave empty.",
+  "obs0Hdr": "Observation",
+  "obs0Nta": "Not to assign",
+  "obs0Cmt": "Comment",
+  "obs0Plc": "Place",
+  "obs0Npf": "No places found",
+  "obs0Raw": "Raw data",
+  "obs0Dnd": "Drag and drop to sort fields"
 }

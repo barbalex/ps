@@ -5,6 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { exists } from '../../../modules/exists.ts'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary.tsx'
@@ -20,6 +21,7 @@ export const OccurenceData = ({ from }) => {
     observationFieldsSortedAtom,
   )
   const { observationId } = useParams({ from })
+  const { formatMessage } = useIntl()
 
   const sortedBeobFields = observationFieldsSorted.slice()
 
@@ -111,8 +113,8 @@ export const OccurenceData = ({ from }) => {
   return (
     <ErrorBoundary>
       <div>
-        <Section title="Raw data" />
-        <p className={styles.explainer}>Dragg and drop to sort fields</p>
+        <Section title={formatMessage({ id: 'obs0Raw', defaultMessage: 'Rohdaten' })} />
+        <p className={styles.explainer}>{formatMessage({ id: 'obs0Dnd', defaultMessage: 'Felder per Drag-and-Drop sortieren' })}</p>
         <div className={styles.outerContainer}>
           <div className={styles.container}>
             <DndProvider backend={HTML5Backend} context={window}>
