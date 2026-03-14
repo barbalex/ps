@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
@@ -9,6 +10,7 @@ const from =
 
 export const Four = ({ observationImport, observationFields, onChange }) => {
   const { observationImportId, subprojectId } = useParams({ from })
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `SELECT 
@@ -32,7 +34,7 @@ export const Four = ({ observationImport, observationFields, onChange }) => {
   return (
     <>
       <DropdownFieldSimpleOptions
-        label="ID Field"
+        label={formatMessage({ id: 'iDFdLb', defaultMessage: 'ID-Feld' })}
         name="id_field"
         value={observationImport.id_field ?? ''}
         onChange={onChange}
@@ -40,12 +42,11 @@ export const Four = ({ observationImport, observationFields, onChange }) => {
         validationMessage={
           <>
             <div>
-              The field that identifies the observation inside the data source
+              {formatMessage({ id: 'iDFdV1', defaultMessage: 'Das Feld, das die Beobachtung in der Datenquelle identifiziert.' })}
             </div>
-            <div>Needed when same observations are imported more than once</div>
+            <div>{formatMessage({ id: 'iDFdV2', defaultMessage: 'Wird benötigt, wenn gleiche Beobachtungen mehrfach importiert werden.' })}</div>
             <div>
-              Enables choosing whether to update existing observations or
-              replace them
+              {formatMessage({ id: 'iDFdV3', defaultMessage: 'Ermöglicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen.' })}
             </div>
           </>
         }
@@ -53,12 +54,12 @@ export const Four = ({ observationImport, observationFields, onChange }) => {
       {!!observationImportOptions.length && (
         <>
           <DropdownFieldOptions
-            label="Previous import"
+            label={formatMessage({ id: 'pvImpLb', defaultMessage: 'Vorheriger Import' })}
             name="previous_import"
             options={observationImportOptions}
             value={observationImport.previous_import ?? ''}
             onChange={onChange}
-            validationMessage="Have observations been previously imported from the same source? If so: choose the previous import. If not: leave empty."
+            validationMessage={formatMessage({ id: 'pvImpVl', defaultMessage: 'Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import auswählen. Falls nein: leer lassen.' })}
           />
         </>
       )}

@@ -984,6 +984,22 @@
     "defaultMessage": "{count} Beobachtungen ersetzt"
   },
   "oBsUpdM": {
-    "defaultMessage": "Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}"
-  }
+    "defaultMessage": "Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}"  },
+  "iDFdLb": {
+    "defaultMessage": "ID-Feld"
+  },
+  "iDFdV1": {
+    "defaultMessage": "Das Feld, das die Beobachtung in der Datenquelle identifiziert."
+  },
+  "iDFdV2": {
+    "defaultMessage": "Wird ben\u00f6tigt, wenn gleiche Beobachtungen mehrfach importiert werden."
+  },
+  "iDFdV3": {
+    "defaultMessage": "Erm\u00f6glicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen."
+  },
+  "pvImpLb": {
+    "defaultMessage": "Vorheriger Import"
+  },
+  "pvImpVl": {
+    "defaultMessage": "Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import ausw\u00e4hlen. Falls nein: leer lassen."  }
 }

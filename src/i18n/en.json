@@ -550,5 +550,11 @@
   "bgTkUpd": "Updating observations",
   "oBsImpM": "{count} observations imported",
   "oBsRplM": "{count} observations replaced",
-  "oBsUpdM": "Updated: {updated}, added: {added}, removed: {removed}"
+  "oBsUpdM": "Updated: {updated}, added: {added}, removed: {removed}",
+  "iDFdLb": "ID Field",
+  "iDFdV1": "The field that identifies the observation inside the data source",
+  "iDFdV2": "Needed when same observations are imported more than once",
+  "iDFdV3": "Enables choosing whether to update existing observations or replace them",
+  "pvImpLb": "Previous import",
+  "pvImpVl": "Have observations been previously imported from the same source? If so: choose the previous import. If not: leave empty."
 }
