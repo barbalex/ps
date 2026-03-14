@@ -544,6 +544,6 @@
   "bCFgHi": "Rapporto",
   "bCGhIj": "Anteprima di stampa del rapporto",
   "bCHiJk": "Anteprima di stampa del rapporto di sottoprogetto",
-  "bCIjKl": "Nessun modello di rapporto trovato. Devi prima creare un modello.",
+  "bCIjKl": "Nessun modello di rapporto trovato. Devi prima creare un Design del rapporto {subproject}.",
   "bCJkLm": "Design del rapporto"
 }

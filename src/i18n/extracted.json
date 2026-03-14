@@ -1017,7 +1017,7 @@
     "defaultMessage": "Teilprojekt-Bericht Druckvorschau"
   },
   "bCIjKl": {
-    "defaultMessage": "Kein Berichts-Design gefunden. Sie müssen zuerst ein Design erstellen."
+    "defaultMessage": "Kein Berichts-Design gefunden. Sie müssen zuerst ein {subproject}-Bericht-Design erstellen."
   },
   "bCJkLm": {
     "defaultMessage": "Bericht-Designs"

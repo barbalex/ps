@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import { Render } from '@puckeditor/core'
 import { useIntl } from 'react-intl'
 
@@ -10,7 +10,8 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
@@ -23,6 +24,7 @@ export const SubprojectReportPrint = ({ from }) => {
   const { subprojectReportId, projectId, subprojectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
   const [validations, setValidations] = useState({})
   const [chartDataMap, setChartDataMap] = useState({})
 
@@ -31,6 +33,7 @@ export const SubprojectReportPrint = ({ from }) => {
   const res = useLiveQuery(
     `SELECT 
       sr.*,
+      (SELECT ${subprojectNameSingularExpr(language, 'p')} FROM projects p WHERE p.project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id)) AS subproject_name_singular,
       (SELECT json_agg(f) FROM (
         SELECT field_id, name, field_label, field_type_id, widget_type_id 
         FROM fields 
@@ -55,6 +58,7 @@ export const SubprojectReportPrint = ({ from }) => {
     [subprojectReportId],
   )
   const row: SubprojectReports = res?.rows?.[0] ?? {}
+  const subprojectNameSingular = row?.subproject_name_singular as string | undefined
   const jsonbData = jsonbDataFromRow(row)
   const design = row?.design
   const fields = row?.fields ?? []
@@ -220,7 +224,10 @@ export const SubprojectReportPrint = ({ from }) => {
         )}
         {(!design || fields.length === 0) && (
           <div>
-            {formatMessage({ id: 'bCIjKl', defaultMessage: 'Kein Berichts-Design gefunden. Sie müssen zuerst ein Design erstellen.' })}
+            {formatMessage(
+              { id: 'bCIjKl', defaultMessage: 'Kein Berichts-Design gefunden. Sie müssen zuerst ein {subproject}-Bericht-Design erstellen.' },
+              { subproject: subprojectNameSingular ?? 'Subprojekt' },
+            )}
           </div>
         )}
       </div>
