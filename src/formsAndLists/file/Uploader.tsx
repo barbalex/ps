@@ -1,9 +1,15 @@
-import { useCallback, useEffect, useContext } from 'react'
+import { useCallback, useEffect, useContext, useRef } from 'react'
 import { useNavigate, useParams, useLocation } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
+import { useAtomValue } from 'jotai'
+import { defineLocale } from '@uploadcare/file-uploader'
+import deLocale from '@uploadcare/file-uploader/locales/file-uploader/de'
+import enLocale from '@uploadcare/file-uploader/locales/file-uploader/en'
+import frLocale from '@uploadcare/file-uploader/locales/file-uploader/fr'
+import itLocale from '@uploadcare/file-uploader/locales/file-uploader/it'
 
 // css is needed
 // not using the rest of react-uploader though
@@ -14,10 +20,20 @@ import './uploader.css'
 import { createFile } from '../../modules/createRows.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
+import { languageAtom } from '../../store.ts'
+
+// register locales once at module level so they are available before any
+// uc-config element initializes
+defineLocale('de', deLocale)
+defineLocale('en', enLocale)
+defineLocale('fr', frLocale)
+defineLocale('it', itLocale)
 
 import '../../form.css'
 
 export const Uploader = ({ from }) => {
+  const language = useAtomValue(languageAtom)
+  const ucConfigRef = useRef<HTMLElement>(null)
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2, actionId, checkId } =
     useParams({ from })
@@ -31,6 +47,10 @@ export const Uploader = ({ from }) => {
   const db = usePGlite()
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
+
+  useEffect(() => {
+    ucConfigRef.current?.setAttribute('locale-name', language)
+  }, [language])
 
   // ISSUE: the event is called THREE times
   // Solution: query files with the uuid and only create if it doesn't exist
@@ -151,6 +171,11 @@ export const Uploader = ({ from }) => {
       css-src="https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/uc-file-uploader-regular.min.css"
       id="uploader"
     >
+      <uc-config
+        ref={ucConfigRef}
+        ctx-name="uploadcare-uploader"
+        locale-name={language}
+      ></uc-config>
       <uc-data-input ctx-name="uploadcare-uploader"></uc-data-input>
     </uc-file-uploader-regular>
   )
