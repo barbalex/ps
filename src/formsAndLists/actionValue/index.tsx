@@ -64,14 +64,11 @@ export const ActionValue = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <>
             <DropdownField
               label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
@@ -86,7 +83,10 @@ export const ActionValue = ({ from }) => {
               validationMessage={validations?.unit_id?.message}
             />
             <TextField
-              label={formatMessage({ id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' })}
+              label={formatMessage({
+                id: 'gRVMgi',
+                defaultMessage: 'Menge (ganzzahlig)',
+              })}
               name="value_integer"
               type="number"
               value={row.value_integer ?? ''}
@@ -95,7 +95,10 @@ export const ActionValue = ({ from }) => {
               validationMessage={validations?.value_integer?.message}
             />
             <TextField
-              label={formatMessage({ id: 'bErRwW', defaultMessage: 'Wert (numerisch)' })}
+              label={formatMessage({
+                id: 'gRVMnu',
+                defaultMessage: 'Menge (numerisch)',
+              })}
               name="value_numeric"
               type="number"
               value={row.value_numeric ?? ''}
@@ -104,7 +107,10 @@ export const ActionValue = ({ from }) => {
               validationMessage={validations?.value_numeric?.message}
             />
             <TextField
-              label={formatMessage({ id: 'bEsSxX', defaultMessage: 'Wert (Text)' })}
+              label={formatMessage({
+                id: 'gRVMtx',
+                defaultMessage: 'Menge (Text)',
+              })}
               name="value_text"
               value={row.value_text ?? ''}
               onChange={onChange}
@@ -112,11 +118,9 @@ export const ActionValue = ({ from }) => {
               validationMessage={validations?.value_text?.message}
             />
           </>
-        : <NotFound
-            table="Action Value"
-            id={actionValueId}
-          />
-        }
+        ) : (
+          <NotFound table="Action Value" id={actionValueId} />
+        )}
       </div>
     </div>
   )

@@ -89,7 +89,10 @@ export const PlaceReportValue = ({ from }) => {
           validationMessage={validations?.unit_id?.message}
         />
         <TextField
-          label={formatMessage({ id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' })}
+          label={formatMessage({
+            id: 'gRVMgi',
+            defaultMessage: 'Menge (ganzzahlig)',
+          })}
           name="value_integer"
           type="number"
           value={row.value_integer ?? ''}
@@ -98,7 +101,10 @@ export const PlaceReportValue = ({ from }) => {
           validationMessage={validations?.value_integer?.message}
         />
         <TextField
-          label={formatMessage({ id: 'bErRwW', defaultMessage: 'Wert (numerisch)' })}
+          label={formatMessage({
+            id: 'gRVMnu',
+            defaultMessage: 'Menge (numerisch)',
+          })}
           name="value_numeric"
           type="number"
           value={row.value_numeric ?? ''}
@@ -107,7 +113,10 @@ export const PlaceReportValue = ({ from }) => {
           validationMessage={validations?.value_numeric?.message}
         />
         <TextField
-          label={formatMessage({ id: 'bEsSxX', defaultMessage: 'Wert (Text)' })}
+          label={formatMessage({
+            id: 'gRVMtx',
+            defaultMessage: 'Menge (Text)',
+          })}
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}
