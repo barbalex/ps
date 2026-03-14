@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createActionReportValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -11,6 +12,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const { actionReportId, actionReportValueId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -20,6 +22,11 @@ export const Header = ({ autoFocusRef, from }) => {
   useEffect(() => {
     actionReportValueIdRef.current = actionReportValueId
   }, [actionReportValueId])
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM action_report_values WHERE action_report_id = '${actionReportId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
     const id = await createActionReportValue({ actionReportId })
@@ -108,12 +115,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Action Report Value"
+      title={formatMessage({ id: 'bDAEFG', defaultMessage: 'Massnahmen-Bericht-Menge' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName="goal report value"
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
+      tableName="action report value"
     />
   )
 }

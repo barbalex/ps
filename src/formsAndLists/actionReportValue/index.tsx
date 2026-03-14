@@ -68,7 +68,7 @@ export const ActionReportValue = ({ from }) => {
   if (!row) {
     return (
       <NotFound
-        table="Action Report Value"
+        table={formatMessage({ id: 'bDAEFG', defaultMessage: 'Massnahmen-Bericht-Menge' })}
         id={actionReportValueId}
       />
     )
