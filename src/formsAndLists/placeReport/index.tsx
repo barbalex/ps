@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -16,6 +17,7 @@ import '../../form.css'
 export const PlaceReport = ({ from }) => {
   const { placeReportId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const [validations, setValidations] = useState({})
 
@@ -75,7 +77,7 @@ export const PlaceReport = ({ from }) => {
             from={from}
           />
         ) : (
-          <NotFound table="Report" id={placeReportId} />
+          <NotFound table={formatMessage({ id: 'bCFgHi', defaultMessage: 'Bericht' })} id={placeReportId} />
         )}
       </div>
     </div>
