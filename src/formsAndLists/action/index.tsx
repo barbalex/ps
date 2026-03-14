@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -16,6 +17,7 @@ export const Action = ({ from }) => {
   const { actionId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -59,14 +61,11 @@ export const Action = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
             validations={validations}
@@ -74,11 +73,12 @@ export const Action = ({ from }) => {
             autoFocusRef={autoFocusRef}
             from={from}
           />
-        : <NotFound
-            table="Action"
+        ) : (
+          <NotFound
+            table={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
             id={actionId}
           />
-        }
+        )}
       </div>
     </div>
   )

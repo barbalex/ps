@@ -3,6 +3,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import { useIntl } from 'react-intl'
 
 import '../../form.css'
 
@@ -19,11 +20,12 @@ export const ActionForm = ({
   // as inside filters it's name is a path
   // instead of it being inside of the data field
   const jsonbData = jsonbDataFromRow(row)
+  const { formatMessage } = useIntl()
 
   return (
     <>
       <DateField
-        label="Date"
+        label={formatMessage({ id: 'bEoOtT', defaultMessage: 'Datum' })}
         name="date"
         value={row.date}
         onChange={onChange}
@@ -31,7 +33,7 @@ export const ActionForm = ({
         validationMessage={validations?.date?.message}
       />
       <SwitchField
-        label="relevant for reports"
+        label={formatMessage({ id: 'bEpPuU', defaultMessage: 'Relevant für Berichte' })}
         name="relevant_for_reports"
         value={row.relevant_for_reports}
         onChange={onChange}

@@ -582,5 +582,8 @@
   "bCRvSw": "Place User",
   "bCSwTx": "Report",
   "bCTxUy": "Place Report",
-  "bCUyVz": "No geometries found for {places}"
+  "bCUyVz": "No geometries found for {places}",
+  "bCVzWA": "Zoom to action in map",
+  "bCWAXB": "No geometry",
+  "bCXBYC": "To zoom to an action, create its geometry first"
 }

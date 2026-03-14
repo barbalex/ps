@@ -129,8 +129,12 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const alertNoGeometry = () =>
     addNotification({
-      title: 'No geometry',
-      body: `To zoom to an action, create it's geometry first`,
+      title: formatMessage({ id: 'bCWAXB', defaultMessage: 'Keine Geometrie' }),
+      body: formatMessage({
+        id: 'bCXBYC',
+        defaultMessage:
+          'Um auf eine Massnahme zu zoomen, erstellen Sie zuerst die Geometrie',
+      }),
       intent: 'error',
     })
 
@@ -170,7 +174,10 @@ export const Header = ({ autoFocusRef, from }) => {
           size="medium"
           icon={<TbZoomScan />}
           onClick={onClickZoomTo}
-          title={`Zoom to action in map`}
+          title={formatMessage({
+            id: 'bCVzWA',
+            defaultMessage: 'Zur Massnahme in Karte zoomen',
+          })}
         />
       }
     />

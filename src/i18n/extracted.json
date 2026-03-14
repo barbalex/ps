@@ -1054,5 +1054,14 @@
   },
   "bCUyVz": {
     "defaultMessage": "Keine Geometrien für {places} gefunden"
+  },
+  "bCVzWA": {
+    "defaultMessage": "Zur Massnahme in Karte zoomen"
+  },
+  "bCWAXB": {
+    "defaultMessage": "Keine Geometrie"
+  },
+  "bCXBYC": {
+    "defaultMessage": "Um auf eine Massnahme zu zoomen, erstellen Sie zuerst die Geometrie"
   }
 }

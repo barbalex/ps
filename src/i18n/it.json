@@ -556,5 +556,8 @@
   "bCRvSw": "Utente del luogo",
   "bCSwTx": "Rapporto",
   "bCTxUy": "Rapporto del luogo",
-  "bCUyVz": "Nessuna geometria trovata per {places}"
+  "bCUyVz": "Nessuna geometria trovata per {places}",
+  "bCVzWA": "Ingrandisci l'azione nella mappa",
+  "bCWAXB": "Nessuna geometria",
+  "bCXBYC": "Per ingrandire un'azione, crea prima la sua geometria"
 }
