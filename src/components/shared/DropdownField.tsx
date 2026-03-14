@@ -1,6 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import styles from './DropdownField.module.css'
 
@@ -18,10 +19,11 @@ export const DropdownField = ({
   validationMessage: validationMessageIn,
   validationState: validationStateIn = 'none',
   button,
-  noDataMessage = 'No data found',
+  noDataMessage = undefined,
   hideWhenNoData = false,
   ref,
 }) => {
+  const { formatMessage } = useIntl()
   const res = useLiveQuery(
     `SELECT * FROM ${table}${
       where ? ` WHERE ${where}` : ''
@@ -43,7 +45,14 @@ export const DropdownField = ({
   const validationMessage = validationMessageIn
     ? validationMessageIn
     : !options?.length //&& !!value
-      ? `No ${table} found. Please add one first.`
+      ? formatMessage(
+          {
+            id: 'bCOpQr',
+            defaultMessage:
+              'Keine {table}-Einträge vorhanden. Bitte zuerst einen hinzufügen.',
+          },
+          { table },
+        )
       : undefined
 
   if (hideWhenNoData && !options?.length) return null
@@ -79,7 +88,13 @@ export const DropdownField = ({
               )
             })
           ) : (
-            <Option value={''}>{noDataMessage}</Option>
+            <Option value={''}>
+              {noDataMessage ??
+                formatMessage({
+                  id: 'bCNoPq',
+                  defaultMessage: 'Keine Daten gefunden',
+                })}
+            </Option>
           )}
         </Dropdown>
         {!!button && button}

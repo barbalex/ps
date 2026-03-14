@@ -1030,5 +1030,11 @@
   },
   "bCMnOp": {
     "defaultMessage": "Auf {places} in Karte zoomen"
+  },
+  "bCNoPq": {
+    "defaultMessage": "Keine Daten gefunden"
+  },
+  "bCOpQr": {
+    "defaultMessage": "Keine {table}-Einträge vorhanden. Bitte zuerst einen hinzufügen."
   }
 }

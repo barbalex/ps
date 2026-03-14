@@ -548,5 +548,7 @@
   "bCJkLm": "Design del rapporto",
   "bCKlMn": "Mostra il livello {places} sulla mappa",
   "bCLmNo": "Rimuovi il livello {places} dalla mappa",
-  "bCMnOp": "Ingrandisci {places} sulla mappa"
+  "bCMnOp": "Ingrandisci {places} sulla mappa",
+  "bCNoPq": "Nessun dato trovato",
+  "bCOpQr": "Nessuna voce {table} trovata. Aggiungerne prima una."
 }

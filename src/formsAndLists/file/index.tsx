@@ -1,19 +1,14 @@
-import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
-import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { Header } from './Header.tsx'
 import { Uploader } from './Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import { addOperationAtom } from '../../store.ts'
 import type Files from '../../models/public/Files.ts'
 
 import '../../form.css'
@@ -23,9 +18,6 @@ type File = Files & { id: Files['file_id'] }
 
 export const File = ({ from }) => {
   const { fileId } = useParams({ from })
-  const db = usePGlite()
-  const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
@@ -36,62 +28,6 @@ export const File = ({ from }) => {
     [fileId],
   )
   const row: File | undefined = res?.rows?.[0]
-
-  const onChange = async (e, dataIn) => {
-    const { name, value } = getValueFromChange(e, dataIn)
-    // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
-
-    const data = { [name]: value }
-    // if higher level is changed, lower levels need to be removed
-    if (name === 'project_id') {
-      data.subproject_id = null
-      data.place_id = null
-      data.action_id = null
-      data.check_id = null
-    }
-    if (name === 'subproject_id') {
-      data.place_id = null
-      data.action_id = null
-      data.check_id = null
-    }
-    if (name === 'place_id') {
-      data.action_id = null
-      data.check_id = null
-    }
-    let setsString = ''
-    Object.keys(data).map(
-      (key, i) =>
-        (setsString += `${key} = $${i + 2}${
-          i === Object.keys(data).length - 1 ? '' : ', '
-        }`),
-    )
-    try {
-      await db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
-        fileId,
-        ...Object.values(data),
-      ])
-    } catch (error) {
-      setValidations((prev) => ({
-        ...prev,
-        [name]: { state: 'error', message: error.message },
-      }))
-      return
-    }
-    setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [name]: _, ...rest } = prev
-      return rest
-    })
-    addOperation({
-      table: 'files',
-      rowIdName: 'file_id',
-      rowId: fileId,
-      type: 'update',
-      draft: { ...data },
-      prev: { ...row },
-    })
-  }
 
   const { width, ref } = useResizeDetector({
     handleHeight: false,
@@ -121,56 +57,6 @@ export const File = ({ from }) => {
               alt={row.name}
             />
           )}
-        {/* TODO: remove all id fields from form after implementing files everywhere */}
-        <DropdownField
-          label={formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })}
-          name="project_id"
-          table="projects"
-          value={row.project_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.project_id?.state}
-          validationMessage={validations?.project_id?.message}
-        />
-        <DropdownField
-          label={formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}
-          name="subproject_id"
-          table="subprojects"
-          where={`project_id ${row?.project_id ? `= '${row.project_id}'` : 'IS NULL'}`}
-          value={row.subproject_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.subproject_id?.state}
-          validationMessage={validations?.subproject_id?.message}
-        />
-        <DropdownField
-          label={formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}
-          name="place_id"
-          table="places"
-          where={`subproject_id ${row?.subproject_id ? `= '${row?.subproject_id}'` : 'IS NULL'}`}
-          value={row.place_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.place_id?.state}
-          validationMessage={validations?.place_id?.message}
-        />
-        <DropdownField
-          label={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
-          name="action_id"
-          table="actions"
-          where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
-          value={row.action_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.action_id?.state}
-          validationMessage={validations?.action_id?.message}
-        />
-        <DropdownField
-          label={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
-          name="check_id"
-          table="checks"
-          where={`place_id ${row?.place_id ? `= '${row.place_id}'` : 'IS NULL'}`}
-          value={row.check_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.check_id?.state}
-          validationMessage={validations?.check_id?.message}
-        />
         <TextFieldInactive
           label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
           name="name"
