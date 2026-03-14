@@ -34,12 +34,14 @@ export const Header = ({ autoFocusRef, from }) => {
   const combinedRes = useLiveQuery(
     `SELECT
       pl.name_singular_${language} AS name_singular,
-      (SELECT COUNT(*) FROM place_reports WHERE place_id = '${placeId2 ?? placeId}') AS count
+      (SELECT COUNT(*) FROM place_reports WHERE place_id = $1) AS count
     FROM place_levels pl
-    WHERE pl.project_id = $1 AND pl.level = $2`,
-    [projectId, placeId2 ? 2 : 1],
+    WHERE pl.project_id = $2 AND pl.level = $3`,
+    [placeId2 ?? placeId, projectId, placeId2 ? 2 : 1],
   )
-  const nameSingular = combinedRes?.rows?.[0]?.name_singular as string | undefined
+  const nameSingular = combinedRes?.rows?.[0]?.name_singular as
+    | string
+    | undefined
   const rowCount = combinedRes?.rows?.[0]?.count ?? 2
 
   const title = nameSingular
@@ -98,9 +100,8 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const next = placeReports[(index + 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${next.place_report_id}/report`
+        to: isForm
+          ? `../../${next.place_report_id}/report`
           : `../${next.place_report_id}`,
         params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
       })
@@ -122,9 +123,8 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = placeReports[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.place_report_id}/report`
+        to: isForm
+          ? `../../${previous.place_report_id}/report`
           : `../${previous.place_report_id}`,
         params: (prev) => ({
           ...prev,

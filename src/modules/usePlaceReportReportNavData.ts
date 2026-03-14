@@ -6,11 +6,11 @@ import { useIntl } from 'react-intl'
 import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
-  projectId_: string
-  subprojectId_: string
-  placeId_: string
-  placeId2_?: string
-  placeReportId_: string
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  placeReportId: string
 }
 
 type NavData = {
@@ -19,20 +19,14 @@ type NavData = {
 }
 
 export const usePlaceReportReportNavData = ({
-  projectId_,
-  subprojectId_,
-  placeId_,
-  placeId2_,
-  placeReportId_,
+  projectId,
+  subprojectId,
+  placeId,
+  placeId2,
+  placeReportId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
-
-  const projectId = projectId_?.replace(/_/g, '-')
-  const subprojectId = subprojectId_?.replace(/_/g, '-')
-  const placeId = placeId_?.replace(/_/g, '-')
-  const placeId2 = placeId2_?.replace(/_/g, '-')
-  const placeReportId = placeReportId_?.replace(/_/g, '-')
 
   const placeReportQuery = useLiveQuery(/* sql */ `
     SELECT
@@ -45,14 +39,14 @@ export const usePlaceReportReportNavData = ({
   const parentArray = [
     'data',
     'projects',
-    projectId_,
+    projectId,
     'subprojects',
-    subprojectId_,
+    subprojectId,
     'places',
-    placeId_,
-    ...(placeId2_ ? ['places', placeId2_] : []),
+    placeId,
+    ...(placeId2 ? ['places', placeId2] : []),
     'reports',
-    placeReportId_,
+    placeReportId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'report']
