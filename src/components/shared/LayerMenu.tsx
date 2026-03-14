@@ -12,12 +12,18 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { mapBoundsAtom, addOperationAtom, tabsAtom } from '../../store.ts'
+import {
+  mapBoundsAtom,
+  addOperationAtom,
+  tabsAtom,
+  addNotificationAtom,
+} from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
 export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const { formatMessage } = useIntl()
 
@@ -120,6 +126,20 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
         features.push(geometry)
       }
     }
+    if (!features.length) {
+      addNotification({
+        title: formatMessage(
+          {
+            id: 'bCUyVz',
+            defaultMessage: 'Keine Geometrien für {places} gefunden',
+          },
+          { places: placeNamePlural ?? tableLabel },
+        ),
+        intent: 'warning',
+      })
+      return
+    }
+
     const fC = featureCollection(features)
     const bufferedFC = buffer(fC, 0.05)
 

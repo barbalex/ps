@@ -1051,5 +1051,8 @@
   },
   "bCTxUy": {
     "defaultMessage": "Ort-Bericht"
+  },
+  "bCUyVz": {
+    "defaultMessage": "Keine Geometrien für {places} gefunden"
   }
 }

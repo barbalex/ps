@@ -555,5 +555,6 @@
   "bCQuRv": "(nessuna etichetta)",
   "bCRvSw": "Utente del luogo",
   "bCSwTx": "Rapporto",
-  "bCTxUy": "Rapporto del luogo"
+  "bCTxUy": "Rapporto del luogo",
+  "bCUyVz": "Nessuna geometria trovata per {places}"
 }

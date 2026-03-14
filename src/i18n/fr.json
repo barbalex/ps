@@ -555,5 +555,6 @@
   "bCQuRv": "(aucun label)",
   "bCRvSw": "Utilisateur de lieu",
   "bCSwTx": "Rapport",
-  "bCTxUy": "Rapport de lieu"
+  "bCTxUy": "Rapport de lieu",
+  "bCUyVz": "Aucune géométrie trouvée pour {places}"
 }
