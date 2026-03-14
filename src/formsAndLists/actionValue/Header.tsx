@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createActionValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -11,6 +12,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const { actionId, actionValueId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -112,7 +114,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Action Value"
+      title={formatMessage({ id: 'bCZDEF', defaultMessage: 'Massnahmen-Menge' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

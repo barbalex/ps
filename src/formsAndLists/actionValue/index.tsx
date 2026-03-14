@@ -119,7 +119,10 @@ export const ActionValue = ({ from }) => {
             />
           </>
         ) : (
-          <NotFound table="Action Value" id={actionValueId} />
+          <NotFound
+            table={formatMessage({ id: 'bCZDEF', defaultMessage: 'Massnahmen-Menge' })}
+            id={actionValueId}
+          />
         )}
       </div>
     </div>

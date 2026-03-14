@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -16,6 +17,7 @@ export const ActionReport = ({ from }) => {
   const { actionReportId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -63,7 +65,7 @@ export const ActionReport = ({ from }) => {
   if (!row) {
     return (
       <NotFound
-        table="Action Report"
+        table={formatMessage({ id: 'YMGqLf', defaultMessage: 'Massnahmen-Bericht' })}
         id={actionReportId}
       />
     )
