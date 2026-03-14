@@ -524,5 +524,21 @@
   "cRsAlG": "Toutes les observations ont une géométrie",
   "sGAlSt": "Toutes les géométries des {count} observations sont définies",
   "sCdSet": "Définir les coordonnées de {count} observations",
-  "sCdStg": "Définition des coordonnées de {count} observations en cours"
+  "sCdStg": "Définition des coordonnées de {count} observations en cours",
+  "lBlSet": "Définir les étiquettes de {count} observations",
+  "lBlStg": "Définition des étiquettes de {count} observations en cours",
+  "lBlApl": "Appliquer les modifications",
+  "lBlAplg": "Application des modifications en cours",
+  "lBlAlS": "Toutes les {count} observations ont des étiquettes",
+  "lBlCrt": "Veuillez d'abord créer une structure d'étiquette",
+  "lCrTtl": "Créateur d'étiquettes",
+  "lCrBld": "Créez votre propre étiquette.",
+  "lCrPul": "Faites glisser des champs ici. La valeur d'un champ sera utilisée dans l'étiquette.",
+  "lCrCmb": "Combinez plusieurs champs.",
+  "lCrSep": "Placez du texte séparateur à l'aide de l'outil séparateur.",
+  "fLdTtl": "Champs",
+  "fLdSep": "Texte / caractères séparateurs",
+  "fLdAny": "N'importe quel texte",
+  "bChrSp": "Séparateur (texte quelconque)",
+  "bChrPh": "Saisir un texte quelconque"
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Droppable } from '@hello-pangea/dnd'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
+import { useIntl } from 'react-intl'
 
 import { TargetElements } from './TargetElements.tsx'
 import { LabelElement } from '../index.tsx'
@@ -42,6 +43,7 @@ export const Target = ({
 }: Props) => {
   const [changing, setChanging] = useState(false)
   const [prevLabelChanged, setPrevLabelChanged] = useState(labelChanged)
+  const { formatMessage } = useIntl()
 
   // Reset changing state when labelChanged becomes false (getDerivedStateFromProps pattern)
   if (prevLabelChanged !== labelChanged) {
@@ -70,14 +72,14 @@ export const Target = ({
         {(provided, snapshot) => (
           <div className={styles.innerContainer}>
             <div className={styles.titleContainer}>
-              <h4 className={styles.title}>Label Creator</h4>
-              <p className={styles.explainer}>Build your own label.</p>
+              <h4 className={styles.title}>{formatMessage({ id: 'lCrTtl', defaultMessage: 'Beschriftungs-Werkzeug' })}</h4>
+              <p className={styles.explainer}>{formatMessage({ id: 'lCrBld', defaultMessage: 'Eigene Beschriftung erstellen.' })}</p>
               <p className={styles.explainer}>
-                Pull fields here. A field's value will be used in the label.
+                {formatMessage({ id: 'lCrPul', defaultMessage: 'Felder hierher ziehen. Der Feldwert wird in der Beschriftung verwendet.' })}
               </p>
-              <p className={styles.explainer}>Combine multiple fields.</p>
+              <p className={styles.explainer}>{formatMessage({ id: 'lCrCmb', defaultMessage: 'Mehrere Felder kombinieren.' })}</p>
               <p className={styles.explainer}>
-                Place separating text using the separator tool.
+                {formatMessage({ id: 'lCrSep', defaultMessage: 'Trenntext mit dem Trennzeichen-Werkzeug einfügen.' })}
               </p>
             </div>
             <TargetElements
@@ -92,7 +94,7 @@ export const Target = ({
               disabled={!labelChanged}
               icon={changing ? <Spinner size="tiny" /> : undefined}
             >
-              {changing ? 'Applying changes' : buttonLabel || 'Apply changes'}
+              {changing ? formatMessage({ id: 'lBlAplg', defaultMessage: 'Änderungen werden angewendet' }) : buttonLabel || formatMessage({ id: 'lBlApl', defaultMessage: 'Änderungen anwenden' })}
             </Button>
           </div>
         )}

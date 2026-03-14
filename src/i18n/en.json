@@ -524,5 +524,21 @@
   "cRsAlG": "All observations have a geometry",
   "sGAlSt": "All {count} observations' geometries are set",
   "sCdSet": "Set coordinates of {count} observations",
-  "sCdStg": "Setting coordinates of {count} observations"
+  "sCdStg": "Setting coordinates of {count} observations",
+  "lBlSet": "Set labels of {count} observations",
+  "lBlStg": "Setting labels of {count} observations",
+  "lBlApl": "Apply changes",
+  "lBlAplg": "Applying changes",
+  "lBlAlS": "All {count} observations have labels set",
+  "lBlCrt": "Please create a label structure first",
+  "lCrTtl": "Label Creator",
+  "lCrBld": "Build your own label.",
+  "lCrPul": "Pull fields here. A field's value will be used in the label.",
+  "lCrCmb": "Combine multiple fields.",
+  "lCrSep": "Place separating text using the separator tool.",
+  "fLdTtl": "Fields",
+  "fLdSep": "Separating text / characters",
+  "fLdAny": "Any text",
+  "bChrSp": "Separator (any text)",
+  "bChrPh": "Enter any text"
 }

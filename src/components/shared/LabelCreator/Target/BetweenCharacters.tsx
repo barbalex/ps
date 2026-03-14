@@ -1,5 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input } = fluentUiReactComponents
+import { useIntl } from 'react-intl'
 
 import { TargetElement } from './TargetElements.tsx'
 import { LabelElement } from '../index.tsx'
@@ -23,6 +24,8 @@ export const BetweenCharacters = ({
   snapshot,
   provided,
 }: Props) => {
+  const { formatMessage } = useIntl()
+
   const onBlur = (event) => {
     const newLabel = [...label]
     newLabel.forEach((labelElement, i) => {
@@ -42,8 +45,8 @@ export const BetweenCharacters = ({
       className={snapshot.isDragging ? styles.containerDragging : styles.container}
     >
       <Input
-        label="Separator (any Text)"
-        placeholder="Enter any text"
+        label={formatMessage({ id: 'bChrSp', defaultMessage: 'Trennzeichen (beliebiger Text)' })}
+        placeholder={formatMessage({ id: 'bChrPh', defaultMessage: 'Beliebigen Text eingeben' })}
         defaultValue={el.value ?? ''}
         appearance="outline"
         size="small"

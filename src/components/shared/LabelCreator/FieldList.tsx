@@ -1,5 +1,6 @@
 import { Draggable, Droppable } from '@hello-pangea/dnd'
 import { BsArrowsMove } from 'react-icons/bs'
+import { useIntl } from 'react-intl'
 
 // import { LabelElement } from './index.tsx'
 import styles from './FieldList.module.css'
@@ -11,7 +12,10 @@ import styles from './FieldList.module.css'
 
 // only show fields not yet added to label
 // TODO: build labelElements from fields
-export const FieldList = ({ fieldLabels }) => (
+export const FieldList = ({ fieldLabels }) => {
+  const { formatMessage } = useIntl()
+
+  return (
   <div className={styles.container}>
     <Droppable droppableId="fieldList">
       {(provided) => (
@@ -22,7 +26,7 @@ export const FieldList = ({ fieldLabels }) => (
             className={styles.fieldList}
           >
             <h5 className={styles.title}>
-              Fields{' '}
+              {formatMessage({ id: 'fLdTtl', defaultMessage: 'Felder' })}{' '}
               <span className={styles.titleSpan}>({fieldLabels.length})</span>
             </h5>
             <div className={styles.fieldsList}>
@@ -54,7 +58,7 @@ export const FieldList = ({ fieldLabels }) => (
                 </Draggable>
               ))}
             </div>
-            <h5 className={styles.title}>Separating text / characters</h5>
+            <h5 className={styles.title}>{formatMessage({ id: 'fLdSep', defaultMessage: 'Trenntext / Zeichen' })}</h5>
             {/* TODO: this draggable needs a uuidv7 draggableId that changes after every addition of a separator */}
             <Draggable
               key="separator"
@@ -76,7 +80,7 @@ export const FieldList = ({ fieldLabels }) => (
                   }}
                   className={styles.dividerContainer}
                 >
-                  Any text
+                  {formatMessage({ id: 'fLdAny', defaultMessage: 'Beliebiger Text' })}
                   <BsArrowsMove className={styles.fieldHandle} />
                 </div>
               )}
@@ -87,4 +91,5 @@ export const FieldList = ({ fieldLabels }) => (
       )}
     </Droppable>
   </div>
-)
+  )
+}

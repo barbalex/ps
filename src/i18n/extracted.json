@@ -907,5 +907,53 @@
   },
   "sCdStg": {
     "defaultMessage": "Koordinaten von {count} Beobachtungen werden gesetzt"
+  },
+  "lBlSet": {
+    "defaultMessage": "{count} Beobachtungen beschriften"
+  },
+  "lBlStg": {
+    "defaultMessage": "Beschriftungen von {count} Beobachtungen werden gesetzt"
+  },
+  "lBlApl": {
+    "defaultMessage": "Änderungen anwenden"
+  },
+  "lBlAplg": {
+    "defaultMessage": "Änderungen werden angewendet"
+  },
+  "lBlAlS": {
+    "defaultMessage": "Alle {count} Beobachtungen haben Beschriftungen"
+  },
+  "lBlCrt": {
+    "defaultMessage": "Bitte zuerst eine Beschriftungsstruktur erstellen"
+  },
+  "lCrTtl": {
+    "defaultMessage": "Beschriftungs-Werkzeug"
+  },
+  "lCrBld": {
+    "defaultMessage": "Eigene Beschriftung erstellen."
+  },
+  "lCrPul": {
+    "defaultMessage": "Felder hierher ziehen. Der Feldwert wird in der Beschriftung verwendet."
+  },
+  "lCrCmb": {
+    "defaultMessage": "Mehrere Felder kombinieren."
+  },
+  "lCrSep": {
+    "defaultMessage": "Trenntext mit dem Trennzeichen-Werkzeug einfügen."
+  },
+  "fLdTtl": {
+    "defaultMessage": "Felder"
+  },
+  "fLdSep": {
+    "defaultMessage": "Trenntext / Zeichen"
+  },
+  "fLdAny": {
+    "defaultMessage": "Beliebiger Text"
+  },
+  "bChrSp": {
+    "defaultMessage": "Trennzeichen (beliebiger Text)"
+  },
+  "bChrPh": {
+    "defaultMessage": "Beliebigen Text eingeben"
   }
 }

@@ -3,6 +3,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
 import { MdDone } from 'react-icons/md'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { setLabels } from './setLabels.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
@@ -16,6 +17,7 @@ interface Props {
 
 export const Set = ({ observationImport }: Props) => {
   const [settingLabels, setSettingLabels] = useState(false)
+  const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `SELECT * FROM observations WHERE observation_import_id = $1`,
@@ -46,7 +48,7 @@ export const Set = ({ observationImport }: Props) => {
   if (!hasLabelCreation) {
     return (
       <div style={{ color: 'rgb(120, 120, 120)', padding: '8px 0' }}>
-        Please create a label structure first
+        {formatMessage({ id: 'lBlCrt', defaultMessage: 'Bitte zuerst eine Beschriftungsstruktur erstellen' })}
       </div>
     )
   }
@@ -55,9 +57,7 @@ export const Set = ({ observationImport }: Props) => {
     return (
       <div className={styles.allSet}>
         <MdDone className={styles.doneIcon} />
-        {`All ${formatNumber(
-          observations.length,
-        )} observation${observations.length !== 1 ? 's' : ''} have labels set`}
+        {formatMessage({ id: 'lBlAlS', defaultMessage: 'Alle {count} Beobachtungen haben Beschriftungen' }, { count: formatNumber(observations.length) })}
       </div>
     )
   }
@@ -69,9 +69,9 @@ export const Set = ({ observationImport }: Props) => {
         icon={settingLabels ? <Spinner size="tiny" /> : null}
         className={styles.setButton}
       >
-        {`${
-          settingLabels ? 'Setting' : 'Set'
-        } labels of ${formatNumber(toSetCount)} observation${toSetCount !== 1 ? 's' : ''}`}
+        {settingLabels
+          ? formatMessage({ id: 'lBlStg', defaultMessage: 'Beschriftungen von {count} Beobachtungen werden gesetzt' }, { count: formatNumber(toSetCount) })
+          : formatMessage({ id: 'lBlSet', defaultMessage: '{count} Beobachtungen beschriften' }, { count: formatNumber(toSetCount) })}
       </Button>
     </div>
   )

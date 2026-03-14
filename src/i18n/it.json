@@ -524,5 +524,21 @@
   "cRsAlG": "Tutte le osservazioni hanno una geometria",
   "sGAlSt": "Tutte le geometrie delle {count} osservazioni sono impostate",
   "sCdSet": "Imposta le coordinate di {count} osservazioni",
-  "sCdStg": "Impostazione delle coordinate di {count} osservazioni in corso"
+  "sCdStg": "Impostazione delle coordinate di {count} osservazioni in corso",
+  "lBlSet": "Imposta le etichette di {count} osservazioni",
+  "lBlStg": "Impostazione delle etichette di {count} osservazioni in corso",
+  "lBlApl": "Applica modifiche",
+  "lBlAplg": "Applicazione delle modifiche in corso",
+  "lBlAlS": "Tutte le {count} osservazioni hanno etichette",
+  "lBlCrt": "Si prega di creare prima una struttura di etichetta",
+  "lCrTtl": "Creatore di etichette",
+  "lCrBld": "Crea la tua etichetta personalizzata.",
+  "lCrPul": "Trascina i campi qui. Il valore di un campo sarà usato nell'etichetta.",
+  "lCrCmb": "Combina più campi.",
+  "lCrSep": "Inserisci testo separatore usando lo strumento separatore.",
+  "fLdTtl": "Campi",
+  "fLdSep": "Testo / caratteri separatori",
+  "fLdAny": "Qualsiasi testo",
+  "bChrSp": "Separatore (qualsiasi testo)",
+  "bChrPh": "Inserisci qualsiasi testo"
 }
