@@ -33,7 +33,7 @@ export const useGoalReportReportNavData = ({
 
   const goalReportQuery = useLiveQuery(/* sql */ `
     SELECT
-      name as label,
+      label,
       goal_report_id as id
     FROM goal_reports
     WHERE goal_report_id = '${goalReportId}'`)

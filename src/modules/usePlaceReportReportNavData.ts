@@ -36,7 +36,7 @@ export const usePlaceReportReportNavData = ({
 
   const placeReportQuery = useLiveQuery(/* sql */ `
     SELECT
-      name as label,
+      label,
       place_report_id as id
     FROM place_reports
     WHERE place_report_id = '${placeReportId}'`)

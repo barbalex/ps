@@ -30,7 +30,7 @@ export const useGoalGoalNavData = ({
 
   const projectQuery = useLiveQuery(/* sql */ `
     SELECT
-      name as label,
+      label,
       project_id as id
     FROM projects
     WHERE project_id = '${projectId}'`)
@@ -38,7 +38,7 @@ export const useGoalGoalNavData = ({
 
   const subprojectQuery = useLiveQuery(/* sql */ `
     SELECT
-      name as label,
+      label,
       subproject_id as id
     FROM subprojects
     WHERE subproject_id = '${subprojectId}'`)
@@ -46,7 +46,7 @@ export const useGoalGoalNavData = ({
 
   const goalQuery = useLiveQuery(/* sql */ `
     SELECT
-      name as label,
+      label,
       goal_id as id
     FROM goals
     WHERE goal_id = '${goalId}'`)
