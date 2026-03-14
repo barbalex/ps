@@ -2,12 +2,14 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createPlaceUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
+  const { formatMessage } = useIntl()
   const { placeId, placeId2, placeUserId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -94,7 +96,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Place User"
+      title={formatMessage({ id: 'bCRvSw', defaultMessage: 'Ort-Benutzer' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

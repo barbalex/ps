@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -19,6 +20,7 @@ import '../../form.css'
 export const PlaceUser = ({ from }) => {
   const { placeUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const [validations, setValidations] = useState({})
 
@@ -66,7 +68,7 @@ export const PlaceUser = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="User" id={placeUserId} />
+    return <NotFound table={formatMessage({ id: 'bCRvSw', defaultMessage: 'Ort-Benutzer' })} id={placeUserId} />
   }
 
   return (
@@ -74,7 +76,7 @@ export const PlaceUser = ({ from }) => {
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
-          label="User"
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
           table="users"
           value={row.user_id ?? ''}
@@ -85,7 +87,7 @@ export const PlaceUser = ({ from }) => {
           validationMessage={validations?.user_id?.message}
         />
         <RadioGroupField
-          label="Role"
+          label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
           list={userRoles}
           value={row.role ?? ''}

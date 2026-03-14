@@ -552,5 +552,6 @@
   "bCNoPq": "Nessun dato trovato",
   "bCOpQr": "Nessuna voce {table} trovata. Aggiungerne prima una.",
   "bCPrSt": "{label} non può essere modificato",
-  "bCQuRv": "(nessuna etichetta)"
+  "bCQuRv": "(nessuna etichetta)",
+  "bCRvSw": "Utente del luogo"
 }

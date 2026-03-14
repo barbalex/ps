@@ -552,5 +552,6 @@
   "bCNoPq": "Aucune donnée trouvée",
   "bCOpQr": "Aucune entrée {table} trouvée. Veuillez d'abord en ajouter une.",
   "bCPrSt": "{label} ne peut pas être modifié",
-  "bCQuRv": "(aucun label)"
+  "bCQuRv": "(aucun label)",
+  "bCRvSw": "Utilisateur de lieu"
 }

@@ -578,5 +578,6 @@
   "bCNoPq": "No data found",
   "bCOpQr": "No {table} found. Please add one first.",
   "bCPrSt": "{label} can't be changed",
-  "bCQuRv": "(no label)"
+  "bCQuRv": "(no label)",
+  "bCRvSw": "Place User"
 }

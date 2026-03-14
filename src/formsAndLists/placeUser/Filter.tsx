@@ -1,4 +1,5 @@
-import { Filter } from "../../components/shared/Filter/index.tsx";
+import { useIntl } from 'react-intl'
+import { Filter } from '../../components/shared/Filter/index.tsx';
 import { DropdownField } from "../../components/shared/DropdownField.tsx";
 import { RadioGroupField } from "../../components/shared/RadioGroupField.tsx";
 
@@ -9,19 +10,21 @@ type Props = {
   level?: number;
 };
 
-export const PlaceUserFilter = ({ from, level }: Props) => (
+export const PlaceUserFilter = ({ from, level }: Props) => {
+  const { formatMessage } = useIntl()
+  return (
   <Filter from={from} level={level}>
     {({ row, onChange }) => (
       <>
         <DropdownField
-          label="User"
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
           table="users"
           value={row.user_id ?? ""}
           onChange={onChange}
         />
         <RadioGroupField
-          label="Role"
+          label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
           list={userRoles}
           value={row.role ?? ""}
@@ -30,4 +33,5 @@ export const PlaceUserFilter = ({ from, level }: Props) => (
       </>
     )}
   </Filter>
-);
+  )
+};
