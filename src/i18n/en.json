@@ -267,9 +267,9 @@
   "bC1tUv": "Subproject Reports",
   "bC2uVw": "{name} will be rendered here (one section per subproject)",
   "bC3vWx": "Chart data available in report view",
-  "bC4wXy": "No fields yet \u2014 add fields to this project first.",
-  "bC5xYz": "No charts yet \u2014 add charts to this project first.",
-  "bC6yZa": "No active subproject report design \u2014 the Subproject Reports block will be empty.",
+  "bC4wXy": "No fields yet — add fields to this project first.",
+  "bC5xYz": "No charts yet — add charts to this project first.",
+  "bC6yZa": "No active subproject report design — the Subproject Reports block will be empty.",
   "bC7zaB": "Drag fields, charts and subproject reports into the design",
   "bC8AbC": "Fields",
   "bC9BcD": "Charts",
@@ -566,5 +566,9 @@
   "obs0Plc": "Place",
   "obs0Npf": "No places found",
   "obs0Raw": "Raw data",
-  "obs0Dnd": "Drag and drop to sort fields"
+  "obs0Dnd": "Drag and drop to sort fields",
+  "bCFgHi": "Report",
+  "bCGhIj": "Report Print Preview",
+  "bCHiJk": "Subproject Report Print Preview",
+  "bCIjKl": "No report design found. You must first create a design."
 }

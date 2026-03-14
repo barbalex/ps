@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { Render } from '@puckeditor/core'
+import { useIntl } from 'react-intl'
 
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -21,10 +22,12 @@ import '@puckeditor/core/puck.css'
 export const SubprojectReportPrint = ({ from }) => {
   const { subprojectReportId, projectId, subprojectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
   const [chartDataMap, setChartDataMap] = useState({})
 
   const db = usePGlite()
+
   const res = useLiveQuery(
     `SELECT 
       sr.*,
@@ -203,7 +206,7 @@ export const SubprojectReportPrint = ({ from }) => {
       <div className="form-container">
         <div className="print-hide">
           <TextField
-            label="Year"
+            label={formatMessage({ id: 'bB4FgH', defaultMessage: 'Jahr' })}
             name="year"
             type="number"
             value={row.year ?? ''}
@@ -216,7 +219,9 @@ export const SubprojectReportPrint = ({ from }) => {
           <Render config={config} data={design} />
         )}
         {(!design || fields.length === 0) && (
-          <div>No report design found for this subproject.</div>
+          <div>
+            {formatMessage({ id: 'bCIjKl', defaultMessage: 'Kein Berichts-Design gefunden. Sie müssen zuerst ein Design erstellen.' })}
+          </div>
         )}
       </div>
     </div>

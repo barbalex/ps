@@ -1,19 +1,20 @@
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import {
   EyeRegular,
   PrintRegular,
   ArrowLeftRegular,
-
 } from '@fluentui/react-icons'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { projectId, subprojectId, subprojectReportId } = useParams({
@@ -22,6 +23,8 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
 
   const db = usePGlite()
 
@@ -32,10 +35,17 @@ export const Header = ({ autoFocusRef, from }) => {
     subprojectReportIdRef.current = subprojectReportId
   }, [subprojectReportId])
 
-  const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM subproject_reports WHERE subproject_id = '${subprojectId}'`,
+  const combinedRes = useLiveQuery(
+    `SELECT
+      p.${subprojectNameSingularExpr(language)} AS subproject_name_singular,
+      (SELECT COUNT(*) FROM subproject_reports WHERE subproject_id = $1) AS count
+    FROM projects p
+    WHERE p.project_id = $2`,
+    [subprojectId, projectId],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const subprojectNameSingular =
+    combinedRes?.rows?.[0]?.subproject_name_singular
+  const rowCount = combinedRes?.rows?.[0]?.count ?? 2
 
   const isPrintView = location.pathname.endsWith('/print')
 
@@ -143,31 +153,47 @@ export const Header = ({ autoFocusRef, from }) => {
     }
   }
 
-  const siblings =
-    isPrintView ?
-      <>
-        <Button
-          icon={<ArrowLeftRegular />}
-          onClick={onClickBack}
-          title="Back to report"
-        />
-        <Button
-          icon={<PrintRegular />}
-          onClick={onClickPrint}
-          title="Print"
-        />
-      </>
-    : <Button
-        icon={<EyeRegular />}
-        onClick={onClickPdf}
-        title="Preview report"
+  const siblings = isPrintView ? (
+    <>
+      <Button
+        icon={<ArrowLeftRegular />}
+        onClick={onClickBack}
+        title={formatMessage({
+          id: 'bB3EfG',
+          defaultMessage: 'Zurück zum Bericht',
+        })}
       />
+      <Button
+        icon={<PrintRegular />}
+        onClick={onClickPrint}
+        title={formatMessage({ id: 'bB5IjK', defaultMessage: 'Drucken' })}
+      />
+    </>
+  ) : (
+    <Button
+      icon={<EyeRegular />}
+      onClick={onClickPdf}
+      title={formatMessage({
+        id: 'bB2DeF',
+        defaultMessage: 'Bericht-Vorschau',
+      })}
+    />
+  )
+
+  const title = isPrintView
+    ? subprojectNameSingular
+      ? `${subprojectNameSingular}-${formatMessage({ id: 'bCGhIj', defaultMessage: 'Bericht Druckvorschau' })}`
+      : formatMessage({
+          id: 'bCHiJk',
+          defaultMessage: 'Teilprojekt-Bericht Druckvorschau',
+        })
+    : subprojectNameSingular
+      ? `${subprojectNameSingular}-${formatMessage({ id: 'bCFgHi', defaultMessage: 'Bericht' })}`
+      : formatMessage({ id: 'OGDgRl', defaultMessage: 'Teilprojekt-Bericht' })
 
   return (
     <FormHeader
-      title={
-        isPrintView ? 'Subproject Report Print Preview' : 'Subproject Report'
-      }
+      title={title}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

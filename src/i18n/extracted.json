@@ -348,7 +348,7 @@
     "defaultMessage": "Drucken"
   },
   "bB6JkL": {
-    "defaultMessage": "Kein Berichts-Design f\u00fcr dieses Projekt gefunden."
+    "defaultMessage": "Kein Berichts-Design für dieses Projekt gefunden."
   },
   "bB7MnO": {
     "defaultMessage": "Projekt-Bericht Design"
@@ -369,16 +369,16 @@
     "defaultMessage": "{name} werden hier gerendert (ein Abschnitt pro Subprojekt)"
   },
   "bC3vWx": {
-    "defaultMessage": "Diagramm-Daten sind in der Berichtsansicht verf\u00fcgbar"
+    "defaultMessage": "Diagramm-Daten sind in der Berichtsansicht verfügbar"
   },
   "bC4wXy": {
-    "defaultMessage": "Noch keine Felder \u2014 zuerst Felder zu diesem Projekt hinzuf\u00fcgen."
+    "defaultMessage": "Noch keine Felder — zuerst Felder zu diesem Projekt hinzufügen."
   },
   "bC5xYz": {
-    "defaultMessage": "Noch keine Diagramme \u2014 zuerst Diagramme zu diesem Projekt hinzuf\u00fcgen."
+    "defaultMessage": "Noch keine Diagramme — zuerst Diagramme zu diesem Projekt hinzufügen."
   },
   "bC6yZa": {
-    "defaultMessage": "Kein aktives Subprojekt-Bericht-Design \u2014 der Block 'Subprojekt-Berichte' wird leer sein."
+    "defaultMessage": "Kein aktives Subprojekt-Bericht-Design — der Block 'Subprojekt-Berichte' wird leer sein."
   },
   "bC7zaB": {
     "defaultMessage": "Felder, Diagramme und Subprojekt-Berichte in das Design ziehen"
@@ -402,7 +402,7 @@
     "defaultMessage": "Felder und Diagramme in das Design ziehen"
   },
   "bCDgHi": {
-    "defaultMessage": "Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzuf\u00fcgen."
+    "defaultMessage": "Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzufügen."
   },
   "bCFiJk": {
     "defaultMessage": "Allgemeine Einstellungen"
@@ -414,7 +414,7 @@
     "defaultMessage": "Diagramm-Typ"
   },
   "bCIlMn": {
-    "defaultMessage": "W\u00e4hlen Sie den anzuzeigenden Diagramm-Typ"
+    "defaultMessage": "Wählen Sie den anzuzeigenden Diagramm-Typ"
   },
   "bCJmNo": {
     "defaultMessage": "Aktuelles Jahr"
@@ -438,7 +438,7 @@
     "defaultMessage": "Letzte X Jahre"
   },
   "bCQtVw": {
-    "defaultMessage": "Das Diagramm zeigt h\u00f6chstens die letzten x Jahre (x = eingegebener Wert)"
+    "defaultMessage": "Das Diagramm zeigt höchstens die letzten x Jahre (x = eingegebener Wert)"
   },
   "bCRuWx": {
     "defaultMessage": "Seit"
@@ -456,7 +456,7 @@
     "defaultMessage": "Subjekte stapeln?"
   },
   "bCWzBc": {
-    "defaultMessage": "Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, \u00fcberlagern sie sich"
+    "defaultMessage": "Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, überlagern sie sich"
   },
   "bCXaBd": {
     "defaultMessage": "Subjekte in separaten Diagrammen darstellen?"
@@ -468,7 +468,7 @@
     "defaultMessage": "Bei mehreren Subjekten: Anteil als Prozent anzeigen?"
   },
   "bDaDgE": {
-    "defaultMessage": "Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte f\u00fcr jedes Jahr Werte haben"
+    "defaultMessage": "Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben"
   },
   "bDbEhF": {
     "defaultMessage": "Daten"
@@ -477,13 +477,13 @@
     "defaultMessage": "Tabelle"
   },
   "bDdGjH": {
-    "defaultMessage": "W\u00e4hlen Sie die Tabelle, aus der Daten geladen werden"
+    "defaultMessage": "Wählen Sie die Tabelle, aus der Daten geladen werden"
   },
   "bDeHkI": {
     "defaultMessage": "Stufe"
   },
   "bDfIlJ": {
-    "defaultMessage": "Ebene der Orte und der zugeh\u00f6rigen Kontrollen und Massnahmen"
+    "defaultMessage": "Ebene der Orte und der zugehörigen Kontrollen und Massnahmen"
   },
   "bDgJmK": {
     "defaultMessage": "Berechnungsmethode"
@@ -522,13 +522,13 @@
     "defaultMessage": "Linienfarbe"
   },
   "bDsVyW": {
-    "defaultMessage": "F\u00fcllfarbe"
+    "defaultMessage": "Füllfarbe"
   },
   "bDtWzX": {
-    "defaultMessage": "F\u00fcllung mit Verlauf"
+    "defaultMessage": "Füllung mit Verlauf"
   },
   "bDuXaY": {
-    "defaultMessage": "Wenn aktiviert, wird die Fl\u00e4che mit einem Verlauf gef\u00fcllt. Hilfreich wenn mehrere Themen sich \u00fcberlagern"
+    "defaultMessage": "Wenn aktiviert, wird die Fläche mit einem Verlauf gefüllt. Hilfreich wenn mehrere Themen sich überlagern"
   },
   "bDvYbZ": {
     "defaultMessage": "Filter"
@@ -537,10 +537,10 @@
     "defaultMessage": "TODO: Ein Filter, der auf die Tabelle angewendet wird"
   },
   "bDxAbB": {
-    "defaultMessage": "Zeilen z\u00e4hlen"
+    "defaultMessage": "Zeilen zählen"
   },
   "bDyCcD": {
-    "defaultMessage": "Zeilen nach eindeutigen Feldwerten z\u00e4hlen"
+    "defaultMessage": "Zeilen nach eindeutigen Feldwerten zählen"
   },
   "bDzDeE": {
     "defaultMessage": "Feldwerte summieren"
@@ -579,7 +579,7 @@
     "defaultMessage": "Startjahr"
   },
   "bElLqQ": {
-    "defaultMessage": "\u00dcbergeordneter Ort"
+    "defaultMessage": "Übergeordneter Ort"
   },
   "bEmMrR": {
     "defaultMessage": "Seit wann existiert dieser Ort? (Jahr)"
@@ -591,7 +591,7 @@
     "defaultMessage": "Datum"
   },
   "bEpPuU": {
-    "defaultMessage": "Relevant f\u00fcr Berichte"
+    "defaultMessage": "Relevant für Berichte"
   },
   "bEqQvV": {
     "defaultMessage": "Wert (ganzzahlig)"
@@ -604,33 +604,6 @@
   },
   "bEtTyY": {
     "defaultMessage": "Einstellungen"
-  },
-  "bEkKpP": {
-    "defaultMessage": "Startjahr"
-  },
-  "bElLqQ": {
-    "defaultMessage": "\u00dcbergeordneter Ort"
-  },
-  "bEmMrR": {
-    "defaultMessage": "Seit wann existiert dieser Ort? (Jahr)"
-  },
-  "bEnNsS": {
-    "defaultMessage": "Bis wann existierte dieser Ort? (Jahr)"
-  },
-  "bEoOtT": {
-    "defaultMessage": "Datum"
-  },
-  "bEpPuU": {
-    "defaultMessage": "Relevant f\u00fcr Berichte"
-  },
-  "bEqQvV": {
-    "defaultMessage": "Wert (ganzzahlig)"
-  },
-  "bErRwW": {
-    "defaultMessage": "Wert (numerisch)"
-  },
-  "bEsSxX": {
-    "defaultMessage": "Wert (Text)"
   },
   "jmuVHU": {
     "defaultMessage": "Diagramm-Thema"
@@ -984,7 +957,8 @@
     "defaultMessage": "{count} Beobachtungen ersetzt"
   },
   "oBsUpdM": {
-    "defaultMessage": "Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}"  },
+    "defaultMessage": "Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}"
+  },
   "iDFdLb": {
     "defaultMessage": "ID-Feld"
   },
@@ -992,16 +966,16 @@
     "defaultMessage": "Das Feld, das die Beobachtung in der Datenquelle identifiziert."
   },
   "iDFdV2": {
-    "defaultMessage": "Wird ben\u00f6tigt, wenn gleiche Beobachtungen mehrfach importiert werden."
+    "defaultMessage": "Wird benötigt, wenn gleiche Beobachtungen mehrfach importiert werden."
   },
   "iDFdV3": {
-    "defaultMessage": "Erm\u00f6glicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen."
+    "defaultMessage": "Ermöglicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen."
   },
   "pvImpLb": {
     "defaultMessage": "Vorheriger Import"
   },
   "pvImpVl": {
-    "defaultMessage": "Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import ausw\u00e4hlen. Falls nein: leer lassen."
+    "defaultMessage": "Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import auswählen. Falls nein: leer lassen."
   },
   "obs0Hdr": {
     "defaultMessage": "Beobachtung"
@@ -1032,5 +1006,17 @@
   },
   "gRVMtx": {
     "defaultMessage": "Menge (Text)"
+  },
+  "bCFgHi": {
+    "defaultMessage": "Bericht"
+  },
+  "bCGhIj": {
+    "defaultMessage": "Bericht Druckvorschau"
+  },
+  "bCHiJk": {
+    "defaultMessage": "Teilprojekt-Bericht Druckvorschau"
+  },
+  "bCIjKl": {
+    "defaultMessage": "Kein Berichts-Design gefunden. Sie müssen zuerst ein Design erstellen."
   }
 }
