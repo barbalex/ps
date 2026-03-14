@@ -7,17 +7,18 @@ import { useParams } from '@tanstack/react-router'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
-import { mapBoundsAtom, addOperationAtom } from '../../store.ts'
+import { mapBoundsAtom, addOperationAtom, tabsAtom } from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
 export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const [tabs, setTabs] = useAtom(tabsAtom)
   const { formatMessage } = useIntl()
 
   const { projectId, subprojectId } = useParams({ from })
@@ -39,6 +40,10 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = async () => {
+    // open map if not already visible and we're showing the layer
+    if (!showLayer && !tabs.includes('map')) {
+      setTabs([...tabs, 'map'])
+    }
     db.query(
       `UPDATE layer_presentations SET active = $1 WHERE layer_presentation_id = $2`,
       [!showLayer, layerPresentation.layer_presentation_id],
@@ -54,6 +59,9 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   }
 
   const onClickZoomToLayer = async () => {
+    if (!tabs.includes('map')) {
+      setTabs([...tabs, 'map'])
+    }
     // get all geometries from layer
     // first get all places with level
     // then get all actions/checks/observations with place_id
