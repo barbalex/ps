@@ -3,6 +3,8 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { createGoalReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
@@ -16,6 +18,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+  const { formatMessage } = useIntl()
 
   // Keep a ref to the current goalReportId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -109,7 +112,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Goal Report"
+      title={formatMessage({ id: 'KkGaeP', defaultMessage: 'Ziel-Bericht' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

@@ -1023,5 +1023,14 @@
   },
   "obs0Dnd": {
     "defaultMessage": "Felder per Drag-and-Drop sortieren"
+  },
+  "gRVMgi": {
+    "defaultMessage": "Menge (ganzzahlig)"
+  },
+  "gRVMnu": {
+    "defaultMessage": "Menge (numerisch)"
+  },
+  "gRVMtx": {
+    "defaultMessage": "Menge (Text)"
   }
 }

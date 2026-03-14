@@ -3,6 +3,8 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
+import { useIntl } from 'react-intl'
+
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -20,6 +22,7 @@ const from =
 export const GoalReportValue = () => {
   const { goalReportValueId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -76,7 +79,7 @@ export const GoalReportValue = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <DropdownField
-          label="Unit"
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
           name="unit_id"
           table="units"
           where="use_for_goal_report_values is true"
@@ -89,7 +92,7 @@ export const GoalReportValue = () => {
           validationMessage={validations?.unit_id?.message}
         />
         <TextField
-          label="Value (integer)"
+          label={formatMessage({ id: 'gRVMgi', defaultMessage: 'Menge (ganzzahlig)' })}
           name="value_integer"
           type="number"
           value={row.value_integer ?? ''}
@@ -98,7 +101,7 @@ export const GoalReportValue = () => {
           validationMessage={validations?.value_integer?.message}
         />
         <TextField
-          label="Value (numeric)"
+          label={formatMessage({ id: 'gRVMnu', defaultMessage: 'Menge (numerisch)' })}
           name="value_numeric"
           type="number"
           value={row.value_numeric ?? ''}
@@ -107,7 +110,7 @@ export const GoalReportValue = () => {
           validationMessage={validations?.value_numeric?.message}
         />
         <TextField
-          label="Value (text)"
+          label={formatMessage({ id: 'gRVMtx', defaultMessage: 'Menge (Text)' })}
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}
