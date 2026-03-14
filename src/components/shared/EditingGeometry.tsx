@@ -1,6 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, Textarea } = fluentUiReactComponents
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { SwitchField } from './SwitchField.tsx'
 import {
@@ -13,6 +14,7 @@ import {
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
 export const EditingGeometry = ({ row, table }) => {
+  const { formatMessage } = useIntl()
   const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
     editingPlaceGeometryAtom,
   )
@@ -56,8 +58,12 @@ export const EditingGeometry = ({ row, table }) => {
         : row.action_id === editingActionGeometry
 
   return (
-    <Field label="Geometry">
-      <SwitchField label="Edit" value={switchFieldValue} onChange={onChange} />
+    <Field label={formatMessage({ id: 'gEo0mY', defaultMessage: 'Geometrie' })}>
+      <SwitchField
+        label={formatMessage({ id: 'bCYCZD', defaultMessage: 'Bearbeiten' })}
+        value={switchFieldValue}
+        onChange={onChange}
+      />
       {switchFieldValue && !!row.geometry && (
         <Textarea
           value={row.geometry ? JSON.stringify(row.geometry, null, 3) : ''}
