@@ -21,6 +21,24 @@ export const SqlInitializer = () => {
         `,
       )
       const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
+
+      // Always run: remove duplicate layer_presentations per vector_layer_id
+      // (can be created by a previous bug; trigger prevents new ones)
+      try {
+        await db.exec(`
+          DELETE FROM layer_presentations
+          WHERE layer_presentation_id NOT IN (
+            SELECT DISTINCT ON (vector_layer_id) layer_presentation_id
+            FROM layer_presentations
+            WHERE vector_layer_id IS NOT NULL
+            ORDER BY vector_layer_id, active DESC, layer_presentation_id
+          )
+          AND vector_layer_id IS NOT NULL
+        `)
+      } catch (error) {
+        console.error('Error deduplicating layer_presentations:', error)
+      }
+
       if (projectsTableExists) {
         return setSqlInitializing(false)
       }

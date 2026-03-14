@@ -25,24 +25,28 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const db = usePGlite()
 
   const res = useLiveQuery(
-    `SELECT lp.* 
-    FROM layer_presentations lp
-      inner join vector_layers vl on lp.vector_layer_id = vl.vector_layer_id
-    WHERE vl.project_id = $1 AND vl.type = $2`,
-    [projectId, `${table}${level}`],
+    `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
+    FROM vector_layers vl
+      INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
+    WHERE vl.project_id = $1 AND vl.own_table = $2 AND vl.own_table_level = $3
+    ORDER BY lp.active DESC, lp.layer_presentation_id
+    LIMIT 1`,
+    [projectId, table, level],
   )
-  const layerPresentation: LayerPresentations | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0]
+  const layerPresentation: LayerPresentations | undefined =
+    row?.layer_presentation_id ? row : undefined
 
   const showLayer = layerPresentation?.active ?? false
-  const onClickShowLayer = () => {
+  const onClickShowLayer = async () => {
     db.query(
       `UPDATE layer_presentations SET active = $1 WHERE layer_presentation_id = $2`,
-      [!showLayer, layerPresentation?.layer_presentation_id],
+      [!showLayer, layerPresentation.layer_presentation_id],
     )
     addOperation({
       table: 'layer_presentations',
       rowIdName: 'layer_presentation_id',
-      rowId: layerPresentation?.layer_presentation_id,
+      rowId: layerPresentation.layer_presentation_id,
       operation: 'update',
       draft: { active: !showLayer },
       prev: { ...layerPresentation },
@@ -120,11 +124,17 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
         title={
           showLayer
             ? formatMessage(
-                { id: 'bCLmNo', defaultMessage: '{places}-Ebene aus Karte entfernen' },
+                {
+                  id: 'bCLmNo',
+                  defaultMessage: '{places}-Ebene aus Karte entfernen',
+                },
                 { places: placeNamePlural ?? table },
               )
             : formatMessage(
-                { id: 'bCKlMn', defaultMessage: '{places}-Ebene in Karte anzeigen' },
+                {
+                  id: 'bCKlMn',
+                  defaultMessage: '{places}-Ebene in Karte anzeigen',
+                },
                 { places: placeNamePlural ?? table },
               )
         }
