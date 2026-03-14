@@ -49,6 +49,13 @@ export const Header = ({ autoFocusRef, from }) => {
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
+  const geometryRes = useLiveQuery(
+    `SELECT geometry FROM actions WHERE action_id = $1`,
+    [actionId],
+  )
+  const geometry = geometryRes?.rows?.[0]?.geometry
+  const hasGeometry = !!geometry && geometry.features?.length > 0
+
   const addRow = async () => {
     const id = await createAction({
       projectId,
@@ -139,19 +146,14 @@ export const Header = ({ autoFocusRef, from }) => {
     })
 
   const onClickZoomTo = async () => {
-    const res = await db.query(
-      'SELECT geometry FROM actions WHERE action_id = $1',
-      [actionId],
-    )
-    const geometry: Actions['geometry'] | undefined = res?.rows?.[0]?.geometry
-    if (!geometry || geometry.features.length === 0) return alertNoGeometry()
+    if (!hasGeometry) return alertNoGeometry()
 
-    // 1. show map if not happening
+    // 1. show map if not already visible
     if (!tabs.includes('map')) {
       setTabs([...tabs, 'map'])
     }
 
-    // 2. zoom to place
+    // 2. zoom to action
     const buffered = buffer(geometry, 0.05)
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
@@ -174,6 +176,7 @@ export const Header = ({ autoFocusRef, from }) => {
           size="medium"
           icon={<TbZoomScan />}
           onClick={onClickZoomTo}
+          disabled={!hasGeometry}
           title={formatMessage({
             id: 'bCVzWA',
             defaultMessage: 'Zur Massnahme in Karte zoomen',
