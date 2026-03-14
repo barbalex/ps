@@ -8,6 +8,7 @@ import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createPlace, createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -34,6 +35,7 @@ export const Header = ({
   nameSingular,
   namePlural,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
@@ -172,8 +174,11 @@ export const Header = ({
 
   const alertNoGeometry = () =>
     addNotification({
-      title: 'No geometry',
-      body: `To zoom to a place, create it's geometry first`,
+      title: formatMessage({ id: 'bCWAXB', defaultMessage: 'Keine Geometrie' }),
+      body: formatMessage(
+        { id: 'bDCGHI', defaultMessage: 'Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie' },
+        { place: nameSingular },
+      ),
       intent: 'error',
     })
 
@@ -213,7 +218,10 @@ export const Header = ({
           size="medium"
           icon={<TbZoomScan />}
           onClick={onClickZoomTo}
-          title={`Zoom to ${nameSingular} in map`}
+          title={formatMessage(
+            { id: 'bDBFGH', defaultMessage: 'Auf {place} in Karte zoomen' },
+            { place: nameSingular },
+          )}
         />
       }
     />

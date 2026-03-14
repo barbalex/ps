@@ -1072,5 +1072,11 @@
   },
   "bDAEFG": {
     "defaultMessage": "Massnahmen-Bericht-Menge"
+  },
+  "bDBFGH": {
+    "defaultMessage": "Auf {place} in Karte zoomen"
+  },
+  "bDCGHI": {
+    "defaultMessage": "Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie"
   }
 }

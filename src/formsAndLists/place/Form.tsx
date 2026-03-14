@@ -1,4 +1,5 @@
 import { useParams, useLocation } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -17,6 +18,7 @@ export const PlaceForm = ({
   from,
   autoFocusRef,
 }) => {
+  const { formatMessage } = useIntl()
   const { subprojectId } = useParams({ from })
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('filter')
@@ -34,7 +36,7 @@ export const PlaceForm = ({
       {!isFilter && (
         <>
           <RadioGroupField
-            label="Level"
+            label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
             name="level"
             list={[1, 2]}
             value={row.level ?? ''}
@@ -44,7 +46,7 @@ export const PlaceForm = ({
           />
           {row.level === 2 && (
             <DropdownField
-              label="Parent Place"
+              label={formatMessage({ id: 'bElLqQ', defaultMessage: 'Übergeordneter Ort' })}
               name="parent_id"
               idField="place_id"
               table="places"
@@ -60,7 +62,7 @@ export const PlaceForm = ({
         </>
       )}
       <TextField
-        label="Since when does this place exist? (year)"
+        label={formatMessage({ id: 'bEmMrR', defaultMessage: 'Seit wann existiert dieser Ort? (Jahr)' })}
         name="since"
         value={row.since}
         type="number"
@@ -69,7 +71,7 @@ export const PlaceForm = ({
         validationMessage={validations?.since?.message}
       />
       <TextField
-        label="Until when did this place exist? (year)"
+        label={formatMessage({ id: 'bEnNsS', defaultMessage: 'Bis wann existierte dieser Ort? (Jahr)' })}
         name="until"
         value={row.until}
         type="number"

@@ -562,5 +562,7 @@
   "bCXBYC": "Pour zoomer sur une action, créez d'abord sa géométrie",
   "bCYCZD": "Modifier",
   "bCZDEF": "Valeur de mesure",
-  "bDAEFG": "Valeur de rapport de mesure"
+  "bDAEFG": "Valeur de rapport de mesure",
+  "bDBFGH": "Zoomer sur {place} dans la carte",
+  "bDCGHI": "Pour zoomer sur {place}, créez d'abord sa géométrie"
 }

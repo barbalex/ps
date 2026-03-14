@@ -562,5 +562,7 @@
   "bCXBYC": "Per ingrandire un'azione, crea prima la sua geometria",
   "bCYCZD": "Modifica",
   "bCZDEF": "Valore di misura",
-  "bDAEFG": "Valore rapporto di misura"
+  "bDAEFG": "Valore rapporto di misura",
+  "bDBFGH": "Ingrandisci {place} nella mappa",
+  "bDCGHI": "Per ingrandire {place}, crea prima la sua geometria"
 }

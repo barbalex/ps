@@ -588,5 +588,7 @@
   "bCXBYC": "To zoom to an action, create its geometry first",
   "bCYCZD": "Edit",
   "bCZDEF": "Action Value",
-  "bDAEFG": "Action Report Value"
+  "bDAEFG": "Action Report Value",
+  "bDBFGH": "Zoom to {place} in map",
+  "bDCGHI": "To zoom to {place}, create its geometry first"
 }
