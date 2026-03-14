@@ -550,5 +550,7 @@
   "bCLmNo": "Rimuovi il livello {places} dalla mappa",
   "bCMnOp": "Ingrandisci {places} sulla mappa",
   "bCNoPq": "Nessun dato trovato",
-  "bCOpQr": "Nessuna voce {table} trovata. Aggiungerne prima una."
+  "bCOpQr": "Nessuna voce {table} trovata. Aggiungerne prima una.",
+  "bCPrSt": "{label} non può essere modificato",
+  "bCQuRv": "(nessuna etichetta)"
 }

@@ -1036,5 +1036,11 @@
   },
   "bCOpQr": {
     "defaultMessage": "Keine {table}-Einträge vorhanden. Bitte zuerst einen hinzufügen."
+  },
+  "bCPrSt": {
+    "defaultMessage": "{label} kann nicht geändert werden"
+  },
+  "bCQuRv": {
+    "defaultMessage": "(kein Label)"
   }
 }

@@ -576,5 +576,7 @@
   "bCLmNo": "Remove {places} layer from map",
   "bCMnOp": "Zoom to {places} in map",
   "bCNoPq": "No data found",
-  "bCOpQr": "No {table} found. Please add one first."
+  "bCOpQr": "No {table} found. Please add one first.",
+  "bCPrSt": "{label} can't be changed",
+  "bCQuRv": "(no label)"
 }

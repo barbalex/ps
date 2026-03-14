@@ -550,5 +550,7 @@
   "bCLmNo": "Supprimer la couche {places} de la carte",
   "bCMnOp": "Zoomer sur {places} dans la carte",
   "bCNoPq": "Aucune donnée trouvée",
-  "bCOpQr": "Aucune entrée {table} trouvée. Veuillez d'abord en ajouter une."
+  "bCOpQr": "Aucune entrée {table} trouvée. Veuillez d'abord en ajouter une.",
+  "bCPrSt": "{label} ne peut pas être modifié",
+  "bCQuRv": "(aucun label)"
 }

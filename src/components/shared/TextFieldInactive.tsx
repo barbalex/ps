@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { makeStyles, Input, Body1, Field } = fluentUiReactComponents
+import { useIntl } from 'react-intl'
 type InputProps = React.ComponentProps<typeof Input>
 
 const useStyles = makeStyles({
@@ -9,12 +10,16 @@ const useStyles = makeStyles({
 
 export const TextFieldInactive = (props: InputProps) => {
   const styles = useStyles()
+  const { formatMessage } = useIntl()
 
   const [changed, setChanged] = useState(false)
 
   return (
     <Field
-      label={props.label ?? '(no label provided)'}
+      label={
+        props.label ??
+        formatMessage({ id: 'bCQuRv', defaultMessage: '(kein Label)' })
+      }
       validationMessage={props.validationMessage}
       validationState={props.validationState ?? 'none'}
     >
@@ -32,9 +37,15 @@ export const TextFieldInactive = (props: InputProps) => {
         }}
       />
       {changed && (
-        <Body1
-          className={styles.body}
-        >{`${props.label} can't be changed`}</Body1>
+        <Body1 className={styles.body}>
+          {formatMessage(
+            {
+              id: 'bCPrSt',
+              defaultMessage: '{label} kann nicht geändert werden',
+            },
+            { label: props.label },
+          )}
+        </Body1>
       )}
     </Field>
   )
