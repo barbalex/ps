@@ -3,6 +3,8 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
+import { useIntl } from 'react-intl'
+
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -10,12 +12,14 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import '../../form.css'
 import type ActionReportValues from '../../models/public/ActionReportValues.ts'
+
+import '../../form.css'
 
 export const ActionReportValue = ({ from }) => {
   const { actionReportValueId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -78,7 +82,7 @@ export const ActionReportValue = ({ from }) => {
       />
       <div className="form-container">
         <DropdownField
-          label="Unit"
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
           name="unit_id"
           table="units"
           where="use_for_action_report_values is true"
@@ -90,7 +94,7 @@ export const ActionReportValue = ({ from }) => {
           validationMessage={validations?.unit_id?.message}
         />
         <TextField
-          label="Value (integer)"
+          label={formatMessage({ id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' })}
           name="value_integer"
           type="number"
           value={row.value_integer ?? ''}
@@ -99,7 +103,7 @@ export const ActionReportValue = ({ from }) => {
           validationMessage={validations?.value_integer?.message}
         />
         <TextField
-          label="Value (numeric)"
+          label={formatMessage({ id: 'bErRwW', defaultMessage: 'Wert (numerisch)' })}
           name="value_numeric"
           type="number"
           value={row.value_numeric ?? ''}
@@ -108,7 +112,7 @@ export const ActionReportValue = ({ from }) => {
           validationMessage={validations?.value_numeric?.message}
         />
         <TextField
-          label="Value (text)"
+          label={formatMessage({ id: 'bEsSxX', defaultMessage: 'Wert (Text)' })}
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}

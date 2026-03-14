@@ -3,6 +3,8 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
+import { useIntl } from 'react-intl'
+
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -17,6 +19,7 @@ import '../../form.css'
 export const PlaceReportValue = ({ from }) => {
   const { placeReportValueId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const [validations, setValidations] = useState({})
 
@@ -74,7 +77,7 @@ export const PlaceReportValue = ({ from }) => {
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <DropdownField
-          label="Unit"
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
           name="unit_id"
           table="units"
           where="use_for_place_report_values is true"
@@ -86,7 +89,7 @@ export const PlaceReportValue = ({ from }) => {
           validationMessage={validations?.unit_id?.message}
         />
         <TextField
-          label="Value (integer)"
+          label={formatMessage({ id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' })}
           name="value_integer"
           type="number"
           value={row.value_integer ?? ''}
@@ -95,7 +98,7 @@ export const PlaceReportValue = ({ from }) => {
           validationMessage={validations?.value_integer?.message}
         />
         <TextField
-          label="Value (numeric)"
+          label={formatMessage({ id: 'bErRwW', defaultMessage: 'Wert (numerisch)' })}
           name="value_numeric"
           type="number"
           value={row.value_numeric ?? ''}
@@ -104,7 +107,7 @@ export const PlaceReportValue = ({ from }) => {
           validationMessage={validations?.value_numeric?.message}
         />
         <TextField
-          label="Value (text)"
+          label={formatMessage({ id: 'bEsSxX', defaultMessage: 'Wert (Text)' })}
           name="value_text"
           value={row.value_text ?? ''}
           onChange={onChange}
