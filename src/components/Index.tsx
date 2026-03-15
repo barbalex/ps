@@ -160,7 +160,7 @@ export const Index = () => {
             </h3>
             <FormattedMessage
               id="xP5UoK"
-              defaultMessage="arten-fördern.app kann auch Biotope: als Orte anlegen, Ziele definieren, Massnahmen und Kontrollen organisieren, analysieren und berichten."
+              defaultMessage="arten-fördern.app kann auch Biotope: beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
             />
           </div>
           <div className={styles.card}>
@@ -209,7 +209,7 @@ export const Index = () => {
             </h3>
             <FormattedMessage
               id="gjvJCk"
-              defaultMessage="arten-fördern.app funktioniert auf jedem Betriebssystem: Windows, MacOS, Linux, Android, iOS..."
+              defaultMessage="arten-fördern.app funktioniert auf jedem Betriebs&shy;system: Windows, Mac­OS, Linux, Android, iOS..."
             />
           </div>
           <div className={styles.card}>
@@ -227,8 +227,7 @@ export const Index = () => {
             </h3>
             <FormattedMessage
               id="rEN8QI"
-              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
-              values={{ br }}
+              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
             />
           </div>
           <div className={styles.card}>
