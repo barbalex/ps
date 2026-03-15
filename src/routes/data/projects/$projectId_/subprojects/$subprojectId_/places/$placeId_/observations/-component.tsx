@@ -8,6 +8,7 @@ const routeApi = getRouteApi(
 
 export const RouteComponent = () => {
   const { projectId, subprojectId, placeId } = routeApi.useParams()
+
   return (
     <Observations
       projectId={projectId}

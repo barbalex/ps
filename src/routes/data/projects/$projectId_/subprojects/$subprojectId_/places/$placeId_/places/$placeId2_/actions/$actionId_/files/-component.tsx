@@ -9,6 +9,7 @@ const routeApi = getRouteApi(
 export const RouteComponent = () => {
   const { projectId, subprojectId, placeId, placeId2, actionId } =
     routeApi.useParams()
+
   return (
     <Files
       projectId={projectId}
