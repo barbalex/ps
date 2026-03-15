@@ -17,7 +17,7 @@ export default defineConfig({
     // enabling start causes error: https://github.com/TanStack/router/issues/5795#issuecomment-3973127942
     // tanstackStart(),
     // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
-    tanstackRouter({ target: 'react', autoCodeSplitting: true }),
+    tanstackRouter({ target: 'react', autoCodeSplitting: true, routeFileIgnorePrefix: '-' }),
     react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
     formatjs({
       idInterpolationPattern: '[sha512:contenthash:base64:6]',

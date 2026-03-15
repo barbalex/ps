@@ -1,12 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Files } from '../../../../../formsAndLists/files.tsx'
 import { NotFound } from '../../../../../components/NotFound.tsx'
-
-const RouteComponent = () => {
-  const { projectId } = Route.useParams()
-  return <Files projectId={projectId} />
-}
+import { RouteComponent } from './-component.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/files/')({
   component: RouteComponent,
