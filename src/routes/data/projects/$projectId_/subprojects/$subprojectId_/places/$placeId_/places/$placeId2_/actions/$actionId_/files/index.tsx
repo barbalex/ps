@@ -7,7 +7,7 @@ const from =
 
 export const Route = createFileRoute(from)({
   component: () => {
-    const { projectId, subprojectId, placeId, actionId } = useParams({
+    const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({
       from,
     })
 
@@ -16,6 +16,7 @@ export const Route = createFileRoute(from)({
         projectId={projectId}
         subprojectId={subprojectId}
         placeId={placeId}
+        placeId2={placeId2}
         actionId={actionId}
       />
     )

@@ -60,7 +60,7 @@ export const Files = ({
         {loading ? (
           <Loading />
         ) : (
-          navs.map(({ id, label, url, mimetype }) => {
+          navs.filter((nav) => nav.id).map(({ id, label, url, mimetype }) => {
             let imgSrc = undefined
             if (
               (mimetype?.includes?.('image') || mimetype?.includes?.('pdf')) &&
