@@ -92,15 +92,6 @@ export const Index = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="CiJ0SG" defaultMessage="Berichte" />
-            </h3>
-            <FormattedMessage
-              id="pPWZGx"
-              defaultMessage="...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
               <FormattedMessage
                 id="L7Xr8Z"
                 defaultMessage="Beobachtungen Dritter"
@@ -109,6 +100,15 @@ export const Index = () => {
             <FormattedMessage
               id="sST5WH"
               defaultMessage="...importieren, prüfen und (Teil-)Populationen zuordnen."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage id="CiJ0SG" defaultMessage="Berichte" />
+            </h3>
+            <FormattedMessage
+              id="pPWZGx"
+              defaultMessage="...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
             />
           </div>
           <div className={styles.card}>
