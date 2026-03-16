@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- vector_layer_line_caps
-insert into vector_layer_line_caps (line_cap, sort, updated_by) values ('butt', 1, 'admin'), ('round', 2, 'admin'), ('square', 3, 'admin')
-on conflict (line_cap) do nothing;
-
 -- vector_layer_line_joins
 insert into vector_layer_line_joins (line_join, sort, updated_by) values ('arcs', 1, 'admin'), ('bevel', 2, 'admin'), ('miter', 3, 'admin'), ('miter-clip', 4, 'admin'), ('round', 5, 'admin')
 on conflict (line_join) do nothing;

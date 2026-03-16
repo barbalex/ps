@@ -1,3 +1,19 @@
+export const vectorLayerLineCapOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'butt', labelId: 'Qr1StU', defaultMessage: 'Abrupt', sort: 1 },
+  { value: 'round', labelId: 'Rs2TuV', defaultMessage: 'Rund', sort: 2 },
+  {
+    value: 'square',
+    labelId: 'St3UvW',
+    defaultMessage: 'Quadratisch',
+    sort: 3,
+  },
+]
+
 export const vectorLayerMarkerTypeOptions: {
   value: string
   labelId: string

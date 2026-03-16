@@ -1691,14 +1691,9 @@ CREATE TYPE vector_layer_marker_types_enum AS ENUM (
   'circle', 'marker'
 );
 
-create table if not exists vector_layer_line_caps (
-  line_cap text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE vector_layer_line_caps_enum AS ENUM (
+  'butt', 'round', 'square'
 );
-CREATE INDEX IF NOT EXISTS vector_layer_line_caps_sort_idx ON vector_layer_line_caps USING btree(sort);
 
 create table if not exists vector_layer_line_joins (
   line_join text primary key,
@@ -1731,7 +1726,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   stroke boolean DEFAULT TRUE,
   color text DEFAULT '#3388ff',
   weight integer DEFAULT 3,
-  line_cap text DEFAULT 'round' REFERENCES vector_layer_line_caps(line_cap) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  line_cap vector_layer_line_caps_enum DEFAULT 'round',
   line_join text DEFAULT 'round' REFERENCES vector_layer_line_joins(line_join) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   dash_array text DEFAULT NULL,
   dash_offset text DEFAULT NULL,
