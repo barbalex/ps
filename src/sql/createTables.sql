@@ -535,14 +535,7 @@ COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data 
 --------------------------------------------------------------
 -- units
 --
-create table if not exists unit_types (
-  type text primary key default null,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-CREATE INDEX IF NOT EXISTS unit_types_sort_idx ON unit_types USING btree(sort);
+CREATE TYPE unit_types_enum AS ENUM ('integer', 'numeric', 'text');
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -558,7 +551,7 @@ CREATE TABLE IF NOT EXISTS units(
   name text DEFAULT NULL,
   summable boolean DEFAULT FALSE,
   sort integer DEFAULT NULL,
-  type text DEFAULT null references unit_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED, -- TODO: not in use?
+  type unit_types_enum DEFAULT NULL, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),

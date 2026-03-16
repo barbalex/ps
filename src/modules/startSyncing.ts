@@ -262,16 +262,6 @@ export const startSyncing = async () => {
           table: 'list_values',
           primaryKey: ['list_value_id'],
         },
-        unit_types: {
-          shape: {
-            url,
-            params: {
-              table: 'unit_types',
-            },
-          },
-          table: 'unit_types',
-          primaryKey: ['type'],
-        },
         units: {
           shape: {
             url,

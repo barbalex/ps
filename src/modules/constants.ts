@@ -1,3 +1,19 @@
+export const unitTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'integer', labelId: 'iR9StU', defaultMessage: 'Ganzzahl', sort: 1 },
+  {
+    value: 'numeric',
+    labelId: 'jV0WxY',
+    defaultMessage: 'Dezimalzahl',
+    sort: 2,
+  },
+  { value: 'text', labelId: 'kZ1AbC', defaultMessage: 'Text', sort: 3 },
+]
+
 export const listValueTypeOptions: {
   value: string
   labelId: string
