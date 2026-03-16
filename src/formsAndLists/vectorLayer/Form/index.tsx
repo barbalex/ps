@@ -5,7 +5,7 @@ import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
-import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
+import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { Property } from './Property.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
 
@@ -25,12 +25,22 @@ export const VectorLayerForm = ({
   from,
 }) => {
   const { formatMessage } = useIntl()
+  const vectorLayerTypeLabelMap = Object.fromEntries(
+    vectorLayerTypeOptions
+      .filter((o) => ['wfs', 'upload', 'own'].includes(o.value))
+      .map((o) => [
+        o.value,
+        formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
+      ]),
+  )
+
   return (
     <>
-      <DropdownFieldSimpleOptions
+      <RadioGroupField
         label={formatMessage({ id: 'xTeBn/', defaultMessage: 'Typ' })}
         name="type"
-        options={vectorLayerTypes}
+        list={vectorLayerTypes}
+        labelMap={vectorLayerTypeLabelMap}
         value={row.type ?? ''}
         onChange={onChange}
       />
