@@ -24,6 +24,8 @@ export default interface ProjectReportSubdesigns {
   /** JSON design of the project report subdesign. */
   design: unknown | null;
 
+  label: string | null;
+
   created_at: Date;
 
   updated_at: Date;

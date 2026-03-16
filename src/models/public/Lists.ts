@@ -3,6 +3,7 @@
 
 import type { AccountsAccountId } from './Accounts';
 import type { ProjectsProjectId } from './Projects';
+import type { ListValueTypesType } from './ListValueTypes';
 
 /** Identifier type for public.lists */
 export type ListsListId = string & { __brand: 'public.lists' };
@@ -21,6 +22,8 @@ export default interface Lists {
 
   /** Name of list, like "Gefährdung" */
   name: string | null;
+
+  value_type: ListValueTypesType | null;
 
   data: unknown | null;
 
@@ -51,6 +54,8 @@ export interface ListsInitializer {
 
   /** Name of list, like "Gefährdung" */
   name?: string | null;
+
+  value_type?: ListValueTypesType | null;
 
   data?: unknown | null;
 
@@ -83,6 +88,8 @@ export interface ListsMutator {
 
   /** Name of list, like "Gefährdung" */
   name?: string | null;
+
+  value_type?: ListValueTypesType | null;
 
   data?: unknown | null;
 

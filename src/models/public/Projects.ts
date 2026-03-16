@@ -80,15 +80,6 @@ export default interface Projects {
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects: boolean | null;
 
-  /** Whether files are used in table places. Preset: true */
-  files_active_places: boolean | null;
-
-  /** Whether files are used in table actions. Preset: true */
-  files_active_actions: boolean | null;
-
-  /** Whether files are used in table checks. Preset: true */
-  files_active_checks: boolean | null;
-
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs: string | null;
 
@@ -114,7 +105,10 @@ export interface ProjectsInitializer {
 
   label?: string | null;
 
-  /** "species" or "biotope", preset: "species" */
+  /**
+   * "species" or "biotope", preset: "species"
+   * Default value: 'species'::text
+   */
   type?: ProjectTypesType | null;
 
   /** Preset: "Art" */
@@ -179,24 +173,6 @@ export interface ProjectsInitializer {
    * Default value: true
    */
   files_active_subprojects?: boolean | null;
-
-  /**
-   * Whether files are used in table places. Preset: true
-   * Default value: true
-   */
-  files_active_places?: boolean | null;
-
-  /**
-   * Whether files are used in table actions. Preset: true
-   * Default value: true
-   */
-  files_active_actions?: boolean | null;
-
-  /**
-   * Whether files are used in table checks. Preset: true
-   * Default value: true
-   */
-  files_active_checks?: boolean | null;
 
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs?: string | null;
@@ -282,15 +258,6 @@ export interface ProjectsMutator {
 
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects?: boolean | null;
-
-  /** Whether files are used in table places. Preset: true */
-  files_active_places?: boolean | null;
-
-  /** Whether files are used in table actions. Preset: true */
-  files_active_actions?: boolean | null;
-
-  /** Whether files are used in table checks. Preset: true */
-  files_active_checks?: boolean | null;
 
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs?: string | null;

@@ -43,8 +43,6 @@ export default interface Places {
 
   label: string | null;
 
-  files_active_places: boolean | null;
-
   created_at: Date;
 
   updated_at: Date;
@@ -92,9 +90,6 @@ export interface PlacesInitializer {
 
   label?: string | null;
 
-  /** Default value: true */
-  files_active_places?: boolean | null;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -139,8 +134,6 @@ export interface PlacesMutator {
   bbox?: unknown | null;
 
   label?: string | null;
-
-  files_active_places?: boolean | null;
 
   created_at?: Date;
 

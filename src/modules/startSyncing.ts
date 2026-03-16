@@ -249,6 +249,7 @@ export const startSyncing = async () => {
                 'account_id',
                 'project_id',
                 'name',
+                'value_type',
                 'data',
                 'obsolete',
                 'created_at',

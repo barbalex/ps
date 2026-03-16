@@ -14,7 +14,7 @@ import '../../form.css'
 type Props = {
   onChange: (e: React.ChangeEvent<unknown>, data?: unknown) => Promise<void>
   validations?: Record<string, { state: string; message: string }>
-  row: Lists & { value_type?: string | null }
+  row: Lists
   orIndex?: number
   autoFocusRef?: React.Ref<HTMLInputElement>
 }

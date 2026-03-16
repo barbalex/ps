@@ -19,6 +19,16 @@ export default interface ListValues {
   /** Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used. */
   value: string | null;
 
+  value_integer: number | null;
+
+  value_numeric: string | null;
+
+  value_text: string | null;
+
+  value_date: Date | null;
+
+  value_datetime: Date | null;
+
   obsolete: boolean | null;
 
   label: string | null;
@@ -43,6 +53,16 @@ export interface ListValuesInitializer {
   /** Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used. */
   value?: string | null;
 
+  value_integer?: number | null;
+
+  value_numeric?: string | null;
+
+  value_text?: string | null;
+
+  value_date?: Date | null;
+
+  value_datetime?: Date | null;
+
   /** Default value: false */
   obsolete?: boolean | null;
 
@@ -66,6 +86,16 @@ export interface ListValuesMutator {
 
   /** Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used. */
   value?: string | null;
+
+  value_integer?: number | null;
+
+  value_numeric?: string | null;
+
+  value_text?: string | null;
+
+  value_date?: Date | null;
+
+  value_datetime?: Date | null;
 
   obsolete?: boolean | null;
 

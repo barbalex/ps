@@ -85,6 +85,15 @@ export default interface PlaceLevels {
   /** Are observations used? Preset: true */
   observations: boolean | null;
 
+  /** Are files used for places on this level? Preset: false */
+  place_files: boolean | null;
+
+  /** Are files used for actions on this level? Preset: false */
+  action_files: boolean | null;
+
+  /** Are files used for checks on this level? Preset: false */
+  check_files: boolean | null;
+
   label: string | null;
 
   created_at: Date;
@@ -151,57 +160,75 @@ export interface PlaceLevelsInitializer {
 
   /**
    * Are reports used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   reports?: boolean | null;
 
   /**
    * Are report values used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   report_values?: boolean | null;
 
   /**
    * Are actions used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   actions?: boolean | null;
 
   /**
    * Are action values used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   action_values?: boolean | null;
 
   /**
    * Are action reports used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   action_reports?: boolean | null;
 
   /**
    * Are checks used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   checks?: boolean | null;
 
   /**
    * Are check values used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   check_values?: boolean | null;
 
   /**
    * Are check taxa used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   check_taxa?: boolean | null;
 
   /**
    * Are observations used? Preset: true
-   * Default value: false
+   * Default value: true
    */
   observations?: boolean | null;
+
+  /**
+   * Are files used for places on this level? Preset: false
+   * Default value: true
+   */
+  place_files?: boolean | null;
+
+  /**
+   * Are files used for actions on this level? Preset: false
+   * Default value: true
+   */
+  action_files?: boolean | null;
+
+  /**
+   * Are files used for checks on this level? Preset: false
+   * Default value: true
+   */
+  check_files?: boolean | null;
 
   /** Default value: now() */
   created_at?: Date;
@@ -289,6 +316,15 @@ export interface PlaceLevelsMutator {
 
   /** Are observations used? Preset: true */
   observations?: boolean | null;
+
+  /** Are files used for places on this level? Preset: false */
+  place_files?: boolean | null;
+
+  /** Are files used for actions on this level? Preset: false */
+  action_files?: boolean | null;
+
+  /** Are files used for checks on this level? Preset: false */
+  check_files?: boolean | null;
 
   created_at?: Date;
 

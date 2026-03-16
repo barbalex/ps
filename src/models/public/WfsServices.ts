@@ -29,6 +29,8 @@ export default interface WfsServices {
   /** It seems that this is the crs bbox calls have to be made in */
   default_crs: string | null;
 
+  label: string | null;
+
   created_at: Date;
 
   updated_at: Date;

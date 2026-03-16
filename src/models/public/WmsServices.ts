@@ -29,6 +29,8 @@ export default interface WmsServices {
 
   default_crs: string | null;
 
+  label: string | null;
+
   created_at: Date;
 
   updated_at: Date;

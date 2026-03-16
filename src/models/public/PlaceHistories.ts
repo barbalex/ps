@@ -41,8 +41,6 @@ export default interface PlaceHistories {
 
   label: string | null;
 
-  files_active_places: boolean | null;
-
   created_at: Date;
 
   updated_at: Date;
@@ -83,9 +81,6 @@ export interface PlaceHistoriesInitializer {
 
   bbox?: unknown | null;
 
-  /** Default value: true */
-  files_active_places?: boolean | null;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -125,8 +120,6 @@ export interface PlaceHistoriesMutator {
   geometry?: unknown | null;
 
   bbox?: unknown | null;
-
-  files_active_places?: boolean | null;
 
   created_at?: Date;
 
