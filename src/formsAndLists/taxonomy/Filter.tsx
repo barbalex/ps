@@ -1,6 +1,7 @@
 import { Filter } from '../../components/shared/Filter/index.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { taxonomyTypeOptions } from '../../modules/constants.ts'
 
 type Props = {
   from: string
@@ -16,12 +17,10 @@ export const TaxonomyFilter = ({ from }: Props) => (
           value={row.name ?? ''}
           onChange={onChange}
         />
-        <DropdownField
+        <RadioGroupField
           label="Type"
           name="type"
-          table="taxonomy_types"
-          labelField="type"
-          orderBy="sort, type"
+          list={taxonomyTypeOptions.map((o) => o.value)}
           value={row.type ?? ''}
           onChange={onChange}
         />

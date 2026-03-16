@@ -3,7 +3,7 @@
 
 import type { AccountsAccountId } from './Accounts';
 import type { ProjectsProjectId } from './Projects';
-import type { TaxonomyTypesType } from './TaxonomyTypes';
+import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum';
 
 /** Identifier type for public.taxonomies */
 export type TaxonomiesTaxonomyId = string & { __brand: 'public.taxonomies' };
@@ -21,7 +21,7 @@ export default interface Taxonomies {
   project_id: ProjectsProjectId | null;
 
   /** One of: "species", "biotope". Preset: "species" */
-  type: TaxonomyTypesType | null;
+  type: TaxonomyTypesEnum | null;
 
   /** Shortish name of taxonomy, like "Flora der Schweiz, 1995" */
   name: string | null;
@@ -58,7 +58,7 @@ export interface TaxonomiesInitializer {
   project_id?: ProjectsProjectId | null;
 
   /** One of: "species", "biotope". Preset: "species" */
-  type?: TaxonomyTypesType | null;
+  type?: TaxonomyTypesEnum | null;
 
   /** Shortish name of taxonomy, like "Flora der Schweiz, 1995" */
   name?: string | null;
@@ -97,7 +97,7 @@ export interface TaxonomiesMutator {
   project_id?: ProjectsProjectId | null;
 
   /** One of: "species", "biotope". Preset: "species" */
-  type?: TaxonomyTypesType | null;
+  type?: TaxonomyTypesEnum | null;
 
   /** Shortish name of taxonomy, like "Flora der Schweiz, 1995" */
   name?: string | null;

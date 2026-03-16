@@ -369,21 +369,18 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 --------------------------------------------------------------
 -- taxonomies
 --
-create table if not exists taxonomy_types (
-  type text primary key default null,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
+CREATE TYPE taxonomy_types_enum AS ENUM ('species', 'biotope');
 
-create index if not exists taxonomy_types_sort_idx on taxonomy_types using btree(sort);
+create or replace function immutabletaxonomytype(taxonomy_types_enum) returns text
+strict immutable parallel safe
+as $$ begin return $1::text; end $$
+language plpgsql;
 
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  type text DEFAULT NULL references taxonomy_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
+  type taxonomy_types_enum DEFAULT NULL,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
@@ -393,7 +390,7 @@ CREATE TABLE IF NOT EXISTS taxonomies(
       when name IS NULL THEN taxonomy_id::text
       WHEN type IS NULL THEN taxonomy_id::text 
       when name IS NULL THEN taxonomy_id::text 
-      else name || ' (' || type || ')'
+      else name || ' (' || immutabletaxonomytype(type) || ')'
     END
   ) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),

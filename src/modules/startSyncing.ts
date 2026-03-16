@@ -176,14 +176,6 @@ export const startSyncing = async () => {
           table: 'subproject_histories',
           primaryKey: ['subproject_history_id'],
         },
-        taxonomy_types: {
-          shape: {
-            url,
-            params: { table: 'taxonomy_types' },
-          },
-          table: 'taxonomy_types',
-          primaryKey: ['type'],
-        },
         taxonomies: {
           shape: {
             url,

@@ -1,4 +1,13 @@
-// TODO: most of these constants are not used yet
+export const taxonomyTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'species', labelId: 'xE2FgH', defaultMessage: 'Arten', sort: 1 },
+  { value: 'biotope', labelId: 'yI3JkL', defaultMessage: 'Biotope', sort: 2 },
+]
+
 export const userRoleOptions: {
   value: string
   labelId: string
@@ -20,6 +29,7 @@ export const projectTypeOptions: {
   { value: 'biotope', labelId: 'yI3JkL', defaultMessage: 'Biotope', sort: 2 },
 ]
 
+// TODO: most of these constants are not used yet
 export const constants = {
   titleRowHeight: 52,
   mobileViewMaxWidth: 999,
