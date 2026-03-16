@@ -1,3 +1,18 @@
+export const observationImportGeometryMethodOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  {
+    value: 'coordinates',
+    labelId: 'lD2EfG',
+    defaultMessage: 'Koordinaten',
+    sort: 1,
+  },
+  { value: 'geojson', labelId: 'mH3IjK', defaultMessage: 'GeoJSON', sort: 2 },
+]
+
 export const unitTypeOptions: {
   value: string
   labelId: string

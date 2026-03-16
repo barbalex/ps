@@ -3,7 +3,7 @@
 
 import type { AccountsAccountId } from './Accounts';
 import type { SubprojectsSubprojectId } from './Subprojects';
-import type { ObservationImportsGeometryMethodsGeometryMethod } from './ObservationImportsGeometryMethods';
+import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum';
 
 /** Identifier type for public.observation_imports */
 export type ObservationImportsObservationImportId = string & { __brand: 'public.observation_imports' };
@@ -25,7 +25,7 @@ export default interface ObservationImports {
 
   id_field: string | null;
 
-  geometry_method: ObservationImportsGeometryMethodsGeometryMethod | null;
+  geometry_method: ObservationImportsGeometryMethodsEnum | null;
 
   geojson_geometry_field: string | null;
 
@@ -81,7 +81,7 @@ export interface ObservationImportsInitializer {
 
   id_field?: string | null;
 
-  geometry_method?: ObservationImportsGeometryMethodsGeometryMethod | null;
+  geometry_method?: ObservationImportsGeometryMethodsEnum | null;
 
   geojson_geometry_field?: string | null;
 
@@ -136,7 +136,7 @@ export interface ObservationImportsMutator {
 
   id_field?: string | null;
 
-  geometry_method?: ObservationImportsGeometryMethodsGeometryMethod | null;
+  geometry_method?: ObservationImportsGeometryMethodsEnum | null;
 
   geojson_geometry_field?: string | null;
 

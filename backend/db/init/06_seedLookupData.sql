@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- observation_imports_geometry_methods
-insert into observation_imports_geometry_methods (geometry_method, sort, updated_by) values ('coordinates', 1, 'admin'), ('geojson', 2, 'admin')
-on conflict (geometry_method) do nothing;
-
 -- vector_layer_types
 insert into vector_layer_types ("type", updated_by) values ('wfs', 'admin'), ('upload', 'admin'), ('own', 'admin'), ('places1', 'admin'), ('places2', 'admin'), ('actions1', 'admin'), ('actions2', 'admin'), ('checks1', 'admin'), ('checks2', 'admin'), ('observations_assigned1', 'admin'), ('observations_assigned_lines1', 'admin'), ('observations_assigned2', 'admin'), ('observations_assigned_lines2', 'admin'), ('observations_to_assess', 'admin'), ('observations_not_to_assign', 'admin')
 on conflict ("type") do nothing;

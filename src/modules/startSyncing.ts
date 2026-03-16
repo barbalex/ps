@@ -797,16 +797,6 @@ export const startSyncing = async () => {
           table: 'field_sorts',
           primaryKey: ['field_sort_id'],
         },
-        observation_imports_geometry_methods: {
-          shape: {
-            url,
-            params: {
-              table: 'observation_imports_geometry_methods',
-            },
-          },
-          table: 'observation_imports_geometry_methods',
-          primaryKey: ['geometry_method'],
-        },
         observation_imports: {
           shape: {
             url,

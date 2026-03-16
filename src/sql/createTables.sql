@@ -1401,14 +1401,7 @@ COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name'
 --------------------------------------------------------------
 --observation_imports
 --
-create table if not exists observation_imports_geometry_methods (
-  geometry_method text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-CREATE INDEX IF NOT EXISTS observation_imports_geometry_methods_sort_idx ON observation_imports_geometry_methods USING btree(sort);
+CREATE TYPE observation_imports_geometry_methods_enum AS ENUM ('coordinates', 'geojson');
 
 CREATE TABLE IF NOT EXISTS observation_imports(
   observation_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1417,7 +1410,7 @@ CREATE TABLE IF NOT EXISTS observation_imports(
   created_time timestamptz DEFAULT now(),
   inserted_count integer DEFAULT NULL,
   id_field text DEFAULT NULL,
-  geometry_method text DEFAULT NULL REFERENCES observation_imports_geometry_methods(geometry_method) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  geometry_method observation_imports_geometry_methods_enum DEFAULT NULL,
   geojson_geometry_field text DEFAULT NULL,
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
