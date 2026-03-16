@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- project_types
-insert into project_types ("type", sort, updated_by) values ('species', 1, 'admin'), ('biotope', 2, 'admin')
-on conflict ("type") do nothing;
-
 -- user_roles
 insert into user_roles ("role", updated_by) values ('manager', 'admin'), ('editor', 'admin'), ('reader', 'admin')
 on conflict ("role") do nothing;

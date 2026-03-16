@@ -1,20 +1,14 @@
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../../components/shared/RadioGroupFromOptions.tsx'
+import { projectTypeOptions } from '../../../modules/constants.ts'
 
 export const Type = ({ onChange, validations, row }) => {
   const { formatMessage } = useIntl()
-  const res = useLiveQuery(`SELECT type FROM project_types order by sort, type`)
 
-  const typeLabels: Record<string, string> = {
-    species: formatMessage({ id: 'xE2FgH', defaultMessage: 'Arten' }),
-    biotope: formatMessage({ id: 'yI3JkL', defaultMessage: 'Biotope' }),
-  }
-
-  const options = (res?.rows ?? []).map((r) => ({
-    value: r.type,
-    label: typeLabels[r.type] ?? r.type,
+  const options = projectTypeOptions.map(({ value, labelId, defaultMessage }) => ({
+    value,
+    label: formatMessage({ id: labelId, defaultMessage }),
   }))
 
   return (

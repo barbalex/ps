@@ -10,7 +10,6 @@ const tablesSyncData = [
     primaryKey: ['user_id'],
   },
   { table: 'accounts', primaryKey: ['account_id'] },
-  { table: 'project_types', primaryKey: ['type'] },
   { table: 'projects', primaryKey: ['project_id'] },
   // {
   //   table: 'place_levels',

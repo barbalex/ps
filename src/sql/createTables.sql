@@ -116,15 +116,7 @@ CREATE TABLE IF NOT EXISTS auth_verifications(
 --------------------------------------------------------------
 -- projects
 --
-create table if not exists project_types (
-  type text primary key default null,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-
-create index if not exists project_types_sort_idx on project_types using btree(sort);
+CREATE TYPE project_types_enum AS ENUM ('species', 'biotope');
 
 -- TODO: add crs for presentation
 -- TODO: add geometry
@@ -133,7 +125,7 @@ CREATE TABLE IF NOT EXISTS projects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type text DEFAULT 'species' references project_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
+  type project_types_enum DEFAULT 'species',
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_name_singular_en text DEFAULT NULL,

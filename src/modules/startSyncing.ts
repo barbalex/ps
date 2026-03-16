@@ -63,14 +63,6 @@ export const startSyncing = async () => {
           table: 'auth_verifications',
           primaryKey: ['verification_idverifications'],
         },
-        project_types: {
-          shape: {
-            url,
-            params: { table: 'project_types' },
-          },
-          table: 'project_types',
-          primaryKey: ['type'],
-        },
         projects: {
           shape: {
             url,
