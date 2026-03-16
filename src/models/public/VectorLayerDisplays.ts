@@ -5,7 +5,7 @@ import type { AccountsAccountId } from './Accounts';
 import type { VectorLayersVectorLayerId } from './VectorLayers';
 import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum';
 import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum';
-import type { VectorLayerLineJoinsLineJoin } from './VectorLayerLineJoins';
+import type { default as VectorLayerLineJoinsEnum } from './VectorLayerLineJoinsEnum';
 import type { VectorLayerFillRulesFillRule } from './VectorLayerFillRules';
 
 /** Identifier type for public.vector_layer_displays */
@@ -48,7 +48,7 @@ export default interface VectorLayerDisplays {
   line_cap: VectorLayerLineCapsEnum | null;
 
   /** A string that defines shape to be used at the corners of the stroke. https://leafletjs.com/reference.html#path-linejoin, https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin#usage_context */
-  line_join: VectorLayerLineJoinsLineJoin | null;
+  line_join: VectorLayerLineJoinsEnum | null;
 
   /** A string that defines the stroke dash pattern. Doesn't work on Canvas-powered layers in some old browsers. https://leafletjs.com/reference.html#path-dasharray. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray */
   dash_array: string | null;
@@ -133,9 +133,9 @@ export interface VectorLayerDisplaysInitializer {
 
   /**
    * A string that defines shape to be used at the corners of the stroke. https://leafletjs.com/reference.html#path-linejoin, https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin#usage_context
-   * Default value: 'round'::text
+   * Default value: 'round'::vector_layer_line_joins_enum
    */
-  line_join?: VectorLayerLineJoinsLineJoin | null;
+  line_join?: VectorLayerLineJoinsEnum | null;
 
   /** A string that defines the stroke dash pattern. Doesn't work on Canvas-powered layers in some old browsers. https://leafletjs.com/reference.html#path-dasharray. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray */
   dash_array?: string | null;
@@ -210,7 +210,7 @@ export interface VectorLayerDisplaysMutator {
   line_cap?: VectorLayerLineCapsEnum | null;
 
   /** A string that defines shape to be used at the corners of the stroke. https://leafletjs.com/reference.html#path-linejoin, https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin#usage_context */
-  line_join?: VectorLayerLineJoinsLineJoin | null;
+  line_join?: VectorLayerLineJoinsEnum | null;
 
   /** A string that defines the stroke dash pattern. Doesn't work on Canvas-powered layers in some old browsers. https://leafletjs.com/reference.html#path-dasharray. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray */
   dash_array?: string | null;

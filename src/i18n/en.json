@@ -625,5 +625,6 @@
   "bDGKLM": "Observations assigned",
   "bDHLMN": "Observation assignment lines",
   "bDIMNO": "Observations to assess",
-  "bDJNOP": "Observations not to assign"
+  "bDJNOP": "Observations not to assign",
+  "bDKOPQ": "Miter-clip (limited sharp)"
 }

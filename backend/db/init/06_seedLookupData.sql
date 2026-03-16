@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- vector_layer_line_joins
-insert into vector_layer_line_joins (line_join, sort, updated_by) values ('arcs', 1, 'admin'), ('bevel', 2, 'admin'), ('miter', 3, 'admin'), ('miter-clip', 4, 'admin'), ('round', 5, 'admin')
-on conflict (line_join) do nothing;
-
 -- vector_layer_fill_rules
 insert into vector_layer_fill_rules (fill_rule, sort, updated_by) values ('nonzero', 1, 'admin'), ('evenodd', 2, 'admin')
 on conflict (fill_rule) do nothing;

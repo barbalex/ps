@@ -1,3 +1,21 @@
+export const vectorLayerLineJoinOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'arcs', labelId: 'Xy8ZaB', defaultMessage: 'Bogen', sort: 1 },
+  { value: 'bevel', labelId: 'Uv5WxY', defaultMessage: 'Schräg', sort: 2 },
+  { value: 'miter', labelId: 'Tu4VwX', defaultMessage: 'Spitz', sort: 3 },
+  {
+    value: 'miter-clip',
+    labelId: 'bDKOPQ',
+    defaultMessage: 'Spitz (begrenzt)',
+    sort: 4,
+  },
+  { value: 'round', labelId: 'Rs2TuV', defaultMessage: 'Rund', sort: 5 },
+]
+
 export const vectorLayerLineCapOptions: {
   value: string
   labelId: string

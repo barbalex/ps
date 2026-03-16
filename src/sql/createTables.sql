@@ -1695,14 +1695,9 @@ CREATE TYPE vector_layer_line_caps_enum AS ENUM (
   'butt', 'round', 'square'
 );
 
-create table if not exists vector_layer_line_joins (
-  line_join text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE vector_layer_line_joins_enum AS ENUM (
+  'arcs', 'bevel', 'miter', 'miter-clip', 'round'
 );
-CREATE INDEX IF NOT EXISTS vector_layer_line_joins_sort_idx ON vector_layer_line_joins USING btree(sort);
 
 create table if not exists vector_layer_fill_rules (
   fill_rule text primary key,
@@ -1727,7 +1722,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   color text DEFAULT '#3388ff',
   weight integer DEFAULT 3,
   line_cap vector_layer_line_caps_enum DEFAULT 'round',
-  line_join text DEFAULT 'round' REFERENCES vector_layer_line_joins(line_join) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  line_join vector_layer_line_joins_enum DEFAULT 'round',
   dash_array text DEFAULT NULL,
   dash_offset text DEFAULT NULL,
   fill boolean DEFAULT TRUE,
