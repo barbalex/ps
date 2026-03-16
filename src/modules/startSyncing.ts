@@ -939,16 +939,6 @@ export const startSyncing = async () => {
           table: 'vector_layer_geoms',
           primaryKey: ['vector_layer_geom_id'],
         },
-        vector_layer_fill_rules: {
-          shape: {
-            url,
-            params: {
-              table: 'vector_layer_fill_rules',
-            },
-          },
-          table: 'vector_layer_fill_rules',
-          primaryKey: ['fill_rule'],
-        },
         vector_layer_displays: {
           shape: {
             url,

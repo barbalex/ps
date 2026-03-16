@@ -1699,14 +1699,9 @@ CREATE TYPE vector_layer_line_joins_enum AS ENUM (
   'arcs', 'bevel', 'miter', 'miter-clip', 'round'
 );
 
-create table if not exists vector_layer_fill_rules (
-  fill_rule text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE vector_layer_fill_rules_enum AS ENUM (
+  'nonzero', 'evenodd'
 );
-CREATE INDEX IF NOT EXISTS vector_layer_fill_rules_sort_idx ON vector_layer_fill_rules USING btree(sort);
 
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
@@ -1728,7 +1723,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill boolean DEFAULT TRUE,
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
-  fill_rule text DEFAULT 'evenodd' REFERENCES vector_layer_fill_rules(fill_rule) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  fill_rule vector_layer_fill_rules_enum DEFAULT 'evenodd',
   -- TODO: translate
   label text GENERATED ALWAYS AS (coalesce(nullif(display_property_value, ''), 'Single Display')) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),

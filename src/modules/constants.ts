@@ -1,3 +1,23 @@
+export const vectorLayerFillRuleOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  {
+    value: 'nonzero',
+    labelId: 'Wx7YzA',
+    defaultMessage: 'Nicht-Null',
+    sort: 1,
+  },
+  {
+    value: 'evenodd',
+    labelId: 'Vw6XyZ',
+    defaultMessage: 'Gerade-Ungerade',
+    sort: 2,
+  },
+]
+
 export const vectorLayerLineJoinOptions: {
   value: string
   labelId: string

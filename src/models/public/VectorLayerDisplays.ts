@@ -6,7 +6,7 @@ import type { VectorLayersVectorLayerId } from './VectorLayers';
 import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum';
 import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum';
 import type { default as VectorLayerLineJoinsEnum } from './VectorLayerLineJoinsEnum';
-import type { VectorLayerFillRulesFillRule } from './VectorLayerFillRules';
+import type { default as VectorLayerFillRulesEnum } from './VectorLayerFillRulesEnum';
 
 /** Identifier type for public.vector_layer_displays */
 export type VectorLayerDisplaysVectorLayerDisplayId = string & { __brand: 'public.vector_layer_displays' };
@@ -66,7 +66,7 @@ export default interface VectorLayerDisplays {
   fill_opacity_percent: number | null;
 
   /** A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule */
-  fill_rule: VectorLayerFillRulesFillRule | null;
+  fill_rule: VectorLayerFillRulesEnum | null;
 
   label: string | null;
 
@@ -160,9 +160,9 @@ export interface VectorLayerDisplaysInitializer {
 
   /**
    * A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule
-   * Default value: 'evenodd'::text
+   * Default value: 'evenodd'::vector_layer_fill_rules_enum
    */
-  fill_rule?: VectorLayerFillRulesFillRule | null;
+  fill_rule?: VectorLayerFillRulesEnum | null;
 
   /** Default value: now() */
   created_at?: Date;
@@ -228,7 +228,7 @@ export interface VectorLayerDisplaysMutator {
   fill_opacity_percent?: number | null;
 
   /** A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule */
-  fill_rule?: VectorLayerFillRulesFillRule | null;
+  fill_rule?: VectorLayerFillRulesEnum | null;
 
   created_at?: Date;
 

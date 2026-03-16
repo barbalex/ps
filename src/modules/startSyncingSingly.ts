@@ -399,10 +399,6 @@ const tablesSyncData = [
   //   primaryKey: ['vector_layer_geom_id'],
   // },
   // {
-  //   table: 'vector_layer_fill_rules',
-  //   primaryKey: ['fill_rule'],
-  // },
-  // {
   //   table: 'vector_layer_displays',
   //   columns: [
   //     'vector_layer_display_id',
