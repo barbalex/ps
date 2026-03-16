@@ -1,3 +1,48 @@
+export const vectorLayerOwnTableOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'places', labelId: 'bDDHIJ', defaultMessage: 'Orte', sort: 1 },
+  {
+    value: 'actions',
+    labelId: 'bDEIJK',
+    defaultMessage: 'Massnahmen',
+    sort: 2,
+  },
+  {
+    value: 'checks',
+    labelId: 'bDFJKL',
+    defaultMessage: 'Kontrollen',
+    sort: 3,
+  },
+  {
+    value: 'observations_assigned',
+    labelId: 'bDGKLM',
+    defaultMessage: 'Beobachtungen zugeteilt',
+    sort: 4,
+  },
+  {
+    value: 'observations_assigned_lines',
+    labelId: 'bDHLMN',
+    defaultMessage: 'Beobachtungen zugeteilt Linien',
+    sort: 5,
+  },
+  {
+    value: 'observations_to_assess',
+    labelId: 'bDIMNO',
+    defaultMessage: 'Beobachtungen zu beurteilen',
+    sort: 6,
+  },
+  {
+    value: 'observations_not_to_assign',
+    labelId: 'bDJNOP',
+    defaultMessage: 'Beobachtungen nicht zuzuteilen',
+    sort: 7,
+  },
+]
+
 export const vectorLayerTypeOptions: {
   value: string
   labelId: string

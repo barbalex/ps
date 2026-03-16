@@ -391,10 +391,6 @@ const tablesSyncData = [
   //   primaryKey: ['type'],
   // },
   // {
-  //   table: 'vector_layer_own_tables',
-  //   primaryKey: ['own_table'],
-  // },
-  // {
   //   table: 'vector_layers',
   //   primaryKey: ['vector_layer_id'],
   // },

@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- vector_layer_own_tables
-insert into vector_layer_own_tables (own_table, updated_by) values ('places', 'admin'), ('actions', 'admin'), ('checks', 'admin'), ('observations_assigned', 'admin'), ('observations_assigned_lines', 'admin'), ('observations_to_assess', 'admin'), ('observations_not_to_assign', 'admin')
-on conflict (own_table) do nothing;
-
 -- vector_layer_marker_types
 insert into vector_layer_marker_types (marker_type, sort, updated_by) values ('circle', 1, 'admin'), ('marker', 2, 'admin')
 on conflict (marker_type) do nothing;
