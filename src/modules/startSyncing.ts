@@ -939,16 +939,6 @@ export const startSyncing = async () => {
           table: 'vector_layer_geoms',
           primaryKey: ['vector_layer_geom_id'],
         },
-        vector_layer_marker_types: {
-          shape: {
-            url,
-            params: {
-              table: 'vector_layer_marker_types',
-            },
-          },
-          table: 'vector_layer_marker_types',
-          primaryKey: ['marker_type'],
-        },
         vector_layer_line_caps: {
           shape: {
             url,

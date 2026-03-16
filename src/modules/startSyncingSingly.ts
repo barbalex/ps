@@ -399,10 +399,6 @@ const tablesSyncData = [
   //   primaryKey: ['vector_layer_geom_id'],
   // },
   // {
-  //   table: 'vector_layer_marker_types',
-  //   primaryKey: ['marker_type'],
-  // },
-  // {
   //   table: 'vector_layer_line_caps',
   //   primaryKey: ['line_cap'],
   // },

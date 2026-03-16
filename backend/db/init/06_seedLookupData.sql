@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- vector_layer_marker_types
-insert into vector_layer_marker_types (marker_type, sort, updated_by) values ('circle', 1, 'admin'), ('marker', 2, 'admin')
-on conflict (marker_type) do nothing;
-
 -- vector_layer_line_caps
 insert into vector_layer_line_caps (line_cap, sort, updated_by) values ('butt', 1, 'admin'), ('round', 2, 'admin'), ('square', 3, 'admin')
 on conflict (line_cap) do nothing;

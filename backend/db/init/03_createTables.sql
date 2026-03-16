@@ -1687,14 +1687,9 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set c
 --------------------------------------------------------------
 -- vector_layer_displays
 --
-create table if not exists vector_layer_marker_types (
-  marker_type text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE vector_layer_marker_types_enum AS ENUM (
+  'circle', 'marker'
 );
-CREATE INDEX IF NOT EXISTS vector_layer_marker_types_sort_idx ON vector_layer_marker_types USING btree(sort);
 
 create table if not exists vector_layer_line_caps (
   line_cap text primary key,
@@ -1729,7 +1724,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   display_property_value text DEFAULT NULL,
-  marker_type text DEFAULT 'circle' REFERENCES vector_layer_marker_types(marker_type) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  marker_type vector_layer_marker_types_enum DEFAULT 'circle',
   circle_marker_radius integer DEFAULT 8,
   marker_symbol text DEFAULT NULL,
   marker_size integer DEFAULT 16,

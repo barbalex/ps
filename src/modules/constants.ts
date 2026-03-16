@@ -1,3 +1,13 @@
+export const vectorLayerMarkerTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'circle', labelId: 'Op9QrS', defaultMessage: 'Kreis', sort: 1 },
+  { value: 'marker', labelId: 'Pq0RsT', defaultMessage: 'Marker', sort: 2 },
+]
+
 export const vectorLayerOwnTableOptions: {
   value: string
   labelId: string
