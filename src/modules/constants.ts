@@ -1,3 +1,37 @@
+export const chartSubjectTableNameOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  {
+    value: 'subprojects',
+    labelId: 'bDOSTU',
+    defaultMessage: 'Teilprojekte',
+    sort: 1,
+  },
+  { value: 'places', labelId: 'bDPTUV', defaultMessage: 'Orte', sort: 2 },
+  { value: 'checks', labelId: 'bDQUVW', defaultMessage: 'Kontrollen', sort: 3 },
+  {
+    value: 'check_values',
+    labelId: 'bDRVWX',
+    defaultMessage: 'Kontroll-Mengen',
+    sort: 4,
+  },
+  {
+    value: 'actions',
+    labelId: 'bDSWXY',
+    defaultMessage: 'Massnahmen',
+    sort: 5,
+  },
+  {
+    value: 'action_values',
+    labelId: 'bDTXYZ',
+    defaultMessage: 'Massnahmen-Mengen',
+    sort: 6,
+  },
+]
+
 export const chartTypeOptions: {
   value: string
   labelId: string

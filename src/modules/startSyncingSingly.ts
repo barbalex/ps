@@ -471,10 +471,6 @@ const tablesSyncData = [
   //   primaryKey: ['chart_id'],
   // },
   // {
-  //   table: 'chart_subject_table_names',
-  //   primaryKey: ['table_name'],
-  // },
-  // {
   //   table: 'chart_subject_table_levels',
   //   primaryKey: ['level'],
   // },

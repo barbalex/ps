@@ -3,7 +3,7 @@
 
 import type { AccountsAccountId } from './Accounts';
 import type { ChartsChartId } from './Charts';
-import type { ChartSubjectTableNamesTableName } from './ChartSubjectTableNames';
+import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum';
 import type { ChartSubjectTableLevelsLevel } from './ChartSubjectTableLevels';
 import type { ChartSubjectCalcMethodsCalcMethod } from './ChartSubjectCalcMethods';
 import type { UnitsUnitId } from './Units';
@@ -25,7 +25,7 @@ export default interface ChartSubjects {
   chart_id: ChartsChartId | null;
 
   /** The table to be used as data source */
-  table_name: ChartSubjectTableNamesTableName | null;
+  table_name: ChartSubjectTableNamesEnum | null;
 
   /** The level of the table to be used as data source. 1 or 2 (not relevant for subprojects) */
   table_level: ChartSubjectTableLevelsLevel | null;
@@ -81,7 +81,7 @@ export interface ChartSubjectsInitializer {
   chart_id?: ChartsChartId | null;
 
   /** The table to be used as data source */
-  table_name?: ChartSubjectTableNamesTableName | null;
+  table_name?: ChartSubjectTableNamesEnum | null;
 
   /**
    * The level of the table to be used as data source. 1 or 2 (not relevant for subprojects)
@@ -144,7 +144,7 @@ export interface ChartSubjectsMutator {
   chart_id?: ChartsChartId | null;
 
   /** The table to be used as data source */
-  table_name?: ChartSubjectTableNamesTableName | null;
+  table_name?: ChartSubjectTableNamesEnum | null;
 
   /** The level of the table to be used as data source. 1 or 2 (not relevant for subprojects) */
   table_level?: ChartSubjectTableLevelsLevel | null;
