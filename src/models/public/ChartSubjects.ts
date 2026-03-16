@@ -7,7 +7,7 @@ import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableN
 import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum';
 import type { default as ChartSubjectCalcMethodsEnum } from './ChartSubjectCalcMethodsEnum';
 import type { UnitsUnitId } from './Units';
-import type { ChartSubjectTypesType } from './ChartSubjectTypes';
+import type { default as ChartSubjectTypesEnum } from './ChartSubjectTypesEnum';
 
 /** Identifier type for public.chart_subjects */
 export type ChartSubjectsChartSubjectId = string & { __brand: 'public.chart_subjects' };
@@ -46,7 +46,7 @@ export default interface ChartSubjects {
 
   label: string | null;
 
-  type: ChartSubjectTypesType | null;
+  type: ChartSubjectTypesEnum | null;
 
   /** Stroke color of the chart */
   stroke: string | null;
@@ -105,7 +105,7 @@ export interface ChartSubjectsInitializer {
 
   label?: string | null;
 
-  type?: ChartSubjectTypesType | null;
+  type?: ChartSubjectTypesEnum | null;
 
   /** Stroke color of the chart */
   stroke?: string | null;
@@ -165,7 +165,7 @@ export interface ChartSubjectsMutator {
 
   label?: string | null;
 
-  type?: ChartSubjectTypesType | null;
+  type?: ChartSubjectTypesEnum | null;
 
   /** Stroke color of the chart */
   stroke?: string | null;

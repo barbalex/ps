@@ -1,3 +1,13 @@
+export const chartSubjectTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'linear', labelId: 'bDWABC', defaultMessage: 'Linear', sort: 1 },
+  { value: 'monotone', labelId: 'bDXBCD', defaultMessage: 'Monoton', sort: 2 },
+]
+
 export const chartSubjectCalcMethodOptions: {
   value: string
   labelId: string
