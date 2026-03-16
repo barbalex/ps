@@ -12,8 +12,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type SubprojectUsers from '../../models/public/SubprojectUsers.ts'
-
-const userRoles = ['manager', 'editor', 'reader']
+import { userRoleOptions } from '../../modules/constants.ts'
 
 import '../../form.css'
 
@@ -72,12 +71,15 @@ export const SubprojectUser = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <>
             <DropdownField
-              label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
+              label={formatMessage({
+                id: 'qyI8KV',
+                defaultMessage: 'Benutzer',
+              })}
               name="user_id"
               table="users"
               value={row.user_id ?? ''}
@@ -90,15 +92,16 @@ export const SubprojectUser = () => {
             <RadioGroupField
               label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
               name="role"
-              list={userRoles}
+              list={userRoleOptions.map((o) => o.value)}
               value={row.role ?? ''}
               onChange={onChange}
               validationState={validations?.role?.state}
               validationMessage={validations?.role?.message}
             />
           </>
-        : <NotFound table="User" id={subprojectUserId} />
-        }
+        ) : (
+          <NotFound table="User" id={subprojectUserId} />
+        )}
       </div>
     </div>
   )

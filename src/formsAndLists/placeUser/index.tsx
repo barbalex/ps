@@ -12,8 +12,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type PlaceUsers from '../../models/public/PlaceUsers.ts'
-
-const userRoles = ['manager', 'editor', 'reader']
+import { userRoleOptions } from '../../modules/constants.ts'
 
 import '../../form.css'
 
@@ -68,7 +67,12 @@ export const PlaceUser = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table={formatMessage({ id: 'bCRvSw', defaultMessage: 'Ort-Benutzer' })} id={placeUserId} />
+    return (
+      <NotFound
+        table={formatMessage({ id: 'bCRvSw', defaultMessage: 'Ort-Benutzer' })}
+        id={placeUserId}
+      />
+    )
   }
 
   return (
@@ -89,7 +93,7 @@ export const PlaceUser = ({ from }) => {
         <RadioGroupField
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
-          list={userRoles}
+          list={userRoleOptions.map((o) => o.value)}
           value={row.role ?? ''}
           onChange={onChange}
           validationState={validations?.role?.state}

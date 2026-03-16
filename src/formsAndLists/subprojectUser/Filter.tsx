@@ -1,8 +1,7 @@
 import { Filter } from '../../components/shared/Filter/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-
-const userRoles = ['manager', 'editor', 'reader']
+import { userRoleOptions } from '../../modules/constants.ts'
 
 type Props = {
   from: string
@@ -22,7 +21,7 @@ export const SubprojectUserFilter = ({ from }: Props) => (
         <RadioGroupField
           label="Role"
           name="role"
-          list={userRoles}
+          list={userRoleOptions.map((o) => o.value)}
           value={row.role ?? ''}
           onChange={onChange}
         />

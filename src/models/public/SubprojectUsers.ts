@@ -4,7 +4,7 @@
 import type { AccountsAccountId } from './Accounts';
 import type { SubprojectsSubprojectId } from './Subprojects';
 import type { UsersUserId } from './Users';
-import type { UserRolesRole } from './UserRoles';
+import type { default as UserRolesEnum } from './UserRolesEnum';
 
 /** Identifier type for public.subproject_users */
 export type SubprojectUsersSubprojectUserId = string & { __brand: 'public.subproject_users' };
@@ -24,7 +24,7 @@ export default interface SubprojectUsers {
   user_id: UsersUserId | null;
 
   /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
-  role: UserRolesRole | null;
+  role: UserRolesEnum | null;
 
   label: string | null;
 
@@ -51,7 +51,7 @@ export interface SubprojectUsersInitializer {
   user_id?: UsersUserId | null;
 
   /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
-  role?: UserRolesRole | null;
+  role?: UserRolesEnum | null;
 
   label?: string | null;
 
@@ -79,7 +79,7 @@ export interface SubprojectUsersMutator {
   user_id?: UsersUserId | null;
 
   /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
-  role?: UserRolesRole | null;
+  role?: UserRolesEnum | null;
 
   label?: string | null;
 

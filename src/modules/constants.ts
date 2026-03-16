@@ -1,4 +1,15 @@
 // TODO: most of these constants are not used yet
+export const userRoleOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'manager', labelId: 'aM1NpQ', defaultMessage: 'Manager', sort: 1 },
+  { value: 'editor', labelId: 'bR2StU', defaultMessage: 'Editor', sort: 2 },
+  { value: 'reader', labelId: 'cV3WxY', defaultMessage: 'Reader', sort: 3 },
+]
+
 export const projectTypeOptions: {
   value: string
   labelId: string

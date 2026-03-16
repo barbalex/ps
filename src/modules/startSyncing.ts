@@ -135,14 +135,6 @@ export const startSyncing = async () => {
           table: 'subprojects',
           primaryKey: ['subproject_id'],
         },
-        user_roles: {
-          shape: {
-            url,
-            params: { table: 'user_roles' },
-          },
-          table: 'user_roles',
-          primaryKey: ['role'],
-        },
         project_users: {
           shape: {
             url,

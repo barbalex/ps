@@ -879,7 +879,7 @@ BEGIN
   set label = (
     CASE
       WHEN NEW.email is null THEN NEW.user_id::text
-      ELSE NEW.email || ' (' || coalesce(NULLIF(subproject_users.role, ''), 'no role') || ')'
+      ELSE NEW.email || ' (' || coalesce(subproject_users.role::text, 'no role') || ')'
     END
   )
   WHERE user_id = NEW.user_id;

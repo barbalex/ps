@@ -12,8 +12,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type ProjectUsers from '../../models/public/ProjectUsers.ts'
-
-const userRoles = ['manager', 'editor', 'reader']
+import { userRoleOptions } from '../../modules/constants.ts'
 
 import '../../form.css'
 
@@ -90,7 +89,7 @@ export const ProjectUser = () => {
         <RadioGroupField
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
-          list={userRoles}
+          list={userRoleOptions.map((o) => o.value)}
           value={row.role ?? ''}
           onChange={onChange}
           validationState={validations?.role?.state}
