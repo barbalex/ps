@@ -1,3 +1,14 @@
+export const chartTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'Pie', labelId: 'bDLPQR', defaultMessage: 'Kreis', sort: 1 },
+  { value: 'Radar', labelId: 'bDMQRS', defaultMessage: 'Spinne', sort: 2 },
+  { value: 'Area', labelId: 'bDNRST', defaultMessage: 'Fläche', sort: 3 },
+]
+
 export const vectorLayerFillRuleOptions: {
   value: string
   labelId: string

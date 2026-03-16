@@ -1788,14 +1788,9 @@ COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supp
 --------------------------------------------------------------
 -- charts
 --
-create table if not exists chart_types (
-  chart_type text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE chart_types_enum AS ENUM (
+  'Pie', 'Radar', 'Area'
 );
-CREATE INDEX IF NOT EXISTS chart_types_sort_idx ON chart_types USING btree(sort);
 
 CREATE TABLE IF NOT EXISTS charts(
   chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1809,7 +1804,7 @@ CREATE TABLE IF NOT EXISTS charts(
   years_last_x integer DEFAULT NULL,
   years_since integer DEFAULT NULL,
   years_until integer DEFAULT NULL,
-  chart_type text DEFAULT 'Area' REFERENCES chart_types(chart_type) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  chart_type chart_types_enum DEFAULT 'Area',
   name text DEFAULT NULL,
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,

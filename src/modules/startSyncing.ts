@@ -998,16 +998,6 @@ export const startSyncing = async () => {
           table: 'layer_presentations',
           primaryKey: ['layer_presentation_id'],
         },
-        chart_types: {
-          shape: {
-            url,
-            params: {
-              table: 'chart_types',
-            },
-          },
-          table: 'chart_types',
-          primaryKey: ['chart_type'],
-        },
         charts: {
           shape: {
             url,

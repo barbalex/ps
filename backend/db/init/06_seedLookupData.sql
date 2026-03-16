@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- chart_types
-insert into chart_types (chart_type, sort, updated_by) values ('Pie', 1, 'admin'), ('Radar', 2, 'admin'), ('Area', 3, 'admin')
-on conflict (chart_type) do nothing;
-
 -- chart_subject_table_names
 insert into chart_subject_table_names (table_name, sort, updated_by) values ('subprojects', 1, 'admin'), ('places', 2, 'admin'), ('checks', 3, 'admin'), ('check_values', 4, 'admin'), ('actions', 5, 'admin'), ('action_values', 6, 'admin')
 on conflict (table_name) do nothing;

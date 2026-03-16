@@ -5,7 +5,7 @@ import type { AccountsAccountId } from './Accounts';
 import type { ProjectsProjectId } from './Projects';
 import type { SubprojectsSubprojectId } from './Subprojects';
 import type { PlacesPlaceId } from './Places';
-import type { ChartTypesChartType } from './ChartTypes';
+import type { default as ChartTypesEnum } from './ChartTypesEnum';
 
 /** Identifier type for public.charts */
 export type ChartsChartId = string & { __brand: 'public.charts' };
@@ -44,7 +44,7 @@ export default interface Charts {
   /** If has value: the chart shows data until the value specified. Can be the end date of the project, subproject or place */
   years_until: number | null;
 
-  chart_type: ChartTypesChartType | null;
+  chart_type: ChartTypesEnum | null;
 
   name: string | null;
 
@@ -104,8 +104,8 @@ export interface ChartsInitializer {
   /** If has value: the chart shows data until the value specified. Can be the end date of the project, subproject or place */
   years_until?: number | null;
 
-  /** Default value: 'Area'::text */
-  chart_type?: ChartTypesChartType | null;
+  /** Default value: 'Area'::chart_types_enum */
+  chart_type?: ChartTypesEnum | null;
 
   name?: string | null;
 
@@ -161,7 +161,7 @@ export interface ChartsMutator {
   /** If has value: the chart shows data until the value specified. Can be the end date of the project, subproject or place */
   years_until?: number | null;
 
-  chart_type?: ChartTypesChartType | null;
+  chart_type?: ChartTypesEnum | null;
 
   name?: string | null;
 
