@@ -1595,11 +1595,14 @@ CREATE INDEX IF NOT EXISTS wfs_service_layers_wfs_service_id_idx ON wfs_service_
 --------------------------------------------------------------
 -- vector_layers
 --
-create table if not exists vector_layer_types (
-  type text primary key,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE vector_layer_types_enum AS ENUM (
+  'wfs', 'upload', 'own',
+  'places1', 'places2',
+  'actions1', 'actions2',
+  'checks1', 'checks2',
+  'observations_assigned1', 'observations_assigned_lines1',
+  'observations_assigned2', 'observations_assigned_lines2',
+  'observations_to_assess', 'observations_not_to_assign'
 );
 
 create table if not exists vector_layer_own_tables (
@@ -1614,7 +1617,7 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  type text DEFAULT NULL REFERENCES vector_layer_types(type) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  type vector_layer_types_enum DEFAULT NULL,
   own_table text DEFAULT NULL REFERENCES vector_layer_own_tables(own_table) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   own_table_level integer DEFAULT 1, -- 1 or 2,
   properties jsonb DEFAULT NULL,

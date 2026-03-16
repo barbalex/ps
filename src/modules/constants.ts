@@ -1,3 +1,91 @@
+export const vectorLayerTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'wfs', labelId: 'nL4MnO', defaultMessage: 'WFS', sort: 1 },
+  { value: 'upload', labelId: 'oP5QrS', defaultMessage: 'Upload', sort: 2 },
+  {
+    value: 'own',
+    labelId: 'pT6UvW',
+    defaultMessage: 'Eigene Tabelle',
+    sort: 3,
+  },
+  {
+    value: 'places1',
+    labelId: 'qX7YzA',
+    defaultMessage: 'Orte (Ebene 1)',
+    sort: 4,
+  },
+  {
+    value: 'places2',
+    labelId: 'rB8CdE',
+    defaultMessage: 'Orte (Ebene 2)',
+    sort: 5,
+  },
+  {
+    value: 'actions1',
+    labelId: 'sF9GhI',
+    defaultMessage: 'Massnahmen (Ebene 1)',
+    sort: 6,
+  },
+  {
+    value: 'actions2',
+    labelId: 'tJ0KlM',
+    defaultMessage: 'Massnahmen (Ebene 2)',
+    sort: 7,
+  },
+  {
+    value: 'checks1',
+    labelId: 'uN1OpQ',
+    defaultMessage: 'Kontrollen (Ebene 1)',
+    sort: 8,
+  },
+  {
+    value: 'checks2',
+    labelId: 'vR2StU',
+    defaultMessage: 'Kontrollen (Ebene 2)',
+    sort: 9,
+  },
+  {
+    value: 'observations_assigned1',
+    labelId: 'wV3WxY',
+    defaultMessage: 'Beobachtungen zugeteilt (Ebene 1)',
+    sort: 10,
+  },
+  {
+    value: 'observations_assigned_lines1',
+    labelId: 'xZ4AbC',
+    defaultMessage: 'Beobachtungen zugeteilt Linien (Ebene 1)',
+    sort: 11,
+  },
+  {
+    value: 'observations_assigned2',
+    labelId: 'yD5EfG',
+    defaultMessage: 'Beobachtungen zugeteilt (Ebene 2)',
+    sort: 12,
+  },
+  {
+    value: 'observations_assigned_lines2',
+    labelId: 'zH6IjK',
+    defaultMessage: 'Beobachtungen zugeteilt Linien (Ebene 2)',
+    sort: 13,
+  },
+  {
+    value: 'observations_to_assess',
+    labelId: 'aL7MnO',
+    defaultMessage: 'Beobachtungen zu beurteilen',
+    sort: 14,
+  },
+  {
+    value: 'observations_not_to_assign',
+    labelId: 'bP8QrS',
+    defaultMessage: 'Beobachtungen nicht zuzuteilen',
+    sort: 15,
+  },
+]
+
 export const observationImportGeometryMethodOptions: {
   value: string
   labelId: string

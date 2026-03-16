@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- vector_layer_types
-insert into vector_layer_types ("type", updated_by) values ('wfs', 'admin'), ('upload', 'admin'), ('own', 'admin'), ('places1', 'admin'), ('places2', 'admin'), ('actions1', 'admin'), ('actions2', 'admin'), ('checks1', 'admin'), ('checks2', 'admin'), ('observations_assigned1', 'admin'), ('observations_assigned_lines1', 'admin'), ('observations_assigned2', 'admin'), ('observations_assigned_lines2', 'admin'), ('observations_to_assess', 'admin'), ('observations_not_to_assign', 'admin')
-on conflict ("type") do nothing;
-
 -- vector_layer_own_tables
 insert into vector_layer_own_tables (own_table, updated_by) values ('places', 'admin'), ('actions', 'admin'), ('checks', 'admin'), ('observations_assigned', 'admin'), ('observations_assigned_lines', 'admin'), ('observations_to_assess', 'admin'), ('observations_not_to_assign', 'admin')
 on conflict (own_table) do nothing;

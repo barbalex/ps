@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { vectorLayerTypeOptions } from '../../../modules/constants.ts'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
@@ -10,7 +11,9 @@ import { CreateWfsService } from './CreateWfsService.tsx'
 
 import '../../../form.css'
 
-const vectorLayerTypes = ['wfs', 'upload', 'own']
+const vectorLayerTypes = vectorLayerTypeOptions
+  .filter((o) => ['wfs', 'upload', 'own'].includes(o.value))
+  .map((o) => o.value)
 
 // this is just for presentation of data or filter values
 

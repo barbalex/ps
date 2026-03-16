@@ -919,16 +919,6 @@ export const startSyncing = async () => {
           table: 'wfs_service_layers',
           primaryKey: ['wfs_service_layer_id'],
         },
-        vector_layer_types: {
-          shape: {
-            url,
-            params: {
-              table: 'vector_layer_types',
-            },
-          },
-          table: 'vector_layer_types',
-          primaryKey: ['type'],
-        },
         vector_layer_own_tables: {
           shape: {
             url,
