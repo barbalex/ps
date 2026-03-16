@@ -1,7 +1,6 @@
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useIsFirstRender } from '@uidotdev/usehooks'
 import { useIntl } from 'react-intl'
 
+import { listValueTypeOptions } from '../../modules/constants.ts'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -28,13 +27,7 @@ export const ListForm = ({
   autoFocusRef,
 }: Props) => {
   const { formatMessage } = useIntl()
-  const isFirstRender = useIsFirstRender()
-  const listValueTypesQuery = useLiveQuery(
-    `SELECT type FROM list_value_types ORDER BY sort, type`,
-  )
-  const isListValueTypesLoading =
-    isFirstRender && listValueTypesQuery === undefined
-  const listValueTypes = listValueTypesQuery?.rows?.map((r) => r.type) ?? []
+  const listValueTypes = listValueTypeOptions.map((o) => o.value)
 
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -57,7 +50,6 @@ export const ListForm = ({
         label={formatMessage({ id: 'lVr8Zn', defaultMessage: 'Werttyp' })}
         name="value_type"
         list={listValueTypes}
-        isLoading={isListValueTypesLoading}
         value={row.value_type ?? ''}
         onChange={onChange}
         validationState={validations?.value_type?.state}

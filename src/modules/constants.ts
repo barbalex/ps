@@ -1,3 +1,26 @@
+export const listValueTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'integer', labelId: 'dW4XyZ', defaultMessage: 'Ganzzahl', sort: 1 },
+  {
+    value: 'numeric',
+    labelId: 'eA5BcD',
+    defaultMessage: 'Dezimalzahl',
+    sort: 2,
+  },
+  { value: 'text', labelId: 'fE6FgH', defaultMessage: 'Text', sort: 3 },
+  { value: 'date', labelId: 'gI7JkL', defaultMessage: 'Datum', sort: 4 },
+  {
+    value: 'datetime',
+    labelId: 'hM8NpQ',
+    defaultMessage: 'Datum & Zeit',
+    sort: 5,
+  },
+]
+
 export const taxonomyTypeOptions: {
   value: string
   labelId: string

@@ -468,17 +468,8 @@ COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this sub
 
 --------------------------------------------------------------
 -- lists
--- values: integer, numeric, text, date, datetime (boolean?)
 --
-create table if not exists list_value_types (
-  type text primary key default null,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-
-create index if not exists list_value_types_sort_idx on list_value_types using btree(sort);
+CREATE TYPE list_value_types_enum AS ENUM ('integer', 'numeric', 'text', 'date', 'datetime');
 
 
 CREATE TABLE IF NOT EXISTS lists(
@@ -486,7 +477,7 @@ CREATE TABLE IF NOT EXISTS lists(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
-  value_type text DEFAULT null references list_value_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
+  value_type list_value_types_enum DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), list_id::text)) STORED,

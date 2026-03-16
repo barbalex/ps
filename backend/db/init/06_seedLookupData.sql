@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- list_value_types
-insert into list_value_types ("type", sort, updated_by) values ('integer', 1, 'admin'), ('numeric', 2, 'admin'), ('text', 3, 'admin'), ('date', 4, 'admin'), ('datetime', 5, 'admin') -- ('boolean', 4, 'admin')?
-on conflict ("type") do nothing;
-
 -- unit_types
 insert into unit_types ("type", sort, updated_by) values ('integer', 1, 'admin'), ('numeric', 2, 'admin'), ('text', 3, 'admin')
 on conflict ("type") do nothing;
