@@ -484,12 +484,25 @@ COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this sub
 
 --------------------------------------------------------------
 -- lists
+-- values: integer, numeric, text, date, datetime (boolean?)
 --
+create table if not exists list_value_types (
+  type text primary key default null,
+  sort integer default null,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+create index if not exists list_value_types_sort_idx on list_value_types using btree(sort);
+
+
 CREATE TABLE IF NOT EXISTS lists(
   list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
+  value_type text DEFAULT null references list_value_types(type) on delete no action on update cascade DEFERRABLE INITIALLY DEFERRED,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), list_id::text)) STORED,
@@ -518,8 +531,15 @@ CREATE TABLE IF NOT EXISTS list_values(
   list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  -- TODO: remove value, only use value_type-specific columns
   value text DEFAULT NULL,
+  value_integer integer DEFAULT NULL,
+  value_numeric numeric DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  value_date date DEFAULT NULL,
+  value_datetime timestamptz DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
+  -- TODO: create a trigger to set the value according to the value_type of the list
   label text GENERATED ALWAYS AS (coalesce(nullif(value, ''), list_value_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
