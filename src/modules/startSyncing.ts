@@ -1029,16 +1029,6 @@ export const startSyncing = async () => {
           table: 'charts',
           primaryKey: ['chart_id'],
         },
-        chart_subject_calc_methods: {
-          shape: {
-            url,
-            params: {
-              table: 'chart_subject_calc_methods',
-            },
-          },
-          table: 'chart_subject_calc_methods',
-          primaryKey: ['calc_method'],
-        },
         chart_subject_types: {
           shape: {
             url,

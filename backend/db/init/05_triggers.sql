@@ -1024,9 +1024,9 @@ BEGIN
   SET label = 
     case 
       when NEW.field is not null then
-        coalesce(NULLIF(NEW.table_name::text, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.calc_method, ''), '(no source)') || ', ' || NEW.field || ', ' || coalesce(unit_name, '(no unit)')
+        coalesce(NULLIF(NEW.table_name::text, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.calc_method::text, ''), '(no source)') || ', ' || NEW.field || ', ' || coalesce(unit_name, '(no unit)')
       else 
-        coalesce(NULLIF(NEW.table_name::text, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.calc_method, ''), '(no source)')
+        coalesce(NULLIF(NEW.table_name::text, ''), '(no table name)') || ', ' || coalesce(NULLIF(NEW.calc_method::text, ''), '(no source)')
     end
   WHERE chart_subjects.chart_subject_id = NEW.chart_subject_id;
   RETURN NEW;

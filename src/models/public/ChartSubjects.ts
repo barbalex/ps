@@ -5,7 +5,7 @@ import type { AccountsAccountId } from './Accounts';
 import type { ChartsChartId } from './Charts';
 import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum';
 import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum';
-import type { ChartSubjectCalcMethodsCalcMethod } from './ChartSubjectCalcMethods';
+import type { default as ChartSubjectCalcMethodsEnum } from './ChartSubjectCalcMethodsEnum';
 import type { UnitsUnitId } from './Units';
 import type { ChartSubjectTypesType } from './ChartSubjectTypes';
 
@@ -34,7 +34,7 @@ export default interface ChartSubjects {
   table_filter: unknown | null;
 
   /** How to source the value */
-  calc_method: ChartSubjectCalcMethodsCalcMethod | null;
+  calc_method: ChartSubjectCalcMethodsEnum | null;
 
   /** Field to be used for calc_method */
   field: string | null;
@@ -93,7 +93,7 @@ export interface ChartSubjectsInitializer {
   table_filter?: unknown | null;
 
   /** How to source the value */
-  calc_method?: ChartSubjectCalcMethodsCalcMethod | null;
+  calc_method?: ChartSubjectCalcMethodsEnum | null;
 
   /** Field to be used for calc_method */
   field?: string | null;
@@ -153,7 +153,7 @@ export interface ChartSubjectsMutator {
   table_filter?: unknown | null;
 
   /** How to source the value */
-  calc_method?: ChartSubjectCalcMethodsCalcMethod | null;
+  calc_method?: ChartSubjectCalcMethodsEnum | null;
 
   /** Field to be used for calc_method */
   field?: string | null;

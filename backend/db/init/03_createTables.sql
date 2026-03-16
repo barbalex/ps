@@ -1840,14 +1840,9 @@ CREATE TYPE chart_subject_table_names_enum AS ENUM (
 
 CREATE TYPE chart_subject_table_levels_enum AS ENUM ('1', '2');
 
-create table if not exists chart_subject_calc_methods (
-  calc_method text primary key,
-  sort integer default null,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+CREATE TYPE chart_subject_calc_methods_enum AS ENUM (
+  'count_rows', 'count_rows_by_distinct_field_values', 'sum_values_of_field'
 );
-CREATE INDEX IF NOT EXISTS chart_subject_calc_methods_sort_idx ON chart_subject_calc_methods USING btree(sort);
 
 create table if not exists chart_subject_types (
   type text primary key,
@@ -1865,7 +1860,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   table_name chart_subject_table_names_enum DEFAULT NULL,
   table_level chart_subject_table_levels_enum DEFAULT '1', -- not relevant for subprojects 
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
-  calc_method text DEFAULT NULL REFERENCES chart_subject_calc_methods(calc_method) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, --how to source the value
+  calc_method chart_subject_calc_methods_enum DEFAULT NULL, --how to source the value
   field text DEFAULT NULL, -- field to be used for calc_method
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- needed for action_values, check_values
   name text DEFAULT NULL,

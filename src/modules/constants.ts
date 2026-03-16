@@ -1,3 +1,29 @@
+export const chartSubjectCalcMethodOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  {
+    value: 'count_rows',
+    labelId: 'bDxAbB',
+    defaultMessage: 'Zeilen zählen',
+    sort: 1,
+  },
+  {
+    value: 'count_rows_by_distinct_field_values',
+    labelId: 'bDyCcD',
+    defaultMessage: 'Zeilen pro Feldwert zählen',
+    sort: 2,
+  },
+  {
+    value: 'sum_values_of_field',
+    labelId: 'bDzDeE',
+    defaultMessage: 'Feldwerte summieren',
+    sort: 3,
+  },
+]
+
 export const chartSubjectTableLevelOptions: {
   value: string
   labelId: string
