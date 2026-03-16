@@ -1838,12 +1838,7 @@ CREATE TYPE chart_subject_table_names_enum AS ENUM (
   'subprojects', 'places', 'checks', 'check_values', 'actions', 'action_values'
 );
 
-create table if not exists chart_subject_table_levels (
-  level integer primary key,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
+CREATE TYPE chart_subject_table_levels_enum AS ENUM ('1', '2');
 
 create table if not exists chart_subject_calc_methods (
   calc_method text primary key,
@@ -1868,7 +1863,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name chart_subject_table_names_enum DEFAULT NULL,
-  table_level integer DEFAULT 1 REFERENCES chart_subject_table_levels(level) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- not relevant for subprojects 
+  table_level chart_subject_table_levels_enum DEFAULT '1', -- not relevant for subprojects 
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
   calc_method text DEFAULT NULL REFERENCES chart_subject_calc_methods(calc_method) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, --how to source the value
   field text DEFAULT NULL, -- field to be used for calc_method

@@ -1,3 +1,13 @@
+export const chartSubjectTableLevelOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: '1', labelId: 'bDUYZA', defaultMessage: '1', sort: 1 },
+  { value: '2', labelId: 'bDVZAB', defaultMessage: '2', sort: 2 },
+]
+
 export const chartSubjectTableNameOptions: {
   value: string
   labelId: string

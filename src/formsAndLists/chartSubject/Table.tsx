@@ -16,7 +16,7 @@ const from =
 type Option = {
   id: string
   table_name: string
-  table_level: number | null
+  table_level: string | null
 }
 
 export const Table = ({ onChange, row, ref, validations }) => {
@@ -76,16 +76,16 @@ export const Table = ({ onChange, row, ref, validations }) => {
 
   const opts: Option[] = [
     { id: 'subprojects', table_name: 'subprojects', table_level: null },
-    { id: 'places_1', table_name: 'places', table_level: 1 },
-    { id: 'checks_1', table_name: 'checks', table_level: 1 },
-    { id: 'check_values_1', table_name: 'check_values', table_level: 1 },
-    { id: 'actions_1', table_name: 'actions', table_level: 1 },
-    { id: 'action_values_1', table_name: 'action_values', table_level: 1 },
-    { id: 'places_2', table_name: 'places', table_level: 2 },
-    { id: 'checks_2', table_name: 'checks', table_level: 2 },
-    { id: 'check_values_2', table_name: 'check_values', table_level: 2 },
-    { id: 'actions_2', table_name: 'actions', table_level: 2 },
-    { id: 'action_values_2', table_name: 'action_values', table_level: 2 },
+    { id: 'places_1', table_name: 'places', table_level: '1' },
+    { id: 'checks_1', table_name: 'checks', table_level: '1' },
+    { id: 'check_values_1', table_name: 'check_values', table_level: '1' },
+    { id: 'actions_1', table_name: 'actions', table_level: '1' },
+    { id: 'action_values_1', table_name: 'action_values', table_level: '1' },
+    { id: 'places_2', table_name: 'places', table_level: '2' },
+    { id: 'checks_2', table_name: 'checks', table_level: '2' },
+    { id: 'check_values_2', table_name: 'check_values', table_level: '2' },
+    { id: 'actions_2', table_name: 'actions', table_level: '2' },
+    { id: 'action_values_2', table_name: 'action_values', table_level: '2' },
   ]
 
   const labelMap: Record<string, string> = {

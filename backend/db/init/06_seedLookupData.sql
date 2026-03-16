@@ -5,10 +5,6 @@ BEGIN;
 -- that should be synced to the frontend via Electric
 --------------------------------------------------------------
 
--- chart_subject_table_levels
-insert into chart_subject_table_levels (level, updated_by) values (1, 'admin'), (2, 'admin')
-on conflict (level) do nothing;
-
 -- chart_subject_calc_methods
 insert into chart_subject_calc_methods (calc_method, sort, updated_by) values ('count_rows', 1, 'admin'), ('count_rows_by_distinct_field_values', 2, 'admin'), ('sum_values_of_field', 3, 'admin')
 on conflict (calc_method) do nothing;
