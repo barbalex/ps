@@ -175,14 +175,19 @@ const getTitle = ({
                                               defaultMessage:
                                                 'Projekt-Benutzer',
                                             })
-                                          : tableName
-                                              .split('_')
-                                              .map(
-                                                (w) =>
-                                                  w[0].toUpperCase() +
-                                                  w.slice(1),
-                                              )
-                                              .join(' ')
+                                          : tableName === 'vector_layers'
+                                            ? formatMessage({
+                                                id: 'nauDh5',
+                                                defaultMessage: 'Vektor-Ebenen',
+                                              })
+                                            : tableName
+                                                .split('_')
+                                                .map(
+                                                  (w) =>
+                                                    w[0].toUpperCase() +
+                                                    w.slice(1),
+                                                )
+                                                .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
