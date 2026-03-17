@@ -26,6 +26,12 @@ export const PlaceUserFilter = ({ from, level }: Props) => {
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
           list={userRoleOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            userRoleOptions.map((o) => [
+              o.value,
+              formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
+            ]),
+          )}
           value={row.role ?? ""}
           onChange={onChange}
         />
