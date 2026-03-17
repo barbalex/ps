@@ -109,11 +109,20 @@ const getTitle = ({
           : tableName === 'subproject_taxa'
             ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
             : tableName === 'place_users'
-            ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-            : tableName
-                .split('_')
-                .map((w) => w[0].toUpperCase() + w.slice(1))
-                .join(' ')
+              ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+              : tableName === 'taxonomies'
+                ? formatMessage({ id: 'noT0gR', defaultMessage: 'Taxonomien' })
+                : tableName === 'users'
+                  ? formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })
+                  : tableName === 'wfs_services'
+                    ? formatMessage({
+                        id: 'HzltY9',
+                        defaultMessage: 'WFS-Dienste',
+                      })
+                    : tableName
+                        .split('_')
+                        .map((w) => w[0].toUpperCase() + w.slice(1))
+                        .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
