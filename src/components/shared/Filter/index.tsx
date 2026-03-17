@@ -149,10 +149,17 @@ const getTitle = ({
                                     id: 'Yx8gIR',
                                     defaultMessage: 'Feld-Typen',
                                   })
-                                : tableName
-                                    .split('_')
-                                    .map((w) => w[0].toUpperCase() + w.slice(1))
-                                    .join(' ')
+                                : tableName === 'accounts'
+                                  ? formatMessage({
+                                      id: '/40i9A',
+                                      defaultMessage: 'Konten',
+                                    })
+                                  : tableName
+                                      .split('_')
+                                      .map(
+                                        (w) => w[0].toUpperCase() + w.slice(1),
+                                      )
+                                      .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
