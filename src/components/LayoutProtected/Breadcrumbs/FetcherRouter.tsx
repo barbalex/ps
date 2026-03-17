@@ -1,5 +1,3 @@
-import { useParams } from '@tanstack/react-router'
-
 // import { AnyFetcherImporter } from './AnyFetcherImporter.tsx'
 import { ProjectsFetcher } from './ProjectsFetcher.tsx'
 import { ProjectFetcher } from './ProjectFetcher.tsx'
@@ -129,10 +127,10 @@ import { MessagesFetcher } from './MessagesFetcher.tsx'
 import { MessageFetcher } from './MessageFetcher.tsx'
 import { DataFetcher } from './DataFetcher.tsx'
 
-export const FetcherRouter = ({ fetcherName, ...other }) => {
-  // need to get params here and pass as props otherwise
-  // causes the compiler to: "Error: Rendered fewer hooks than expected"
-  const params = useParams({ strict: false })
+export const FetcherRouter = ({ fetcherName, params, ...other }) => {
+  // params are passed from breadcrumbs per match (match.params),
+  // so each breadcrumb gets the params scoped to its own route segment
+  // rather than all current URL params via useParams({ strict: false })
 
   switch (fetcherName) {
     case 'useDataBreadcrumbData': {
