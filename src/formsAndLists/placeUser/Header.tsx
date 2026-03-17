@@ -1,18 +1,30 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom, useAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createPlaceUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, languageAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
-  const { placeId, placeId2, placeUserId } = useParams({ from })
+  const { projectId, placeId, placeId2, placeUserId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const [language] = useAtom(languageAtom)
+
+  const resPlaceLevel = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2 ORDER BY label`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
+  const placeNameSingular =
+    placeLevel?.[`name_singular_${language}`] ??
+    placeLevel?.name_singular ??
+    formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
+  const title = `${placeNameSingular}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
 
   const db = usePGlite()
 
@@ -64,7 +76,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.place_user_id === placeUserIdRef.current)
+      const index = rows.findIndex(
+        (p) => p.place_user_id === placeUserIdRef.current,
+      )
       const next = rows[(index + 1) % len]
       navigate({
         to: `../${next.place_user_id}`,
@@ -83,7 +97,9 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const rows = res?.rows
       const len = rows.length
-      const index = rows.findIndex((p) => p.place_user_id === placeUserIdRef.current)
+      const index = rows.findIndex(
+        (p) => p.place_user_id === placeUserIdRef.current,
+      )
       const previous = rows[(index + len - 1) % len]
       navigate({
         to: `../${previous.place_user_id}`,
@@ -96,7 +112,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'bCRvSw', defaultMessage: 'Ort-Benutzer' })}
+      title={title}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

@@ -94,6 +94,7 @@ const normalizeId = (value) => {
 const getTitle = ({
   tableName,
   placeNamePlural,
+  placeNameSingularForUsers,
   subprojectNameSingular,
   formatMessage,
 }) => {
@@ -105,10 +106,12 @@ const getTitle = ({
         ? formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })
         : tableName === 'subproject_users'
           ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-          : tableName
-              .split('_')
-              .map((w) => w[0].toUpperCase() + w.slice(1))
-              .join(' ')
+          : tableName === 'place_users'
+            ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+            : tableName
+                .split('_')
+                .map((w) => w[0].toUpperCase() + w.slice(1))
+                .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
@@ -165,6 +168,16 @@ export const Filter = ({
   // const placeNameSingular = placeLevel?.[`name_singular_${language}`] ?? 'Place'
   const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
 
+  // For place_users the owning place level is 2 when placeId2 exists, otherwise 1
+  const resPlaceLevelForUsers = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevelForUsers: PlaceLevels = resPlaceLevelForUsers?.rows?.[0]
+  const placeNameSingularForUsers =
+    placeLevelForUsers?.[`name_singular_${language}`] ??
+    placeLevelForUsers?.name_singular
+
   const resSubprojectName = useLiveQuery(
     `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
     [projectId],
@@ -175,6 +188,7 @@ export const Filter = ({
   const title = getTitle({
     tableName,
     placeNamePlural,
+    placeNameSingularForUsers,
     subprojectNameSingular,
     formatMessage,
   })
