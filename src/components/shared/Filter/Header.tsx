@@ -31,7 +31,10 @@ export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
           size="medium"
           icon={<MdFilterAlt />}
           onClick={onClickBack}
-          title={formatMessage({ id: 'TVoh4o', defaultMessage: 'Filter verlassen' })}
+          title={formatMessage({
+            id: 'TVoh4o',
+            defaultMessage: 'Filter verlassen',
+          })}
           checked={true}
           style={isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : undefined}
         />
@@ -39,7 +42,10 @@ export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
           size="medium"
           icon={<MdFilterAltOff />}
           onClick={onClickClearFilter}
-          title="Clear Filter"
+          title={formatMessage({
+            id: 'fAA1bB',
+            defaultMessage: 'Filter löschen',
+          })}
           disabled={!isFiltered}
         />
       </div>

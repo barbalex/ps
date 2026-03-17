@@ -613,5 +613,12 @@
   "bDHLMN": "Linee osservazioni assegnate",
   "bDIMNO": "Osservazioni da valutare",
   "bDJNOP": "Osservazioni da non assegnare",
-  "bDKOPQ": "Inglete limitato (acuto limitato)"
+  "bDKOPQ": "Inglete limitato (acuto limitato)",
+  "fAA1bB": "Cancella filtro",
+  "fBB2cC": "Filtri di {name}",
+  "fCC3dD": "Filtro {number}",
+  "fDD4eE": "O filtro {number}",
+  "fEE5fF": "O",
+  "fFF6gG": "Rimuovi {label}",
+  "fGG7hH": "Sì, rimuovi"
 }

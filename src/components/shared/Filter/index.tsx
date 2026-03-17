@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Tab, TabList } =
   fluentUiReactComponents
@@ -89,7 +90,7 @@ const normalizeId = (value) => {
   return trimmed === '' ? null : trimmed
 }
 
-const getTitle = ({ tableName, placeNamePlural }) => {
+const getTitle = ({ tableName, placeNamePlural, formatMessage }) => {
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
     tableName === 'places'
@@ -99,8 +100,10 @@ const getTitle = ({ tableName, placeNamePlural }) => {
           .map((w) => w[0].toUpperCase() + w.slice(1))
           .join(' ')
 
-  const title = `${tableNameForTitle} Filters`
-  return title
+  return formatMessage(
+    { id: 'fBB2cC', defaultMessage: '{name} Filter' },
+    { name: tableNameForTitle },
+  )
 }
 
 const getTableName = (urlPath) => {
@@ -133,6 +136,7 @@ export const Filter = ({
   filterAtomNameOverride,
 }) => {
   const params = useParams({ from })
+  const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const projectId = normalizeId(params?.projectId)
   const subprojectId = normalizeId(params?.subprojectId)
@@ -151,7 +155,7 @@ export const Filter = ({
   // const placeNameSingular = placeLevel?.[`name_singular_${language}`] ?? 'Place'
   const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
 
-  const title = getTitle({ tableName, placeNamePlural })
+  const title = getTitle({ tableName, placeNamePlural, formatMessage })
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
@@ -273,10 +277,10 @@ export const Filter = ({
         {filter.map((f, i) => {
           const label =
             i === filter.length - 1 && filter.length > 1
-              ? 'Or'
+              ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
               : i === 0
-                ? `Filter ${i + 1}`
-                : `Or filter ${i + 1}`
+                ? formatMessage({ id: 'fCC3dD', defaultMessage: 'Filter {number}' }, { number: i + 1 })
+                : formatMessage({ id: 'fDD4eE', defaultMessage: 'Oder Filter {number}' }, { number: i + 1 })
           return (
             <Tab key={i} value={i + 1} className={styles.tab}>
               <span className={styles.tabContent}>
@@ -288,8 +292,8 @@ export const Filter = ({
                         className={styles.removeTab}
                         role="button"
                         tabIndex={0}
-                        aria-label={`Remove ${label}`}
-                        title={`Remove ${label}`}
+                        aria-label={formatMessage({ id: 'fFF6gG', defaultMessage: '{label} entfernen' }, { label })}
+                        title={formatMessage({ id: 'fFF6gG', defaultMessage: '{label} entfernen' }, { label })}
                         onClick={(event) => {
                           event.preventDefault()
                           event.stopPropagation()
@@ -318,7 +322,7 @@ export const Filter = ({
                             removeOrFilter(i)
                           }}
                         >
-                          Yes, remove
+                          {formatMessage({ id: 'fGG7hH', defaultMessage: 'Ja, entfernen' })}
                         </MenuItem>
                         <MenuItem
                           onClick={(event) => {
@@ -326,7 +330,7 @@ export const Filter = ({
                             event.stopPropagation()
                           }}
                         >
-                          No
+                          {formatMessage({ id: 'Cw9vQw', defaultMessage: 'Nein' })}
                         </MenuItem>
                       </MenuList>
                     </MenuPopover>
@@ -338,7 +342,7 @@ export const Filter = ({
         })}
         {canAddAnotherFilter && (
           <Tab value="add" className={styles.tab}>
-            {isActiveVirtualTab ? 'Or' : '+'}
+            {isActiveVirtualTab ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' }) : '+'}
           </Tab>
         )}
       </TabList>

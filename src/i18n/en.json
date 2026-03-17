@@ -639,5 +639,12 @@
   "bDHLMN": "Observation assignment lines",
   "bDIMNO": "Observations to assess",
   "bDJNOP": "Observations not to assign",
-  "bDKOPQ": "Miter-clip (limited sharp)"
+  "bDKOPQ": "Miter-clip (limited sharp)",
+  "fAA1bB": "Clear Filter",
+  "fBB2cC": "{name} Filters",
+  "fCC3dD": "Filter {number}",
+  "fDD4eE": "Or filter {number}",
+  "fEE5fF": "Or",
+  "fFF6gG": "Remove {label}",
+  "fGG7hH": "Yes, remove"
 }
