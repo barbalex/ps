@@ -12,6 +12,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import { accountTypeOptions } from '../../modules/constants.ts'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 
@@ -96,7 +97,6 @@ export const Account = () => {
     return <NotFound table="Account" id={accountId} />
   }
 
-  // TODO: translate account types
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
@@ -115,7 +115,16 @@ export const Account = () => {
         <RadioGroupField
           label={formatMessage({ id: 'xTeBn/', defaultMessage: 'Typ' })}
           name="type"
-          list={['trial', 'free', 'basic', 'premium']}
+          list={accountTypeOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            accountTypeOptions.map((o) => [
+              o.value,
+              formatMessage({
+                id: o.labelId,
+                defaultMessage: o.defaultMessage,
+              }),
+            ]),
+          )}
           value={row.type ?? ''}
           onChange={onChange}
           validationState={validations?.type?.state}
