@@ -8,6 +8,18 @@ export const chartSubjectTypeOptions: {
   { value: 'monotone', labelId: 'bDXBCD', defaultMessage: 'Monoton', sort: 2 },
 ]
 
+export const accountTypeOptions: {
+  value: string
+  labelId: string
+  defaultMessage: string
+  sort: number
+}[] = [
+  { value: 'trial', labelId: 'fJJ0kK', defaultMessage: 'Test', sort: 1 },
+  { value: 'free', labelId: 'fKK1lL', defaultMessage: 'Kostenlos', sort: 2 },
+  { value: 'basic', labelId: 'fLL2mM', defaultMessage: 'Basis', sort: 3 },
+  { value: 'premium', labelId: 'fMM3nN', defaultMessage: 'Premium', sort: 4 },
+]
+
 export const chartSubjectCalcMethodOptions: {
   value: string
   labelId: string
