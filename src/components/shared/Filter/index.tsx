@@ -124,10 +124,16 @@ const getTitle = ({
                           id: 'IKLYLz',
                           defaultMessage: 'WMS-Ebenen',
                         })
-                      : tableName
-                          .split('_')
-                          .map((w) => w[0].toUpperCase() + w.slice(1))
-                          .join(' ')
+                      : tableName === 'files'
+                        ? formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })
+                        : tableName === 'fields'
+                          ? formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })
+                          : tableName === 'widgets_for_fields'
+                            ? formatMessage({ id: 'bDoJBk', defaultMessage: 'Widgets für Felder' })
+                            : tableName
+                                .split('_')
+                                .map((w) => w[0].toUpperCase() + w.slice(1))
+                                .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
