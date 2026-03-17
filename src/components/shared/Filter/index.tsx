@@ -164,13 +164,18 @@ const getTitle = ({
                                           id: 'nVkh0Z',
                                           defaultMessage: 'Einheiten',
                                         })
-                                      : tableName
-                                          .split('_')
-                                          .map(
-                                            (w) =>
-                                              w[0].toUpperCase() + w.slice(1),
-                                          )
-                                          .join(' ')
+                                      : tableName === 'lists'
+                                        ? formatMessage({
+                                            id: 'zhvWvI',
+                                            defaultMessage: 'Listen',
+                                          })
+                                        : tableName
+                                            .split('_')
+                                            .map(
+                                              (w) =>
+                                                w[0].toUpperCase() + w.slice(1),
+                                            )
+                                            .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
