@@ -180,14 +180,19 @@ const getTitle = ({
                                                 id: 'nauDh5',
                                                 defaultMessage: 'Vektor-Ebenen',
                                               })
-                                            : tableName
-                                                .split('_')
-                                                .map(
-                                                  (w) =>
-                                                    w[0].toUpperCase() +
-                                                    w.slice(1),
-                                                )
-                                                .join(' ')
+                                            : tableName === 'wms_services'
+                                              ? formatMessage({
+                                                  id: '0pm66C',
+                                                  defaultMessage: 'WMS-Dienste',
+                                                })
+                                              : tableName
+                                                  .split('_')
+                                                  .map(
+                                                    (w) =>
+                                                      w[0].toUpperCase() +
+                                                      w.slice(1),
+                                                  )
+                                                  .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
