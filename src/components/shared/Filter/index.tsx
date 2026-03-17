@@ -17,6 +17,7 @@ import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.
 import styles from './index.module.css'
 import '../../../form.css'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
+import { subprojectNameSingularExpr } from '../../../modules/subprojectNameCols.ts'
 
 const getFilterStrings = ({
   filter,
@@ -90,17 +91,24 @@ const normalizeId = (value) => {
   return trimmed === '' ? null : trimmed
 }
 
-const getTitle = ({ tableName, placeNamePlural, formatMessage }) => {
+const getTitle = ({
+  tableName,
+  placeNamePlural,
+  subprojectNameSingular,
+  formatMessage,
+}) => {
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
     tableName === 'places'
       ? placeNamePlural
       : tableName === 'crs'
         ? formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })
-        : tableName
-            .split('_')
-            .map((w) => w[0].toUpperCase() + w.slice(1))
-            .join(' ')
+        : tableName === 'subproject_users'
+          ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+          : tableName
+              .split('_')
+              .map((w) => w[0].toUpperCase() + w.slice(1))
+              .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
@@ -157,7 +165,19 @@ export const Filter = ({
   // const placeNameSingular = placeLevel?.[`name_singular_${language}`] ?? 'Place'
   const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
 
-  const title = getTitle({ tableName, placeNamePlural, formatMessage })
+  const resSubprojectName = useLiveQuery(
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const subprojectNameSingular =
+    resSubprojectName?.rows?.[0]?.subproject_name_singular
+
+  const title = getTitle({
+    tableName,
+    placeNamePlural,
+    subprojectNameSingular,
+    formatMessage,
+  })
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
@@ -281,8 +301,14 @@ export const Filter = ({
             i === filter.length - 1 && filter.length > 1
               ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
               : i === 0
-                ? formatMessage({ id: 'fCC3dD', defaultMessage: 'Filter {number}' }, { number: i + 1 })
-                : formatMessage({ id: 'fDD4eE', defaultMessage: 'Oder Filter {number}' }, { number: i + 1 })
+                ? formatMessage(
+                    { id: 'fCC3dD', defaultMessage: 'Filter {number}' },
+                    { number: i + 1 },
+                  )
+                : formatMessage(
+                    { id: 'fDD4eE', defaultMessage: 'Oder Filter {number}' },
+                    { number: i + 1 },
+                  )
           return (
             <Tab key={i} value={i + 1} className={styles.tab}>
               <span className={styles.tabContent}>
@@ -294,8 +320,14 @@ export const Filter = ({
                         className={styles.removeTab}
                         role="button"
                         tabIndex={0}
-                        aria-label={formatMessage({ id: 'fFF6gG', defaultMessage: '{label} entfernen' }, { label })}
-                        title={formatMessage({ id: 'fFF6gG', defaultMessage: '{label} entfernen' }, { label })}
+                        aria-label={formatMessage(
+                          { id: 'fFF6gG', defaultMessage: '{label} entfernen' },
+                          { label },
+                        )}
+                        title={formatMessage(
+                          { id: 'fFF6gG', defaultMessage: '{label} entfernen' },
+                          { label },
+                        )}
                         onClick={(event) => {
                           event.preventDefault()
                           event.stopPropagation()
@@ -324,7 +356,10 @@ export const Filter = ({
                             removeOrFilter(i)
                           }}
                         >
-                          {formatMessage({ id: 'fGG7hH', defaultMessage: 'Ja, entfernen' })}
+                          {formatMessage({
+                            id: 'fGG7hH',
+                            defaultMessage: 'Ja, entfernen',
+                          })}
                         </MenuItem>
                         <MenuItem
                           onClick={(event) => {
@@ -332,7 +367,10 @@ export const Filter = ({
                             event.stopPropagation()
                           }}
                         >
-                          {formatMessage({ id: 'Cw9vQw', defaultMessage: 'Nein' })}
+                          {formatMessage({
+                            id: 'Cw9vQw',
+                            defaultMessage: 'Nein',
+                          })}
                         </MenuItem>
                       </MenuList>
                     </MenuPopover>
@@ -344,7 +382,9 @@ export const Filter = ({
         })}
         {canAddAnotherFilter && (
           <Tab value="add" className={styles.tab}>
-            {isActiveVirtualTab ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' }) : '+'}
+            {isActiveVirtualTab
+              ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
+              : '+'}
           </Tab>
         )}
       </TabList>
