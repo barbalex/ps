@@ -106,7 +106,9 @@ const getTitle = ({
         ? formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })
         : tableName === 'subproject_users'
           ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-          : tableName === 'place_users'
+          : tableName === 'subproject_taxa'
+            ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
+            : tableName === 'place_users'
             ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
             : tableName
                 .split('_')
