@@ -119,10 +119,15 @@ const getTitle = ({
                         id: 'HzltY9',
                         defaultMessage: 'WFS-Dienste',
                       })
-                    : tableName
-                        .split('_')
-                        .map((w) => w[0].toUpperCase() + w.slice(1))
-                        .join(' ')
+                    : tableName === 'wms_layers'
+                      ? formatMessage({
+                          id: 'IKLYLz',
+                          defaultMessage: 'WMS-Ebenen',
+                        })
+                      : tableName
+                          .split('_')
+                          .map((w) => w[0].toUpperCase() + w.slice(1))
+                          .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
