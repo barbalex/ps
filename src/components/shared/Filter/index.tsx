@@ -95,10 +95,12 @@ const getTitle = ({ tableName, placeNamePlural, formatMessage }) => {
   const tableNameForTitle =
     tableName === 'places'
       ? placeNamePlural
-      : tableName
-          .split('_')
-          .map((w) => w[0].toUpperCase() + w.slice(1))
-          .join(' ')
+      : tableName === 'crs'
+        ? formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })
+        : tableName
+            .split('_')
+            .map((w) => w[0].toUpperCase() + w.slice(1))
+            .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
