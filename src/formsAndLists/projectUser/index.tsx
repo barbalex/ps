@@ -68,7 +68,15 @@ export const ProjectUser = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table={formatMessage({ id: 'gi+ubY', defaultMessage: 'Projekt-Benutzer' })} id={projectUserId} />
+    return (
+      <NotFound
+        table={formatMessage({
+          id: 'gi+ubY',
+          defaultMessage: 'Projekt-Benutzer',
+        })}
+        id={projectUserId}
+      />
+    )
   }
 
   return (
@@ -90,6 +98,15 @@ export const ProjectUser = () => {
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
           list={userRoleOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            userRoleOptions.map((o) => [
+              o.value,
+              formatMessage({
+                id: o.labelId,
+                defaultMessage: o.defaultMessage,
+              }),
+            ]),
+          )}
           value={row.role ?? ''}
           onChange={onChange}
           validationState={validations?.role?.state}

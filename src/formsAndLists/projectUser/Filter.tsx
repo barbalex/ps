@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { Filter } from '../../components/shared/Filter/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -7,25 +8,34 @@ type Props = {
   from: string
 }
 
-export const ProjectUserFilter = ({ from }: Props) => (
-  <Filter from={from}>
-    {({ row, onChange }) => (
-      <>
-        <DropdownField
-          label="User"
-          name="user_id"
-          table="users"
-          value={row.user_id ?? ''}
-          onChange={onChange}
-        />
-        <RadioGroupField
-          label="Role"
-          name="role"
-          list={userRoleOptions.map((o) => o.value)}
-          value={row.role ?? ''}
-          onChange={onChange}
-        />
-      </>
-    )}
-  </Filter>
-)
+export const ProjectUserFilter = ({ from }: Props) => {
+  const { formatMessage } = useIntl()
+  return (
+    <Filter from={from}>
+      {({ row, onChange }) => (
+        <>
+          <DropdownField
+            label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
+            name="user_id"
+            table="users"
+            value={row.user_id ?? ''}
+            onChange={onChange}
+          />
+          <RadioGroupField
+            label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
+            name="role"
+            list={userRoleOptions.map((o) => o.value)}
+            labelMap={Object.fromEntries(
+              userRoleOptions.map((o) => [
+                o.value,
+                formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
+              ]),
+            )}
+            value={row.role ?? ''}
+            onChange={onChange}
+          />
+        </>
+      )}
+    </Filter>
+  )
+}

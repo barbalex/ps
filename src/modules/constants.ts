@@ -370,7 +370,7 @@ export const userRoleOptions: {
 }[] = [
   { value: 'manager', labelId: 'aM1NpQ', defaultMessage: 'Manager', sort: 1 },
   { value: 'editor', labelId: 'bR2StU', defaultMessage: 'Editor', sort: 2 },
-  { value: 'reader', labelId: 'cV3WxY', defaultMessage: 'Reader', sort: 3 },
+  { value: 'reader', labelId: 'cV3WxY', defaultMessage: 'Leser', sort: 3 },
 ]
 
 export const projectTypeOptions: {
