@@ -169,13 +169,20 @@ const getTitle = ({
                                             id: 'zhvWvI',
                                             defaultMessage: 'Listen',
                                           })
-                                        : tableName
-                                            .split('_')
-                                            .map(
-                                              (w) =>
-                                                w[0].toUpperCase() + w.slice(1),
-                                            )
-                                            .join(' ')
+                                        : tableName === 'project_users'
+                                          ? formatMessage({
+                                              id: 'gi+ubY',
+                                              defaultMessage:
+                                                'Projekt-Benutzer',
+                                            })
+                                          : tableName
+                                              .split('_')
+                                              .map(
+                                                (w) =>
+                                                  w[0].toUpperCase() +
+                                                  w.slice(1),
+                                              )
+                                              .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
