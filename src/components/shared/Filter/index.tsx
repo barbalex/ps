@@ -125,15 +125,29 @@ const getTitle = ({
                           defaultMessage: 'WMS-Ebenen',
                         })
                       : tableName === 'files'
-                        ? formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })
+                        ? formatMessage({
+                            id: 'mn58Sh',
+                            defaultMessage: 'Dateien',
+                          })
                         : tableName === 'fields'
-                          ? formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })
+                          ? formatMessage({
+                              id: 'I+dTZE',
+                              defaultMessage: 'Felder',
+                            })
                           : tableName === 'widgets_for_fields'
-                            ? formatMessage({ id: 'bDoJBk', defaultMessage: 'Widgets für Felder' })
-                            : tableName
-                                .split('_')
-                                .map((w) => w[0].toUpperCase() + w.slice(1))
-                                .join(' ')
+                            ? formatMessage({
+                                id: 'bDoJBk',
+                                defaultMessage: 'Widgets für Felder',
+                              })
+                            : tableName === 'widget_types'
+                              ? formatMessage({
+                                  id: 'U55pI0',
+                                  defaultMessage: 'Widget-Typen',
+                                })
+                              : tableName
+                                  .split('_')
+                                  .map((w) => w[0].toUpperCase() + w.slice(1))
+                                  .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
