@@ -5,6 +5,7 @@ const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
 import { PGlite } from '@electric-sql/pglite'
 import { electricSync } from '@electric-sql/pglite-sync'
+import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
@@ -40,6 +41,7 @@ const db = await PGlite.create('idb://ps', {
   extensions: {
     live,
     electric: electricSync(),
+    postgis,
   },
   relaxedDurability: true,
   // debug: true, // Disabled - too verbose

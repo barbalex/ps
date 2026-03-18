@@ -24,6 +24,7 @@
     "@cyntler/react-doc-viewer": "1.17.1",
     "@e965/xlsx": "0.20.3",
     "@electric-sql/pglite": "0.4.0",
+    "@electric-sql/pglite-postgis": "^0.0.2",
     "@electric-sql/pglite-react": "0.3.0",
     "@electric-sql/pglite-sync": "0.5.0",
     "@electric-sql/pglite-tools": "0.3.0",
