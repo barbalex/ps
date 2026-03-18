@@ -77,6 +77,7 @@ export interface PlaceHistoriesInitializer {
 
   data?: unknown | null;
 
+  /** Default value: NULL::geometry */
   geometry?: unknown | null;
 
   bbox?: unknown | null;

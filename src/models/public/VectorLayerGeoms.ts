@@ -55,7 +55,10 @@ export interface VectorLayerGeomsInitializer {
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
 
-  /** geometry-collection of this row */
+  /**
+   * geometry-collection of this row
+   * Default value: NULL::geometry
+   */
   geometry?: unknown | null;
 
   /** properties of this row */

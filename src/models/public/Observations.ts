@@ -71,7 +71,10 @@ export interface ObservationsInitializer {
   /** Used to replace previously imported observations */
   id_in_source?: string | null;
 
-  /** geometry of observation. Extracted from data to show the observation on a map */
+  /**
+   * geometry of observation. Extracted from data to show the observation on a map
+   * Default value: NULL::geometry
+   */
   geometry?: unknown | null;
 
   /** label of observation, used to show it in the UI. Created on import */

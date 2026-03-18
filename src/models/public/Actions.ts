@@ -61,7 +61,10 @@ export interface ActionsInitializer {
   /** Room for action specific data, defined in "fields" table */
   data?: unknown | null;
 
-  /** geometry of action */
+  /**
+   * geometry of action
+   * Default value: NULL::geometry
+   */
   geometry?: unknown | null;
 
   /** bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side */
