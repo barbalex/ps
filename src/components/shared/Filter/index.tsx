@@ -17,7 +17,7 @@ import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.
 import styles from './index.module.css'
 import '../../../form.css'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
-import { subprojectNameSingularExpr } from '../../../modules/subprojectNameCols.ts'
+import { subprojectNameSingularExpr, subprojectNamePluralExpr } from '../../../modules/subprojectNameCols.ts'
 
 const getFilterStrings = ({
   filter,
@@ -96,11 +96,14 @@ const getTitle = ({
   placeNamePlural,
   placeNameSingularForUsers,
   subprojectNameSingular,
+  subprojectNamePlural,
   formatMessage,
 }) => {
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
-    tableName === 'places'
+    tableName === 'subprojects'
+      ? (subprojectNamePlural ?? formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }))
+      : tableName === 'places'
       ? placeNamePlural
       : tableName === 'crs'
         ? formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })
@@ -272,17 +275,20 @@ export const Filter = ({
     placeLevelForUsers?.name_singular
 
   const resSubprojectName = useLiveQuery(
-    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular, ${subprojectNamePluralExpr(language)} AS subproject_name_plural FROM projects WHERE project_id = $1`,
     [projectId],
   )
   const subprojectNameSingular =
     resSubprojectName?.rows?.[0]?.subproject_name_singular
+  const subprojectNamePlural =
+    resSubprojectName?.rows?.[0]?.subproject_name_plural
 
   const title = getTitle({
     tableName,
     placeNamePlural,
     placeNameSingularForUsers,
     subprojectNameSingular,
+    subprojectNamePlural,
     formatMessage,
   })
 
