@@ -42,26 +42,19 @@ export const Actions = ({ from }) => {
         addRow={add}
         menus={
           <>
-            <LayerMenu
-              table="actions"
-              level={placeId2 ? 2 : 1}
-              //TODO: from={from}
-            />
+            <LayerMenu table="actions" level={placeId2 ? 2 : 1} from={from} />
             <FilterButton isFiltered={isFiltered} />
           </>
         }
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              label={label ?? id}
-              to={id}
-            />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} label={label ?? id} to={id} />
           ))
-        }
+        )}
       </div>
     </div>
   )

@@ -45,7 +45,7 @@ export const Checks = ({ from }) => {
             <LayerMenu
               table="checks"
               level={placeId2 ? 2 : 1}
-              //TODO: from={from}
+              from={from}
             />
             <FilterButton isFiltered={isFiltered} />
           </>
