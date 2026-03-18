@@ -62,24 +62,48 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = async () => {
-    // open map if not already visible and we're showing the layer
-    if (!showLayer && !tabs.includes('map')) {
+    const lpId = layerPresentation?.layer_presentation_id
+    if (showLayer) {
+      // deactivate
+      db.query(
+        `UPDATE layer_presentations SET active = FALSE WHERE layer_presentation_id = $1`,
+        [lpId],
+      )
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: lpId,
+        operation: 'update',
+        draft: { active: false },
+        prev: { ...layerPresentation },
+      })
+      setMapLayerSorting(mapLayerSorting.filter((id) => id !== lpId))
+      return
+    }
+    // activate: open map if needed
+    if (!tabs.includes('map')) {
       setTabs([...tabs, 'map'])
     }
-    // activate layer if not already active
-    if (showLayer) return
-    db.query(
-      `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
-      [layerPresentation.layer_presentation_id],
-    )
-    addOperation({
-      table: 'layer_presentations',
-      rowIdName: 'layer_presentation_id',
-      rowId: layerPresentation.layer_presentation_id,
-      operation: 'update',
-      draft: { active: true },
-      prev: { ...layerPresentation },
-    })
+    let newLpId = lpId
+    if (!newLpId && vectorLayerId) {
+      newLpId = await createLayerPresentation({ vectorLayerId, active: true })
+    } else if (newLpId) {
+      db.query(
+        `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
+        [newLpId],
+      )
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: newLpId,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...layerPresentation },
+      })
+    }
+    if (newLpId && !mapLayerSorting.includes(newLpId)) {
+      setMapLayerSorting([...mapLayerSorting, newLpId])
+    }
   }
 
   const onClickZoomToLayer = async () => {
