@@ -12,11 +12,13 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import { createLayerPresentation } from '../../modules/createRows.ts'
 import {
   mapBoundsAtom,
   addOperationAtom,
   tabsAtom,
   addNotificationAtom,
+  mapLayerSortingAtom,
 } from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
@@ -25,6 +27,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { formatMessage } = useIntl()
 
   const tableLabelMessages: Record<
@@ -46,13 +49,14 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const res = useLiveQuery(
     `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
     FROM vector_layers vl
-      INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
+      LEFT JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
     WHERE vl.project_id = $1 AND vl.own_table = $2 AND vl.own_table_level = $3
     ORDER BY lp.active DESC, lp.layer_presentation_id
     LIMIT 1`,
     [projectId, table, level],
   )
   const row = res?.rows?.[0]
+  const vectorLayerId: string | undefined = row?.vl_vector_layer_id
   const layerPresentation: LayerPresentations | undefined =
     row?.layer_presentation_id ? row : undefined
 
@@ -81,6 +85,27 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
   const onClickZoomToLayer = async () => {
     if (!tabs.includes('map')) {
       setTabs([...tabs, 'map'])
+    }
+    // activate layer if not already active
+    let lpId: string | undefined = layerPresentation?.layer_presentation_id
+    if (!lpId && vectorLayerId) {
+      lpId = await createLayerPresentation({ vectorLayerId, active: true })
+    } else if (lpId && !showLayer) {
+      db.query(
+        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
+        [lpId],
+      )
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: lpId,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...layerPresentation },
+      })
+    }
+    if (lpId && !mapLayerSorting.includes(lpId)) {
+      setMapLayerSorting([...mapLayerSorting, lpId])
     }
     // get all geometries from layer
     // first get all places with level
