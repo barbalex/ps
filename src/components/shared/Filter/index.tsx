@@ -17,7 +17,10 @@ import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.
 import styles from './index.module.css'
 import '../../../form.css'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
-import { subprojectNameSingularExpr, subprojectNamePluralExpr } from '../../../modules/subprojectNameCols.ts'
+import {
+  subprojectNameSingularExpr,
+  subprojectNamePluralExpr,
+} from '../../../modules/subprojectNameCols.ts'
 
 const getFilterStrings = ({
   filter,
@@ -93,6 +96,7 @@ const normalizeId = (value) => {
 
 const getTitle = ({
   tableName,
+  placeNameSingular,
   placeNamePlural,
   placeNameSingularForUsers,
   subprojectNameSingular,
@@ -102,112 +106,170 @@ const getTitle = ({
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
     tableName === 'subprojects'
-      ? (subprojectNamePlural ?? formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }))
-      : tableName === 'places'
-      ? placeNamePlural
-      : tableName === 'crs'
-        ? formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })
-        : tableName === 'subproject_users'
-          ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-          : tableName === 'subproject_taxa'
-            ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
-            : tableName === 'place_users'
-              ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-              : tableName === 'taxonomies'
-                ? formatMessage({ id: 'noT0gR', defaultMessage: 'Taxonomien' })
-                : tableName === 'users'
-                  ? formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })
-                  : tableName === 'wfs_services'
-                    ? formatMessage({
-                        id: 'HzltY9',
-                        defaultMessage: 'WFS-Dienste',
-                      })
-                    : tableName === 'wms_layers'
-                      ? formatMessage({
-                          id: 'IKLYLz',
-                          defaultMessage: 'WMS-Ebenen',
-                        })
-                      : tableName === 'files'
-                        ? formatMessage({
-                            id: 'mn58Sh',
-                            defaultMessage: 'Dateien',
-                          })
-                        : tableName === 'fields'
+      ? (subprojectNamePlural ??
+        formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }))
+      : tableName === 'charts'
+        ? formatMessage({ id: 'bChRtS', defaultMessage: 'Diagramme' })
+        : tableName === 'goals'
+          ? formatMessage({ id: 'bGoAlS', defaultMessage: 'Ziele' })
+          : tableName === 'actions'
+            ? formatMessage({ id: 'bAcTiS', defaultMessage: 'Massnahmen' })
+            : tableName === 'checks'
+              ? formatMessage({ id: 'bChEcS', defaultMessage: 'Kontrollen' })
+              : tableName === 'observation_imports'
+                ? formatMessage({
+                    id: 'bObImS',
+                    defaultMessage: 'Beobachtungs-Importe',
+                  })
+                : tableName === 'observations'
+                  ? formatMessage({
+                      id: 'bObSeS',
+                      defaultMessage: 'Beobachtungen',
+                    })
+                  : tableName === 'subproject_reports'
+                    ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'bBrRtS', defaultMessage: 'Berichte' })}`
+                    : tableName === 'place_reports'
+                      ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'bBrRtS', defaultMessage: 'Berichte' })}`
+                      : tableName === 'places'
+                        ? placeNamePlural
+                        : tableName === 'crs'
                           ? formatMessage({
-                              id: 'I+dTZE',
-                              defaultMessage: 'Felder',
+                              id: 'OzBS9Z',
+                              defaultMessage: 'KBS',
                             })
-                          : tableName === 'widgets_for_fields'
-                            ? formatMessage({
-                                id: 'bDoJBk',
-                                defaultMessage: 'Widgets für Felder',
-                              })
-                            : tableName === 'widget_types'
-                              ? formatMessage({
-                                  id: 'U55pI0',
-                                  defaultMessage: 'Widget-Typen',
-                                })
-                              : tableName === 'field_types'
-                                ? formatMessage({
-                                    id: 'Yx8gIR',
-                                    defaultMessage: 'Feld-Typen',
-                                  })
-                                : tableName === 'accounts'
+                          : tableName === 'subproject_users'
+                            ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+                            : tableName === 'subproject_taxa'
+                              ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
+                              : tableName === 'place_users'
+                                ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+                                : tableName === 'taxonomies'
                                   ? formatMessage({
-                                      id: '/40i9A',
-                                      defaultMessage: 'Konten',
+                                      id: 'noT0gR',
+                                      defaultMessage: 'Taxonomien',
                                     })
-                                  : tableName === 'projects'
+                                  : tableName === 'users'
                                     ? formatMessage({
-                                        id: 'x9x+dX',
-                                        defaultMessage: 'Projekte',
+                                        id: 'eZ3yEB',
+                                        defaultMessage: 'Benutzer',
                                       })
-                                    : tableName === 'units'
+                                    : tableName === 'wfs_services'
                                       ? formatMessage({
-                                          id: 'nVkh0Z',
-                                          defaultMessage: 'Einheiten',
+                                          id: 'HzltY9',
+                                          defaultMessage: 'WFS-Dienste',
                                         })
-                                      : tableName === 'lists'
+                                      : tableName === 'wms_layers'
                                         ? formatMessage({
-                                            id: 'zhvWvI',
-                                            defaultMessage: 'Listen',
+                                            id: 'IKLYLz',
+                                            defaultMessage: 'WMS-Ebenen',
                                           })
-                                        : tableName === 'project_users'
+                                        : tableName === 'files'
                                           ? formatMessage({
-                                              id: 'gi+ubY',
-                                              defaultMessage:
-                                                'Projekt-Benutzer',
+                                              id: 'mn58Sh',
+                                              defaultMessage: 'Dateien',
                                             })
-                                          : tableName === 'vector_layers'
+                                          : tableName === 'fields'
                                             ? formatMessage({
-                                                id: 'nauDh5',
-                                                defaultMessage: 'Vektor-Ebenen',
+                                                id: 'I+dTZE',
+                                                defaultMessage: 'Felder',
                                               })
-                                            : tableName === 'wms_services'
+                                            : tableName === 'widgets_for_fields'
                                               ? formatMessage({
-                                                  id: '0pm66C',
-                                                  defaultMessage: 'WMS-Dienste',
+                                                  id: 'bDoJBk',
+                                                  defaultMessage:
+                                                    'Widgets für Felder',
                                                 })
-                                              : tableName === 'persons'
+                                              : tableName === 'widget_types'
                                                 ? formatMessage({
-                                                    id: 'bbjyW2',
-                                                    defaultMessage: 'Personen',
+                                                    id: 'U55pI0',
+                                                    defaultMessage:
+                                                      'Widget-Typen',
                                                   })
-                                                : tableName ===
-                                                    'project_reports'
+                                                : tableName === 'field_types'
                                                   ? formatMessage({
-                                                      id: 'CiJ0SG',
+                                                      id: 'Yx8gIR',
                                                       defaultMessage:
-                                                        'Berichte',
+                                                        'Feld-Typen',
                                                     })
-                                                  : tableName
-                                                      .split('_')
-                                                      .map(
-                                                        (w) =>
-                                                          w[0].toUpperCase() +
-                                                          w.slice(1),
-                                                      )
-                                                      .join(' ')
+                                                  : tableName === 'accounts'
+                                                    ? formatMessage({
+                                                        id: '/40i9A',
+                                                        defaultMessage:
+                                                          'Konten',
+                                                      })
+                                                    : tableName === 'projects'
+                                                      ? formatMessage({
+                                                          id: 'x9x+dX',
+                                                          defaultMessage:
+                                                            'Projekte',
+                                                        })
+                                                      : tableName === 'units'
+                                                        ? formatMessage({
+                                                            id: 'nVkh0Z',
+                                                            defaultMessage:
+                                                              'Einheiten',
+                                                          })
+                                                        : tableName === 'lists'
+                                                          ? formatMessage({
+                                                              id: 'zhvWvI',
+                                                              defaultMessage:
+                                                                'Listen',
+                                                            })
+                                                          : tableName ===
+                                                              'project_users'
+                                                            ? formatMessage({
+                                                                id: 'gi+ubY',
+                                                                defaultMessage:
+                                                                  'Projekt-Benutzer',
+                                                              })
+                                                            : tableName ===
+                                                                'vector_layers'
+                                                              ? formatMessage({
+                                                                  id: 'nauDh5',
+                                                                  defaultMessage:
+                                                                    'Vektor-Ebenen',
+                                                                })
+                                                              : tableName ===
+                                                                  'wms_services'
+                                                                ? formatMessage(
+                                                                    {
+                                                                      id: '0pm66C',
+                                                                      defaultMessage:
+                                                                        'WMS-Dienste',
+                                                                    },
+                                                                  )
+                                                                : tableName ===
+                                                                    'persons'
+                                                                  ? formatMessage(
+                                                                      {
+                                                                        id: 'bbjyW2',
+                                                                        defaultMessage:
+                                                                          'Personen',
+                                                                      },
+                                                                    )
+                                                                  : tableName ===
+                                                                      'project_reports'
+                                                                    ? formatMessage(
+                                                                        {
+                                                                          id: 'CiJ0SG',
+                                                                          defaultMessage:
+                                                                            'Berichte',
+                                                                        },
+                                                                      )
+                                                                    : tableName
+                                                                        .split(
+                                                                          '_',
+                                                                        )
+                                                                        .map(
+                                                                          (w) =>
+                                                                            w[0].toUpperCase() +
+                                                                            w.slice(
+                                                                              1,
+                                                                            ),
+                                                                        )
+                                                                        .join(
+                                                                          ' ',
+                                                                        )
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
@@ -261,7 +323,8 @@ export const Filter = ({
     [projectId, placeId ? 2 : 1],
   )
   const placeLevel: PlaceLevels = resPlaceLevel?.rows?.[0]
-  // const placeNameSingular = placeLevel?.[`name_singular_${language}`] ?? 'Place'
+  const placeNameSingular =
+    placeLevel?.[`name_singular_${language}`] ?? placeLevel?.name_singular_de
   const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
 
   // For place_users the owning place level is 2 when placeId2 exists, otherwise 1
@@ -285,6 +348,7 @@ export const Filter = ({
 
   const title = getTitle({
     tableName,
+    placeNameSingular,
     placeNamePlural,
     placeNameSingularForUsers,
     subprojectNameSingular,
