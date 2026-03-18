@@ -1,5 +1,8 @@
 import { useParams, useLocation } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
+import { useAtom } from 'jotai'
+
+import { designingAtom } from '../../store.ts'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -22,6 +25,7 @@ export const PlaceForm = ({
   const { subprojectId } = useParams({ from })
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('filter')
+  const [designing] = useAtom(designingAtom)
 
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -35,18 +39,23 @@ export const PlaceForm = ({
     <div className="form-container">
       {!isFilter && (
         <>
-          <RadioGroupField
-            label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
-            name="level"
-            list={[1, 2]}
-            value={row.level ?? ''}
-            onChange={onChange}
-            validationState={validations?.level?.state}
-            validationMessage={validations?.level?.message}
-          />
+          {designing && (
+            <RadioGroupField
+              label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
+              name="level"
+              list={[1, 2]}
+              value={row.level ?? ''}
+              onChange={onChange}
+              validationState={validations?.level?.state}
+              validationMessage={validations?.level?.message}
+            />
+          )}
           {row.level === 2 && (
             <DropdownField
-              label={formatMessage({ id: 'bElLqQ', defaultMessage: 'Übergeordneter Ort' })}
+              label={formatMessage({
+                id: 'bElLqQ',
+                defaultMessage: 'Übergeordneter Ort',
+              })}
               name="parent_id"
               idField="place_id"
               table="places"
@@ -62,7 +71,10 @@ export const PlaceForm = ({
         </>
       )}
       <TextField
-        label={formatMessage({ id: 'bEmMrR', defaultMessage: 'Seit wann existiert dieser Ort? (Jahr)' })}
+        label={formatMessage({
+          id: 'bEmMrR',
+          defaultMessage: 'Seit wann existiert dieser Ort? (Jahr)',
+        })}
         name="since"
         value={row.since}
         type="number"
@@ -71,7 +83,10 @@ export const PlaceForm = ({
         validationMessage={validations?.since?.message}
       />
       <TextField
-        label={formatMessage({ id: 'bEnNsS', defaultMessage: 'Bis wann existierte dieser Ort? (Jahr)' })}
+        label={formatMessage({
+          id: 'bEnNsS',
+          defaultMessage: 'Bis wann existierte dieser Ort? (Jahr)',
+        })}
         name="until"
         value={row.until}
         type="number"
