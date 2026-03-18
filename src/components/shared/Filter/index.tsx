@@ -109,27 +109,27 @@ const getTitle = ({
       ? (subprojectNamePlural ??
         formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }))
       : tableName === 'charts'
-        ? formatMessage({ id: 'bChRtS', defaultMessage: 'Diagramme' })
+        ? formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' })
         : tableName === 'goals'
-          ? formatMessage({ id: 'bGoAlS', defaultMessage: 'Ziele' })
+          ? formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })
           : tableName === 'actions'
-            ? formatMessage({ id: 'bAcTiS', defaultMessage: 'Massnahmen' })
+            ? formatMessage({ id: 'bDSWXY', defaultMessage: 'Massnahmen' })
             : tableName === 'checks'
-              ? formatMessage({ id: 'bChEcS', defaultMessage: 'Kontrollen' })
+              ? formatMessage({ id: 'bDQUVW', defaultMessage: 'Kontrollen' })
               : tableName === 'observation_imports'
                 ? formatMessage({
-                    id: 'bObImS',
+                    id: 'C7apNr',
                     defaultMessage: 'Beobachtungs-Importe',
                   })
                 : tableName === 'observations'
                   ? formatMessage({
-                      id: 'bObSeS',
+                      id: 'yYvnIS',
                       defaultMessage: 'Beobachtungen',
                     })
                   : tableName === 'subproject_reports'
-                    ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'bBrRtS', defaultMessage: 'Berichte' })}`
+                    ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
                     : tableName === 'place_reports'
-                      ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'bBrRtS', defaultMessage: 'Berichte' })}`
+                      ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
                       : tableName === 'places'
                         ? placeNamePlural
                         : tableName === 'crs'
