@@ -107,23 +107,31 @@ export const DrawControlComponent = ({
 
       const bbox = getBbox(featureCollection)
 
+      // Convert FeatureCollection to GeometryCollection for the PostGIS geometry column
+      const geometryCollection = {
+        type: 'GeometryCollection',
+        geometries: featureCollection.features
+          .map((f) => f.geometry)
+          .filter(Boolean),
+      }
+
       // query previous geometry for the operation log
       const prevRes = await db.query(
-        `SELECT geometry, bbox FROM ${tableName} WHERE ${activeIdName} = $1`,
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry, bbox FROM ${tableName} WHERE ${activeIdName} = $1`,
         [activeId],
       )
       const row = prevRes?.rows?.[0] ?? {}
 
       db.query(
-        `UPDATE ${tableName} SET geometry = $1, bbox = $2 WHERE ${activeIdName} = $3`,
-        [featureCollection, bbox, activeId],
+        `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1), bbox = $2 WHERE ${activeIdName} = $3`,
+        [JSON.stringify(geometryCollection), bbox, activeId],
       )
       addOperation({
         table: tableName,
         rowIdName: activeIdName,
         rowId: activeId,
         operation: 'update',
-        draft: { geometry: featureCollection, bbox },
+        draft: { geometry: geometryCollection, bbox },
         prev: { ...row },
       })
     },
@@ -154,9 +162,10 @@ export const DrawControlComponent = ({
         ? 'checks'
         : 'actions'
     if (activeId) {
-      db.query(`SELECT geometry FROM ${tableName} WHERE ${activeIdName} = $1`, [
-        activeId,
-      ]).then((result) => {
+      db.query(
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM ${tableName} WHERE ${activeIdName} = $1`,
+        [activeId],
+      ).then((result) => {
         const geometry = result?.rows?.[0]?.geometry
         if (geometry && drawLayer) {
           try {

@@ -32,14 +32,14 @@ export const PlaceComboboxWithDistance = ({
 
   // Get the observation to access its geometry
   const observationRes = useLiveQuery(
-    `SELECT geometry FROM observations WHERE observation_id = $1`,
+    `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM observations WHERE observation_id = $1`,
     [observationId],
   )
   const observation = observationRes?.rows?.[0]
 
   // Get all places
   const placesRes = useLiveQuery(
-    `SELECT place_id, label, geometry FROM places WHERE geometry IS NOT NULL ORDER BY label`,
+    `SELECT place_id, label, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE geometry IS NOT NULL ORDER BY label`,
   )
   const places = useMemo(() => placesRes?.rows ?? [], [placesRes])
 
@@ -63,12 +63,12 @@ export const PlaceComboboxWithDistance = ({
       if (occGeometry.type === 'Point') {
         occPoint = point(occGeometry.coordinates)
       } else if (
-        occGeometry.type === 'FeatureCollection' &&
-        occGeometry.features?.length > 0
+        occGeometry.type === 'GeometryCollection' &&
+        occGeometry.geometries?.length > 0
       ) {
-        const firstFeature = occGeometry.features[0]
-        if (firstFeature.geometry?.type === 'Point') {
-          occPoint = point(firstFeature.geometry.coordinates)
+        const firstGeom = occGeometry.geometries[0]
+        if (firstGeom?.type === 'Point') {
+          occPoint = point(firstGeom.coordinates)
         }
       } else if (occGeometry.coordinates) {
         // Try to extract first coordinate
@@ -108,13 +108,13 @@ export const PlaceComboboxWithDistance = ({
               dist =
                 distance(occPoint, point(place.geometry.coordinates)) * 1000
             } else if (
-              place.geometry?.type === 'FeatureCollection' &&
-              place.geometry.features?.length > 0
+              place.geometry?.type === 'GeometryCollection' &&
+              place.geometry.geometries?.length > 0
             ) {
-              const firstFeature = place.geometry.features[0]
-              if (firstFeature.geometry?.type === 'Point') {
+              const firstGeom = place.geometry.geometries[0]
+              if (firstGeom?.type === 'Point') {
                 dist =
-                  distance(occPoint, point(firstFeature.geometry.coordinates)) *
+                  distance(occPoint, point(firstGeom.coordinates)) *
                   1000
               }
             }

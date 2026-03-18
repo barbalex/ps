@@ -133,24 +133,28 @@ export const Layer = ({ layerData }) => {
     let geometry
     if (ownTable === 'place') {
       const res = await db.query(
-        `SELECT geometry FROM places WHERE place_id = $1`,
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE place_id = $1`,
         [ownId],
       )
       geometry = res?.rows?.[0]?.geometry
     } else if (ownTable === 'check') {
       const res = await db.query(
-        `SELECT geometry FROM checks WHERE check_id = $1`,
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE check_id = $1`,
         [ownId],
       )
       geometry = res?.rows?.[0]?.geometry
     } else if (ownTable === 'action') {
       const res = await db.query(
-        `SELECT geometry FROM actions WHERE action_id = $1`,
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE action_id = $1`,
         [ownId],
       )
       geometry = res?.rows?.[0]?.geometry
     }
-    if (!geometry || !geometry.features?.length) return
+    if (
+      !geometry ||
+      !(geometry as { geometries?: unknown[] }).geometries?.length
+    )
+      return
     if (!tabs.includes('map')) setTabs([...tabs, 'map'])
     const buffered = buffer(geometry, 0.05)
     const newBbox = bbox(buffered)

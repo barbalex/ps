@@ -6,11 +6,13 @@ import type Places from '../../../../models/public/Places.ts'
 export const Places1 = ({ layerPresentation }) => {
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery(
-    `SELECT * FROM places WHERE parent_id IS NULL AND geometry IS NOT NULL`,
+    `SELECT place_id, account_id, subproject_id, parent_id, level, since, until, data,
+      ST_AsGeoJSON(geometry)::json as geometry, bbox, label, created_at, updated_at, updated_by
+    FROM places WHERE parent_id IS NULL AND geometry IS NOT NULL`,
   )
   const places: Places[] = res?.rows ?? []
 
-  // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
+  // geometry is returned as GeometryCollection JSON via ST_AsGeoJSON; convert to FeatureCollection for display
   // properties need to go into every feature
   const data = places.map((p) => {
     // add p's properties to all features:
@@ -18,7 +20,15 @@ export const Places1 = ({ layerPresentation }) => {
     // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
-    geometry.features.forEach((f) => {
+    const fc = {
+      type: 'FeatureCollection',
+      features: (geometry?.geometries ?? []).map((g) => ({
+        type: 'Feature',
+        geometry: g,
+        properties: {},
+      })),
+    }
+    fc.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data)) {
@@ -31,7 +41,7 @@ export const Places1 = ({ layerPresentation }) => {
       }
     })
 
-    return geometry
+    return fc
   })
 
   if (!data?.length) return null

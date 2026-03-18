@@ -11,7 +11,9 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
   const { subprojectId } = useParams({ strict: false })
   const res = useLiveQuery(
     `
-    SELECT o.*
+    SELECT o.observation_id, o.account_id, o.observation_import_id, o.place_id, o.not_to_assign,
+      o.comment, o.data, o.id_in_source, ST_AsGeoJSON(o.geometry)::json as geometry,
+      o.label, o.created_at, o.updated_at, o.updated_by
     FROM observations o
       INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
     WHERE 
@@ -24,7 +26,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
   )
   const observations: Observations[] = res?.rows ?? []
 
-  // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
+  // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display
   // properties need to go into every feature
   const data = observations.map((p) => {
     // add p's properties to all features:
@@ -32,8 +34,16 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
     // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
-    if (!data) return geometry
-    geometry.features.forEach((f) => {
+    const fc = {
+      type: 'FeatureCollection',
+      features: (geometry?.geometries ?? []).map((g) => ({
+        type: 'Feature',
+        geometry: g,
+        properties: {},
+      })),
+    }
+    if (!data) return fc
+    fc.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data)) {
@@ -46,7 +56,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
       }
     })
 
-    return geometry
+    return fc
   })
 
   if (!data?.length) return null

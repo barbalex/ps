@@ -50,11 +50,13 @@ export const Header = ({ autoFocusRef, from }) => {
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const geometryRes = useLiveQuery(
-    `SELECT geometry FROM actions WHERE action_id = $1`,
+    `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE action_id = $1`,
     [actionId],
   )
   const geometry = geometryRes?.rows?.[0]?.geometry
-  const hasGeometry = !!geometry && geometry.features?.length > 0
+  const hasGeometry =
+    !!geometry &&
+    (geometry as { geometries?: unknown[] }).geometries?.length > 0
 
   const addRow = async () => {
     const id = await createAction({

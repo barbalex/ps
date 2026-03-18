@@ -53,7 +53,9 @@ export const assignToNearestDroppable = async ({
   }
   // If both or neither are included, we don't filter by parent_id
 
-  const placesRes = await db.query(`SELECT * FROM places WHERE ${whereClause}`)
+  const placesRes = await db.query(
+    `SELECT *, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE ${whereClause}`,
+  )
   const places = placesRes?.rows ?? []
 
   // 2. get the nearest feature

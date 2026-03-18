@@ -128,12 +128,17 @@ export const Header = ({ autoFocusRef, from }) => {
     })
 
   const onClickZoomTo = async () => {
-    const res = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
-      checkId,
-    ])
+    const res = await db.query(
+      `SELECT *, ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE check_id = $1`,
+      [checkId],
+    )
     const check: Checks | undefined = res?.rows?.[0]
     const geometry = check?.geometry
-    if (!geometry || geometry.features.length === 0) return alertNoGeometry()
+    if (
+      !geometry ||
+      (geometry as { geometries?: unknown[] }).geometries?.length === 0
+    )
+      return alertNoGeometry()
 
     // 1. show map if not happening
     if (!tabs.includes('map')) setTabs([...tabs, 'map'])

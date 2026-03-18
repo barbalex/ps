@@ -7,7 +7,9 @@ export const Actions1 = ({ layerPresentation }) => {
   // TODO: query only inside current map bounds using places.bbox
   const resActions = useLiveQuery(
     `
-    SELECT actions.* 
+    SELECT actions.action_id, actions.account_id, actions.place_id, actions.date, actions.data,
+      ST_AsGeoJSON(actions.geometry)::json as geometry, actions.bbox, actions.relevant_for_reports,
+      actions.label, actions.created_at, actions.updated_at, actions.updated_by
     FROM actions
       INNER JOIN places ON actions.place_id = places.place_id
     WHERE 
@@ -18,7 +20,7 @@ export const Actions1 = ({ layerPresentation }) => {
   const actions: Actions[] = resActions?.rows ?? []
   // console.log('hello Actions1, checks:', checks)
 
-  // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
+  // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display
   // properties need to go into every feature
   const data = actions.map((p) => {
     // add p's properties to all features:
@@ -26,8 +28,16 @@ export const Actions1 = ({ layerPresentation }) => {
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
-    if (!data) return geometry
-    geometry.features.forEach((f) => {
+    const fc = {
+      type: 'FeatureCollection',
+      features: (geometry?.geometries ?? []).map((g) => ({
+        type: 'Feature',
+        geometry: g,
+        properties: {},
+      })),
+    }
+    if (!data) return fc
+    fc.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data)) {
@@ -40,7 +50,7 @@ export const Actions1 = ({ layerPresentation }) => {
       }
     })
 
-    return geometry
+    return fc
   })
   // console.log('hello Actions1, data:', data)
 

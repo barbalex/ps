@@ -85,7 +85,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     // then get all actions/checks/observations with place_id
     let geometries = []
     const placesResult = await db.query(
-      `SELECT place_id, geometry FROM places WHERE subproject_id = $1 AND level = $2`,
+      `SELECT place_id, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE subproject_id = $1 AND level = $2`,
       [subprojectId, level],
     )
     const places = placesResult?.rows
@@ -93,34 +93,33 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
       geometries = places.map((place) => place.geometry)
     } else if (table === 'actions') {
       const res = await db.query(
-        `SELECT action_id, geometry FROM actions WHERE place_id = ANY($1)`,
+        `SELECT action_id, ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
       const actions = res?.rows
       geometries = actions.map((action) => action.geometry)
     } else if (table === 'checks') {
       const res = await db.query(
-        `SELECT check_id, geometry FROM checks WHERE place_id = ANY($1)`,
+        `SELECT check_id, ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
       const checks = res?.rows
       geometries = checks.map((check) => check.geometry)
     } else if (table === 'observations') {
       const res = await db.query(
-        `SELECT observation_id, geometry FROM observations WHERE place_id = ANY($1)`,
+        `SELECT observation_id, ST_AsGeoJSON(geometry)::json as geometry FROM observations WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
       const observations = res?.rows
       geometries = observations.map((o) => o.geometry)
     }
-    // geometries are saved as featureCollections
-    // bbox accepts a single feature or a featureCollection
-    // so we need to combine all features into a single featureCollection
+    // geometries are stored as GeometryCollection (PostGIS type)
+    // collect all individual geometries into a flat Feature array for bbox calculation
     const features = []
     for (const geometry of geometries) {
-      if (geometry?.features) {
-        for (const feature of geometry.features) {
-          features.push(feature)
+      if (geometry?.geometries) {
+        for (const g of geometry.geometries) {
+          features.push({ type: 'Feature', geometry: g, properties: {} })
         }
       } else if (geometry) {
         features.push(geometry)

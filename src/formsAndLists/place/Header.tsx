@@ -176,7 +176,11 @@ export const Header = ({
     addNotification({
       title: formatMessage({ id: 'bCWAXB', defaultMessage: 'Keine Geometrie' }),
       body: formatMessage(
-        { id: 'bDCGHI', defaultMessage: 'Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie' },
+        {
+          id: 'bDCGHI',
+          defaultMessage:
+            'Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie',
+        },
         { place: nameSingular },
       ),
       intent: 'error',
@@ -184,11 +188,14 @@ export const Header = ({
 
   const onClickZoomTo = async () => {
     const res = await db.query(
-      `SELECT geometry FROM places WHERE place_id = $1`,
+      `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE place_id = $1`,
       [placeId2 ?? placeId],
     )
     const geometry: Places['geometry'] | undefined = res?.rows?.[0]?.geometry
-    if (!geometry || geometry.features.length === 0) {
+    if (
+      !geometry ||
+      (geometry as { geometries?: unknown[] }).geometries?.length === 0
+    ) {
       return alertNoGeometry()
     }
 
