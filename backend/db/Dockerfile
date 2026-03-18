@@ -1,5 +1,6 @@
-# FROM postgis/postgis:18-3.6
-FROM postgres:18-alpine
+FROM postgis/postgis:17-3.5
+# FROM postgis/postgis:18-3.6 errored, something about upgrades
+# FROM postgres:18-alpine
 
 # mount SQL files directly into the Postgres containers’ initialization directory
 COPY ./init/ /docker-entrypoint-initdb.d/

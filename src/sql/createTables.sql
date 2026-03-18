@@ -1,4 +1,7 @@
 BEGIN;
+
+CREATE EXTENSION postgis;
+   
 --------------------------------------------------------------
 -- users
 --
@@ -591,8 +594,7 @@ CREATE TABLE IF NOT EXISTS places(
   since integer DEFAULT NULL,
   until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -606,8 +608,7 @@ CREATE INDEX IF NOT EXISTS places_parent_id_idx ON places USING btree(parent_id)
 CREATE INDEX IF NOT EXISTS places_level_idx ON places USING btree(level);
 CREATE INDEX IF NOT EXISTS places_label_idx ON places USING btree(label);
 CREATE INDEX IF NOT EXISTS places_data_idx ON places USING gin(data);
--- TODO: switch to gist when postGIS is used
-CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gin(geometry);
+CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gist(geometry);
 
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
 COMMENT ON COLUMN places.account_id IS 'redundant account_id enhances data safety';
@@ -635,8 +636,7 @@ CREATE TABLE IF NOT EXISTS place_histories(
   since integer DEFAULT NULL,
   until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (COALESCE(year::text, place_history_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -650,6 +650,7 @@ CREATE INDEX IF NOT EXISTS place_histories_year_idx ON place_histories USING btr
 CREATE INDEX IF NOT EXISTS place_histories_account_id_idx ON place_histories USING btree(account_id);
 CREATE INDEX IF NOT EXISTS place_histories_subproject_id_idx ON place_histories USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS place_histories_parent_id_idx ON place_histories USING btree(parent_id);
+CREATE INDEX IF NOT EXISTS place_histories_geometry_idx ON place_histories USING gist(geometry);
 
 COMMENT ON COLUMN place_histories.year IS 'One history entry per year per place';
 COMMENT ON COLUMN place_histories.account_id IS 'redundant account_id enhances data safety';
@@ -664,8 +665,7 @@ CREATE TABLE IF NOT EXISTS actions(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text GENERATED ALWAYS AS (coalesce(immutabledate(date), action_id::text)) STORED,
@@ -679,8 +679,7 @@ CREATE INDEX IF NOT EXISTS actions_place_id_idx ON actions USING btree(place_id)
 CREATE INDEX IF NOT EXISTS actions_date_idx ON actions USING btree(date);
 CREATE INDEX IF NOT EXISTS actions_label_idx ON actions USING btree(label);
 CREATE INDEX IF NOT EXISTS actions_data_idx ON actions USING gin(data);
--- TODO: switch to gist when postGIS is used
-CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gin(geometry);
+CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gist(geometry);
 
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
 COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
@@ -785,8 +784,7 @@ CREATE TABLE IF NOT EXISTS checks(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED,
@@ -800,8 +798,7 @@ CREATE INDEX IF NOT EXISTS checks_place_id_idx ON checks USING btree(place_id);
 CREATE INDEX IF NOT EXISTS checks_date_idx ON checks USING btree(date);
 CREATE INDEX IF NOT EXISTS checks_label_idx ON checks USING btree(label);
 CREATE INDEX IF NOT EXISTS checks_data_idx ON checks USING gin(data);
--- TODO: switch to gist when postGIS is used
-CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gin(geometry);
+CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gist(geometry);
 
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
@@ -1453,8 +1450,7 @@ CREATE TABLE IF NOT EXISTS observations(
   comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using observation_import_id.id_field
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using observation_import_id.geometry_method and it's field(s)
-  geometry jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using observation_import_id.geometry_method and it's field(s)
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1466,8 +1462,7 @@ CREATE INDEX IF NOT EXISTS observations_observation_import_id_idx ON observation
 CREATE INDEX IF NOT EXISTS observations_place_id_idx ON observations USING btree(place_id);
 CREATE INDEX IF NOT EXISTS observations_label_idx ON observations USING btree(label);
 CREATE INDEX IF NOT EXISTS observations_data_idx ON observations USING gin(data);
--- TODO: switch to gist when postGIS is used
-CREATE INDEX IF NOT EXISTS observations_geometry_idx ON observations USING gin(geometry);
+CREATE INDEX IF NOT EXISTS observations_geometry_idx ON observations USING gist(geometry);
 
 COMMENT ON TABLE observations IS 'observations. Imported for subprojects (species projects) or projects (biotope projects).';
 COMMENT ON COLUMN observations.place_id IS 'The place this observation is assigned to.';
@@ -1658,8 +1653,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   properties jsonb DEFAULT NULL,
   -- bbox can be used to load only what is in view
   bbox_sw_lng real DEFAULT NULL,
@@ -1673,8 +1667,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
 
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_account_id_idx ON vector_layer_geoms USING btree(account_id);
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_vector_layer_id_idx ON vector_layer_geoms USING btree(vector_layer_id);
--- TODO: switch to gist when postGIS is used
-CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gin(geometry);
+CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gist(geometry);
 
 COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport) 3. enable displaying by field values. Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
 COMMENT ON COLUMN vector_layer_geoms.geometry IS 'geometry-collection of this row';
