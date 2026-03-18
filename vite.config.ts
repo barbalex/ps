@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import tsConfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import formatjs from '@formatjs/vite-plugin'
@@ -12,8 +11,10 @@ export default defineConfig({
     port: 5176,
     // host: '0.0.0.0',
   },
+  resolve: {
+    tsconfigPaths: true,
+  },
   plugins: [
-    tsConfigPaths(),
     // enabling start causes error: https://github.com/TanStack/router/issues/5795#issuecomment-3973127942
     // tanstackStart(),
     // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
