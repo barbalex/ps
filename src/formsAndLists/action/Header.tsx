@@ -9,7 +9,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
-import { createAction } from '../../modules/createRows.ts'
+import { createAction, createLayerPresentation } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import {
@@ -17,6 +17,7 @@ import {
   mapBoundsAtom,
   addOperationAtom,
   addNotificationAtom,
+  mapLayerSortingAtom,
 } from '../../store.ts'
 import type Actions from '../../models/public/Actions.ts'
 
@@ -28,6 +29,7 @@ export const Header = ({ autoFocusRef, from }) => {
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/action'
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
@@ -155,7 +157,41 @@ export const Header = ({ autoFocusRef, from }) => {
       setTabs([...tabs, 'map'])
     }
 
-    // 2. zoom to action
+    // 2. activate layer if not active
+    const level = placeId2 ? 2 : 1
+    const layerRes = await db.query(
+      `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
+      FROM vector_layers vl
+        LEFT JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
+      WHERE vl.project_id = $1 AND vl.own_table = 'actions' AND vl.own_table_level = $2
+      ORDER BY lp.active DESC, lp.layer_presentation_id
+      LIMIT 1`,
+      [projectId, level],
+    )
+    const layerRow = layerRes?.rows?.[0]
+    const vectorLayerId: string | undefined = layerRow?.vl_vector_layer_id
+    let lpId: string | undefined = layerRow?.layer_presentation_id
+    if (!lpId && vectorLayerId) {
+      lpId = await createLayerPresentation({ vectorLayerId, active: true })
+    } else if (lpId && !layerRow?.active) {
+      await db.query(
+        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
+        [lpId],
+      )
+      addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: lpId,
+        operation: 'update',
+        draft: { active: true },
+        prev: { ...layerRow },
+      })
+    }
+    if (lpId && !mapLayerSorting.includes(lpId)) {
+      setMapLayerSorting([...mapLayerSorting, lpId])
+    }
+
+    // 3. zoom to action
     const buffered = buffer(geometry, 0.05)
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)

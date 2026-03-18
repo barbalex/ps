@@ -62,16 +62,18 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     if (!showLayer && !tabs.includes('map')) {
       setTabs([...tabs, 'map'])
     }
+    // activate layer if not already active
+    if (showLayer) return
     db.query(
-      `UPDATE layer_presentations SET active = $1 WHERE layer_presentation_id = $2`,
-      [!showLayer, layerPresentation.layer_presentation_id],
+      `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
+      [layerPresentation.layer_presentation_id],
     )
     addOperation({
       table: 'layer_presentations',
       rowIdName: 'layer_presentation_id',
       rowId: layerPresentation.layer_presentation_id,
       operation: 'update',
-      draft: { active: !showLayer },
+      draft: { active: true },
       prev: { ...layerPresentation },
     })
   }
