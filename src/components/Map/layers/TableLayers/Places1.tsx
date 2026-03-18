@@ -1,9 +1,11 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useParams } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
 import type Places from '../../../../models/public/Places.ts'
 
 export const Places1 = ({ layerPresentation }) => {
+  const { placeId } = useParams({ strict: false })
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery(
     `SELECT place_id, account_id, subproject_id, parent_id, level, since, until, data,
@@ -47,5 +49,12 @@ export const Places1 = ({ layerPresentation }) => {
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return <TableLayer data={data} layerPresentation={layerPresentation} />
+  return (
+    <TableLayer
+      data={data}
+      layerPresentation={layerPresentation}
+      activeId={placeId}
+      activeIdField="place_id"
+    />
+  )
 }

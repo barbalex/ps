@@ -16,7 +16,7 @@ import {
 } from '../../../../store.ts'
 import { observationMarkers } from './observationMarkers.ts'
 
-export const TableLayer = ({ data, layerPresentation }) => {
+export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdField = null }) => {
   const confirmAssigningToSingleTarget = useAtomValue(
     confirmAssigningToSingleTargetAtom,
   )
@@ -95,17 +95,25 @@ export const TableLayer = ({ data, layerPresentation }) => {
   return (
     <ErrorBoundary layer={layer}>
       <GeoJSON
-        key={`${dataKey}/${JSON.stringify(firstDisplay)}`}
+        key={`${dataKey}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
         data={data}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
           // need to choose display to pass in
           const displayToUse = displayFromFeature(feature)
 
-          return vectorLayerDisplayToProperties({
+          const baseStyle = vectorLayerDisplayToProperties({
             vectorLayerDisplay: displayToUse,
             presentation: layerPresentation,
           })
+          if (
+            activeId &&
+            activeIdField &&
+            feature?.properties?.[activeIdField] === activeId
+          ) {
+            return { ...baseStyle, color: 'orange', weight: 3 }
+          }
+          return baseStyle
         }}
         pointToLayer={(feature, latlng) => {
           const displayToUse = displayFromFeature(feature)
@@ -132,8 +140,13 @@ export const TableLayer = ({ data, layerPresentation }) => {
             clickableCircle._isInternal = true
 
             // Create the visible circle (non-interactive so clicks pass through)
+            const isActiveFeature =
+              activeId &&
+              activeIdField &&
+              feature?.properties?.[activeIdField] === activeId
             const visualCircle = L.circleMarker(latlng, {
               ...displayToUse,
+              ...(isActiveFeature ? { color: 'orange', weight: 3 } : {}),
               radius: visualRadius,
               interactive: false,
               bubblingMouseEvents: false,
