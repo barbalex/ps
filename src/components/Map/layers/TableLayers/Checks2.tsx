@@ -1,11 +1,14 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
 import type Checks from '../../../../models/public/Checks.ts'
 
 export const Checks2 = ({ layerPresentation }) => {
-  const { checkId } = useParams({ strict: false })
+  const { pathname } = useLocation()
+  const pathParts = pathname.split('/')
+  const checksIdx = pathParts.indexOf('checks')
+  const checkId = checksIdx !== -1 ? pathParts[checksIdx + 1] : undefined
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery(
     `
@@ -38,10 +41,10 @@ export const Checks2 = ({ layerPresentation }) => {
         properties: {},
       })),
     }
-    if (!data) return fc
     fc.features.forEach((f) => {
       f.properties = properties ?? {}
-      // data is _not_ passed under the data property due to errors created
+      if (data) {
+        // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data)) {
         // ensure that properties are not overwritten
         // but also make sure if key is used for styling, it is not changed...
@@ -49,6 +52,7 @@ export const Checks2 = ({ layerPresentation }) => {
           f.properties[`_${key}`] = properties[key]
         }
         f.properties[key] = value
+        }
       }
     })
 

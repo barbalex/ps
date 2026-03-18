@@ -1,11 +1,16 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
 import type Places from '../../../../models/public/Places.ts'
 
 export const Places2 = ({ layerPresentation }) => {
-  const { placeId2 } = useParams({ strict: false })
+  const { pathname } = useLocation()
+  const pathParts = pathname.split('/')
+  // placeId2 is the second /places/{id} segment in the URL
+  const firstPlacesIdx = pathParts.indexOf('places')
+  const secondPlacesIdx = firstPlacesIdx !== -1 ? pathParts.indexOf('places', firstPlacesIdx + 1) : -1
+  const placeId2 = secondPlacesIdx !== -1 ? pathParts[secondPlacesIdx + 1] : undefined
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery(
     `SELECT place_id, account_id, subproject_id, parent_id, level, since, until, data,
