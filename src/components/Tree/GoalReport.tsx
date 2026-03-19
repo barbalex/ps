@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { GoalReportValuesNode } from './GoalReportValues.tsx'
@@ -16,6 +17,7 @@ export const GoalReportNode = ({
   level = 8,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -68,7 +70,7 @@ export const GoalReportNode = ({
       {isOpen && (
         <>
           <Node
-            label="Report"
+            label={formatMessage({ id: 'KkGaeP', defaultMessage: 'Bericht' })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
