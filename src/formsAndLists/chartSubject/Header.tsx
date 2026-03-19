@@ -102,7 +102,7 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'jmuVHU', defaultMessage: 'Diagramm-Thema' })}
+      title={formatMessage({ id: 'jmuVHU', defaultMessage: 'Thema' })}
       addRow={designing ? addRow : undefined}
       deleteRow={designing ? deleteRow : undefined}
       toNext={toNext}

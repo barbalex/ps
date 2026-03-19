@@ -23,10 +23,7 @@ export const Header = ({ autoFocusRef }) => {
     `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = '${projectId}'`,
   )
   const subprojectNameSingular = projectRes?.rows?.[0]?.subproject_name_singular
-  const title =
-    subprojectNameSingular ?
-      `${subprojectNameSingular}-${formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}`
-    : formatMessage({ id: '86d76W', defaultMessage: 'Teilprojekt-Taxon' })
+  const title = formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })
 
   const db = usePGlite()
 
