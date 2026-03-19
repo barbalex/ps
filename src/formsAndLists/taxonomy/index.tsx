@@ -104,7 +104,7 @@ export const Taxonomy = ({ from }) => {
             formatMessage({
               id: 'vU6WxY',
               defaultMessage:
-                'Einheit der Taxonomie. Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt.',
+                'Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt.',
             })
           }
         />

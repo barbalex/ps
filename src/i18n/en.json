@@ -661,5 +661,5 @@
   "hQ0RsU": "Enables users to add own and edit existing WMS and WFS layers. Preset: false. This makes the UI more complex, so only enable if needed.",
   "nX4TyZ": "Taxonomies classify objects (e.g. species, biotopes), mostly hierarchically. There is no universally valid way to classify species and biotopes. The genetic composition and distribution of species can change over time. Biotopes change their species composition. Therefore, a taxonomy is never final. It is normal that, depending on context, different taxonomies are used, and in a single project multiple taxonomies may be used simultaneously.",
   "uT5VwX": "Type",
-  "vU6WxY": "Unit of taxonomy. Helps analysing data in reports. Examples: «abundance class», «cover». If no unit is set, the taxonomy is assumed to describe presence only."
+  "vU6WxY": "Helps analysing data in reports. Examples: «abundance class», «cover». If no unit is set, the taxonomy is assumed to describe presence only."
 }
