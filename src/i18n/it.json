@@ -632,5 +632,6 @@
   "uA2LpQ": "Nessun tipo di valore impostato. Si prega di selezionare un tipo di valore nella lista.",
   "gRVMgi": "Quantità (intero)",
   "gRVMnu": "Quantità (numerico)",
-  "gRVMtx": "Quantità (testo)"
+  "gRVMtx": "Quantità (testo)",
+  "gP1QrT": "Elenco dei taxa rappresentati in questo sottoprogetto. Possono essere più di uno, ad esempio sinonimi di una tassonomia o di tassonomie diverse. Un taxon non dovrebbe essere utilizzato in più di un sottoprogetto."
 }

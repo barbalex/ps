@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { createSubprojectTaxon } from '../modules/createRows.ts'
 import { useSubprojectTaxaNavData } from '../modules/useSubprojectTaxaNavData.ts'
@@ -11,6 +12,7 @@ import '../form.css'
 export const SubprojectTaxa = ({ from }) => {
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   const { loading, navData, isFiltered } = useSubprojectTaxaNavData({
     projectId,
@@ -39,18 +41,20 @@ export const SubprojectTaxa = ({ from }) => {
         nameSingular={nameSingular}
         addRow={add}
         menus={canFilter ? <FilterButton isFiltered={isFiltered} /> : undefined}
+        description={formatMessage({
+          id: 'gP1QrT',
+          defaultMessage:
+            'Liste der Taxa, die in diesem Teilprojekt vertreten sind. Es können mehrere sein, zum Beispiel Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
+        })}
       />
       <div className="list-container">
-        {loading ?
+        {loading ? (
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              to={id}
-              label={label ?? id}
-            />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} to={id} label={label ?? id} />
           ))
-        }
+        )}
       </div>
     </div>
   )

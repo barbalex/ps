@@ -468,7 +468,7 @@ CREATE INDEX IF NOT EXISTS subproject_taxa_label_idx ON subproject_taxa USING bt
 
 COMMENT ON TABLE subproject_taxa IS 'list wor what taxa data is managed in the subproject.';
 COMMENT ON COLUMN subproject_taxa.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject.';
+COMMENT ON COLUMN subproject_taxa.taxon_id IS 'List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject.';
 
 --------------------------------------------------------------
 -- lists

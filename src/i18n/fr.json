@@ -632,5 +632,6 @@
   "uA2LpQ": "Aucun type de valeur défini. Veuillez sélectionner un type de valeur dans la liste.",
   "gRVMgi": "Quantité (entier)",
   "gRVMnu": "Quantité (numérique)",
-  "gRVMtx": "Quantité (texte)"
+  "gRVMtx": "Quantité (texte)",
+  "gP1QrT": "Liste des taxons représentés dans ce sous-projet. Peut en contenir plusieurs, par exemple des synonymes d'une même taxonomie ou de taxonomies différentes. Un taxon ne devrait pas être utilisé dans plus d'un sous-projet."
 }

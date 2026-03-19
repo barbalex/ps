@@ -655,5 +655,6 @@
   "fKK1lL": "Free",
   "fLL2mM": "Basic",
   "fMM3nN": "Premium",
-  "uA2LpQ": "No value type set. Please select a value type in the list."
+  "uA2LpQ": "No value type set. Please select a value type in the list.",
+  "gP1QrT": "List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject."
 }
