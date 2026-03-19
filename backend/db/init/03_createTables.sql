@@ -182,6 +182,7 @@ COMMENT ON TABLE projects IS 'Goal: manage projects';
 --
 -- TODO: we need a language setting for the user in the db
 -- to set the label in triggers according to it
+-- NOOOOOOO: label is not dependent on user...
 CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -509,16 +510,13 @@ CREATE TABLE IF NOT EXISTS list_values(
   list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  -- TODO: remove value, only use value_type-specific columns
-  value text DEFAULT NULL,
   value_integer integer DEFAULT NULL,
   value_numeric numeric DEFAULT NULL,
   value_text text DEFAULT NULL,
   value_date date DEFAULT NULL,
   value_datetime timestamptz DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  -- TODO: create a trigger to set the value according to the value_type of the list
-  label text GENERATED ALWAYS AS (coalesce(nullif(value, ''), list_value_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(value_integer, value_numeric, nullif(value_text, ''), value_date, value_datetime, list_value_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1718,7 +1716,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_opacity_percent integer DEFAULT 100,
   fill_rule vector_layer_fill_rules_enum DEFAULT 'evenodd',
   -- TODO: translate
-  label text GENERATED ALWAYS AS (coalesce(nullif(display_property_value, ''), 'Single Display')) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(display_property_value, ''), 'Single')) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
