@@ -4,6 +4,7 @@
 import type { AccountsAccountId } from './Accounts';
 import type { ProjectsProjectId } from './Projects';
 import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum';
+import type { UnitsUnitId } from './Units';
 
 /** Identifier type for public.taxonomies */
 export type TaxonomiesTaxonomyId = string & { __brand: 'public.taxonomies' };
@@ -22,6 +23,9 @@ export default interface Taxonomies {
 
   /** One of: "species", "biotope". Preset: "species" */
   type: TaxonomyTypesEnum | null;
+
+  /** Unit of taxonomy. Helps analysing data for reporting. Examples: "abundance class", "percent cover". If no unit is set, the taxonomy is assumed to describe presence only. */
+  unit_id: UnitsUnitId | null;
 
   /** Shortish name of taxonomy, like "Flora der Schweiz, 1995" */
   name: string | null;
@@ -59,6 +63,9 @@ export interface TaxonomiesInitializer {
 
   /** One of: "species", "biotope". Preset: "species" */
   type?: TaxonomyTypesEnum | null;
+
+  /** Unit of taxonomy. Helps analysing data for reporting. Examples: "abundance class", "percent cover". If no unit is set, the taxonomy is assumed to describe presence only. */
+  unit_id?: UnitsUnitId | null;
 
   /** Shortish name of taxonomy, like "Flora der Schweiz, 1995" */
   name?: string | null;
@@ -98,6 +105,9 @@ export interface TaxonomiesMutator {
 
   /** One of: "species", "biotope". Preset: "species" */
   type?: TaxonomyTypesEnum | null;
+
+  /** Unit of taxonomy. Helps analysing data for reporting. Examples: "abundance class", "percent cover". If no unit is set, the taxonomy is assumed to describe presence only. */
+  unit_id?: UnitsUnitId | null;
 
   /** Shortish name of taxonomy, like "Flora der Schweiz, 1995" */
   name?: string | null;

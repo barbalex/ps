@@ -4,7 +4,6 @@
 import type { AccountsAccountId } from './Accounts';
 import type { ProjectsProjectId } from './Projects';
 import type { default as UnitTypesEnum } from './UnitTypesEnum';
-import type { ListsListId } from './Lists';
 
 /** Identifier type for public.units */
 export type UnitsUnitId = string & { __brand: 'public.units' };
@@ -21,39 +20,16 @@ export default interface Units {
 
   project_id: ProjectsProjectId | null;
 
-  /** Whether to use this unit for action values. Preset: false */
-  use_for_action_values: boolean | null;
-
-  /** Whether to use this unit for action report values. Preset: false */
-  use_for_action_report_values: boolean | null;
-
-  /** Whether to use this unit for check values. Preset: false */
-  use_for_check_values: boolean | null;
-
-  /** Whether to use this unit for place report values. Preset: false */
-  use_for_place_report_values: boolean | null;
-
-  /** Whether to use this unit for goal report values. Preset: false */
-  use_for_goal_report_values: boolean | null;
-
-  /** Whether to use this unit for subproject taxa. Preset: false */
-  use_for_subproject_taxa: boolean | null;
-
-  /** Whether to use this unit for check taxa. Preset: false */
-  use_for_check_taxa: boolean | null;
-
   /** Name of unit, like "Anzahl" */
   name: string | null;
 
-  /** Whether values of this unit can be summed. Else: distribution of count per value. Preset: false */
+  /** Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false */
   summable: boolean | null;
 
   sort: number | null;
 
   /** One of: "integer", "numeric", "text". Preset: "integer" */
   type: UnitTypesEnum | null;
-
-  list_id: ListsListId | null;
 
   label: string | null;
 
@@ -77,53 +53,11 @@ export interface UnitsInitializer {
 
   project_id?: ProjectsProjectId | null;
 
-  /**
-   * Whether to use this unit for action values. Preset: false
-   * Default value: false
-   */
-  use_for_action_values?: boolean | null;
-
-  /**
-   * Whether to use this unit for action report values. Preset: false
-   * Default value: false
-   */
-  use_for_action_report_values?: boolean | null;
-
-  /**
-   * Whether to use this unit for check values. Preset: false
-   * Default value: false
-   */
-  use_for_check_values?: boolean | null;
-
-  /**
-   * Whether to use this unit for place report values. Preset: false
-   * Default value: false
-   */
-  use_for_place_report_values?: boolean | null;
-
-  /**
-   * Whether to use this unit for goal report values. Preset: false
-   * Default value: false
-   */
-  use_for_goal_report_values?: boolean | null;
-
-  /**
-   * Whether to use this unit for subproject taxa. Preset: false
-   * Default value: false
-   */
-  use_for_subproject_taxa?: boolean | null;
-
-  /**
-   * Whether to use this unit for check taxa. Preset: false
-   * Default value: false
-   */
-  use_for_check_taxa?: boolean | null;
-
   /** Name of unit, like "Anzahl" */
   name?: string | null;
 
   /**
-   * Whether values of this unit can be summed. Else: distribution of count per value. Preset: false
+   * Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false
    * Default value: false
    */
   summable?: boolean | null;
@@ -132,8 +66,6 @@ export interface UnitsInitializer {
 
   /** One of: "integer", "numeric", "text". Preset: "integer" */
   type?: UnitTypesEnum | null;
-
-  list_id?: ListsListId | null;
 
   /** Default value: now() */
   created_at?: Date;
@@ -156,39 +88,16 @@ export interface UnitsMutator {
 
   project_id?: ProjectsProjectId | null;
 
-  /** Whether to use this unit for action values. Preset: false */
-  use_for_action_values?: boolean | null;
-
-  /** Whether to use this unit for action report values. Preset: false */
-  use_for_action_report_values?: boolean | null;
-
-  /** Whether to use this unit for check values. Preset: false */
-  use_for_check_values?: boolean | null;
-
-  /** Whether to use this unit for place report values. Preset: false */
-  use_for_place_report_values?: boolean | null;
-
-  /** Whether to use this unit for goal report values. Preset: false */
-  use_for_goal_report_values?: boolean | null;
-
-  /** Whether to use this unit for subproject taxa. Preset: false */
-  use_for_subproject_taxa?: boolean | null;
-
-  /** Whether to use this unit for check taxa. Preset: false */
-  use_for_check_taxa?: boolean | null;
-
   /** Name of unit, like "Anzahl" */
   name?: string | null;
 
-  /** Whether values of this unit can be summed. Else: distribution of count per value. Preset: false */
+  /** Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false */
   summable?: boolean | null;
 
   sort?: number | null;
 
   /** One of: "integer", "numeric", "text". Preset: "integer" */
   type?: UnitTypesEnum | null;
-
-  list_id?: ListsListId | null;
 
   created_at?: Date;
 

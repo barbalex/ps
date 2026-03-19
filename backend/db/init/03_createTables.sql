@@ -408,6 +408,7 @@ CREATE TABLE IF NOT EXISTS taxonomies(
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
 CREATE INDEX IF NOT EXISTS taxonomies_project_id_idx ON taxonomies USING btree(project_id);
 CREATE INDEX IF NOT EXISTS taxonomies_type_idx ON taxonomies USING btree(type);
+CREATE INDEX IF NOT EXISTS taxonomies_unit_id_idx ON taxonomies USING btree(unit_id);
 CREATE INDEX IF NOT EXISTS taxonomies_name_idx ON taxonomies USING btree(name);
 CREATE INDEX IF NOT EXISTS taxonomies_label_idx ON taxonomies USING btree(label);
 CREATE INDEX IF NOT EXISTS taxonomies_obsolete_idx ON taxonomies((1))
@@ -558,7 +559,6 @@ CREATE INDEX IF NOT EXISTS units_account_id_idx ON units USING btree(account_id)
 CREATE INDEX IF NOT EXISTS units_project_id_idx ON units USING btree(project_id);
 CREATE INDEX IF NOT EXISTS units_name_idx ON units USING btree(name);
 CREATE INDEX IF NOT EXISTS units_sort_idx ON units USING btree(sort);
-CREATE INDEX IF NOT EXISTS units_list_id_idx ON units USING btree(list_id);
 CREATE INDEX IF NOT EXISTS units_label_idx ON units USING btree(label);
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
