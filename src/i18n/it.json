@@ -633,5 +633,5 @@
   "gRVMgi": "Quantità (intero)",
   "gRVMnu": "Quantità (numerico)",
   "gRVMtx": "Quantità (testo)",
-  "gP1QrT": "Elenco dei taxa rappresentati in questo sottoprogetto. Possono essere più di uno, ad esempio sinonimi di una tassonomia o di tassonomie diverse. Un taxon non dovrebbe essere utilizzato in più di un sottoprogetto."
+  "gP1QrT": "Elenco dei taxa rappresentati in questo sottoprogetto {subprojectNameSingular}. Esempi: sinonimi di una tassonomia o di tassonomie diverse. Un taxon non dovrebbe essere utilizzato in più di un sottoprogetto."
 }

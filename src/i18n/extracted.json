@@ -1092,6 +1092,6 @@
     "defaultMessage": "Bericht"
   },
   "gP1QrT": {
-    "defaultMessage": "Liste der Taxa, die in diesem Teilprojekt vertreten sind. Es können mehrere sein, zum Beispiel Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden."
+    "defaultMessage": "Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden."
   }
 }

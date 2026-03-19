@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
+import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createSubprojectTaxon } from '../modules/createRows.ts'
 import { useSubprojectTaxaNavData } from '../modules/useSubprojectTaxaNavData.ts'
@@ -7,12 +9,22 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { languageAtom } from '../store.ts'
+import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
 import '../form.css'
 
 export const SubprojectTaxa = ({ from }) => {
   const { projectId, subprojectId } = useParams({ from })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+
+  const projectRes = useLiveQuery(
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const subprojectNameSingular =
+    projectRes?.rows?.[0]?.subproject_name_singular ?? ''
 
   const { loading, navData, isFiltered } = useSubprojectTaxaNavData({
     projectId,
@@ -41,11 +53,14 @@ export const SubprojectTaxa = ({ from }) => {
         nameSingular={nameSingular}
         addRow={add}
         menus={canFilter ? <FilterButton isFiltered={isFiltered} /> : undefined}
-        description={formatMessage({
-          id: 'gP1QrT',
-          defaultMessage:
-            'Liste der Taxa, die in diesem Teilprojekt vertreten sind. Es können mehrere sein, zum Beispiel Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
-        })}
+        description={formatMessage(
+          {
+            id: 'gP1QrT',
+            defaultMessage:
+              'Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
+          },
+          { subprojectNameSingular },
+        )}
       />
       <div className="list-container">
         {loading ? (
