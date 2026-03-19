@@ -31,11 +31,13 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
+  users_can_edit_map_layers?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
   id: string
   label: string | null
+  users_can_edit_map_layers?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -55,6 +57,7 @@ type NavDataNotForBreadcrumb = {
 type NavDataNotForBreadcrumbDesigning = {
   id: string
   label: string | null
+  users_can_edit_map_layers?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -160,7 +163,8 @@ export const useProjectNavData = ({
       }
       SELECT
         project_id AS id,
-        label
+        label,
+        users_can_edit_map_layers
         ${
           !forBreadcrumb
             ? `,
@@ -317,54 +321,58 @@ export const useProjectNavData = ({
               }),
             }),
           },
-          {
-            id: 'wms-services',
-            label: buildNavLabel({
-              loading,
-              countFiltered: nav?.wms_services_count_unfiltered ?? 0,
-              namePlural: formatMessage({
-                id: '0pm66C',
-                defaultMessage: 'WMS-Dienste',
-              }),
-            }),
-          },
-          {
-            id: 'wms-layers',
-            label: buildNavLabel({
-              loading,
-              isFiltered: wmsLayersIsFiltered,
-              countFiltered: nav?.wms_layers_count_filtered ?? 0,
-              countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
-              namePlural: formatMessage({
-                id: 'IKLYLz',
-                defaultMessage: 'WMS-Ebenen',
-              }),
-            }),
-          },
-          {
-            id: 'wfs-services',
-            label: buildNavLabel({
-              loading,
-              countFiltered: nav?.wfs_services_count_unfiltered ?? 0,
-              namePlural: formatMessage({
-                id: 'HzltY9',
-                defaultMessage: 'WFS-Dienste',
-              }),
-            }),
-          },
-          {
-            id: 'vector-layers',
-            label: buildNavLabel({
-              loading,
-              isFiltered: vectorLayersIsFiltered,
-              countFiltered: nav?.vector_layers_count_filtered ?? 0,
-              countUnfiltered: nav?.vector_layers_count_unfiltered ?? 0,
-              namePlural: formatMessage({
-                id: 'nauDh5',
-                defaultMessage: 'Vektor-Ebenen',
-              }),
-            }),
-          },
+          ...(designing || (nav?.users_can_edit_map_layers ?? false)
+            ? [
+                {
+                  id: 'wms-services',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.wms_services_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: '0pm66C',
+                      defaultMessage: 'WMS-Dienste',
+                    }),
+                  }),
+                },
+                {
+                  id: 'wms-layers',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: wmsLayersIsFiltered,
+                    countFiltered: nav?.wms_layers_count_filtered ?? 0,
+                    countUnfiltered: nav?.wms_layers_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'IKLYLz',
+                      defaultMessage: 'WMS-Ebenen',
+                    }),
+                  }),
+                },
+                {
+                  id: 'wfs-services',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.wfs_services_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'HzltY9',
+                      defaultMessage: 'WFS-Dienste',
+                    }),
+                  }),
+                },
+                {
+                  id: 'vector-layers',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: vectorLayersIsFiltered,
+                    countFiltered: nav?.vector_layers_count_filtered ?? 0,
+                    countUnfiltered: nav?.vector_layers_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'nauDh5',
+                      defaultMessage: 'Vektor-Ebenen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
           ...(designing
             ? [
                 {

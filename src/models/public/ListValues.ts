@@ -16,9 +16,6 @@ export default interface ListValues {
 
   list_id: ListsListId | null;
 
-  /** Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used. */
-  value: string | null;
-
   value_integer: number | null;
 
   value_numeric: string | null;
@@ -50,9 +47,6 @@ export interface ListValuesInitializer {
 
   list_id?: ListsListId | null;
 
-  /** Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used. */
-  value?: string | null;
-
   value_integer?: number | null;
 
   value_numeric?: string | null;
@@ -83,9 +77,6 @@ export interface ListValuesMutator {
   account_id?: AccountsAccountId | null;
 
   list_id?: ListsListId | null;
-
-  /** Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used. */
-  value?: string | null;
 
   value_integer?: number | null;
 

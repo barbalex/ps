@@ -69,6 +69,9 @@ export default interface Projects {
   /** One of: "use all", "use last". Preset: "use last" */
   multiple_check_values_on_same_level: string | null;
 
+  /** Enables users to add own and edit existing wms and wfs layers. Preset: false. This makes the ui more complex, so only set to true if needed. */
+  users_can_edit_map_layers: boolean | null;
+
   /** Room for project specific data, defined in "fields" table */
   data: unknown | null;
 
@@ -155,6 +158,12 @@ export interface ProjectsInitializer {
 
   /** One of: "use all", "use last". Preset: "use last" */
   multiple_check_values_on_same_level?: string | null;
+
+  /**
+   * Enables users to add own and edit existing wms and wfs layers. Preset: false. This makes the ui more complex, so only set to true if needed.
+   * Default value: false
+   */
+  users_can_edit_map_layers?: boolean | null;
 
   /** Room for project specific data, defined in "fields" table */
   data?: unknown | null;
@@ -247,6 +256,9 @@ export interface ProjectsMutator {
 
   /** One of: "use all", "use last". Preset: "use last" */
   multiple_check_values_on_same_level?: string | null;
+
+  /** Enables users to add own and edit existing wms and wfs layers. Preset: false. This makes the ui more complex, so only set to true if needed. */
+  users_can_edit_map_layers?: boolean | null;
 
   /** Room for project specific data, defined in "fields" table */
   data?: unknown | null;

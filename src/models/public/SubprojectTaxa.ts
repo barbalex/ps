@@ -20,7 +20,7 @@ export default interface SubprojectTaxa {
 
   subproject_id: SubprojectsSubprojectId | null;
 
-  /** taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject. */
+  /** List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject. */
   taxon_id: TaxaTaxonId | null;
 
   label: string | null;
@@ -45,7 +45,7 @@ export interface SubprojectTaxaInitializer {
 
   subproject_id?: SubprojectsSubprojectId | null;
 
-  /** taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject. */
+  /** List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject. */
   taxon_id?: TaxaTaxonId | null;
 
   label?: string | null;
@@ -71,7 +71,7 @@ export interface SubprojectTaxaMutator {
 
   subproject_id?: SubprojectsSubprojectId | null;
 
-  /** taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject. */
+  /** List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject. */
   taxon_id?: TaxaTaxonId | null;
 
   label?: string | null;
