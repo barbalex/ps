@@ -148,6 +148,7 @@ CREATE TABLE IF NOT EXISTS projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
+  users_can_edit_map_layers boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
@@ -171,6 +172,7 @@ COMMENT ON COLUMN projects.places_order_by IS 'Used to order places in lists. Co
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
 COMMENT ON COLUMN projects.multiple_action_values_on_same_level IS 'One of: "use all", "use last". Preset: "use all"';
 COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
+COMMENT ON COLUMN projects.users_can_edit_map_layers IS 'Enables users to add own and edit existing wms and wfs layers. Preset: false. This makes the ui more complex, so only set to true if needed.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';

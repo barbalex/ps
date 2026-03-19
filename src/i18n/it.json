@@ -633,5 +633,7 @@
   "gRVMgi": "Quantità (intero)",
   "gRVMnu": "Quantità (numerico)",
   "gRVMtx": "Quantità (testo)",
-  "gP1QrT": "Elenco dei taxa rappresentati in questo sottoprogetto {subprojectNameSingular}. Esempi: sinonimi di una tassonomia o di tassonomie diverse. Un taxon non dovrebbe essere utilizzato in più di un sottoprogetto."
+  "gP1QrT": "Elenco dei taxa rappresentati in questo sottoprogetto {subprojectNameSingular}. Esempi: sinonimi di una tassonomia o di tassonomie diverse. Un taxon non dovrebbe essere utilizzato in più di un sottoprogetto.",
+  "oP9QrS": "Gli utenti possono modificare i livelli della mappa",
+  "hQ0RsU": "Consente agli utenti di aggiungere propri livelli WMS e WFS e di modificare quelli esistenti. Valore predefinito: false. Rende l'interfaccia più complessa, quindi attivare solo se necessario."
 }

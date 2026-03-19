@@ -1093,5 +1093,11 @@
   },
   "gP1QrT": {
     "defaultMessage": "Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden."
+  },
+  "oP9QrS": {
+    "defaultMessage": "Benutzer können Kartenebenen bearbeiten"
+  },
+  "hQ0RsU": {
+    "defaultMessage": "Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Voreinstellung: false. Dies macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig."
   }
 }

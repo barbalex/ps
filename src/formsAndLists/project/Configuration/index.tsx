@@ -307,6 +307,24 @@ export const Configuration = ({ from }) => {
               defaultMessage: 'Wähle ein KBS in der KBS-Liste',
             })}
           />
+          <SwitchField
+            label={formatMessage({
+              id: 'oP9QrS',
+              defaultMessage: 'Benutzer können Kartenebenen bearbeiten',
+            })}
+            name="users_can_edit_map_layers"
+            value={row.users_can_edit_map_layers ?? false}
+            onChange={onChange}
+            validationState={validations?.users_can_edit_map_layers?.state}
+            validationMessage={
+              validations?.users_can_edit_map_layers?.message ??
+              formatMessage({
+                id: 'hQ0RsU',
+                defaultMessage:
+                  'Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Voreinstellung: false. Dies macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
+              })
+            }
+          />
           <Divider />
           <Label>
             {formatMessage({
