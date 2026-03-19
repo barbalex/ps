@@ -923,8 +923,8 @@ export const createCheckTaxon = async ({ checkId }) => {
   const db = store.get(pgliteDbAtom)
 
   // inherit the project's default unit if set
-  const projectRes = await db.query<{ checks_default_unit_id: string | null }>(
-    `SELECT p.checks_default_unit_id
+  const projectRes = await db.query<{ check_taxa_default_unit_id: string | null }>(
+    `SELECT p.check_taxa_default_unit_id
      FROM projects p
      JOIN subprojects sp ON sp.project_id = p.project_id
      JOIN places pl ON pl.subproject_id = sp.subproject_id
@@ -933,7 +933,7 @@ export const createCheckTaxon = async ({ checkId }) => {
      LIMIT 1`,
     [checkId],
   )
-  const defaultUnitId = projectRes.rows?.[0]?.checks_default_unit_id ?? null
+  const defaultUnitId = projectRes.rows?.[0]?.check_taxa_default_unit_id ?? null
 
   const check_taxon_id = uuidv7()
   const draft = {

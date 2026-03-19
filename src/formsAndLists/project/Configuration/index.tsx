@@ -341,14 +341,14 @@ export const Configuration = ({ from }) => {
               id: 'mP7QrS',
               defaultMessage: 'Standard-Einheit für Kontroll-Mengen',
             })}
-            name="checks_default_unit_id"
+            name="check_taxa_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.checks_default_unit_id ?? ''}
+            value={row.check_taxa_default_unit_id ?? ''}
             onChange={onChange}
-            validationState={validations?.checks_default_unit_id?.state}
-            validationMessage={validations?.checks_default_unit_id?.message}
+            validationState={validations?.check_taxa_default_unit_id?.state}
+            validationMessage={validations?.check_taxa_default_unit_id?.message}
           />
           <Divider />
           <Label>

@@ -3,6 +3,7 @@
 
 import type { AccountsAccountId } from './Accounts';
 import type { default as ProjectTypesEnum } from './ProjectTypesEnum';
+import type { UnitsUnitId } from './Units';
 
 /** Identifier type for public.projects */
 export type ProjectsProjectId = string & { __brand: 'public.projects' };
@@ -59,6 +60,12 @@ export default interface Projects {
   goal_reports_label_by: string | null;
 
   goal_reports_order_by: string | null;
+
+  /** Default unit for check values. Can be overwritten in checks */
+  checks_default_unit_id: string | null;
+
+  /** Default unit for check taxa values. Can be overwritten in check_taxa */
+  check_taxa_default_unit_id: UnitsUnitId | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels: string | null;
@@ -149,6 +156,12 @@ export interface ProjectsInitializer {
   goal_reports_label_by?: string | null;
 
   goal_reports_order_by?: string | null;
+
+  /** Default unit for check values. Can be overwritten in checks */
+  checks_default_unit_id?: string | null;
+
+  /** Default unit for check taxa values. Can be overwritten in check_taxa */
+  check_taxa_default_unit_id?: UnitsUnitId | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels?: string | null;
@@ -247,6 +260,12 @@ export interface ProjectsMutator {
   goal_reports_label_by?: string | null;
 
   goal_reports_order_by?: string | null;
+
+  /** Default unit for check values. Can be overwritten in checks */
+  checks_default_unit_id?: string | null;
+
+  /** Default unit for check taxa values. Can be overwritten in check_taxa */
+  check_taxa_default_unit_id?: UnitsUnitId | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels?: string | null;
