@@ -4,3 +4,8 @@ create or replace function immutabledate(date) returns text
 strict immutable parallel safe
 as $$ begin return to_char($1::date, 'YYYY.MM.DD'); end $$
 language plpgsql;
+
+create or replace function immutabletimestamptz(timestamptz) returns text
+strict immutable parallel safe
+as $$ begin return to_char($1 AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'); end $$
+language plpgsql;
