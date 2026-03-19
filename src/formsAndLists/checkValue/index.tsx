@@ -6,18 +6,19 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type CheckValues from '../../models/public/CheckValues.ts'
+import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
 
 export const CheckValue = ({ from }) => {
-  const { checkValueId } = useParams({ from })
+  const { checkValueId, projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
@@ -30,6 +31,17 @@ export const CheckValue = ({ from }) => {
     [checkValueId],
   )
   const row: CheckValues | undefined = res?.rows?.[0]
+
+  const unitsRes = useLiveQuery(
+    `SELECT unit_id, name, type FROM units WHERE project_id = $1 ORDER BY sort, name`,
+    [projectId],
+  )
+  const units: Pick<Units, 'unit_id' | 'name' | 'type'>[] = unitsRes?.rows ?? []
+  const unitIds = units.map((u) => u.unit_id)
+  const unitLabelMap = Object.fromEntries(
+    units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
+  )
+  const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
   // console.log('CheckValue', { row, results })
 
@@ -67,59 +79,88 @@ export const CheckValue = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <>
-            <DropdownField
+            <RadioGroupField
               label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
               name="unit_id"
-              table="units"
-              where="use_for_check_values is true"
+              list={unitIds}
+              labelMap={unitLabelMap}
+              isLoading={unitsRes === undefined}
               value={row.unit_id ?? ''}
               onChange={onChange}
+              layout="horizontal"
               autoFocus
               ref={autoFocusRef}
-              validationState={validations?.unit_id?.state}
-              validationMessage={validations?.unit_id?.message}
+              validationState={
+                selectedUnit && !selectedUnit.type
+                  ? 'warning'
+                  : (validations?.unit_id?.state ?? 'none')
+              }
+              validationMessage={
+                selectedUnit && !selectedUnit.type
+                  ? formatMessage({
+                      id: 'uN4VwX',
+                      defaultMessage:
+                        'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
+                    })
+                  : validations?.unit_id?.message
+              }
             />
-            <TextField
-              label={formatMessage({ id: 'gRVMgi', defaultMessage: 'Menge (ganzzahlig)' })}
-              name="value_integer"
-              type="number"
-              value={row.value_integer ?? ''}
-              onChange={onChange}
-              validationState={validations?.value_integer?.state}
-              validationMessage={validations?.value_integer?.message}
-            />
-            <TextField
-              label={formatMessage({ id: 'gRVMnu', defaultMessage: 'Menge (numerisch)' })}
-              name="value_numeric"
-              type="number"
-              value={row.value_numeric ?? ''}
-              onChange={onChange}
-              validationState={validations?.value_numeric?.state}
-              validationMessage={validations?.value_numeric?.message}
-            />
-            <TextField
-              label={formatMessage({ id: 'gRVMtx', defaultMessage: 'Menge (Text)' })}
-              name="value_text"
-              value={row.value_text ?? ''}
-              onChange={onChange}
-              validationState={validations?.value_text?.state}
-              validationMessage={validations?.value_text?.message}
-            />
+            {(selectedUnit?.type === 'integer' ||
+              row.value_integer !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'integer'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="value_integer"
+                type="number"
+                value={row.value_integer ?? ''}
+                onChange={onChange}
+                validationState={validations?.value_integer?.state}
+                validationMessage={validations?.value_integer?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'numeric' ||
+              row.value_numeric !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'numeric'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="value_numeric"
+                type="number"
+                value={row.value_numeric ?? ''}
+                onChange={onChange}
+                validationState={validations?.value_numeric?.state}
+                validationMessage={validations?.value_numeric?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'text' || row.value_text !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'text'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="value_text"
+                value={row.value_text ?? ''}
+                onChange={onChange}
+                validationState={validations?.value_text?.state}
+                validationMessage={validations?.value_text?.message}
+              />
+            )}
           </>
-        : <NotFound
-            table="Check Value"
-            id={checkValueId}
-          />
-        }
+        ) : (
+          <NotFound table="Check Value" id={checkValueId} />
+        )}
       </div>
     </div>
   )

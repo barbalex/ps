@@ -640,5 +640,7 @@
   "uT5VwX": "Tipo",
   "uN4VwX": "Il campo della quantità non viene visualizzato perché l'unità selezionata non ha un tipo.",
   "gRVMng": "Quantità",
+  "qB8CdE": "Unità predefinita per i valori di controllo",
+  "mP7QrS": "Unità predefinita per le quantità dei taxa di controllo",
   "vU6WxY": "Aiuta ad analizzare i dati nei rapporti. Esempi: «classe di abbondanza», «copertura». Se non è impostata alcuna unità, si presume che la tassonomia descriva solo la presenza."
 }

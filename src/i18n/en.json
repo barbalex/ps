@@ -663,5 +663,7 @@
   "uT5VwX": "Type",
   "uN4VwX": "Quantity field is not shown because the selected unit has no type.",
   "gRVMng": "Quantity",
+  "qB8CdE": "Default unit for check values",
+  "mP7QrS": "Default unit for check taxon quantities",
   "vU6WxY": "Helps analysing data in reports. Examples: «abundance class», «cover». If no unit is set, the taxonomy is assumed to describe presence only."
 }

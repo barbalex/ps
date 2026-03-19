@@ -901,19 +901,37 @@ export const createCheck = async ({ projectId, placeId }) => {
 
 export const createCheckValue = async ({ checkId }) => {
   const db = store.get(pgliteDbAtom)
+
+  // inherit the project's default unit if set
+  const projectRes = await db.query<{ checks_default_unit_id: string | null }>(
+    `SELECT p.checks_default_unit_id
+     FROM projects p
+     JOIN subprojects sp ON sp.project_id = p.project_id
+     JOIN places pl ON pl.subproject_id = sp.subproject_id
+     JOIN checks c ON c.place_id = pl.place_id
+     WHERE c.check_id = $1
+     LIMIT 1`,
+    [checkId],
+  )
+  const defaultUnitId = projectRes.rows?.[0]?.checks_default_unit_id ?? null
+
   const check_value_id = uuidv7()
+  const draft = {
+    check_value_id,
+    check_id: checkId,
+    ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
+  }
+  const cols = Object.keys(draft).join(', ')
+  const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
   await db.query(
-    `insert into check_values (check_value_id, check_id) values ($1, $2)`,
-    [check_value_id, checkId],
+    `INSERT INTO check_values (${cols}) VALUES (${vals})`,
+    Object.values(draft),
   )
 
   store.set(addOperationAtom, {
     table: 'check_values',
     operation: 'insert',
-    draft: {
-      check_value_id,
-      check_id: checkId,
-    },
+    draft,
   })
 
   return check_value_id
