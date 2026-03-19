@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { ActionValuesNode } from './ActionsValues.tsx'
@@ -20,6 +21,7 @@ export const ActionNode = ({
   level = 8,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const { formatMessage } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -82,7 +84,7 @@ export const ActionNode = ({
       {isOpen && (
         <>
           <Node
-            label="Action"
+            label={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
