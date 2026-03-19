@@ -6,7 +6,6 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -70,18 +69,6 @@ export const ActionValue = ({ from }) => {
           <Loading />
         ) : row ? (
           <>
-            <DropdownField
-              label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-              name="unit_id"
-              table="units"
-              where="use_for_action_values is true"
-              value={row.unit_id ?? ''}
-              onChange={onChange}
-              autoFocus
-              ref={autoFocusRef}
-              validationState={validations?.unit_id?.state}
-              validationMessage={validations?.unit_id?.message}
-            />
             <TextField
               label={formatMessage({
                 id: 'gRVMgi',
@@ -120,7 +107,10 @@ export const ActionValue = ({ from }) => {
           </>
         ) : (
           <NotFound
-            table={formatMessage({ id: 'bCZDEF', defaultMessage: 'Massnahmen-Menge' })}
+            table={formatMessage({
+              id: 'bCZDEF',
+              defaultMessage: 'Massnahmen-Menge',
+            })}
             id={actionValueId}
           />
         )}
