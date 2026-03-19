@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { ListValuesNode } from './ListValues.tsx'
@@ -12,6 +13,7 @@ export const ListNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = ['data', 'projects', projectId, 'lists']
@@ -53,7 +55,7 @@ export const ListNode = ({ projectId, nav, level = 4 }) => {
       {isOpen && (
         <>
           <Node
-            label="List"
+            label={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
@@ -62,10 +64,7 @@ export const ListNode = ({ projectId, nav, level = 4 }) => {
             isActive={isEqual(urlPath, [...ownArray, 'list'])}
             to={`${ownUrl}/list`}
           />
-          <ListValuesNode
-            projectId={projectId}
-            listId={nav.id}
-          />
+          <ListValuesNode projectId={projectId} listId={nav.id} />
         </>
       )}
     </>
