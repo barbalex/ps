@@ -8,11 +8,14 @@ export function Info() {
   return (
     <div className={styles.container} tabIndex={-1}>
       <p>
-        {formatMessage({
-          id: 'Dx2eAf',
-          defaultMessage:
-            'Dies ist eine (hoffentlich) vollständige Liste der Koordinaten-Bezugs-Systeme.',
-        })}
+        {formatMessage(
+          {
+            id: 'Dx2eAf',
+            defaultMessage:
+              'Dies ist eine (hoffentlich) vollständige Liste der <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ysteme.',
+          },
+          { b: (chunks) => <strong>{chunks}</strong> },
+        )}
       </p>
       <p>
         {formatMessage({
