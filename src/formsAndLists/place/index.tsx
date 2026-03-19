@@ -12,7 +12,6 @@ import { addOperationAtom, languageAtom } from '../../store.ts'
 import type Places from '../../models/public/Places.ts'
 
 import '../../form.css'
-import styles from './index.module.css'
 
 export const Place = ({ from }) => {
   const { projectId, placeId, placeId2 } = useParams({ from })
@@ -48,7 +47,8 @@ export const Place = ({ from }) => {
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevels = nameRes?.rows ?? []
-  const nameSingular = placeLevels?.[0]?.[`name_singular_${language}`] ?? 'Place'
+  const nameSingular =
+    placeLevels?.[0]?.[`name_singular_${language}`] ?? 'Place'
   const namePlural = placeLevels?.[0]?.[`name_plural_${language}`] ?? 'Places'
 
   const onChange = async (e, data) => {
@@ -86,12 +86,7 @@ export const Place = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table={nameSingular}
-        id={placeId2 ?? placeId}
-      />
-    )
+    return <NotFound table={nameSingular} id={placeId2 ?? placeId} />
   }
 
   if (onlyForm) {
@@ -113,7 +108,6 @@ export const Place = ({ from }) => {
         nameSingular={nameSingular}
         namePlural={namePlural}
       />
-      <div className={styles.fields}></div>
       <Form
         row={row}
         onChange={onChange}

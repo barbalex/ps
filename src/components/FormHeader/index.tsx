@@ -41,7 +41,7 @@ export const FormHeader = ({
         />
       )}
     </div>
-    {description && (
+    {!!description && (
       <div style={{ padding: '10px 10px 0 10px' }}>
         <SectionDescription>{description}</SectionDescription>
       </div>
