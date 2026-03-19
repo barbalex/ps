@@ -957,37 +957,6 @@ COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data
 COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
 
 --------------------------------------------------------------
--- goal_report_values
---
-CREATE TABLE IF NOT EXISTS goal_report_values(
-  goal_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  value_integer integer DEFAULT NULL,
-  value_numeric double precision DEFAULT NULL,
-  value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-
-CREATE INDEX IF NOT EXISTS goal_report_values_account_id_idx ON goal_report_values USING btree(account_id);
-CREATE INDEX IF NOT EXISTS goal_report_values_goal_report_id_idx ON goal_report_values USING btree(goal_report_id);
-CREATE INDEX IF NOT EXISTS goal_report_values_unit_id_idx ON goal_report_values USING btree(unit_id);
-CREATE INDEX IF NOT EXISTS goal_report_values_value_integer_idx ON goal_report_values USING btree(value_integer);
-CREATE INDEX IF NOT EXISTS goal_report_values_value_numeric_idx ON goal_report_values USING btree(value_numeric);
-CREATE INDEX IF NOT EXISTS goal_report_values_value_text_idx ON goal_report_values USING btree(value_text);
-CREATE INDEX IF NOT EXISTS goal_report_values_label_idx ON goal_report_values USING btree(label);
-
-COMMENT ON TABLE goal_report_values IS 'value-ing the success of goals';
-COMMENT ON COLUMN goal_report_values.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN goal_report_values.value_integer IS 'Used for integer values';
-COMMENT ON COLUMN goal_report_values.value_numeric IS 'Used for numeric values';
-COMMENT ON COLUMN goal_report_values.value_text IS 'Used for text values';
-
---------------------------------------------------------------
 -- subproject_reports
 --
 CREATE TABLE IF NOT EXISTS subproject_reports(

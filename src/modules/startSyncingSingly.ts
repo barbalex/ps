@@ -188,7 +188,6 @@ const tablesSyncData = [
   //   ],
   //   primaryKey: ['place_report_id'],
   // },
-  // { table: 'place_report_values', primaryKey: ['place_report_value_id'] },
   // { table: 'messages', primaryKey: ['message_id'] },
   // { table: 'user_messages', primaryKey: ['user_message_id'] },
   // { table: 'place_users', primaryKey: ['place_user_id'] },

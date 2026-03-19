@@ -706,26 +706,6 @@ export const createGoalReport = async ({ projectId, goalId }) => {
   return goal_report_id
 }
 
-export const createGoalReportValue = async ({ goalReportId }) => {
-  const db = store.get(pgliteDbAtom)
-  const goal_report_value_id = uuidv7()
-  await db.query(
-    `insert into goal_report_values (goal_report_value_id, goal_report_id) values ($1, $2)`,
-    [goal_report_value_id, goalReportId],
-  )
-
-  store.set(addOperationAtom, {
-    table: 'goal_report_values',
-    operation: 'insert',
-    draft: {
-      goal_report_value_id,
-      goal_report_id: goalReportId,
-    },
-  })
-
-  return goal_report_value_id
-}
-
 export const createSubprojectUser = async ({ subprojectId }) => {
   const db = store.get(pgliteDbAtom)
   const subproject_user_id = uuidv7()

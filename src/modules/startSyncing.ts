@@ -516,16 +516,6 @@ export const startSyncing = async () => {
           table: 'goal_reports',
           primaryKey: ['goal_report_id'],
         },
-        goal_report_values: {
-          shape: {
-            url,
-            params: {
-              table: 'goal_report_values',
-            },
-          },
-          table: 'goal_report_values',
-          primaryKey: ['goal_report_value_id'],
-        },
         subproject_reports: {
           shape: {
             url,

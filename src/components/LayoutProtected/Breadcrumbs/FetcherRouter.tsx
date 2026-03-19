@@ -62,8 +62,6 @@ import { GoalGoalFetcher } from './GoalGoalFetcher.tsx'
 import { GoalReportsFetcher } from './GoalReportsFetcher.tsx'
 import { GoalReportFetcher } from './GoalReportFetcher.tsx'
 import { GoalReportReportFetcher } from './GoalReportReportFetcher.tsx'
-import { GoalReportValuesFetcher } from './GoalReportValuesFetcher.tsx'
-import { GoalReportValueFetcher } from './GoalReportValueFetcher.tsx'
 import { ObservationImportsFetcher } from './ObservationImportsFetcher.tsx'
 import { ObservationImportFetcher } from './ObservationImportFetcher.tsx'
 import { ObservationsToAssessFetcher } from './ObservationsToAssessFetcher.tsx'
@@ -415,27 +413,6 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <GoalReportReportFetcher params={params} {...other} />
-    }
-    case 'useGoalReportValuesNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.goalId ||
-        !params.goalReportId
-      )
-        return null
-      return <GoalReportValuesFetcher params={params} {...other} />
-    }
-    case 'useGoalReportValueNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.goalId ||
-        !params.goalReportId ||
-        !params.goalReportValueId
-      )
-        return null
-      return <GoalReportValueFetcher params={params} {...other} />
     }
     case 'useObservationImportsNavData': {
       if (!params.projectId || !params.subprojectId) return null
