@@ -658,5 +658,6 @@
   "uA2LpQ": "No value type set. Please select a value type in the list.",
   "gP1QrT": "List of taxa that represent / are meant in this {subprojectNameSingular} subproject. Examples: synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject.",
   "oP9QrS": "Users can edit map layers",
-  "hQ0RsU": "Enables users to add own and edit existing WMS and WFS layers. Preset: false. This makes the UI more complex, so only enable if needed."
+  "hQ0RsU": "Enables users to add own and edit existing WMS and WFS layers. Preset: false. This makes the UI more complex, so only enable if needed.",
+  "nX4TyZ": "Taxonomies classify objects (e.g. species, biotopes), mostly hierarchically. There is no universally valid way to classify species and biotopes. The genetic composition and distribution of species can change over time. Biotopes change their species composition. Therefore, a taxonomy is never final. It is normal that, depending on context, different taxonomies are used, and in a single project multiple taxonomies may be used simultaneously."
 }

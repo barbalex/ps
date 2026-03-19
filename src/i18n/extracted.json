@@ -1099,5 +1099,6 @@
   },
   "hQ0RsU": {
     "defaultMessage": "Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Voreinstellung: false. Dies macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig."
-  }
+  },
+  "nX4TyZ": "Taxonomien klassifizieren Objekte (z. B. Arten, Biotope), meist hierarchisch. Es gibt keine allgemein gültige Art, Arten und Biotope zu klassifizieren. Die genetische Zusammensetzung und die Verbreitung von Arten können im Laufe der Zeit ändern. Biotope verändern ihre Artzusammensetzung. Daher ist eine Taxonomie auch nie abschliessend. Es ist daher normal, dass je nach Kontext verschiedene und in einem einzelnen Projekt auch gleichzeitig mehrere Taxonomien verwendet werden."
 }

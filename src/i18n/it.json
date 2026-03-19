@@ -635,5 +635,6 @@
   "gRVMtx": "Quantità (testo)",
   "gP1QrT": "Elenco dei taxa rappresentati in questo sottoprogetto {subprojectNameSingular}. Esempi: sinonimi di una tassonomia o di tassonomie diverse. Un taxon non dovrebbe essere utilizzato in più di un sottoprogetto.",
   "oP9QrS": "Gli utenti possono modificare i livelli della mappa",
-  "hQ0RsU": "Consente agli utenti di aggiungere propri livelli WMS e WFS e di modificare quelli esistenti. Valore predefinito: false. Rende l'interfaccia più complessa, quindi attivare solo se necessario."
+  "hQ0RsU": "Consente agli utenti di aggiungere propri livelli WMS e WFS e di modificare quelli esistenti. Valore predefinito: false. Rende l'interfaccia più complessa, quindi attivare solo se necessario.",
+  "nX4TyZ": "Le tassonomie classificano oggetti (ad es. specie, biotopi), per lo più in modo gerarchico. Non esiste un modo universalmente valido per classificare specie e biotopi. La composizione genetica e la distribuzione delle specie possono cambiare nel tempo. I biotopi modificano la loro composizione in specie. Pertanto una tassonomia non è mai definitiva. È normale che, a seconda del contesto, vengano utilizzate tassonomie diverse e che in un singolo progetto ne siano impiegate contemporaneamente più di una."
 }
