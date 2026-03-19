@@ -388,13 +388,7 @@ export const createUnit = async ({ projectId }) => {
   const db = store.get(pgliteDbAtom)
   await db.query(
     `INSERT INTO units (unit_id, project_id, summable, sort, type) VALUES ($1, $2, $3, $4, $5)`,
-    [
-      unit_id,
-      projectId,
-      false,
-      0,
-      'integer',
-    ],
+    [unit_id, projectId, false, 0, 'integer'],
   )
 
   store.set(addOperationAtom, {
@@ -671,6 +665,7 @@ export const createGoalReport = async ({ projectId, goalId }) => {
   })
 
   const goal_report_id = uuidv7()
+  console.log('createGoalReport, goal_report_id:', goal_report_id)
   const data = {
     goal_report_id,
     goal_id: goalId,

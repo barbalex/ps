@@ -360,9 +360,9 @@ BEGIN
 
   UPDATE goal_reports SET label = 
   CASE 
-    WHEN _project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    WHEN _project_goal_reports_label_by IS NULL THEN NEW.goal_report_id::text
     WHEN _project_goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
-    WHEN NEW.data -> _project_goal_reports_label_by IS NULL THEN NEW.goal_id::text
+    WHEN NEW.data -> _project_goal_reports_label_by IS NULL THEN NEW.goal_report_id::text
     ELSE NEW.data ->> _project_goal_reports_label_by
   END
   WHERE goal_reports.goal_report_id = NEW.goal_report_id;
