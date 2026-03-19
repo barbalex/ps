@@ -1,5 +1,8 @@
 import { useParams } from '@tanstack/react-router'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtom } from 'jotai'
 
+import { languageAtom } from '../../store.ts'
 import { usePlaceNavData } from '../../modules/usePlaceNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
@@ -8,6 +11,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 export const PlaceList = ({ from }) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+  const [language] = useAtom(languageAtom)
   const { loading, navData } = usePlaceNavData({
     projectId,
     subprojectId,
@@ -16,10 +20,18 @@ export const PlaceList = ({ from }) => {
   })
   const { navs, notFound, nameSingular } = navData
 
+  const nameRes = useLiveQuery(
+    `SELECT name_singular_${language}, name_plural_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const nameSingularFromLevel =
+    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? nameSingular
+  const namePlural = nameRes?.rows?.[0]?.[`name_plural_${language}`] ?? 'Places'
+
   if (notFound) {
     return (
       <NotFound
-        table={nameSingular}
+        table={nameSingularFromLevel}
         id={placeId2 ?? placeId}
       />
     )
@@ -27,7 +39,11 @@ export const PlaceList = ({ from }) => {
 
   return (
     <div className="list-view">
-      <Header from={from} />
+      <Header
+        from={from}
+        nameSingular={nameSingularFromLevel}
+        namePlural={namePlural}
+      />
       <div className="list-container">
         {loading ?
           <Loading />
