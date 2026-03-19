@@ -1078,5 +1078,11 @@
   },
   "bDCGHI": {
     "defaultMessage": "Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie"
+  },
+  "fNN4oO": {
+    "defaultMessage": "Zur Kontrolle in Karte zoomen"
+  },
+  "fOO5pP": {
+    "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstellen Sie zuerst die Geometrie"
   }
 }
