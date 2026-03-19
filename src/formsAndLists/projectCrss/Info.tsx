@@ -8,11 +8,14 @@ export const Info = () => {
   return (
     <div className={styles.container} tabIndex={-1}>
       <p>
-        {formatMessage({
-          id: 'Ac1BdE',
-          defaultMessage:
-            'Sie können mehrere Koordinaten-Bezugs-Systeme hinzufügen.',
-        })}
+        {formatMessage(
+          {
+            id: 'Ac1BdE',
+            defaultMessage:
+              'Sie können mehrere <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ysteme hinzufügen.',
+          },
+          { b: (chunks) => <strong>{chunks}</strong> },
+        )}
       </p>
       <p>
         {formatMessage({

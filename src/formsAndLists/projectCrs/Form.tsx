@@ -126,11 +126,14 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
   return (
     <>
       <SectionDescription>
-        {formatMessage({
-          id: 'Op6QrS',
-          defaultMessage:
-            'Ein Koordinaten-Bezugs-System legt fest, wie Koordinaten auf der Erde verortet werden.',
-        })}
+        {formatMessage(
+          {
+            id: 'Op6QrS',
+            defaultMessage:
+              'Ein <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ystem legt fest, wie Koordinaten auf der Erde verortet werden.',
+          },
+          { b: (chunks) => <strong>{chunks}</strong> },
+        )}
       </SectionDescription>
       <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
       <TextField
