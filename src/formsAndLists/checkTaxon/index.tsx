@@ -6,17 +6,19 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type CheckTaxa from '../../models/public/CheckTaxa.ts'
+import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
 
 export const CheckTaxon = ({ from }) => {
-  const { checkTaxonId } = useParams({ from })
+  const { checkTaxonId, projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
   const { formatMessage } = useIntl()
@@ -25,10 +27,28 @@ export const CheckTaxon = ({ from }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(
-    `SELECT * FROM check_taxa WHERE check_taxon_id = $1`,
-    [checkTaxonId],
+    `WITH ct AS (
+      SELECT * FROM check_taxa WHERE check_taxon_id = $1
+    ), u AS (
+      SELECT json_agg(json_build_object('unit_id', unit_id, 'name', name, 'type', type) ORDER BY sort, name) AS units_data
+      FROM units WHERE project_id = $2
+    )
+    SELECT ct.*, u.units_data FROM ct, u`,
+    [checkTaxonId, projectId],
   )
-  const row: CheckTaxa | undefined = res?.rows?.[0]
+  const rawRow = res?.rows?.[0] as
+    | (CheckTaxa & {
+        units_data: Pick<Units, 'unit_id' | 'name' | 'type'>[] | null
+      })
+    | undefined
+  const row: CheckTaxa | undefined = rawRow
+  const units: Pick<Units, 'unit_id' | 'name' | 'type'>[] =
+    rawRow?.units_data ?? []
+  const unitIds = units.map((u) => u.unit_id)
+  const unitLabelMap = Object.fromEntries(
+    units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
+  )
+  const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
   // console.log('CheckTaxon', { row, results })
 
@@ -68,9 +88,9 @@ export const CheckTaxon = ({ from }) => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <>
             <DropdownField
               label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
@@ -83,38 +103,60 @@ export const CheckTaxon = ({ from }) => {
               validationState={validations?.taxon_id?.state}
               validationMessage={validations?.taxon_id?.message}
             />
-            <TextField
-              label={formatMessage({ id: 'gRVMgi', defaultMessage: 'Menge (ganzzahlig)' })}
-              name="value_integer"
-              type="number"
-              value={row.value_integer ?? ''}
+            <RadioGroupField
+              label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+              name="unit_id"
+              list={unitIds}
+              labelMap={unitLabelMap}
+              isLoading={res === undefined}
+              value={row.unit_id ?? ''}
               onChange={onChange}
-              validationState={validations?.value_integer?.state}
-              validationMessage={validations?.value_integer?.message}
+              layout="horizontal"
+              validationState={validations?.unit_id?.state}
+              validationMessage={validations?.unit_id?.message}
             />
-            <TextField
-              label={formatMessage({ id: 'gRVMnu', defaultMessage: 'Menge (numerisch)' })}
-              name="value_numeric"
-              type="number"
-              value={row.value_numeric ?? ''}
-              onChange={onChange}
-              validationState={validations?.value_numeric?.state}
-              validationMessage={validations?.value_numeric?.message}
-            />
-            <TextField
-              label={formatMessage({ id: 'gRVMtx', defaultMessage: 'Menge (Text)' })}
-              name="value_text"
-              value={row.value_text ?? ''}
-              onChange={onChange}
-              validationState={validations?.value_text?.state}
-              validationMessage={validations?.value_text?.message}
-            />
+            {selectedUnit?.type === 'integer' && (
+              <TextField
+                label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                name="value_integer"
+                type="number"
+                value={row.value_integer ?? ''}
+                onChange={onChange}
+                validationState={validations?.value_integer?.state}
+                validationMessage={validations?.value_integer?.message}
+              />
+            )}
+            {selectedUnit?.type === 'numeric' && (
+              <TextField
+                label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                name="value_numeric"
+                type="number"
+                value={row.value_numeric ?? ''}
+                onChange={onChange}
+                validationState={validations?.value_numeric?.state}
+                validationMessage={validations?.value_numeric?.message}
+              />
+            )}
+            {selectedUnit?.type === 'text' && (
+              <TextField
+                label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                name="value_text"
+                value={row.value_text ?? ''}
+                onChange={onChange}
+                validationState={validations?.value_text?.state}
+                validationMessage={validations?.value_text?.message}
+              />
+            )}
           </>
-        : <NotFound
-            table={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
+        ) : (
+          <NotFound
+            table={formatMessage({
+              id: '1kFtKf',
+              defaultMessage: 'Kontroll-Taxon',
+            })}
             id={checkTaxonId}
           />
-        }
+        )}
       </div>
     </div>
   )
