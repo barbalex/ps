@@ -29,9 +29,10 @@ export const PlaceForm = ({
   const [designing] = useAtom(designingAtom)
   const [language] = useAtom(languageAtom)
 
+  const level = placeId2 || from.includes('/$placeId_/places') ? 2 : 1
   const nameRes = useLiveQuery(
     `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
+    [projectId, level],
   )
   const nameSingular =
     nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
