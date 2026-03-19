@@ -28,11 +28,21 @@ export const DropdownFieldFromList = ({
   button,
 }: Props) => {
   const res = useLiveQuery(
-    `SELECT list_value_id, value FROM list_values WHERE list_id = $1`,
+    `SELECT lv.list_value_id, lv.label, l.value_type,
+      lv.value_integer, lv.value_numeric, lv.value_text, lv.value_date, lv.value_datetime
+     FROM list_values lv
+     JOIN lists l ON l.list_id = lv.list_id
+     WHERE lv.list_id = $1`,
     [list_id],
   )
-  const options = (res?.rows ?? []).map(({ value }) => value)
-  const selectedOptions = options.filter((option) => option === value)
+  const rows = res?.rows ?? []
+  const valueType = rows[0]?.value_type ?? null
+  const valueColumn = valueType ? `value_${valueType}` : null
+
+  const selectedRow = valueColumn
+    ? rows.find((row) => String(row[valueColumn]) === String(value))
+    : undefined
+  const selectedOptions = selectedRow ? [selectedRow.list_value_id] : []
 
   return (
     <Field
@@ -44,20 +54,28 @@ export const DropdownFieldFromList = ({
       <div className={styles.row}>
         <Dropdown
           name={name}
-          value={selectedOptions?.[0] ?? ''}
+          value={selectedRow?.label ?? ''}
           selectedOptions={selectedOptions}
-          onOptionSelect={(e, data) =>
-            onChange({ target: { name, value: data.optionValue } })
-          }
+          onOptionSelect={(e, data) => {
+            const row = rows.find((r) => r.list_value_id === data.optionValue)
+            if (!row) return
+            if (!row.value_type)
+              throw new Error(`List ${list_id} has no value_type set`)
+            onChange({
+              target: { name, value: row[`value_${row.value_type}`] },
+            })
+          }}
           appearance="underline"
           className={styles.dd}
           autoFocus={autoFocus}
           ref={ref}
           clearable
         >
-          {options.map((option) => {
-            return <Option key={option}>{option}</Option>
-          })}
+          {rows.map((row) => (
+            <Option key={row.list_value_id} value={row.list_value_id}>
+              {row.label}
+            </Option>
+          ))}
         </Dropdown>
         {!!button && button}
       </div>
