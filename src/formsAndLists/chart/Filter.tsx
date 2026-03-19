@@ -31,7 +31,7 @@ export const ChartFilter = ({ from }: Props) => {
           <RadioGroupField
             label={formatMessage({
               id: 'bCHkLm',
-              defaultMessage: 'Diagrammtyp',
+              defaultMessage: 'Diagramm-Typ',
             })}
             name="chart_type"
             list={list}

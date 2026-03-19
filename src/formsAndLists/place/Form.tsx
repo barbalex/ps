@@ -1,8 +1,9 @@
 import { useParams, useLocation } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
-import { designingAtom } from '../../store.ts'
+import { designingAtom, languageAtom } from '../../store.ts'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -22,10 +23,18 @@ export const PlaceForm = ({
   autoFocusRef,
 }) => {
   const { formatMessage } = useIntl()
-  const { subprojectId } = useParams({ from })
+  const { subprojectId, projectId, placeId2 } = useParams({ from })
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('filter')
   const [designing] = useAtom(designingAtom)
+  const [language] = useAtom(languageAtom)
+
+  const nameRes = useLiveQuery(
+    `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const nameSingular =
+    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
 
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -71,10 +80,13 @@ export const PlaceForm = ({
         </>
       )}
       <TextField
-        label={formatMessage({
-          id: 'bEmMrR',
-          defaultMessage: 'Seit wann existiert dieser Ort? (Jahr)',
-        })}
+        label={formatMessage(
+          {
+            id: 'bEmMrR',
+            defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
+          },
+          { nameSingular },
+        )}
         name="since"
         value={row.since}
         type="number"
@@ -83,10 +95,14 @@ export const PlaceForm = ({
         validationMessage={validations?.since?.message}
       />
       <TextField
-        label={formatMessage({
-          id: 'bEnNsS',
-          defaultMessage: 'Bis wann existierte dieser Ort? (Jahr)',
-        })}
+        label={formatMessage(
+          {
+            id: 'bEnNsS',
+            defaultMessage:
+              'Bis zu welchem Jahr existierte die {nameSingular}?',
+          },
+          { nameSingular },
+        )}
         name="until"
         value={row.until}
         type="number"

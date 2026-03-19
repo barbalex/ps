@@ -1,5 +1,9 @@
+import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
+import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
+import { languageAtom } from '../../store.ts'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
 /**
@@ -34,11 +38,11 @@ const fieldMessages = {
   parent_id: { id: 'bElLqQ', defaultMessage: 'Übergeordneter Ort' },
   since: {
     id: 'bEmMrR',
-    defaultMessage: 'Seit wann existiert dieser Ort? (Jahr)',
+    defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
   },
   until: {
     id: 'bEnNsS',
-    defaultMessage: 'Bis wann existierte dieser Ort? (Jahr)',
+    defaultMessage: 'Bis zu welchem Jahr existierte die {nameSingular}?',
   },
   // checks / actions
   date: { id: 'bEoOtT', defaultMessage: 'Datum' },
@@ -64,6 +68,15 @@ const fieldsByTable: Record<string, string[]> = {
 
 export const Field = ({ onChange, row, validations }) => {
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+  const { projectId } = useParams({ strict: false })
+
+  const nameRes = useLiveQuery(
+    `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, Number(row?.table_level ?? 1)],
+  )
+  const nameSingular =
+    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
 
   const fields = row.table_name ? (fieldsByTable[row.table_name] ?? []) : []
 
@@ -71,7 +84,10 @@ export const Field = ({ onChange, row, validations }) => {
   if (!fields.length) return null
 
   const labelMap = Object.fromEntries(
-    fields.map((key) => [key, formatMessage(fieldMessages[key])]),
+    fields.map((key) => [
+      key,
+      formatMessage(fieldMessages[key], { nameSingular }),
+    ]),
   )
 
   return (

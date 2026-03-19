@@ -582,10 +582,10 @@
     "defaultMessage": "Übergeordneter Ort"
   },
   "bEmMrR": {
-    "defaultMessage": "Seit wann existiert dieser Ort? (Jahr)"
+    "defaultMessage": "Seit welchem Jahr existiert die {nameSingular}?"
   },
   "bEnNsS": {
-    "defaultMessage": "Bis wann existierte dieser Ort? (Jahr)"
+    "defaultMessage": "Bis zu welchem Jahr existierte die {nameSingular}?"
   },
   "bEoOtT": {
     "defaultMessage": "Datum"
