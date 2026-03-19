@@ -90,10 +90,14 @@ export const Header = ({ autoFocusRef }) => {
   return (
     <FormHeader
       title={formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })}
-      description={formatMessage({
-        id: 'Pa0bCd',
-        defaultMessage: 'KBS = Koordinaten-Bezugs-System',
-      })}
+      description={formatMessage(
+        {
+          id: 'Pa0bCd',
+          defaultMessage:
+            '<b>K</b>BS = <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ystem',
+        },
+        { b: (chunks) => <strong>{chunks}</strong> },
+      )}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
