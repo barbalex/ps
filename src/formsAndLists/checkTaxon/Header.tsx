@@ -2,6 +2,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
+import { useIntl } from 'react-intl'
 
 import { createCheckTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -11,6 +12,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const { checkId, checkTaxonId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -103,14 +105,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Check Taxon"
+      title={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName="check taxon"
+      tableName={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
     />
   )
 }

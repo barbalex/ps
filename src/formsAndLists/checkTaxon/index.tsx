@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
@@ -18,6 +19,7 @@ export const CheckTaxon = ({ from }) => {
   const { checkTaxonId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -71,7 +73,7 @@ export const CheckTaxon = ({ from }) => {
         : row ?
           <>
             <DropdownField
-              label="Taxon"
+              label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
               name="taxon_id"
               table="taxa"
               value={row.taxon_id ?? ''}
@@ -82,7 +84,7 @@ export const CheckTaxon = ({ from }) => {
               validationMessage={validations?.taxon_id?.message}
             />
             <TextField
-              label="Value (integer)"
+              label={formatMessage({ id: 'gRVMgi', defaultMessage: 'Menge (ganzzahlig)' })}
               name="value_integer"
               type="number"
               value={row.value_integer ?? ''}
@@ -91,7 +93,7 @@ export const CheckTaxon = ({ from }) => {
               validationMessage={validations?.value_integer?.message}
             />
             <TextField
-              label="Value (numeric)"
+              label={formatMessage({ id: 'gRVMnu', defaultMessage: 'Menge (numerisch)' })}
               name="value_numeric"
               type="number"
               value={row.value_numeric ?? ''}
@@ -100,7 +102,7 @@ export const CheckTaxon = ({ from }) => {
               validationMessage={validations?.value_numeric?.message}
             />
             <TextField
-              label="Value (text)"
+              label={formatMessage({ id: 'gRVMtx', defaultMessage: 'Menge (Text)' })}
               name="value_text"
               value={row.value_text ?? ''}
               onChange={onChange}
@@ -109,7 +111,7 @@ export const CheckTaxon = ({ from }) => {
             />
           </>
         : <NotFound
-            table="Check Taxon"
+            table={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
             id={checkTaxonId}
           />
         }
