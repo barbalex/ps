@@ -10,5 +10,11 @@
     "subproject",
     "subprojects",
     "swisstopo"
-  ]
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "/^python3 -c \"\nimport json\nfiles = \\['extracted', 'en', 'fr', 'it'\\]\nkeys = \\['TmPR2\\+', 'gRVMgi', 'gRVMnu', 'gRVMtx'\\]\nfor f in files:\n    with open\\(f'/home/alex/Documents/GitHub/ps/src/i18n/\\{f\\}\\.json'\\) as fp:\n        data = json\\.load\\(fp\\)\n    print\\(f'--- \\{f\\}\\.json ---'\\)\n    for k in keys:\n        print\\(f'  \\{k\\}: \\{data\\.get\\(k\\)\\}'\\)\n\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
 }

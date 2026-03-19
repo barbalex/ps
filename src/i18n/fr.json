@@ -125,7 +125,7 @@
   "Jou8/E": "Sous-projets",
   "KFwvHV": "Promouvoir les espèces rares et menacées",
   "Kj9LmN": "Aucun WMS trouvé. Vous pouvez en ajouter un.",
-  "KkGaeP": "Rapport d'objectif",
+  "KkGaeP": "Rapport",
   "KkLxJl": "Historique",
   "Kl0MnN": "Définir comme CRS de présentation de la carte",
   "Kl5MnO": "Remplissage : couleur",
@@ -200,7 +200,7 @@
   "TVoh4o": "Quitter le filtre",
   "TZgWxf": "Lieu",
   "Tb8kLm": "Table",
-  "TmPR2+": "Valeur du rapport d'objectif",
+  "TmPR2+": "Quantité",
   "TpzCEx": "Url",
   "Tu4VwX": "Onglet (pointu)",
   "Tw3UxZ": "Nombre de lignes",
@@ -629,5 +629,8 @@
   "fKK1lL": "Gratuit",
   "fLL2mM": "Standard",
   "fMM3nN": "Premium",
-  "uA2LpQ": "Aucun type de valeur défini. Veuillez sélectionner un type de valeur dans la liste."
+  "uA2LpQ": "Aucun type de valeur défini. Veuillez sélectionner un type de valeur dans la liste.",
+  "gRVMgi": "Quantité (entier)",
+  "gRVMnu": "Quantité (numérique)",
+  "gRVMtx": "Quantité (texte)"
 }
