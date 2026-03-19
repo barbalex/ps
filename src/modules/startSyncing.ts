@@ -246,7 +246,6 @@ export const startSyncing = async () => {
                 'list_value_id',
                 'account_id',
                 'list_id',
-                'value',
                 'value_integer',
                 'value_numeric',
                 'value_text',
