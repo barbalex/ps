@@ -165,43 +165,6 @@ AFTER UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_email_update_trigger();
 
--- action_report_values: when any data is changed, update label using units name
-CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-  units_name TEXT;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  -- ensure query does not return no row
-  IF NEW.unit_id IS NULL THEN
-    units_name := NULL;
-  ELSE
-    SELECT units.name INTO units_name FROM units WHERE units.unit_id = NEW.unit_id;
-  END IF;
-
-  UPDATE action_report_values
-    SET label = (
-      CASE 
-        WHEN units_name is null then NEW.action_report_value_id::text
-        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-      END
-    )
-  WHERE action_report_values.action_report_value_id = NEW.action_report_value_id;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER action_report_values_label_trigger
-AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_report_values
-FOR EACH ROW
-EXECUTE PROCEDURE action_report_values_label_trigger();
-
 -- action_values
 CREATE OR REPLACE FUNCTION action_values_label_trigger()
 RETURNS TRIGGER AS $$

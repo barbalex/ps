@@ -1047,26 +1047,6 @@ export const createActionReport = async ({ projectId, actionId }) => {
   return action_report_id
 }
 
-export const createActionReportValue = async ({ actionReportId }) => {
-  const db = store.get(pgliteDbAtom)
-  const action_report_value_id = uuidv7()
-  await db.query(
-    `insert into action_report_values (action_report_value_id, action_report_id) values ($1, $2)`,
-    [action_report_value_id, actionReportId],
-  )
-
-  store.set(addOperationAtom, {
-    table: 'action_report_values',
-    operation: 'insert',
-    draft: {
-      action_report_value_id,
-      action_report_id: actionReportId,
-    },
-  })
-
-  return action_report_value_id
-}
-
 export const createPlaceReport = async ({ projectId, placeId }) => {
   const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
