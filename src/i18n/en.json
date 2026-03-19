@@ -662,5 +662,6 @@
   "nX4TyZ": "Taxonomies classify objects (e.g. species, biotopes), mostly hierarchically. There is no universally valid way to classify species and biotopes. The genetic composition and distribution of species can change over time. Biotopes change their species composition. Therefore, a taxonomy is never final. It is normal that, depending on context, different taxonomies are used, and in a single project multiple taxonomies may be used simultaneously.",
   "uT5VwX": "Type",
   "uN4VwX": "Quantity field is not shown because the selected unit has no type.",
+  "gRVMng": "Quantity",
   "vU6WxY": "Helps analysing data in reports. Examples: «abundance class», «cover». If no unit is set, the taxonomy is assumed to describe presence only."
 }

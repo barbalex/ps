@@ -637,5 +637,6 @@
   "oP9QrS": "Les utilisateurs peuvent modifier les couches de carte",
   "hQ0RsU": "Permet aux utilisateurs d'ajouter leurs propres couches WMS et WFS et de modifier les couches existantes. Complexifie l'interface, ne l'activer que si nécessaire.",
   "nX4TyZ": "Les taxonomies classifient les objets (p. ex. espèces, biotopes), le plus souvent de manière hiérarchique. Il n’existe pas de classification universellement valable des espèces et des biotopes. La composition génétique et la répartition des espèces peuvent évoluer au fil du temps. Les biotopes modifient leur composition en espèces. Une taxonomie n’est donc jamais définitive. Il est normal que, selon le contexte, différentes taxonomies soient utilisées et que plusieurs soient employées simultanément dans un même projet.",
-  "uT5VwX": "Type",  "uN4VwX": "Le champ de quantité n'est pas affiché car l'unité sélectionnée n'a pas de type.",  "vU6WxY": "Aide à analyser les données dans les rapports. Exemples : «classe d’abondance», «recouvrement». Si aucune unité n’est définie, la taxonomie est supposée ne décrire que la présence."
+  "uT5VwX": "Type",  "uN4VwX": "Le champ de quantité n'est pas affiché car l'unité sélectionnée n'a pas de type.",
+  "gRVMng": "Quantité",  "vU6WxY": "Aide à analyser les données dans les rapports. Exemples : «classe d’abondance», «recouvrement». Si aucune unité n’est définie, la taxonomie est supposée ne décrire que la présence."
 }
