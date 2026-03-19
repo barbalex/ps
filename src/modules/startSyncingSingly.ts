@@ -207,7 +207,6 @@ const tablesSyncData = [
   //   primaryKey: ['goal_id'],
   // },
   // { table: 'goal_reports', primaryKey: ['goal_report_id'] },
-  // { table: 'goal_report_values', primaryKey: ['goal_report_value_id'] },
   // {
   //   table: 'subproject_reports',
   //   columns: [
