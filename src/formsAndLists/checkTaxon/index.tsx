@@ -112,8 +112,20 @@ export const CheckTaxon = ({ from }) => {
               value={row.unit_id ?? ''}
               onChange={onChange}
               layout="horizontal"
-              validationState={validations?.unit_id?.state}
-              validationMessage={validations?.unit_id?.message}
+              validationState={
+                selectedUnit && !selectedUnit.type
+                  ? 'warning'
+                  : (validations?.unit_id?.state ?? 'none')
+              }
+              validationMessage={
+                selectedUnit && !selectedUnit.type
+                  ? formatMessage({
+                      id: 'uN4VwX',
+                      defaultMessage:
+                        'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
+                    })
+                  : validations?.unit_id?.message
+              }
             />
             {selectedUnit?.type === 'integer' && (
               <TextField

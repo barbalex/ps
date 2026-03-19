@@ -571,6 +571,7 @@ COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed (
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
 
 ALTER TABLE taxonomies ADD CONSTRAINT taxonomies_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE projects ADD CONSTRAINT projects_checks_default_unit_id_fkey FOREIGN KEY (checks_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 --------------------------------------------------------------
 -- places

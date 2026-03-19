@@ -24,6 +24,7 @@ import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../../store.ts'
 import { projectTypeNames } from '../../../modules/projectTypeNames.ts'
 import type Projects from '../../../models/public/Projects.ts'
+import type Units from '../../../models/public/Units.ts'
 
 export const Configuration = ({ from }) => {
   const { projectId } = useParams({ from })
@@ -37,6 +38,16 @@ export const Configuration = ({ from }) => {
     projectId,
   ])
   const row: Projects | undefined = res?.rows?.[0]
+
+  const unitsRes = useLiveQuery(
+    `SELECT unit_id, name FROM units WHERE project_id = $1 ORDER BY sort, name`,
+    [projectId],
+  )
+  const units: Pick<Units, 'unit_id' | 'name'>[] = unitsRes?.rows ?? []
+  const unitIds = units.map((u) => u.unit_id)
+  const unitLabelMap = Object.fromEntries(
+    units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
+  )
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -321,9 +332,23 @@ export const Configuration = ({ from }) => {
               formatMessage({
                 id: 'hQ0RsU',
                 defaultMessage:
-                  'Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Voreinstellung: false. Dies macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
+                  'Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
               })
             }
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'mP7QrS',
+              defaultMessage: 'Standard-Einheit für Kontroll-Mengen',
+            })}
+            name="checks_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.checks_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={validations?.checks_default_unit_id?.state}
+            validationMessage={validations?.checks_default_unit_id?.message}
           />
           <Divider />
           <Label>
