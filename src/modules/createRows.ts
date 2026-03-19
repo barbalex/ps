@@ -387,17 +387,10 @@ export const createUnit = async ({ projectId }) => {
   const unit_id = uuidv7()
   const db = store.get(pgliteDbAtom)
   await db.query(
-    `INSERT INTO units (unit_id, project_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa, summable, sort, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+    `INSERT INTO units (unit_id, project_id, summable, sort, type) VALUES ($1, $2, $3, $4, $5)`,
     [
       unit_id,
       projectId,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
       false,
       0,
       'integer',
@@ -410,13 +403,6 @@ export const createUnit = async ({ projectId }) => {
     draft: {
       unit_id,
       project_id: projectId,
-      use_for_action_values: true,
-      use_for_action_report_values: true,
-      use_for_check_values: true,
-      use_for_place_report_values: true,
-      use_for_goal_report_values: true,
-      use_for_subproject_taxa: true,
-      use_for_check_taxa: true,
       summable: false,
       sort: 0,
       type: 'integer',

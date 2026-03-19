@@ -387,11 +387,12 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type taxonomy_types_enum DEFAULT NULL,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
-  url text DEFAULT NULL,
-  obsolete boolean DEFAULT FALSE,
-  data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS ( 
+  url text DEFAULT NULL, -- TODO: not in use?
+  obsolete boolean DEFAULT FALSE, -- TODO: not in use?
+  data jsonb DEFAULT NULL, -- TODO: not in use?
+  label text GENERATED ALWAYS AS (
     CASE 
       when name IS NULL THEN taxonomy_id::text
       WHEN type IS NULL THEN taxonomy_id::text 
@@ -416,6 +417,7 @@ WHERE
 COMMENT ON TABLE taxonomies IS 'A taxonomy is a list of taxa (species or biotopes).';
 COMMENT ON COLUMN taxonomies.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN taxonomies.type IS 'One of: "species", "biotope". Preset: "species"';
+COMMENT ON COLUMN taxonomies.unit_id IS 'Unit of taxonomy. Helps analysing data for reporting. Examples: "abundance class", "percent cover". If no unit is set, the taxonomy is assumed to describe presence only.';
 COMMENT ON COLUMN taxonomies.name IS 'Shortish name of taxonomy, like "Flora der Schweiz, 1995"';
 COMMENT ON COLUMN taxonomies.url IS 'URL of taxonomy, like "https://www.infoflora.ch/de/flora"';
 COMMENT ON COLUMN taxonomies.obsolete IS 'Is taxonomy obsolete? Preset: false';
@@ -542,18 +544,10 @@ CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  use_for_action_values boolean DEFAULT FALSE,
-  use_for_action_report_values boolean DEFAULT FALSE,
-  use_for_check_values boolean DEFAULT FALSE,
-  use_for_place_report_values boolean DEFAULT FALSE,
-  use_for_goal_report_values boolean DEFAULT FALSE,
-  use_for_subproject_taxa boolean DEFAULT FALSE,
-  use_for_check_taxa boolean DEFAULT FALSE,
   name text DEFAULT NULL,
   summable boolean DEFAULT FALSE,
   sort integer DEFAULT NULL,
   type unit_types_enum DEFAULT NULL, -- TODO: not in use?
-  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -569,15 +563,8 @@ CREATE INDEX IF NOT EXISTS units_label_idx ON units USING btree(label);
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
 COMMENT ON COLUMN units.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN units.use_for_action_values IS 'Whether to use this unit for action values. Preset: false';
-COMMENT ON COLUMN units.use_for_action_report_values IS 'Whether to use this unit for action report values. Preset: false';
-COMMENT ON COLUMN units.use_for_check_values IS 'Whether to use this unit for check values. Preset: false';
-COMMENT ON COLUMN units.use_for_place_report_values IS 'Whether to use this unit for place report values. Preset: false';
-COMMENT ON COLUMN units.use_for_goal_report_values IS 'Whether to use this unit for goal report values. Preset: false';
-COMMENT ON COLUMN units.use_for_subproject_taxa IS 'Whether to use this unit for subproject taxa. Preset: false';
-COMMENT ON COLUMN units.use_for_check_taxa IS 'Whether to use this unit for check taxa. Preset: false';
 COMMENT ON COLUMN units.name IS 'Name of unit, like "Anzahl"';
-COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed. Else: distribution of count per value. Preset: false';
+COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false';
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
 
 --------------------------------------------------------------

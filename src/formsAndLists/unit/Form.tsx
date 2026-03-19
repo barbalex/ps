@@ -1,15 +1,23 @@
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
-import { Section } from '../../components/shared/Section.tsx'
+import { unitTypeOptions } from '../../modules/constants.ts'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
 export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
   const { formatMessage } = useIntl()
+
+  const unitTypeLabelMap = Object.fromEntries(
+    unitTypeOptions.map((o) => [
+      o.value,
+      formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
+    ]),
+  )
+  const unitTypeList = unitTypeOptions.map((o) => o.value)
 
   return (
     <>
@@ -23,135 +31,48 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
         validationState={validations?.name?.state}
         validationMessage={validations?.name?.message}
       />
-      <Section
-        title={formatMessage({ id: 'Rc5DeF', defaultMessage: 'Verwenden für' })}
-      >
-        <SwitchField
-          label={formatMessage({
-            id: 'Xa1BcD',
-            defaultMessage: 'Massnahmen-Mengen',
-          })}
-          name="use_for_action_values"
-          value={row.use_for_action_values ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_action_values?.state}
-          validationMessage={validations?.use_for_action_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'Yb2CdE',
-            defaultMessage: 'Massnahmen-Bericht-Mengen',
-          })}
-          name="use_for_action_report_values"
-          value={row.use_for_action_report_values ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_action_report_values?.state}
-          validationMessage={validations?.use_for_action_report_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'Zc3DeF',
-            defaultMessage: 'Kontroll-Mengen',
-          })}
-          name="use_for_check_values"
-          value={row.use_for_check_values ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_check_values?.state}
-          validationMessage={validations?.use_for_check_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'Ad4EfG',
-            defaultMessage: 'Ort-Bericht-Mengen',
-          })}
-          name="use_for_place_report_values"
-          value={row.use_for_place_report_values ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_place_report_values?.state}
-          validationMessage={validations?.use_for_place_report_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'Be5FgH',
-            defaultMessage: 'Ziel-Bericht-Mengen',
-          })}
-          name="use_for_goal_report_values"
-          value={row.use_for_goal_report_values ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_goal_report_values?.state}
-          validationMessage={validations?.use_for_goal_report_values?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'Cf6GhI',
-            defaultMessage: 'Teilprojekt-Taxa',
-          })}
-          name="use_for_subproject_taxa"
-          value={row.use_for_subproject_taxa ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_subproject_taxa?.state}
-          validationMessage={validations?.use_for_subproject_taxa?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'Dg7HiJ',
-            defaultMessage: 'Kontroll-Taxa',
-          })}
-          name="use_for_check_taxa"
-          value={row.use_for_check_taxa ?? false}
-          onChange={onChange}
-          validationState={validations?.use_for_check_taxa?.state}
-          validationMessage={validations?.use_for_check_taxa?.message}
-        />
-      </Section>
-      <Section
-        title={formatMessage({
-          id: 'Rd6EfG',
-          defaultMessage: 'Weitere Einstellungen',
-        })}
-      >
-        <SwitchField
-          label={formatMessage({ id: 'Eh8IjK', defaultMessage: 'Summierbar' })}
-          name="summable"
-          value={row.summable ?? false}
-          onChange={onChange}
-          validationState={validations?.summable?.state}
-          validationMessage={
-            validations?.summable?.message ??
-            formatMessage({
-              id: 'Eh9JkL',
-              defaultMessage:
-                'Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt.',
-            })
-          }
-        />
-        <TextField
-          label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
-          name="sort"
-          type="number"
-          value={row.sort ?? ''}
-          onChange={onChange}
-          validationState={validations?.sort?.state}
-          validationMessage={
-            validations?.sort?.message ??
-            formatMessage({
-              id: 'Pq8RsT',
-              defaultMessage:
-                'Standardmässig wird nach Name sortiert. Das können Sie mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt.',
-            })
-          }
-        />
-        <DropdownField
-          label={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}
-          name="list_id"
-          table="lists"
-          where={`project_id = '${row.project_id}'`}
-          value={row.list_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.list_id?.state}
-          validationMessage={validations?.list_id?.message}
-        />
-      </Section>
+      <RadioGroupField
+        label={formatMessage({ id: 'uT5VwX', defaultMessage: 'Typ' })}
+        name="type"
+        list={unitTypeList}
+        value={row.type ?? ''}
+        onChange={onChange}
+        validationState={validations?.type?.state}
+        validationMessage={validations?.type?.message}
+        labelMap={unitTypeLabelMap}
+        layout="horizontal"
+      />
+      <SwitchField
+        label={formatMessage({ id: 'Eh8IjK', defaultMessage: 'Summierbar' })}
+        name="summable"
+        value={row.summable ?? false}
+        onChange={onChange}
+        validationState={validations?.summable?.state}
+        validationMessage={
+          validations?.summable?.message ??
+          formatMessage({
+            id: 'Eh9JkL',
+            defaultMessage:
+              'Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt.',
+          })
+        }
+      />
+      <TextField
+        label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
+        name="sort"
+        type="number"
+        value={row.sort ?? ''}
+        onChange={onChange}
+        validationState={validations?.sort?.state}
+        validationMessage={
+          validations?.sort?.message ??
+          formatMessage({
+            id: 'Pq8RsT',
+            defaultMessage:
+              'Standardmässig wird nach Name sortiert. Das können Sie mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt.',
+          })
+        }
+      />
     </>
   )
 }

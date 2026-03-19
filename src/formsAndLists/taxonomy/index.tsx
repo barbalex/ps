@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
+import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -18,7 +19,7 @@ import type Taxonomies from '../../models/public/Taxonomies.ts'
 import '../../form.css'
 
 export const Taxonomy = ({ from }) => {
-  const { taxonomyId } = useParams({ from })
+  const { projectId, taxonomyId } = useParams({ from })
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
@@ -66,7 +67,12 @@ export const Taxonomy = ({ from }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table={formatMessage({ id: '6MNIJU', defaultMessage: 'Taxonomie' })} id={taxonomyId} />
+    return (
+      <NotFound
+        table={formatMessage({ id: '6MNIJU', defaultMessage: 'Taxonomie' })}
+        id={taxonomyId}
+      />
+    )
   }
 
   return (
@@ -84,6 +90,24 @@ export const Taxonomy = ({ from }) => {
           validationMessage={validations?.name?.message}
         />
         <Type row={row} onChange={onChange} validations={validations} />
+        <DropdownField
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+          name="unit_id"
+          table="units"
+          idField="unit_id"
+          where={`project_id = '${projectId}'`}
+          value={row.unit_id ?? ''}
+          onChange={onChange}
+          validationState={validations?.unit_id?.state}
+          validationMessage={
+            validations?.unit_id?.message ??
+            formatMessage({
+              id: 'vU6WxY',
+              defaultMessage:
+                'Einheit der Taxonomie. Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt.',
+            })
+          }
+        />
         <TextField
           label={formatMessage({ id: 'TpzCEx', defaultMessage: 'Url' })}
           name="url"
