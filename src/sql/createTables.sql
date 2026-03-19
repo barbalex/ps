@@ -516,7 +516,7 @@ CREATE TABLE IF NOT EXISTS list_values(
   value_date date DEFAULT NULL,
   value_datetime timestamptz DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(value_integer, value_numeric, nullif(value_text, ''), value_date, value_datetime, list_value_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(value_integer::text, value_numeric::text, nullif(value_text, ''), immutabledate(value_date), immutabletimestamptz(value_datetime), list_value_id::text)) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -524,13 +524,11 @@ CREATE TABLE IF NOT EXISTS list_values(
 
 CREATE INDEX IF NOT EXISTS list_values_account_id_idx ON list_values USING btree(account_id);
 CREATE INDEX IF NOT EXISTS list_values_list_id_idx ON list_values USING btree(list_id);
-CREATE INDEX IF NOT EXISTS list_values_value_idx ON list_values USING btree(value);
 CREATE INDEX IF NOT EXISTS list_values_label_idx ON list_values USING btree(label);
 CREATE INDEX IF NOT EXISTS list_values_obsolete_idx ON list_values((1))
 WHERE
   obsolete;
 
-COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used.';
 COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data safety';
 
 --------------------------------------------------------------
