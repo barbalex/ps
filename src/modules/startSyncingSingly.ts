@@ -111,13 +111,6 @@ const tablesSyncData = [
   //     'unit_id',
   //     'account_id',
   //     'project_id',
-  //     'use_for_action_values',
-  //     'use_for_action_report_values',
-  //     'use_for_check_values',
-  //     'use_for_place_report_values',
-  //     'use_for_goal_report_values',
-  //     'use_for_subproject_taxa',
-  //     'use_for_check_taxa',
   //     'name',
   //     'summable',
   //     'sort',
@@ -162,7 +155,6 @@ const tablesSyncData = [
   //   ],
   //   primaryKey: ['action_report_id'],
   // },
-  // { table: 'action_report_values', primaryKey: ['action_report_value_id'] },
   // {
   //   table: 'checks',
   //   columns: [
