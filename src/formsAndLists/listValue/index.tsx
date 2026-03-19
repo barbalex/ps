@@ -161,7 +161,7 @@ export const ListValue = () => {
                 {formatMessage({
                   id: 'uA2LpQ',
                   defaultMessage:
-                    'Kein Werttyp gesetzt. Bitte im zugehoerigen Listen-Datensatz einen Werttyp waehlen.',
+                    'Kein Werttyp gesetzt. Bitte in der Liste einen Werttyp wählen.',
                 })}
               </div>
             )}

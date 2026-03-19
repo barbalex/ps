@@ -333,7 +333,7 @@
   "fK0LmN": "Places ordered by",
   "fN0sZQ": "Vector Layer",
   "fX7CwS": "English (plural)",
-  "fhL4R2": "Vector Layer Display",
+  "fhL4R2": "Display",
   "flT9HK": "Organize species into their populations.",
   "fz2AhZ": "Project",
   "gKq4qF": "Observation assigned",
@@ -654,5 +654,6 @@
   "fJJ0kK": "Trial",
   "fKK1lL": "Free",
   "fLL2mM": "Basic",
-  "fMM3nN": "Premium"
+  "fMM3nN": "Premium",
+  "uA2LpQ": "No value type set. Please select a value type in the list."
 }

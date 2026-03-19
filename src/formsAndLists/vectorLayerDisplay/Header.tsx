@@ -162,7 +162,7 @@ export const Header = ({
     <FormHeader
       title={formatMessage({
         id: 'fhL4R2',
-        defaultMessage: 'Vektor-Ebenen-Darstellung',
+        defaultMessage: 'Anzeige',
       })}
       addRow={addRow}
       deleteRow={deleteRow}
@@ -170,7 +170,10 @@ export const Header = ({
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName="vector layer display"
+      tableName={formatMessage({
+        id: 'fhL4R2',
+        defaultMessage: 'Anzeige',
+      })}
     />
   )
 }
