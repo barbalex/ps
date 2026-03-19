@@ -127,7 +127,8 @@ export const CheckTaxon = ({ from }) => {
                   : validations?.unit_id?.message
               }
             />
-            {selectedUnit?.type === 'integer' && (
+            {(selectedUnit?.type === 'integer' ||
+              row.value_integer !== null) && (
               <TextField
                 label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
                 name="value_integer"
@@ -138,7 +139,8 @@ export const CheckTaxon = ({ from }) => {
                 validationMessage={validations?.value_integer?.message}
               />
             )}
-            {selectedUnit?.type === 'numeric' && (
+            {(selectedUnit?.type === 'numeric' ||
+              row.value_numeric !== null) && (
               <TextField
                 label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
                 name="value_numeric"
@@ -149,7 +151,7 @@ export const CheckTaxon = ({ from }) => {
                 validationMessage={validations?.value_numeric?.message}
               />
             )}
-            {selectedUnit?.type === 'text' && (
+            {(selectedUnit?.type === 'text' || row.value_text !== null) && (
               <TextField
                 label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
                 name="value_text"
