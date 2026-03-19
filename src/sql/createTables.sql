@@ -387,7 +387,7 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type taxonomy_types_enum DEFAULT NULL,
-  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   name text DEFAULT NULL,
   url text DEFAULT NULL, -- TODO: not in use?
   obsolete boolean DEFAULT FALSE, -- TODO: not in use?
@@ -566,6 +566,8 @@ COMMENT ON COLUMN units.account_id IS 'redundant account_id enhances data safety
 COMMENT ON COLUMN units.name IS 'Name of unit, like "Anzahl"';
 COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false';
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
+
+ALTER TABLE taxonomies ADD CONSTRAINT taxonomies_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 --------------------------------------------------------------
 -- places
