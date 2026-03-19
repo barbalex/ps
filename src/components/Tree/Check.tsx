@@ -9,6 +9,8 @@ import { CheckTaxaNode } from './CheckTaxa.tsx'
 import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { useIntl } from 'react-intl'
+
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckNode = ({
@@ -22,6 +24,7 @@ export const CheckNode = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
 
   // need project to know whether to show files
   const res = useLiveQuery(
@@ -86,7 +89,7 @@ export const CheckNode = ({
       {isOpen && (
         <>
           <Node
-            label="Check"
+            label={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&

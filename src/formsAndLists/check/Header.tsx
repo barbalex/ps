@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 import { TbZoomScan } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
@@ -29,6 +30,7 @@ export const Header = ({ autoFocusRef, from }) => {
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/check' ||
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
+  const { formatMessage } = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -192,14 +194,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Check"
+      title={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName="check"
+      tableName={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
       siblings={
         <Button
           size="medium"
