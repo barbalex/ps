@@ -48,8 +48,6 @@ import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
 import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { PlaceReportReportFetcher } from './PlaceReportReportFetcher.tsx'
-import { PlaceReportValuesFetcher } from './PlaceReportValuesFetcher.tsx'
-import { PlaceReportValueFetcher } from './PlaceReportValueFetcher.tsx'
 import { ObservationsAssignedFetcher } from './ObservationsAssignedFetcher.tsx'
 import { ObservationAssignedFetcher } from './ObservationAssignedFetcher.tsx'
 import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
@@ -311,27 +309,6 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <PlaceReportReportFetcher params={params} {...other} />
-    }
-    case 'usePlaceReportValuesNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.placeReportId
-      )
-        return null
-      return <PlaceReportValuesFetcher params={params} {...other} />
-    }
-    case 'usePlaceReportValueNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.placeReportId ||
-        !params.placeReportValueId
-      )
-        return null
-      return <PlaceReportValueFetcher params={params} {...other} />
     }
     case 'useObservationsAssignedNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)

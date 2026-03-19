@@ -1082,26 +1082,6 @@ export const createPlaceReport = async ({ projectId, placeId }) => {
   return place_report_id
 }
 
-export const createPlaceReportValue = async ({ placeReportId }) => {
-  const db = store.get(pgliteDbAtom)
-  const place_report_value_id = uuidv7()
-  await db.query(
-    `insert into place_report_values (place_report_value_id, place_report_id) values ($1, $2)`,
-    [place_report_value_id, placeReportId],
-  )
-
-  store.set(addOperationAtom, {
-    table: 'place_report_values',
-    operation: 'insert',
-    draft: {
-      place_report_value_id,
-      place_report_id: placeReportId,
-    },
-  })
-
-  return place_report_value_id
-}
-
 export const createMessage = async () => {
   const db = store.get(pgliteDbAtom)
   const message_id = uuidv7()

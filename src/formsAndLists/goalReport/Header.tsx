@@ -10,9 +10,6 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const isForm =
-    from ===
-    '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/report'
   const { projectId, goalId, goalReportId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -33,7 +30,7 @@ export const Header = ({ autoFocusRef, from }) => {
       goalId,
     })
     navigate({
-      to: isForm ? `../../${id}/report` : `../${id}/report`,
+      to: `../${id}`,
       params: (prev) => ({ ...prev, goalReportId: id }),
     })
     autoFocusRef?.current?.focus()
@@ -56,7 +53,7 @@ export const Header = ({ autoFocusRef, from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: `..` })
     } catch (error) {
       console.error(error)
     }
@@ -75,10 +72,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const next = goalReports[(index + 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${next.goal_report_id}/report`
-          : `../${next.goal_report_id}`,
+        to: `../${next.goal_report_id}`,
         params: (prev) => ({ ...prev, goalReportId: next.goal_report_id }),
       })
     } catch (error) {
@@ -99,10 +93,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = goalReports[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.goal_report_id}/report`
-          : `../${previous.goal_report_id}`,
+        to: `../${previous.goal_report_id}`,
         params: (prev) => ({ ...prev, goalReportId: previous.goal_report_id }),
       })
     } catch (error) {

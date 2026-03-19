@@ -10,11 +10,6 @@ import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
-  const isForm =
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/reports/$actionReportId_/report' ||
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/reports/$actionReportId_/report'
   const { projectId, actionId, actionReportId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -37,7 +32,7 @@ export const Header = ({ autoFocusRef, from }) => {
     const id = await createActionReport({ projectId, actionId })
     if (!id) return
     navigate({
-      to: isForm ? `../../${id}/report` : `../${id}/report`,
+      to: `../${id}`,
       params: (prev) => ({ ...prev, actionReportId: id }),
     })
     autoFocusRef?.current?.focus()
@@ -60,7 +55,7 @@ export const Header = ({ autoFocusRef, from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: `..` })
     } catch (error) {
       console.error('Error deleting action report:', error)
     }
@@ -79,10 +74,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const next = actionReports[(index + 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${next.action_report_id}/report`
-          : `../${next.action_report_id}`,
+        to: `../${next.action_report_id}`,
         params: (prev) => ({ ...prev, actionReportId: next.action_report_id }),
       })
     } catch (error) {
@@ -103,10 +95,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = actionReports[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ?
-            `../../${previous.action_report_id}/report`
-          : `../${previous.action_report_id}`,
+        to: `../${previous.action_report_id}`,
         params: (prev) => ({
           ...prev,
           actionReportId: previous.action_report_id,
@@ -119,12 +108,17 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'YMGqLf', defaultMessage: 'Massnahmen-Bericht' })}
+      title={formatMessage({
+        id: 'YMGqLf',
+        defaultMessage: 'Massnahmen-Bericht',
+      })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
-      toPrevious={toPrevious}      toNextDisabled={rowCount <= 1}
-      toPreviousDisabled={rowCount <= 1}      tableName="goal report value"
+      toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
+      tableName="goal report value"
     />
   )
 }

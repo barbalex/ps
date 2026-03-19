@@ -4,7 +4,6 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
-import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
   projectId: string
@@ -17,7 +16,6 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
-  place_report_values_count: number
 }
 
 export const usePlaceReportNavData = ({
@@ -31,27 +29,17 @@ export const usePlaceReportNavData = ({
   const { formatMessage } = useIntl()
 
   const sql = `
-      WITH
-        place_report_values_count AS (SELECT count(*) FROM place_report_values WHERE place_report_id = '${placeReportId}')
       SELECT
         place_report_id AS id,
-        label,
-        place_report_values_count.count AS place_report_values_count
+        label
       FROM 
-        place_reports,
-        place_report_values_count
+        place_reports
       WHERE 
         place_reports.place_report_id = '${placeReportId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
-
-  const resPlaceLevel = useLiveQuery(
-    `SELECT report_values FROM place_levels WHERE project_id = $1 AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
-  )
-  const placeLevel = resPlaceLevel?.rows?.[0]
 
   const parentArray = [
     'data',
@@ -88,27 +76,7 @@ export const usePlaceReportNavData = ({
     ownUrl,
     label,
     notFound,
-    navs: [
-      {
-        id: 'report',
-        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
-      },
-      ...(placeLevel?.report_values !== false
-        ? [
-            {
-              id: 'values',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.place_report_values_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                }),
-              }),
-            },
-          ]
-        : []),
-    ],
+    navs: [],
   }
 
   return { navData, loading }

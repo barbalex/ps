@@ -9,11 +9,6 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const isForm =
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/reports/$placeReportId_/report' ||
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/reports/$placeReportId_/report/'
   const { projectId, placeId, placeId2, placeReportId } = useParams({
     from,
   })
@@ -55,7 +50,7 @@ export const Header = ({ autoFocusRef, from }) => {
     })
     if (!id) return
     navigate({
-      to: isForm ? `../../${id}/report` : `../${id}/report`,
+      to: `../${id}`,
       params: (prev) => ({
         ...prev,
         placeReportId: id,
@@ -81,7 +76,7 @@ export const Header = ({ autoFocusRef, from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: `..` })
     } catch (error) {
       console.error(error)
     }
@@ -100,9 +95,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const next = placeReports[(index + 1) % len]
       navigate({
-        to: isForm
-          ? `../../${next.place_report_id}/report`
-          : `../${next.place_report_id}`,
+        to: `../${next.place_report_id}`,
         params: (prev) => ({ ...prev, placeReportId: next.place_report_id }),
       })
     } catch (error) {
@@ -123,9 +116,7 @@ export const Header = ({ autoFocusRef, from }) => {
       )
       const previous = placeReports[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.place_report_id}/report`
-          : `../${previous.place_report_id}`,
+        to: `../${previous.place_report_id}`,
         params: (prev) => ({
           ...prev,
           placeReportId: previous.place_report_id,

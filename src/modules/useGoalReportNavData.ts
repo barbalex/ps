@@ -4,7 +4,6 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
-import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
   projectId: string
@@ -16,7 +15,6 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
-  goal_report_values_count: number
 }
 
 export const useGoalReportNavData = ({
@@ -30,15 +28,11 @@ export const useGoalReportNavData = ({
 
   const res = useLiveQuery(
     `
-      WITH 
-        goal_report_values_count AS (SELECT count(*) FROM goal_report_values WHERE goal_report_id = '${goalReportId}')
       SELECT
         goal_report_id AS id,
-        label,
-        goal_report_values_count.count AS goal_report_values_count
+        label
       FROM 
-        goal_reports,
-        goal_report_values_count
+        goal_reports
       WHERE 
         goal_reports.goal_report_id = '${goalReportId}'`,
   )
@@ -80,20 +74,7 @@ export const useGoalReportNavData = ({
     ownUrl,
     label,
     notFound,
-    navs: [
-      {
-        id: 'report',
-        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
-      },
-      {
-        id: 'values',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.goal_report_values_count ?? 0,
-          namePlural: formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' }),
-        }),
-      },
-    ],
+    navs: [],
   }
 
   return { navData, loading }

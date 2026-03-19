@@ -492,43 +492,6 @@ AFTER INSERT OR UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
 
--- place_report_values
-CREATE OR REPLACE FUNCTION place_report_values_label_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-  units_name TEXT;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  -- ensure query does not return no row
-  if NEW.unit_id is null then
-    units_name := null;
-  else
-    SELECT units.name INTO units_name from units where units.unit_id = NEW.unit_id;
-  end if;
-
-  UPDATE place_report_values 
-    SET label = (
-      CASE 
-        WHEN units_name is null then NEW.place_report_value_id::text
-        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
-      END
-    )
-  WHERE place_report_values.place_report_value_id = NEW.place_report_value_id;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER place_report_values_label_trigger
-AFTER UPDATE OF unit_id, value_integer, value_numeric, value_text ON place_report_values
-FOR EACH ROW
-EXECUTE PROCEDURE place_report_values_label_trigger();
-
 -- places
 CREATE OR REPLACE FUNCTION places_label_trigger()
 RETURNS TRIGGER AS $$
