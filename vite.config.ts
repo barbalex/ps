@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import formatjs from '@formatjs/vite-plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import babel from '@rolldown/plugin-babel'
 // import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 
 // https://vitejs.dev/config/
@@ -18,8 +19,15 @@ export default defineConfig({
     // enabling start causes error: https://github.com/TanStack/router/issues/5795#issuecomment-3973127942
     // tanstackStart(),
     // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
-    tanstackRouter({ target: 'react', autoCodeSplitting: true, routeFileIgnorePrefix: '-' }),
-    react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+      routeFileIgnorePrefix: '-',
+    }),
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
+    }),
     formatjs({
       idInterpolationPattern: '[sha512:contenthash:base64:6]',
       ast: true,
