@@ -128,37 +128,37 @@ export const CheckTaxon = ({ from }) => {
               }
             />
             {(selectedUnit?.type === 'integer' ||
-              row.value_integer !== null) && (
+              row.quantity_integer !== null) && (
               <TextField
                 label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-                name="value_integer"
+                name="quantity_integer"
                 type="number"
-                value={row.value_integer ?? ''}
+                value={row.quantity_integer ?? ''}
                 onChange={onChange}
-                validationState={validations?.value_integer?.state}
-                validationMessage={validations?.value_integer?.message}
+                validationState={validations?.quantity_integer?.state}
+                validationMessage={validations?.quantity_integer?.message}
               />
             )}
             {(selectedUnit?.type === 'numeric' ||
-              row.value_numeric !== null) && (
+              row.quantity_numeric !== null) && (
               <TextField
                 label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-                name="value_numeric"
+                name="quantity_numeric"
                 type="number"
-                value={row.value_numeric ?? ''}
+                value={row.quantity_numeric ?? ''}
                 onChange={onChange}
-                validationState={validations?.value_numeric?.state}
-                validationMessage={validations?.value_numeric?.message}
+                validationState={validations?.quantity_numeric?.state}
+                validationMessage={validations?.quantity_numeric?.message}
               />
             )}
-            {(selectedUnit?.type === 'text' || row.value_text !== null) && (
+            {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
               <TextField
                 label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-                name="value_text"
-                value={row.value_text ?? ''}
+                name="quantity_text"
+                value={row.quantity_text ?? ''}
                 onChange={onChange}
-                validationState={validations?.value_text?.state}
-                validationMessage={validations?.value_text?.message}
+                validationState={validations?.quantity_text?.state}
+                validationMessage={validations?.quantity_text?.message}
               />
             )}
           </>

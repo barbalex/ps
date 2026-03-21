@@ -817,10 +817,9 @@ CREATE TABLE IF NOT EXISTS check_taxa(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  -- TODO: rename to quantity_...
-  value_integer integer DEFAULT NULL,
-  value_numeric double precision DEFAULT NULL,
-  value_text text DEFAULT NULL,
+  quantity_integer integer DEFAULT NULL,
+  quantity_numeric double precision DEFAULT NULL,
+  quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -831,9 +830,9 @@ CREATE INDEX IF NOT EXISTS check_taxa_account_id_idx ON check_taxa USING btree(a
 CREATE INDEX IF NOT EXISTS check_taxa_check_id_idx ON check_taxa USING btree(check_id);
 CREATE INDEX IF NOT EXISTS check_taxa_taxon_id_idx ON check_taxa USING btree(taxon_id);
 CREATE INDEX IF NOT EXISTS check_taxa_unit_id_idx ON check_taxa USING btree(unit_id);
-CREATE INDEX IF NOT EXISTS check_taxa_value_integer_idx ON check_taxa USING btree(value_integer);
-CREATE INDEX IF NOT EXISTS check_taxa_value_numeric_idx ON check_taxa USING btree(value_numeric);
-CREATE INDEX IF NOT EXISTS check_taxa_value_text_idx ON check_taxa USING btree(value_text);
+CREATE INDEX IF NOT EXISTS check_taxa_quantity_integer_idx ON check_taxa USING btree(quantity_integer);
+CREATE INDEX IF NOT EXISTS check_taxa_quantity_numeric_idx ON check_taxa USING btree(quantity_numeric);
+CREATE INDEX IF NOT EXISTS check_taxa_quantity_text_idx ON check_taxa USING btree(quantity_text);
 CREATE INDEX IF NOT EXISTS check_taxa_label_idx ON check_taxa USING btree(label);
 
 COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';

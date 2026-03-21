@@ -22,11 +22,11 @@ export default interface CheckTaxa {
 
   unit_id: UnitsUnitId | null;
 
-  value_integer: number | null;
+  quantity_integer: number | null;
 
-  value_numeric: number | null;
+  quantity_numeric: number | null;
 
-  value_text: string | null;
+  quantity_text: string | null;
 
   label: string | null;
 
@@ -51,11 +51,11 @@ export interface CheckTaxaInitializer {
 
   unit_id?: UnitsUnitId | null;
 
-  value_integer?: number | null;
+  quantity_integer?: number | null;
 
-  value_numeric?: number | null;
+  quantity_numeric?: number | null;
 
-  value_text?: string | null;
+  quantity_text?: string | null;
 
   label?: string | null;
 
@@ -81,11 +81,11 @@ export interface CheckTaxaMutator {
 
   unit_id?: UnitsUnitId | null;
 
-  value_integer?: number | null;
+  quantity_integer?: number | null;
 
-  value_numeric?: number | null;
+  quantity_numeric?: number | null;
 
-  value_text?: string | null;
+  quantity_text?: string | null;
 
   label?: string | null;
 
