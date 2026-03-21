@@ -418,6 +418,7 @@
   "lVImportDesc": "Le fichier doit contenir une simple liste de valeurs — une par ligne, sans en-tête de colonne. Type attendu : {type}.",
   "lVImportFormats": "Formats pris en charge : .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Déposez un fichier ici ou cliquez pour sélectionner",
+  "tImport": "Importer des taxons depuis un fichier",
   "lVDeleteAll": "Supprimer toutes les valeurs",
   "lVDeleteAllConfirm": "Supprimer toutes les valeurs ?",
   "lWQzTz": "Ajouter un champ",
