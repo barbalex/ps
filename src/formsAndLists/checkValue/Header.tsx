@@ -6,11 +6,13 @@ import { useRef, useEffect } from 'react'
 import { createCheckValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
+import { useIntl } from 'react-intl'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { checkId, checkValueId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
 
   const db = usePGlite()
 
@@ -103,14 +105,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title="Check value"
+      title={formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName="check value"
+      tableName={formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })}
     />
   )
 }
