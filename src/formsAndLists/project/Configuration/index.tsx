@@ -352,6 +352,20 @@ export const Configuration = ({ from }) => {
           />
           <RadioGroupField
             label={formatMessage({
+              id: 'aR9BsD',
+              defaultMessage: 'Standard-Einheit für Massnahmen-Bericht-Mengen',
+            })}
+            name="action_reports_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.action_reports_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={validations?.action_reports_default_unit_id?.state}
+            validationMessage={validations?.action_reports_default_unit_id?.message}
+          />
+          <RadioGroupField
+            label={formatMessage({
               id: 'qB8CdE',
               defaultMessage: 'Standard-Einheit für Kontroll-Mengen',
             })}

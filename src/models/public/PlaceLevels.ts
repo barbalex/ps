@@ -73,6 +73,9 @@ export default interface PlaceLevels {
   /** Are action reports used? Preset: true */
   action_reports: boolean | null;
 
+  /** Are action report quantities used? Preset: true */
+  action_report_quantities: boolean | null;
+
   /** Are checks used? Preset: true */
   checks: boolean | null;
 
@@ -187,6 +190,12 @@ export interface PlaceLevelsInitializer {
    * Default value: true
    */
   action_reports?: boolean | null;
+
+  /**
+   * Are action report quantities used? Preset: true
+   * Default value: true
+   */
+  action_report_quantities?: boolean | null;
 
   /**
    * Are checks used? Preset: true
@@ -304,6 +313,9 @@ export interface PlaceLevelsMutator {
 
   /** Are action reports used? Preset: true */
   action_reports?: boolean | null;
+
+  /** Are action report quantities used? Preset: true */
+  action_report_quantities?: boolean | null;
 
   /** Are checks used? Preset: true */
   checks?: boolean | null;

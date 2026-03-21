@@ -922,7 +922,9 @@ export const createCheckQuantity = async ({ checkId }) => {
     ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')
-  const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
   await db.query(
     `INSERT INTO check_quantities (${cols}) VALUES (${vals})`,
     Object.values(draft),
@@ -941,7 +943,9 @@ export const createCheckTaxon = async ({ checkId }) => {
   const db = store.get(pgliteDbAtom)
 
   // inherit the project's default unit if set
-  const projectRes = await db.query<{ check_taxa_default_unit_id: string | null }>(
+  const projectRes = await db.query<{
+    check_taxa_default_unit_id: string | null
+  }>(
     `SELECT p.check_taxa_default_unit_id
      FROM projects p
      JOIN subprojects sp ON sp.project_id = p.project_id
@@ -960,7 +964,9 @@ export const createCheckTaxon = async ({ checkId }) => {
     ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')
-  const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
   await db.query(
     `INSERT INTO check_taxa (${cols}) VALUES (${vals})`,
     Object.values(draft),
@@ -1014,7 +1020,9 @@ export const createActionQuantity = async ({ actionId, projectId }) => {
   // inherit the project's default unit if set
   let defaultUnitId: string | null = null
   if (projectId) {
-    const projectRes = await db.query<{ actions_default_unit_id: string | null }>(
+    const projectRes = await db.query<{
+      actions_default_unit_id: string | null
+    }>(
       `SELECT actions_default_unit_id FROM projects WHERE project_id = $1 LIMIT 1`,
       [projectId],
     )
@@ -1028,7 +1036,9 @@ export const createActionQuantity = async ({ actionId, projectId }) => {
     ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')
-  const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
   await db.query(
     `INSERT INTO action_quantities (${cols}) VALUES (${vals})`,
     Object.values(draft),
@@ -1076,6 +1086,50 @@ export const createActionReport = async ({ projectId, actionId }) => {
   })
 
   return action_report_id
+}
+
+export const createActionReportQuantity = async ({ actionReportId }) => {
+  const db = store.get(pgliteDbAtom)
+
+  // inherit the project's default unit if set
+  const projectRes = await db.query<{
+    action_reports_default_unit_id: string | null
+  }>(
+    `SELECT p.action_reports_default_unit_id
+     FROM projects p
+     JOIN subprojects sp ON sp.project_id = p.project_id
+     JOIN places pl ON pl.subproject_id = sp.subproject_id
+     JOIN actions a ON a.place_id = pl.place_id
+     JOIN action_reports ar ON ar.action_id = a.action_id
+     WHERE ar.action_report_id = $1
+     LIMIT 1`,
+    [actionReportId],
+  )
+  const defaultUnitId =
+    projectRes.rows?.[0]?.action_reports_default_unit_id ?? null
+
+  const action_report_quantity_id = uuidv7()
+  const draft = {
+    action_report_quantity_id,
+    action_report_id: actionReportId,
+    ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
+  }
+  const cols = Object.keys(draft).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
+  await db.query(
+    `INSERT INTO action_report_quantities (${cols}) VALUES (${vals})`,
+    Object.values(draft),
+  )
+
+  store.set(addOperationAtom, {
+    table: 'action_report_quantities',
+    operation: 'insert',
+    draft,
+  })
+
+  return action_report_quantity_id
 }
 
 export const createPlaceReport = async ({ projectId, placeId }) => {

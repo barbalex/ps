@@ -45,6 +45,8 @@ import { ActionQuantityFetcher } from './ActionQuantityFetcher.tsx'
 import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
 import { ActionReportFetcher } from './ActionReportFetcher.tsx'
 import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
+import { ActionReportQuantitiesFetcher } from './ActionReportQuantitiesFetcher.tsx'
+import { ActionReportQuantityFetcher } from './ActionReportQuantityFetcher.tsx'
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
 import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { PlaceReportReportFetcher } from './PlaceReportReportFetcher.tsx'
@@ -282,6 +284,29 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <ActionReportReportFetcher params={params} {...other} />
+    }
+    case 'useActionReportQuantitiesNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.actionId ||
+        !params.actionReportId
+      )
+        return null
+      return <ActionReportQuantitiesFetcher params={params} {...other} />
+    }
+    case 'useActionReportQuantityNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.actionId ||
+        !params.actionReportId ||
+        !params.actionReportQuantityId
+      )
+        return null
+      return <ActionReportQuantityFetcher params={params} {...other} />
     }
     case 'usePlaceReportsNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)

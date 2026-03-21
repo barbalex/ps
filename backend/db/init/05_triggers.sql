@@ -202,6 +202,42 @@ AFTER INSERT OR UPDATE OF unit_id, quantity_integer, quantity_numeric, quantity_
 FOR EACH ROW
 EXECUTE PROCEDURE action_quantities_label_trigger();
 
+CREATE OR REPLACE FUNCTION action_report_quantities_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  unit_name TEXT;
+BEGIN
+  -- Check if electric.syncing is true - defaults to false if not set
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  -- ensure query does not return no row
+  if NEW.unit_id is null then
+    unit_name := null;
+  else
+    SELECT units.name INTO unit_name from units where units.unit_id = NEW.unit_id;
+  end if;
+
+  UPDATE action_report_quantities
+    SET label = (
+      CASE 
+        WHEN unit_name is null then NEW.action_report_quantity_id::text
+        ELSE unit_name || ': ' || coalesce(NEW.quantity_integer::text, NEW.quantity_numeric::text, NEW.quantity_text, '(no value)')
+      END
+    )
+  WHERE action_report_quantities.action_report_quantity_id = NEW.action_report_quantity_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER action_report_quantities_label_trigger
+AFTER INSERT OR UPDATE OF unit_id, quantity_integer, quantity_numeric, quantity_text ON action_report_quantities
+FOR EACH ROW
+EXECUTE PROCEDURE action_report_quantities_label_trigger();
+
 -- check_taxa
 CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
 RETURNS TRIGGER AS $$

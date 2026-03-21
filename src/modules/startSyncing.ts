@@ -100,6 +100,7 @@ export const startSyncing = async () => {
                 'actions',
                 'action_quantities',
                 'action_reports',
+                'action_report_quantities',
                 'checks',
                 'check_quantities',
                 'check_taxa',
@@ -346,6 +347,16 @@ export const startSyncing = async () => {
           },
           table: 'action_reports',
           primaryKey: ['action_report_id'],
+        },
+        action_report_quantities: {
+          shape: {
+            url,
+            params: {
+              table: 'action_report_quantities',
+            },
+          },
+          table: 'action_report_quantities',
+          primaryKey: ['action_report_quantity_id'],
         },
         checks: {
           shape: {

@@ -1,10 +1,10 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
-import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
   projectId: string
@@ -13,48 +13,40 @@ type Props = {
   placeId2?: string
   actionId: string
   actionReportId: string
+  actionReportQuantityId: string
 }
 
 type NavData = {
   id: string
   label: string
-  action_report_quantities_count: number
 }
 
-export const useActionReportNavData = ({
+export const useActionReportQuantityNavData = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
   actionId,
   actionReportId,
+  actionReportQuantityId,
 }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const location = useLocation()
 
-  const sql = `
-      WITH
-        action_report_quantities_count AS (SELECT count(*) FROM action_report_quantities WHERE action_report_id = '${actionReportId}')
+  const res = useLiveQuery(
+    `
       SELECT
-        action_report_id AS id,
-        label,
-        action_report_quantities_count.count AS action_report_quantities_count
-      FROM 
-        action_reports,
-        action_report_quantities_count
-      WHERE 
-        action_reports.action_report_id = '${actionReportId}'`
-  const res = useLiveQuery(sql)
+        action_report_quantity_id as id,
+        label 
+      FROM action_report_quantities 
+      WHERE action_report_quantity_id = $1`,
+    [actionReportQuantityId],
+  )
+
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
-
-  const resPlaceLevel = useLiveQuery(
-    `SELECT action_report_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
-  )
-  const placeLevel = resPlaceLevel?.rows?.[0]
-
   const parentArray = [
     'data',
     'projects',
@@ -67,9 +59,11 @@ export const useActionReportNavData = ({
     'actions',
     actionId,
     'reports',
+    actionReportId,
+    'quantities',
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, nav?.id]
+  const ownArray = [...parentArray, actionReportQuantityId]
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -85,35 +79,17 @@ export const useActionReportNavData = ({
     isInActiveNodeArray,
     isActive,
     isOpen,
-    level: 2,
     parentUrl,
     ownArray,
     urlPath,
     ownUrl,
     label,
     notFound,
-    navs: [
-      {
-        id: 'report',
-        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
-      },
-      ...(placeLevel?.action_report_quantities !== false
-        ? [
-            {
-              id: 'quantities',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.action_report_quantities_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                }),
-              }),
-            },
-          ]
-        : []),
-    ],
+    nameSingular: formatMessage({
+      id: 'hULs6J',
+      defaultMessage: 'Massnahmen-Bericht-Menge',
+    }),
   }
 
-  return { navData, loading }
+  return { loading, navData }
 }
