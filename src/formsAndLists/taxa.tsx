@@ -11,6 +11,8 @@ import { useTaxaNavData } from '../modules/useTaxaNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { ImportDialog } from './taxa/ImportDialog.tsx'
+import { importTaxa } from './taxa/importTaxa.ts'
 import '../form.css'
 
 const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/'
@@ -46,6 +48,10 @@ export const Taxa = () => {
     })
   }
 
+  const onFileSelected = (file: File) => {
+    importTaxa({ file, taxonomyId })
+  }
+
   const importButton = (
     <Tooltip
       content={formatMessage({
@@ -64,14 +70,25 @@ export const Taxa = () => {
 
   return (
     <div className="list-view">
+      <ImportDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        onFileSelected={onFileSelected}
+      />
       <ListHeader
         label={label}
         nameSingular={nameSingular}
         addRow={add}
         deleteRow={deleteAllTaxa}
         deleteRowDisabled={!loading && navs.length === 0}
-        deleteLabel={formatMessage({ id: 'tDeleteAll', defaultMessage: 'Alle Taxa entfernen' })}
-        deleteConfirmLabel={formatMessage({ id: 'tDeleteAllConfirm', defaultMessage: 'Alle Taxa entfernen?' })}
+        deleteLabel={formatMessage({
+          id: 'tDeleteAll',
+          defaultMessage: 'Alle Taxa entfernen',
+        })}
+        deleteConfirmLabel={formatMessage({
+          id: 'tDeleteAllConfirm',
+          defaultMessage: 'Alle Taxa entfernen?',
+        })}
         menus={[importButton]}
       />
       <div className="list-container">
