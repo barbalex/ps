@@ -104,6 +104,8 @@ export const startSyncing = async () => {
                 'checks',
                 'check_quantities',
                 'check_taxa',
+                'check_reports',
+                'check_report_quantities',
                 'observations',
                 'created_at',
                 'updated_at',
@@ -357,6 +359,36 @@ export const startSyncing = async () => {
           },
           table: 'action_report_quantities',
           primaryKey: ['action_report_quantity_id'],
+        },
+        check_reports: {
+          shape: {
+            url,
+            params: {
+              table: 'check_reports',
+              columns: [
+                'check_report_id',
+                'account_id',
+                'check_id',
+                'year',
+                'data',
+                'created_at',
+                'updated_at',
+                'updated_by',
+              ],
+            },
+          },
+          table: 'check_reports',
+          primaryKey: ['check_report_id'],
+        },
+        check_report_quantities: {
+          shape: {
+            url,
+            params: {
+              table: 'check_report_quantities',
+            },
+          },
+          table: 'check_report_quantities',
+          primaryKey: ['check_report_quantity_id'],
         },
         checks: {
           shape: {

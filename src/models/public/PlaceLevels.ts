@@ -85,6 +85,10 @@ export default interface PlaceLevels {
   /** Are check taxa used? Preset: true */
   check_taxa: boolean | null;
 
+  check_reports: boolean | null;
+
+  check_report_quantities: boolean | null;
+
   /** Are observations used? Preset: true */
   observations: boolean | null;
 
@@ -215,6 +219,12 @@ export interface PlaceLevelsInitializer {
    */
   check_taxa?: boolean | null;
 
+  /** Default value: true */
+  check_reports?: boolean | null;
+
+  /** Default value: true */
+  check_report_quantities?: boolean | null;
+
   /**
    * Are observations used? Preset: true
    * Default value: true
@@ -325,6 +335,10 @@ export interface PlaceLevelsMutator {
 
   /** Are check taxa used? Preset: true */
   check_taxa?: boolean | null;
+
+  check_reports?: boolean | null;
+
+  check_report_quantities?: boolean | null;
 
   /** Are observations used? Preset: true */
   observations?: boolean | null;

@@ -47,6 +47,11 @@ import { ActionReportFetcher } from './ActionReportFetcher.tsx'
 import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
 import { ActionReportQuantitiesFetcher } from './ActionReportQuantitiesFetcher.tsx'
 import { ActionReportQuantityFetcher } from './ActionReportQuantityFetcher.tsx'
+import { CheckReportsFetcher } from './CheckReportsFetcher.tsx'
+import { CheckReportFetcher } from './CheckReportFetcher.tsx'
+import { CheckReportReportFetcher } from './CheckReportReportFetcher.tsx'
+import { CheckReportQuantitiesFetcher } from './CheckReportQuantitiesFetcher.tsx'
+import { CheckReportQuantityFetcher } from './CheckReportQuantityFetcher.tsx'
 import { PlaceReportsFetcher } from './PlaceReportsFetcher.tsx'
 import { PlaceReportFetcher } from './PlaceReportFetcher.tsx'
 import { PlaceReportReportFetcher } from './PlaceReportReportFetcher.tsx'
@@ -307,6 +312,61 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <ActionReportQuantityFetcher params={params} {...other} />
+    }
+    case 'useCheckReportsNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.checkId
+      )
+        return null
+      return <CheckReportsFetcher params={params} {...other} />
+    }
+    case 'useCheckReportNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.checkId ||
+        !params.checkReportId
+      )
+        return null
+      return <CheckReportFetcher params={params} {...other} />
+    }
+    case 'useCheckReportReportNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.checkId ||
+        !params.checkReportId
+      )
+        return null
+      return <CheckReportReportFetcher params={params} {...other} />
+    }
+    case 'useCheckReportQuantitiesNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.checkId ||
+        !params.checkReportId
+      )
+        return null
+      return <CheckReportQuantitiesFetcher params={params} {...other} />
+    }
+    case 'useCheckReportQuantityNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.checkId ||
+        !params.checkReportId ||
+        !params.checkReportQuantityId
+      )
+        return null
+      return <CheckReportQuantityFetcher params={params} {...other} />
     }
     case 'usePlaceReportsNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
