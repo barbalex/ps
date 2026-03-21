@@ -418,6 +418,8 @@
   "lVImportDesc": "Le fichier doit contenir une simple liste de valeurs — une par ligne, sans en-tête de colonne. Type attendu : {type}.",
   "lVImportFormats": "Formats pris en charge : .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Déposez un fichier ici ou cliquez pour sélectionner",
+  "lVDeleteAll": "Supprimer toutes les valeurs",
+  "lVDeleteAllConfirm": "Supprimer toutes les valeurs ?",
   "lWQzTz": "Ajouter un champ",
   "mE4JdZ": "Italien (abrégé)",
   "mL7MnO": "Enregistrer les fichiers localement (disponibles hors ligne)",

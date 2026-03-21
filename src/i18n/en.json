@@ -421,6 +421,8 @@
   "lVImportDesc": "The file should contain a simple list of values — one per line, with no column header. Expected type: {type}.",
   "lVImportFormats": "Supported formats: .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Drop a file here or click to select",
+  "lVDeleteAll": "Remove all values",
+  "lVDeleteAllConfirm": "Remove all values?",
   "lWQzTz": "Add Field",
   "mE4JdZ": "Italian (short)",
   "mL7MnO": "Save files locally (available offline)",

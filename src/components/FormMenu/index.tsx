@@ -11,6 +11,8 @@ export const FormMenu = ({
   addRowDisabled = false,
   addRowDisabledReason,
   deleteRow,
+  deleteLabel = null,
+  deleteConfirmLabel = null,
   toNext,
   toPrevious,
   toNextDisabled = false,
@@ -51,7 +53,7 @@ export const FormMenu = ({
           />
         </Tooltip>
       )}
-      {!!deleteRow && <Delete deleteRow={deleteRow} tableName={tableName} />}
+      {!!deleteRow && <Delete deleteRow={deleteRow} tableName={tableName} deleteLabel={deleteLabel} deleteConfirmLabel={deleteConfirmLabel} />}
       {!!toNext && (
         <Tooltip
           content={formatMessage({

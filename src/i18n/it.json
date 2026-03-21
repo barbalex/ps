@@ -418,6 +418,8 @@
   "lVImportDesc": "Il file deve contenere un semplice elenco di valori — uno per riga, senza intestazione di colonna. Tipo atteso: {type}.",
   "lVImportFormats": "Formati supportati: .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Trascina un file qui o clicca per selezionare",
+  "lVDeleteAll": "Rimuovi tutti i valori",
+  "lVDeleteAllConfirm": "Rimuovere tutti i valori?",
   "lWQzTz": "Aggiungi campo",
   "mE4JdZ": "Italiano (abbreviato)",
   "mL7MnO": "Salva file localmente (disponibili offline)",

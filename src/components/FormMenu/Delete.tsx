@@ -14,25 +14,41 @@ const {
   Tooltip,
 } = fluentUiReactComponents
 
-export const Delete = ({ deleteRow, tableName }) => {
+export const Delete = ({
+  deleteRow,
+  deleteLabel = null,
+  deleteConfirmLabel = null,
+}) => {
   const { formatMessage } = useIntl()
 
   return (
     <Menu openOnHover={false}>
       <MenuTrigger>
-        <Tooltip content={formatMessage({ id: 'Zv6sNt', defaultMessage: 'l\u00f6schen' })}>
-          <Button
-            size="medium"
-            icon={<FaMinus />}
-          />
+        <Tooltip
+          content={
+            deleteLabel ??
+            formatMessage({ id: 'Zv6sNt', defaultMessage: 'l\u00f6schen' })
+          }
+        >
+          <Button size="medium" icon={<FaMinus />} />
         </Tooltip>
       </MenuTrigger>
       <MenuPopover>
         <MenuList>
           <MenuGroup>
-            <MenuGroupHeader>{formatMessage({ id: 'Au7tOu', defaultMessage: 'L\u00f6schen?' })}</MenuGroupHeader>
-            <MenuItem onClick={deleteRow}>{formatMessage({ id: 'Bv8uPv', defaultMessage: 'Ja' })}</MenuItem>
-            <MenuItem>{formatMessage({ id: 'Cw9vQw', defaultMessage: 'Nein' })}</MenuItem>
+            <MenuGroupHeader>
+              {deleteConfirmLabel ??
+                formatMessage({
+                  id: 'Au7tOu',
+                  defaultMessage: 'L\u00f6schen?',
+                })}
+            </MenuGroupHeader>
+            <MenuItem onClick={deleteRow}>
+              {formatMessage({ id: 'Bv8uPv', defaultMessage: 'Ja' })}
+            </MenuItem>
+            <MenuItem>
+              {formatMessage({ id: 'Cw9vQw', defaultMessage: 'Nein' })}
+            </MenuItem>
           </MenuGroup>
         </MenuList>
       </MenuPopover>

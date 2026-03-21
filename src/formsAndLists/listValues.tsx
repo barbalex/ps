@@ -9,6 +9,7 @@ import { ImportDialog } from './listValues/ImportDialog.tsx'
 import { importListValues } from './listValues/importListValues.ts'
 
 import { createListValue } from '../modules/createRows.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
 import { useListValuesNavData } from '../modules/useListValuesNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -41,6 +42,16 @@ export const ListValues = () => {
     importListValues({ file, listId, valueType })
   }
 
+  const deleteAllValues = async () => {
+    const db = store.get(pgliteDbAtom)
+    await db.query(`DELETE FROM list_values WHERE list_id = $1`, [listId])
+    store.set(addOperationAtom, {
+      table: 'list_values',
+      operation: 'delete',
+      filter: { function: 'eq', column: 'list_id', value: listId },
+    })
+  }
+
   const importButton = (
     <Tooltip
       content={formatMessage({
@@ -65,6 +76,9 @@ export const ListValues = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        deleteRow={deleteAllValues}
+        deleteLabel={formatMessage({ id: 'lVDeleteAll', defaultMessage: 'Alle Werte entfernen' })}
+        deleteConfirmLabel={formatMessage({ id: 'lVDeleteAllConfirm', defaultMessage: 'Alle Werte entfernen?' })}
         menus={[importButton]}
       />
       <div className="list-container">
