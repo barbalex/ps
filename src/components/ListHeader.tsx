@@ -9,6 +9,7 @@ interface Props {
   addRowDisabled?: boolean
   addRowDisabledReason?: string
   deleteRow?: () => void
+  deleteRowDisabled?: boolean
   deleteLabel?: string
   deleteConfirmLabel?: string
   menus?: unknown[]
@@ -24,6 +25,7 @@ export const ListHeader = ({
   addRowDisabled,
   addRowDisabledReason,
   deleteRow,
+  deleteRowDisabled,
   deleteLabel,
   deleteConfirmLabel,
   menus,
@@ -37,6 +39,7 @@ export const ListHeader = ({
         addRowDisabled={addRowDisabled}
         addRowDisabledReason={addRowDisabledReason}
         deleteRow={deleteRow}
+        deleteRowDisabled={deleteRowDisabled}
         deleteLabel={deleteLabel}
         deleteConfirmLabel={deleteConfirmLabel}
         nameSingular={nameSingular}

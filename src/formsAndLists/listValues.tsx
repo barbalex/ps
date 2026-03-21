@@ -77,8 +77,15 @@ export const ListValues = () => {
         nameSingular={nameSingular}
         addRow={add}
         deleteRow={deleteAllValues}
-        deleteLabel={formatMessage({ id: 'lVDeleteAll', defaultMessage: 'Alle Werte entfernen' })}
-        deleteConfirmLabel={formatMessage({ id: 'lVDeleteAllConfirm', defaultMessage: 'Alle Werte entfernen?' })}
+        deleteRowDisabled={!loading && navs.length === 0}
+        deleteLabel={formatMessage({
+          id: 'lVDeleteAll',
+          defaultMessage: 'Alle Werte entfernen',
+        })}
+        deleteConfirmLabel={formatMessage({
+          id: 'lVDeleteAllConfirm',
+          defaultMessage: 'Alle Werte entfernen?',
+        })}
         menus={[importButton]}
       />
       <div className="list-container">

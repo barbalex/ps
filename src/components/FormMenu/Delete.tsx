@@ -18,6 +18,7 @@ export const Delete = ({
   deleteRow,
   deleteLabel = null,
   deleteConfirmLabel = null,
+  disabled = false,
 }) => {
   const { formatMessage } = useIntl()
 
@@ -27,10 +28,10 @@ export const Delete = ({
         <Tooltip
           content={
             deleteLabel ??
-            formatMessage({ id: 'Zv6sNt', defaultMessage: 'l\u00f6schen' })
+            formatMessage({ id: 'Zv6sNt', defaultMessage: 'löschen' })
           }
         >
-          <Button size="medium" icon={<FaMinus />} />
+          <Button size="medium" icon={<FaMinus />} disabled={disabled} />
         </Tooltip>
       </MenuTrigger>
       <MenuPopover>
