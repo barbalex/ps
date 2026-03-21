@@ -1008,21 +1008,36 @@ export const createAction = async ({ projectId, placeId }) => {
   return action_id
 }
 
-export const createActionValue = async ({ actionId }) => {
+export const createActionValue = async ({ actionId, projectId }) => {
   const db = store.get(pgliteDbAtom)
+
+  // inherit the project's default unit if set
+  let defaultUnitId: string | null = null
+  if (projectId) {
+    const projectRes = await db.query<{ actions_default_unit_id: string | null }>(
+      `SELECT actions_default_unit_id FROM projects WHERE project_id = $1 LIMIT 1`,
+      [projectId],
+    )
+    defaultUnitId = projectRes.rows?.[0]?.actions_default_unit_id ?? null
+  }
+
   const action_value_id = uuidv7()
+  const draft = {
+    action_value_id,
+    action_id: actionId,
+    ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
+  }
+  const cols = Object.keys(draft).join(', ')
+  const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
   await db.query(
-    `insert into action_values (action_value_id, action_id) values ($1, $2)`,
-    [action_value_id, actionId],
+    `INSERT INTO action_values (${cols}) VALUES (${vals})`,
+    Object.values(draft),
   )
 
   store.set(addOperationAtom, {
     table: 'action_values',
     operation: 'insert',
-    draft: {
-      action_value_id,
-      action_id: actionId,
-    },
+    draft,
   })
 
   return action_value_id

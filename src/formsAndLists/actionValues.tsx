@@ -23,7 +23,7 @@ export const ActionValues = ({ from }) => {
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createActionValue({ actionId })
+    const id = await createActionValue({ actionId, projectId })
     if (!id) return
     navigate({
       to: id,

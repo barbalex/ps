@@ -145,6 +145,7 @@ CREATE TABLE IF NOT EXISTS projects(
   goals_label_by text DEFAULT NULL, -- TODO: jsonb array
   goal_reports_label_by text DEFAULT NULL, -- TODO: jsonb array
   goal_reports_order_by text DEFAULT NULL, -- TODO: jsonb array
+  actions_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   checks_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   check_taxa_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   values_on_multiple_levels text DEFAULT NULL,
@@ -164,6 +165,7 @@ CREATE TABLE IF NOT EXISTS projects(
 CREATE INDEX IF NOT EXISTS projects_account_id_idx ON projects USING btree(account_id);
 CREATE INDEX IF NOT EXISTS projects_name_idx ON projects USING btree(name);
 CREATE INDEX IF NOT EXISTS projects_label_idx ON projects USING btree(label);
+CREATE INDEX IF NOT EXISTS projects_actions_default_unit_id_idx ON projects USING btree(actions_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_checks_default_unit_id_idx ON projects USING btree(checks_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_check_taxa_default_unit_id_idx ON projects USING btree(check_taxa_default_unit_id);
 
@@ -173,6 +175,7 @@ COMMENT ON COLUMN projects.subproject_name_singular IS 'Preset: "Art"';
 COMMENT ON COLUMN projects.subproject_name_plural IS 'Preset: "Arten"';
 COMMENT ON COLUMN projects.places_label_by IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 COMMENT ON COLUMN projects.places_order_by IS 'Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
+COMMENT ON COLUMN projects.actions_default_unit_id IS 'Default unit for action values.';
 COMMENT ON COLUMN projects.checks_default_unit_id IS 'Default unit for check values. Can be overwritten in checks';
 COMMENT ON COLUMN projects.check_taxa_default_unit_id IS 'Default unit for check taxa values. Can be overwritten in check_taxa';
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
@@ -577,6 +580,7 @@ COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "
 COMMENT ON COLUMN units.list_id IS 'Optional list of allowed values for this unit. When set, check/action value inputs use the list values instead of a free text/number field.';
 
 ALTER TABLE taxonomies ADD CONSTRAINT taxonomies_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE projects ADD CONSTRAINT projects_actions_default_unit_id_fkey FOREIGN KEY (actions_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_check_taxa_default_unit_id_fkey FOREIGN KEY (check_taxa_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_checks_default_unit_id_fkey FOREIGN KEY (checks_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
