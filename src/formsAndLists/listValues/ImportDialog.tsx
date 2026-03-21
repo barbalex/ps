@@ -18,7 +18,7 @@ interface Props {
   open: boolean
   listId: string
   onClose: () => void
-  onFileSelected: (file: File) => void
+  onFileSelected: (file: File, valueType: string | undefined) => void
 }
 
 const VALUE_TYPE_LABELS: Record<string, string> = {
@@ -29,20 +29,24 @@ const VALUE_TYPE_LABELS: Record<string, string> = {
   datetime: 'Datum und Uhrzeit (ISO 8601)',
 }
 
-export const ImportDialog = ({ open, listId, onClose, onFileSelected }: Props) => {
+export const ImportDialog = ({
+  open,
+  listId,
+  onClose,
+  onFileSelected,
+}: Props) => {
   const { formatMessage } = useIntl()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const res = useLiveQuery(
-    `SELECT value_type FROM lists WHERE list_id = $1`,
-    [listId],
-  )
+  const res = useLiveQuery(`SELECT value_type FROM lists WHERE list_id = $1`, [
+    listId,
+  ])
   const valueType: string | undefined = res?.rows?.[0]?.value_type
 
   const handleFile = (file: File | undefined) => {
     if (!file) return
-    onFileSelected(file)
+    onFileSelected(file, valueType)
     onClose()
   }
 
@@ -82,11 +86,19 @@ export const ImportDialog = ({ open, listId, onClose, onFileSelected }: Props) =
   const typeLabel = VALUE_TYPE_LABELS[valueType ?? ''] ?? valueType ?? '?'
 
   return (
-    <Dialog open={open} onOpenChange={(_e, data) => { if (!data.open) onClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={(_e, data) => {
+        if (!data.open) onClose()
+      }}
+    >
       <DialogSurface>
         <DialogBody>
           <DialogTitle>
-            {formatMessage({ id: 'lVImportTitle', defaultMessage: 'Werte importieren' })}
+            {formatMessage({
+              id: 'lVImportTitle',
+              defaultMessage: 'Werte importieren',
+            })}
           </DialogTitle>
           <DialogContent>
             <p className={styles.description}>
@@ -102,7 +114,8 @@ export const ImportDialog = ({ open, listId, onClose, onFileSelected }: Props) =
             <p className={styles.description}>
               {formatMessage({
                 id: 'lVImportFormats',
-                defaultMessage: 'Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods',
+                defaultMessage:
+                  'Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods',
               })}
             </p>
             <input

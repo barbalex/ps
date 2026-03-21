@@ -6,6 +6,7 @@ import { FaFileImport } from 'react-icons/fa'
 import { useIntl } from 'react-intl'
 
 import { ImportDialog } from './listValues/ImportDialog.tsx'
+import { importListValues } from './listValues/importListValues.ts'
 
 import { createListValue } from '../modules/createRows.ts'
 import { useListValuesNavData } from '../modules/useListValuesNavData.ts'
@@ -36,9 +37,8 @@ export const ListValues = () => {
 
   const onClickImport = () => setImportDialogOpen(true)
 
-  const onImportFileSelected = (file: File) => {
-    // TODO: process file in step 3
-    console.log('Import file selected:', file.name)
+  const onImportFileSelected = (file: File, valueType: string | undefined) => {
+    importListValues({ file, listId, valueType })
   }
 
   const importButton = (
