@@ -21,7 +21,15 @@ interface Props {
   onFileSelected: (file: File, valueType: string | undefined) => void
 }
 
-const VALUE_TYPE_LABELS: Record<string, string> = {
+const VALUE_TYPE_MESSAGE_IDS: Record<string, string> = {
+  integer: 'lVTypeInteger',
+  numeric: 'lVTypeNumeric',
+  text: 'lVTypeText',
+  date: 'lVTypeDate',
+  datetime: 'lVTypeDatetime',
+}
+
+const VALUE_TYPE_DEFAULTS: Record<string, string> = {
   integer: 'Ganzzahl (z.B. 1, 2, 3)',
   numeric: 'Dezimalzahl (z.B. 1.5, 2.75)',
   text: 'Text',
@@ -83,7 +91,12 @@ export const ImportDialog = ({
     handleFile(e.dataTransfer.files?.[0])
   }
 
-  const typeLabel = VALUE_TYPE_LABELS[valueType ?? ''] ?? valueType ?? '?'
+  const typeLabel = valueType
+    ? formatMessage({
+        id: VALUE_TYPE_MESSAGE_IDS[valueType] ?? valueType,
+        defaultMessage: VALUE_TYPE_DEFAULTS[valueType] ?? valueType,
+      })
+    : '?'
 
   return (
     <Dialog
