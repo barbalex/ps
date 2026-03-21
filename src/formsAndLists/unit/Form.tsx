@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { unitTypeOptions } from '../../modules/constants.ts'
 
 import '../../form.css'
@@ -56,6 +57,20 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
               'Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt.',
           })
         }
+      />
+      <DropdownField
+        label={formatMessage({
+          id: 'Ls6dFg',
+          defaultMessage: 'Liste (Werte aus Liste verwenden)',
+        })}
+        name="list_id"
+        table="lists"
+        where={`project_id = '${row.project_id}'`}
+        value={row.list_id ?? ''}
+        onChange={onChange}
+        validationState={validations?.list_id?.state}
+        validationMessage={validations?.list_id?.message}
+        hideWhenNoData
       />
       <TextField
         label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}

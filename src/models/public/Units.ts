@@ -3,6 +3,7 @@
 
 import type { AccountsAccountId } from './Accounts';
 import type { ProjectsProjectId } from './Projects';
+import type { ListsListId } from './Lists';
 import type { default as UnitTypesEnum } from './UnitTypesEnum';
 
 /** Identifier type for public.units */
@@ -19,6 +20,9 @@ export default interface Units {
   account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
+
+  /** Optional list of allowed values for this unit. When set, check/action value inputs use the list values instead of a free text/number field. */
+  list_id: ListsListId | null;
 
   /** Name of unit, like "Anzahl" */
   name: string | null;
@@ -52,6 +56,9 @@ export interface UnitsInitializer {
   account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
+
+  /** Optional list of allowed values for this unit. When set, check/action value inputs use the list values instead of a free text/number field. */
+  list_id?: ListsListId | null;
 
   /** Name of unit, like "Anzahl" */
   name?: string | null;
@@ -87,6 +94,9 @@ export interface UnitsMutator {
   account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
+
+  /** Optional list of allowed values for this unit. When set, check/action value inputs use the list values instead of a free text/number field. */
+  list_id?: ListsListId | null;
 
   /** Name of unit, like "Anzahl" */
   name?: string | null;

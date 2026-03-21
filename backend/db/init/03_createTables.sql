@@ -551,6 +551,7 @@ CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   summable boolean DEFAULT FALSE,
   sort integer DEFAULT NULL,
@@ -566,12 +567,14 @@ CREATE INDEX IF NOT EXISTS units_project_id_idx ON units USING btree(project_id)
 CREATE INDEX IF NOT EXISTS units_name_idx ON units USING btree(name);
 CREATE INDEX IF NOT EXISTS units_sort_idx ON units USING btree(sort);
 CREATE INDEX IF NOT EXISTS units_label_idx ON units USING btree(label);
+CREATE INDEX IF NOT EXISTS units_list_id_idx ON units USING btree(list_id);
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
 COMMENT ON COLUMN units.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN units.name IS 'Name of unit, like "Anzahl"';
 COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false';
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
+COMMENT ON COLUMN units.list_id IS 'Optional list of allowed values for this unit. When set, check/action value inputs use the list values instead of a free text/number field.';
 
 ALTER TABLE taxonomies ADD CONSTRAINT taxonomies_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_check_taxa_default_unit_id_fkey FOREIGN KEY (check_taxa_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;

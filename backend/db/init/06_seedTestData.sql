@@ -10190,8 +10190,19 @@ INSERT INTO taxa(account_id, name, taxonomy_id, taxon_id) values
 ('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 2', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cff12-54b6-7c49-9553-b84f0624f7ba');
 -- units
 INSERT INTO units(project_id, account_id, name, unit_id, summable, type) values 
-('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Deckung in %', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, 'integer'), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Abundanzklasse (1-5)', '018cff39-fcdd-7046-aa4f-49532086eb69', true, 'integer');
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Deckung in %', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, 'integer'), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Abundanzklasse', '018cff39-fcdd-7046-aa4f-49532086eb69', true, 'integer');
 UPDATE projects SET check_taxa_default_unit_id = '018cff37-ece7-77b8-abe5-7cbe86b5dc88' WHERE project_id = '018cfcf7-6424-7000-a100-851c5cc2c878';
 -- placeLevels
 INSERT INTO place_levels(account_id, level, name_plural_en, name_short_en, name_singular_en, name_plural_de, name_short_de, name_singular_de, name_plural_fr, name_short_fr, name_singular_fr, name_plural_it, name_short_it, name_singular_it, place_level_id, project_id, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, observations) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', 1, 'Populations', 'Pop', 'Population', 'Populationen', 'Pop', 'Population', 'Populations', 'Pop', 'Population', 'Popolazioni', 'Pop', 'Popolazione', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', true, true, true, true, true, true, true, true, true),('018cf958-27e2-7000-90d3-59f024d467be', 2, 'Subpopulations', 'SPop', 'Subpopulation', 'Teil-Populationen', 'SPop', 'Teil-Population', 'Subpopulations', 'SPop', 'Subpopulation', 'Sottopopolazioni', 'SPop', 'Sottopopolazione', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', true, true, true, true, true, true, true, true, true);
+-- lists
+-- seed a list for Abundanzklasse units
+INSERT INTO lists(list_id, account_id, project_id, name, value_type) values
+('018cff3b-a100-7000-b000-000000000001', '018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Abundanzklasse', 'integer');
+INSERT INTO list_values(list_value_id, account_id, list_id, value_integer) values
+('018cff3b-a200-7000-b000-000000000001', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 1),
+('018cff3b-a200-7000-b000-000000000002', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 2),
+('018cff3b-a200-7000-b000-000000000003', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 3),
+('018cff3b-a200-7000-b000-000000000004', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 4),
+('018cff3b-a200-7000-b000-000000000005', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 5);
+UPDATE units SET list_id = '018cff3b-a100-7000-b000-000000000001' WHERE unit_id = '018cff39-fcdd-7046-aa4f-49532086eb69';

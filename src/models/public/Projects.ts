@@ -62,7 +62,7 @@ export default interface Projects {
   goal_reports_order_by: string | null;
 
   /** Default unit for check values. Can be overwritten in checks */
-  checks_default_unit_id: string | null;
+  checks_default_unit_id: UnitsUnitId | null;
 
   /** Default unit for check taxa values. Can be overwritten in check_taxa */
   check_taxa_default_unit_id: UnitsUnitId | null;
@@ -158,7 +158,7 @@ export interface ProjectsInitializer {
   goal_reports_order_by?: string | null;
 
   /** Default unit for check values. Can be overwritten in checks */
-  checks_default_unit_id?: string | null;
+  checks_default_unit_id?: UnitsUnitId | null;
 
   /** Default unit for check taxa values. Can be overwritten in check_taxa */
   check_taxa_default_unit_id?: UnitsUnitId | null;
@@ -262,7 +262,7 @@ export interface ProjectsMutator {
   goal_reports_order_by?: string | null;
 
   /** Default unit for check values. Can be overwritten in checks */
-  checks_default_unit_id?: string | null;
+  checks_default_unit_id?: UnitsUnitId | null;
 
   /** Default unit for check taxa values. Can be overwritten in check_taxa */
   check_taxa_default_unit_id?: UnitsUnitId | null;
