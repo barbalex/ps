@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useRef } from 'react'
+import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Tooltip } = fluentUiReactComponents
 import { FaFileImport } from 'react-icons/fa'
 import { useIntl } from 'react-intl'
+
+import { ImportDialog } from './listValues/ImportDialog.tsx'
 
 import { createListValue } from '../modules/createRows.ts'
 import { useListValuesNavData } from '../modules/useListValuesNavData.ts'
@@ -18,7 +20,7 @@ export const ListValues = () => {
   const { projectId, listId } = useParams({ from })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
-  const importInputRef = useRef<HTMLInputElement>(null)
+  const [importDialogOpen, setImportDialogOpen] = useState(false)
 
   const { loading, navData } = useListValuesNavData({ projectId, listId })
   const { navs, label, nameSingular } = navData
@@ -32,15 +34,10 @@ export const ListValues = () => {
     })
   }
 
-  const onClickImport = () => {
-    importInputRef.current.click()
-    importInputRef.current.value = null
-  }
+  const onClickImport = () => setImportDialogOpen(true)
 
-  const onImportFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    // TODO: process file in step 2
+  const onImportFileSelected = (file: File) => {
+    // TODO: process file in step 3
     console.log('Import file selected:', file.name)
   }
 
@@ -58,12 +55,11 @@ export const ListValues = () => {
 
   return (
     <div className="list-view">
-      <input
-        type="file"
-        accept=".csv,.xlsx,.xls,.ods,.tsv"
-        ref={importInputRef}
-        style={{ display: 'none' }}
-        onChange={onImportFileSelected}
+      <ImportDialog
+        open={importDialogOpen}
+        listId={listId}
+        onClose={() => setImportDialogOpen(false)}
+        onFileSelected={onImportFileSelected}
       />
       <ListHeader
         label={label}

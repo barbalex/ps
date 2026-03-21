@@ -1,0 +1,26 @@
+.description {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.dropZone {
+  margin-top: 16px;
+  border: 2px dashed #aaa;
+  border-radius: 6px;
+  padding: 32px 16px;
+  text-align: center;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.dropZone:hover {
+  background-color: rgba(0, 120, 212, 0.06);
+  border-color: #0078d4;
+}
+
+.dragging {
+  background-color: rgba(103, 216, 101, 0.15);
+  border-color: #4caf50;
+}
