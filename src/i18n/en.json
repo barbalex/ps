@@ -422,6 +422,8 @@
   "lVImportFormats": "Supported formats: .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Drop a file here or click to select",
   "tImport": "Import taxa from file",
+  "tDeleteAll": "Remove all taxa",
+  "tDeleteAllConfirm": "Remove all taxa?",
   "lVDeleteAll": "Remove all values",
   "lVDeleteAllConfirm": "Remove all values?",
   "lWQzTz": "Add Field",

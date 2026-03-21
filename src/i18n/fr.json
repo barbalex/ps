@@ -419,6 +419,8 @@
   "lVImportFormats": "Formats pris en charge : .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Déposez un fichier ici ou cliquez pour sélectionner",
   "tImport": "Importer des taxons depuis un fichier",
+  "tDeleteAll": "Supprimer tous les taxons",
+  "tDeleteAllConfirm": "Supprimer tous les taxons ?",
   "lVDeleteAll": "Supprimer toutes les valeurs",
   "lVDeleteAllConfirm": "Supprimer toutes les valeurs ?",
   "lWQzTz": "Ajouter un champ",

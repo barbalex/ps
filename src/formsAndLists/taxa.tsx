@@ -6,6 +6,7 @@ import { FaFileImport } from 'react-icons/fa'
 import { useIntl } from 'react-intl'
 
 import { createTaxon } from '../modules/createRows.ts'
+import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
 import { useTaxaNavData } from '../modules/useTaxaNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -35,6 +36,16 @@ export const Taxa = () => {
     })
   }
 
+  const deleteAllTaxa = async () => {
+    const db = store.get(pgliteDbAtom)
+    await db.query(`DELETE FROM taxa WHERE taxonomy_id = $1`, [taxonomyId])
+    store.set(addOperationAtom, {
+      table: 'taxa',
+      operation: 'delete',
+      filter: { function: 'eq', column: 'taxonomy_id', value: taxonomyId },
+    })
+  }
+
   const importButton = (
     <Tooltip
       content={formatMessage({
@@ -57,6 +68,10 @@ export const Taxa = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
+        deleteRow={deleteAllTaxa}
+        deleteRowDisabled={!loading && navs.length === 0}
+        deleteLabel={formatMessage({ id: 'tDeleteAll', defaultMessage: 'Alle Taxa entfernen' })}
+        deleteConfirmLabel={formatMessage({ id: 'tDeleteAllConfirm', defaultMessage: 'Alle Taxa entfernen?' })}
         menus={[importButton]}
       />
       <div className="list-container">
