@@ -68,7 +68,7 @@ export default interface PlaceLevels {
   actions: boolean | null;
 
   /** Are action values used? Preset: true */
-  action_values: boolean | null;
+  action_quantities: boolean | null;
 
   /** Are action reports used? Preset: true */
   action_reports: boolean | null;
@@ -77,7 +77,7 @@ export default interface PlaceLevels {
   checks: boolean | null;
 
   /** Are check values used? Preset: true */
-  check_values: boolean | null;
+  check_quantities: boolean | null;
 
   /** Are check taxa used? Preset: true */
   check_taxa: boolean | null;
@@ -180,7 +180,7 @@ export interface PlaceLevelsInitializer {
    * Are action values used? Preset: true
    * Default value: true
    */
-  action_values?: boolean | null;
+  action_quantities?: boolean | null;
 
   /**
    * Are action reports used? Preset: true
@@ -198,7 +198,7 @@ export interface PlaceLevelsInitializer {
    * Are check values used? Preset: true
    * Default value: true
    */
-  check_values?: boolean | null;
+  check_quantities?: boolean | null;
 
   /**
    * Are check taxa used? Preset: true
@@ -300,7 +300,7 @@ export interface PlaceLevelsMutator {
   actions?: boolean | null;
 
   /** Are action values used? Preset: true */
-  action_values?: boolean | null;
+  action_quantities?: boolean | null;
 
   /** Are action reports used? Preset: true */
   action_reports?: boolean | null;
@@ -309,7 +309,7 @@ export interface PlaceLevelsMutator {
   checks?: boolean | null;
 
   /** Are check values used? Preset: true */
-  check_values?: boolean | null;
+  check_quantities?: boolean | null;
 
   /** Are check taxa used? Preset: true */
   check_taxa?: boolean | null;

@@ -5,7 +5,7 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
-import { ActionValuesNode } from './ActionsValues.tsx'
+import { ActionQuantitiesNode } from './ActionQuantities.tsx'
 import { ActionReportsNode } from './ActionsReports.tsx'
 import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -26,7 +26,7 @@ export const ActionNode = ({
   const navigate = useNavigate()
 
   const res = useLiveQuery(
-    `SELECT action_files, action_values, action_reports
+    `SELECT action_files, action_quantities, action_reports
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
@@ -94,8 +94,8 @@ export const ActionNode = ({
             childrenCount={0}
             to={`${ownUrl}/action`}
           />
-          {row?.action_values !== false && (
-            <ActionValuesNode
+          {row?.action_quantities !== false && (
+            <ActionQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}

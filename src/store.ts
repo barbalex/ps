@@ -341,8 +341,8 @@ export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // filter_place_users_1
 // filter_place_charts_1
 // filter_place_chart_subjects_1
-// filter_check_values_1
-// filter_check_values_2
+// filter_check_quantities_1
+// filter_check_quantities_2
 // filter_place_check_taxa_2
 // filter_place_users_2
 // filter_place_charts_2

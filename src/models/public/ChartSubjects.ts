@@ -39,7 +39,7 @@ export default interface ChartSubjects {
   /** Field to be used for calc_method */
   field: string | null;
 
-  /** Needed for action_values, check_values */
+  /** Needed for action_quantities, check_quantities */
   value_unit: UnitsUnitId | null;
 
   name: string | null;
@@ -98,7 +98,7 @@ export interface ChartSubjectsInitializer {
   /** Field to be used for calc_method */
   field?: string | null;
 
-  /** Needed for action_values, check_values */
+  /** Needed for action_quantities, check_quantities */
   value_unit?: UnitsUnitId | null;
 
   name?: string | null;
@@ -158,7 +158,7 @@ export interface ChartSubjectsMutator {
   /** Field to be used for calc_method */
   field?: string | null;
 
-  /** Needed for action_values, check_values */
+  /** Needed for action_quantities, check_quantities */
   value_unit?: UnitsUnitId | null;
 
   name?: string | null;

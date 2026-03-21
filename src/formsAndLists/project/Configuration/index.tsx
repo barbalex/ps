@@ -403,15 +403,15 @@ export const Configuration = ({ from }) => {
               defaultMessage:
                 '...mehrere Massnahmen-Mengen auf gleicher Ort-Stufe',
             })}
-            name="multiple_action_values_on_same_level"
+            name="multiple_action_quantities_on_same_level"
             list={['first', 'last', 'all']}
-            value={row.multiple_action_values_on_same_level ?? ''}
+            value={row.multiple_action_quantities_on_same_level ?? ''}
             onChange={onChange}
             validationState={
-              validations.multiple_action_values_on_same_level?.state
+              validations.multiple_action_quantities_on_same_level?.state
             }
             validationMessage={
-              validations.multiple_action_values_on_same_level?.message
+              validations.multiple_action_quantities_on_same_level?.message
             }
           />
           <RadioGroupField
@@ -420,15 +420,15 @@ export const Configuration = ({ from }) => {
               defaultMessage:
                 '...mehrere Kontroll-Mengen auf gleicher Ort-Stufe',
             })}
-            name="multiple_check_values_on_same_level"
+            name="multiple_check_quantities_on_same_level"
             list={['first', 'last', 'all']}
-            value={row.multiple_check_values_on_same_level ?? ''}
+            value={row.multiple_check_quantities_on_same_level ?? ''}
             onChange={onChange}
             validationState={
-              validations.multiple_check_values_on_same_level?.state
+              validations.multiple_check_quantities_on_same_level?.state
             }
             validationMessage={
-              validations.multiple_check_values_on_same_level?.message
+              validations.multiple_check_quantities_on_same_level?.message
             }
           />
           <Divider />

@@ -6,9 +6,9 @@ enum ChartSubjectTableNamesEnum {
   subprojects = 'subprojects',
   places = 'places',
   checks = 'checks',
-  check_values = 'check_values',
+  check_quantities = 'check_quantities',
   actions = 'actions',
-  action_values = 'action_values',
+  action_quantities = 'action_quantities',
 };
 
 export default ChartSubjectTableNamesEnum;

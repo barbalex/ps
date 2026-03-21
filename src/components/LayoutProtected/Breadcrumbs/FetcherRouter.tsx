@@ -34,14 +34,14 @@ import { PlaceHistoryFetcher } from './PlaceHistoryFetcher.tsx'
 
 import { ChecksFetcher } from './ChecksFetcher.tsx'
 import { CheckFetcher } from './CheckFetcher.tsx'
-import { CheckValuesFetcher } from './CheckValuesFetcher.tsx'
-import { CheckValueFetcher } from './CheckValueFetcher.tsx'
+import { CheckQuantitiesFetcher } from './CheckQuantitiesFetcher.tsx'
+import { CheckQuantityFetcher } from './CheckQuantityFetcher.tsx'
 import { CheckTaxaFetcher } from './CheckTaxaFetcher.tsx'
 import { CheckTaxonFetcher } from './CheckTaxonFetcher.tsx'
 import { ActionsFetcher } from './ActionsFetcher.tsx'
 import { ActionFetcher } from './ActionFetcher.tsx'
-import { ActionValuesFetcher } from './ActionValuesFetcher.tsx'
-import { ActionValueFetcher } from './ActionValueFetcher.tsx'
+import { ActionQuantitiesFetcher } from './ActionQuantitiesFetcher.tsx'
+import { ActionQuantityFetcher } from './ActionQuantityFetcher.tsx'
 import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
 import { ActionReportFetcher } from './ActionReportFetcher.tsx'
 import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
@@ -173,7 +173,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         return null
       return <CheckFetcher params={params} {...other} />
     }
-    case 'useCheckValuesNavData': {
+    case 'useCheckQuantitiesNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
@@ -181,9 +181,9 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         !params.checkId
       )
         return null
-      return <CheckValuesFetcher params={params} {...other} />
+      return <CheckQuantitiesFetcher params={params} {...other} />
     }
-    case 'useCheckValueNavData': {
+    case 'useCheckQuantityNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
@@ -192,7 +192,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         !params.checkValueId
       )
         return null
-      return <CheckValueFetcher params={params} {...other} />
+      return <CheckQuantityFetcher params={params} {...other} />
     }
     case 'useCheckTaxaNavData': {
       if (
@@ -230,7 +230,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         return null
       return <ActionFetcher params={params} {...other} />
     }
-    case 'useActionValuesNavData': {
+    case 'useActionQuantitiesNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
@@ -238,9 +238,9 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         !params.actionId
       )
         return null
-      return <ActionValuesFetcher params={params} {...other} />
+      return <ActionQuantitiesFetcher params={params} {...other} />
     }
-    case 'useActionValueNavData': {
+    case 'useActionQuantityNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
@@ -249,7 +249,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         !params.actionValueId
       )
         return null
-      return <ActionValueFetcher params={params} {...other} />
+      return <ActionQuantityFetcher params={params} {...other} />
     }
     case 'useActionReportsNavData': {
       if (

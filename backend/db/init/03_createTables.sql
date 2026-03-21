@@ -149,8 +149,8 @@ CREATE TABLE IF NOT EXISTS projects(
   checks_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   check_taxa_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   values_on_multiple_levels text DEFAULT NULL,
-  multiple_action_values_on_same_level text DEFAULT NULL,
-  multiple_check_values_on_same_level text DEFAULT NULL,
+  multiple_action_quantities_on_same_level text DEFAULT NULL,
+  multiple_check_quantities_on_same_level text DEFAULT NULL,
   users_can_edit_map_layers boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT FALSE,
@@ -179,8 +179,8 @@ COMMENT ON COLUMN projects.actions_default_unit_id IS 'Default unit for action v
 COMMENT ON COLUMN projects.checks_default_unit_id IS 'Default unit for check values. Can be overwritten in checks';
 COMMENT ON COLUMN projects.check_taxa_default_unit_id IS 'Default unit for check taxa values. Can be overwritten in check_taxa';
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
-COMMENT ON COLUMN projects.multiple_action_values_on_same_level IS 'One of: "use all", "use last". Preset: "use all"';
-COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
+COMMENT ON COLUMN projects.multiple_action_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use all"';
+COMMENT ON COLUMN projects.multiple_check_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
 COMMENT ON COLUMN projects.users_can_edit_map_layers IS 'Enables users to add own and edit existing wms and wfs layers. Preset: false. This makes the ui more complex, so only set to true if needed.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
@@ -214,10 +214,10 @@ CREATE TABLE IF NOT EXISTS place_levels(
   reports boolean DEFAULT TRUE,
   report_values boolean DEFAULT TRUE,
   actions boolean DEFAULT TRUE,
-  action_values boolean DEFAULT TRUE,
+  action_quantities boolean DEFAULT TRUE,
   action_reports boolean DEFAULT TRUE,
   checks boolean DEFAULT TRUE,
-  check_values boolean DEFAULT TRUE,
+  check_quantities boolean DEFAULT TRUE,
   check_taxa boolean DEFAULT TRUE,
   observations boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
@@ -260,10 +260,10 @@ COMMENT ON COLUMN place_levels.name_short_it IS 'Italian short name. Preset: "Po
 COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: true';
 COMMENT ON COLUMN place_levels.report_values IS 'Are report values used? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
-COMMENT ON COLUMN place_levels.action_values IS 'Are action values used? Preset: true';
+COMMENT ON COLUMN place_levels.action_quantities IS 'Are action values used? Preset: true';
 COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: true';
 COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
-COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: true';
+COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
 COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
@@ -691,35 +691,35 @@ COMMENT ON COLUMN actions.bbox IS 'bbox of the geometry. Set client-side on ever
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
 
 --------------------------------------------------------------
--- action_values
+-- action_quantities
 --
-CREATE TABLE IF NOT EXISTS action_values(
-  action_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS action_quantities(
+  action_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  value_integer integer DEFAULT NULL,
-  value_numeric double precision DEFAULT NULL,
-  value_text text DEFAULT NULL,
+  quantity_integer integer DEFAULT NULL,
+  quantity_numeric double precision DEFAULT NULL,
+  quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS action_values_account_id_idx ON action_values USING btree(account_id);
-CREATE INDEX IF NOT EXISTS action_values_action_id_idx ON action_values USING btree(action_id);
-CREATE INDEX IF NOT EXISTS action_values_unit_id_idx ON action_values USING btree(unit_id);
-CREATE INDEX IF NOT EXISTS action_values_value_integer_idx ON action_values USING btree(value_integer);
-CREATE INDEX IF NOT EXISTS action_values_value_numeric_idx ON action_values USING btree(value_numeric);
-CREATE INDEX IF NOT EXISTS action_values_value_text_idx ON action_values USING btree(value_text);
-CREATE INDEX IF NOT EXISTS action_values_label_idx ON action_values USING btree(label);
+CREATE INDEX IF NOT EXISTS action_quantities_account_id_idx ON action_quantities USING btree(account_id);
+CREATE INDEX IF NOT EXISTS action_quantities_action_id_idx ON action_quantities USING btree(action_id);
+CREATE INDEX IF NOT EXISTS action_quantities_unit_id_idx ON action_quantities USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS action_quantities_quantity_integer_idx ON action_quantities USING btree(quantity_integer);
+CREATE INDEX IF NOT EXISTS action_quantities_quantity_numeric_idx ON action_quantities USING btree(quantity_numeric);
+CREATE INDEX IF NOT EXISTS action_quantities_quantity_text_idx ON action_quantities USING btree(quantity_text);
+CREATE INDEX IF NOT EXISTS action_quantities_label_idx ON action_quantities USING btree(label);
 
-COMMENT ON TABLE action_values IS 'value-ing actions. Measuring or assessing';
-COMMENT ON COLUMN action_values.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN action_values.value_integer IS 'Used for integer values';
-COMMENT ON COLUMN action_values.value_numeric IS 'Used for numeric values';
-COMMENT ON COLUMN action_values.value_text IS 'Used for text values';
+COMMENT ON TABLE action_quantities IS 'Quantities of actions. Measuring or assessing';
+COMMENT ON COLUMN action_quantities.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN action_quantities.quantity_integer IS 'Used for integer quantities';
+COMMENT ON COLUMN action_quantities.quantity_numeric IS 'Used for numeric quantities';
+COMMENT ON COLUMN action_quantities.quantity_text IS 'Used for text quantities';
 
 --------------------------------------------------------------
 -- action_reports
@@ -777,36 +777,36 @@ COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fiel
 COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
 --------------------------------------------------------------
--- check_values
+-- check_quantities
 --
-CREATE TABLE IF NOT EXISTS check_values(
-  check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS check_quantities(
+  check_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   -- with this reference to "on update cascade", when setting unit_id, live_query re-execution fails with memory error
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
-  value_integer integer DEFAULT NULL,
-  value_numeric double precision DEFAULT NULL,
-  value_text text DEFAULT NULL,
+  quantity_integer integer DEFAULT NULL,
+  quantity_numeric double precision DEFAULT NULL,
+  quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS check_values_account_id_idx ON check_values USING btree(account_id);
-CREATE INDEX IF NOT EXISTS check_values_check_id_idx ON check_values USING btree(check_id);
-CREATE INDEX IF NOT EXISTS check_values_unit_id_idx ON check_values USING btree(unit_id);
-CREATE INDEX IF NOT EXISTS check_values_value_integer_idx ON check_values USING btree(value_integer);
-CREATE INDEX IF NOT EXISTS check_values_value_numeric_idx ON check_values USING btree(value_numeric);
-CREATE INDEX IF NOT EXISTS check_values_value_text_idx ON check_values USING btree(value_text);
-CREATE INDEX IF NOT EXISTS check_values_label_idx ON check_values USING btree(label);
+CREATE INDEX IF NOT EXISTS check_quantities_account_id_idx ON check_quantities USING btree(account_id);
+CREATE INDEX IF NOT EXISTS check_quantities_check_id_idx ON check_quantities USING btree(check_id);
+CREATE INDEX IF NOT EXISTS check_quantities_unit_id_idx ON check_quantities USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS check_quantities_quantity_integer_idx ON check_quantities USING btree(quantity_integer);
+CREATE INDEX IF NOT EXISTS check_quantities_quantity_numeric_idx ON check_quantities USING btree(quantity_numeric);
+CREATE INDEX IF NOT EXISTS check_quantities_quantity_text_idx ON check_quantities USING btree(quantity_text);
+CREATE INDEX IF NOT EXISTS check_quantities_label_idx ON check_quantities USING btree(label);
 
-COMMENT ON TABLE check_values IS 'value-ing checks i.e. the situation of the subproject in this place';
-COMMENT ON COLUMN check_values.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN check_values.value_integer IS 'Used for integer values';
-COMMENT ON COLUMN check_values.value_numeric IS 'Used for numeric values';
-COMMENT ON COLUMN check_values.value_text IS 'Used for text values';
+COMMENT ON TABLE check_quantities IS 'Quantities of checks i.e. the situation of the subproject in this place';
+COMMENT ON COLUMN check_quantities.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN check_quantities.quantity_integer IS 'Used for integer quantities';
+COMMENT ON COLUMN check_quantities.quantity_numeric IS 'Used for numeric quantities';
+COMMENT ON COLUMN check_quantities.quantity_text IS 'Used for text quantities';
 
 --------------------------------------------------------------
 -- check_taxa
@@ -817,6 +817,7 @@ CREATE TABLE IF NOT EXISTS check_taxa(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  -- TODO: rename to quantity_...
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
@@ -1737,7 +1738,7 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 -- chart_subjects
 --
 CREATE TYPE chart_subject_table_names_enum AS ENUM (
-  'subprojects', 'places', 'checks', 'check_values', 'actions', 'action_values'
+  'subprojects', 'places', 'checks', 'check_quantities', 'actions', 'action_quantities'
 );
 
 CREATE TYPE chart_subject_table_levels_enum AS ENUM ('1', '2');
@@ -1757,7 +1758,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
   calc_method chart_subject_calc_methods_enum DEFAULT NULL, --how to source the value
   field text DEFAULT NULL, -- field to be used for calc_method
-  value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- needed for action_values, check_values
+  value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- needed for action_quantities, check_quantities
   name text DEFAULT NULL,
   label text DEFAULT NULL,
   type chart_subject_types_enum DEFAULT NULL, -- not used
@@ -1787,7 +1788,7 @@ COMMENT ON COLUMN chart_subjects.table_level IS 'The level of the table to be us
 COMMENT ON COLUMN chart_subjects.table_filter IS 'A filter that is applied to the table';
 COMMENT ON COLUMN chart_subjects.calc_method IS 'How to source the value';
 COMMENT ON COLUMN chart_subjects.field IS 'Field to be used for calc_method';
-COMMENT ON COLUMN chart_subjects.value_unit IS 'Needed for action_values, check_values';
+COMMENT ON COLUMN chart_subjects.value_unit IS 'Needed for action_quantities, check_quantities';
 COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 

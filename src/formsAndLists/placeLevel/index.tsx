@@ -318,11 +318,11 @@ export const PlaceLevel = () => {
               id: 'qI8NhD',
               defaultMessage: 'Massnahmen-Mengen',
             })}
-            name="action_values"
-            value={row.action_values ?? false}
+            name="action_quantities"
+            value={row.action_quantities ?? false}
             onChange={onChange}
-            validationState={validations?.action_values?.state}
-            validationMessage={validations?.action_values?.message}
+            validationState={validations?.action_quantities?.state}
+            validationMessage={validations?.action_quantities?.message}
           />
           <SwitchField
             label={formatMessage({
@@ -351,11 +351,11 @@ export const PlaceLevel = () => {
               id: 'tL1QkG',
               defaultMessage: 'Kontroll-Mengen',
             })}
-            name="check_values"
-            value={row.check_values ?? false}
+            name="check_quantities"
+            value={row.check_quantities ?? false}
             onChange={onChange}
-            validationState={validations?.check_values?.state}
-            validationMessage={validations?.check_values?.message}
+            validationState={validations?.check_quantities?.state}
+            validationMessage={validations?.check_quantities?.message}
           />
           <SwitchField
             label={formatMessage({

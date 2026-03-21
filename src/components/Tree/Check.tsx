@@ -4,7 +4,7 @@ import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'
-import { CheckValuesNode } from './CheckValues.tsx'
+import { CheckQuantitiesNode } from './CheckQuantities.tsx'
 import { CheckTaxaNode } from './CheckTaxa.tsx'
 import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -28,7 +28,7 @@ export const CheckNode = ({
 
   // need project to know whether to show files
   const res = useLiveQuery(
-    `SELECT check_files, check_values, check_taxa
+    `SELECT check_files, check_quantities, check_taxa
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
@@ -99,8 +99,8 @@ export const CheckNode = ({
             childrenCount={0}
             to={`${ownUrl}/check`}
           />
-          {placeLevel?.check_values !== false && (
-            <CheckValuesNode
+          {placeLevel?.check_quantities !== false && (
+            <CheckQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}

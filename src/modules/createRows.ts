@@ -37,8 +37,8 @@ export const createProject = async () => {
     type: 'species',
     ...projectTypeNames['species'],
     values_on_multiple_levels: 'first',
-    multiple_action_values_on_same_level: 'all',
-    multiple_check_values_on_same_level: 'last',
+    multiple_action_quantities_on_same_level: 'all',
+    multiple_check_quantities_on_same_level: 'last',
     files_active_projects: true,
     files_active_subprojects: true,
 
@@ -534,7 +534,7 @@ export const createPlaceLevel = async ({ project_id }) => {
   const db = store.get(pgliteDbAtom)
   const place_level_id = uuidv7()
   await db.query(
-    `insert into place_levels (place_level_id, project_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, observations, place_files, action_files, check_files) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+    `insert into place_levels (place_level_id, project_id, level, reports, report_values, actions, action_quantities, action_reports, checks, check_quantities, check_taxa, observations, place_files, action_files, check_files) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
     [
       place_level_id,
       project_id,
@@ -564,10 +564,10 @@ export const createPlaceLevel = async ({ project_id }) => {
       reports: true,
       report_values: true,
       actions: true,
-      action_values: true,
+      action_quantities: true,
       action_reports: true,
       checks: true,
-      check_values: true,
+      check_quantities: true,
       check_taxa: true,
       observations: true,
       place_files: true,
@@ -899,7 +899,7 @@ export const createCheck = async ({ projectId, placeId }) => {
   return check_id
 }
 
-export const createCheckValue = async ({ checkId }) => {
+export const createCheckQuantity = async ({ checkId }) => {
   const db = store.get(pgliteDbAtom)
 
   // inherit the project's default unit if set
@@ -915,26 +915,26 @@ export const createCheckValue = async ({ checkId }) => {
   )
   const defaultUnitId = projectRes.rows?.[0]?.checks_default_unit_id ?? null
 
-  const check_value_id = uuidv7()
+  const check_quantity_id = uuidv7()
   const draft = {
-    check_value_id,
+    check_quantity_id,
     check_id: checkId,
     ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')
   const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
   await db.query(
-    `INSERT INTO check_values (${cols}) VALUES (${vals})`,
+    `INSERT INTO check_quantities (${cols}) VALUES (${vals})`,
     Object.values(draft),
   )
 
   store.set(addOperationAtom, {
-    table: 'check_values',
+    table: 'check_quantities',
     operation: 'insert',
     draft,
   })
 
-  return check_value_id
+  return check_quantity_id
 }
 
 export const createCheckTaxon = async ({ checkId }) => {
@@ -1008,7 +1008,7 @@ export const createAction = async ({ projectId, placeId }) => {
   return action_id
 }
 
-export const createActionValue = async ({ actionId, projectId }) => {
+export const createActionQuantity = async ({ actionId, projectId }) => {
   const db = store.get(pgliteDbAtom)
 
   // inherit the project's default unit if set
@@ -1021,26 +1021,26 @@ export const createActionValue = async ({ actionId, projectId }) => {
     defaultUnitId = projectRes.rows?.[0]?.actions_default_unit_id ?? null
   }
 
-  const action_value_id = uuidv7()
+  const action_quantity_id = uuidv7()
   const draft = {
-    action_value_id,
+    action_quantity_id,
     action_id: actionId,
     ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')
   const vals = Object.keys(draft).map((_, i) => `$${i + 1}`).join(', ')
   await db.query(
-    `INSERT INTO action_values (${cols}) VALUES (${vals})`,
+    `INSERT INTO action_quantities (${cols}) VALUES (${vals})`,
     Object.values(draft),
   )
 
   store.set(addOperationAtom, {
-    table: 'action_values',
+    table: 'action_quantities',
     operation: 'insert',
     draft,
   })
 
-  return action_value_id
+  return action_quantity_id
 }
 
 export const createActionReport = async ({ projectId, actionId }) => {

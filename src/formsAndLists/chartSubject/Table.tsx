@@ -78,14 +78,14 @@ export const Table = ({ onChange, row, ref, validations }) => {
     { id: 'subprojects', table_name: 'subprojects', table_level: null },
     { id: 'places_1', table_name: 'places', table_level: '1' },
     { id: 'checks_1', table_name: 'checks', table_level: '1' },
-    { id: 'check_values_1', table_name: 'check_values', table_level: '1' },
+    { id: 'check_quantities_1', table_name: 'check_quantities', table_level: '1' },
     { id: 'actions_1', table_name: 'actions', table_level: '1' },
-    { id: 'action_values_1', table_name: 'action_values', table_level: '1' },
+    { id: 'action_quantities_1', table_name: 'action_quantities', table_level: '1' },
     { id: 'places_2', table_name: 'places', table_level: '2' },
     { id: 'checks_2', table_name: 'checks', table_level: '2' },
-    { id: 'check_values_2', table_name: 'check_values', table_level: '2' },
+    { id: 'check_quantities_2', table_name: 'check_quantities', table_level: '2' },
     { id: 'actions_2', table_name: 'actions', table_level: '2' },
-    { id: 'action_values_2', table_name: 'action_values', table_level: '2' },
+    { id: 'action_quantities_2', table_name: 'action_quantities', table_level: '2' },
   ]
 
   const labelMap: Record<string, string> = {
@@ -95,7 +95,7 @@ export const Table = ({ onChange, row, ref, validations }) => {
       { id: 'bEgGlL', defaultMessage: '{place}-Kontrollen' },
       { place: singular1 },
     ),
-    check_values_1: formatMessage(
+    check_quantities_1: formatMessage(
       { id: 'bEhHmM', defaultMessage: '{place}-Kontroll-Mengen' },
       { place: singular1 },
     ),
@@ -103,7 +103,7 @@ export const Table = ({ onChange, row, ref, validations }) => {
       { id: 'bEiInN', defaultMessage: '{place}-Massnahmen' },
       { place: singular1 },
     ),
-    action_values_1: formatMessage(
+    action_quantities_1: formatMessage(
       { id: 'bEjJoO', defaultMessage: '{place}-Massnahmen-Mengen' },
       { place: singular1 },
     ),
@@ -112,7 +112,7 @@ export const Table = ({ onChange, row, ref, validations }) => {
       { id: 'bEgGlL', defaultMessage: '{place}-Kontrollen' },
       { place: singular2 },
     ),
-    check_values_2: formatMessage(
+    check_quantities_2: formatMessage(
       { id: 'bEhHmM', defaultMessage: '{place}-Kontroll-Mengen' },
       { place: singular2 },
     ),
@@ -120,7 +120,7 @@ export const Table = ({ onChange, row, ref, validations }) => {
       { id: 'bEiInN', defaultMessage: '{place}-Massnahmen' },
       { place: singular2 },
     ),
-    action_values_2: formatMessage(
+    action_quantities_2: formatMessage(
       { id: 'bEjJoO', defaultMessage: '{place}-Massnahmen-Mengen' },
       { place: singular2 },
     ),

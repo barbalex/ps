@@ -17,7 +17,7 @@ type Props = {
 type NavData = {
   id: string
   label: string
-  check_values_count: number
+  check_quantities_count: number
   check_taxa_count: number
   files_count: number
 }
@@ -34,18 +34,18 @@ export const useCheckNavData = ({
 
   const sql = `
       WITH
-        check_values_count AS (SELECT count(*) FROM check_values WHERE check_id = '${checkId}'),
+        check_quantities_count AS (SELECT count(*) FROM check_quantities WHERE check_id = '${checkId}'),
         check_taxa_count AS (SELECT count(*) FROM check_taxa WHERE check_id = '${checkId}'),
         files_count AS (SELECT count(*) FROM files WHERE check_id = '${checkId}')
       SELECT
         check_id AS id,
         label,
-        check_values_count.count AS check_values_count,
+        check_quantities_count.count AS check_quantities_count,
         check_taxa_count.count AS check_taxa_count,
         files_count.count AS files_count
       FROM 
         checks,
-        check_values_count,
+        check_quantities_count,
         check_taxa_count,
         files_count
       WHERE 
@@ -55,7 +55,7 @@ export const useCheckNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_values, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -100,13 +100,13 @@ export const useCheckNavData = ({
         id: 'check',
         label: formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' }),
       },
-      ...(placeLevel?.check_values !== false
+      ...(placeLevel?.check_quantities !== false
         ? [
             {
-              id: 'values',
+              id: 'quantities',
               label: buildNavLabel({
                 loading,
-                countFiltered: nav?.check_values_count ?? 0,
+                countFiltered: nav?.check_quantities_count ?? 0,
                 namePlural: formatMessage({
                   id: 'Xuj/Gy',
                   defaultMessage: 'Mengen',

@@ -165,8 +165,8 @@ AFTER UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_email_update_trigger();
 
--- action_values
-CREATE OR REPLACE FUNCTION action_values_label_trigger()
+-- action_quantities
+CREATE OR REPLACE FUNCTION action_quantities_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -185,22 +185,22 @@ BEGIN
     SELECT units.name INTO unit_name from units where units.unit_id = NEW.unit_id;
   end if;
 
-  UPDATE action_values
+  UPDATE action_quantities
     SET label = (
       CASE 
-        WHEN unit_name is null then NEW.action_value_id::text
-        ELSE unit_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+        WHEN unit_name is null then NEW.action_quantity_id::text
+        ELSE unit_name || ': ' || coalesce(NEW.quantity_integer::text, NEW.quantity_numeric::text, NEW.quantity_text, '(no value)')
       END
     )
-  WHERE action_values.action_value_id = NEW.action_value_id;
+  WHERE action_quantities.action_quantity_id = NEW.action_quantity_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER action_values_label_trigger
-AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON action_values
+CREATE OR REPLACE TRIGGER action_quantities_label_trigger
+AFTER INSERT OR UPDATE OF unit_id, quantity_integer, quantity_numeric, quantity_text ON action_quantities
 FOR EACH ROW
-EXECUTE PROCEDURE action_values_label_trigger();
+EXECUTE PROCEDURE action_quantities_label_trigger();
 
 -- check_taxa
 CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
@@ -251,8 +251,8 @@ AFTER UPDATE OF taxon_id OR INSERT ON check_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
 
--- check_values
-CREATE OR REPLACE FUNCTION check_values_label_trigger()
+-- check_quantities
+CREATE OR REPLACE FUNCTION check_quantities_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -270,22 +270,22 @@ BEGIN
     SELECT units.name INTO units_name from units where units.unit_id = NEW.unit_id;
   end if;
 
-  UPDATE check_values 
+  UPDATE check_quantities 
     SET label = (
       CASE 
-        WHEN units_name is null then NEW.check_value_id::text
-        ELSE units_name || ': ' || coalesce(NEW.value_integer::text, NEW.value_numeric::text, NEW.value_text, '(no value)')
+        WHEN units_name is null then NEW.check_quantity_id::text
+        ELSE units_name || ': ' || coalesce(NEW.quantity_integer::text, NEW.quantity_numeric::text, NEW.quantity_text, '(no value)')
       END
     )
-  WHERE check_values.check_value_id = NEW.check_value_id;
+  WHERE check_quantities.check_quantity_id = NEW.check_quantity_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER check_values_label_trigger
-AFTER INSERT OR UPDATE OF unit_id, value_integer, value_numeric, value_text ON check_values
+CREATE OR REPLACE TRIGGER check_quantities_label_trigger
+AFTER INSERT OR UPDATE OF unit_id, quantity_integer, quantity_numeric, quantity_text ON check_quantities
 FOR EACH ROW
-EXECUTE PROCEDURE check_values_label_trigger();
+EXECUTE PROCEDURE check_quantities_label_trigger();
 
 -- goal_reports update
 CREATE OR REPLACE FUNCTION goal_reports_label_trigger()

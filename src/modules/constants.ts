@@ -71,7 +71,7 @@ export const chartSubjectTableNameOptions: {
   { value: 'places', labelId: 'bDPTUV', defaultMessage: 'Orte', sort: 2 },
   { value: 'checks', labelId: 'bDQUVW', defaultMessage: 'Kontrollen', sort: 3 },
   {
-    value: 'check_values',
+    value: 'check_quantities',
     labelId: 'bDRVWX',
     defaultMessage: 'Kontroll-Mengen',
     sort: 4,
@@ -83,7 +83,7 @@ export const chartSubjectTableNameOptions: {
     sort: 5,
   },
   {
-    value: 'action_values',
+    value: 'action_quantities',
     labelId: 'bDTXYZ',
     defaultMessage: 'Massnahmen-Mengen',
     sort: 6,

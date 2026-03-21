@@ -12,8 +12,8 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
  * dedicated form component, translated to the app language, so users see
  * familiar names.
  *
- * Tables available: subprojects, places, checks, check_values, actions,
- * action_values (matching chart_subject_table_names seed data).
+ * Tables available: subprojects, places, checks, check_quantities, actions,
+ * action_quantities (matching chart_subject_table_names seed data).
  *
  * Excluded fields per table (never useful as a chart aggregation key):
  *   - the table's primary key (…_id)
@@ -50,20 +50,20 @@ const fieldMessages = {
     id: 'bEpPuU',
     defaultMessage: 'Relevant für Berichte',
   },
-  // check_values / action_values
+  // check_quantities / action_quantities
   unit_id: { id: 'bDkNqO', defaultMessage: 'Einheit' },
-  value_integer: { id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' },
-  value_numeric: { id: 'bErRwW', defaultMessage: 'Wert (numerisch)' },
-  value_text: { id: 'bEsSxX', defaultMessage: 'Wert (Text)' },
+  quantity_integer: { id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' },
+  quantity_numeric: { id: 'bErRwW', defaultMessage: 'Wert (numerisch)' },
+  quantity_text: { id: 'bEsSxX', defaultMessage: 'Wert (Text)' },
 }
 
 const fieldsByTable: Record<string, string[]> = {
   subprojects: ['name', 'start_year'],
   places: ['level', 'parent_id', 'since', 'until'],
   checks: ['date', 'relevant_for_reports'],
-  check_values: ['unit_id', 'value_integer', 'value_numeric', 'value_text'],
+  check_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
   actions: ['date', 'relevant_for_reports'],
-  action_values: ['unit_id', 'value_integer', 'value_numeric', 'value_text'],
+  action_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
 }
 
 export const Field = ({ onChange, row, validations }) => {

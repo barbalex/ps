@@ -24,10 +24,10 @@ const tablesSyncData = [
   //     'reports',
   //     'report_values',
   //     'actions',
-  //     'action_values',
+  //     'action_quantities',
   //     'action_reports',
   //     'checks',
-  //     'check_values',
+  //     'check_quantities',
   //     'check_taxa',
   //     'observations',
   //     'created_at',
@@ -140,7 +140,7 @@ const tablesSyncData = [
   //   ],
   //   primaryKey: ['action_id'],
   // },
-  // { table: 'action_values', primaryKey: ['action_value_id'] },
+  // { table: 'action_quantities', primaryKey: ['action_quantity_id'] },
   // {
   //   table: 'action_reports',
   //   columns: [
@@ -172,7 +172,7 @@ const tablesSyncData = [
   //   ],
   //   primaryKey: ['check_id'],
   // },
-  // { table: 'check_values', primaryKey: ['check_value_id'] },
+  // { table: 'check_quantities', primaryKey: ['check_quantity_id'] },
   // { table: 'check_taxa', primaryKey: ['check_taxon_id'] },
   // {
   //   table: 'place_reports',
