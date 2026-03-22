@@ -424,10 +424,7 @@ export const PlaceLevel = () => {
             validationMessage={validations?.observations?.message}
           />
           <SwitchField
-            label={formatMessage({
-              id: 'aB1CdE',
-              defaultMessage: 'Ort-Dateien',
-            })}
+            label={`${placeName}-Dateien`}
             name="place_files"
             value={row.place_files ?? false}
             onChange={onChange}
