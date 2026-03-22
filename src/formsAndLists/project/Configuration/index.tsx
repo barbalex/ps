@@ -405,6 +405,14 @@ export const Configuration = ({ from }) => {
           </SectionDescription>
           <div className="checkboxfield-list">
             <SwitchField
+              label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`}
+              name="project_reports"
+              value={row.project_reports ?? true}
+              onChange={onChange}
+              validationState={validations?.project_reports?.state}
+              validationMessage={validations?.project_reports?.message}
+            />
+            <SwitchField
               label={formatMessage({
                 id: 'tV2WxY',
                 defaultMessage: 'Projekte: WMS-Dienste und WMS-Ebenen',
@@ -447,6 +455,14 @@ export const Configuration = ({ from }) => {
               onChange={onChange}
               validationState={validations?.files_active_projects?.state}
               validationMessage={validations?.files_active_projects?.message}
+            />
+            <SwitchField
+              label={`${subprojectName}: ${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`}
+              name="subproject_reports"
+              value={row.subproject_reports ?? true}
+              onChange={onChange}
+              validationState={validations?.subproject_reports?.state}
+              validationMessage={validations?.subproject_reports?.message}
             />
             <SwitchField
               label={`${subprojectName}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}

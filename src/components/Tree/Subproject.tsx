@@ -34,6 +34,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
+  const showSubprojectReports = isDesigning || (project?.subproject_reports ?? true)
 
   // TODO: Check if user is account owner for the parent project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
@@ -102,7 +103,9 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             to={`${ownUrl}/subproject`}
           />
           <PlacesNode projectId={projectId} subprojectId={nav.id} level={5} />
-          <SubprojectReportsNode projectId={projectId} subprojectId={nav.id} />
+          {showSubprojectReports && (
+            <SubprojectReportsNode projectId={projectId} subprojectId={nav.id} />
+          )}
           <SubprojectHistoriesNode
             projectId={projectId}
             subprojectId={nav.id}

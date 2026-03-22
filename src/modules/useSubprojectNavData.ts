@@ -10,6 +10,7 @@ import {
   filesFilterAtom,
   treeOpenNodesAtom,
   languageAtom,
+  designingAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
@@ -28,6 +29,7 @@ type NavData = {
   places_count_filtered?: number | null
   places_count_unfiltered?: number | null
   place_name_plural?: string | null
+  subproject_reports?: boolean | null
   subproject_reports_count_filtered?: number | null
   subproject_reports_count_unfiltered?: number | null
   subproject_histories_count?: number | null
@@ -46,6 +48,7 @@ type NavData = {
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
+  const [designing] = useAtom(designingAtom)
   const [placesFilter] = useAtom(places1FilterAtom)
   const [language] = useAtom(languageAtom)
 
@@ -88,6 +91,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         sp.subproject_id AS id,
         sp.label, 
         ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
+        p.subproject_reports AS subproject_reports,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
         place_name_plural.name_plural_${language} AS place_name_plural,
@@ -178,19 +182,23 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             getPlaceFallbackNames(projectType, 1, formatMessage).plural,
         }),
       },
-      {
-        id: 'reports',
-        label: buildNavLabel({
-          loading,
-          isFiltered: subprojectReportsIsFiltered,
-          countFiltered: nav?.subproject_reports_count_filtered ?? 0,
-          countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'CiJ0SG',
-            defaultMessage: 'Berichte',
-          }),
-        }),
-      },
+      ...(designing || (nav?.subproject_reports ?? true)
+        ? [
+            {
+              id: 'reports',
+              label: buildNavLabel({
+                loading,
+                isFiltered: subprojectReportsIsFiltered,
+                countFiltered: nav?.subproject_reports_count_filtered ?? 0,
+                countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'CiJ0SG',
+                  defaultMessage: 'Berichte',
+                }),
+              }),
+            },
+          ]
+        : []),
       {
         id: 'histories',
         label: buildNavLabel({

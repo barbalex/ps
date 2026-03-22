@@ -33,6 +33,8 @@ type NavData = {
   label: string | null
   wms_layers?: boolean | null
   vector_layers?: boolean | null
+  project_reports?: boolean | null
+  subproject_reports?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
@@ -40,6 +42,8 @@ type NavDataNotForBreadcrumb = {
   label: string | null
   wms_layers?: boolean | null
   vector_layers?: boolean | null
+  project_reports?: boolean | null
+  subproject_reports?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -61,6 +65,8 @@ type NavDataNotForBreadcrumbDesigning = {
   label: string | null
   wms_layers?: boolean | null
   vector_layers?: boolean | null
+  project_reports?: boolean | null
+  subproject_reports?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -168,7 +174,9 @@ export const useProjectNavData = ({
         project_id AS id,
         label,
         wms_layers,
-        vector_layers
+        vector_layers,
+        project_reports,
+        subproject_reports
         ${
           !forBreadcrumb
             ? `,
@@ -299,19 +307,23 @@ export const useProjectNavData = ({
                 formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }),
             }),
           },
-          {
-            id: 'reports',
-            label: buildNavLabel({
-              loading,
-              isFiltered: projectReportsIsFiltered,
-              countFiltered: nav?.project_reports_count_filtered ?? 0,
-              countUnfiltered: nav?.project_reports_count_unfiltered ?? 0,
-              namePlural: formatMessage({
-                id: 'CiJ0SG',
-                defaultMessage: 'Berichte',
-              }),
-            }),
-          },
+          ...(designing || (nav?.project_reports ?? true)
+            ? [
+                {
+                  id: 'reports',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: projectReportsIsFiltered,
+                    countFiltered: nav?.project_reports_count_filtered ?? 0,
+                    countUnfiltered: nav?.project_reports_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'CiJ0SG',
+                      defaultMessage: 'Berichte',
+                    }),
+                  }),
+                },
+              ]
+            : []),
           {
             id: 'persons',
             label: buildNavLabel({

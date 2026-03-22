@@ -155,6 +155,8 @@ CREATE TABLE IF NOT EXISTS projects(
   multiple_check_quantities_on_same_level text DEFAULT NULL,
   wms_layers boolean DEFAULT FALSE,
   vector_layers boolean DEFAULT FALSE,
+  project_reports boolean DEFAULT TRUE,
+  subproject_reports boolean DEFAULT TRUE,
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
@@ -190,6 +192,8 @@ COMMENT ON COLUMN projects.multiple_action_quantities_on_same_level IS 'One of: 
 COMMENT ON COLUMN projects.multiple_check_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
 COMMENT ON COLUMN projects.wms_layers IS 'Whether wms-services and wms-layers are shown. Preset: false.';
 COMMENT ON COLUMN projects.vector_layers IS 'Whether vector-layers and wfs-services are shown. Preset: false.';
+COMMENT ON COLUMN projects.project_reports IS 'Whether project-reports are shown. Preset: true.';
+COMMENT ON COLUMN projects.subproject_reports IS 'Whether subproject-reports are shown. Preset: true.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
