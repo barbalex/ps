@@ -33,15 +33,19 @@ type NavData = {
   subproject_reports_count_filtered?: number | null
   subproject_reports_count_unfiltered?: number | null
   subproject_histories_count?: number | null
+  goals?: boolean | null
   goals_count_filtered?: number | null
   goals_count_unfiltered?: number | null
+  occurrences?: boolean | null
   observation_imports_count?: number | null
   observations_to_assess_count?: number | null
   observations_not_to_assign_count?: number | null
+  taxa?: boolean | null
   subproject_taxa_count?: number | null
   subproject_users_count?: number | null
   files_count_filtered?: number | null
   files_count_unfiltered?: number | null
+  charts?: boolean | null
   charts_count?: number | null
 }
 
@@ -92,6 +96,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         sp.label, 
         ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
         p.subproject_reports AS subproject_reports,
+        p.goals AS goals,
+        p.occurrences AS occurrences,
+        p.taxa AS taxa,
+        p.charts AS charts,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
         place_name_plural.name_plural_${language} AS place_name_plural,
@@ -210,57 +218,75 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           }),
         }),
       },
-      {
-        id: 'goals',
-        label: buildNavLabel({
-          loading,
-          isFiltered: goalsIsFiltered,
-          countFiltered: nav?.goals_count_filtered ?? 0,
-          countUnfiltered: nav?.goals_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' }),
-        }),
-      },
-      {
-        id: 'observation-imports',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.observation_imports_count ?? 0,
-          namePlural: formatMessage({
-            id: 'C7apNr',
-            defaultMessage: 'Beobachtungs-Importe',
-          }),
-        }),
-      },
-      {
-        id: 'observations-to-assess',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.observations_to_assess_count ?? 0,
-          namePlural: formatMessage({
-            id: 'BEylmv',
-            defaultMessage: 'Beobachtungen zu beurteilen',
-          }),
-        }),
-      },
-      {
-        id: 'observations-not-to-assign',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.observations_not_to_assign_count ?? 0,
-          namePlural: formatMessage({
-            id: 'slC/ul',
-            defaultMessage: 'Beobachtungen nicht zuzuordnen',
-          }),
-        }),
-      },
-      {
-        id: 'taxa',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.subproject_taxa_count ?? 0,
-          namePlural: formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' }),
-        }),
-      },
+      ...(designing || (nav?.goals ?? true)
+        ? [
+            {
+              id: 'goals',
+              label: buildNavLabel({
+                loading,
+                isFiltered: goalsIsFiltered,
+                countFiltered: nav?.goals_count_filtered ?? 0,
+                countUnfiltered: nav?.goals_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: '3srcwg',
+                  defaultMessage: 'Ziele',
+                }),
+              }),
+            },
+          ]
+        : []),
+      ...(designing || (nav?.occurrences ?? true)
+        ? [
+            {
+              id: 'observation-imports',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.observation_imports_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'C7apNr',
+                  defaultMessage: 'Beobachtungs-Importe',
+                }),
+              }),
+            },
+            {
+              id: 'observations-to-assess',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.observations_to_assess_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'BEylmv',
+                  defaultMessage: 'Beobachtungen zu beurteilen',
+                }),
+              }),
+            },
+            {
+              id: 'observations-not-to-assign',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.observations_not_to_assign_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'slC/ul',
+                  defaultMessage: 'Beobachtungen nicht zuzuordnen',
+                }),
+              }),
+            },
+          ]
+        : []),
+      ...(designing || (nav?.taxa ?? true)
+        ? [
+            {
+              id: 'taxa',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.subproject_taxa_count ?? 0,
+                namePlural: formatMessage({
+                  id: '7sVbg1',
+                  defaultMessage: 'Taxa',
+                }),
+              }),
+            },
+          ]
+        : []),
       {
         id: 'users',
         label: buildNavLabel({
@@ -285,17 +311,21 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           }),
         }),
       },
-      {
-        id: 'charts',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.charts_count ?? 0,
-          namePlural: formatMessage({
-            id: 'ZPEO8P',
-            defaultMessage: 'Diagramme',
-          }),
-        }),
-      },
+      ...(designing || (nav?.charts ?? true)
+        ? [
+            {
+              id: 'charts',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.charts_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'ZPEO8P',
+                  defaultMessage: 'Diagramme',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 

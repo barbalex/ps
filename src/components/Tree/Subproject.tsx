@@ -34,7 +34,12 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
-  const showSubprojectReports = isDesigning || (project?.subproject_reports ?? true)
+  const showSubprojectReports =
+    isDesigning || (project?.subproject_reports ?? true)
+  const showGoals = isDesigning || (project?.goals ?? true)
+  const showOccurrences = isDesigning || (project?.occurrences ?? true)
+  const showTaxa = isDesigning || (project?.taxa ?? true)
+  const showCharts = isDesigning || (project?.charts ?? true)
 
   // TODO: Check if user is account owner for the parent project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
@@ -104,28 +109,46 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
           />
           <PlacesNode projectId={projectId} subprojectId={nav.id} level={5} />
           {showSubprojectReports && (
-            <SubprojectReportsNode projectId={projectId} subprojectId={nav.id} />
+            <SubprojectReportsNode
+              projectId={projectId}
+              subprojectId={nav.id}
+            />
           )}
           <SubprojectHistoriesNode
             projectId={projectId}
             subprojectId={nav.id}
           />
-          <GoalsNode projectId={projectId} subprojectId={nav.id} />
-          <ObservationImportsNode projectId={projectId} subprojectId={nav.id} />
-          <ObservationsToAssessNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <ObservationsNotToAssignNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
-          <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
+          {showGoals && (
+            <GoalsNode projectId={projectId} subprojectId={nav.id} />
+          )}
+          {showOccurrences && (
+            <ObservationImportsNode
+              projectId={projectId}
+              subprojectId={nav.id}
+            />
+          )}
+          {showOccurrences && (
+            <ObservationsToAssessNode
+              projectId={projectId}
+              subprojectId={nav.id}
+            />
+          )}
+          {showOccurrences && (
+            <ObservationsNotToAssignNode
+              projectId={projectId}
+              subprojectId={nav.id}
+            />
+          )}
+          {showTaxa && (
+            <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
+          )}
           <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
           {showFiles && (
             <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}
-          <ChartsNode projectId={projectId} subprojectId={nav.id} level={5} />
+          {showCharts && (
+            <ChartsNode projectId={projectId} subprojectId={nav.id} level={5} />
+          )}
         </>
       )}
     </>

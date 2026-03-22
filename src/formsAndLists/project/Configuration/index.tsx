@@ -413,6 +413,14 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.project_reports?.message}
             />
             <SwitchField
+              label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'bbjyW2', defaultMessage: 'Personen' })}`}
+              name="persons"
+              value={row.persons ?? true}
+              onChange={onChange}
+              validationState={validations?.persons?.state}
+              validationMessage={validations?.persons?.message}
+            />
+            <SwitchField
               label={formatMessage({
                 id: 'tV2WxY',
                 defaultMessage: 'Projekte: WMS-Dienste und WMS-Ebenen',
@@ -463,6 +471,45 @@ export const Configuration = ({ from }) => {
               onChange={onChange}
               validationState={validations?.subproject_reports?.state}
               validationMessage={validations?.subproject_reports?.message}
+            />
+            <SwitchField
+              label={`${subprojectName}: ${formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })}`}
+              name="goals"
+              value={row.goals ?? true}
+              onChange={onChange}
+              validationState={validations?.goals?.state}
+              validationMessage={validations?.goals?.message}
+            />
+            <SwitchField
+              label={`${subprojectName}: ${formatMessage({ id: 'yK5Pq6', defaultMessage: 'Beobachtungen' })}`}
+              name="occurrences"
+              value={row.occurrences ?? true}
+              onChange={onChange}
+              validationState={validations?.occurrences?.state}
+              validationMessage={
+                validations?.occurrences?.message ??
+                formatMessage({
+                  id: 'zL6Qr7',
+                  defaultMessage:
+                    'Steuert Beobachtungs-Importe, Beobachtungen zu beurteilen und nicht zuzuordnen.',
+                })
+              }
+            />
+            <SwitchField
+              label={`${subprojectName}: ${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`}
+              name="taxa"
+              value={row.taxa ?? true}
+              onChange={onChange}
+              validationState={validations?.taxa?.state}
+              validationMessage={validations?.taxa?.message}
+            />
+            <SwitchField
+              label={`${subprojectName}: ${formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' })}`}
+              name="charts"
+              value={row.charts ?? true}
+              onChange={onChange}
+              validationState={validations?.charts?.state}
+              validationMessage={validations?.charts?.message}
             />
             <SwitchField
               label={`${subprojectName}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}

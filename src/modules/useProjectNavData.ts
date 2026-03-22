@@ -35,6 +35,11 @@ type NavData = {
   vector_layers?: boolean | null
   project_reports?: boolean | null
   subproject_reports?: boolean | null
+  persons?: boolean | null
+  goals?: boolean | null
+  occurrences?: boolean | null
+  taxa?: boolean | null
+  charts?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
@@ -44,6 +49,11 @@ type NavDataNotForBreadcrumb = {
   vector_layers?: boolean | null
   project_reports?: boolean | null
   subproject_reports?: boolean | null
+  persons?: boolean | null
+  goals?: boolean | null
+  occurrences?: boolean | null
+  taxa?: boolean | null
+  charts?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -67,6 +77,11 @@ type NavDataNotForBreadcrumbDesigning = {
   vector_layers?: boolean | null
   project_reports?: boolean | null
   subproject_reports?: boolean | null
+  persons?: boolean | null
+  goals?: boolean | null
+  occurrences?: boolean | null
+  taxa?: boolean | null
+  charts?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -176,7 +191,12 @@ export const useProjectNavData = ({
         wms_layers,
         vector_layers,
         project_reports,
-        subproject_reports
+        subproject_reports,
+        persons,
+        goals,
+        occurrences,
+        taxa,
+        charts
         ${
           !forBreadcrumb
             ? `,
@@ -324,19 +344,23 @@ export const useProjectNavData = ({
                 },
               ]
             : []),
-          {
-            id: 'persons',
-            label: buildNavLabel({
-              loading,
-              isFiltered: personsIsFiltered,
-              countFiltered: nav?.persons_count_filtered ?? 0,
-              countUnfiltered: nav?.persons_count_unfiltered ?? 0,
-              namePlural: formatMessage({
-                id: 'bbjyW2',
-                defaultMessage: 'Personen',
-              }),
-            }),
-          },
+          ...(designing || (nav?.persons ?? true)
+            ? [
+                {
+                  id: 'persons',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: personsIsFiltered,
+                    countFiltered: nav?.persons_count_filtered ?? 0,
+                    countUnfiltered: nav?.persons_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'bbjyW2',
+                      defaultMessage: 'Personen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
           ...(designing || (nav?.wms_layers ?? false)
             ? [
                 {

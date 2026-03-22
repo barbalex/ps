@@ -157,6 +157,11 @@ CREATE TABLE IF NOT EXISTS projects(
   vector_layers boolean DEFAULT FALSE,
   project_reports boolean DEFAULT TRUE,
   subproject_reports boolean DEFAULT TRUE,
+  persons boolean DEFAULT TRUE,
+  goals boolean DEFAULT TRUE,
+  occurrences boolean DEFAULT TRUE,
+  taxa boolean DEFAULT TRUE,
+  charts boolean DEFAULT TRUE,
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
@@ -194,6 +199,11 @@ COMMENT ON COLUMN projects.wms_layers IS 'Whether wms-services and wms-layers ar
 COMMENT ON COLUMN projects.vector_layers IS 'Whether vector-layers and wfs-services are shown. Preset: false.';
 COMMENT ON COLUMN projects.project_reports IS 'Whether project-reports are shown. Preset: true.';
 COMMENT ON COLUMN projects.subproject_reports IS 'Whether subproject-reports are shown. Preset: true.';
+COMMENT ON COLUMN projects.persons IS 'Whether persons are shown. Preset: true.';
+COMMENT ON COLUMN projects.goals IS 'Whether goals (subproject) are shown. Preset: true.';
+COMMENT ON COLUMN projects.occurrences IS 'Whether occurrences (observation imports, to assess, not to assign) are shown. Preset: true.';
+COMMENT ON COLUMN projects.taxa IS 'Whether subproject taxa are shown. Preset: true.';
+COMMENT ON COLUMN projects.charts IS 'Whether charts (subproject) are shown. Preset: true.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
