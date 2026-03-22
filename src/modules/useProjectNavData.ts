@@ -31,13 +31,15 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
-  users_can_edit_map_layers?: boolean | null
+  wms_layers?: boolean | null
+  vector_layers?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
   id: string
   label: string | null
-  users_can_edit_map_layers?: boolean | null
+  wms_layers?: boolean | null
+  vector_layers?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -57,7 +59,8 @@ type NavDataNotForBreadcrumb = {
 type NavDataNotForBreadcrumbDesigning = {
   id: string
   label: string | null
-  users_can_edit_map_layers?: boolean | null
+  wms_layers?: boolean | null
+  vector_layers?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -164,7 +167,8 @@ export const useProjectNavData = ({
       SELECT
         project_id AS id,
         label,
-        users_can_edit_map_layers
+        wms_layers,
+        vector_layers
         ${
           !forBreadcrumb
             ? `,
@@ -321,7 +325,7 @@ export const useProjectNavData = ({
               }),
             }),
           },
-          ...(designing || (nav?.users_can_edit_map_layers ?? false)
+          ...(designing || (nav?.wms_layers ?? false)
             ? [
                 {
                   id: 'wms-services',
@@ -347,6 +351,10 @@ export const useProjectNavData = ({
                     }),
                   }),
                 },
+              ]
+            : []),
+          ...(designing || (nav?.vector_layers ?? false)
+            ? [
                 {
                   id: 'wfs-services',
                   label: buildNavLabel({

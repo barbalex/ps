@@ -406,19 +406,37 @@ export const Configuration = ({ from }) => {
           <div className="checkboxfield-list">
             <SwitchField
               label={formatMessage({
-                id: 'oP9QrS',
-                defaultMessage: 'Benutzer können Kartenebenen bearbeiten',
+                id: 'tV2WxY',
+                defaultMessage: 'Projekte: WMS-Dienste und WMS-Ebenen',
               })}
-              name="users_can_edit_map_layers"
-              value={row.users_can_edit_map_layers ?? false}
+              name="wms_layers"
+              value={row.wms_layers ?? false}
               onChange={onChange}
-              validationState={validations?.users_can_edit_map_layers?.state}
+              validationState={validations?.wms_layers?.state}
               validationMessage={
-                validations?.users_can_edit_map_layers?.message ??
+                validations?.wms_layers?.message ??
                 formatMessage({
-                  id: 'hQ0RsU',
+                  id: 'uW3XyZ',
                   defaultMessage:
-                    'Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
+                    'Aktiviert WMS-Dienste und WMS-Ebenen. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
+                })
+              }
+            />
+            <SwitchField
+              label={formatMessage({
+                id: 'vX4YzA',
+                defaultMessage: 'Projekte: WFS-Dienste und Vektor-Ebenen',
+              })}
+              name="vector_layers"
+              value={row.vector_layers ?? false}
+              onChange={onChange}
+              validationState={validations?.vector_layers?.state}
+              validationMessage={
+                validations?.vector_layers?.message ??
+                formatMessage({
+                  id: 'wY5ZaB',
+                  defaultMessage:
+                    'Aktiviert WFS-Dienste und Vektor-Ebenen. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
                 })
               }
             />
