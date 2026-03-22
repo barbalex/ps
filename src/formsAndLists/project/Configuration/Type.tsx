@@ -13,7 +13,7 @@ export const Type = ({ onChange, validations, row }) => {
 
   return (
     <RadioGroupFromOptions
-      label={formatMessage({ id: 'wA1BcD', defaultMessage: 'Typ' })}
+      label={formatMessage({ id: 'wA1BcD', defaultMessage: 'Projekttyp' })}
       name="type"
       options={options}
       value={row.type ?? ''}
