@@ -287,17 +287,21 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             },
           ]
         : []),
-      {
-        id: 'users',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.subproject_users_count ?? 0,
-          namePlural: formatMessage({
-            id: 'eZ3yEB',
-            defaultMessage: 'Benutzer',
-          }),
-        }),
-      },
+      ...(designing
+        ? [
+            {
+              id: 'users',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.subproject_users_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'eZ3yEB',
+                  defaultMessage: 'Benutzer',
+                }),
+              }),
+            },
+          ]
+        : []),
       {
         id: 'files',
         label: buildNavLabel({

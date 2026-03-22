@@ -20,10 +20,10 @@ export const Tree = () => {
   return (
     <div className={`${styles.container} no-print`}>
       <ProjectsNode />
-      <UsersNode />
       <AccountsNode />
       {designing && (
         <>
+          <UsersNode />
           <FieldTypesNode />
           <WidgetTypesNode />
           <WidgetsForFieldsNode />

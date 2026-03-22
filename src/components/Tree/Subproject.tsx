@@ -142,7 +142,9 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
           {showTaxa && (
             <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
           )}
-          <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
+          {showDesigningNodes && (
+            <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
+          )}
           {showFiles && (
             <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}
