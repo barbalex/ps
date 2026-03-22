@@ -287,7 +287,7 @@ export const PlaceLevel = () => {
             })}
           </SectionDescription>
           <SwitchField
-            label={`${placeName}-Berichte`}
+            label={`${placeName}: Berichte`}
             name="place_reports"
             value={row.place_reports ?? false}
             onChange={onChange}
@@ -295,7 +295,7 @@ export const PlaceLevel = () => {
             validationMessage={validations?.place_reports?.message}
           />
           <SwitchField
-            label={`${placeName}-Bericht-Mengen`}
+            label={`${placeName}: Bericht-Mengen`}
             name="place_report_values"
             value={row.place_report_values ?? false}
             onChange={onChange}
@@ -435,7 +435,7 @@ export const PlaceLevel = () => {
             validationMessage={validations?.observations?.message}
           />
           <SwitchField
-            label={`${placeName}-Dateien`}
+            label={`${placeName}: Dateien`}
             name="place_files"
             value={row.place_files ?? false}
             onChange={onChange}
