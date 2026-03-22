@@ -87,7 +87,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {!!placeLevel?.reports && (
+      {!!placeLevel?.place_reports && (
         <PlaceReportsNode
           projectId={projectId}
           subprojectId={subprojectId}

@@ -285,22 +285,22 @@ export const PlaceLevel = () => {
               id: 'nF5KeA',
               defaultMessage: 'Berichte',
             })}
-            name="reports"
-            value={row.reports ?? false}
+            name="place_reports"
+            value={row.place_reports ?? false}
             onChange={onChange}
-            validationState={validations?.reports?.state}
-            validationMessage={validations?.reports?.message}
+            validationState={validations?.place_reports?.state}
+            validationMessage={validations?.place_reports?.message}
           />
           <SwitchField
             label={formatMessage({
               id: 'oG6LfB',
               defaultMessage: 'Bericht-Mengen',
             })}
-            name="report_values"
-            value={row.report_values ?? false}
+            name="place_report_values"
+            value={row.place_report_values ?? false}
             onChange={onChange}
-            validationState={validations?.report_values?.state}
-            validationMessage={validations?.report_values?.message}
+            validationState={validations?.place_report_values?.state}
+            validationMessage={validations?.place_report_values?.message}
           />
           <SwitchField
             label={formatMessage({
