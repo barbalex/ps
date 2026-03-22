@@ -33,7 +33,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
     projectId,
   ])
   const project: Projects | undefined = res?.rows?.[0]
-  const showFiles = project?.files_active_subprojects ?? false
+  const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
   const showGoals = isDesigning || (project?.goals ?? true)

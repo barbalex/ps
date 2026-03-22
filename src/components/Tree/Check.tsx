@@ -12,7 +12,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
 export const CheckNode = ({
   projectId,
@@ -23,6 +23,7 @@ export const CheckNode = ({
   level = 8,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
@@ -35,7 +36,7 @@ export const CheckNode = ({
     [projectId, placeId2 ? 2 : 1],
   )
   const row = res?.rows?.[0]
-  const showFiles = row?.check_files !== false
+  const showFiles = isDesigning || row?.check_files !== false
   const placeLevel = row
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -100,7 +101,7 @@ export const CheckNode = ({
             childrenCount={0}
             to={`${ownUrl}/check`}
           />
-          {placeLevel?.check_quantities !== false && (
+          {(isDesigning || placeLevel?.check_quantities !== false) && (
             <CheckQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}
@@ -110,7 +111,7 @@ export const CheckNode = ({
               level={level + 1}
             />
           )}
-          {placeLevel?.check_reports !== false && (
+          {(isDesigning || placeLevel?.check_reports !== false) && (
             <CheckReportsNode
               projectId={projectId}
               subprojectId={subprojectId}
@@ -120,7 +121,7 @@ export const CheckNode = ({
               level={level + 1}
             />
           )}
-          {placeLevel?.check_taxa !== false && (
+          {(isDesigning || placeLevel?.check_taxa !== false) && (
             <CheckTaxaNode
               projectId={projectId}
               subprojectId={subprojectId}

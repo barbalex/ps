@@ -10,7 +10,7 @@ import { ActionReportsNode } from './ActionsReports.tsx'
 import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
 export const ActionNode = ({
   projectId,
@@ -21,6 +21,7 @@ export const ActionNode = ({
   level = 8,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ export const ActionNode = ({
     [projectId, placeId2 ? 2 : 1],
   )
   const row = res?.rows?.[0]
-  const showFiles = row?.action_files !== false
+  const showFiles = isDesigning || row?.action_files !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -94,7 +95,7 @@ export const ActionNode = ({
             childrenCount={0}
             to={`${ownUrl}/action`}
           />
-          {row?.action_quantities !== false && (
+          {(isDesigning || row?.action_quantities !== false) && (
             <ActionQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}
@@ -104,7 +105,7 @@ export const ActionNode = ({
               level={level + 1}
             />
           )}
-          {row?.action_reports !== false && (
+          {(isDesigning || row?.action_reports !== false) && (
             <ActionReportsNode
               projectId={projectId}
               subprojectId={subprojectId}

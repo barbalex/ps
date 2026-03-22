@@ -37,7 +37,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const showFiles = nav.files_active_projects ?? false
+  const showFiles = designing || (nav.files_active_projects ?? false)
 
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`

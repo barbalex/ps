@@ -13,7 +13,7 @@ import { PlaceHistoriesNode } from '../PlaceHistories.tsx'
 import { ObservationsAssignedNode } from '../ObservationsAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
-import { languageAtom } from '../../../store.ts'
+import { languageAtom, designingAtom } from '../../../store.ts'
 
 // TODO: add charts?
 export const PlaceChildren = ({
@@ -25,6 +25,7 @@ export const PlaceChildren = ({
 }) => {
   // const level = placeId2 ? 8 : 6
   const [language] = useAtom(languageAtom)
+  const [isDesigning] = useAtom(designingAtom)
 
   // query from place_level what children to show
   const resPlaceLevels = useLiveQuery(
@@ -34,7 +35,7 @@ export const PlaceChildren = ({
   const placeLevel: PlaceLevels = resPlaceLevels?.rows?.[0]
 
   // need place_level to know whether to show files
-  const showFiles = placeLevel?.place_files !== false
+  const showFiles = isDesigning || placeLevel?.place_files !== false
 
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -69,7 +70,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {!!placeLevel?.checks && (
+      {(isDesigning || !!placeLevel?.checks) && (
         <ChecksNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -78,7 +79,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {!!placeLevel?.actions && (
+      {(isDesigning || !!placeLevel?.actions) && (
         <ActionsNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -87,7 +88,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {!!placeLevel?.place_reports && (
+      {(isDesigning || !!placeLevel?.place_reports) && (
         <PlaceReportsNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -96,7 +97,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {!!placeLevel?.observations && (
+      {(isDesigning || !!placeLevel?.observations) && (
         <ObservationsAssignedNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -105,13 +106,15 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      <PlaceUsersNode
-        projectId={projectId}
-        subprojectId={subprojectId}
-        placeId={placeId}
-        placeId2={placeId2}
-        level={level + 1}
-      />
+      {isDesigning && (
+        <PlaceUsersNode
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId}
+          placeId2={placeId2}
+          level={level + 1}
+        />
+      )}
       <PlaceHistoriesNode
         projectId={projectId}
         subprojectId={subprojectId}
