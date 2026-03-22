@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
@@ -31,6 +31,7 @@ export const useActionReportNavData = ({
 }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
 
   const sql = `
       WITH
@@ -97,7 +98,7 @@ export const useActionReportNavData = ({
         id: 'report',
         label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
       },
-      ...(placeLevel?.action_report_quantities !== false
+      ...(isDesigning || placeLevel?.action_report_quantities !== false
         ? [
             {
               id: 'quantities',

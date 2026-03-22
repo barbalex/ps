@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
@@ -31,6 +31,7 @@ export const useCheckNavData = ({
 }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
 
   const sql = `
       WITH
@@ -100,7 +101,7 @@ export const useCheckNavData = ({
         id: 'check',
         label: formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' }),
       },
-      ...(placeLevel?.check_quantities !== false
+      ...(isDesigning || placeLevel?.check_quantities !== false
         ? [
             {
               id: 'quantities',
@@ -115,7 +116,7 @@ export const useCheckNavData = ({
             },
           ]
         : []),
-      ...(placeLevel?.check_taxa !== false
+      ...(isDesigning || placeLevel?.check_taxa !== false
         ? [
             {
               id: 'taxa',
@@ -130,7 +131,7 @@ export const useCheckNavData = ({
             },
           ]
         : []),
-      ...(placeLevel?.check_files !== false
+      ...(isDesigning || placeLevel?.check_files !== false
         ? [
             {
               id: 'files',
