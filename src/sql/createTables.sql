@@ -610,6 +610,7 @@ CREATE TABLE IF NOT EXISTS places(
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
+  relevant_for_reports boolean DEFAULT TRUE,
   label text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -635,6 +636,7 @@ COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fiel
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
+COMMENT ON COLUMN places.relevant_for_reports IS 'Whether place is relevant for reports. Preset: true';
 
 --------------------------------------------------------------
 -- place_histories

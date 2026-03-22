@@ -7,6 +7,7 @@ import { designingAtom, languageAtom } from '../../store.ts'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
@@ -120,6 +121,14 @@ export const PlaceForm = ({
         from={from}
         autoFocus={row.level !== 2}
         ref={row.level !== 2 ? autoFocusRef : undefined}
+      />
+      <SwitchField
+        label={formatMessage({ id: 'bEpPuU', defaultMessage: 'Relevant für Berichte' })}
+        name="relevant_for_reports"
+        value={row.relevant_for_reports}
+        onChange={onChange}
+        validationState={validations?.relevant_for_reports?.state}
+        validationMessage={validations?.relevant_for_reports?.message}
       />
       <EditingGeometry row={row} table="places" />
     </div>

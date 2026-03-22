@@ -12,7 +12,7 @@ export const Places1 = ({ layerPresentation }) => {
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery(
     `SELECT place_id, account_id, subproject_id, parent_id, level, since, until, data,
-      ST_AsGeoJSON(geometry)::json as geometry, bbox, label, created_at, updated_at, updated_by
+      ST_AsGeoJSON(geometry)::json as geometry, bbox, relevant_for_reports, label, created_at, updated_at, updated_by
     FROM places WHERE parent_id IS NULL AND geometry IS NOT NULL`,
   )
   const places: Places[] = res?.rows ?? []

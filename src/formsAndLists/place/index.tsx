@@ -96,6 +96,7 @@ export const Place = ({ from }) => {
         onChange={onChange}
         validations={validations}
         autoFocusRef={autoFocusRef}
+        from={from}
       />
     )
   }
@@ -113,6 +114,7 @@ export const Place = ({ from }) => {
         onChange={onChange}
         validations={validations}
         autoFocusRef={autoFocusRef}
+        from={from}
       />
     </div>
   )
