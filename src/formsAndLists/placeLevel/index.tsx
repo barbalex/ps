@@ -370,6 +370,28 @@ export const PlaceLevel = () => {
           />
           <SwitchField
             label={formatMessage({
+              id: 'bP8TqJ',
+              defaultMessage: 'Kontroll-Berichte',
+            })}
+            name="check_reports"
+            value={row.check_reports ?? false}
+            onChange={onChange}
+            validationState={validations?.check_reports?.state}
+            validationMessage={validations?.check_reports?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'cQ9UrK',
+              defaultMessage: 'Kontroll-Bericht-Mengen',
+            })}
+            name="check_report_quantities"
+            value={row.check_report_quantities ?? false}
+            onChange={onChange}
+            validationState={validations?.check_report_quantities?.state}
+            validationMessage={validations?.check_report_quantities?.message}
+          />
+          <SwitchField
+            label={formatMessage({
               id: 'uM2RlH',
               defaultMessage: 'Kontroll-Taxa',
             })}
