@@ -262,7 +262,7 @@ export const usePlaceNavData = ({
           countFiltered: nav?.observations_count ?? 0,
           namePlural: formatMessage({
             id: 'OaXR/X',
-            defaultMessage: 'zugeordnete Beobachtungen',
+            defaultMessage: 'Beobachtungen zugeordnet',
           }),
         }),
       },

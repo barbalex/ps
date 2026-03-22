@@ -152,7 +152,7 @@ export const useObservationsNavData = ({
         })
       : formatMessage({
           id: 'OaXR/X',
-          defaultMessage: 'zugeordnete Beobachtungen',
+          defaultMessage: 'Beobachtungen zugeordnet',
         })
   const nameSingular = isToAssess
     ? formatMessage({

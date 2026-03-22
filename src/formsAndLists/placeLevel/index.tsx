@@ -426,7 +426,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'vN3SmI',
-              defaultMessage: 'Zugewiesene Beobachtungen',
+              defaultMessage: 'Beobachtungen zugeordnet',
             })}
             name="observations"
             value={row.observations ?? false}
