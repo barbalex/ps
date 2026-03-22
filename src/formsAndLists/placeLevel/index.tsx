@@ -327,7 +327,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'rJ9OiE',
-              defaultMessage: 'Massnahmenberichte',
+              defaultMessage: 'Massnahmen-Berichte',
             })}
             name="action_reports"
             value={row.action_reports ?? false}
@@ -370,6 +370,17 @@ export const PlaceLevel = () => {
           />
           <SwitchField
             label={formatMessage({
+              id: 'kL3MnO',
+              defaultMessage: 'Kontroll-Dateien',
+            })}
+            name="check_files"
+            value={row.check_files ?? false}
+            onChange={onChange}
+            validationState={validations?.check_files?.state}
+            validationMessage={validations?.check_files?.message}
+          />
+          <SwitchField
+            label={formatMessage({
               id: 'vN3SmI',
               defaultMessage: 'Beobachtungen',
             })}
@@ -400,17 +411,6 @@ export const PlaceLevel = () => {
             onChange={onChange}
             validationState={validations?.action_files?.state}
             validationMessage={validations?.action_files?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'kL3MnO',
-              defaultMessage: 'Kontroll-Dateien',
-            })}
-            name="check_files"
-            value={row.check_files ?? false}
-            onChange={onChange}
-            validationState={validations?.check_files?.state}
-            validationMessage={validations?.check_files?.message}
           />
         </Section>
       </div>
