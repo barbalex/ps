@@ -230,7 +230,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           countFiltered: nav?.observations_to_assess_count ?? 0,
           namePlural: formatMessage({
             id: 'BEylmv',
-            defaultMessage: 'zu beurteilende Beobachtungen',
+            defaultMessage: 'Beobachtungen zu beurteilen',
           }),
         }),
       },
@@ -241,7 +241,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
           countFiltered: nav?.observations_not_to_assign_count ?? 0,
           namePlural: formatMessage({
             id: 'slC/ul',
-            defaultMessage: 'nicht zuzuordnende Beobachtungen',
+            defaultMessage: 'Beobachtungen nicht zuzuordnen',
           }),
         }),
       },

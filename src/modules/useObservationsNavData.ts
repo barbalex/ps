@@ -143,12 +143,12 @@ export const useObservationsNavData = ({
   const namePlural = isToAssess
     ? formatMessage({
         id: 'BEylmv',
-        defaultMessage: 'zu beurteilende Beobachtungen',
+        defaultMessage: 'Beobachtungen zu beurteilen',
       })
     : isNotToAssign
       ? formatMessage({
           id: 'slC/ul',
-          defaultMessage: 'nicht zuzuordnende Beobachtungen',
+          defaultMessage: 'Beobachtungen nicht zuzuordnen',
         })
       : formatMessage({
           id: 'OaXR/X',
@@ -157,12 +157,12 @@ export const useObservationsNavData = ({
   const nameSingular = isToAssess
     ? formatMessage({
         id: 'tfUHK5',
-        defaultMessage: 'zu beurteilende Beobachtung',
+        defaultMessage: 'Beobachtung zu beurteilen',
       })
     : isNotToAssign
       ? formatMessage({
           id: 'aanYYz',
-          defaultMessage: 'nicht zuzuordnende Beobachtung',
+          defaultMessage: 'Beobachtung nicht zuzuordnen',
         })
       : formatMessage({
           id: 'gKq4qF',
