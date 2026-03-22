@@ -283,7 +283,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'nF5KeA',
-              defaultMessage: 'Berichte',
+              defaultMessage: 'Ort-Berichte',
             })}
             name="place_reports"
             value={row.place_reports ?? false}
@@ -294,7 +294,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'oG6LfB',
-              defaultMessage: 'Bericht-Mengen',
+              defaultMessage: 'Ort-Bericht-Mengen',
             })}
             name="place_report_values"
             value={row.place_report_values ?? false}

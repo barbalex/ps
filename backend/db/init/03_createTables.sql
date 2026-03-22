@@ -235,9 +235,9 @@ CREATE TABLE IF NOT EXISTS place_levels(
   label text GENERATED ALWAYS AS (
     CASE
       WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
-      WHEN name_plural_de IS NULL THEN level::text || '.' || name_short_de
-      WHEN name_short_de IS NULL THEN level::text || '.' || name_plural_de
-      ELSE level::text || '.' || name_plural_de
+      WHEN name_plural_de IS NULL THEN level::text || '. ' || name_short_de
+      WHEN name_short_de IS NULL THEN level::text || '. ' || name_plural_de
+      ELSE level::text || '. ' || name_plural_de
     END
   ) STORED,
   created_at timestamptz NOT NULL DEFAULT now(),
