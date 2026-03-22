@@ -24,7 +24,7 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
-  const { formatMessage } = useIntl()
+  const { formatMessage, locale } = useIntl()
 
   const [validations, setValidations] = useState({})
 
@@ -36,6 +36,12 @@ export const PlaceLevel = () => {
     [placeLevelId],
   )
   const row: PlaceLevels | undefined = res?.rows?.[0]
+
+  const lang = locale.split('-')[0]
+  const placeName =
+    row?.[`name_singular_${lang}`] ??
+    row?.name_singular_de ??
+    'Ort'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -281,10 +287,7 @@ export const PlaceLevel = () => {
             })}
           </SectionDescription>
           <SwitchField
-            label={formatMessage({
-              id: 'nF5KeA',
-              defaultMessage: 'Ort-Berichte',
-            })}
+            label={`${placeName}-Berichte`}
             name="place_reports"
             value={row.place_reports ?? false}
             onChange={onChange}
@@ -292,10 +295,7 @@ export const PlaceLevel = () => {
             validationMessage={validations?.place_reports?.message}
           />
           <SwitchField
-            label={formatMessage({
-              id: 'oG6LfB',
-              defaultMessage: 'Ort-Bericht-Mengen',
-            })}
+            label={`${placeName}-Bericht-Mengen`}
             name="place_report_values"
             value={row.place_report_values ?? false}
             onChange={onChange}
