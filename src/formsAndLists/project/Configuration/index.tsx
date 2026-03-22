@@ -459,7 +459,7 @@ export const Configuration = ({ from }) => {
             {formatMessage({
               id: 'qS1VxO',
               defaultMessage:
-                'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren vereinfacht die Benutzeroberfläche.',
+                'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert.',
             })}
           </SectionDescription>
           <div className="checkboxfield-list">
