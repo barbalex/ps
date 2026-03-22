@@ -39,9 +39,9 @@ export const PlaceLevel = () => {
 
   const lang = locale.split('-')[0]
   const placeName =
-    row?.[`name_singular_${lang}`] ??
-    row?.name_singular_de ??
-    'Ort'
+    row?.[`name_plural_${lang}`] ??
+    row?.name_plural_de ??
+    'Orte'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
