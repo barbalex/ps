@@ -29,7 +29,7 @@ import type Units from '../../../models/public/Units.ts'
 export const Configuration = ({ from }) => {
   const { projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
-  const { formatMessage } = useIntl()
+  const { formatMessage, locale } = useIntl()
   const [validations, setValidations] = useState({})
 
   const db = usePGlite()
@@ -48,6 +48,12 @@ export const Configuration = ({ from }) => {
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
   )
+
+  const lang = locale.split('-')[0]
+  const subprojectName =
+    row?.[`subproject_name_plural_${lang}`] ??
+    row?.subproject_name_plural ??
+    'Arten'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -486,28 +492,16 @@ export const Configuration = ({ from }) => {
                 })
               }
             />
-            <Label>
-              {formatMessage({
-                id: 'nO8PqR',
-                defaultMessage: 'Dateien hochladen aktivieren für:',
-              })}
-            </Label>
-            <CheckboxField
-              label={formatMessage({
-                id: 'x9x+dX',
-                defaultMessage: 'Projekte',
-              })}
+            <SwitchField
+              label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
               name="files_active_projects"
               value={row.files_active_projects ?? false}
               onChange={onChange}
               validationState={validations?.files_active_projects?.state}
               validationMessage={validations?.files_active_projects?.message}
             />
-            <CheckboxField
-              label={formatMessage({
-                id: 'Jou8/E',
-                defaultMessage: 'Teilprojekte',
-              })}
+            <SwitchField
+              label={`${subprojectName}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
               name="files_active_subprojects"
               value={row.files_active_subprojects ?? false}
               onChange={onChange}
