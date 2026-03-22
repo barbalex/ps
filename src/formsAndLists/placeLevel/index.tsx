@@ -144,7 +144,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'bT3YsO',
-              defaultMessage: 'Deutsch (Einzahl)',
+              defaultMessage: 'Deutsch: Einzahl',
             })}
             name="name_singular_de"
             value={row.name_singular_de ?? ''}
@@ -157,7 +157,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'cU4ZtP',
-              defaultMessage: 'Deutsch (Mehrzahl)',
+              defaultMessage: 'Deutsch: Mehrzahl',
             })}
             name="name_plural_de"
             value={row.name_plural_de ?? ''}
@@ -179,7 +179,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'eW6BvR',
-              defaultMessage: 'Englisch (Einzahl)',
+              defaultMessage: 'Englisch: Einzahl',
             })}
             name="name_singular_en"
             value={row.name_singular_en ?? ''}
@@ -190,7 +190,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'fX7CwS',
-              defaultMessage: 'Englisch (Mehrzahl)',
+              defaultMessage: 'Englisch: Mehrzahl',
             })}
             name="name_plural_en"
             value={row.name_plural_en ?? ''}
@@ -212,7 +212,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'hZ9EyU',
-              defaultMessage: 'Französisch (Einzahl)',
+              defaultMessage: 'Französisch: Einzahl',
             })}
             name="name_singular_fr"
             value={row.name_singular_fr ?? ''}
@@ -223,7 +223,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'iA0FzV',
-              defaultMessage: 'Französisch (Mehrzahl)',
+              defaultMessage: 'Französisch: Mehrzahl',
             })}
             name="name_plural_fr"
             value={row.name_plural_fr ?? ''}
@@ -245,7 +245,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'kC2HbX',
-              defaultMessage: 'Italienisch (Einzahl)',
+              defaultMessage: 'Italienisch: Einzahl',
             })}
             name="name_singular_it"
             value={row.name_singular_it ?? ''}
@@ -256,7 +256,7 @@ export const PlaceLevel = () => {
           <TextField
             label={formatMessage({
               id: 'lD3IcY',
-              defaultMessage: 'Italienisch (Mehrzahl)',
+              defaultMessage: 'Italienisch: Mehrzahl',
             })}
             name="name_plural_it"
             value={row.name_plural_it ?? ''}

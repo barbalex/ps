@@ -163,7 +163,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'bT3YsO',
-              defaultMessage: 'Deutsch (Einzahl)',
+              defaultMessage: 'Deutsch: Einzahl',
             })}
             name="subproject_name_singular"
             value={row.subproject_name_singular ?? ''}
@@ -174,7 +174,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'cU4ZtP',
-              defaultMessage: 'Deutsch (Mehrzahl)',
+              defaultMessage: 'Deutsch: Mehrzahl',
             })}
             name="subproject_name_plural"
             value={row.subproject_name_plural ?? ''}
@@ -185,7 +185,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'eW6BvR',
-              defaultMessage: 'Englisch (Einzahl)',
+              defaultMessage: 'Englisch: Einzahl',
             })}
             name="subproject_name_singular_en"
             value={row.subproject_name_singular_en ?? ''}
@@ -198,7 +198,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'fX7CwS',
-              defaultMessage: 'Englisch (Mehrzahl)',
+              defaultMessage: 'Englisch: Mehrzahl',
             })}
             name="subproject_name_plural_en"
             value={row.subproject_name_plural_en ?? ''}
@@ -209,7 +209,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'hZ9EyU',
-              defaultMessage: 'Französisch (Einzahl)',
+              defaultMessage: 'Französisch: Einzahl',
             })}
             name="subproject_name_singular_fr"
             value={row.subproject_name_singular_fr ?? ''}
@@ -222,7 +222,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'iA0FzV',
-              defaultMessage: 'Französisch (Mehrzahl)',
+              defaultMessage: 'Französisch: Mehrzahl',
             })}
             name="subproject_name_plural_fr"
             value={row.subproject_name_plural_fr ?? ''}
@@ -233,7 +233,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'kC2HbX',
-              defaultMessage: 'Italienisch (Einzahl)',
+              defaultMessage: 'Italienisch: Einzahl',
             })}
             name="subproject_name_singular_it"
             value={row.subproject_name_singular_it ?? ''}
@@ -246,7 +246,7 @@ export const Configuration = ({ from }) => {
           <TextField
             label={formatMessage({
               id: 'lD3IcY',
-              defaultMessage: 'Italienisch (Mehrzahl)',
+              defaultMessage: 'Italienisch: Mehrzahl',
             })}
             name="subproject_name_plural_it"
             value={row.subproject_name_plural_it ?? ''}
