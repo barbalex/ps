@@ -6,10 +6,12 @@ import { projectTypeOptions } from '../../../modules/constants.ts'
 export const Type = ({ onChange, validations, row }) => {
   const { formatMessage } = useIntl()
 
-  const options = projectTypeOptions.map(({ value, labelId, defaultMessage }) => ({
-    value,
-    label: formatMessage({ id: labelId, defaultMessage }),
-  }))
+  const options = projectTypeOptions.map(
+    ({ value, labelId, defaultMessage }) => ({
+      value,
+      label: formatMessage({ id: labelId, defaultMessage }),
+    }),
+  )
 
   return (
     <RadioGroupFromOptions
@@ -19,7 +21,14 @@ export const Type = ({ onChange, validations, row }) => {
       value={row.type ?? ''}
       onChange={onChange}
       validationState={validations?.type?.state}
-      validationMessage={validations?.type?.message}
+      validationMessage={
+        validations?.type?.message ??
+        formatMessage({
+          id: 'oT4UvW',
+          defaultMessage:
+            'Arten wählen, um deren (Teil-)Populationen zu bearbeiten. Biotope für (Teil-)Biotope bzw. Lebensräume',
+        })
+      }
     />
   )
 }

@@ -137,13 +137,6 @@ export const Configuration = ({ from }) => {
         })}
       />
       <div className="form-container" role="tabpanel" aria-labelledby="form">
-        <SectionDescription>
-          {formatMessage({
-            id: 'oT4UvW',
-            defaultMessage:
-              'Arten wählen, um deren (Teil-)Populationen zu bearbeiten. Biotope für (Teil-)Biotope bzw. Lebensräume',
-          })}
-        </SectionDescription>
         <Type row={row} onChange={onChange} validations={validations} />
         <Section
           title={formatMessage({
