@@ -304,50 +304,6 @@ export const PlaceLevel = () => {
           />
           <SwitchField
             label={formatMessage({
-              id: 'pH7MgC',
-              defaultMessage: 'Massnahmen',
-            })}
-            name="actions"
-            value={row.actions ?? false}
-            onChange={onChange}
-            validationState={validations?.actions?.state}
-            validationMessage={validations?.actions?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'qI8NhD',
-              defaultMessage: 'Massnahmen-Mengen',
-            })}
-            name="action_quantities"
-            value={row.action_quantities ?? false}
-            onChange={onChange}
-            validationState={validations?.action_quantities?.state}
-            validationMessage={validations?.action_quantities?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'rJ9OiE',
-              defaultMessage: 'Massnahmen-Berichte',
-            })}
-            name="action_reports"
-            value={row.action_reports ?? false}
-            onChange={onChange}
-            validationState={validations?.action_reports?.state}
-            validationMessage={validations?.action_reports?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'aR7VqN',
-              defaultMessage: 'Massnahmen-Bericht-Mengen',
-            })}
-            name="action_report_quantities"
-            value={row.action_report_quantities ?? false}
-            onChange={onChange}
-            validationState={validations?.action_report_quantities?.state}
-            validationMessage={validations?.action_report_quantities?.message}
-          />
-          <SwitchField
-            label={formatMessage({
               id: 'sK0PjF',
               defaultMessage: 'Kontrollen',
             })}
@@ -414,6 +370,61 @@ export const PlaceLevel = () => {
           />
           <SwitchField
             label={formatMessage({
+              id: 'pH7MgC',
+              defaultMessage: 'Massnahmen',
+            })}
+            name="actions"
+            value={row.actions ?? false}
+            onChange={onChange}
+            validationState={validations?.actions?.state}
+            validationMessage={validations?.actions?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'qI8NhD',
+              defaultMessage: 'Massnahmen-Mengen',
+            })}
+            name="action_quantities"
+            value={row.action_quantities ?? false}
+            onChange={onChange}
+            validationState={validations?.action_quantities?.state}
+            validationMessage={validations?.action_quantities?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'rJ9OiE',
+              defaultMessage: 'Massnahmen-Berichte',
+            })}
+            name="action_reports"
+            value={row.action_reports ?? false}
+            onChange={onChange}
+            validationState={validations?.action_reports?.state}
+            validationMessage={validations?.action_reports?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'aR7VqN',
+              defaultMessage: 'Massnahmen-Bericht-Mengen',
+            })}
+            name="action_report_quantities"
+            value={row.action_report_quantities ?? false}
+            onChange={onChange}
+            validationState={validations?.action_report_quantities?.state}
+            validationMessage={validations?.action_report_quantities?.message}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'fG2HiJ',
+              defaultMessage: 'Massnahmen-Dateien',
+            })}
+            name="action_files"
+            value={row.action_files ?? false}
+            onChange={onChange}
+            validationState={validations?.action_files?.state}
+            validationMessage={validations?.action_files?.message}
+          />
+          <SwitchField
+            label={formatMessage({
               id: 'vN3SmI',
               defaultMessage: 'Beobachtungen',
             })}
@@ -430,17 +441,6 @@ export const PlaceLevel = () => {
             onChange={onChange}
             validationState={validations?.place_files?.state}
             validationMessage={validations?.place_files?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'fG2HiJ',
-              defaultMessage: 'Massnahmen-Dateien',
-            })}
-            name="action_files"
-            value={row.action_files ?? false}
-            onChange={onChange}
-            validationState={validations?.action_files?.state}
-            validationMessage={validations?.action_files?.message}
           />
         </Section>
       </div>
