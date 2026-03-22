@@ -303,6 +303,14 @@ export const PlaceLevel = () => {
             validationMessage={validations?.place_report_values?.message}
           />
           <SwitchField
+            label={`${placeName}: ${formatMessage({ id: 'vN3SmI', defaultMessage: 'Beobachtungen zugeordnet' })}`}
+            name="observations"
+            value={row.observations ?? false}
+            onChange={onChange}
+            validationState={validations?.observations?.state}
+            validationMessage={validations?.observations?.message}
+          />
+          <SwitchField
             label={formatMessage({
               id: 'sK0PjF',
               defaultMessage: 'Kontrollen',
@@ -422,17 +430,6 @@ export const PlaceLevel = () => {
             onChange={onChange}
             validationState={validations?.action_files?.state}
             validationMessage={validations?.action_files?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'vN3SmI',
-              defaultMessage: 'Beobachtungen zugeordnet',
-            })}
-            name="observations"
-            value={row.observations ?? false}
-            onChange={onChange}
-            validationState={validations?.observations?.state}
-            validationMessage={validations?.observations?.message}
           />
           <SwitchField
             label={`${placeName}: Dateien`}
