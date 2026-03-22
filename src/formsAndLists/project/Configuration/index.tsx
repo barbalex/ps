@@ -324,6 +324,20 @@ export const Configuration = ({ from }) => {
               defaultMessage: 'Wähle ein KBS in der KBS-Liste',
             })}
           />
+        </Section>
+        <Section
+          title={formatMessage({
+            id: 'pV5WxY',
+            defaultMessage: 'Standard-Einheiten',
+          })}
+        >
+          <SectionDescription>
+            {formatMessage({
+              id: 'rX7ZaC',
+              defaultMessage:
+                'Sie können hier Standard-Einheiten definieren. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren',
+            })}
+          </SectionDescription>
           <RadioGroupField
             label={formatMessage({
               id: 'nR6StU',
