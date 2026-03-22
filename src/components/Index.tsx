@@ -28,8 +28,8 @@ export const Index = () => {
       <div className={styles.scrollContainer}>
         <h6 className={styles.pageTitle}>
           <FormattedMessage
-            id="KFwvHV"
-            defaultMessage="Seltene und bedrohte Arten fördern"
+            id="aP3RsT"
+            defaultMessage="Ein Werkzeug für Naturschutzfachleute, um seltene und bedrohte Arten und Lebensräume zu fördern."
           />
         </h6>
         <div className={styles.cardContainer}>

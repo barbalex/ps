@@ -76,10 +76,11 @@
 
 .pageTitle {
   text-align: center;
-  font-size: 2em !important;
+  font-size: 1.5em !important;
   margin: 0;
   padding-top: 15px;
-  padding-bottom: 0;
+  padding-left: 15px;
+  padding-right: 15px;
   font-weight: 700 !important;
   text-shadow:
     2px 2px 3px white,
@@ -88,14 +89,20 @@
     -2px 2px 3px white;
   @media (min-width: 700px) {
     padding-top: 20px;
-    padding-bottom: 5;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   @media (min-width: 1200px) {
     padding-top: 25px;
     padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
   @media (min-width: 1700px) {
     padding-top: 30px;
     padding-bottom: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 }
