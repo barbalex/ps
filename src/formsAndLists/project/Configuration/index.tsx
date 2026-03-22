@@ -248,76 +248,6 @@ export const Configuration = ({ from }) => {
         </Section>
         <Section
           title={formatMessage({
-            id: 'bU6VwX',
-            defaultMessage: 'Weitere Einstellungen',
-          })}
-        >
-          <TextField
-            label={formatMessage({
-              id: 'cY7ZaB',
-              defaultMessage: 'Teilprojekt sortieren nach (Feldname)',
-            })}
-            name="subproject_order_by"
-            value={row.subproject_order_by ?? ''}
-            onChange={onChange}
-            validationState={validations?.subproject_order_by?.state}
-            validationMessage={validations?.subproject_order_by?.message}
-          />
-          <LabelBy
-            label={formatMessage({
-              id: 'dC8DeF',
-              defaultMessage: 'Berichte beschriften nach',
-            })}
-            name="goal_reports_label_by"
-            table="goal_reports"
-            value={row.goal_reports_label_by ?? ''}
-            onChange={onChange}
-            extraFieldNames={['id']}
-            from={from}
-            validationState={validations?.goal_reports_label_by?.state}
-            validationMessage={validations?.goal_reports_label_by?.message}
-          />
-          <LabelBy
-            label={formatMessage({
-              id: 'eG9HiJ',
-              defaultMessage: 'Orte beschriften nach',
-            })}
-            name="places_label_by"
-            table="places"
-            value={row.places_label_by ?? ''}
-            onChange={onChange}
-            extraFieldNames={['id', 'level']}
-            from={from}
-            validationState={validations?.places_label_by?.state}
-            validationMessage={validations?.places_label_by?.message}
-          />
-          <FieldList
-            label={formatMessage({
-              id: 'fK0LmN',
-              defaultMessage: 'Orte sortieren nach',
-            })}
-            name="places_order_by"
-            table="projects"
-            fieldsTable="places"
-            id={projectId}
-            valueArray={row.places_order_by ?? []}
-            from={from}
-          />
-          <TextFieldInactive
-            label={formatMessage({
-              id: 'gO1PqR',
-              defaultMessage: 'Karten-Präsentations-KBS',
-            })}
-            name="map_presentation_crs"
-            value={row.map_presentation_crs ?? 'EPSG:4326'}
-            validationMessage={formatMessage({
-              id: 'hS2TuV',
-              defaultMessage: 'Wähle ein KBS in der KBS-Liste',
-            })}
-          />
-        </Section>
-        <Section
-          title={formatMessage({
             id: 'pV5WxY',
             defaultMessage: 'Standard-Einheiten',
           })}
@@ -520,6 +450,76 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.files_active_subprojects?.message}
             />
           </div>
+        </Section>
+        <Section
+          title={formatMessage({
+            id: 'bU6VwX',
+            defaultMessage: 'Weitere Einstellungen',
+          })}
+        >
+          <TextField
+            label={formatMessage({
+              id: 'cY7ZaB',
+              defaultMessage: 'Teilprojekt sortieren nach (Feldname)',
+            })}
+            name="subproject_order_by"
+            value={row.subproject_order_by ?? ''}
+            onChange={onChange}
+            validationState={validations?.subproject_order_by?.state}
+            validationMessage={validations?.subproject_order_by?.message}
+          />
+          <LabelBy
+            label={formatMessage({
+              id: 'dC8DeF',
+              defaultMessage: 'Berichte beschriften nach',
+            })}
+            name="goal_reports_label_by"
+            table="goal_reports"
+            value={row.goal_reports_label_by ?? ''}
+            onChange={onChange}
+            extraFieldNames={['id']}
+            from={from}
+            validationState={validations?.goal_reports_label_by?.state}
+            validationMessage={validations?.goal_reports_label_by?.message}
+          />
+          <LabelBy
+            label={formatMessage({
+              id: 'eG9HiJ',
+              defaultMessage: 'Orte beschriften nach',
+            })}
+            name="places_label_by"
+            table="places"
+            value={row.places_label_by ?? ''}
+            onChange={onChange}
+            extraFieldNames={['id', 'level']}
+            from={from}
+            validationState={validations?.places_label_by?.state}
+            validationMessage={validations?.places_label_by?.message}
+          />
+          <FieldList
+            label={formatMessage({
+              id: 'fK0LmN',
+              defaultMessage: 'Orte sortieren nach',
+            })}
+            name="places_order_by"
+            table="projects"
+            fieldsTable="places"
+            id={projectId}
+            valueArray={row.places_order_by ?? []}
+            from={from}
+          />
+          <TextFieldInactive
+            label={formatMessage({
+              id: 'gO1PqR',
+              defaultMessage: 'Karten-Präsentations-KBS',
+            })}
+            name="map_presentation_crs"
+            value={row.map_presentation_crs ?? 'EPSG:4326'}
+            validationMessage={formatMessage({
+              id: 'hS2TuV',
+              defaultMessage: 'Wähle ein KBS in der KBS-Liste',
+            })}
+          />
         </Section>
       </div>
     </div>
