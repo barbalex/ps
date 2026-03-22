@@ -311,6 +311,14 @@ export const PlaceLevel = () => {
             validationMessage={validations?.observations?.message}
           />
           <SwitchField
+            label={`${placeName}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
+            name="place_files"
+            value={row.place_files ?? false}
+            onChange={onChange}
+            validationState={validations?.place_files?.state}
+            validationMessage={validations?.place_files?.message}
+          />
+          <SwitchField
             label={formatMessage({
               id: 'sK0PjF',
               defaultMessage: 'Kontrollen',
@@ -324,7 +332,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'tL1QkG',
-              defaultMessage: 'Kontroll-Mengen',
+              defaultMessage: 'Kontrollen: Mengen',
             })}
             name="check_quantities"
             value={row.check_quantities ?? false}
@@ -335,7 +343,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'bP8TqJ',
-              defaultMessage: 'Kontroll-Berichte',
+              defaultMessage: 'Kontrollen: Berichte',
             })}
             name="check_reports"
             value={row.check_reports ?? false}
@@ -346,7 +354,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'cQ9UrK',
-              defaultMessage: 'Kontroll-Bericht-Mengen',
+              defaultMessage: 'Kontrollen: Bericht-Mengen',
             })}
             name="check_report_quantities"
             value={row.check_report_quantities ?? false}
@@ -357,7 +365,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'uM2RlH',
-              defaultMessage: 'Kontroll-Taxa',
+              defaultMessage: 'Kontrollen: Taxa',
             })}
             name="check_taxa"
             value={row.check_taxa ?? false}
@@ -368,7 +376,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'kL3MnO',
-              defaultMessage: 'Kontroll-Dateien',
+              defaultMessage: 'Kontrollen: Dateien',
             })}
             name="check_files"
             value={row.check_files ?? false}
@@ -390,7 +398,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'qI8NhD',
-              defaultMessage: 'Massnahmen-Mengen',
+              defaultMessage: 'Massnahmen: Mengen',
             })}
             name="action_quantities"
             value={row.action_quantities ?? false}
@@ -401,7 +409,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'rJ9OiE',
-              defaultMessage: 'Massnahmen-Berichte',
+              defaultMessage: 'Massnahmen: Berichte',
             })}
             name="action_reports"
             value={row.action_reports ?? false}
@@ -412,7 +420,7 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'aR7VqN',
-              defaultMessage: 'Massnahmen-Bericht-Mengen',
+              defaultMessage: 'Massnahmen: Bericht-Mengen',
             })}
             name="action_report_quantities"
             value={row.action_report_quantities ?? false}
@@ -423,21 +431,13 @@ export const PlaceLevel = () => {
           <SwitchField
             label={formatMessage({
               id: 'fG2HiJ',
-              defaultMessage: 'Massnahmen-Dateien',
+              defaultMessage: 'Massnahmen: Dateien',
             })}
             name="action_files"
             value={row.action_files ?? false}
             onChange={onChange}
             validationState={validations?.action_files?.state}
             validationMessage={validations?.action_files?.message}
-          />
-          <SwitchField
-            label={`${placeName}: Dateien`}
-            name="place_files"
-            value={row.place_files ?? false}
-            onChange={onChange}
-            validationState={validations?.place_files?.state}
-            validationMessage={validations?.place_files?.message}
           />
         </Section>
       </div>
