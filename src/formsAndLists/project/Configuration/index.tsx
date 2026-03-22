@@ -335,7 +335,7 @@ export const Configuration = ({ from }) => {
             {formatMessage({
               id: 'rX7ZaC',
               defaultMessage:
-                'Sie können hier Standard-Einheiten definieren. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren',
+                'Sie können hier Standard-Einheiten definieren. Die Standard-Einheit wird bei neuen Datensätzen voreingestellt (kann aber verändert werden). Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren. Sie müssen allerdings auch dafür sorgen, dass die Daten auch tatsächlich mit diesen Einheiten erfasst werden (Qualitätskontrollen können helfen).',
             })}
           </SectionDescription>
           <RadioGroupField

@@ -453,7 +453,7 @@
   "qI8NhD": "Misura: quantità",
   "qS1VxO": "È possibile attivare o disattivare le seguenti capacità secondo le proprie esigenze. Disattivare quelle non necessarie è consigliato, in quanto semplifica l'interfaccia utente nella modalità di modifica normale. In modalità progettazione, tutte le capacità sono attivate.",
   "pV5WxY": "Unità predefinite",
-  "rX7ZaC": "Qui è possibile definire le unità predefinite. La standardizzazione delle unità utilizzate consente di confrontare e analizzare i dati in modo sistematico",
+  "rX7ZaC": "Qui è possibile definire le unità predefinite. L'unità predefinita viene preimpostata per i nuovi record (ma può essere modificata). La standardizzazione delle unità utilizzate consente di confrontare e analizzare i dati in modo sistematico. Tuttavia, è necessario assicurarsi che i dati vengano effettivamente registrati con queste unità (i controlli di qualità possono essere d'aiuto).",
   "qyI8KV": "Utente",
   "qyfs2A": "Configurazione del progetto",
   "rEN8QI": "Più collaboratori hanno accidentalmente modificato gli stessi dati offline? È facile da correggere. Puoi vedere chi ha cambiato cosa e quando.",
