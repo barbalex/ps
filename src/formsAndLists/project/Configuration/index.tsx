@@ -406,17 +406,6 @@ export const Configuration = ({ from }) => {
           <div className="checkboxfield-list">
             <SwitchField
               label={formatMessage({
-                id: 'mL7MnO',
-                defaultMessage: 'Dateien lokal speichern (offline verfügbar)',
-              })}
-              name="files_offline"
-              value={row.files_offline}
-              onChange={onChange}
-              validationState={validations?.files_offline?.state}
-              validationMessage={validations?.files_offline?.message}
-            />
-            <SwitchField
-              label={formatMessage({
                 id: 'oP9QrS',
                 defaultMessage: 'Benutzer können Kartenebenen bearbeiten',
               })}
@@ -519,6 +508,17 @@ export const Configuration = ({ from }) => {
               id: 'hS2TuV',
               defaultMessage: 'Wähle ein KBS in der KBS-Liste',
             })}
+          />
+          <SwitchField
+            label={formatMessage({
+              id: 'mL7MnO',
+              defaultMessage: 'Dateien lokal speichern (offline verfügbar)',
+            })}
+            name="files_offline"
+            value={row.files_offline}
+            onChange={onChange}
+            validationState={validations?.files_offline?.state}
+            validationMessage={validations?.files_offline?.message}
           />
         </Section>
       </div>
