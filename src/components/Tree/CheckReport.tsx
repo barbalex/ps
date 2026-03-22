@@ -8,7 +8,7 @@ import { Node } from './Node.tsx'
 import { CheckReportQuantitiesNode } from './CheckReportQuantities.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
 export const CheckReportNode = ({
   projectId,
@@ -20,6 +20,7 @@ export const CheckReportNode = ({
   level = 10,
 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
@@ -93,7 +94,7 @@ export const CheckReportNode = ({
             childrenCount={0}
             to={`${ownUrl}/report`}
           />
-          {placeLevel?.check_report_quantities !== false && (
+          {(isDesigning || placeLevel?.check_report_quantities !== false) && (
             <CheckReportQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}
