@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Label, Divider } = fluentUiReactComponents
+const { Label } = fluentUiReactComponents
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
@@ -412,7 +412,13 @@ export const Configuration = ({ from }) => {
             validationState={validations?.check_taxa_default_unit_id?.state}
             validationMessage={validations?.check_taxa_default_unit_id?.message}
           />
-          <Divider />
+        </Section>
+        <Section
+          title={formatMessage({
+            id: 'sT8UvW',
+            defaultMessage: 'Wie Daten für Berichte ausgewertet werden',
+          })}
+        >
           <Label>
             {formatMessage({
               id: 'iW3XyZ',

@@ -456,6 +456,7 @@
   "qI8NhD": "Action: quantities",
   "qS1VxO": "You can enable or disable the following capabilities as needed. Disabling unused ones is recommended, as it simplifies the user interface in normal editing mode. In design mode, all capabilities are enabled.",
   "pV5WxY": "Default units",
+  "sT8UvW": "How data is evaluated for reports",
   "rX7ZaC": "You can select default units here. The default unit is pre-set for new records, but can be changed. Standardising the units used makes it possible to compare and analyse data systematically. Of course, you must also ensure that data is actually recorded using these units (quality controls can help).",
   "qyI8KV": "User",
   "qyfs2A": "Project Configuration",

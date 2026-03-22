@@ -453,6 +453,7 @@
   "qI8NhD": "Mesure: quantités",
   "qS1VxO": "Vous pouvez activer ou désactiver les capacités suivantes selon vos besoins. Désactiver celles qui ne sont pas utilisées est recommandé, car cela simplifie l'interface utilisateur en mode d'édition normal. En mode conception, toutes les capacités sont activées.",
   "pV5WxY": "Unités par défaut",
+  "sT8UvW": "Comment les données sont évaluées pour les rapports",
   "rX7ZaC": "Vous pouvez sélectionner ici des unités par défaut. L'unité par défaut est prédéfinie pour les nouveaux enregistrements, mais peut être modifiée. La standardisation des unités utilisées permet de comparer et d'analyser les données de manière systématique. Vous devez bien sûr aussi veiller à ce que les données soient effectivement saisies avec ces unités (les contrôles de qualité peuvent aider).",
   "qyI8KV": "Utilisateur",
   "qyfs2A": "Configuration du projet",
