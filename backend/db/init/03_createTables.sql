@@ -197,9 +197,6 @@ COMMENT ON TABLE projects IS 'Goal: manage projects';
 --------------------------------------------------------------
 -- place_levels
 --
--- TODO: we need a language setting for the user in the db
--- to set the label in triggers according to it
--- NOOOOOOO: label is not dependent on user...
 CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -232,6 +229,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   place_files boolean DEFAULT TRUE,
   action_files boolean DEFAULT TRUE,
   check_files boolean DEFAULT TRUE,
+  -- label depends on language, thus generated in the app code
   label text GENERATED ALWAYS AS (
     CASE
       WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
