@@ -318,24 +318,6 @@ export const Configuration = ({ from }) => {
               defaultMessage: 'Wähle ein KBS in der KBS-Liste',
             })}
           />
-          <SwitchField
-            label={formatMessage({
-              id: 'oP9QrS',
-              defaultMessage: 'Benutzer können Kartenebenen bearbeiten',
-            })}
-            name="users_can_edit_map_layers"
-            value={row.users_can_edit_map_layers ?? false}
-            onChange={onChange}
-            validationState={validations?.users_can_edit_map_layers?.state}
-            validationMessage={
-              validations?.users_can_edit_map_layers?.message ??
-              formatMessage({
-                id: 'hQ0RsU',
-                defaultMessage:
-                  'Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
-              })
-            }
-          />
           <RadioGroupField
             label={formatMessage({
               id: 'nR6StU',
@@ -463,7 +445,17 @@ export const Configuration = ({ from }) => {
               validations.multiple_check_quantities_on_same_level?.message
             }
           />
-          <Divider />
+        </Section>
+        <Section
+          title={formatMessage({ id: 'yR6TsL', defaultMessage: 'Fähigkeiten' })}
+        >
+          <SectionDescription>
+            {formatMessage({
+              id: 'qS1VxO',
+              defaultMessage:
+                'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren vereinfacht die Benutzeroberfläche.',
+            })}
+          </SectionDescription>
           <div className="checkboxfield-list">
             <SwitchField
               label={formatMessage({
@@ -475,6 +467,24 @@ export const Configuration = ({ from }) => {
               onChange={onChange}
               validationState={validations?.files_offline?.state}
               validationMessage={validations?.files_offline?.message}
+            />
+            <SwitchField
+              label={formatMessage({
+                id: 'oP9QrS',
+                defaultMessage: 'Benutzer können Kartenebenen bearbeiten',
+              })}
+              name="users_can_edit_map_layers"
+              value={row.users_can_edit_map_layers ?? false}
+              onChange={onChange}
+              validationState={validations?.users_can_edit_map_layers?.state}
+              validationMessage={
+                validations?.users_can_edit_map_layers?.message ??
+                formatMessage({
+                  id: 'hQ0RsU',
+                  defaultMessage:
+                    'Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
+                })
+              }
             />
             <Label>
               {formatMessage({
