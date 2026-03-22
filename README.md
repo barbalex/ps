@@ -1,6 +1,6 @@
 # Promoting rare and endangered species
 
-Something is growing here. Inspired by [apflora](https://apflora.ch).
+A tool for nature conservation experts to callaboratively promote rare, endangered species and habitats. Inspired by [apflora](https://apflora.ch).
 
 ### Places
 
