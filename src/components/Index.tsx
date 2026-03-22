@@ -29,7 +29,7 @@ export const Index = () => {
         <h6 className={styles.pageTitle}>
           <FormattedMessage
             id="aP3RsT"
-            defaultMessage="Ein Werkzeug für Naturschutzfachleute, um seltene und bedrohte Arten und Lebensräume zu fördern."
+            defaultMessage="Ein Werkzeug für Naturschutzfachleute, um bedrohte Arten und Lebensräume zu fördern."
           />
         </h6>
         <div className={styles.cardContainer}>
