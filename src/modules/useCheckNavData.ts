@@ -18,6 +18,7 @@ type NavData = {
   id: string
   label: string
   check_quantities_count: number
+  check_reports_count: number
   check_taxa_count: number
   files_count: number
 }
@@ -36,17 +37,20 @@ export const useCheckNavData = ({
   const sql = `
       WITH
         check_quantities_count AS (SELECT count(*) FROM check_quantities WHERE check_id = '${checkId}'),
+        check_reports_count AS (SELECT count(*) FROM check_reports WHERE check_id = '${checkId}'),
         check_taxa_count AS (SELECT count(*) FROM check_taxa WHERE check_id = '${checkId}'),
         files_count AS (SELECT count(*) FROM files WHERE check_id = '${checkId}')
       SELECT
         check_id AS id,
         label,
         check_quantities_count.count AS check_quantities_count,
+        check_reports_count.count AS check_reports_count,
         check_taxa_count.count AS check_taxa_count,
         files_count.count AS files_count
       FROM 
         checks,
         check_quantities_count,
+        check_reports_count,
         check_taxa_count,
         files_count
       WHERE 
@@ -56,7 +60,7 @@ export const useCheckNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_quantities, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_reports, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -111,6 +115,21 @@ export const useCheckNavData = ({
                 namePlural: formatMessage({
                   id: 'Xuj/Gy',
                   defaultMessage: 'Mengen',
+                }),
+              }),
+            },
+          ]
+        : []),
+      ...(isDesigning || placeLevel?.check_reports !== false
+        ? [
+            {
+              id: 'reports',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.check_reports_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'CiJ0SG',
+                  defaultMessage: 'Berichte',
                 }),
               }),
             },
