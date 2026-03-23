@@ -429,14 +429,7 @@ export const Configuration = ({ from }) => {
               value={row.wms_layers ?? false}
               onChange={onChange}
               validationState={validations?.wms_layers?.state}
-              validationMessage={
-                validations?.wms_layers?.message ??
-                formatMessage({
-                  id: 'uW3XyZ',
-                  defaultMessage:
-                    'Aktiviert WMS-Dienste und WMS-Ebenen. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
-                })
-              }
+              validationMessage={validations?.wms_layers?.message}
             />
             <SwitchField
               label={formatMessage({
@@ -447,14 +440,7 @@ export const Configuration = ({ from }) => {
               value={row.vector_layers ?? false}
               onChange={onChange}
               validationState={validations?.vector_layers?.state}
-              validationMessage={
-                validations?.vector_layers?.message ??
-                formatMessage({
-                  id: 'wY5ZaB',
-                  defaultMessage:
-                    'Aktiviert WFS-Dienste und Vektor-Ebenen. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig.',
-                })
-              }
+              validationMessage={validations?.vector_layers?.message}
             />
             <SwitchField
               label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
