@@ -107,12 +107,23 @@ export const PlaceReportWithQuantities = ({ from }) => {
                   defaultMessage: 'Mengen',
                 })}
               >
-                {quantities.map((q) => (
-                  <PlaceReportQuantityInline
-                    key={q.place_report_quantity_id}
-                    placeReportQuantityId={q.place_report_quantity_id}
-                    projectId={projectId}
-                  />
+                {quantities.map((q, i) => (
+                  <div key={q.place_report_quantity_id}>
+                    {i > 0 && (
+                      <div
+                        style={{
+                          borderTop: '8px solid rgb(225, 247, 224)',
+                          marginLeft: -10,
+                          marginRight: -10,
+                          marginBottom: 8,
+                        }}
+                      />
+                    )}
+                    <PlaceReportQuantityInline
+                      placeReportQuantityId={q.place_report_quantity_id}
+                      projectId={projectId}
+                    />
+                  </div>
                 ))}
                 <Tooltip
                   content={formatMessage({
