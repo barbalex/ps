@@ -61,7 +61,7 @@ export default interface PlaceLevels {
   /** Are reports used? Preset: true */
   place_reports: boolean | null;
 
-  /** Are report values used? Preset: true */
+  /** Are report quantities used? Preset: true */
   place_report_quantities: boolean | null;
 
   /** Are actions used? Preset: true */
