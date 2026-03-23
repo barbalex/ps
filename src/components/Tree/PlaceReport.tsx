@@ -25,7 +25,7 @@ export const PlaceReportNode = ({
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
-    `SELECT place_report_values
+    `SELECT place_report_quantities
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
@@ -91,7 +91,7 @@ export const PlaceReportNode = ({
             childrenCount={0}
             to={`${ownUrl}/report`}
           />
-          {(isDesigning || placeLevel?.place_report_values !== false) && (
+          {(isDesigning || placeLevel?.place_report_quantities !== false) && (
             <PlaceReportQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}

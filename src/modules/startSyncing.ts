@@ -96,7 +96,7 @@ export const startSyncing = async () => {
                 'name_short_fr',
                 'name_short_it',
                 'place_reports',
-                'place_report_values',
+                'place_report_quantities',
                 'actions',
                 'action_quantities',
                 'action_reports',

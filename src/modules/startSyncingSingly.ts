@@ -22,7 +22,7 @@ const tablesSyncData = [
   //     'name_plural',
   //     'name_short',
   //     'place_reports',
-  //     'place_report_values',
+  //     'place_report_quantities',
   //     'actions',
   //     'action_quantities',
   //     'action_reports',

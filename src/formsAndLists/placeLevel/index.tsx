@@ -296,11 +296,11 @@ export const PlaceLevel = () => {
           {(isDesigning || row.place_reports) && (
             <SwitchField
               label={`${placeName}: ${formatMessage({ id: 'oG6LfB', defaultMessage: 'Bericht-Mengen' })}`}
-              name="place_report_values"
-              value={row.place_report_values ?? false}
+              name="place_report_quantities"
+              value={row.place_report_quantities ?? false}
               onChange={onChange}
-              validationState={validations?.place_report_values?.state}
-              validationMessage={validations?.place_report_values?.message}
+              validationState={validations?.place_report_quantities?.state}
+              validationMessage={validations?.place_report_quantities?.message}
             />
           )}
           <SwitchField

@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   name_plural_it text DEFAULT NULL,
   name_short_it text DEFAULT NULL,
   place_reports boolean DEFAULT TRUE,
-  place_report_values boolean DEFAULT TRUE,
+  place_report_quantities boolean DEFAULT TRUE,
   actions boolean DEFAULT TRUE,
   action_quantities boolean DEFAULT TRUE,
   action_reports boolean DEFAULT TRUE,
@@ -281,7 +281,7 @@ COMMENT ON COLUMN place_levels.name_singular_it IS 'Italian singular name. Prese
 COMMENT ON COLUMN place_levels.name_plural_it IS 'Italian plural name. Preset: "Popolazioni"';
 COMMENT ON COLUMN place_levels.name_short_it IS 'Italian short name. Preset: "Pop"';
 COMMENT ON COLUMN place_levels.place_reports IS 'Are reports used? Preset: true';
-COMMENT ON COLUMN place_levels.place_report_values IS 'Are report values used? Preset: true';
+COMMENT ON COLUMN place_levels.place_report_quantities IS 'Are report quantities used? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
 COMMENT ON COLUMN place_levels.action_quantities IS 'Are action values used? Preset: true';
 COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: true';

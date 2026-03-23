@@ -49,7 +49,7 @@ export const usePlaceReportNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT place_report_values FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT place_report_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -94,7 +94,7 @@ export const usePlaceReportNavData = ({
         id: 'report',
         label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
       },
-      ...(isDesigning || placeLevel?.place_report_values !== false
+      ...(isDesigning || placeLevel?.place_report_quantities !== false
         ? [
             {
               id: 'quantities',
