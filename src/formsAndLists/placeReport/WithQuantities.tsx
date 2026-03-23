@@ -125,6 +125,15 @@ export const PlaceReportWithQuantities = ({ from }) => {
                     />
                   </div>
                 ))}
+                {quantities.length > 0 && (
+                  <div
+                    style={{
+                      borderTop: '8px solid rgb(225, 247, 224)',
+                      marginLeft: -10,
+                      marginRight: -10,
+                    }}
+                  />
+                )}
                 <Tooltip
                   content={formatMessage({
                     id: 'V6iUlF',
