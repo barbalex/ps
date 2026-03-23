@@ -243,6 +243,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_quantities boolean DEFAULT TRUE,
   check_quantities_in_check boolean DEFAULT TRUE,
   check_taxa boolean DEFAULT TRUE,
+  check_taxa_in_check boolean DEFAULT TRUE,
   check_reports boolean DEFAULT TRUE,
   check_report_quantities boolean DEFAULT TRUE,
   check_report_quantities_in_report boolean DEFAULT TRUE,

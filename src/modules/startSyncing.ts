@@ -108,6 +108,7 @@ export const startSyncing = async () => {
                 'check_quantities',
                 'check_quantities_in_check',
                 'check_taxa',
+                'check_taxa_in_check',
                 'check_reports',
                 'check_report_quantities',
                 'check_report_quantities_in_report',

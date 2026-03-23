@@ -677,5 +677,9 @@
   "gRVMng": "Quantità",
   "qB8CdE": "Unità predefinita per i valori di controllo",
   "mP7QrS": "Unità predefinita per le quantità dei taxa di controllo",
-  "vU6WxY": "Aiuta ad analizzare i dati nei rapporti. Esempi: «classe di abbondanza», «copertura». Se non è impostata alcuna unità, si presume che la tassonomia descriva solo la presenza."
+  "vU6WxY": "Aiuta ad analizzare i dati nei rapporti. Esempi: «classe di abbondanza», «copertura». Se non è impostata alcuna unità, si presume che la tassonomia descriva solo la presenza.",
+  "gE4ItL": "Controllo: taxa nel controllo",
+  "hF5JuM": "Elimina taxon",
+  "iG6KvN": "Elimina taxon?",
+  "jH7LwO": "Aggiungi taxon"
 }

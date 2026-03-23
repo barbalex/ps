@@ -420,6 +420,19 @@ export const PlaceLevel = () => {
             validationState={validations?.check_taxa?.state}
             validationMessage={validations?.check_taxa?.message}
           />
+          {(isDesigning || row.check_taxa) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'gE4ItL',
+                defaultMessage: 'Kontrollen: Taxa in Kontrolle',
+              })}
+              name="check_taxa_in_check"
+              value={row.check_taxa_in_check ?? true}
+              onChange={onChange}
+              validationState={validations?.check_taxa_in_check?.state}
+              validationMessage={validations?.check_taxa_in_check?.message}
+            />
+          )}
           <SwitchField
             label={formatMessage({
               id: 'kL3MnO',

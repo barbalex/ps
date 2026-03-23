@@ -700,5 +700,9 @@
   "gRVMng": "Quantity",
   "qB8CdE": "Default unit for check values",
   "mP7QrS": "Default unit for check taxon quantities",
-  "vU6WxY": "Helps analysing data in reports. Examples: «abundance class», «cover». If no unit is set, the taxonomy is assumed to describe presence only."
+  "vU6WxY": "Helps analysing data in reports. Examples: «abundance class», «cover». If no unit is set, the taxonomy is assumed to describe presence only.",
+  "gE4ItL": "Check: taxa in check",
+  "hF5JuM": "Delete taxon",
+  "iG6KvN": "Delete taxon?",
+  "jH7LwO": "Add taxon"
 }

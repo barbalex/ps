@@ -30,7 +30,7 @@ export const CheckNode = ({
 
   // need project to know whether to show files
   const res = useLiveQuery(
-    `SELECT check_files, check_quantities, check_quantities_in_check, check_reports, check_taxa
+    `SELECT check_files, check_quantities, check_quantities_in_check, check_reports, check_taxa, check_taxa_in_check
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
@@ -39,6 +39,7 @@ export const CheckNode = ({
   const showFiles = isDesigning || row?.check_files !== false
   const placeLevel = row
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
+  const taxaInCheck = placeLevel?.check_taxa_in_check !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -123,16 +124,17 @@ export const CheckNode = ({
               level={level + 1}
             />
           )}
-          {(isDesigning || placeLevel?.check_taxa !== false) && (
-            <CheckTaxaNode
-              projectId={projectId}
-              subprojectId={subprojectId}
-              placeId={placeId}
-              placeId2={placeId2}
-              checkId={nav.id}
-              level={level + 1}
-            />
-          )}
+          {!taxaInCheck &&
+            (isDesigning || placeLevel?.check_taxa !== false) && (
+              <CheckTaxaNode
+                projectId={projectId}
+                subprojectId={subprojectId}
+                placeId={placeId}
+                placeId2={placeId2}
+                checkId={nav.id}
+                level={level + 1}
+              />
+            )}
           {showFiles && (
             <FilesNode
               projectId={projectId}

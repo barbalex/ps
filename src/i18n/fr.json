@@ -677,5 +677,9 @@
   "gRVMng": "Quantité",
   "qB8CdE": "Unité par défaut pour les valeurs de contrôle",
   "mP7QrS": "Unité par défaut pour les quantités de taxons de contrôle",
-  "vU6WxY": "Aide à analyser les données dans les rapports. Exemples : «classe d’abondance», «recouvrement». Si aucune unité n’est définie, la taxonomie est supposée ne décrire que la présence."
+  "vU6WxY": "Aide à analyser les données dans les rapports. Exemples : «classe d'abondance», «recouvrement». Si aucune unité n'est définie, la taxonomie est supposée ne décrire que la présence.",
+  "gE4ItL": "Contrôle: taxa dans le contrôle",
+  "hF5JuM": "Supprimer le taxon",
+  "iG6KvN": "Supprimer le taxon?",
+  "jH7LwO": "Ajouter un taxon"
 }
