@@ -15,7 +15,7 @@ export const Type = ({ onChange, validations, row }) => {
 
   return (
     <RadioGroupFromOptions
-      label={formatMessage({ id: 'wA1BcD', defaultMessage: 'Projekttyp' })}
+      label={formatMessage({ id: 'wA1BcD', defaultMessage: 'Projekt-Typ' })}
       name="type"
       options={options}
       value={row.type ?? ''}
