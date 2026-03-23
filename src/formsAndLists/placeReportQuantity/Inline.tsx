@@ -164,105 +164,114 @@ export const PlaceReportQuantityInline = ({
   if (!row) return null
 
   return (
-    <div className="form-container-embedded">
-      <RadioGroupField
-        label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-        name="unit_id"
-        list={unitIds}
-        labelMap={unitLabelMap}
-        isLoading={unitsRes === undefined}
-        value={row.unit_id ?? ''}
-        onChange={onChange}
-        layout="horizontal"
-        validationState={
-          selectedUnit && !selectedUnit.type
-            ? 'warning'
-            : (validations?.unit_id?.state ?? 'none')
-        }
-        validationMessage={
-          selectedUnit && !selectedUnit.type
-            ? formatMessage({
-                id: 'uN4VwX',
-                defaultMessage:
-                  'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
-              })
-            : validations?.unit_id?.message
-        }
-      />
-      {selectedUnit?.list_id && hasListValues ? (
-        listValues.length <= 5 ? (
-          <RadioGroupField
-            label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-            name={unitValueField}
-            list={listValueIds}
-            labelMap={listValueLabelMap}
-            value={currentListValueStr}
-            onChange={(_e, data) => onListValueChange(data?.value ?? null)}
-            layout="horizontal"
-            validationState={validations?.[unitValueField]?.state}
-            validationMessage={validations?.[unitValueField]?.message}
-          />
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 15,
+        }}
+      >
+        <RadioGroupField
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+          name="unit_id"
+          list={unitIds}
+          labelMap={unitLabelMap}
+          isLoading={unitsRes === undefined}
+          value={row.unit_id ?? ''}
+          onChange={onChange}
+          layout="horizontal"
+          validationState={
+            selectedUnit && !selectedUnit.type
+              ? 'warning'
+              : (validations?.unit_id?.state ?? 'none')
+          }
+          validationMessage={
+            selectedUnit && !selectedUnit.type
+              ? formatMessage({
+                  id: 'uN4VwX',
+                  defaultMessage:
+                    'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
+                })
+              : validations?.unit_id?.message
+          }
+        />
+        {selectedUnit?.list_id && hasListValues ? (
+          listValues.length <= 5 ? (
+            <RadioGroupField
+              label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+              name={unitValueField}
+              list={listValueIds}
+              labelMap={listValueLabelMap}
+              value={currentListValueStr}
+              onChange={(_e, data) => onListValueChange(data?.value ?? null)}
+              layout="horizontal"
+              validationState={validations?.[unitValueField]?.state}
+              validationMessage={validations?.[unitValueField]?.message}
+            />
+          ) : (
+            <DropdownFieldSimpleOptions
+              name={unitValueField}
+              label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+              options={listValueIds}
+              value={currentListValueStr}
+              onChange={(e) => onListValueChange(e.target.value ?? null)}
+              validationState={validations?.[unitValueField]?.state}
+              validationMessage={validations?.[unitValueField]?.message}
+            />
+          )
         ) : (
-          <DropdownFieldSimpleOptions
-            name={unitValueField}
-            label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-            options={listValueIds}
-            value={currentListValueStr}
-            onChange={(e) => onListValueChange(e.target.value ?? null)}
-            validationState={validations?.[unitValueField]?.state}
-            validationMessage={validations?.[unitValueField]?.message}
-          />
-        )
-      ) : (
-        <>
-          {(selectedUnit?.type === 'integer' ||
-            row.quantity_integer !== null) && (
-            <TextField
-              label={
-                selectedUnit?.type !== 'integer'
-                  ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
-                  : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
-              }
-              name="quantity_integer"
-              type="number"
-              value={row.quantity_integer ?? ''}
-              onChange={onChange}
-              validationState={validations?.quantity_integer?.state}
-              validationMessage={validations?.quantity_integer?.message}
-            />
-          )}
-          {(selectedUnit?.type === 'numeric' ||
-            row.quantity_numeric !== null) && (
-            <TextField
-              label={
-                selectedUnit?.type !== 'numeric'
-                  ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
-                  : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
-              }
-              name="quantity_numeric"
-              type="number"
-              value={row.quantity_numeric ?? ''}
-              onChange={onChange}
-              validationState={validations?.quantity_numeric?.state}
-              validationMessage={validations?.quantity_numeric?.message}
-            />
-          )}
-          {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
-            <TextField
-              label={
-                selectedUnit?.type !== 'text'
-                  ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
-                  : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
-              }
-              name="quantity_text"
-              value={row.quantity_text ?? ''}
-              onChange={onChange}
-              validationState={validations?.quantity_text?.state}
-              validationMessage={validations?.quantity_text?.message}
-            />
-          )}
-        </>
-      )}
+          <>
+            {(selectedUnit?.type === 'integer' ||
+              row.quantity_integer !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'integer'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="quantity_integer"
+                type="number"
+                value={row.quantity_integer ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_integer?.state}
+                validationMessage={validations?.quantity_integer?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'numeric' ||
+              row.quantity_numeric !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'numeric'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="quantity_numeric"
+                type="number"
+                value={row.quantity_numeric ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_numeric?.state}
+                validationMessage={validations?.quantity_numeric?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'text'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="quantity_text"
+                value={row.quantity_text ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_text?.state}
+                validationMessage={validations?.quantity_text?.message}
+              />
+            )}
+          </>
+        )}
+      </div>
       <Delete
         deleteRow={deleteRow}
         deleteLabel={formatMessage({
