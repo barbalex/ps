@@ -64,6 +64,9 @@ export default interface PlaceLevels {
   /** Are report quantities used? Preset: true */
   place_report_quantities: boolean | null;
 
+  /** Show report quantities inside the report form instead of a separate route? Preset: true */
+  place_report_quantities_in_report: boolean | null;
+
   /** Are actions used? Preset: true */
   actions: boolean | null;
 
@@ -176,6 +179,12 @@ export interface PlaceLevelsInitializer {
    * Default value: true
    */
   place_report_quantities?: boolean | null;
+
+  /**
+   * Show report quantities inside the report form instead of a separate route? Preset: true
+   * Default value: true
+   */
+  place_report_quantities_in_report?: boolean | null;
 
   /**
    * Are actions used? Preset: true
@@ -314,6 +323,9 @@ export interface PlaceLevelsMutator {
 
   /** Are report quantities used? Preset: true */
   place_report_quantities?: boolean | null;
+
+  /** Show report quantities inside the report form instead of a separate route? Preset: true */
+  place_report_quantities_in_report?: boolean | null;
 
   /** Are actions used? Preset: true */
   actions?: boolean | null;
