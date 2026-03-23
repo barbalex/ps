@@ -51,7 +51,7 @@ export const useCheckReportNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_report_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_report_quantities, check_report_quantities_in_report FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -93,27 +93,30 @@ export const useCheckReportNavData = ({
     ownUrl,
     label,
     notFound,
-    navs: [
-      {
-        id: 'report',
-        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
-      },
-      ...(isDesigning || placeLevel?.check_report_quantities !== false
+    navs:
+      placeLevel?.check_report_quantities_in_report === false
         ? [
             {
-              id: 'quantities',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.check_report_quantities_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                }),
-              }),
+              id: 'report',
+              label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
             },
+            ...(isDesigning || placeLevel?.check_report_quantities !== false
+              ? [
+                  {
+                    id: 'quantities',
+                    label: buildNavLabel({
+                      loading,
+                      countFiltered: nav?.check_report_quantities_count ?? 0,
+                      namePlural: formatMessage({
+                        id: 'Xuj/Gy',
+                        defaultMessage: 'Mengen',
+                      }),
+                    }),
+                  },
+                ]
+              : []),
           ]
-        : []),
-    ],
+        : [],
   }
 
   return { navData, loading }

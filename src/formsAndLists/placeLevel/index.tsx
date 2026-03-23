@@ -377,6 +377,23 @@ export const PlaceLevel = () => {
             validationState={validations?.check_report_quantities?.state}
             validationMessage={validations?.check_report_quantities?.message}
           />
+          {(isDesigning || row.check_report_quantities) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'eS9TuN',
+                defaultMessage: 'Kontrollen: Bericht-Mengen im Bericht',
+              })}
+              name="check_report_quantities_in_report"
+              value={row.check_report_quantities_in_report ?? true}
+              onChange={onChange}
+              validationState={
+                validations?.check_report_quantities_in_report?.state
+              }
+              validationMessage={
+                validations?.check_report_quantities_in_report?.message
+              }
+            />
+          )}
           <SwitchField
             label={formatMessage({
               id: 'uM2RlH',

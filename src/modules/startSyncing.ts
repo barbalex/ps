@@ -107,6 +107,7 @@ export const startSyncing = async () => {
                 'check_taxa',
                 'check_reports',
                 'check_report_quantities',
+                'check_report_quantities_in_report',
                 'observations',
                 'created_at',
                 'updated_at',
