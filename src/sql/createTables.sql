@@ -235,6 +235,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   place_report_quantities_in_report boolean DEFAULT TRUE,
   actions boolean DEFAULT TRUE,
   action_quantities boolean DEFAULT TRUE,
+  action_quantities_in_action boolean DEFAULT TRUE,
   action_reports boolean DEFAULT TRUE,
   action_report_quantities boolean DEFAULT TRUE,
   action_report_quantities_in_report boolean DEFAULT TRUE,
@@ -289,6 +290,7 @@ COMMENT ON COLUMN place_levels.place_report_quantities IS 'Are report quantities
 COMMENT ON COLUMN place_levels.place_report_quantities_in_report IS 'Show report quantities inside the report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
 COMMENT ON COLUMN place_levels.action_quantities IS 'Are action values used? Preset: true';
+COMMENT ON COLUMN place_levels.action_quantities_in_action IS 'Show action quantities inside the action form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: true';
 COMMENT ON COLUMN place_levels.action_report_quantities IS 'Are action report quantities used? Preset: true';
 COMMENT ON COLUMN place_levels.action_report_quantities_in_report IS 'Show action report quantities inside the action report form instead of a separate route? Preset: true';

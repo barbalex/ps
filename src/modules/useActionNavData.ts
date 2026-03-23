@@ -57,10 +57,11 @@ export const useActionNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT action_quantities, action_reports, action_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_quantities, action_quantities_in_action, action_reports, action_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
+  const quantitiesInAction = placeLevel?.action_quantities_in_action !== false
 
   const parentArray = [
     'data',
@@ -102,7 +103,7 @@ export const useActionNavData = ({
         id: 'action',
         label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
       },
-      ...(isDesigning || placeLevel?.action_quantities !== false
+      ...(!quantitiesInAction && (isDesigning || placeLevel?.action_quantities !== false)
         ? [
             {
               id: 'quantities',

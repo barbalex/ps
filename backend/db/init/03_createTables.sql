@@ -235,6 +235,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   place_report_quantities_in_report boolean DEFAULT TRUE,
   actions boolean DEFAULT TRUE,
   action_quantities boolean DEFAULT TRUE,
+  action_quantities_in_action boolean DEFAULT TRUE,
   action_reports boolean DEFAULT TRUE,
   action_report_quantities boolean DEFAULT TRUE,
   action_report_quantities_in_report boolean DEFAULT TRUE,

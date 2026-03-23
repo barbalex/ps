@@ -365,7 +365,9 @@ export const PlaceLevel = () => {
               value={row.check_quantities_in_check ?? true}
               onChange={onChange}
               validationState={validations?.check_quantities_in_check?.state}
-              validationMessage={validations?.check_quantities_in_check?.message}
+              validationMessage={
+                validations?.check_quantities_in_check?.message
+              }
             />
           )}
           <SwitchField
@@ -451,6 +453,21 @@ export const PlaceLevel = () => {
             validationState={validations?.action_quantities?.state}
             validationMessage={validations?.action_quantities?.message}
           />
+          {(isDesigning || row.action_quantities) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'fD5OsU',
+                defaultMessage: 'Massnahmen: Mengen in Massnahme',
+              })}
+              name="action_quantities_in_action"
+              value={row.action_quantities_in_action ?? true}
+              onChange={onChange}
+              validationState={validations?.action_quantities_in_action?.state}
+              validationMessage={
+                validations?.action_quantities_in_action?.message
+              }
+            />
+          )}
           <SwitchField
             label={formatMessage({
               id: 'rJ9OiE',

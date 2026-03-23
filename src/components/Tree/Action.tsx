@@ -27,13 +27,14 @@ export const ActionNode = ({
   const navigate = useNavigate()
 
   const res = useLiveQuery(
-    `SELECT action_files, action_quantities, action_reports
+    `SELECT action_files, action_quantities, action_quantities_in_action, action_reports
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
   )
   const row = res?.rows?.[0]
   const showFiles = isDesigning || row?.action_files !== false
+  const quantitiesInAction = row?.action_quantities_in_action !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -95,16 +96,17 @@ export const ActionNode = ({
             childrenCount={0}
             to={`${ownUrl}/action`}
           />
-          {(isDesigning || row?.action_quantities !== false) && (
-            <ActionQuantitiesNode
-              projectId={projectId}
-              subprojectId={subprojectId}
-              placeId={placeId}
-              placeId2={placeId2}
-              actionId={nav.id}
-              level={level + 1}
-            />
-          )}
+          {!quantitiesInAction &&
+            (isDesigning || row?.action_quantities !== false) && (
+              <ActionQuantitiesNode
+                projectId={projectId}
+                subprojectId={subprojectId}
+                placeId={placeId}
+                placeId2={placeId2}
+                actionId={nav.id}
+                level={level + 1}
+              />
+            )}
           {(isDesigning || row?.action_reports !== false) && (
             <ActionReportsNode
               projectId={projectId}
