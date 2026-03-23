@@ -6,11 +6,13 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { Delete } from '../../components/FormMenu/Delete.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../store.ts'
 import type CheckTaxa from '../../models/public/CheckTaxa.ts'
 import type Units from '../../models/public/Units.ts'
+import type ListValues from '../../models/public/ListValues.ts'
 
 type Props = {
   checkTaxonId: string
@@ -30,15 +32,46 @@ export const CheckTaxonInline = ({ checkTaxonId, projectId }: Props) => {
   const row: CheckTaxa | undefined = res?.rows?.[0]
 
   const unitsRes = useLiveQuery(
-    `SELECT unit_id, name, type FROM units WHERE project_id = $1 ORDER BY sort, name`,
+    `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name' | 'type'>[] = unitsRes?.rows ?? []
+  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] =
+    unitsRes?.rows ?? []
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
   )
   const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
+
+  const listValuesRes = useLiveQuery(
+    `SELECT * FROM list_values WHERE list_id = $1 AND (obsolete IS NULL OR obsolete = false) ORDER BY value_integer, value_numeric, value_text, label`,
+    [selectedUnit?.list_id ?? '00000000-0000-0000-0000-000000000000'],
+  )
+  const listValues: ListValues[] = listValuesRes?.rows ?? []
+  const hasListValues = listValues.length > 0
+
+  const unitValueField =
+    selectedUnit?.type === 'integer'
+      ? 'quantity_integer'
+      : selectedUnit?.type === 'numeric'
+        ? 'quantity_numeric'
+        : selectedUnit?.type === 'text'
+          ? 'quantity_text'
+          : null
+
+  const currentListValueStr = unitValueField
+    ? (row?.[unitValueField]?.toString() ?? '')
+    : ''
+
+  const listValueOptions = listValues.map((lv) => ({
+    value:
+      (lv.value_integer ?? lv.value_numeric ?? lv.value_text)?.toString() ?? '',
+    label: lv.label ?? '',
+  }))
+  const listValueIds = listValueOptions.map((o) => o.value)
+  const listValueLabelMap = Object.fromEntries(
+    listValueOptions.map((o) => [o.value, o.label]),
+  )
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -66,6 +99,44 @@ export const CheckTaxonInline = ({ checkTaxonId, projectId }: Props) => {
       rowId: checkTaxonId,
       operation: 'update',
       draft: { [name]: value },
+      prev: { ...row },
+    })
+  }
+
+  const onListValueChange = async (valueStr: string | null) => {
+    if (!unitValueField) return
+    const typedValue =
+      valueStr === null || valueStr === ''
+        ? null
+        : selectedUnit?.type === 'integer'
+          ? parseInt(valueStr, 10)
+          : selectedUnit?.type === 'numeric'
+            ? parseFloat(valueStr)
+            : valueStr
+    if (row[unitValueField] === typedValue) return
+    try {
+      await db.query(
+        `UPDATE check_taxa SET ${unitValueField} = $1 WHERE check_taxon_id = $2`,
+        [typedValue, checkTaxonId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        [unitValueField]: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [unitValueField]: _, ...rest } = prev
+      return rest
+    })
+    addOperation({
+      table: 'check_taxa',
+      rowIdName: 'check_taxon_id',
+      rowId: checkTaxonId,
+      operation: 'update',
+      draft: { [unitValueField]: typedValue },
       prev: { ...row },
     })
   }
@@ -162,39 +233,79 @@ export const CheckTaxonInline = ({ checkTaxonId, projectId }: Props) => {
               : validations?.unit_id?.message
           }
         />
-        {(selectedUnit?.type === 'integer' ||
-          row.quantity_integer !== null) && (
-          <TextField
-            label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-            name="quantity_integer"
-            type="number"
-            value={row.quantity_integer ?? ''}
-            onChange={onChange}
-            validationState={validations?.quantity_integer?.state}
-            validationMessage={validations?.quantity_integer?.message}
-          />
-        )}
-        {(selectedUnit?.type === 'numeric' ||
-          row.quantity_numeric !== null) && (
-          <TextField
-            label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-            name="quantity_numeric"
-            type="number"
-            value={row.quantity_numeric ?? ''}
-            onChange={onChange}
-            validationState={validations?.quantity_numeric?.state}
-            validationMessage={validations?.quantity_numeric?.message}
-          />
-        )}
-        {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
-          <TextField
-            label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-            name="quantity_text"
-            value={row.quantity_text ?? ''}
-            onChange={onChange}
-            validationState={validations?.quantity_text?.state}
-            validationMessage={validations?.quantity_text?.message}
-          />
+        {selectedUnit?.list_id && hasListValues ? (
+          listValues.length <= 5 ? (
+            <RadioGroupField
+              label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+              name={`${unitValueField}_${checkTaxonId}`}
+              list={listValueIds}
+              labelMap={listValueLabelMap}
+              value={currentListValueStr}
+              onChange={(_e, data) => onListValueChange(data?.value ?? null)}
+              layout="horizontal"
+              validationState={validations?.[unitValueField]?.state}
+              validationMessage={validations?.[unitValueField]?.message}
+            />
+          ) : (
+            <DropdownFieldSimpleOptions
+              name={unitValueField}
+              label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+              options={listValueIds}
+              value={currentListValueStr}
+              onChange={(e) => onListValueChange(e.target.value ?? null)}
+              validationState={validations?.[unitValueField]?.state}
+              validationMessage={validations?.[unitValueField]?.message}
+            />
+          )
+        ) : (
+          <>
+            {(selectedUnit?.type === 'integer' ||
+              row.quantity_integer !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'integer'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="quantity_integer"
+                type="number"
+                value={row.quantity_integer ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_integer?.state}
+                validationMessage={validations?.quantity_integer?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'numeric' ||
+              row.quantity_numeric !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'numeric'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="quantity_numeric"
+                type="number"
+                value={row.quantity_numeric ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_numeric?.state}
+                validationMessage={validations?.quantity_numeric?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'text'
+                    ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
+                    : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                }
+                name="quantity_text"
+                value={row.quantity_text ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_text?.state}
+                validationMessage={validations?.quantity_text?.message}
+              />
+            )}
+          </>
         )}
       </div>
       <Delete
