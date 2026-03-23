@@ -51,10 +51,12 @@ export const useActionReportNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT action_report_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_report_quantities, action_report_quantities_in_report FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
+  const quantitiesInReport =
+    placeLevel?.action_report_quantities_in_report !== false
 
   const parentArray = [
     'data',
@@ -93,27 +95,29 @@ export const useActionReportNavData = ({
     ownUrl,
     label,
     notFound,
-    navs: [
-      {
-        id: 'report',
-        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
-      },
-      ...(isDesigning || placeLevel?.action_report_quantities !== false
-        ? [
-            {
-              id: 'quantities',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.action_report_quantities_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                }),
-              }),
-            },
-          ]
-        : []),
-    ],
+    navs: quantitiesInReport
+      ? []
+      : [
+          {
+            id: 'report',
+            label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
+          },
+          ...(isDesigning || placeLevel?.action_report_quantities !== false
+            ? [
+                {
+                  id: 'quantities',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.action_report_quantities_count ?? 0,
+                    namePlural: formatMessage({
+                      id: 'Xuj/Gy',
+                      defaultMessage: 'Mengen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+        ],
   }
 
   return { navData, loading }

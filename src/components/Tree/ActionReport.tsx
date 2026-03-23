@@ -26,12 +26,14 @@ export const ActionReportNode = ({
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
-    `SELECT action_report_quantities
+    `SELECT action_report_quantities, action_report_quantities_in_report
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = res?.rows?.[0]
+  const quantitiesInReport =
+    placeLevel?.action_report_quantities_in_report !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -66,6 +68,21 @@ export const ActionReportNode = ({
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
+  }
+
+  // when quantities are embedded in the action report form, this is a leaf node
+  if (quantitiesInReport) {
+    return (
+      <Node
+        label={nav.label}
+        id={nav.id}
+        level={level}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={0}
+        to={ownUrl}
+      />
+    )
   }
 
   return (
