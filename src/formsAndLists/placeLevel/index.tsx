@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -14,7 +14,7 @@ import { Header } from './Header.tsx'
 import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, designingAtom } from '../../store.ts'
 import type PlaceLevels from '../../models/public/PlaceLevels.ts'
 
 import '../../form.css'
@@ -24,6 +24,7 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 export const PlaceLevel = () => {
   const { placeLevelId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const { formatMessage, locale } = useIntl()
 
   const [validations, setValidations] = useState({})
@@ -39,9 +40,7 @@ export const PlaceLevel = () => {
 
   const lang = locale.split('-')[0]
   const placeName =
-    row?.[`name_plural_${lang}`] ??
-    row?.name_plural_de ??
-    'Orte'
+    row?.[`name_plural_${lang}`] ?? row?.name_plural_de ?? 'Orte'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -294,14 +293,16 @@ export const PlaceLevel = () => {
             validationState={validations?.place_reports?.state}
             validationMessage={validations?.place_reports?.message}
           />
-          <SwitchField
-            label={`${placeName}: ${formatMessage({ id: 'oG6LfB', defaultMessage: 'Bericht-Mengen' })}`}
-            name="place_report_values"
-            value={row.place_report_values ?? false}
-            onChange={onChange}
-            validationState={validations?.place_report_values?.state}
-            validationMessage={validations?.place_report_values?.message}
-          />
+          {(isDesigning || row.place_reports) && (
+            <SwitchField
+              label={`${placeName}: ${formatMessage({ id: 'oG6LfB', defaultMessage: 'Bericht-Mengen' })}`}
+              name="place_report_values"
+              value={row.place_report_values ?? false}
+              onChange={onChange}
+              validationState={validations?.place_report_values?.state}
+              validationMessage={validations?.place_report_values?.message}
+            />
+          )}
           <SwitchField
             label={`${placeName}: ${formatMessage({ id: 'vN3SmI', defaultMessage: 'Beobachtungen zugeordnet' })}`}
             name="observations"

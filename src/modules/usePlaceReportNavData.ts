@@ -3,7 +3,8 @@ import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesAtom, designingAtom } from '../store.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
   projectId: string
@@ -16,6 +17,7 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
+  place_report_quantities_count: number
 }
 
 export const usePlaceReportNavData = ({
@@ -26,20 +28,31 @@ export const usePlaceReportNavData = ({
   placeReportId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
 
   const sql = `
+      WITH
+        place_report_quantities_count AS (SELECT count(*) FROM place_report_quantities WHERE place_report_id = '${placeReportId}')
       SELECT
         place_report_id AS id,
-        label
+        label,
+        place_report_quantities_count.count AS place_report_quantities_count
       FROM 
-        place_reports
+        place_reports,
+        place_report_quantities_count
       WHERE 
         place_reports.place_report_id = '${placeReportId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
+
+  const resPlaceLevel = useLiveQuery(
+    `SELECT place_report_values FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = resPlaceLevel?.rows?.[0]
 
   const parentArray = [
     'data',
@@ -76,7 +89,27 @@ export const usePlaceReportNavData = ({
     ownUrl,
     label,
     notFound,
-    navs: [],
+    navs: [
+      {
+        id: 'report',
+        label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
+      },
+      ...(isDesigning || placeLevel?.place_report_values !== false
+        ? [
+            {
+              id: 'quantities',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.place_report_quantities_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'Xuj/Gy',
+                  defaultMessage: 'Mengen',
+                }),
+              }),
+            },
+          ]
+        : []),
+    ],
   }
 
   return { navData, loading }

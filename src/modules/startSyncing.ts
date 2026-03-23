@@ -453,6 +453,16 @@ export const startSyncing = async () => {
           table: 'place_reports',
           primaryKey: ['place_report_id'],
         },
+        place_report_quantities: {
+          shape: {
+            url,
+            params: {
+              table: 'place_report_quantities',
+            },
+          },
+          table: 'place_report_quantities',
+          primaryKey: ['place_report_quantity_id'],
+        },
         messages: {
           shape: {
             url,

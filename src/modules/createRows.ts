@@ -1252,6 +1252,32 @@ export const createPlaceReport = async ({ projectId, placeId }) => {
   return place_report_id
 }
 
+export const createPlaceReportQuantity = async ({ placeReportId }) => {
+  const db = store.get(pgliteDbAtom)
+
+  const place_report_quantity_id = uuidv7()
+  const draft = {
+    place_report_quantity_id,
+    place_report_id: placeReportId,
+  }
+  const cols = Object.keys(draft).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
+  await db.query(
+    `INSERT INTO place_report_quantities (${cols}) VALUES (${vals})`,
+    Object.values(draft),
+  )
+
+  store.set(addOperationAtom, {
+    table: 'place_report_quantities',
+    operation: 'insert',
+    draft,
+  })
+
+  return place_report_quantity_id
+}
+
 export const createMessage = async () => {
   const db = store.get(pgliteDbAtom)
   const message_id = uuidv7()

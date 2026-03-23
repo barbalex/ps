@@ -1,7 +1,14 @@
-import { useLocation } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { isEqual } from 'es-toolkit'
+import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
+import { PlaceReportQuantitiesNode } from './PlaceReportQuantities.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
 export const PlaceReportNode = ({
   projectId,
@@ -11,7 +18,19 @@ export const PlaceReportNode = ({
   nav,
   level = 8,
 }) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { formatMessage } = useIntl()
+
+  const res = useLiveQuery(
+    `SELECT place_report_values
+     FROM place_levels
+     WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
+    [projectId, placeId2 ? 2 : 1],
+  )
+  const placeLevel = res?.rows?.[0]
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -25,11 +44,26 @@ export const PlaceReportNode = ({
     ...(placeId2 ? ['places', placeId2] : []),
     'reports',
   ]
+  const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
+
+  const onClickButton = () => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
+      }
+      return
+    }
+    // add to openNodes without navigating
+    addOpenNodes({ nodes: [ownArray] })
+  }
 
   return (
     <>
@@ -37,11 +71,38 @@ export const PlaceReportNode = ({
         label={nav.label}
         id={nav.id}
         level={level}
+        isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={0}
+        childrenCount={11}
         to={ownUrl}
+        onClickButton={onClickButton}
       />
+      {isOpen && (
+        <>
+          <Node
+            label={formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' })}
+            level={level + 1}
+            isInActiveNodeArray={
+              ownArray.every((part, i) => urlPath[i] === part) &&
+              urlPath[ownArray.length] === 'report'
+            }
+            isActive={isEqual([...ownArray, 'report'], urlPath)}
+            childrenCount={0}
+            to={`${ownUrl}/report`}
+          />
+          {(isDesigning || placeLevel?.place_report_values !== false) && (
+            <PlaceReportQuantitiesNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              placeId={placeId}
+              placeId2={placeId2}
+              placeReportId={nav.id}
+              level={level + 1}
+            />
+          )}
+        </>
+      )}
     </>
   )
 }
