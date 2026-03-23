@@ -240,6 +240,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   action_report_quantities_in_report boolean DEFAULT TRUE,
   checks boolean DEFAULT TRUE,
   check_quantities boolean DEFAULT TRUE,
+  check_quantities_in_check boolean DEFAULT TRUE,
   check_taxa boolean DEFAULT TRUE,
   check_reports boolean DEFAULT TRUE,
   check_report_quantities boolean DEFAULT TRUE,
@@ -293,6 +294,7 @@ COMMENT ON COLUMN place_levels.action_report_quantities IS 'Are action report qu
 COMMENT ON COLUMN place_levels.action_report_quantities_in_report IS 'Show action report quantities inside the action report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Preset: true';
+COMMENT ON COLUMN place_levels.check_quantities_in_check IS 'Show check quantities inside the check form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.check_report_quantities_in_report IS 'Show check report quantities inside the check report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';

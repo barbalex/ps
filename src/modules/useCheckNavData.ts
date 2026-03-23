@@ -60,10 +60,11 @@ export const useCheckNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_quantities, check_reports, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_quantities_in_check, check_reports, check_taxa, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
+  const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
 
   const parentArray = [
     'data',
@@ -105,7 +106,8 @@ export const useCheckNavData = ({
         id: 'check',
         label: formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' }),
       },
-      ...(isDesigning || placeLevel?.check_quantities !== false
+      ...(!quantitiesInCheck &&
+      (isDesigning || placeLevel?.check_quantities !== false)
         ? [
             {
               id: 'quantities',

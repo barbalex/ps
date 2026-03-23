@@ -88,6 +88,9 @@ export default interface PlaceLevels {
   /** Are check values used? Preset: true */
   check_quantities: boolean | null;
 
+  /** Show check quantities inside the check form instead of a separate route? Preset: true */
+  check_quantities_in_check: boolean | null;
+
   /** Are check taxa used? Preset: true */
   check_taxa: boolean | null;
 
@@ -235,6 +238,12 @@ export interface PlaceLevelsInitializer {
   check_quantities?: boolean | null;
 
   /**
+   * Show check quantities inside the check form instead of a separate route? Preset: true
+   * Default value: true
+   */
+  check_quantities_in_check?: boolean | null;
+
+  /**
    * Are check taxa used? Preset: true
    * Default value: true
    */
@@ -365,6 +374,9 @@ export interface PlaceLevelsMutator {
 
   /** Are check values used? Preset: true */
   check_quantities?: boolean | null;
+
+  /** Show check quantities inside the check form instead of a separate route? Preset: true */
+  check_quantities_in_check?: boolean | null;
 
   /** Are check taxa used? Preset: true */
   check_taxa?: boolean | null;
