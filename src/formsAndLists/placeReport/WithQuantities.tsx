@@ -38,7 +38,7 @@ export const PlaceReportWithQuantities = ({ from }) => {
   const row: PlaceReports | undefined = res?.rows?.[0]
 
   const quantitiesRes = useLiveQuery(
-    `SELECT place_report_quantity_id FROM place_report_quantities WHERE place_report_id = $1 ORDER BY label`,
+    `SELECT place_report_quantity_id FROM place_report_quantities WHERE place_report_id = $1 ORDER BY label, place_report_quantity_id`,
     [placeReportId],
   )
   const quantities = quantitiesRes?.rows ?? []

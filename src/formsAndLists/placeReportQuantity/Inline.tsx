@@ -105,6 +105,36 @@ export const PlaceReportQuantityInline = ({
     })
   }
 
+  const onUnitChange = async (_e, data) => {
+    const value = data?.value === row.unit_id ? null : (data?.value ?? null)
+    if (row.unit_id === value) return
+    try {
+      await db.query(
+        `UPDATE place_report_quantities SET unit_id = $1 WHERE place_report_quantity_id = $2`,
+        [value, placeReportQuantityId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        unit_id: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { unit_id: _, ...rest } = prev
+      return rest
+    })
+    addOperation({
+      table: 'place_report_quantities',
+      rowIdName: 'place_report_quantity_id',
+      rowId: placeReportQuantityId,
+      operation: 'update',
+      draft: { unit_id: value },
+      prev: { ...row },
+    })
+  }
+
   const onListValueChange = async (valueStr: string | null) => {
     if (!unitValueField) return
     const typedValue =
@@ -175,12 +205,12 @@ export const PlaceReportQuantityInline = ({
       >
         <RadioGroupField
           label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-          name="unit_id"
+          name={`unit_id_${placeReportQuantityId}`}
           list={unitIds}
           labelMap={unitLabelMap}
           isLoading={unitsRes === undefined}
           value={row.unit_id ?? ''}
-          onChange={onChange}
+          onChange={onUnitChange}
           layout="horizontal"
           validationState={
             selectedUnit && !selectedUnit.type
@@ -201,7 +231,7 @@ export const PlaceReportQuantityInline = ({
           listValues.length <= 5 ? (
             <RadioGroupField
               label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-              name={unitValueField}
+              name={`${unitValueField}_${placeReportQuantityId}`}
               list={listValueIds}
               labelMap={listValueLabelMap}
               value={currentListValueStr}
