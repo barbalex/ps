@@ -467,19 +467,12 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.goals?.message}
             />
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: 'yK5Pq6', defaultMessage: 'Beobachtungen' })}`}
+              label={`${subprojectName}: ${formatMessage({ id: 'yK5Pq6', defaultMessage: 'Beobachtungen (inkl. Importe)' })}`}
               name="occurrences"
               value={row.occurrences ?? true}
               onChange={onChange}
               validationState={validations?.occurrences?.state}
-              validationMessage={
-                validations?.occurrences?.message ??
-                formatMessage({
-                  id: 'zL6Qr7',
-                  defaultMessage:
-                    'Steuert Beobachtungs-Importe, Beobachtungen zu beurteilen und nicht zuzuordnen.',
-                })
-              }
+              validationMessage={validations?.occurrences?.message}
             />
             <SwitchField
               label={`${subprojectName}: ${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`}
