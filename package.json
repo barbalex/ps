@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "how-to-install-using-sfw": "sfw npm install -f",
     "ncu using cooldown": "ncu -c 5 -i",
-    "i18n:extract": "formatjs extract 'src/**/*.tsx' --out-file src/i18n/extracted.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
+    "i18n:extract": "formatjs extract 'src/**/*.tsx' --out-file src/i18n/extracted.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+    "qcs:generate": "node backend/db/generate_qcs_sql.mjs"
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "1.7.9",
