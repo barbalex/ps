@@ -20,7 +20,6 @@ const tablesSyncData = [
   //     'level',
   //     'name_singular',
   //     'name_plural',
-  //     'name_short',
   //     'place_reports',
   //     'place_report_quantities',
   //     'actions',

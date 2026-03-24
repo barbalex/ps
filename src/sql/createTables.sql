@@ -220,16 +220,12 @@ CREATE TABLE IF NOT EXISTS place_levels(
   level integer DEFAULT 1,
   name_singular_de text DEFAULT NULL,
   name_plural_de text DEFAULT NULL,
-  name_short_de text DEFAULT NULL,
   name_singular_en text DEFAULT NULL,
   name_plural_en text DEFAULT NULL,
-  name_short_en text DEFAULT NULL,
   name_singular_fr text DEFAULT NULL,
   name_plural_fr text DEFAULT NULL,
-  name_short_fr text DEFAULT NULL,
   name_singular_it text DEFAULT NULL,
   name_plural_it text DEFAULT NULL,
-  name_short_it text DEFAULT NULL,
   place_reports boolean DEFAULT TRUE,
   place_report_quantities boolean DEFAULT TRUE,
   place_report_quantities_in_report boolean DEFAULT TRUE,
@@ -254,9 +250,8 @@ CREATE TABLE IF NOT EXISTS place_levels(
   -- label depends on language, thus generated in the app code
   label text GENERATED ALWAYS AS (
     CASE
-      WHEN (name_short_de IS NULL AND name_plural_de IS NULL) THEN place_level_id::text
-      WHEN name_plural_de IS NULL THEN level::text || '. ' || name_short_de
-      WHEN name_short_de IS NULL THEN level::text || '. ' || name_plural_de
+      WHEN name_plural_de IS NULL THEN place_level_id::text
+      WHEN level IS NULL THEN '(no level). ' || name_plural_de
       ELSE level::text || '. ' || name_plural_de
     END
   ) STORED,
@@ -276,16 +271,12 @@ COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN place_levels.name_singular_de IS 'German singular name. Preset: "Population"';
 COMMENT ON COLUMN place_levels.name_plural_de IS 'German plural name. Preset: "Populationen"';
-COMMENT ON COLUMN place_levels.name_short_de IS 'German short name. Preset: "Pop"';
 COMMENT ON COLUMN place_levels.name_singular_en IS 'English singular name. Preset: "Population"';
 COMMENT ON COLUMN place_levels.name_plural_en IS 'English plural name. Preset: "Populations"';
-COMMENT ON COLUMN place_levels.name_short_en IS 'English short name. Preset: "Pop"';
 COMMENT ON COLUMN place_levels.name_singular_fr IS 'French singular name. Preset: "Population"';
 COMMENT ON COLUMN place_levels.name_plural_fr IS 'French plural name. Preset: "Populations"';
-COMMENT ON COLUMN place_levels.name_short_fr IS 'French short name. Preset: "Pop"';
 COMMENT ON COLUMN place_levels.name_singular_it IS 'Italian singular name. Preset: "Popolazione"';
 COMMENT ON COLUMN place_levels.name_plural_it IS 'Italian plural name. Preset: "Popolazioni"';
-COMMENT ON COLUMN place_levels.name_short_it IS 'Italian short name. Preset: "Pop"';
 COMMENT ON COLUMN place_levels.place_reports IS 'Are reports used? Preset: true';
 COMMENT ON COLUMN place_levels.place_report_quantities IS 'Are report quantities used? Preset: true';
 COMMENT ON COLUMN place_levels.place_report_quantities_in_report IS 'Show report quantities inside the report form instead of a separate route? Preset: true';

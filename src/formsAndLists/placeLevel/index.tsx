@@ -166,17 +166,6 @@ export const PlaceLevel = () => {
           />
           <TextField
             label={formatMessage({
-              id: 'dV5AuQ',
-              defaultMessage: 'Deutsch (Kurzform)',
-            })}
-            name="name_short_de"
-            value={row.name_short_de ?? ''}
-            onChange={onChange}
-            validationState={validations?.name_short_de?.state}
-            validationMessage={validations?.name_short_de?.message}
-          />
-          <TextField
-            label={formatMessage({
               id: 'eW6BvR',
               defaultMessage: 'Englisch: Einzahl',
             })}
@@ -196,17 +185,6 @@ export const PlaceLevel = () => {
             onChange={onChange}
             validationState={validations?.name_plural_en?.state}
             validationMessage={validations?.name_plural_en?.message}
-          />
-          <TextField
-            label={formatMessage({
-              id: 'gY8DxT',
-              defaultMessage: 'Englisch (Kurzform)',
-            })}
-            name="name_short_en"
-            value={row.name_short_en ?? ''}
-            onChange={onChange}
-            validationState={validations?.name_short_en?.state}
-            validationMessage={validations?.name_short_en?.message}
           />
           <TextField
             label={formatMessage({
@@ -232,17 +210,6 @@ export const PlaceLevel = () => {
           />
           <TextField
             label={formatMessage({
-              id: 'jB1GaW',
-              defaultMessage: 'Französisch (Kurzform)',
-            })}
-            name="name_short_fr"
-            value={row.name_short_fr ?? ''}
-            onChange={onChange}
-            validationState={validations?.name_short_fr?.state}
-            validationMessage={validations?.name_short_fr?.message}
-          />
-          <TextField
-            label={formatMessage({
               id: 'kC2HbX',
               defaultMessage: 'Italienisch: Einzahl',
             })}
@@ -262,17 +229,6 @@ export const PlaceLevel = () => {
             onChange={onChange}
             validationState={validations?.name_plural_it?.state}
             validationMessage={validations?.name_plural_it?.message}
-          />
-          <TextField
-            label={formatMessage({
-              id: 'mE4JdZ',
-              defaultMessage: 'Italienisch (Kurzform)',
-            })}
-            name="name_short_it"
-            value={row.name_short_it ?? ''}
-            onChange={onChange}
-            validationState={validations?.name_short_it?.state}
-            validationMessage={validations?.name_short_it?.message}
           />
         </Section>
         <Section
