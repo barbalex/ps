@@ -5,7 +5,7 @@ import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { auth } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
-const port = 3002
+const port = 3003
 
 // Configure CORS middleware
 app.use(
