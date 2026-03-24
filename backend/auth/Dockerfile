@@ -16,7 +16,7 @@ RUN npm ci --only=production
 # Bundle app source
 COPY . .
 
-EXPOSE 3002
+EXPOSE 3003
 
 USER node
 
