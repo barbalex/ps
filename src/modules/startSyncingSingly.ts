@@ -262,20 +262,6 @@ const tablesSyncData = [
   //   primaryKey: ['file_id'],
   // },
   // {
-  //   table: 'persons',
-  //   columns: [
-  //     'person_id',
-  //     'project_id',
-  //     'account_id',
-  //     'email',
-  //     'data',
-  //     'created_at',
-  //     'updated_at',
-  //     'updated_by',
-  //   ],
-  //   primaryKey: ['person_id'],
-  // },
-  // {
   //   table: 'field_types',
   //   columns: [
   //     'field_type_id',

@@ -708,26 +708,6 @@ export const startSyncing = async () => {
           table: 'files',
           primaryKey: ['file_id'],
         },
-        persons: {
-          shape: {
-            url,
-            params: {
-              table: 'persons',
-              columns: [
-                'person_id',
-                'project_id',
-                'account_id',
-                'email',
-                'data',
-                'created_at',
-                'updated_at',
-                'updated_by',
-              ],
-            },
-          },
-          table: 'persons',
-          primaryKey: ['person_id'],
-        },
         field_types: {
           shape: {
             url,

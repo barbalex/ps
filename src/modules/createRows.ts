@@ -283,41 +283,6 @@ export const createUser = async ({ setUserId }) => {
   return user_id
 }
 
-export const createPerson = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
-  // find fields with preset values on the data column
-  const presetData = await getPresetData({
-    projectId,
-    table: 'persons',
-  })
-
-  const person_id = uuidv7()
-  const data = {
-    person_id,
-    project_id: projectId,
-
-    ...presetData,
-  }
-
-  const columns = Object.keys(data).join(',')
-  const values = Object.values(data)
-    .map((_, i) => `$${i + 1}`)
-    .join(',')
-
-  await db.query(
-    `insert into persons (${columns}) values (${values})`,
-    Object.values(data),
-  )
-
-  store.set(addOperationAtom, {
-    table: 'persons',
-    operation: 'insert',
-    draft: data,
-  })
-
-  return person_id
-}
-
 export const createCrs = async () => {
   const crs_id = uuidv7()
   const db = store.get(pgliteDbAtom)

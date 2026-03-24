@@ -140,8 +140,6 @@ CREATE TABLE IF NOT EXISTS projects(
   subproject_order_by text DEFAULT NULL,
   places_label_by text DEFAULT NULL, -- TODO: jsonb array
   places_order_by text DEFAULT NULL, -- TODO: jsonb array
-  persons_label_by text DEFAULT NULL, -- TODO: jsonb array
-  persons_order_by text DEFAULT NULL, -- TODO: jsonb array
   goals_label_by text DEFAULT NULL, -- TODO: jsonb array
   goal_reports_label_by text DEFAULT NULL, -- TODO: jsonb array
   goal_reports_order_by text DEFAULT NULL, -- TODO: jsonb array
@@ -157,7 +155,6 @@ CREATE TABLE IF NOT EXISTS projects(
   vector_layers boolean DEFAULT TRUE,
   project_reports boolean DEFAULT TRUE,
   subproject_reports boolean DEFAULT TRUE,
-  persons boolean DEFAULT TRUE,
   goals boolean DEFAULT TRUE,
   occurrences boolean DEFAULT TRUE,
   taxa boolean DEFAULT TRUE,
@@ -199,7 +196,6 @@ COMMENT ON COLUMN projects.wms_layers IS 'Whether wms-services and wms-layers ar
 COMMENT ON COLUMN projects.vector_layers IS 'Whether vector-layers and wfs-services are shown. Preset: false.';
 COMMENT ON COLUMN projects.project_reports IS 'Whether project-reports are shown. Preset: true.';
 COMMENT ON COLUMN projects.subproject_reports IS 'Whether subproject-reports are shown. Preset: true.';
-COMMENT ON COLUMN projects.persons IS 'Whether persons are shown. Preset: true.';
 COMMENT ON COLUMN projects.goals IS 'Whether goals (subproject) are shown. Preset: true.';
 COMMENT ON COLUMN projects.occurrences IS 'Whether occurrences (observation imports, to assess, not to assign) are shown. Preset: true.';
 COMMENT ON COLUMN projects.taxa IS 'Whether subproject taxa are shown. Preset: true.';
@@ -1298,30 +1294,6 @@ COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields
 COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
 COMMENT ON COLUMN files.file IS 'file content';
 COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
-
---------------------------------------------------------------
--- persons
---
-CREATE TABLE IF NOT EXISTS persons(
-  person_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  email text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), person_id::text)) STORED,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
-);
-
-CREATE INDEX IF NOT EXISTS persons_account_id_idx ON persons USING btree(account_id);
-CREATE INDEX IF NOT EXISTS persons_project_id_idx ON persons USING btree(project_id);
-CREATE INDEX IF NOT EXISTS persons_email_idx ON persons USING btree(email);
-CREATE INDEX IF NOT EXISTS persons_label_idx ON persons USING btree(label);
-
-COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
-COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
 
 --------------------------------------------------------------
 -- field_types

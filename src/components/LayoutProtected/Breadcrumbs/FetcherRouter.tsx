@@ -7,8 +7,6 @@ import { SubprojectFetcher } from './SubprojectFetcher.tsx'
 
 import { ProjectReportsFetcher } from './ProjectReportsFetcher.tsx'
 import { ProjectReportFetcher } from './ProjectReportFetcher.tsx'
-import { PersonsFetcher } from './PersonsFetcher.tsx'
-import { PersonFetcher } from './PersonFetcher.tsx'
 import { WmsServicesFetcher } from './WmsServicesFetcher.tsx'
 import { WmsServiceFetcher } from './WmsServiceFetcher.tsx'
 import { WmsServiceWmsServiceFetcher } from './WmsServiceWmsServiceFetcher.tsx'
@@ -641,14 +639,6 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useProjectReportNavData': {
       if (!params.projectId || !params.projectReportId) return null
       return <ProjectReportFetcher params={params} {...other} />
-    }
-    case 'usePersonsNavData': {
-      if (!params.projectId) return null
-      return <PersonsFetcher params={params} {...other} />
-    }
-    case 'usePersonNavData': {
-      if (!params.projectId || !params.personId) return null
-      return <PersonFetcher params={params} {...other} />
     }
     case 'useWmsServicesNavData': {
       if (!params.projectId) return null

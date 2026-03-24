@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 import {
   subprojectsFilterAtom,
   projectReportsFilterAtom,
-  personsFilterAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
   listsFilterAtom,
@@ -35,7 +34,6 @@ type NavData = {
   vector_layers?: boolean | null
   project_reports?: boolean | null
   subproject_reports?: boolean | null
-  persons?: boolean | null
   goals?: boolean | null
   occurrences?: boolean | null
   taxa?: boolean | null
@@ -49,7 +47,6 @@ type NavDataNotForBreadcrumb = {
   vector_layers?: boolean | null
   project_reports?: boolean | null
   subproject_reports?: boolean | null
-  persons?: boolean | null
   goals?: boolean | null
   occurrences?: boolean | null
   taxa?: boolean | null
@@ -60,8 +57,6 @@ type NavDataNotForBreadcrumb = {
   subprojects_name_plural?: string | null
   project_reports_count_unfiltered?: number
   project_reports_count_filtered?: number
-  persons_count_unfiltered?: number
-  persons_count_filtered?: number
   wms_services_count_unfiltered?: number
   wms_layers_count_unfiltered?: number
   wms_layers_count_filtered?: number
@@ -77,7 +72,6 @@ type NavDataNotForBreadcrumbDesigning = {
   vector_layers?: boolean | null
   project_reports?: boolean | null
   subproject_reports?: boolean | null
-  persons?: boolean | null
   goals?: boolean | null
   occurrences?: boolean | null
   taxa?: boolean | null
@@ -88,8 +82,6 @@ type NavDataNotForBreadcrumbDesigning = {
   subprojects_name_plural?: string | null
   project_reports_count_unfiltered?: number
   project_reports_count_filtered?: number
-  persons_count_unfiltered?: number
-  persons_count_filtered?: number
   wms_services_count_unfiltered?: number
   wms_layers_count_unfiltered?: number
   wms_layers_count_filtered?: number
@@ -126,10 +118,6 @@ export const useProjectNavData = ({
     filterStringFromFilter(projectReportsFilter)
   const projectReportsIsFiltered = !!projectReportsFilterString
 
-  const [personsFilter] = useAtom(personsFilterAtom)
-  const personsFilterString = filterStringFromFilter(personsFilter)
-  const personsIsFiltered = !!personsFilterString
-
   const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
   const wmsLayersFilterString = filterStringFromFilter(wmsLayersFilter)
   const wmsLayersIsFiltered = !!wmsLayersFilterString
@@ -161,8 +149,6 @@ export const useProjectNavData = ({
             subprojects_names AS (SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular, ${subprojectNamePluralExpr(language)} AS subproject_name_plural FROM projects WHERE project_id = '${projectId}'),
             project_reports_count_unfiltered AS (SELECT count(*) FROM project_reports WHERE project_id = '${projectId}'),
             project_reports_count_filtered AS (SELECT count(*) FROM project_reports WHERE project_id = '${projectId}' ${projectReportsIsFiltered ? ` AND ${projectReportsFilterString}` : ''}),
-            persons_count_unfiltered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}'),
-            persons_count_filtered AS (SELECT count(*) FROM persons WHERE project_id = '${projectId}' ${personsIsFiltered ? ` AND ${personsFilterString}` : ''}),
             wms_services_count_unfiltered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}'),
             wms_layers_count_unfiltered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}'),
             wms_layers_count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${wmsLayersIsFiltered ? ` AND ${wmsLayersFilterString}` : ''}),
@@ -192,7 +178,6 @@ export const useProjectNavData = ({
         vector_layers,
         project_reports,
         subproject_reports,
-        persons,
         goals,
         occurrences,
         taxa,
@@ -206,8 +191,6 @@ export const useProjectNavData = ({
             subprojects_names.subproject_name_plural AS subprojects_name_plural,
             project_reports_count_unfiltered.count AS project_reports_count_unfiltered,
             project_reports_count_filtered.count AS project_reports_count_filtered,
-            persons_count_unfiltered.count AS persons_count_unfiltered,
-            persons_count_filtered.count AS persons_count_filtered,
             wms_services_count_unfiltered.count AS wms_services_count_unfiltered,
             wms_layers_count_unfiltered.count AS wms_layers_count_unfiltered,
             wms_layers_count_filtered.count AS wms_layers_count_filtered,
@@ -240,8 +223,6 @@ export const useProjectNavData = ({
             subprojects_names, 
             project_reports_count_unfiltered, 
             project_reports_count_filtered,
-            persons_count_unfiltered,
-            persons_count_filtered,
             wms_services_count_unfiltered,
             wms_layers_count_unfiltered,
             wms_layers_count_filtered,
@@ -344,23 +325,7 @@ export const useProjectNavData = ({
                 },
               ]
             : []),
-          ...(designing || (nav?.persons ?? true)
-            ? [
-                {
-                  id: 'persons',
-                  label: buildNavLabel({
-                    loading,
-                    isFiltered: personsIsFiltered,
-                    countFiltered: nav?.persons_count_filtered ?? 0,
-                    countUnfiltered: nav?.persons_count_unfiltered ?? 0,
-                    namePlural: formatMessage({
-                      id: 'bbjyW2',
-                      defaultMessage: 'Personen',
-                    }),
-                  }),
-                },
-              ]
-            : []),
+
           ...(designing || (nav?.wms_layers ?? false)
             ? [
                 {

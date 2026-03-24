@@ -8,7 +8,6 @@ import { Node } from '../Node.tsx'
 import { ProjectDesignNode } from '../ProjectDesign.tsx'
 import { SubprojectsNode } from '../Subprojects.tsx'
 import { ProjectReportsNode } from '../ProjectReports.tsx'
-import { PersonsNode } from '../Persons.tsx'
 import { WmsServicesNode } from '../WmsServices.tsx'
 import { WfsServicesNode } from '../WfsServices.tsx'
 import { ListsNode } from '../Lists.tsx'
@@ -46,7 +45,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
 
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
-    `SELECT project_id, wms_layers, vector_layers, project_reports, persons FROM projects WHERE project_id = $1`,
+    `SELECT project_id, wms_layers, vector_layers, project_reports FROM projects WHERE project_id = $1`,
     [nav.id],
   )
   const project = resultProject?.rows?.[0]
@@ -57,7 +56,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const showWmsNodes = designing || (project?.wms_layers ?? false)
   const showVectorNodes = designing || (project?.vector_layers ?? false)
   const showProjectReports = designing || (project?.project_reports ?? true)
-  const showPersons = designing || (project?.persons ?? true)
 
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -114,7 +112,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
             <ProjectReportDesignsNode projectId={nav.id} level={3} />
           )}
           {showProjectReports && <ProjectReportsNode projectId={nav.id} />}
-          {showPersons && <PersonsNode projectId={nav.id} />}
           {showWmsNodes && <WmsServicesNode projectId={nav.id} />}
           {showWmsNodes && <WmsLayersNode projectId={nav.id} />}
           {showVectorNodes && <WfsServicesNode projectId={nav.id} />}

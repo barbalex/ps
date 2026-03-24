@@ -239,16 +239,7 @@ const getTitle = ({
                                                                     },
                                                                   )
                                                                 : tableName ===
-                                                                    'persons'
-                                                                  ? formatMessage(
-                                                                      {
-                                                                        id: 'bbjyW2',
-                                                                        defaultMessage:
-                                                                          'Personen',
-                                                                      },
-                                                                    )
-                                                                  : tableName ===
-                                                                      'project_reports'
+                                                                    'project_reports'
                                                                     ? formatMessage(
                                                                         {
                                                                           id: 'CiJ0SG',

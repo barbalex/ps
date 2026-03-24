@@ -413,14 +413,6 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.project_reports?.message}
             />
             <SwitchField
-              label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'bbjyW2', defaultMessage: 'Personen' })}`}
-              name="persons"
-              value={row.persons ?? true}
-              onChange={onChange}
-              validationState={validations?.persons?.state}
-              validationMessage={validations?.persons?.message}
-            />
-            <SwitchField
               label={formatMessage({
                 id: 'tV2WxY',
                 defaultMessage: 'Projekte: WMS-Dienste und WMS-Ebenen',

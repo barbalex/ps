@@ -4,7 +4,6 @@ const tablesAbovePlaces = [
   'projects',
   'subprojects',
   'users',
-  'persons',
   'lists',
   'units',
   'taxonomies',
