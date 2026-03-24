@@ -1,10 +1,12 @@
+import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 
 import '../../form.css'
+
+const { Dropdown, Field, Option } = fluentUiReactComponents
 
 type Opt = { id: string; table_name: string; place_level: string | null }
 
@@ -196,16 +198,31 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         value={row?.label_it ?? ''}
         onChange={onChange}
       />
-      <RadioGroupField
+      <Field
         label={formatMessage({ id: 'qc.tableName', defaultMessage: 'Tabelle' })}
-        name="table_name"
-        list={opts.map((o) => o.id)}
-        value={combinedValue}
-        onChange={handleTableChange}
-        labelMap={tableOptLabelMap}
         validationMessage={validations?.table_name?.message}
-        validationState={validations?.table_name?.state}
-      />
+        validationState={validations?.table_name?.state ?? 'none'}
+      >
+        <Dropdown
+          name="table_name"
+          value={tableOptLabelMap[combinedValue] ?? ''}
+          selectedOptions={combinedValue ? [combinedValue] : []}
+          onOptionSelect={(_e, data) =>
+            handleTableChange(null, { value: data.optionValue })
+          }
+          appearance="underline"
+          clearable
+        >
+          {opts.map((o) => (
+            <Option
+              key={o.id}
+              value={o.id}
+            >
+              {tableOptLabelMap[o.id] ?? o.id}
+            </Option>
+          ))}
+        </Dropdown>
+      </Field>
       <SwitchField
         label={formatMessage({
           id: 'qc.isRootLevel',
