@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS projects(
   action_taxa_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   action_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   check_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
+  place_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_quantities_on_same_level text DEFAULT NULL,
   multiple_check_quantities_on_same_level text DEFAULT NULL,
@@ -179,6 +180,7 @@ CREATE INDEX IF NOT EXISTS projects_check_taxa_default_unit_id_idx ON projects U
 CREATE INDEX IF NOT EXISTS projects_action_taxa_default_unit_id_idx ON projects USING btree(action_taxa_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_action_reports_default_unit_id_idx ON projects USING btree(action_reports_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_check_reports_default_unit_id_idx ON projects USING btree(check_reports_default_unit_id);
+CREATE INDEX IF NOT EXISTS projects_place_reports_default_unit_id_idx ON projects USING btree(place_reports_default_unit_id);
 
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
@@ -192,6 +194,7 @@ COMMENT ON COLUMN projects.check_taxa_default_unit_id IS 'Default unit for check
 COMMENT ON COLUMN projects.action_taxa_default_unit_id IS 'Default unit for action taxa values. Can be overwritten in action_taxa';
 COMMENT ON COLUMN projects.action_reports_default_unit_id IS 'Default unit for action report quantities. Can be overwritten in action_reports';
 COMMENT ON COLUMN projects.check_reports_default_unit_id IS 'Default unit for check report quantities. Can be overwritten in check_reports';
+COMMENT ON COLUMN projects.place_reports_default_unit_id IS 'Default unit for place report quantities. Can be overwritten in place_reports';
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
 COMMENT ON COLUMN projects.multiple_action_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use all"';
 COMMENT ON COLUMN projects.multiple_check_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
@@ -612,6 +615,7 @@ ALTER TABLE projects ADD CONSTRAINT projects_action_taxa_default_unit_id_fkey FO
 ALTER TABLE projects ADD CONSTRAINT projects_checks_default_unit_id_fkey FOREIGN KEY (checks_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_action_reports_default_unit_id_fkey FOREIGN KEY (action_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_check_reports_default_unit_id_fkey FOREIGN KEY (check_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE projects ADD CONSTRAINT projects_place_reports_default_unit_id_fkey FOREIGN KEY (place_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 --------------------------------------------------------------
 -- places

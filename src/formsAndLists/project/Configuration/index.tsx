@@ -261,48 +261,18 @@ export const Configuration = ({ from }) => {
           </SectionDescription>
           <RadioGroupField
             label={formatMessage({
-              id: 'nR6StU',
-              defaultMessage: 'Standard-Einheit für Massnahmen-Mengen',
+              id: 'cU1DvF',
+              defaultMessage: 'Standard-Einheit für Ort-Bericht-Mengen',
             })}
-            name="actions_default_unit_id"
+            name="place_reports_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.actions_default_unit_id ?? ''}
+            value={row.place_reports_default_unit_id ?? ''}
             onChange={onChange}
-            validationState={validations?.actions_default_unit_id?.state}
-            validationMessage={validations?.actions_default_unit_id?.message}
-          />
-          <RadioGroupField
-            label={formatMessage({
-              id: 'aR9BsD',
-              defaultMessage: 'Standard-Einheit für Massnahmen-Bericht-Mengen',
-            })}
-            name="action_reports_default_unit_id"
-            list={unitIds}
-            labelMap={unitLabelMap}
-            isLoading={unitsRes === undefined}
-            value={row.action_reports_default_unit_id ?? ''}
-            onChange={onChange}
-            validationState={validations?.action_reports_default_unit_id?.state}
+            validationState={validations?.place_reports_default_unit_id?.state}
             validationMessage={
-              validations?.action_reports_default_unit_id?.message
-            }
-          />
-          <RadioGroupField
-            label={formatMessage({
-              id: 'bT0CsE',
-              defaultMessage: 'Standard-Einheit für Massnahmen-Taxon-Mengen',
-            })}
-            name="action_taxa_default_unit_id"
-            list={unitIds}
-            labelMap={unitLabelMap}
-            isLoading={unitsRes === undefined}
-            value={row.action_taxa_default_unit_id ?? ''}
-            onChange={onChange}
-            validationState={validations?.action_taxa_default_unit_id?.state}
-            validationMessage={
-              validations?.action_taxa_default_unit_id?.message
+              validations?.place_reports_default_unit_id?.message
             }
           />
           <RadioGroupField
@@ -348,6 +318,52 @@ export const Configuration = ({ from }) => {
             onChange={onChange}
             validationState={validations?.check_taxa_default_unit_id?.state}
             validationMessage={validations?.check_taxa_default_unit_id?.message}
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'nR6StU',
+              defaultMessage: 'Standard-Einheit für Massnahmen-Mengen',
+            })}
+            name="actions_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.actions_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={validations?.actions_default_unit_id?.state}
+            validationMessage={validations?.actions_default_unit_id?.message}
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'aR9BsD',
+              defaultMessage: 'Standard-Einheit für Massnahmen-Bericht-Mengen',
+            })}
+            name="action_reports_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.action_reports_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={validations?.action_reports_default_unit_id?.state}
+            validationMessage={
+              validations?.action_reports_default_unit_id?.message
+            }
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'bT0CsE',
+              defaultMessage: 'Standard-Einheit für Massnahmen-Taxon-Mengen',
+            })}
+            name="action_taxa_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.action_taxa_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={validations?.action_taxa_default_unit_id?.state}
+            validationMessage={
+              validations?.action_taxa_default_unit_id?.message
+            }
           />
         </Section>
         <Section

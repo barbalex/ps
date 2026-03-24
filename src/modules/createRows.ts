@@ -1274,10 +1274,27 @@ export const createPlaceReport = async ({ projectId, placeId }) => {
 export const createPlaceReportQuantity = async ({ placeReportId }) => {
   const db = store.get(pgliteDbAtom)
 
+  // inherit the project's default unit if set
+  const projectRes = await db.query<{
+    place_reports_default_unit_id: string | null
+  }>(
+    `SELECT p.place_reports_default_unit_id
+     FROM projects p
+     JOIN subprojects sp ON sp.project_id = p.project_id
+     JOIN places pl ON pl.subproject_id = sp.subproject_id
+     JOIN place_reports pr ON pr.place_id = pl.place_id
+     WHERE pr.place_report_id = $1
+     LIMIT 1`,
+    [placeReportId],
+  )
+  const defaultUnitId =
+    projectRes.rows?.[0]?.place_reports_default_unit_id ?? null
+
   const place_report_quantity_id = uuidv7()
   const draft = {
     place_report_quantity_id,
     place_report_id: placeReportId,
+    ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')
   const vals = Object.keys(draft)
