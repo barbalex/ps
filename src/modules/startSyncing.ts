@@ -1111,6 +1111,7 @@ export const startSyncing = async () => {
                 'qcs_id',
                 'name',
                 'table_name',
+                'place_level',
                 'label',
                 'description',
                 'sort',

@@ -2003,6 +2003,7 @@ CREATE TABLE IF NOT EXISTS qcs(
   qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   name text DEFAULT NULL,
   table_name text DEFAULT NULL,
+  place_level integer DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), qcs_id::text)) STORED,
   description text DEFAULT NULL,
   sort smallint DEFAULT NULL,
@@ -2017,6 +2018,7 @@ CREATE INDEX IF NOT EXISTS qcs_label_idx ON qcs USING btree(label);
 CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
 COMMENT ON COLUMN qcs.table_name IS 'The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui';
+COMMENT ON COLUMN qcs.place_level IS 'The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks';
 COMMENT ON TABLE qcs IS 'Quality controls for data. Surface suspicious data.';
 
 --------------------------------------------------------------
