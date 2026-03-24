@@ -389,8 +389,9 @@ export const constants = {
   mobileViewMaxWidth: 999,
   getPostgrestUri: () =>
     window?.location?.hostname === 'localhost'
-      ? `http://localhost:3001`
+      ? `http://localhost:3002`
       : 'https://api.arten-fördern.app',
+  // set 3001 to go via caddy, 3000 to go directly to electric backend
   getElectricUri: () =>
     window?.location?.hostname === 'localhost'
       ? `http://localhost:3000/v1/shape`
