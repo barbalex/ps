@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 
 import '../../form.css'
 
@@ -177,6 +178,33 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         labelMap={tableOptLabelMap}
         validationMessage={validations?.table_name?.message}
         validationState={validations?.table_name?.state}
+      />
+      <SwitchField
+        label={formatMessage({
+          id: 'qc.isRootLevel',
+          defaultMessage: 'Root-Ebene',
+        })}
+        name="is_root_level"
+        value={row?.is_root_level}
+        onChange={onChange}
+      />
+      <SwitchField
+        label={formatMessage({
+          id: 'qc.isProjectLevel',
+          defaultMessage: 'Projekt-Ebene',
+        })}
+        name="is_project_level"
+        value={row?.is_project_level}
+        onChange={onChange}
+      />
+      <SwitchField
+        label={formatMessage({
+          id: 'qc.isSubprojectLevel',
+          defaultMessage: 'Teilprojekt-Ebene',
+        })}
+        name="is_subproject_level"
+        value={row?.is_subproject_level}
+        onChange={onChange}
       />
       <TextField
         label={formatMessage({
