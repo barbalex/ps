@@ -700,5 +700,7 @@
   "jH7LwO": "Add taxon",
   "yK5Pq6": "Observations (incl. imports)",
   "aBcDeF": "Machine-readable name used in exports as table name. Example: \"project_name\"",
-  "gHiJkL": "Human-friendly name. Example: \"Project Name\""
+  "gHiJkL": "Human-friendly name. Example: \"Project Name\"",
+  "qcs.nameSingular": "Quality control",
+  "qcs.namePlural": "Quality controls"
 }

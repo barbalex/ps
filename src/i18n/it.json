@@ -677,5 +677,7 @@
   "jH7LwO": "Aggiungi taxon",
   "yK5Pq6": "Osservazioni (incl. importazioni)",
   "aBcDeF": "Nome leggibile dalla macchina, utilizzato nelle esportazioni come nome di tabella. Esempio: \"nome_progetto\"",
-  "gHiJkL": "Nome intuitivo. Esempio: \"Nome Progetto\""
+  "gHiJkL": "Nome intuitivo. Esempio: \"Nome Progetto\"",
+  "qcs.nameSingular": "Controllo qualità",
+  "qcs.namePlural": "Controlli qualità"
 }
