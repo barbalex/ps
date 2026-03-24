@@ -48,6 +48,8 @@ export interface QcsInitializer {
   /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
   place_level?: number | null;
 
+  label?: string | null;
+
   description?: string | null;
 
   sort?: number | null;
@@ -75,6 +77,8 @@ export interface QcsMutator {
 
   /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
   place_level?: number | null;
+
+  label?: string | null;
 
   description?: string | null;
 

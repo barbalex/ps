@@ -1827,3 +1827,34 @@ export const createObservation = ({ observationImportId, data = null }) => ({
   observation_import_id: observationImportId,
   data,
 })
+
+export const createQc = async () => {
+  const db = store.get(pgliteDbAtom)
+  const qcs_id = uuidv7()
+  await db.query(`insert into qcs (qcs_id) values ($1)`, [qcs_id])
+
+  store.set(addOperationAtom, {
+    table: 'qcs',
+    operation: 'insert',
+    draft: { qcs_id },
+  })
+
+  return qcs_id
+}
+
+export const createSubprojectQc = async ({ subprojectId, qcId }) => {
+  const db = store.get(pgliteDbAtom)
+  const subproject_qc_id = uuidv7()
+  await db.query(
+    `insert into subproject_qcs (subproject_qc_id, subproject_id, qc_id) values ($1, $2, $3)`,
+    [subproject_qc_id, subprojectId, qcId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'subproject_qcs',
+    operation: 'insert',
+    draft: { subproject_qc_id, subproject_id: subprojectId, qc_id: qcId },
+  })
+
+  return subproject_qc_id
+}

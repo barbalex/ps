@@ -1107,17 +1107,6 @@ export const startSyncing = async () => {
             url,
             params: {
               table: 'qcs',
-              columns: [
-                'qcs_id',
-                'name',
-                'table_name',
-                'place_level',
-                'description',
-                'sort',
-                'created_at',
-                'updated_at',
-                'updated_by',
-              ],
             },
           },
           table: 'qcs',

@@ -2004,7 +2004,7 @@ CREATE TABLE IF NOT EXISTS qcs(
   name text DEFAULT NULL,
   table_name text DEFAULT NULL,
   place_level integer DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), qcs_id::text)) STORED,
+  label text DEFAULT NULL,
   description text DEFAULT NULL,
   sort smallint DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),

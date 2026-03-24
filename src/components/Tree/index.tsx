@@ -6,6 +6,7 @@ import { AccountsNode } from './Accounts.tsx'
 import { FieldTypesNode } from './FieldTypes.tsx'
 import { WidgetTypesNode } from './WidgetTypes.tsx'
 import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
+import { QcsNode } from './Qcs.tsx'
 import { FieldsNode } from './Fields.tsx'
 import { FilesNode } from './Files.tsx'
 import { MessagesNode } from './Messages.tsx'
@@ -27,6 +28,8 @@ export const Tree = () => {
           <FieldTypesNode />
           <WidgetTypesNode />
           <WidgetsForFieldsNode />
+          {/* TODO: restrict editing to super managers once auth supports it */}
+          <QcsNode />
           <FieldsNode />
           <CrssNode />
           <FilesNode level={1} />

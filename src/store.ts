@@ -332,6 +332,7 @@ export const placeReports2FilterAtom = atomWithStorage(
   'placeReports2FilterAtom',
   [],
 )
+export const qcsFilterAtom = atomWithStorage('qcsFilterAtom', [])
 // TODO: add
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // TODO: add more filters
