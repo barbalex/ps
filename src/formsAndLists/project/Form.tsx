@@ -31,7 +31,14 @@ export const ProjectForm = ({
         autoFocus
         ref={autoFocusRef}
         validationState={validations?.name?.state}
-        validationMessage={validations?.name?.message}
+        validationMessage={
+          validations?.name?.message ??
+          formatMessage({
+            id: 'aBcDeF',
+            defaultMessage:
+              'Maschinen-lesbarer Name, der in Exporten als Tabellen-Name verwendet werden kann. Beispiel: "projekt_name"',
+          })
+        }
       />
       <TextField
         label={formatMessage({ id: 'XlAbCd', defaultMessage: 'Bezeichnung' })}
@@ -39,7 +46,13 @@ export const ProjectForm = ({
         value={row.label ?? ''}
         onChange={onChange}
         validationState={validations?.label?.state}
-        validationMessage={validations?.label?.message}
+        validationMessage={
+          validations?.label?.message ??
+          formatMessage({
+            id: 'gHiJkL',
+            defaultMessage: 'Menschen-freundlicher Name. Beispiel: "Projekt-Name"',
+          })
+        }
       />
       <Jsonb
         table="projects"
