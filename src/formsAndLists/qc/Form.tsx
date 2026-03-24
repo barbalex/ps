@@ -162,11 +162,38 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
       />
       <TextField
         label={formatMessage({
-          id: 'qc.label',
-          defaultMessage: 'Bezeichnung',
+          id: 'qc.labelDe',
+          defaultMessage: 'Bezeichnung (DE)',
         })}
-        name="label"
-        value={row?.label ?? ''}
+        name="label_de"
+        value={row?.label_de ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label={formatMessage({
+          id: 'qc.labelEn',
+          defaultMessage: 'Bezeichnung (EN)',
+        })}
+        name="label_en"
+        value={row?.label_en ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label={formatMessage({
+          id: 'qc.labelFr',
+          defaultMessage: 'Bezeichnung (FR)',
+        })}
+        name="label_fr"
+        value={row?.label_fr ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label={formatMessage({
+          id: 'qc.labelIt',
+          defaultMessage: 'Bezeichnung (IT)',
+        })}
+        name="label_it"
+        value={row?.label_it ?? ''}
         onChange={onChange}
       />
       <RadioGroupField

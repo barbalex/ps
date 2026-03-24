@@ -19,7 +19,13 @@ export default interface Qcs {
   /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
   place_level: number | null;
 
-  label: string | null;
+  label_de: string | null;
+
+  label_en: string | null;
+
+  label_fr: string | null;
+
+  label_it: string | null;
 
   description: string | null;
 
@@ -54,7 +60,13 @@ export interface QcsInitializer {
   /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
   place_level?: number | null;
 
-  label?: string | null;
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 
   description?: string | null;
 
@@ -93,7 +105,13 @@ export interface QcsMutator {
   /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
   place_level?: number | null;
 
-  label?: string | null;
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 
   description?: string | null;
 

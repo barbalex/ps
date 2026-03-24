@@ -1995,7 +1995,10 @@ CREATE TABLE IF NOT EXISTS qcs(
   name text DEFAULT NULL,
   table_name text DEFAULT NULL,
   place_level integer DEFAULT NULL,
-  label text DEFAULT NULL,
+  label_de text DEFAULT NULL,
+  label_en text DEFAULT NULL,
+  label_fr text DEFAULT NULL,
+  label_it text DEFAULT NULL,
   description text DEFAULT NULL,
   sort smallint DEFAULT NULL,
   is_root_level boolean DEFAULT false,
@@ -2008,7 +2011,7 @@ CREATE TABLE IF NOT EXISTS qcs(
 );
 
 CREATE INDEX IF NOT EXISTS qcs_name_idx ON qcs USING btree(name);
-CREATE INDEX IF NOT EXISTS qcs_label_idx ON qcs USING btree(label);
+CREATE INDEX IF NOT EXISTS qcs_label_de_idx ON qcs USING btree(label_de);
 CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
 COMMENT ON COLUMN qcs.table_name IS 'The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui';

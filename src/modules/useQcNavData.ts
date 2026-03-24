@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { languageAtom, treeOpenNodesAtom } from '../store.ts'
 
 const parentArray = ['data', 'qcs']
 const parentUrl = `/${parentArray.join('/')}`
@@ -20,6 +20,7 @@ type NavData = {
 
 export const useQcNavData = ({ qcsId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -27,7 +28,7 @@ export const useQcNavData = ({ qcsId }: Props) => {
     `
     SELECT
       qcs_id AS id,
-      label
+      COALESCE(NULLIF(label_${language}, ''), label_de) AS label
     FROM qcs
     WHERE qcs_id = $1
     `,
