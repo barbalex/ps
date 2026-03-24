@@ -1,0 +1,78 @@
+import { useNavigate } from '@tanstack/react-router'
+
+import { Node } from './Node.tsx'
+import { ActionTaxonNode } from './ActionTaxon.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { useActionTaxaNavData } from '../../modules/useActionTaxaNavData.ts'
+
+export const ActionTaxaNode = ({
+  projectId,
+  subprojectId,
+  placeId,
+  placeId2,
+  actionId,
+  level = 9,
+}) => {
+  const navigate = useNavigate()
+
+  const { navData } = useActionTaxaNavData({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionId,
+  })
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
+
+  const onClickButton = () => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
+      }
+      return
+    }
+    addOpenNodes({ nodes: [ownArray] })
+  }
+
+  const showNavs = isOpen && navs.length > 0 && navs[0].id
+
+  return (
+    <>
+      <Node
+        label={label}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={navs.length}
+        to={ownUrl}
+        onClickButton={onClickButton}
+      />
+      {showNavs &&
+        navs.map((nav, i) => (
+          <ActionTaxonNode
+            key={`${nav.id}-${i}`}
+            projectId={projectId}
+            subprojectId={subprojectId}
+            placeId={placeId}
+            placeId2={placeId2}
+            actionId={actionId}
+            nav={nav}
+            level={level + 1}
+          />
+        ))}
+    </>
+  )
+}

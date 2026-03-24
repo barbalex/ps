@@ -439,6 +439,30 @@ export const PlaceLevel = () => {
           )}
           <SwitchField
             label={formatMessage({
+              id: 'pQ2RsT',
+              defaultMessage: 'Massnahmen: Taxa',
+            })}
+            name="action_taxa"
+            value={row.action_taxa ?? false}
+            onChange={onChange}
+            validationState={validations?.action_taxa?.state}
+            validationMessage={validations?.action_taxa?.message}
+          />
+          {(isDesigning || row.action_taxa) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'rS3TuV',
+                defaultMessage: 'Massnahmen: Taxa in Massnahme',
+              })}
+              name="action_taxa_in_action"
+              value={row.action_taxa_in_action ?? true}
+              onChange={onChange}
+              validationState={validations?.action_taxa_in_action?.state}
+              validationMessage={validations?.action_taxa_in_action?.message}
+            />
+          )}
+          <SwitchField
+            label={formatMessage({
               id: 'rJ9OiE',
               defaultMessage: 'Massnahmen: Berichte',
             })}

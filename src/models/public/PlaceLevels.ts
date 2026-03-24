@@ -63,6 +63,10 @@ export default interface PlaceLevels {
 
   action_quantities_in_action: boolean | null;
 
+  action_taxa: boolean | null;
+
+  action_taxa_in_action: boolean | null;
+
   /** Are action reports used? Preset: true */
   action_reports: boolean | null;
 
@@ -189,6 +193,12 @@ export interface PlaceLevelsInitializer {
 
   /** Default value: true */
   action_quantities_in_action?: boolean | null;
+
+  /** Default value: true */
+  action_taxa?: boolean | null;
+
+  /** Default value: true */
+  action_taxa_in_action?: boolean | null;
 
   /**
    * Are action reports used? Preset: true
@@ -335,6 +345,10 @@ export interface PlaceLevelsMutator {
   action_quantities?: boolean | null;
 
   action_quantities_in_action?: boolean | null;
+
+  action_taxa?: boolean | null;
+
+  action_taxa_in_action?: boolean | null;
 
   /** Are action reports used? Preset: true */
   action_reports?: boolean | null;

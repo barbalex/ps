@@ -146,6 +146,7 @@ CREATE TABLE IF NOT EXISTS projects(
   actions_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   checks_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   check_taxa_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
+  action_taxa_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   action_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   check_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   values_on_multiple_levels text DEFAULT NULL,
@@ -175,6 +176,7 @@ CREATE INDEX IF NOT EXISTS projects_label_idx ON projects USING btree(label);
 CREATE INDEX IF NOT EXISTS projects_actions_default_unit_id_idx ON projects USING btree(actions_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_checks_default_unit_id_idx ON projects USING btree(checks_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_check_taxa_default_unit_id_idx ON projects USING btree(check_taxa_default_unit_id);
+CREATE INDEX IF NOT EXISTS projects_action_taxa_default_unit_id_idx ON projects USING btree(action_taxa_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_action_reports_default_unit_id_idx ON projects USING btree(action_reports_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_check_reports_default_unit_id_idx ON projects USING btree(check_reports_default_unit_id);
 
@@ -187,6 +189,7 @@ COMMENT ON COLUMN projects.places_order_by IS 'Used to order places in lists. Co
 COMMENT ON COLUMN projects.actions_default_unit_id IS 'Default unit for action values.';
 COMMENT ON COLUMN projects.checks_default_unit_id IS 'Default unit for check values. Can be overwritten in checks';
 COMMENT ON COLUMN projects.check_taxa_default_unit_id IS 'Default unit for check taxa values. Can be overwritten in check_taxa';
+COMMENT ON COLUMN projects.action_taxa_default_unit_id IS 'Default unit for action taxa values. Can be overwritten in action_taxa';
 COMMENT ON COLUMN projects.action_reports_default_unit_id IS 'Default unit for action report quantities. Can be overwritten in action_reports';
 COMMENT ON COLUMN projects.check_reports_default_unit_id IS 'Default unit for check report quantities. Can be overwritten in check_reports';
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
@@ -228,6 +231,8 @@ CREATE TABLE IF NOT EXISTS place_levels(
   actions boolean DEFAULT TRUE,
   action_quantities boolean DEFAULT TRUE,
   action_quantities_in_action boolean DEFAULT TRUE,
+  action_taxa boolean DEFAULT TRUE,
+  action_taxa_in_action boolean DEFAULT TRUE,
   action_reports boolean DEFAULT TRUE,
   action_report_quantities boolean DEFAULT TRUE,
   action_report_quantities_in_report boolean DEFAULT TRUE,
@@ -603,6 +608,7 @@ COMMENT ON COLUMN units.list_id IS 'Optional list of allowed values for this uni
 ALTER TABLE taxonomies ADD CONSTRAINT taxonomies_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_actions_default_unit_id_fkey FOREIGN KEY (actions_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_check_taxa_default_unit_id_fkey FOREIGN KEY (check_taxa_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE projects ADD CONSTRAINT projects_action_taxa_default_unit_id_fkey FOREIGN KEY (action_taxa_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_checks_default_unit_id_fkey FOREIGN KEY (checks_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_action_reports_default_unit_id_fkey FOREIGN KEY (action_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_check_reports_default_unit_id_fkey FOREIGN KEY (check_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
@@ -745,6 +751,35 @@ COMMENT ON COLUMN action_quantities.account_id IS 'redundant account_id enhances
 COMMENT ON COLUMN action_quantities.quantity_integer IS 'Used for integer quantities';
 COMMENT ON COLUMN action_quantities.quantity_numeric IS 'Used for numeric quantities';
 COMMENT ON COLUMN action_quantities.quantity_text IS 'Used for text quantities';
+
+--------------------------------------------------------------
+-- action_taxa
+--
+CREATE TABLE IF NOT EXISTS action_taxa(
+  action_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  quantity_integer integer DEFAULT NULL,
+  quantity_numeric double precision DEFAULT NULL,
+  quantity_text text DEFAULT NULL,
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS action_taxa_account_id_idx ON action_taxa USING btree(account_id);
+CREATE INDEX IF NOT EXISTS action_taxa_action_id_idx ON action_taxa USING btree(action_id);
+CREATE INDEX IF NOT EXISTS action_taxa_taxon_id_idx ON action_taxa USING btree(taxon_id);
+CREATE INDEX IF NOT EXISTS action_taxa_unit_id_idx ON action_taxa USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS action_taxa_quantity_integer_idx ON action_taxa USING btree(quantity_integer);
+CREATE INDEX IF NOT EXISTS action_taxa_quantity_numeric_idx ON action_taxa USING btree(quantity_numeric);
+CREATE INDEX IF NOT EXISTS action_taxa_quantity_text_idx ON action_taxa USING btree(quantity_text);
+CREATE INDEX IF NOT EXISTS action_taxa_label_idx ON action_taxa USING btree(label);
+
+COMMENT ON COLUMN action_taxa.account_id IS 'redundant account_id enhances data safety';
 
 --------------------------------------------------------------
 -- action_reports

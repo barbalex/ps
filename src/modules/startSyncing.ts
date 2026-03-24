@@ -97,6 +97,8 @@ export const startSyncing = async () => {
                 'actions',
                 'action_quantities',
                 'action_quantities_in_action',
+                'action_taxa',
+                'action_taxa_in_action',
                 'action_reports',
                 'action_report_quantities',
                 'action_report_quantities_in_report',
@@ -434,6 +436,16 @@ export const startSyncing = async () => {
           },
           table: 'check_taxa',
           primaryKey: ['check_taxon_id'],
+        },
+        action_taxa: {
+          shape: {
+            url,
+            params: {
+              table: 'action_taxa',
+            },
+          },
+          table: 'action_taxa',
+          primaryKey: ['action_taxon_id'],
         },
         place_reports: {
           shape: {

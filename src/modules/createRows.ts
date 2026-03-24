@@ -963,6 +963,49 @@ export const createCheckTaxon = async ({ checkId }) => {
   return check_taxon_id
 }
 
+export const createActionTaxon = async ({ actionId }) => {
+  const db = store.get(pgliteDbAtom)
+
+  // inherit the project's default unit if set
+  const projectRes = await db.query<{
+    action_taxa_default_unit_id: string | null
+  }>(
+    `SELECT p.action_taxa_default_unit_id
+     FROM projects p
+     JOIN subprojects sp ON sp.project_id = p.project_id
+     JOIN places pl ON pl.subproject_id = sp.subproject_id
+     JOIN actions a ON a.place_id = pl.place_id
+     WHERE a.action_id = $1
+     LIMIT 1`,
+    [actionId],
+  )
+  const defaultUnitId =
+    projectRes.rows?.[0]?.action_taxa_default_unit_id ?? null
+
+  const action_taxon_id = uuidv7()
+  const draft = {
+    action_taxon_id,
+    action_id: actionId,
+    ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
+  }
+  const cols = Object.keys(draft).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
+  await db.query(
+    `INSERT INTO action_taxa (${cols}) VALUES (${vals})`,
+    Object.values(draft),
+  )
+
+  store.set(addOperationAtom, {
+    table: 'action_taxa',
+    operation: 'insert',
+    draft,
+  })
+
+  return action_taxon_id
+}
+
 export const createAction = async ({ projectId, placeId }) => {
   const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column

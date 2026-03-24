@@ -42,6 +42,8 @@ import { ActionQuantitiesFetcher } from './ActionQuantitiesFetcher.tsx'
 import { ActionQuantityFetcher } from './ActionQuantityFetcher.tsx'
 import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
 import { ActionReportFetcher } from './ActionReportFetcher.tsx'
+import { ActionTaxaFetcher } from './ActionTaxaFetcher.tsx'
+import { ActionTaxonFetcher } from './ActionTaxonFetcher.tsx'
 import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
 import { ActionReportQuantitiesFetcher } from './ActionReportQuantitiesFetcher.tsx'
 import { ActionReportQuantityFetcher } from './ActionReportQuantityFetcher.tsx'
@@ -260,6 +262,27 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <ActionQuantityFetcher params={params} {...other} />
+    }
+    case 'useActionTaxaNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.actionId
+      )
+        return null
+      return <ActionTaxaFetcher params={params} {...other} />
+    }
+    case 'useActionTaxonNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.actionId ||
+        !params.actionTaxonId
+      )
+        return null
+      return <ActionTaxonFetcher params={params} {...other} />
     }
     case 'useActionReportsNavData': {
       if (
