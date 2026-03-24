@@ -12,3 +12,5 @@ dropbox_uploader.conf
 .DS_Store
 
 deploy-backend.sh
+
+tasks

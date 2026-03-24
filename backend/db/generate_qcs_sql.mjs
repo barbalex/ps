@@ -48,13 +48,16 @@ const valueLines = rows
       is_root_level,
       is_project_level,
       is_subproject_level,
+      sql_val,
     ] = cols
 
     if (!name?.trim()) return null
 
+    const sqlLiteral = (sql_val ?? '').trim() ? `'${esc(sql_val)}'` : 'NULL'
+
     return (
       `('${esc(name)}', '${esc(label_de)}', '${esc(label_en)}', '${esc(label_fr)}', '${esc(label_it)}', ` +
-      `'${esc(table_name)}', ${placeLevel(place_level_raw)}, ${bool(is_root_level)}, ${bool(is_project_level)}, ${bool(is_subproject_level)}, NULL)`
+      `'${esc(table_name)}', ${placeLevel(place_level_raw)}, ${bool(is_root_level)}, ${bool(is_project_level)}, ${bool(is_subproject_level)}, ${sqlLiteral})`
     )
   })
   .filter(Boolean)
