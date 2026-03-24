@@ -291,18 +291,18 @@ export const Configuration = ({ from }) => {
           />
           <RadioGroupField
             label={formatMessage({
-              id: 'dSt9mU',
-              defaultMessage: 'Standard-Einheit für Kontroll-Bericht-Mengen',
+              id: 'bT0CsE',
+              defaultMessage: 'Standard-Einheit für Massnahmen-Taxon-Mengen',
             })}
-            name="check_reports_default_unit_id"
+            name="action_taxa_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.check_reports_default_unit_id ?? ''}
+            value={row.action_taxa_default_unit_id ?? ''}
             onChange={onChange}
-            validationState={validations?.check_reports_default_unit_id?.state}
+            validationState={validations?.action_taxa_default_unit_id?.state}
             validationMessage={
-              validations?.check_reports_default_unit_id?.message
+              validations?.action_taxa_default_unit_id?.message
             }
           />
           <RadioGroupField
@@ -318,6 +318,22 @@ export const Configuration = ({ from }) => {
             onChange={onChange}
             validationState={validations?.checks_default_unit_id?.state}
             validationMessage={validations?.checks_default_unit_id?.message}
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'dSt9mU',
+              defaultMessage: 'Standard-Einheit für Kontroll-Bericht-Mengen',
+            })}
+            name="check_reports_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.check_reports_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={validations?.check_reports_default_unit_id?.state}
+            validationMessage={
+              validations?.check_reports_default_unit_id?.message
+            }
           />
           <RadioGroupField
             label={formatMessage({
