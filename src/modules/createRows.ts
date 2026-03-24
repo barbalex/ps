@@ -1844,17 +1844,17 @@ export const createQc = async () => {
 
 export const createSubprojectQc = async ({ subprojectId, qcId }) => {
   const db = store.get(pgliteDbAtom)
-  const subproject_qc_id = uuidv7()
+  const qcs_assignment_id = uuidv7()
   await db.query(
-    `insert into subproject_qcs (subproject_qc_id, subproject_id, qc_id) values ($1, $2, $3)`,
-    [subproject_qc_id, subprojectId, qcId],
+    `insert into qcs_assignment (qcs_assignment_id, subproject_id, qc_id) values ($1, $2, $3)`,
+    [qcs_assignment_id, subprojectId, qcId],
   )
 
   store.set(addOperationAtom, {
-    table: 'subproject_qcs',
+    table: 'qcs_assignment',
     operation: 'insert',
-    draft: { subproject_qc_id, subproject_id: subprojectId, qc_id: qcId },
+    draft: { qcs_assignment_id, subproject_id: subprojectId, qc_id: qcId },
   })
 
-  return subproject_qc_id
+  return qcs_assignment_id
 }

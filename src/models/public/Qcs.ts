@@ -25,6 +25,12 @@ export default interface Qcs {
 
   sort: number | null;
 
+  is_root_level: boolean | null;
+
+  is_project_level: boolean | null;
+
+  is_subproject_level: boolean | null;
+
   created_at: Date;
 
   updated_at: Date;
@@ -53,6 +59,15 @@ export interface QcsInitializer {
   description?: string | null;
 
   sort?: number | null;
+
+  /** Default value: false */
+  is_root_level?: boolean | null;
+
+  /** Default value: false */
+  is_project_level?: boolean | null;
+
+  /** Default value: false */
+  is_subproject_level?: boolean | null;
 
   /** Default value: now() */
   created_at?: Date;
@@ -83,6 +98,12 @@ export interface QcsMutator {
   description?: string | null;
 
   sort?: number | null;
+
+  is_root_level?: boolean | null;
+
+  is_project_level?: boolean | null;
+
+  is_subproject_level?: boolean | null;
 
   created_at?: Date;
 

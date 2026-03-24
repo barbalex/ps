@@ -30,7 +30,7 @@ export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
-    `SELECT count(*) AS count FROM subproject_qcs WHERE subproject_id = $1`,
+    `SELECT count(*) AS count FROM qcs_assignment WHERE subproject_id = $1`,
     [subprojectId],
   )
 

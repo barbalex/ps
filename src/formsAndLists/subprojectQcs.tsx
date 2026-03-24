@@ -27,7 +27,7 @@ type QcRow = {
 }
 
 type ActiveEntry = {
-  subproject_qc_id: string
+  qcs_assignment_id: string
   qc_id: string
 }
 
@@ -67,9 +67,9 @@ export const SubprojectQcs = ({ from }) => {
     `SELECT qcs_id, name, label, table_name, place_level, sort FROM qcs ORDER BY label`,
   )
 
-  // Load active subproject_qcs for this subproject
+  // Load active qcs_assignment for this subproject
   const activeRes = useLiveQuery(
-    `SELECT subproject_qc_id, qc_id FROM subproject_qcs WHERE subproject_id = $1`,
+    `SELECT qcs_assignment_id, qc_id FROM qcs_assignment WHERE subproject_id = $1`,
     [subprojectId],
   )
 
@@ -251,16 +251,16 @@ export const SubprojectQcs = ({ from }) => {
       if (!entry) return
       try {
         await db.query(
-          `DELETE FROM subproject_qcs WHERE subproject_qc_id = $1`,
-          [entry.subproject_qc_id],
+          `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
+          [entry.qcs_assignment_id],
         )
         addOperation({
-          table: 'subproject_qcs',
-          rowIdName: 'subproject_qc_id',
-          rowId: entry.subproject_qc_id,
+          table: 'qcs_assignment',
+          rowIdName: 'qcs_assignment_id',
+          rowId: entry.qcs_assignment_id,
           operation: 'delete',
           prev: {
-            subproject_qc_id: entry.subproject_qc_id,
+            qcs_assignment_id: entry.qcs_assignment_id,
             qc_id: qcId,
             subproject_id: subprojectId,
           },
@@ -287,16 +287,16 @@ export const SubprojectQcs = ({ from }) => {
     for (const entry of toDelete) {
       try {
         await db.query(
-          `DELETE FROM subproject_qcs WHERE subproject_qc_id = $1`,
-          [entry.subproject_qc_id],
+          `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
+          [entry.qcs_assignment_id],
         )
         addOperation({
-          table: 'subproject_qcs',
-          rowIdName: 'subproject_qc_id',
-          rowId: entry.subproject_qc_id,
+          table: 'qcs_assignment',
+          rowIdName: 'qcs_assignment_id',
+          rowId: entry.qcs_assignment_id,
           operation: 'delete',
           prev: {
-            subproject_qc_id: entry.subproject_qc_id,
+            qcs_assignment_id: entry.qcs_assignment_id,
             qc_id: entry.qc_id,
             subproject_id: subprojectId,
           },

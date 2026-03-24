@@ -1112,13 +1112,13 @@ export const startSyncing = async () => {
           table: 'qcs',
           primaryKey: ['qcs_id'],
         },
-        subproject_qcs: {
+        qcs_assignment: {
           shape: {
             url,
-            params: { table: 'subproject_qcs' },
+            params: { table: 'qcs_assignment' },
           },
-          table: 'subproject_qcs',
-          primaryKey: ['subproject_qc_id'],
+          table: 'qcs_assignment',
+          primaryKey: ['qcs_assignment_id'],
         },
       },
       key: 'ps-sync', // Persistent key for live updates across reloads
