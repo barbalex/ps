@@ -28,17 +28,11 @@ export default interface PlaceLevels {
   /** German plural name. Preset: "Populationen" */
   name_plural_de: string | null;
 
-  /** German short name. Preset: "Pop" */
-  name_short_de: string | null;
-
   /** English singular name. Preset: "Population" */
   name_singular_en: string | null;
 
   /** English plural name. Preset: "Populations" */
   name_plural_en: string | null;
-
-  /** English short name. Preset: "Pop" */
-  name_short_en: string | null;
 
   /** French singular name. Preset: "Population" */
   name_singular_fr: string | null;
@@ -46,17 +40,11 @@ export default interface PlaceLevels {
   /** French plural name. Preset: "Populations" */
   name_plural_fr: string | null;
 
-  /** French short name. Preset: "Pop" */
-  name_short_fr: string | null;
-
   /** Italian singular name. Preset: "Popolazione" */
   name_singular_it: string | null;
 
   /** Italian plural name. Preset: "Popolazioni" */
   name_plural_it: string | null;
-
-  /** Italian short name. Preset: "Pop" */
-  name_short_it: string | null;
 
   /** Are reports used? Preset: true */
   place_reports: boolean | null;
@@ -151,17 +139,11 @@ export interface PlaceLevelsInitializer {
   /** German plural name. Preset: "Populationen" */
   name_plural_de?: string | null;
 
-  /** German short name. Preset: "Pop" */
-  name_short_de?: string | null;
-
   /** English singular name. Preset: "Population" */
   name_singular_en?: string | null;
 
   /** English plural name. Preset: "Populations" */
   name_plural_en?: string | null;
-
-  /** English short name. Preset: "Pop" */
-  name_short_en?: string | null;
 
   /** French singular name. Preset: "Population" */
   name_singular_fr?: string | null;
@@ -169,17 +151,11 @@ export interface PlaceLevelsInitializer {
   /** French plural name. Preset: "Populations" */
   name_plural_fr?: string | null;
 
-  /** French short name. Preset: "Pop" */
-  name_short_fr?: string | null;
-
   /** Italian singular name. Preset: "Popolazione" */
   name_singular_it?: string | null;
 
   /** Italian plural name. Preset: "Popolazioni" */
   name_plural_it?: string | null;
-
-  /** Italian short name. Preset: "Pop" */
-  name_short_it?: string | null;
 
   /**
    * Are reports used? Preset: true
@@ -325,17 +301,11 @@ export interface PlaceLevelsMutator {
   /** German plural name. Preset: "Populationen" */
   name_plural_de?: string | null;
 
-  /** German short name. Preset: "Pop" */
-  name_short_de?: string | null;
-
   /** English singular name. Preset: "Population" */
   name_singular_en?: string | null;
 
   /** English plural name. Preset: "Populations" */
   name_plural_en?: string | null;
-
-  /** English short name. Preset: "Pop" */
-  name_short_en?: string | null;
 
   /** French singular name. Preset: "Population" */
   name_singular_fr?: string | null;
@@ -343,17 +313,11 @@ export interface PlaceLevelsMutator {
   /** French plural name. Preset: "Populations" */
   name_plural_fr?: string | null;
 
-  /** French short name. Preset: "Pop" */
-  name_short_fr?: string | null;
-
   /** Italian singular name. Preset: "Popolazione" */
   name_singular_it?: string | null;
 
   /** Italian plural name. Preset: "Popolazioni" */
   name_plural_it?: string | null;
-
-  /** Italian short name. Preset: "Pop" */
-  name_short_it?: string | null;
 
   /** Are reports used? Preset: true */
   place_reports?: boolean | null;
