@@ -731,5 +731,10 @@
   "qc.isRootLevel": "Root level",
   "qc.isProjectLevel": "Project level",
   "qc.isSubprojectLevel": "Subproject level",
-  "qc.description": "Description"
+  "qc.description": "Description",
+  "qc.sql": "SQL",
+  "qc.sql.hintRoot": "Root level: no parameters needed.",
+  "qc.sql.hintProject": "Project level: $1 = project_id (uuid)",
+  "qc.sql.hintSubproject": "Subproject level: $1 = subproject_id (uuid)",
+  "qc.sql.hintNone": "Set is_root_level, is_project_level or is_subproject_level to see available parameters."
 }

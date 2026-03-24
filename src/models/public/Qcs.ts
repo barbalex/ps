@@ -37,6 +37,8 @@ export default interface Qcs {
 
   is_subproject_level: boolean | null;
 
+  sql: string | null;
+
   created_at: Date;
 
   updated_at: Date;
@@ -81,6 +83,8 @@ export interface QcsInitializer {
   /** Default value: false */
   is_subproject_level?: boolean | null;
 
+  sql?: string | null;
+
   /** Default value: now() */
   created_at?: Date;
 
@@ -122,6 +126,8 @@ export interface QcsMutator {
   is_project_level?: boolean | null;
 
   is_subproject_level?: boolean | null;
+
+  sql?: string | null;
 
   created_at?: Date;
 

@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.hint {
+  color: var(--colorNeutralForeground3);
+  font-style: italic;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.editorWrapper {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--colorNeutralStroke1);
+  min-height: 180px;
+}
+
+.validationError {
+  color: var(--colorPaletteRedForeground3);
+}
+
+.validationWarning {
+  color: var(--colorPaletteYellowForeground2);
+}

@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
 
 import '../../form.css'
 
@@ -59,6 +60,42 @@ const opts: Opt[] = [
 // this form is rendered from the item view and from the filter
 export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
   const { formatMessage } = useIntl()
+
+  // Build the parameter hint based on which level flags are set
+  const paramHint = (() => {
+    const parts: string[] = []
+    if (row?.is_root_level) {
+      parts.push(
+        formatMessage({
+          id: 'qc.sql.hintRoot',
+          defaultMessage: 'Root level: no parameters needed.',
+        }),
+      )
+    }
+    if (row?.is_project_level) {
+      parts.push(
+        formatMessage({
+          id: 'qc.sql.hintProject',
+          defaultMessage: 'Project level: $1 = project_id (uuid)',
+        }),
+      )
+    }
+    if (row?.is_subproject_level) {
+      parts.push(
+        formatMessage({
+          id: 'qc.sql.hintSubproject',
+          defaultMessage: 'Subproject level: $1 = subproject_id (uuid)',
+        }),
+      )
+    }
+    return parts.length
+      ? parts.join('\n')
+      : formatMessage({
+          id: 'qc.sql.hintNone',
+          defaultMessage:
+            'Set is_root_level, is_project_level or is_subproject_level to see available parameters.',
+        })
+  })()
 
   const tableOptLabelMap: Record<string, string> = {
     accounts: formatMessage({ id: 'qc.accounts', defaultMessage: 'Konten' }),
@@ -260,6 +297,15 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         onChange={onChange}
         validationMessage={validations?.description?.message}
         validationState={validations?.description?.state}
+      />
+      <SqlEditorField
+        label={formatMessage({ id: 'qc.sql', defaultMessage: 'SQL' })}
+        name="sql"
+        value={row?.sql ?? ''}
+        onChange={onChange}
+        hint={paramHint}
+        validationMessage={validations?.sql?.message}
+        validationState={validations?.sql?.state}
       />
       <TextField
         label={formatMessage({

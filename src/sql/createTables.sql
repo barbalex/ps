@@ -2015,6 +2015,7 @@ CREATE TABLE IF NOT EXISTS qcs(
   is_root_level boolean DEFAULT false,
   is_project_level boolean DEFAULT false,
   is_subproject_level boolean DEFAULT false,
+  sql text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
