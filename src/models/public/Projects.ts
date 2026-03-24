@@ -216,13 +216,13 @@ export interface ProjectsInitializer {
 
   /**
    * Whether wms-services and wms-layers are shown. Preset: false.
-   * Default value: false
+   * Default value: true
    */
   wms_layers?: boolean | null;
 
   /**
    * Whether vector-layers and wfs-services are shown. Preset: false.
-   * Default value: false
+   * Default value: true
    */
   vector_layers?: boolean | null;
 

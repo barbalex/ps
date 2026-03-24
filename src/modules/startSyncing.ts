@@ -1112,7 +1112,6 @@ export const startSyncing = async () => {
                 'name',
                 'table_name',
                 'place_level',
-                'label',
                 'description',
                 'sort',
                 'created_at',
