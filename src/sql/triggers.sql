@@ -1030,3 +1030,56 @@ CREATE OR REPLACE TRIGGER chart_subjects_label_trigger
 AFTER INSERT OR UPDATE OF value_unit, field, calc_method, table_name ON chart_subjects
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();
+
+-- subproject_qcs: set label from qcs.name with subproject_qc_id as fallback
+CREATE OR REPLACE FUNCTION subproject_qcs_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  _qc_name TEXT;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  IF NEW.qc_id IS NULL THEN
+    _qc_name := NULL;
+  ELSE
+    SELECT qcs.name INTO _qc_name FROM qcs WHERE qcs.qcs_id = NEW.qc_id;
+  END IF;
+
+  UPDATE subproject_qcs
+    SET label = coalesce(nullif(_qc_name, ''), NEW.subproject_qc_id::text)
+  WHERE subproject_qcs.subproject_qc_id = NEW.subproject_qc_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER subproject_qcs_label_trigger
+AFTER INSERT OR UPDATE OF qc_id ON subproject_qcs
+FOR EACH ROW
+EXECUTE PROCEDURE subproject_qcs_label_trigger();
+
+-- when qcs.name changes, update labels of all related subproject_qcs
+CREATE OR REPLACE FUNCTION qcs_name_update_subproject_qcs_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  UPDATE subproject_qcs
+    SET label = coalesce(nullif(NEW.name, ''), subproject_qc_id::text)
+  WHERE subproject_qcs.qc_id = NEW.qcs_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER qcs_name_update_subproject_qcs_label_trigger
+AFTER UPDATE OF name ON qcs
+FOR EACH ROW
+EXECUTE PROCEDURE qcs_name_update_subproject_qcs_label_trigger();

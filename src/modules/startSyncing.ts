@@ -1102,6 +1102,35 @@ export const startSyncing = async () => {
           table: 'project_crs',
           primaryKey: ['project_crs_id'],
         },
+        qcs: {
+          shape: {
+            url,
+            params: {
+              table: 'qcs',
+              columns: [
+                'qcs_id',
+                'name',
+                'table_name',
+                'label',
+                'description',
+                'sort',
+                'created_at',
+                'updated_at',
+                'updated_by',
+              ],
+            },
+          },
+          table: 'qcs',
+          primaryKey: ['qcs_id'],
+        },
+        subproject_qcs: {
+          shape: {
+            url,
+            params: { table: 'subproject_qcs' },
+          },
+          table: 'subproject_qcs',
+          primaryKey: ['subproject_qc_id'],
+        },
       },
       key: 'ps-sync', // Persistent key for live updates across reloads
       // Removed initialInsertMethod - let Electric use default for live updates

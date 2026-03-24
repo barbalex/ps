@@ -1996,4 +1996,47 @@ CREATE INDEX IF NOT EXISTS project_crs_label_idx ON project_crs USING btree(labe
 
 COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
 
+--------------------------------------------------------------
+-- qcs: quality controls for data
+--
+CREATE TABLE IF NOT EXISTS qcs(
+  qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
+  table_name text DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), qcs_id::text)) STORED,
+  description text DEFAULT NULL,
+  sort smallint DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (name)
+);
+
+CREATE INDEX IF NOT EXISTS qcs_name_idx ON qcs USING btree(name);
+CREATE INDEX IF NOT EXISTS qcs_label_idx ON qcs USING btree(label);
+CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
+
+COMMENT ON COLUMN qcs.table_name IS 'The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui';
+COMMENT ON TABLE qcs IS 'Quality controls for data. Surface suspicious data.';
+
+--------------------------------------------------------------
+-- subproject_qcs
+--
+CREATE TABLE IF NOT EXISTS subproject_qcs(
+  subproject_qc_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid NOT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  qc_id uuid NOT NULL REFERENCES qcs(qcs_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (subproject_id, qc_id)
+);
+
+CREATE INDEX IF NOT EXISTS subproject_qcs_subproject_id_idx ON subproject_qcs USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_qcs_qc_id_idx ON subproject_qcs USING btree(qc_id);
+CREATE INDEX IF NOT EXISTS subproject_qcs_label_idx ON subproject_qcs USING btree(label);
+
+COMMENT ON TABLE subproject_qcs IS 'Quality controls used in a subproject. Ensure not to create false positives by only applying quality controls that are relevant for the data in a subproject.';
+
 COMMIT;

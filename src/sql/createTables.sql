@@ -153,8 +153,8 @@ CREATE TABLE IF NOT EXISTS projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_quantities_on_same_level text DEFAULT NULL,
   multiple_check_quantities_on_same_level text DEFAULT NULL,
-  wms_layers boolean DEFAULT FALSE,
-  vector_layers boolean DEFAULT FALSE,
+  wms_layers boolean DEFAULT TRUE,
+  vector_layers boolean DEFAULT TRUE,
   project_reports boolean DEFAULT TRUE,
   subproject_reports boolean DEFAULT TRUE,
   persons boolean DEFAULT TRUE,
@@ -291,14 +291,12 @@ COMMENT ON COLUMN place_levels.place_report_quantities IS 'Are report quantities
 COMMENT ON COLUMN place_levels.place_report_quantities_in_report IS 'Show report quantities inside the report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
 COMMENT ON COLUMN place_levels.action_quantities IS 'Are action values used? Preset: true';
-COMMENT ON COLUMN place_levels.action_quantities_in_action IS 'Show action quantities inside the action form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: true';
 COMMENT ON COLUMN place_levels.action_report_quantities IS 'Are action report quantities used? Preset: true';
 COMMENT ON COLUMN place_levels.action_report_quantities_in_report IS 'Show action report quantities inside the action report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities_in_check IS 'Show check quantities inside the check form instead of a separate route? Preset: true';
-COMMENT ON COLUMN place_levels.check_taxa_in_check IS 'Show check taxa inside the check form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.check_report_quantities_in_report IS 'Show check report quantities inside the check report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
@@ -1997,5 +1995,48 @@ CREATE INDEX IF NOT EXISTS project_crs_code_idx ON project_crs USING btree(code)
 CREATE INDEX IF NOT EXISTS project_crs_label_idx ON project_crs USING btree(label);
 
 COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
+
+--------------------------------------------------------------
+-- qcs: quality controls for data
+--
+CREATE TABLE IF NOT EXISTS qcs(
+  qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
+  table_name text DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), qcs_id::text)) STORED,
+  description text DEFAULT NULL,
+  sort smallint DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (name)
+);
+
+CREATE INDEX IF NOT EXISTS qcs_name_idx ON qcs USING btree(name);
+CREATE INDEX IF NOT EXISTS qcs_label_idx ON qcs USING btree(label);
+CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
+
+COMMENT ON COLUMN qcs.table_name IS 'The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui';
+COMMENT ON TABLE qcs IS 'Quality controls for data. Surface suspicious data.';
+
+--------------------------------------------------------------
+-- subproject_qcs
+--
+CREATE TABLE IF NOT EXISTS subproject_qcs(
+  subproject_qc_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid NOT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  qc_id uuid NOT NULL REFERENCES qcs(qcs_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (subproject_id, qc_id)
+);
+
+CREATE INDEX IF NOT EXISTS subproject_qcs_subproject_id_idx ON subproject_qcs USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_qcs_qc_id_idx ON subproject_qcs USING btree(qc_id);
+CREATE INDEX IF NOT EXISTS subproject_qcs_label_idx ON subproject_qcs USING btree(label);
+
+COMMENT ON TABLE subproject_qcs IS 'Quality controls used in a subproject. Ensure not to create false positives by only applying quality controls that are relevant for the data in a subproject.';
 
 COMMIT;
