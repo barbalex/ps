@@ -100,8 +100,9 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
       for (const qc of qcs) {
         if (!qc.sql) continue
         try {
-          const params: (string | number)[] = [subprojectId]
-          if (qc.filter_by_year) {
+          const params: (string | number)[] = []
+          if (qc.sql.includes('$1')) params.push(subprojectId)
+          if (qc.filter_by_year && qc.sql.includes('$2')) {
             const yearNum = parseInt(yearValue, 10)
             if (!isNaN(yearNum)) params.push(yearNum)
           }
