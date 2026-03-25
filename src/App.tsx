@@ -3,12 +3,11 @@ import { RouterProvider } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
-import { PGlite } from '@electric-sql/pglite'
+import { PGliteWorker } from '@electric-sql/pglite/worker'
 import { electricSync } from '@electric-sql/pglite-sync'
 import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
-import { useBeforeunload } from 'react-beforeunload'
 import { IntlProvider, useIntl } from 'react-intl'
 
 import en from './i18n/en.json'
@@ -37,15 +36,18 @@ const IntlSetter = () => {
   return null
 }
 
-const db = await PGlite.create('idb://ps', {
-  extensions: {
-    live,
-    electric: electricSync(),
-    postgis,
+const db = await PGliteWorker.create(
+  new Worker(new URL('./pglite-worker.ts', import.meta.url), {
+    type: 'module',
+  }),
+  {
+    extensions: {
+      electric: electricSync(),
+      live,
+      postgis,
+    },
   },
-  relaxedDurability: true,
-  // debug: true, // Disabled - too verbose
-})
+)
 store.set(pgliteDbAtom, db)
 
 // Expose db and store on window for console debugging
@@ -67,10 +69,6 @@ export const App = () => {
     }
     document.title = titles[language] ?? 'Arten fördern'
   }, [language])
-
-  // needed to prevent problems with relaxed durability and closing connections
-  // https://github.com/electric-sql/pglite/issues/879#issuecomment-3777577150
-  useBeforeunload(() => db.close())
 
   return (
     <JotaiProvider store={store}>
