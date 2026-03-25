@@ -36,6 +36,7 @@ const IntlSetter = () => {
   return null
 }
 
+// hm. seems things have slowed down since using this worker to enable multi-tab?
 const db = await PGliteWorker.create(
   new Worker(new URL('./pglite-worker.ts', import.meta.url), {
     type: 'module',
