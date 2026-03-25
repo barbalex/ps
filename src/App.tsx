@@ -3,7 +3,8 @@ import { RouterProvider } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
-import { PGliteWorker } from '@electric-sql/pglite/worker'
+// import { PGliteWorker } from '@electric-sql/pglite/worker'
+import { PGlite } from '@electric-sql/pglite'
 import { electricSync } from '@electric-sql/pglite-sync'
 import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
@@ -36,19 +37,29 @@ const IntlSetter = () => {
   return null
 }
 
-// hm. seems things have slowed down since using this worker to enable multi-tab?
-const db = await PGliteWorker.create(
-  new Worker(new URL('./pglite-worker.ts', import.meta.url), {
-    type: 'module',
-  }),
-  {
-    extensions: {
-      electric: electricSync(),
-      live,
-      postgis,
-    },
+// hm. things slowed down hard when using this worker to enable multi-tab
+// looked like the storage doubled as well
+// const db = await PGliteWorker.create(
+//   new Worker(new URL('./pglite-worker.ts', import.meta.url), {
+//     type: 'module',
+//   }),
+//   {
+//     extensions: {
+//       electric: electricSync(),
+//       live,
+//       postgis,
+//     },
+//   },
+// )
+const db = await PGlite.create('idb://ps', {
+  extensions: {
+    live,
+    electric: electricSync(),
+    postgis,
   },
-)
+  relaxedDurability: true,
+  // debug: true,
+})
 store.set(pgliteDbAtom, db)
 
 // Expose db and store on window for console debugging
