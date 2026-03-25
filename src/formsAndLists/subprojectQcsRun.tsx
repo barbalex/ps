@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { useState, useEffect, useCallback } from 'react'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -50,7 +50,15 @@ function HighlightedLabel({
     <span>
       {parts.map((part, i) =>
         regex.test(part) ? (
-          <mark key={i} style={{ background: 'var(--colorBrandBackground2)', color: 'inherit', padding: '0 1px', borderRadius: 2 }}>
+          <mark
+            key={i}
+            style={{
+              background: 'var(--colorBrandBackground2)',
+              color: 'inherit',
+              padding: '0 1px',
+              borderRadius: 2,
+            }}
+          >
             {part}
           </mark>
         ) : (
@@ -66,14 +74,13 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const db = usePGlite()
+  const navigate = useNavigate()
 
   const currentYear = new Date().getFullYear().toString()
   const [year, setYear] = useState(currentYear)
   const [labelFilter, setLabelFilter] = useState('')
   const [results, setResults] = useState<QcResult[] | null>(null)
   const [running, setRunning] = useState(false)
-  // track run counter so we can trigger re-run
-  const [runKey, setRunKey] = useState(0)
 
   // Load chosen QCs for this subproject, joined with qcs data
   const qcsRes = useLiveQuery(
@@ -121,20 +128,17 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
     [db, subprojectId],
   )
 
-  // Run automatically on first load and when runKey changes
-  const hasRunRef = useRef(false)
+  // Run automatically on first load
   useEffect(() => {
     if (loading) return
     const qcs = (qcsRes?.rows ?? []) as QcRow[]
-    if (!hasRunRef.current || runKey > 0) {
-      hasRunRef.current = true
-      runAllQcs(qcs, year)
-    }
+    runAllQcs(qcs, year)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, runKey])
+  }, [loading])
 
   const handleReanalyse = () => {
-    setRunKey((k) => k + 1)
+    const qcs = (qcsRes?.rows ?? []) as QcRow[]
+    runAllQcs(qcs, year)
   }
 
   const title = formatMessage({
@@ -154,8 +158,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   const visibleCards = filteredResults.filter(
     (r) => r.rows.length > 0 || r.error,
   )
-  const allClean =
-    results !== null && !running && visibleCards.length === 0
+  const allClean = results !== null && !running && visibleCards.length === 0
 
   return (
     <div className="list-view">
@@ -164,171 +167,204 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
       </div>
 
       <div className="list-container">
-      {/* Controls */}
-      <div
-        style={{
-          padding: '8px 10px',
-          display: 'flex',
-          gap: '12px',
-          flexWrap: 'wrap',
-          alignItems: 'flex-end',
-        }}
-      >
-        <Field
-          label={formatMessage({
-            id: 'subprojectQcsRun.year',
-            defaultMessage: 'Bericht Jahr',
-          })}
+        {/* Controls */}
+        <div
+          style={{
+            padding: '8px 10px',
+            display: 'flex',
+            gap: '12px',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+          }}
         >
-          <Input
-            value={year}
-            onChange={(_, data) => setYear(data.value)}
-            style={{ width: 90 }}
-            appearance="underline"
-            type="number"
-          />
-        </Field>
-        <Field
-          label={formatMessage({
-            id: 'subprojectQcsRun.filter',
-            defaultMessage: 'QK-Label filtern',
-          })}
-        >
-          <Input
-            value={labelFilter}
-            onChange={(_, data) => setLabelFilter(data.value)}
-            placeholder={formatMessage({
-              id: 'subprojectQcsRun.filterPlaceholder',
-              defaultMessage: 'Filter...',
+          <Field
+            label={formatMessage({
+              id: 'subprojectQcsRun.year',
+              defaultMessage: 'Bericht Jahr',
             })}
-            appearance="underline"
-          />
-        </Field>
-        <Button
-          appearance="primary"
-          onClick={handleReanalyse}
-          disabled={running}
-          icon={running ? <Spinner size="tiny" /> : undefined}
-        >
-          {formatMessage({
-            id: 'subprojectQcsRun.reanalyse',
-            defaultMessage: 'Neu analysieren',
-          })}
-        </Button>
-      </div>
-
-      {/* Results area */}
-      <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {running && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Spinner size="small" />
-            <Text>
-              {formatMessage({
-                id: 'subprojectQcsRun.running',
-                defaultMessage: 'Analysiere...',
-              })}
-            </Text>
-          </div>
-        )}
-
-        {allClean && (
-          <div
-            style={{
-              textAlign: 'center',
-              padding: '40px 20px',
-              fontSize: '1.4em',
-              animation: 'celebrate 0.6s ease-out',
-            }}
           >
-            <style>{`
+            <Input
+              value={year}
+              onChange={(_, data) => setYear(data.value)}
+              style={{ width: 90 }}
+              appearance="underline"
+              type="number"
+            />
+          </Field>
+          <Field
+            label={formatMessage({
+              id: 'subprojectQcsRun.filter',
+              defaultMessage: 'QK-Label filtern',
+            })}
+          >
+            <Input
+              value={labelFilter}
+              onChange={(_, data) => setLabelFilter(data.value)}
+              placeholder={formatMessage({
+                id: 'subprojectQcsRun.filterPlaceholder',
+                defaultMessage: 'Filter...',
+              })}
+              appearance="underline"
+            />
+          </Field>
+          <Button
+            appearance="primary"
+            onClick={handleReanalyse}
+            disabled={running}
+            icon={running ? <Spinner size="tiny" /> : undefined}
+          >
+            {formatMessage({
+              id: 'subprojectQcsRun.reanalyse',
+              defaultMessage: 'Neu analysieren',
+            })}
+          </Button>
+        </div>
+
+        {/* Results area */}
+        <div
+          style={{
+            padding: '8px 10px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+        >
+          {running && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Spinner size="small" />
+              <Text>
+                {formatMessage({
+                  id: 'subprojectQcsRun.running',
+                  defaultMessage: 'Analysiere...',
+                })}
+              </Text>
+            </div>
+          )}
+
+          {allClean && (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '40px 20px',
+                fontSize: '1.4em',
+                animation: 'celebrate 0.6s ease-out',
+              }}
+            >
+              <style>{`
               @keyframes celebrate {
                 0%   { transform: scale(0.7); opacity: 0; }
                 60%  { transform: scale(1.1); opacity: 1; }
                 100% { transform: scale(1);   opacity: 1; }
               }
             `}</style>
-            <div style={{ fontSize: '3em', marginBottom: 8 }}>🎉</div>
-            <div style={{ fontWeight: 600 }}>
-              {formatMessage({
-                id: 'subprojectQcsRun.allClean',
-                defaultMessage: 'Juhui, nichts zu meckern',
-              })}
-            </div>
-          </div>
-        )}
-
-        {!running &&
-          visibleCards.map(({ qc, rows, error }) => (
-            <Card key={qc.qcs_id} style={{ maxWidth: 800 }}>
-              <CardHeader
-                header={
-                  <Text weight="semibold">
-                    <HighlightedLabel
-                      text={qc.label ?? qc.qcs_id}
-                      term={labelFilter}
-                    />
-                  </Text>
-                }
-              />
-              <div style={{ padding: '0 12px 12px' }}>
-                {error ? (
-                  <Text
-                    style={{ color: 'var(--colorPaletteRedForeground1)', fontFamily: 'monospace', fontSize: '0.85em' }}
-                  >
-                    {error}
-                  </Text>
-                ) : (
-                  <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {rows.map((row, i) => {
-                      const label = row.label ?? String(Object.values(row)[0] ?? '')
-                      const url = row.url as string | undefined
-                      return (
-                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          {url ? (
-                            <>
-                              <Link href={url} target="_self">
-                                {label}
-                              </Link>
-                              <a
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title={formatMessage({
-                                  id: 'subprojectQcsRun.openNewTab',
-                                  defaultMessage: 'In neuem Tab öffnen',
-                                })}
-                                style={{ color: 'var(--colorNeutralForeground3)', lineHeight: 1, display: 'flex', alignItems: 'center' }}
-                              >
-                                {/* External link icon (inline SVG) */}
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="14"
-                                  height="14"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                  <polyline points="15 3 21 3 21 9" />
-                                  <line x1="10" y1="14" x2="21" y2="3" />
-                                </svg>
-                              </a>
-                            </>
-                          ) : (
-                            <Text>{label}</Text>
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                )}
+              <div style={{ fontSize: '3em', marginBottom: 8 }}>🎉</div>
+              <div style={{ fontWeight: 600 }}>
+                {formatMessage({
+                  id: 'subprojectQcsRun.allClean',
+                  defaultMessage: 'Juhui, nichts zu meckern',
+                })}
               </div>
-            </Card>
-          ))}
-      </div>
+            </div>
+          )}
+
+          {!running &&
+            visibleCards.map(({ qc, rows, error }) => (
+              <Card key={qc.qcs_id} style={{ maxWidth: 800 }}>
+                <CardHeader
+                  header={
+                    <Text weight="semibold">
+                      <HighlightedLabel
+                        text={qc.label ?? qc.qcs_id}
+                        term={labelFilter}
+                      />
+                    </Text>
+                  }
+                />
+                <div style={{ padding: '0 12px 12px' }}>
+                  {error ? (
+                    <Text
+                      style={{
+                        color: 'var(--colorPaletteRedForeground1)',
+                        fontFamily: 'monospace',
+                        fontSize: '0.85em',
+                      }}
+                    >
+                      {error}
+                    </Text>
+                  ) : (
+                    <ul
+                      style={{
+                        margin: 0,
+                        padding: 0,
+                        listStyle: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 4,
+                      }}
+                    >
+                      {rows.map((row, i) => {
+                        const label =
+                          row.label ?? String(Object.values(row)[0] ?? '')
+                        const url = row.url as string | undefined
+                        return (
+                          <li
+                            key={i}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 6,
+                            }}
+                          >
+                            {url ? (
+                              <>
+                                <Link onClick={() => navigate({ to: url })}>
+                                  {label}
+                                </Link>
+                                <a
+                                  href={url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={formatMessage({
+                                    id: 'subprojectQcsRun.openNewTab',
+                                    defaultMessage: 'In neuem Tab öffnen',
+                                  })}
+                                  style={{
+                                    color: 'var(--colorNeutralForeground3)',
+                                    lineHeight: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  {/* External link icon (inline SVG) */}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                    <polyline points="15 3 21 3 21 9" />
+                                    <line x1="10" y1="14" x2="21" y2="3" />
+                                  </svg>
+                                </a>
+                              </>
+                            ) : (
+                              <Text>{label}</Text>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              </Card>
+            ))}
+        </div>
       </div>
     </div>
   )

@@ -62,12 +62,12 @@ export const observeOperations = (store) =>
         return revertOperation(firstOperation)
       } else if (error.code === '23505') {
         // duplicate key value violates unique constraint
-        // TODO: catch uniqueness violations: revert and inform user
-        store.set(addNotificationAtom, {
-          intent: 'error',
-          title: 'Uniqueness violation',
-          body: error.message,
-        })
+        // This means the INSERT already reached the server (e.g. network timeout on response)
+        // The data is already correct on the server — treat as idempotent success
+        console.log(
+          'observeOperations: 23505 duplicate key — operation already applied on server, removing from queue',
+        )
+        return removeOperation(firstOperation)
       }
       // if network error: return, setting shortTermOnline false
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
