@@ -25,7 +25,7 @@ export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
     subprojectId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'qcs']
+  const ownArray = [...parentArray, 'qcs-choose']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 

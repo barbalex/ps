@@ -148,7 +148,7 @@ import { Route as DataProjectsProjectIdTaxonomiesTaxonomyIdTaxaRouteRouteImport 
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/users/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdTaxaRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/taxa/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/reports/route'
-import { Route as DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/qcs/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/route'
@@ -165,7 +165,7 @@ import { Route as DataProjectsProjectIdTaxonomiesTaxonomyIdTaxaIndexRouteImport 
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdUsersIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/users/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdTaxaIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/taxa/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdReportsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/reports/index'
-import { Route as DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/qcs/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/index'
@@ -1194,10 +1194,10 @@ const DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRoute =
     getParentRoute: () =>
       DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
   } as any)
-const DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteImport.update({
-    id: '/qcs',
-    path: '/qcs',
+const DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteImport.update({
+    id: '/qcs-choose',
+    path: '/qcs-choose',
     getParentRoute: () =>
       DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
   } as any)
@@ -1320,12 +1320,12 @@ const DataProjectsProjectIdSubprojectsSubprojectIdReportsIndexRoute =
     getParentRoute: () =>
       DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRoute,
   } as any)
-const DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRouteImport.update({
+const DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () =>
-      DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRoute,
+      DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRoute,
   } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRouteImport.update({
@@ -3391,7 +3391,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteWithChildren
-  '/data/projects/$projectId/subprojects/$subprojectId/qcs': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdTaxaRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/users': typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRouteWithChildren
@@ -3446,7 +3446,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/qcs/': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose/': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/users/': typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersIndexRoute
@@ -3765,7 +3765,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/qcs': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/users': typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersIndexRoute
@@ -4030,7 +4030,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteWithChildren
-  '/data/projects/$projectId_/subprojects/$subprojectId_/qcs': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdTaxaRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/users': typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRouteWithChildren
@@ -4085,7 +4085,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRoute
-  '/data/projects/$projectId_/subprojects/$subprojectId_/qcs/': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose/': typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdTaxaIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/users/': typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersIndexRoute
@@ -4410,7 +4410,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess'
     | '/data/projects/$projectId/subprojects/$subprojectId/places'
-    | '/data/projects/$projectId/subprojects/$subprojectId/qcs'
+    | '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose'
     | '/data/projects/$projectId/subprojects/$subprojectId/reports'
     | '/data/projects/$projectId/subprojects/$subprojectId/taxa'
     | '/data/projects/$projectId/subprojects/$subprojectId/users'
@@ -4465,7 +4465,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/'
-    | '/data/projects/$projectId/subprojects/$subprojectId/qcs/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose/'
     | '/data/projects/$projectId/subprojects/$subprojectId/reports/'
     | '/data/projects/$projectId/subprojects/$subprojectId/taxa/'
     | '/data/projects/$projectId/subprojects/$subprojectId/users/'
@@ -4784,7 +4784,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess'
     | '/data/projects/$projectId/subprojects/$subprojectId/places'
-    | '/data/projects/$projectId/subprojects/$subprojectId/qcs'
+    | '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose'
     | '/data/projects/$projectId/subprojects/$subprojectId/reports'
     | '/data/projects/$projectId/subprojects/$subprojectId/taxa'
     | '/data/projects/$projectId/subprojects/$subprojectId/users'
@@ -5048,7 +5048,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/qcs'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/reports'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/taxa'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/users'
@@ -5103,7 +5103,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/qcs/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/reports/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/users/'
@@ -6287,11 +6287,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
     }
-    '/data/projects/$projectId_/subprojects/$subprojectId_/qcs': {
-      id: '/data/projects/$projectId_/subprojects/$subprojectId_/qcs'
-      path: '/qcs'
-      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/qcs'
-      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteImport
+    '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose'
+      path: '/qcs-choose'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places': {
@@ -6406,12 +6406,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRoute
     }
-    '/data/projects/$projectId_/subprojects/$subprojectId_/qcs/': {
-      id: '/data/projects/$projectId_/subprojects/$subprojectId_/qcs/'
+    '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/qcs-choose/'
       path: '/'
-      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/qcs/'
-      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRouteImport
-      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRoute
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/qcs-choose/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/'
@@ -9761,19 +9761,19 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteWithChildren =
     DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteChildren,
   )
 
-interface DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteChildren {
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute
+interface DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute
 }
 
-const DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteChildren =
+const DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteChildren =
   {
-    DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdQcsIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseIndexRoute,
   }
 
-const DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteWithChildren =
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRoute._addFileChildren(
-    DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteChildren,
+const DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteChildren,
   )
 
 interface DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteChildren {
@@ -9851,7 +9851,7 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteWithChildren
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdTaxaRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdTaxaRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdUsersRouteRouteWithChildren
@@ -9877,8 +9877,8 @@ const DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren: DataProjec
       DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteWithChildren,
-    DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdQcsRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdQcsChooseRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdReportsRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdTaxaRouteRoute:
