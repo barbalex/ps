@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { createSubprojectQc } from '../modules/createRows.ts'
+import { useSubprojectQcsNavData } from '../modules/useSubprojectQcsNavData.ts'
 import { CheckboxField } from '../components/shared/CheckboxField.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { addOperationAtom, languageAtom } from '../store.ts'
@@ -26,7 +27,8 @@ type ActiveEntry = {
 }
 
 export const SubprojectQcs = ({ from }) => {
-  const { subprojectId } = useParams({ from })
+  const { projectId, subprojectId } = useParams({ from })
+  const { navData } = useSubprojectQcsNavData({ projectId, subprojectId })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -125,15 +127,10 @@ export const SubprojectQcs = ({ from }) => {
     }
   }
 
-  const title = formatMessage({
-    id: 'subprojectQcs.title',
-    defaultMessage: 'Qualitätskontrollen: wählen',
-  })
-
   return (
     <div className="list-view">
       <div className="list-view-header">
-        <h1>{title}</h1>
+        <h1>{navData.label}</h1>
       </div>
       <div
         style={{

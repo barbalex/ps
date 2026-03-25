@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, Link } from '@tanstack/react-router'
+import { useSubprojectQcsRunNavData } from '../modules/useSubprojectQcsRunNavData.ts'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -17,8 +18,17 @@ import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
 
 import '../form.css'
 
-const { Button, Input, Field, Card, CardHeader, Spinner, Text, Switch, Tooltip } =
-  fluentUiReactComponents
+const {
+  Button,
+  Input,
+  Field,
+  Card,
+  CardHeader,
+  Spinner,
+  Text,
+  Switch,
+  Tooltip,
+} = fluentUiReactComponents
 
 type QcRow = {
   qcs_id: string
@@ -77,10 +87,13 @@ function HighlightedLabel({
 }
 
 export const SubprojectQcsRun = ({ from }: { from: string }) => {
-  const { subprojectId } = useParams({ from })
+  const { projectId, subprojectId } = useParams({ from })
+  const { navData } = useSubprojectQcsRunNavData({ projectId, subprojectId })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [onlyWithResults, setOnlyWithResults] = useAtom(qcsRunOnlyWithResultsAtom)
+  const [onlyWithResults, setOnlyWithResults] = useAtom(
+    qcsRunOnlyWithResultsAtom,
+  )
   const [labelFilter, setLabelFilter] = useAtom(qcsRunLabelFilterAtom)
   const setFilteredCount = useSetAtom(qcsRunFilteredCountAtom)
   const db = usePGlite()
@@ -150,11 +163,6 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
     runAllQcs(qcs, year)
   }
 
-  const title = formatMessage({
-    id: 'subprojectQcsRun.title',
-    defaultMessage: 'Qualitätskontrollen: ausführen',
-  })
-
   // Filter results by label
   const filteredResults = (results ?? []).filter((r) => {
     if (onlyWithResults && r.rows.length === 0 && !r.error) return false
@@ -173,7 +181,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   return (
     <div className="list-view">
       <div className="list-view-header">
-        <h1>{title}</h1>
+        <h1>{navData.label}</h1>
       </div>
 
       <div className="list-container">
@@ -296,9 +304,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                       {error}
                     </Text>
                   ) : rows.length === 0 ? (
-                    <Text
-                      style={{ color: 'var(--colorNeutralForeground3)' }}
-                    >
+                    <Text style={{ color: 'var(--colorNeutralForeground3)' }}>
                       {formatMessage({
                         id: 'subprojectQcsRun.allOk',
                         defaultMessage: 'Alles i.O.',
@@ -332,7 +338,9 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                               <>
                                 <Link
                                   to={url}
-                                  style={{ color: 'var(--colorBrandForeground1)' }}
+                                  style={{
+                                    color: 'var(--colorBrandForeground1)',
+                                  }}
                                 >
                                   {label}
                                 </Link>
@@ -349,7 +357,9 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                                     icon={<WindowEdit16Regular />}
                                     onClick={() => {
                                       setDialogUrl(url)
-                                      setDialogLabel(`${qc.label ?? qc.qcs_id}: ${label}`)
+                                      setDialogLabel(
+                                        `${qc.label ?? qc.qcs_id}: ${label}`,
+                                      )
                                     }}
                                   />
                                 </Tooltip>
