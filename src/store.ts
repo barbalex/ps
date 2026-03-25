@@ -115,6 +115,10 @@ export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
+export const qcsRunOnlyWithResultsAtom = atomWithStorage(
+  'qcsRunOnlyWithResults',
+  false,
+)
 
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]

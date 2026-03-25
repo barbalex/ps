@@ -6,11 +6,11 @@ import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { Loading } from '../components/shared/Loading.tsx'
-import { languageAtom } from '../store.ts'
+import { languageAtom, qcsRunOnlyWithResultsAtom } from '../store.ts'
 
 import '../form.css'
 
-const { Button, Input, Field, Card, CardHeader, Link, Spinner, Text } =
+const { Button, Input, Field, Card, CardHeader, Link, Spinner, Text, Switch } =
   fluentUiReactComponents
 
 type QcRow = {
@@ -73,6 +73,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   const { subprojectId } = useParams({ from })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
+  const [onlyWithResults, setOnlyWithResults] = useAtom(qcsRunOnlyWithResultsAtom)
   const db = usePGlite()
   const navigate = useNavigate()
 
@@ -148,6 +149,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
 
   // Filter results by label
   const filteredResults = (results ?? []).filter((r) => {
+    if (onlyWithResults && r.rows.length === 0 && !r.error) return false
     if (!labelFilter.trim()) return true
     return (r.qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase())
   })
@@ -186,7 +188,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
           <Field
             label={formatMessage({
               id: 'subprojectQcsRun.filter',
-              defaultMessage: 'QK-Label filtern',
+              defaultMessage: 'Nach Label filtern',
             })}
           >
             <Input
@@ -199,6 +201,14 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
               appearance="underline"
             />
           </Field>
+          <Switch
+            checked={onlyWithResults}
+            onChange={(_, data) => setOnlyWithResults(data.checked)}
+            label={formatMessage({
+              id: 'subprojectQcsRun.onlyWithResults',
+              defaultMessage: 'Nur mit Befunden',
+            })}
+          />
           <Button
             appearance="primary"
             onClick={handleReanalyse}
