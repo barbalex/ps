@@ -312,6 +312,9 @@ export const SubprojectQcs = ({ from }) => {
     defaultMessage: 'Qualitätskontrollen wählen',
   })
 
+  console.log('SubprojectQcs, populatedGroups:', populatedGroups)
+  console.log('SubprojectQcs, ungroupedQcs:', ungroupedQcs)
+
   return (
     <div className="list-view">
       <div className="list-view-header">
