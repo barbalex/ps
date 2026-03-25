@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { sql } from '@codemirror/lang-sql'
+import { EditorView } from '@codemirror/view'
 import { oneDark } from '@codemirror/theme-one-dark'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Label, Text, tokens } = fluentUiReactComponents
@@ -39,10 +40,7 @@ export const SqlEditorField = ({
     <div className={styles.container}>
       {label && <Label className={styles.label}>{label}</Label>}
       {hint && (
-        <Text
-          size={200}
-          className={styles.hint}
-        >
+        <Text size={200} className={styles.hint}>
           {hint}
         </Text>
       )}
@@ -58,7 +56,7 @@ export const SqlEditorField = ({
       >
         <CodeMirror
           value={value ?? ''}
-          extensions={[sql()]}
+          extensions={[sql(), EditorView.lineWrapping]}
           theme={oneDark}
           onChange={handleChange}
           basicSetup={{

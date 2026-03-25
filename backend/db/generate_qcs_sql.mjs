@@ -13,9 +13,63 @@ const csvPath = join(projectRoot, 'src', 'other', 'qcs.csv')
 const sqlPath = join(projectRoot, 'backend', 'db', 'init', '07_qcs.sql')
 
 const csv = readFileSync(csvPath, 'utf-8')
-const lines = csv.split('\n').filter((l) => l.trim())
-// skip header
-const rows = lines.slice(1)
+
+// RFC 4180-compliant CSV parser (handles quoted fields with embedded newlines)
+function parseCSV(text, delimiter = ';') {
+  const rows = []
+  let row = []
+  let field = ''
+  let inQuotes = false
+  let i = 0
+  while (i < text.length) {
+    const ch = text[i]
+    if (inQuotes) {
+      if (ch === '"' && text[i + 1] === '"') {
+        field += '"'
+        i += 2
+      } else if (ch === '"') {
+        inQuotes = false
+        i++
+      } else {
+        field += ch
+        i++
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true
+        i++
+      } else if (ch === delimiter) {
+        row.push(field)
+        field = ''
+        i++
+      } else if (ch === '\r' && text[i + 1] === '\n') {
+        row.push(field)
+        rows.push(row)
+        row = []
+        field = ''
+        i += 2
+      } else if (ch === '\n') {
+        row.push(field)
+        rows.push(row)
+        row = []
+        field = ''
+        i++
+      } else {
+        field += ch
+        i++
+      }
+    }
+  }
+  if (row.length > 0 || field) {
+    row.push(field)
+    rows.push(row)
+  }
+  return rows
+}
+
+const allRows = parseCSV(csv)
+// skip header, skip empty trailing rows
+const rows = allRows.slice(1).filter((r) => r[4]?.trim())
 
 // Escape single quotes for SQL string literals
 const esc = (s) => (s ?? '').trim().replaceAll("'", "''")
@@ -34,9 +88,8 @@ const placeLevel = (s) => {
 const bool = (s) => ((s ?? '').trim() === 'true' ? 'true' : 'false')
 
 const valueLines = rows
-  .map((line) => {
-    const cols = line.split(';')
-    // label_de;label_en;label_fr;label_it;name;table_name;place_level;is_root_level;is_project_level;is_subproject_level;;sort;description
+  .map((cols) => {
+    // label_de;label_en;label_fr;label_it;name;table_name;place_level;is_root_level;is_project_level;is_subproject_level;sql;sort;description
     const [
       label_de,
       label_en,
