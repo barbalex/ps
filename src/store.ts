@@ -122,6 +122,26 @@ export const qcsRunOnlyWithResultsAtom = atomWithStorage(
 export const qcsRunLabelFilterAtom = atomWithStorage('qcsRunLabelFilter', '')
 export const qcsRunFilteredCountAtom = atom<number | null>(null)
 
+export const rootQcsRunOnlyWithResultsAtom = atomWithStorage(
+  'rootQcsRunOnlyWithResults',
+  false,
+)
+export const rootQcsRunLabelFilterAtom = atomWithStorage(
+  'rootQcsRunLabelFilter',
+  '',
+)
+export const rootQcsRunFilteredCountAtom = atom<number | null>(null)
+
+export const projectQcsRunOnlyWithResultsAtom = atomWithStorage(
+  'projectQcsRunOnlyWithResults',
+  false,
+)
+export const projectQcsRunLabelFilterAtom = atomWithStorage(
+  'projectQcsRunLabelFilter',
+  '',
+)
+export const projectQcsRunFilteredCountAtom = atom<number | null>(null)
+
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
 const _navLang = navigator.language.split('-')[0] as Language

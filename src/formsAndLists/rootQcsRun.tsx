@@ -1,0 +1,335 @@
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from '@tanstack/react-router'
+import { useRootQcsRunNavData } from '../modules/useRootQcsRunNavData.ts'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtom, useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+
+import { Loading } from '../components/shared/Loading.tsx'
+import {
+  languageAtom,
+  rootQcsRunOnlyWithResultsAtom,
+  rootQcsRunLabelFilterAtom,
+  rootQcsRunFilteredCountAtom,
+} from '../store.ts'
+import { Dismiss16Regular, WindowEdit16Regular } from '@fluentui/react-icons'
+import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
+
+import '../form.css'
+
+const { Button, Input, Field, Card, CardHeader, Text, Switch, Tooltip } =
+  fluentUiReactComponents
+
+type QcRow = {
+  qcs_id: string
+  label: string | null
+  sql: string | null
+  filter_by_year: boolean | null
+}
+
+type ResultRow = {
+  label?: string | null
+  url?: string | null
+  [key: string]: unknown
+}
+
+/** Highlight all occurrences of `term` in `text` */
+function HighlightedLabel({
+  text,
+  term,
+}: {
+  text: string
+  term: string
+}): React.ReactElement {
+  if (!term.trim()) return <span>{text}</span>
+  const regex = new RegExp(
+    `(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+    'gi',
+  )
+  const parts = text.split(regex)
+  return (
+    <span>
+      {parts.map((part, i) =>
+        regex.test(part) ? (
+          <mark
+            key={i}
+            style={{
+              background: 'var(--colorBrandBackground2)',
+              color: 'inherit',
+              padding: '0 1px',
+              borderRadius: 2,
+            }}
+          >
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
+    </span>
+  )
+}
+
+type QcCardProps = {
+  qc: QcRow
+  year: string
+  labelFilter: string
+  onlyWithResults: boolean
+  onOpenDialog: (url: string, label: string) => void
+}
+
+function QcCard({
+  qc,
+  year,
+  labelFilter,
+  onlyWithResults,
+  onOpenDialog,
+}: QcCardProps) {
+  const { formatMessage } = useIntl()
+
+  // Root-level QCS have no $1 param; $1 = year only when filter_by_year
+  const params: (string | number)[] = []
+  if (qc.filter_by_year && qc.sql!.includes('$1')) {
+    const yearNum = parseInt(year, 10)
+    if (!isNaN(yearNum)) params.push(yearNum)
+  }
+
+  const result = useLiveQuery<ResultRow>(qc.sql!, params)
+
+  if (result === undefined) return null
+  const rows = result.rows
+
+  if (onlyWithResults && rows.length === 0) return null
+
+  return (
+    <Card style={{ maxWidth: 800 }}>
+      <CardHeader
+        header={
+          <Text weight="semibold">
+            <HighlightedLabel text={qc.label ?? qc.qcs_id} term={labelFilter} />
+          </Text>
+        }
+      />
+      <div style={{ padding: '0 12px 12px' }}>
+        {rows.length === 0 ? (
+          <Text style={{ color: 'var(--colorNeutralForeground3)' }}>
+            {formatMessage({
+              id: 'rootQcsRun.allOk',
+              defaultMessage: 'Alles i.O.',
+            })}
+          </Text>
+        ) : (
+          <ul
+            style={{
+              margin: 0,
+              padding: 0,
+              listStyle: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+            }}
+          >
+            {rows.map((row, i) => {
+              const label = row.label ?? String(Object.values(row)[0] ?? '')
+              const url = row.url as string | undefined
+              return (
+                <li
+                  key={i}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                >
+                  {url ? (
+                    <>
+                      <Link
+                        to={url}
+                        style={{ color: 'var(--colorBrandForeground1)' }}
+                      >
+                        {label}
+                      </Link>
+                      <Tooltip
+                        content={formatMessage({
+                          id: 'subprojectQcsRun.openInDialog',
+                          defaultMessage: 'Im Dialog öffnen',
+                        })}
+                        relationship="label"
+                      >
+                        <Button
+                          appearance="subtle"
+                          size="small"
+                          icon={<WindowEdit16Regular />}
+                          onClick={() =>
+                            onOpenDialog(
+                              url,
+                              `${qc.label ?? qc.qcs_id}: ${label}`,
+                            )
+                          }
+                        />
+                      </Tooltip>
+                    </>
+                  ) : (
+                    <Text>{label}</Text>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+    </Card>
+  )
+}
+
+export const RootQcsRun = () => {
+  const { navData } = useRootQcsRunNavData()
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+  const [onlyWithResults, setOnlyWithResults] = useAtom(
+    rootQcsRunOnlyWithResultsAtom,
+  )
+  const [labelFilter, setLabelFilter] = useAtom(rootQcsRunLabelFilterAtom)
+  const setFilteredCount = useSetAtom(rootQcsRunFilteredCountAtom)
+  const navigate = useNavigate()
+
+  const currentYear = new Date().getFullYear().toString()
+  const [year, setYear] = useState(currentYear)
+  const [dialogUrl, setDialogUrl] = useState<string | null>(null)
+  const [dialogLabel, setDialogLabel] = useState<string | null>(null)
+
+  // Load chosen QCs for root level
+  const qcsRes = useLiveQuery(
+    `SELECT q.qcs_id,
+            COALESCE(NULLIF(q.label_${language}, ''), q.label_de) AS label,
+            q.sql,
+            q.filter_by_year
+     FROM qcs_assignment qa
+     JOIN qcs q ON q.qcs_id = qa.qc_id
+     WHERE qa.project_id IS NULL
+       AND qa.subproject_id IS NULL
+       AND q.sql IS NOT NULL
+       AND q.sql != ''
+     ORDER BY label`,
+  )
+
+  const loading = qcsRes === undefined
+
+  const qcRows: QcRow[] = (qcsRes?.rows ?? []) as QcRow[]
+
+  const labelFilteredQcs = labelFilter.trim()
+    ? qcRows.filter((qc) =>
+        (qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase()),
+      )
+    : qcRows
+
+  useEffect(() => {
+    setFilteredCount(labelFilteredQcs.length)
+  }, [labelFilteredQcs.length, setFilteredCount])
+
+  if (loading) return <Loading />
+
+  return (
+    <div className="list-view">
+      <div className="list-view-header">
+        <h1>{navData.label}</h1>
+      </div>
+
+      <div className="list-container">
+        <div
+          style={{
+            padding: '8px 10px',
+            display: 'flex',
+            gap: '12px',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+          }}
+        >
+          <Field
+            label={formatMessage({
+              id: 'subprojectQcsRun.year',
+              defaultMessage: 'Bericht Jahr',
+            })}
+          >
+            <Input
+              value={year}
+              onChange={(_, data) => setYear(data.value)}
+              style={{ width: 90 }}
+              appearance="underline"
+              type="number"
+            />
+          </Field>
+          <Field
+            label={formatMessage({
+              id: 'subprojectQcsRun.filter',
+              defaultMessage: 'Nach Label filtern',
+            })}
+          >
+            <Input
+              value={labelFilter}
+              onChange={(_, data) => setLabelFilter(data.value)}
+              placeholder={formatMessage({
+                id: 'subprojectQcsRun.filterPlaceholder',
+                defaultMessage: 'Filter...',
+              })}
+              appearance="underline"
+              contentAfter={
+                labelFilter ? (
+                  <Dismiss16Regular
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setLabelFilter('')}
+                    aria-label={formatMessage({
+                      id: 'subprojectQcsRun.clearFilter',
+                      defaultMessage: 'Filter leeren',
+                    })}
+                  />
+                ) : undefined
+              }
+            />
+          </Field>
+          <Switch
+            checked={onlyWithResults}
+            onChange={(_, data) => setOnlyWithResults(data.checked)}
+            label={formatMessage({
+              id: 'subprojectQcsRun.onlyWithResults',
+              defaultMessage: 'Nur mit Befunden',
+            })}
+          />
+        </div>
+
+        <div
+          style={{
+            padding: '8px 10px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+        >
+          {labelFilteredQcs.map((qc) => (
+            <QcCard
+              key={qc.qcs_id}
+              qc={qc}
+              year={year}
+              labelFilter={labelFilter}
+              onlyWithResults={onlyWithResults}
+              onOpenDialog={(url, label) => {
+                setDialogUrl(url)
+                setDialogLabel(label)
+              }}
+            />
+          ))}
+        </div>
+      </div>
+      <QcsResultDialog
+        url={dialogUrl}
+        label={dialogLabel}
+        onClose={() => {
+          setDialogUrl(null)
+          setDialogLabel(null)
+        }}
+        onNavigate={(url) => {
+          setDialogUrl(null)
+          setDialogLabel(null)
+          navigate({ to: url })
+        }}
+      />
+    </div>
+  )
+}

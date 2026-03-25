@@ -22,6 +22,8 @@ import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
 import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
+import { ProjectQcsNode } from '../ProjectQcs.tsx'
+import { ProjectQcsRunNode } from '../ProjectQcsRun.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
@@ -128,6 +130,8 @@ export const ProjectNode = ({ nav, level = 2 }) => {
               <FieldsNode projectId={nav.id} />
             </>
           )}
+          <ProjectQcsNode projectId={nav.id} level={level + 1} />
+          <ProjectQcsRunNode projectId={nav.id} level={level + 1} />
         </>
       )}
     </>

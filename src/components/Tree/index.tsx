@@ -7,6 +7,8 @@ import { FieldTypesNode } from './FieldTypes.tsx'
 import { WidgetTypesNode } from './WidgetTypes.tsx'
 import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
 import { QcsNode } from './Qcs.tsx'
+import { RootQcsNode } from './RootQcs.tsx'
+import { RootQcsRunNode } from './RootQcsRun.tsx'
 import { FieldsNode } from './Fields.tsx'
 import { FilesNode } from './Files.tsx'
 import { MessagesNode } from './Messages.tsx'
@@ -35,6 +37,8 @@ export const Tree = () => {
           <FilesNode level={1} />
         </>
       )}
+      <RootQcsNode />
+      <RootQcsRunNode />
       <MessagesNode />
     </div>
   )
