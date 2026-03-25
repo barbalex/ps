@@ -251,10 +251,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
           clearable
         >
           {opts.map((o) => (
-            <Option
-              key={o.id}
-              value={o.id}
-            >
+            <Option key={o.id} value={o.id}>
               {tableOptLabelMap[o.id] ?? o.id}
             </Option>
           ))}
@@ -285,6 +282,15 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         })}
         name="is_subproject_level"
         value={row?.is_subproject_level}
+        onChange={onChange}
+      />
+      <SwitchField
+        label={formatMessage({
+          id: 'qc.filterByYear',
+          defaultMessage: 'Nach Jahr filtern',
+        })}
+        name="filter_by_year"
+        value={row?.filter_by_year}
         onChange={onChange}
       />
       <TextField

@@ -89,7 +89,7 @@ const bool = (s) => ((s ?? '').trim() === 'true' ? 'true' : 'false')
 
 const valueLines = rows
   .map((cols) => {
-    // label_de;label_en;label_fr;label_it;name;table_name;place_level;is_root_level;is_project_level;is_subproject_level;sql;sort;description
+    // label_de;label_en;label_fr;label_it;name;table_name;place_level;is_root_level;is_project_level;is_subproject_level;filter_by_year;sql;sort;description
     const [
       label_de,
       label_en,
@@ -101,6 +101,7 @@ const valueLines = rows
       is_root_level,
       is_project_level,
       is_subproject_level,
+      filter_by_year,
       sql_val,
     ] = cols
 
@@ -110,7 +111,7 @@ const valueLines = rows
 
     return (
       `('${esc(name)}', '${esc(label_de)}', '${esc(label_en)}', '${esc(label_fr)}', '${esc(label_it)}', ` +
-      `'${esc(table_name)}', ${placeLevel(place_level_raw)}, ${bool(is_root_level)}, ${bool(is_project_level)}, ${bool(is_subproject_level)}, ${sqlLiteral})`
+      `'${esc(table_name)}', ${placeLevel(place_level_raw)}, ${bool(is_root_level)}, ${bool(is_project_level)}, ${bool(is_subproject_level)}, ${bool(filter_by_year)}, ${sqlLiteral})`
     )
   })
   .filter(Boolean)
@@ -123,7 +124,7 @@ const sql = `-- qcs: quality controls for data
 -- place_level: NULL means the QC applies to all place levels (1 and 2).
 --              An integer (1 or 2) restricts it to that specific place level.
 
-INSERT INTO qcs (name, label_de, label_en, label_fr, label_it, table_name, place_level, is_root_level, is_project_level, is_subproject_level, sql)
+INSERT INTO qcs (name, label_de, label_en, label_fr, label_it, table_name, place_level, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
 VALUES
 ${valueLines}
 ON CONFLICT (name) DO UPDATE SET
@@ -135,7 +136,8 @@ ON CONFLICT (name) DO UPDATE SET
   place_level         = EXCLUDED.place_level,
   is_root_level       = EXCLUDED.is_root_level,
   is_project_level    = EXCLUDED.is_project_level,
-  is_subproject_level = EXCLUDED.is_subproject_level;
+  is_subproject_level = EXCLUDED.is_subproject_level,
+  filter_by_year      = EXCLUDED.filter_by_year;
   -- NOTE: sql is intentionally excluded from ON CONFLICT — it is user-edited and must not be overwritten by CSV regeneration.
 `
 
