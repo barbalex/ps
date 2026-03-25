@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, Link } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -12,12 +12,12 @@ import {
   qcsRunLabelFilterAtom,
   qcsRunFilteredCountAtom,
 } from '../store.ts'
-import { Dismiss16Regular } from '@fluentui/react-icons'
+import { Dismiss16Regular, WindowEdit16Regular } from '@fluentui/react-icons'
 import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
 
 import '../form.css'
 
-const { Button, Input, Field, Card, CardHeader, Spinner, Text, Switch } =
+const { Button, Input, Field, Card, CardHeader, Spinner, Text, Switch, Tooltip } =
   fluentUiReactComponents
 
 type QcRow = {
@@ -329,15 +329,31 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                             }}
                           >
                             {url ? (
-                              <Text
-                                style={{ cursor: 'pointer', color: 'var(--colorBrandForeground1)', textDecoration: 'underline' }}
-                                onClick={() => {
-                                  setDialogUrl(url)
-                                  setDialogLabel(label)
-                                }}
-                              >
-                                {label}
-                              </Text>
+                              <>
+                                <Link
+                                  to={url}
+                                  style={{ color: 'var(--colorBrandForeground1)' }}
+                                >
+                                  {label}
+                                </Link>
+                                <Tooltip
+                                  content={formatMessage({
+                                    id: 'subprojectQcsRun.openInDialog',
+                                    defaultMessage: 'Im Dialog öffnen',
+                                  })}
+                                  relationship="label"
+                                >
+                                  <Button
+                                    appearance="subtle"
+                                    size="small"
+                                    icon={<WindowEdit16Regular />}
+                                    onClick={() => {
+                                      setDialogUrl(url)
+                                      setDialogLabel(label)
+                                    }}
+                                  />
+                                </Tooltip>
+                              </>
                             ) : (
                               <Text>{label}</Text>
                             )}
