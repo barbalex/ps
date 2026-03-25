@@ -349,7 +349,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                                     icon={<WindowEdit16Regular />}
                                     onClick={() => {
                                       setDialogUrl(url)
-                                      setDialogLabel(label)
+                                      setDialogLabel(`${qc.label ?? qc.qcs_id}: ${label}`)
                                     }}
                                   />
                                 </Tooltip>
