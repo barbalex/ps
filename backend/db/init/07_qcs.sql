@@ -403,7 +403,7 @@ WHERE p.subproject_id = $1
   OR p.until >= date_part(''year'', now())::integer)
   AND nullif(p.label, '''') IS NULL
 ORDER BY p.label'),
-('placesFilesMissing', 'Orte (relevante und aktuell existierende) ohne Dateien', 'Places (relevant and currently existing) without files', 'Lieux (pertinents et actuellement existants) sans fichiers', 'Luoghi (rilevanti e attualmente esistenti) senza file', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesFilesMissing', 'Orte (relevante und aktuell existierende) ohne Dateien', 'Places (relevant and currently existing) without files', 'Lieux (pertinents et actuellement existants) sans fichiers', 'Luoghi (rilevanti e attualmente esistenti) senza file', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/files/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -414,7 +414,7 @@ WHERE p.subproject_id = $1
 FROM files f
 WHERE f.place_id = p.place_id)
 ORDER BY p.label'),
-('placesChecksMissing', 'Orte (relevante und aktuell existierende) ohne Kontrollen', 'Places (relevant and currently existing) without checks', 'Lieux (pertinents et actuellement existants) sans contrôles', 'Luoghi (rilevanti e attualmente esistenti) senza controlli', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesChecksMissing', 'Orte (relevante und aktuell existierende) ohne Kontrollen', 'Places (relevant and currently existing) without checks', 'Lieux (pertinents et actuellement existants) sans contrôles', 'Luoghi (rilevanti e attualmente esistenti) senza controlli', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/checks/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -425,7 +425,7 @@ WHERE p.subproject_id = $1
 FROM checks c
 WHERE c.place_id = p.place_id)
 ORDER BY p.label'),
-('placesChecksMissingInYear', 'Orte (relevante und aktuell existierende) ohne Kontrolle in Jahr', 'Places (relevant and currently existing) without check in year', 'Lieux (pertinents et actuellement existants) sans contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza controllo nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesChecksMissingInYear', 'Orte (relevante und aktuell existierende) ohne Kontrolle in Jahr', 'Places (relevant and currently existing) without check in year', 'Lieux (pertinents et actuellement existants) sans contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza controllo nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/checks/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -437,7 +437,7 @@ FROM checks c
 WHERE c.place_id = p.place_id
   AND date_part(''year'', c.date) = date_part(''year'', now()))
 ORDER BY p.label'),
-('placesActionsMissing', 'Orte (relevante und aktuell existierende) ohne Massnahmen', 'Places (relevant and currently existing) without actions', 'Lieux (pertinents et actuellement existants) sans actions', 'Luoghi (rilevanti e attualmente esistenti) senza azioni', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesActionsMissing', 'Orte (relevante und aktuell existierende) ohne Massnahmen', 'Places (relevant and currently existing) without actions', 'Lieux (pertinents et actuellement existants) sans actions', 'Luoghi (rilevanti e attualmente esistenti) senza azioni', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -448,7 +448,7 @@ WHERE p.subproject_id = $1
 FROM actions a
 WHERE a.place_id = p.place_id)
 ORDER BY p.label'),
-('placesActionsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Massnahme in Jahr', 'Places (relevant and currently existing) without action in year', 'Lieux (pertinents et actuellement existants) sans action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza azione nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesActionsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Massnahme in Jahr', 'Places (relevant and currently existing) without action in year', 'Lieux (pertinents et actuellement existants) sans action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza azione nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -460,7 +460,7 @@ FROM actions a
 WHERE a.place_id = p.place_id
   AND date_part(''year'', a.date) = date_part(''year'', now()))
 ORDER BY p.label'),
-('placesReportsMissing', 'Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesReportsMissing', 'Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -471,7 +471,7 @@ WHERE p.subproject_id = $1
 FROM place_reports pr
 WHERE pr.place_id = p.place_id)
 ORDER BY p.label'),
-('placesReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('placesReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -525,7 +525,7 @@ WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
   AND c.geometry IS NULL
 ORDER BY c.label'),
-('checksQuantitiesMissing', 'Kontrollen (relevante) ohne Menge', 'Checks (relevant) without quantity', 'Contrôles (pertinents) sans quantité', 'Controlli (rilevanti) senza quantità', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('checksQuantitiesMissing', 'Kontrollen (relevante) ohne Menge', 'Checks (relevant) without quantity', 'Contrôles (pertinents) sans quantité', 'Controlli (rilevanti) senza quantità', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/quantities/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -535,7 +535,7 @@ WHERE p.subproject_id = $1
 FROM check_quantities cq
 WHERE cq.check_id = c.check_id)
 ORDER BY c.label'),
-('checksTaxaMissing', 'Kontrollen (relevante) ohne Taxa', 'Checks (relevant) without taxa', 'Contrôles (pertinents) sans taxons', 'Controlli (rilevanti) senza taxa', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('checksTaxaMissing', 'Kontrollen (relevante) ohne Taxa', 'Checks (relevant) without taxa', 'Contrôles (pertinents) sans taxons', 'Controlli (rilevanti) senza taxa', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/taxa/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -545,7 +545,7 @@ WHERE p.subproject_id = $1
 FROM check_taxa ct
 WHERE ct.check_id = c.check_id)
 ORDER BY c.label'),
-('checksReportMissingInYear', 'Kontrollen (relevante) ohne Bericht in Jahr', 'Checks (relevant) without report in year', 'Contrôles (pertinents) sans rapport dans l''année', 'Controlli (rilevanti) senza rapporto nell''anno', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('checksReportMissingInYear', 'Kontrollen (relevante) ohne Bericht in Jahr', 'Checks (relevant) without report in year', 'Contrôles (pertinents) sans rapport dans l''année', 'Controlli (rilevanti) senza rapporto nell''anno', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/reports/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -556,7 +556,7 @@ FROM check_reports cr
 WHERE cr.check_id = c.check_id
   AND cr.year = date_part(''year'', now())::integer)
 ORDER BY c.label'),
-('checksFilesMissing', 'Kontrollen (relevante) ohne Datei', 'Checks (relevant) without file', 'Contrôles (pertinents) sans fichier', 'Controlli (rilevanti) senza file', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('checksFilesMissing', 'Kontrollen (relevante) ohne Datei', 'Checks (relevant) without file', 'Contrôles (pertinents) sans fichier', 'Controlli (rilevanti) senza file', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/files/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -582,7 +582,7 @@ WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
   AND a.geometry IS NULL
 ORDER BY a.label'),
-('actionsQuantitiesMissing', 'Massnahmen (relevante) ohne Menge', 'Actions (relevant) without quantity', 'Actions (pertinentes) sans quantité', 'Azioni (rilevanti) senza quantità', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('actionsQuantitiesMissing', 'Massnahmen (relevante) ohne Menge', 'Actions (relevant) without quantity', 'Actions (pertinentes) sans quantité', 'Azioni (rilevanti) senza quantità', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/quantities/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -592,7 +592,7 @@ WHERE p.subproject_id = $1
 FROM action_quantities aq
 WHERE aq.action_id = a.action_id)
 ORDER BY a.label'),
-('actionsTaxaMissing', 'Massnahmen (relevante) ohne Taxa', 'Actions (relevant) without taxa', 'Actions (pertinentes) sans taxons', 'Azioni (rilevanti) senza taxa', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('actionsTaxaMissing', 'Massnahmen (relevante) ohne Taxa', 'Actions (relevant) without taxa', 'Actions (pertinentes) sans taxons', 'Azioni (rilevanti) senza taxa', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/taxa/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -602,7 +602,7 @@ WHERE p.subproject_id = $1
 FROM action_taxa atx
 WHERE atx.action_id = a.action_id)
 ORDER BY a.label'),
-('actionsReportMissingInYear', 'Massnahmen (relevante) ohne Bericht in Jahr', 'Actions (relevant) without report in year', 'Actions (pertinentes) sans rapport dans l''année', 'Azioni (rilevanti) senza rapporto nell''anno', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('actionsReportMissingInYear', 'Massnahmen (relevante) ohne Bericht in Jahr', 'Actions (relevant) without report in year', 'Actions (pertinentes) sans rapport dans l''année', 'Azioni (rilevanti) senza rapporto nell''anno', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/reports/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -613,7 +613,7 @@ FROM action_reports ar
 WHERE ar.action_id = a.action_id
   AND ar.year = date_part(''year'', now())::integer)
 ORDER BY a.label'),
-('actionsFilesMissing', 'Massnahmen (relevante) ohne Datei', 'Actions (relevant) without file', 'Actions (pertinentes) sans fichier', 'Azioni (rilevanti) senza file', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('actionsFilesMissing', 'Massnahmen (relevante) ohne Datei', 'Actions (relevant) without file', 'Actions (pertinentes) sans fichier', 'Azioni (rilevanti) senza file', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/files/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
