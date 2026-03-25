@@ -148,7 +148,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
 
   const title = formatMessage({
     id: 'subprojectQcsRun.title',
-    defaultMessage: 'Qualitätskontrollen ausführen',
+    defaultMessage: 'Qualitätskontrollen: ausführen',
   })
 
   // Filter results by label

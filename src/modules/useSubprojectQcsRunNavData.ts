@@ -71,7 +71,7 @@ export const useSubprojectQcsRunNavData = ({
       countUnfiltered: count,
       namePlural: formatMessage({
         id: 'subprojectQcsRun.title',
-        defaultMessage: 'Qualitätskontrollen ausführen',
+        defaultMessage: 'Qualitätskontrollen: ausführen',
       }),
     }),
     nameSingular: formatMessage({

@@ -127,7 +127,7 @@ export const SubprojectQcs = ({ from }) => {
 
   const title = formatMessage({
     id: 'subprojectQcs.title',
-    defaultMessage: 'Qualitätskontrollen wählen',
+    defaultMessage: 'Qualitätskontrollen: wählen',
   })
 
   return (
