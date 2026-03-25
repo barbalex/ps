@@ -163,6 +163,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
         <h1>{title}</h1>
       </div>
 
+      <div className="list-container">
       {/* Controls */}
       <div
         style={{
@@ -327,6 +328,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
               </div>
             </Card>
           ))}
+      </div>
       </div>
     </div>
   )
