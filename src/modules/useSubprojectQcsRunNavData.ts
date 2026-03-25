@@ -12,7 +12,10 @@ type Props = {
   subprojectId: string
 }
 
-export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
+export const useSubprojectQcsRunNavData = ({
+  projectId,
+  subprojectId,
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -25,7 +28,7 @@ export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
     subprojectId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'qcs-choose']
+  const ownArray = [...parentArray, 'qcs-run']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
@@ -55,8 +58,8 @@ export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
       countFiltered: count,
       countUnfiltered: count,
       namePlural: formatMessage({
-        id: 'subprojectQcs.title',
-        defaultMessage: 'Qualitätskontrollen wählen',
+        id: 'subprojectQcsRun.title',
+        defaultMessage: 'Qualitätskontrollen ausführen',
       }),
     }),
     nameSingular: formatMessage({

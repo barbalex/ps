@@ -13,6 +13,7 @@ import { ObservationsNotToAssignNode } from './ObservationsNotToAssign.tsx'
 import { SubprojectTaxaNode } from './SubprojectTaxa.tsx'
 import { SubprojectUsersNode } from './SubprojectUsers.tsx'
 import { SubprojectQcsNode } from './SubprojectQcs.tsx'
+import { SubprojectQcsRunNode } from './SubprojectQcsRun.tsx'
 import { ObservationImportsNode } from './ObservationImports.tsx'
 import { FilesNode } from './Files.tsx'
 import { ChartsNode } from './Charts.tsx'
@@ -149,6 +150,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
           {showDesigningNodes && (
             <SubprojectQcsNode projectId={projectId} subprojectId={nav.id} />
           )}
+          <SubprojectQcsRunNode projectId={projectId} subprojectId={nav.id} />
           {showFiles && (
             <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}

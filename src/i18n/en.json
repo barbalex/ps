@@ -703,6 +703,7 @@
   "gHiJkL": "Human-friendly name. Example: \"Project Name\"",
   "qcs.nameSingular": "Quality control",
   "qcs.namePlural": "Quality controls",
+  "subprojectQcsRun.title": "Run quality controls",
   "qc.accounts": "Accounts",
   "qc.users": "Users",
   "qc.fieldTypes": "Field types",

@@ -680,6 +680,7 @@
   "gHiJkL": "Nom convivial. Exemple : \"Nom du projet\"",
   "qcs.nameSingular": "Contrôle de qualité",
   "qcs.namePlural": "Contrôles de qualité",
+  "subprojectQcsRun.title": "Exécuter les contrôles qualité",
   "qc.accounts": "Comptes",
   "qc.users": "Utilisateurs",
   "qc.fieldTypes": "Types de champ",

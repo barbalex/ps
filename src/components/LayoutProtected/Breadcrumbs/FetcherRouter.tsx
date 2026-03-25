@@ -123,6 +123,7 @@ import { WidgetForFieldFetcher } from './WidgetForFieldFetcher.tsx'
 import { QcsFetcher } from './QcsFetcher.tsx'
 import { QcFetcher } from './QcFetcher.tsx'
 import { SubprojectQcsFetcher } from './SubprojectQcsFetcher.tsx'
+import { SubprojectQcsRunFetcher } from './SubprojectQcsRunFetcher.tsx'
 import { FieldsFetcher } from './FieldsFetcher.tsx'
 import { FieldFetcher } from './FieldFetcher.tsx'
 import { CrssFetcher } from './CrssFetcher.tsx'
@@ -862,6 +863,10 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useSubprojectQcsNavData': {
       if (!params.projectId || !params.subprojectId) return null
       return <SubprojectQcsFetcher params={params} {...other} />
+    }
+    case 'useSubprojectQcsRunNavData': {
+      if (!params.projectId || !params.subprojectId) return null
+      return <SubprojectQcsRunFetcher params={params} {...other} />
     }
     case 'useWidgetsForFieldsNavData': {
       if (!params.projectId) return null

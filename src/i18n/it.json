@@ -680,6 +680,7 @@
   "gHiJkL": "Nome intuitivo. Esempio: \"Nome Progetto\"",
   "qcs.nameSingular": "Controllo qualità",
   "qcs.namePlural": "Controlli qualità",
+  "subprojectQcsRun.title": "Esegui i controlli qualità",
   "qc.accounts": "Account",
   "qc.users": "Utenti",
   "qc.fieldTypes": "Tipi di campo",
