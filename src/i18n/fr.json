@@ -731,5 +731,6 @@
   "qc.sql.hintRoot": "Niveau racine\u00a0: aucun paramètre requis.",
   "qc.sql.hintProject": "Niveau projet\u00a0: $1 = project_id (uuid)",
   "qc.sql.hintSubproject": "Niveau sous-projet\u00a0: $1 = subproject_id (uuid)",
-  "qc.sql.hintNone": "Définissez is_root_level, is_project_level ou is_subproject_level pour voir les paramètres disponibles."
+  "qc.sql.hintNone": "Définissez is_root_level, is_project_level ou is_subproject_level pour voir les paramètres disponibles.",
+  "subprojectQcsRun.openInDialog": "Ouvrir dans une boîte de dialogue"
 }
