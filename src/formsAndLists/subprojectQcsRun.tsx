@@ -1,12 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { Loading } from '../components/shared/Loading.tsx'
-import { languageAtom, qcsRunOnlyWithResultsAtom } from '../store.ts'
+import {
+  languageAtom,
+  qcsRunOnlyWithResultsAtom,
+  qcsRunLabelFilterAtom,
+  qcsRunFilteredCountAtom,
+} from '../store.ts'
 
 import '../form.css'
 
@@ -74,12 +79,13 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const [onlyWithResults, setOnlyWithResults] = useAtom(qcsRunOnlyWithResultsAtom)
+  const [labelFilter, setLabelFilter] = useAtom(qcsRunLabelFilterAtom)
+  const setFilteredCount = useSetAtom(qcsRunFilteredCountAtom)
   const db = usePGlite()
   const navigate = useNavigate()
 
   const currentYear = new Date().getFullYear().toString()
   const [year, setYear] = useState(currentYear)
-  const [labelFilter, setLabelFilter] = useState('')
   const [results, setResults] = useState<QcResult[] | null>(null)
   const [running, setRunning] = useState(false)
 
@@ -145,14 +151,20 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
     defaultMessage: 'Qualitätskontrollen ausführen',
   })
 
-  if (loading) return <Loading />
-
   // Filter results by label
   const filteredResults = (results ?? []).filter((r) => {
     if (onlyWithResults && r.rows.length === 0 && !r.error) return false
     if (!labelFilter.trim()) return true
     return (r.qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase())
   })
+
+  // Keep nav hook in sync with current filtered count
+  useEffect(() => {
+    if (results === null) return
+    setFilteredCount(filteredResults.length)
+  }, [filteredResults.length, results, setFilteredCount])
+
+  if (loading) return <Loading />
 
   return (
     <div className="list-view">

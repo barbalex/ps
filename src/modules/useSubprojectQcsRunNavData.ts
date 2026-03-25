@@ -5,7 +5,12 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import {
+  treeOpenNodesAtom,
+  qcsRunLabelFilterAtom,
+  qcsRunOnlyWithResultsAtom,
+  qcsRunFilteredCountAtom,
+} from '../store.ts'
 
 type Props = {
   projectId: string
@@ -17,6 +22,9 @@ export const useSubprojectQcsRunNavData = ({
   subprojectId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [labelFilter] = useAtom(qcsRunLabelFilterAtom)
+  const [onlyWithResults] = useAtom(qcsRunOnlyWithResultsAtom)
+  const [filteredCount] = useAtom(qcsRunFilteredCountAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -40,6 +48,10 @@ export const useSubprojectQcsRunNavData = ({
   const loading = res === undefined
   const count = res?.rows?.[0]?.count ?? 0
 
+  const isFiltered =
+    (!!labelFilter.trim() || onlyWithResults) && filteredCount !== null
+  const countFiltered = filteredCount !== null ? filteredCount : count
+
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
@@ -54,8 +66,8 @@ export const useSubprojectQcsRunNavData = ({
     ownUrl,
     label: buildNavLabel({
       loading,
-      isFiltered: false,
-      countFiltered: count,
+      isFiltered,
+      countFiltered,
       countUnfiltered: count,
       namePlural: formatMessage({
         id: 'subprojectQcsRun.title',

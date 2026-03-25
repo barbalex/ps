@@ -119,6 +119,8 @@ export const qcsRunOnlyWithResultsAtom = atomWithStorage(
   'qcsRunOnlyWithResults',
   false,
 )
+export const qcsRunLabelFilterAtom = atomWithStorage('qcsRunLabelFilter', '')
+export const qcsRunFilteredCountAtom = atom<number | null>(null)
 
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
