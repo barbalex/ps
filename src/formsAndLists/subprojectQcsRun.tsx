@@ -12,6 +12,7 @@ import {
   qcsRunLabelFilterAtom,
   qcsRunFilteredCountAtom,
 } from '../store.ts'
+import { Dismiss16Regular } from '@fluentui/react-icons'
 
 import '../form.css'
 
@@ -211,6 +212,18 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                 defaultMessage: 'Filter...',
               })}
               appearance="underline"
+              contentAfter={
+                labelFilter ? (
+                  <Dismiss16Regular
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setLabelFilter('')}
+                    aria-label={formatMessage({
+                      id: 'subprojectQcsRun.clearFilter',
+                      defaultMessage: 'Filter leeren',
+                    })}
+                  />
+                ) : undefined
+              }
             />
           </Field>
           <Switch

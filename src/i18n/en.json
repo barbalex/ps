@@ -707,6 +707,7 @@
   "subprojectQcsRun.year": "Report year",
   "subprojectQcsRun.filter": "Filter by label",
   "subprojectQcsRun.filterPlaceholder": "Filter...",
+  "subprojectQcsRun.clearFilter": "Clear filter",
   "subprojectQcsRun.onlyWithResults": "Only with findings",
   "subprojectQcsRun.reanalyse": "Re-analyse",
   "subprojectQcsRun.running": "Analysing...",

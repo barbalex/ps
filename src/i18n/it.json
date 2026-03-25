@@ -684,6 +684,7 @@
   "subprojectQcsRun.year": "Anno del rapporto",
   "subprojectQcsRun.filter": "Filtra per etichetta",
   "subprojectQcsRun.filterPlaceholder": "Filtra...",
+  "subprojectQcsRun.clearFilter": "Cancella filtro",
   "subprojectQcsRun.onlyWithResults": "Solo con risultati",
   "subprojectQcsRun.reanalyse": "Ri-analizza",
   "subprojectQcsRun.running": "Analisi in corso...",
