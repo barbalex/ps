@@ -114,9 +114,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
             if (!isNaN(yearNum)) params.push(yearNum)
           }
           const res = await db.query<ResultRow>(qc.sql, params)
-          if (res.rows.length > 0) {
-            out.push({ qc, rows: res.rows })
-          }
+          out.push({ qc, rows: res.rows })
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err)
           out.push({ qc, rows: [], error: msg })
@@ -153,12 +151,6 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
     if (!labelFilter.trim()) return true
     return (r.qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase())
   })
-
-  // Shown cards = those with rows (or with errors)
-  const visibleCards = filteredResults.filter(
-    (r) => r.rows.length > 0 || r.error,
-  )
-  const allClean = results !== null && !running && visibleCards.length === 0
 
   return (
     <div className="list-view">
@@ -241,34 +233,8 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
             </div>
           )}
 
-          {allClean && (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '40px 20px',
-                fontSize: '1.4em',
-                animation: 'celebrate 0.6s ease-out',
-              }}
-            >
-              <style>{`
-              @keyframes celebrate {
-                0%   { transform: scale(0.7); opacity: 0; }
-                60%  { transform: scale(1.1); opacity: 1; }
-                100% { transform: scale(1);   opacity: 1; }
-              }
-            `}</style>
-              <div style={{ fontSize: '3em', marginBottom: 8 }}>🎉</div>
-              <div style={{ fontWeight: 600 }}>
-                {formatMessage({
-                  id: 'subprojectQcsRun.allClean',
-                  defaultMessage: 'Juhui, nichts zu meckern',
-                })}
-              </div>
-            </div>
-          )}
-
           {!running &&
-            visibleCards.map(({ qc, rows, error }) => (
+            filteredResults.map(({ qc, rows, error }) => (
               <Card key={qc.qcs_id} style={{ maxWidth: 800 }}>
                 <CardHeader
                   header={
@@ -290,6 +256,15 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                       }}
                     >
                       {error}
+                    </Text>
+                  ) : rows.length === 0 ? (
+                    <Text
+                      style={{ color: 'var(--colorNeutralForeground3)' }}
+                    >
+                      {formatMessage({
+                        id: 'subprojectQcsRun.allOk',
+                        defaultMessage: 'Alles i.O.',
+                      })}
                     </Text>
                   ) : (
                     <ul
