@@ -53,7 +53,16 @@ export const SqlInitializer = () => {
         }
       }
 
+      // this is probably not needed
       if (projectsTableExists) {
+        // Run migrations for columns added after initial schema creation
+        try {
+          await db.exec(`
+            ALTER TABLE qcs ADD COLUMN IF NOT EXISTS filter_by_year boolean DEFAULT false;
+          `)
+        } catch (error) {
+          console.error('Error running qcs migration:', error)
+        }
         return setSqlInitializing(false)
       }
 
