@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from '@tanstack/react-router'
 import { useSubprojectQcsRunNavData } from '../modules/useSubprojectQcsRunNavData.ts'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -18,17 +18,8 @@ import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
 
 import '../form.css'
 
-const {
-  Button,
-  Input,
-  Field,
-  Card,
-  CardHeader,
-  Spinner,
-  Text,
-  Switch,
-  Tooltip,
-} = fluentUiReactComponents
+const { Button, Input, Field, Card, CardHeader, Text, Switch, Tooltip } =
+  fluentUiReactComponents
 
 type QcRow = {
   qcs_id: string
@@ -41,12 +32,6 @@ type ResultRow = {
   label?: string | null
   url?: string | null
   [key: string]: unknown
-}
-
-type QcResult = {
-  qc: QcRow
-  rows: ResultRow[]
-  error?: string
 }
 
 /** Highlight all occurrences of `term` in `text` */
@@ -86,6 +71,116 @@ function HighlightedLabel({
   )
 }
 
+type QcCardProps = {
+  qc: QcRow
+  subprojectId: string
+  year: string
+  labelFilter: string
+  onlyWithResults: boolean
+  onOpenDialog: (url: string, label: string) => void
+}
+
+function QcCard({
+  qc,
+  subprojectId,
+  year,
+  labelFilter,
+  onlyWithResults,
+  onOpenDialog,
+}: QcCardProps) {
+  const { formatMessage } = useIntl()
+
+  const params: (string | number)[] = []
+  if (qc.sql!.includes('$1')) params.push(subprojectId)
+  if (qc.filter_by_year && qc.sql!.includes('$2')) {
+    const yearNum = parseInt(year, 10)
+    if (!isNaN(yearNum)) params.push(yearNum)
+  }
+
+  const result = useLiveQuery<ResultRow>(qc.sql!, params)
+
+  if (result === undefined) return null
+  const rows = result.rows
+
+  if (onlyWithResults && rows.length === 0) return null
+
+  return (
+    <Card style={{ maxWidth: 800 }}>
+      <CardHeader
+        header={
+          <Text weight="semibold">
+            <HighlightedLabel text={qc.label ?? qc.qcs_id} term={labelFilter} />
+          </Text>
+        }
+      />
+      <div style={{ padding: '0 12px 12px' }}>
+        {rows.length === 0 ? (
+          <Text style={{ color: 'var(--colorNeutralForeground3)' }}>
+            {formatMessage({
+              id: 'subprojectQcsRun.allOk',
+              defaultMessage: 'Alles i.O.',
+            })}
+          </Text>
+        ) : (
+          <ul
+            style={{
+              margin: 0,
+              padding: 0,
+              listStyle: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+            }}
+          >
+            {rows.map((row, i) => {
+              const label = row.label ?? String(Object.values(row)[0] ?? '')
+              const url = row.url as string | undefined
+              return (
+                <li
+                  key={i}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                >
+                  {url ? (
+                    <>
+                      <Link
+                        to={url}
+                        style={{ color: 'var(--colorBrandForeground1)' }}
+                      >
+                        {label}
+                      </Link>
+                      <Tooltip
+                        content={formatMessage({
+                          id: 'subprojectQcsRun.openInDialog',
+                          defaultMessage: 'Im Dialog öffnen',
+                        })}
+                        relationship="label"
+                      >
+                        <Button
+                          appearance="subtle"
+                          size="small"
+                          icon={<WindowEdit16Regular />}
+                          onClick={() =>
+                            onOpenDialog(
+                              url,
+                              `${qc.label ?? qc.qcs_id}: ${label}`,
+                            )
+                          }
+                        />
+                      </Tooltip>
+                    </>
+                  ) : (
+                    <Text>{label}</Text>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+    </Card>
+  )
+}
+
 export const SubprojectQcsRun = ({ from }: { from: string }) => {
   const { projectId, subprojectId } = useParams({ from })
   const { navData } = useSubprojectQcsRunNavData({ projectId, subprojectId })
@@ -96,13 +191,10 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   )
   const [labelFilter, setLabelFilter] = useAtom(qcsRunLabelFilterAtom)
   const setFilteredCount = useSetAtom(qcsRunFilteredCountAtom)
-  const db = usePGlite()
   const navigate = useNavigate()
 
   const currentYear = new Date().getFullYear().toString()
   const [year, setYear] = useState(currentYear)
-  const [results, setResults] = useState<QcResult[] | null>(null)
-  const [running, setRunning] = useState(false)
   const [dialogUrl, setDialogUrl] = useState<string | null>(null)
   const [dialogLabel, setDialogLabel] = useState<string | null>(null)
 
@@ -123,58 +215,19 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
 
   const loading = qcsRes === undefined
 
-  // Run all QC queries whenever runKey changes (and QCs are loaded)
-  const runAllQcs = useCallback(
-    async (qcs: QcRow[], yearValue: string) => {
-      setRunning(true)
-      const out: QcResult[] = []
-      for (const qc of qcs) {
-        if (!qc.sql) continue
-        try {
-          const params: (string | number)[] = []
-          if (qc.sql.includes('$1')) params.push(subprojectId)
-          if (qc.filter_by_year && qc.sql.includes('$2')) {
-            const yearNum = parseInt(yearValue, 10)
-            if (!isNaN(yearNum)) params.push(yearNum)
-          }
-          const res = await db.query<ResultRow>(qc.sql, params)
-          out.push({ qc, rows: res.rows })
-        } catch (err) {
-          const msg = err instanceof Error ? err.message : String(err)
-          out.push({ qc, rows: [], error: msg })
-        }
-      }
-      setResults(out)
-      setRunning(false)
-    },
-    [db, subprojectId],
-  )
+  const qcRows: QcRow[] = (qcsRes?.rows ?? []) as QcRow[]
 
-  // Run automatically on first load
+  // Filter by label at parent level so unmounted QcCards don't run live queries
+  const labelFilteredQcs = labelFilter.trim()
+    ? qcRows.filter((qc) =>
+        (qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase()),
+      )
+    : qcRows
+
+  // Keep nav count in sync
   useEffect(() => {
-    if (loading) return
-    const qcs = (qcsRes?.rows ?? []) as QcRow[]
-    runAllQcs(qcs, year)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading])
-
-  const handleReanalyse = () => {
-    const qcs = (qcsRes?.rows ?? []) as QcRow[]
-    runAllQcs(qcs, year)
-  }
-
-  // Filter results by label
-  const filteredResults = (results ?? []).filter((r) => {
-    if (onlyWithResults && r.rows.length === 0 && !r.error) return false
-    if (!labelFilter.trim()) return true
-    return (r.qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase())
-  })
-
-  // Keep nav hook in sync with current filtered count
-  useEffect(() => {
-    if (results === null) return
-    setFilteredCount(filteredResults.length)
-  }, [filteredResults.length, results, setFilteredCount])
+    setFilteredCount(labelFilteredQcs.length)
+  }, [labelFilteredQcs.length, setFilteredCount])
 
   if (loading) return <Loading />
 
@@ -245,20 +298,9 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
               defaultMessage: 'Nur mit Befunden',
             })}
           />
-          <Button
-            appearance="primary"
-            onClick={handleReanalyse}
-            disabled={running}
-            icon={running ? <Spinner size="tiny" /> : undefined}
-          >
-            {formatMessage({
-              id: 'subprojectQcsRun.reanalyse',
-              defaultMessage: 'Neu analysieren',
-            })}
-          </Button>
         </div>
 
-        {/* Results area */}
+        {/* Results area — each card uses its own live query */}
         <div
           style={{
             padding: '8px 10px',
@@ -267,114 +309,20 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
             gap: 12,
           }}
         >
-          {running && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Spinner size="small" />
-              <Text>
-                {formatMessage({
-                  id: 'subprojectQcsRun.running',
-                  defaultMessage: 'Analysiere...',
-                })}
-              </Text>
-            </div>
-          )}
-
-          {!running &&
-            filteredResults.map(({ qc, rows, error }) => (
-              <Card key={qc.qcs_id} style={{ maxWidth: 800 }}>
-                <CardHeader
-                  header={
-                    <Text weight="semibold">
-                      <HighlightedLabel
-                        text={qc.label ?? qc.qcs_id}
-                        term={labelFilter}
-                      />
-                    </Text>
-                  }
-                />
-                <div style={{ padding: '0 12px 12px' }}>
-                  {error ? (
-                    <Text
-                      style={{
-                        color: 'var(--colorPaletteRedForeground1)',
-                        fontFamily: 'monospace',
-                        fontSize: '0.85em',
-                      }}
-                    >
-                      {error}
-                    </Text>
-                  ) : rows.length === 0 ? (
-                    <Text style={{ color: 'var(--colorNeutralForeground3)' }}>
-                      {formatMessage({
-                        id: 'subprojectQcsRun.allOk',
-                        defaultMessage: 'Alles i.O.',
-                      })}
-                    </Text>
-                  ) : (
-                    <ul
-                      style={{
-                        margin: 0,
-                        padding: 0,
-                        listStyle: 'none',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 4,
-                      }}
-                    >
-                      {rows.map((row, i) => {
-                        const label =
-                          row.label ?? String(Object.values(row)[0] ?? '')
-                        const url = row.url as string | undefined
-                        return (
-                          <li
-                            key={i}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 6,
-                            }}
-                          >
-                            {url ? (
-                              <>
-                                <Link
-                                  to={url}
-                                  style={{
-                                    color: 'var(--colorBrandForeground1)',
-                                  }}
-                                >
-                                  {label}
-                                </Link>
-                                <Tooltip
-                                  content={formatMessage({
-                                    id: 'subprojectQcsRun.openInDialog',
-                                    defaultMessage: 'Im Dialog öffnen',
-                                  })}
-                                  relationship="label"
-                                >
-                                  <Button
-                                    appearance="subtle"
-                                    size="small"
-                                    icon={<WindowEdit16Regular />}
-                                    onClick={() => {
-                                      setDialogUrl(url)
-                                      setDialogLabel(
-                                        `${qc.label ?? qc.qcs_id}: ${label}`,
-                                      )
-                                    }}
-                                  />
-                                </Tooltip>
-                              </>
-                            ) : (
-                              <Text>{label}</Text>
-                            )}
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  )}
-                </div>
-              </Card>
-            ))}
+          {labelFilteredQcs.map((qc) => (
+            <QcCard
+              key={qc.qcs_id}
+              qc={qc}
+              subprojectId={subprojectId}
+              year={year}
+              labelFilter={labelFilter}
+              onlyWithResults={onlyWithResults}
+              onOpenDialog={(url, label) => {
+                setDialogUrl(url)
+                setDialogLabel(label)
+              }}
+            />
+          ))}
         </div>
       </div>
       <QcsResultDialog
