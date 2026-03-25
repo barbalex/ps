@@ -13,10 +13,11 @@ import {
   qcsRunFilteredCountAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
+import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
 
 import '../form.css'
 
-const { Button, Input, Field, Card, CardHeader, Link, Spinner, Text, Switch } =
+const { Button, Input, Field, Card, CardHeader, Spinner, Text, Switch } =
   fluentUiReactComponents
 
 type QcRow = {
@@ -89,6 +90,8 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   const [year, setYear] = useState(currentYear)
   const [results, setResults] = useState<QcResult[] | null>(null)
   const [running, setRunning] = useState(false)
+  const [dialogUrl, setDialogUrl] = useState<string | null>(null)
+  const [dialogLabel, setDialogLabel] = useState<string | null>(null)
 
   // Load chosen QCs for this subproject, joined with qcs data
   const qcsRes = useLiveQuery(
@@ -326,43 +329,15 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
                             }}
                           >
                             {url ? (
-                              <>
-                                <Link onClick={() => navigate({ to: url })}>
-                                  {label}
-                                </Link>
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  title={formatMessage({
-                                    id: 'subprojectQcsRun.openNewTab',
-                                    defaultMessage: 'In neuem Tab öffnen',
-                                  })}
-                                  style={{
-                                    color: 'var(--colorNeutralForeground3)',
-                                    lineHeight: 1,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  {/* External link icon (inline SVG) */}
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                    <polyline points="15 3 21 3 21 9" />
-                                    <line x1="10" y1="14" x2="21" y2="3" />
-                                  </svg>
-                                </a>
-                              </>
+                              <Text
+                                style={{ cursor: 'pointer', color: 'var(--colorBrandForeground1)', textDecoration: 'underline' }}
+                                onClick={() => {
+                                  setDialogUrl(url)
+                                  setDialogLabel(label)
+                                }}
+                              >
+                                {label}
+                              </Text>
                             ) : (
                               <Text>{label}</Text>
                             )}
@@ -376,6 +351,19 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
             ))}
         </div>
       </div>
+      <QcsResultDialog
+        url={dialogUrl}
+        label={dialogLabel}
+        onClose={() => {
+          setDialogUrl(null)
+          setDialogLabel(null)
+        }}
+        onNavigate={(url) => {
+          setDialogUrl(null)
+          setDialogLabel(null)
+          navigate({ to: url })
+        }}
+      />
     </div>
   )
 }
