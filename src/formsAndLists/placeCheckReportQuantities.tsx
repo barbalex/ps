@@ -28,7 +28,7 @@ export const PlaceCheckReportQuantities = ({ from }) => {
     if (!id) return
     navigate({
       to: id,
-      params: (prev) => ({ ...prev, placeReportQuantityId: id }),
+      params: (prev) => ({ ...prev, placeCheckReportQuantityId: id }),
     })
   }
 

@@ -29,6 +29,7 @@ export const PlaceCheckReport = ({ from }) => {
     [placeCheckReportId],
   )
   const row: PlaceCheckReports | undefined = res?.rows?.[0]
+  console.log('PlaceCheckReport', { placeCheckReportId, row, res })
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -77,7 +78,10 @@ export const PlaceCheckReport = ({ from }) => {
             from={from}
           />
         ) : (
-          <NotFound table={formatMessage({ id: 'bCFgHi', defaultMessage: 'Bericht' })} id={placeCheckReportId} />
+          <NotFound
+            table={formatMessage({ id: 'bCFgHi', defaultMessage: 'Bericht' })}
+            id={placeCheckReportId}
+          />
         )}
       </div>
     </div>

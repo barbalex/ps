@@ -1,9 +1,9 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import { NotFound } from '../../../../../../../../../../../../../components/NotFound.tsx'
+import { NotFound } from '../../../../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$placeReportId_/quantities',
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/check-reports/$placeCheckReportId_/quantities',
 )({
   component: Outlet,
   notFoundComponent: NotFound,
@@ -17,11 +17,8 @@ export const Route = createFileRoute(
     if (!params.placeId || params.placeId === 'undefined') {
       throw new Error('Invalid or missing placeId in route parameters')
     }
-    if (!params.placeId2 || params.placeId2 === 'undefined') {
-      throw new Error('Invalid or missing placeId2 in route parameters')
-    }
-    if (!params.placeReportId || params.placeReportId === 'undefined') {
-      throw new Error('Invalid or missing placeReportId in route parameters')
+    if (!params.placeCheckReportId || params.placeCheckReportId === 'undefined') {
+      throw new Error('Invalid or missing placeCheckReportId in route parameters')
     }
     return {
       navDataFetcher: 'usePlaceCheckReportQuantitiesNavData',

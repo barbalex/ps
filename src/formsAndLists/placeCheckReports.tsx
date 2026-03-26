@@ -28,7 +28,7 @@ export const PlaceCheckReports = ({ from }) => {
     if (!id) return
     navigate({
       to: id,
-      params: (prev) => ({ ...prev, placeReportId: id }),
+      params: (prev) => ({ ...prev, placeCheckReportId: id }),
     })
   }
 
