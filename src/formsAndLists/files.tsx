@@ -42,45 +42,49 @@ export const Files = ({
   // offline to SQLite
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        hideTitle={hideTitle}
-        menus={[
-          <FilterButton key="filter" isFiltered={isFiltered} />,
-          <Button
-            key="add"
-            size="medium"
-            title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
-            icon={<FaPlus />}
-            onClick={onClickAdd}
-          />,
-        ]}
-      />
+      {!hideTitle && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          menus={[
+            <FilterButton key="filter" isFiltered={isFiltered} />,
+            <Button
+              key="add"
+              size="medium"
+              title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+              icon={<FaPlus />}
+              onClick={onClickAdd}
+            />,
+          ]}
+        />
+      )}
       <div className="list-container">
         <Uploader />
         {loading ? (
           <Loading />
         ) : (
-          navs.filter((nav) => nav.id).map(({ id, label, url, mimetype }) => {
-            let imgSrc = undefined
-            if (
-              (mimetype?.includes?.('image') || mimetype?.includes?.('pdf')) &&
-              url
-            ) {
-              imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
-            }
+          navs
+            .filter((nav) => nav.id)
+            .map(({ id, label, url, mimetype }) => {
+              let imgSrc = undefined
+              if (
+                (mimetype?.includes?.('image') ||
+                  mimetype?.includes?.('pdf')) &&
+                url
+              ) {
+                imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
+              }
 
-            return (
-              <Row
-                key={id}
-                label={label ?? id}
-                to={id}
-                imgSrc={imgSrc}
-                lastHasImages={true}
-              />
-            )
-          })
+              return (
+                <Row
+                  key={id}
+                  label={label ?? id}
+                  to={id}
+                  imgSrc={imgSrc}
+                  lastHasImages={true}
+                />
+              )
+            })
         )}
       </div>
     </div>

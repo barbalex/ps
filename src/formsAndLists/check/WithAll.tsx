@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useContext } from 'react'
 import {
   useParams,
   useNavigate,
@@ -21,7 +21,14 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import { CheckTaxonInline } from '../checkTaxon/Inline.tsx'
-import { addOperationAtom, designingAtom } from '../../store.ts'
+import {
+  addOperationAtom,
+  designingAtom,
+  filesFilterAtom,
+} from '../../store.ts'
+import { FilterButton } from '../../components/shared/FilterButton.tsx'
+import { UploaderContext } from '../../UploaderContext.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Checks from '../../models/public/Checks.ts'
 
 import '../../form.css'
@@ -90,11 +97,28 @@ export const CheckWithAll = ({
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
-  // Detect if the files section is open based on the current URL
+  const [filesFilter] = useAtom(filesFilterAtom)
+  const filesIsFiltered = !!filterStringFromFilter(filesFilter)
+  const uploaderCtx = useContext(UploaderContext)
+  const uploaderApi = uploaderCtx?.current?.getAPI?.()
+  const onClickAddFile = () => uploaderApi?.initFlow?.()
+
   const isFilesOpen =
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
 
+  const fileHeaderActions =
+    showFiles && isFilesOpen ? (
+      <>
+        <FilterButton isFiltered={filesIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddFile}
+        />
+      </>
+    ) : undefined
   const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
   const filesUrl = `${checkBaseUrl}/files`
   const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
@@ -254,6 +278,7 @@ export const CheckWithAll = ({
                 isOpen={isFilesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={fileHeaderActions}
               >
                 <Outlet />
               </Section>

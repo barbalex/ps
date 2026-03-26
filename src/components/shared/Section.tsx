@@ -12,6 +12,7 @@ export const Section = ({
   isOpen = undefined,
   titleStyle = undefined,
   childrenStyle = undefined,
+  headerActions = undefined,
 }) => (
   <section>
     <h2
@@ -30,27 +31,33 @@ export const Section = ({
       }
     >
       {title}
-      {isOpen !== undefined && (
+      {(headerActions || isOpen !== undefined) && (
         <span
           style={{
-            fontSize: '1.3em',
-            padding: '2px 7px',
-            marginLeft: 35,
-            borderRadius: 4,
-            background: 'rgba(0,0,0,0.10)',
             display: 'inline-flex',
             alignItems: 'center',
+            gap: 4,
+            marginLeft: 'auto',
+            paddingLeft: 10,
           }}
-          onClick={
-            onNavigate
-              ? (e) => {
-                  e.stopPropagation()
-                  onHeaderClick?.()
-                }
-              : undefined
-          }
+          onClick={(e) => e.stopPropagation()}
         >
-          {isOpen ? <FaChevronDown /> : <FaChevronUp />}
+          {headerActions}
+          {isOpen !== undefined && (
+            <span
+              style={{
+                fontSize: '1.3em',
+                padding: '2px 7px',
+                borderRadius: 4,
+                background: 'rgba(0,0,0,0.10)',
+                display: 'inline-flex',
+                alignItems: 'center',
+              }}
+              onClick={() => onHeaderClick?.()}
+            >
+              {isOpen ? <FaChevronDown /> : <FaChevronUp />}
+            </span>
+          )}
         </span>
       )}
     </h2>
