@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS projects(
   action_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   check_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   place_check_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
+  place_action_reports_default_unit_id uuid DEFAULT NULL, -- FK to units added below after units table
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_quantities_on_same_level text DEFAULT NULL,
   multiple_check_quantities_on_same_level text DEFAULT NULL,
@@ -181,6 +182,7 @@ CREATE INDEX IF NOT EXISTS projects_action_taxa_default_unit_id_idx ON projects 
 CREATE INDEX IF NOT EXISTS projects_action_reports_default_unit_id_idx ON projects USING btree(action_reports_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_check_reports_default_unit_id_idx ON projects USING btree(check_reports_default_unit_id);
 CREATE INDEX IF NOT EXISTS projects_place_check_reports_default_unit_id_idx ON projects USING btree(place_check_reports_default_unit_id);
+CREATE INDEX IF NOT EXISTS projects_place_action_reports_default_unit_id_idx ON projects USING btree(place_action_reports_default_unit_id);
 
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
@@ -195,6 +197,7 @@ COMMENT ON COLUMN projects.action_taxa_default_unit_id IS 'Default unit for acti
 COMMENT ON COLUMN projects.action_reports_default_unit_id IS 'Default unit for action report quantities. Can be overwritten in action_reports';
 COMMENT ON COLUMN projects.check_reports_default_unit_id IS 'Default unit for check report quantities. Can be overwritten in check_reports';
 COMMENT ON COLUMN projects.place_check_reports_default_unit_id IS 'Default unit for place check report quantities. Can be overwritten in place_check_reports';
+COMMENT ON COLUMN projects.place_action_reports_default_unit_id IS 'Default unit for place action report quantities. Can be overwritten in place_action_reports';
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
 COMMENT ON COLUMN projects.multiple_action_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use all"';
 COMMENT ON COLUMN projects.multiple_check_quantities_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
@@ -231,6 +234,9 @@ CREATE TABLE IF NOT EXISTS place_levels(
   place_check_reports boolean DEFAULT TRUE,
   place_check_report_quantities boolean DEFAULT TRUE,
   place_check_report_quantities_in_report boolean DEFAULT TRUE,
+  place_action_reports boolean DEFAULT TRUE,
+  place_action_report_quantities boolean DEFAULT TRUE,
+  place_action_report_quantities_in_report boolean DEFAULT TRUE,
   actions boolean DEFAULT TRUE,
   action_quantities boolean DEFAULT TRUE,
   action_quantities_in_action boolean DEFAULT TRUE,
@@ -284,6 +290,9 @@ COMMENT ON COLUMN place_levels.name_plural_it IS 'Italian plural name. Preset: "
 COMMENT ON COLUMN place_levels.place_check_reports IS 'Are check reports for places used? Preset: true';
 COMMENT ON COLUMN place_levels.place_check_report_quantities IS 'Are place check report quantities used? Preset: true';
 COMMENT ON COLUMN place_levels.place_check_report_quantities_in_report IS 'Show place check report quantities inside the report form instead of a separate route? Preset: true';
+COMMENT ON COLUMN place_levels.place_action_reports IS 'Are action reports for places used? Preset: true';
+COMMENT ON COLUMN place_levels.place_action_report_quantities IS 'Are place action report quantities used? Preset: true';
+COMMENT ON COLUMN place_levels.place_action_report_quantities_in_report IS 'Show place action report quantities inside the report form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
 COMMENT ON COLUMN place_levels.action_quantities IS 'Are action values used? Preset: true';
 COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: true';
@@ -616,6 +625,7 @@ ALTER TABLE projects ADD CONSTRAINT projects_checks_default_unit_id_fkey FOREIGN
 ALTER TABLE projects ADD CONSTRAINT projects_action_reports_default_unit_id_fkey FOREIGN KEY (action_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_check_reports_default_unit_id_fkey FOREIGN KEY (check_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE projects ADD CONSTRAINT projects_place_check_reports_default_unit_id_fkey FOREIGN KEY (place_check_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE projects ADD CONSTRAINT projects_place_action_reports_default_unit_id_fkey FOREIGN KEY (place_action_reports_default_unit_id) REFERENCES units(unit_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 --------------------------------------------------------------
 -- places
@@ -1043,6 +1053,62 @@ COMMENT ON COLUMN place_check_report_quantities.account_id IS 'redundant account
 COMMENT ON COLUMN place_check_report_quantities.quantity_integer IS 'Used for integer quantities';
 COMMENT ON COLUMN place_check_report_quantities.quantity_numeric IS 'Used for numeric quantities';
 COMMENT ON COLUMN place_check_report_quantities.quantity_text IS 'Used for text quantities';
+
+--------------------------------------------------------------
+-- place_action_reports
+--
+CREATE TABLE IF NOT EXISTS place_action_reports(
+  place_action_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  year integer DEFAULT DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(year::text, place_action_report_id::text)) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS place_action_reports_account_id_idx ON place_action_reports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_action_reports_place_id_idx ON place_action_reports USING btree(place_id);
+CREATE INDEX IF NOT EXISTS place_action_reports_year_idx ON place_action_reports USING btree(year);
+CREATE INDEX IF NOT EXISTS place_action_reports_label_idx ON place_action_reports USING btree(label);
+
+COMMENT ON TABLE place_action_reports IS 'Reporting on actions taken in this place.';
+COMMENT ON COLUMN place_action_reports.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN place_action_reports.year IS 'Year of report. Preset: current year';
+COMMENT ON COLUMN place_action_reports.data IS 'Room for place action report specific data, defined in "fields" table';
+
+--------------------------------------------------------------
+-- place_action_report_quantities
+--
+CREATE TABLE IF NOT EXISTS place_action_report_quantities(
+  place_action_report_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  place_action_report_id uuid DEFAULT NULL REFERENCES place_action_reports(place_action_report_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
+  quantity_integer integer DEFAULT NULL,
+  quantity_numeric double precision DEFAULT NULL,
+  quantity_text text DEFAULT NULL,
+  label text DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_account_id_idx ON place_action_report_quantities USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_place_action_report_id_idx ON place_action_report_quantities USING btree(place_action_report_id);
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_unit_id_idx ON place_action_report_quantities USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_quantity_integer_idx ON place_action_report_quantities USING btree(quantity_integer);
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_quantity_numeric_idx ON place_action_report_quantities USING btree(quantity_numeric);
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_quantity_text_idx ON place_action_report_quantities USING btree(quantity_text);
+CREATE INDEX IF NOT EXISTS place_action_report_quantities_label_idx ON place_action_report_quantities USING btree(label);
+
+COMMENT ON TABLE place_action_report_quantities IS 'Quantities of place action reports';
+COMMENT ON COLUMN place_action_report_quantities.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN place_action_report_quantities.quantity_integer IS 'Used for integer quantities';
+COMMENT ON COLUMN place_action_report_quantities.quantity_numeric IS 'Used for numeric quantities';
+COMMENT ON COLUMN place_action_report_quantities.quantity_text IS 'Used for text quantities';
 
 --------------------------------------------------------------
 -- messages

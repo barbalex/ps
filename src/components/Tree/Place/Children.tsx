@@ -7,6 +7,7 @@ import { Node } from '../Node.tsx'
 import { ChecksNode } from '../Checks.tsx'
 import { ActionsNode } from '../Actions.tsx'
 import { PlaceCheckReportsNode } from '../PlaceCheckReports.tsx'
+import { PlaceActionReportsNode } from '../PlaceActionReports.tsx'
 import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
 import { PlaceHistoriesNode } from '../PlaceHistories.tsx'
@@ -79,6 +80,15 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
+      {(isDesigning || !!placeLevel?.place_check_reports) && (
+        <PlaceCheckReportsNode
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId}
+          placeId2={placeId2}
+          level={level + 1}
+        />
+      )}
       {(isDesigning || !!placeLevel?.actions) && (
         <ActionsNode
           projectId={projectId}
@@ -88,8 +98,8 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.place_check_reports) && (
-        <PlaceCheckReportsNode
+      {(isDesigning || !!placeLevel?.place_action_reports) && (
+        <PlaceActionReportsNode
           projectId={projectId}
           subprojectId={subprojectId}
           placeId={placeId}

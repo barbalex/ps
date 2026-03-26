@@ -1237,6 +1237,86 @@ export const createPlaceCheckReportQuantity = async ({
   return place_check_report_quantity_id
 }
 
+export const createPlaceActionReport = async ({ projectId, placeId }) => {
+  const db = store.get(pgliteDbAtom)
+  // find fields with preset values on the data column
+  const presetData = await getPresetData({
+    projectId,
+    table: 'place_action_reports',
+  })
+
+  const place_action_report_id = uuidv7()
+  const data = {
+    place_action_report_id,
+    place_id: placeId,
+    year: new Date().getFullYear(),
+    ...presetData,
+  }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  await db.query(
+    `insert into place_action_reports (${columns}) values (${values})`,
+    Object.values(data),
+  )
+
+  store.set(addOperationAtom, {
+    table: 'place_action_reports',
+    operation: 'insert',
+    draft: data,
+  })
+
+  return place_action_report_id
+}
+
+export const createPlaceActionReportQuantity = async ({
+  placeActionReportId,
+}) => {
+  const db = store.get(pgliteDbAtom)
+
+  // inherit the project's default unit if set
+  const projectRes = await db.query<{
+    place_action_reports_default_unit_id: string | null
+  }>(
+    `SELECT p.place_action_reports_default_unit_id
+     FROM projects p
+     JOIN subprojects sp ON sp.project_id = p.project_id
+     JOIN places pl ON pl.subproject_id = sp.subproject_id
+     JOIN place_action_reports pr ON pr.place_id = pl.place_id
+     WHERE pr.place_action_report_id = $1
+     LIMIT 1`,
+    [placeActionReportId],
+  )
+  const defaultUnitId =
+    projectRes.rows?.[0]?.place_action_reports_default_unit_id ?? null
+
+  const place_action_report_quantity_id = uuidv7()
+  const draft = {
+    place_action_report_quantity_id,
+    place_action_report_id: placeActionReportId,
+    ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
+  }
+  const cols = Object.keys(draft).join(', ')
+  const vals = Object.keys(draft)
+    .map((_, i) => `$${i + 1}`)
+    .join(', ')
+  await db.query(
+    `INSERT INTO place_action_report_quantities (${cols}) VALUES (${vals})`,
+    Object.values(draft),
+  )
+
+  store.set(addOperationAtom, {
+    table: 'place_action_report_quantities',
+    operation: 'insert',
+    draft,
+  })
+
+  return place_action_report_quantity_id
+}
+
 export const createMessage = async () => {
   const db = store.get(pgliteDbAtom)
   const message_id = uuidv7()
