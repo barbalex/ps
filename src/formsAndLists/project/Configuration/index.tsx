@@ -294,22 +294,6 @@ export const Configuration = ({ from }) => {
           />
           <RadioGroupField
             label={formatMessage({
-              id: 'dSt9mU',
-              defaultMessage: 'Standard-Einheit für Kontroll-Bericht-Mengen',
-            })}
-            name="check_reports_default_unit_id"
-            list={unitIds}
-            labelMap={unitLabelMap}
-            isLoading={unitsRes === undefined}
-            value={row.check_reports_default_unit_id ?? ''}
-            onChange={onChange}
-            validationState={validations?.check_reports_default_unit_id?.state}
-            validationMessage={
-              validations?.check_reports_default_unit_id?.message
-            }
-          />
-          <RadioGroupField
-            label={formatMessage({
               id: 'mP7QrS',
               defaultMessage: 'Standard-Einheit für Kontroll-Taxon-Mengen',
             })}
@@ -321,6 +305,25 @@ export const Configuration = ({ from }) => {
             onChange={onChange}
             validationState={validations?.check_taxa_default_unit_id?.state}
             validationMessage={validations?.check_taxa_default_unit_id?.message}
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'dV2EwG',
+              defaultMessage:
+                'Standard-Einheit für Ort-Massnahmen-Bericht-Mengen',
+            })}
+            name="place_action_reports_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.place_action_reports_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={
+              validations?.place_action_reports_default_unit_id?.state
+            }
+            validationMessage={
+              validations?.place_action_reports_default_unit_id?.message
+            }
           />
           <RadioGroupField
             label={formatMessage({

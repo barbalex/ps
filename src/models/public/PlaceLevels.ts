@@ -99,13 +99,6 @@ export default interface PlaceLevels {
 
   check_taxa_in_check: boolean | null;
 
-  check_reports: boolean | null;
-
-  check_report_quantities: boolean | null;
-
-  /** Show check report quantities inside the check report form instead of a separate route? Preset: true */
-  check_report_quantities_in_report: boolean | null;
-
   /** Are observations used? Preset: true */
   observations: boolean | null;
 
@@ -272,18 +265,6 @@ export interface PlaceLevelsInitializer {
   /** Default value: true */
   check_taxa_in_check?: boolean | null;
 
-  /** Default value: true */
-  check_reports?: boolean | null;
-
-  /** Default value: true */
-  check_report_quantities?: boolean | null;
-
-  /**
-   * Show check report quantities inside the check report form instead of a separate route? Preset: true
-   * Default value: true
-   */
-  check_report_quantities_in_report?: boolean | null;
-
   /**
    * Are observations used? Preset: true
    * Default value: true
@@ -408,13 +389,6 @@ export interface PlaceLevelsMutator {
   check_taxa?: boolean | null;
 
   check_taxa_in_check?: boolean | null;
-
-  check_reports?: boolean | null;
-
-  check_report_quantities?: boolean | null;
-
-  /** Show check report quantities inside the check report form instead of a separate route? Preset: true */
-  check_report_quantities_in_report?: boolean | null;
 
   /** Are observations used? Preset: true */
   observations?: boolean | null;

@@ -255,8 +255,12 @@ export const PlaceLevel = () => {
               name="place_check_report_quantities"
               value={row.place_check_report_quantities ?? false}
               onChange={onChange}
-              validationState={validations?.place_check_report_quantities?.state}
-              validationMessage={validations?.place_check_report_quantities?.message}
+              validationState={
+                validations?.place_check_report_quantities?.state
+              }
+              validationMessage={
+                validations?.place_check_report_quantities?.message
+              }
             />
           )}
           {(isDesigning || row.place_check_report_quantities) && (
@@ -270,6 +274,42 @@ export const PlaceLevel = () => {
               }
               validationMessage={
                 validations?.place_check_report_quantities_in_report?.message
+              }
+            />
+          )}
+          <SwitchField
+            label={`${placeName}: ${formatMessage({ id: 'eV3FxH', defaultMessage: 'Massnahmen-Berichte' })}`}
+            name="place_action_reports"
+            value={row.place_action_reports ?? false}
+            onChange={onChange}
+            validationState={validations?.place_action_reports?.state}
+            validationMessage={validations?.place_action_reports?.message}
+          />
+          {(isDesigning || row.place_action_reports) && (
+            <SwitchField
+              label={`${placeName}: ${formatMessage({ id: 'fW4GyI', defaultMessage: 'Massnahmen-Bericht-Mengen' })}`}
+              name="place_action_report_quantities"
+              value={row.place_action_report_quantities ?? false}
+              onChange={onChange}
+              validationState={
+                validations?.place_action_report_quantities?.state
+              }
+              validationMessage={
+                validations?.place_action_report_quantities?.message
+              }
+            />
+          )}
+          {(isDesigning || row.place_action_report_quantities) && (
+            <SwitchField
+              label={`${placeName}: ${formatMessage({ id: 'gX5HzJ', defaultMessage: 'Massnahmen-Bericht-Mengen in Population' })}`}
+              name="place_action_report_quantities_in_report"
+              value={row.place_action_report_quantities_in_report ?? true}
+              onChange={onChange}
+              validationState={
+                validations?.place_action_report_quantities_in_report?.state
+              }
+              validationMessage={
+                validations?.place_action_report_quantities_in_report?.message
               }
             />
           )}
@@ -323,45 +363,6 @@ export const PlaceLevel = () => {
               validationState={validations?.check_quantities_in_check?.state}
               validationMessage={
                 validations?.check_quantities_in_check?.message
-              }
-            />
-          )}
-          <SwitchField
-            label={formatMessage({
-              id: 'bP8TqJ',
-              defaultMessage: 'Kontrollen: Berichte',
-            })}
-            name="check_reports"
-            value={row.check_reports ?? false}
-            onChange={onChange}
-            validationState={validations?.check_reports?.state}
-            validationMessage={validations?.check_reports?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'cQ9UrK',
-              defaultMessage: 'Kontrollen: Bericht-Mengen',
-            })}
-            name="check_report_quantities"
-            value={row.check_report_quantities ?? false}
-            onChange={onChange}
-            validationState={validations?.check_report_quantities?.state}
-            validationMessage={validations?.check_report_quantities?.message}
-          />
-          {(isDesigning || row.check_report_quantities) && (
-            <SwitchField
-              label={formatMessage({
-                id: 'eS9TuN',
-                defaultMessage: 'Kontrollen: Bericht-Mengen im Bericht',
-              })}
-              name="check_report_quantities_in_report"
-              value={row.check_report_quantities_in_report ?? true}
-              onChange={onChange}
-              validationState={
-                validations?.check_report_quantities_in_report?.state
-              }
-              validationMessage={
-                validations?.check_report_quantities_in_report?.message
               }
             />
           )}

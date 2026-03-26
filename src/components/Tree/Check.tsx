@@ -29,7 +29,7 @@ export const CheckNode = ({
 
   // need project to know whether to show files
   const res = useLiveQuery(
-    `SELECT check_files, check_quantities, check_quantities_in_check, check_reports, check_taxa, check_taxa_in_check
+    `SELECT check_files, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],

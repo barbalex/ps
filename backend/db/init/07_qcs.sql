@@ -52,11 +52,7 @@ ORDER BY label'),
 FROM fields f
 WHERE nullif(f.table_name, '''') IS NULL
 ORDER BY f.label'),
-('fieldsLevelMissing', 'Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
-FROM fields f
-WHERE f.table_name IN (''places'', ''checks'', ''actions'', ''place_check_reports'', ''check_reports'', ''action_reports'')
-  AND f.level IS NULL
-ORDER BY f.label'),
+('fieldsLevelMissing', 'Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', 'fields', NULL, true, false, false, false, NULL),
 ('fieldsNameMissing', 'Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.name, '''') IS NULL
@@ -460,29 +456,8 @@ FROM actions a
 WHERE a.place_id = p.place_id
   AND date_part(''year'', a.date) = date_part(''year'', now()))
 ORDER BY p.label'),
-('placesReportsMissing', 'Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/reports/'' AS url
-FROM places p
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-WHERE p.subproject_id = $1
-  AND p.relevant_for_reports = true
-  AND (p.until IS NULL
-  OR p.until >= date_part(''year'', now())::integer)
-  AND NOT EXISTS (SELECT 1
-FROM place_check_reports pr
-WHERE pr.place_id = p.place_id)
-ORDER BY p.label'),
-('placesReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/reports/'' AS url
-FROM places p
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-WHERE p.subproject_id = $1
-  AND p.relevant_for_reports = true
-  AND (p.until IS NULL
-  OR p.until >= date_part(''year'', now())::integer)
-  AND NOT EXISTS (SELECT 1
-FROM place_check_reports pr
-WHERE pr.place_id = p.place_id
-  AND pr.year = date_part(''year'', now())::integer)
-ORDER BY p.label'),
+('placesReportsMissing', 'Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', 'places', NULL, false, false, true, false, NULL),
+('placesReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', 'places', NULL, false, false, true, true, NULL),
 ('places1Places2Missing', 'Orte (relevante und aktuell existierende) Stufe 1 ohne Stufe 2', 'Places (relevant and currently existing) level 1 without level 2', 'Lieux (pertinents et actuellement existants) niveau 1 sans niveau 2', 'Luoghi (rilevanti e attualmente esistenti) livello 1 senza livello 2', 'places', 1, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || s.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects s ON s.subproject_id = p.subproject_id
@@ -494,6 +469,52 @@ WHERE p.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM places p2
 WHERE p2.parent_id = p.place_id)
+ORDER BY p.label'),
+('placesCheckReportsMissing', 'Orte (relevante und aktuell existierende) ohne Kontroll-Bericht', 'Places (relevant and currently existing) without check report', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part(''year'', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_check_reports pcr
+WHERE pcr.place_id = p.place_id)
+ORDER BY p.label'),
+('placesCheckReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr', 'Places (relevant and currently existing) without check report in year', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell''anno', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part(''year'', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_check_reports pcr
+WHERE pcr.place_id = p.place_id
+  AND pcr.year = date_part(''year'', now())::integer)
+ORDER BY p.label'),
+('placesActionReportsMissing', 'Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht', 'Places (relevant and currently existing) without action report', 'Lieux (pertinents et actuellement existants) sans rapport d''action', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part(''year'', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_action_reports par
+WHERE par.place_id = p.place_id)
+ORDER BY p.label'),
+('placesActionReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr', 'Places (relevant and currently existing) without action report in year', 'Lieux (pertinents et actuellement existants) sans rapport d''action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell''anno', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part(''year'', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_action_reports par
+WHERE par.place_id = p.place_id
+  AND par.year = date_part(''year'', now())::integer)
 ORDER BY p.label'),
 ('placeUsersUserMissing', 'Ort-Benutzer ohne Benutzer', 'Place users without user', 'Utilisateurs de lieu sans utilisateur', 'Utenti di luogo senza utente', 'place_users', NULL, false, false, true, false, 'SELECT pu.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || pu.place_id || ''/users/'' || pu.place_user_id || ''/'' AS url
 FROM place_users pu
@@ -545,17 +566,6 @@ WHERE p.subproject_id = $1
 FROM check_taxa ct
 WHERE ct.check_id = c.check_id)
 ORDER BY c.label'),
-('checksReportMissingInYear', 'Kontrollen (relevante) ohne Bericht in Jahr', 'Checks (relevant) without report in year', 'Contrôles (pertinents) sans rapport dans l''année', 'Controlli (rilevanti) senza rapporto nell''anno', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/reports/'' AS url
-FROM checks c
-JOIN places p ON p.place_id = c.place_id
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-WHERE p.subproject_id = $1
-  AND c.relevant_for_reports = true
-  AND NOT EXISTS (SELECT 1
-FROM check_reports cr
-WHERE cr.check_id = c.check_id
-  AND cr.year = date_part(''year'', now())::integer)
-ORDER BY c.label'),
 ('checksFilesMissing', 'Kontrollen (relevante) ohne Datei', 'Checks (relevant) without file', 'Contrôles (pertinents) sans fichier', 'Controlli (rilevanti) senza file', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/files/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
@@ -602,17 +612,6 @@ WHERE p.subproject_id = $1
 FROM action_taxa atx
 WHERE atx.action_id = a.action_id)
 ORDER BY a.label'),
-('actionsReportMissingInYear', 'Massnahmen (relevante) ohne Bericht in Jahr', 'Actions (relevant) without report in year', 'Actions (pertinentes) sans rapport dans l''année', 'Azioni (rilevanti) senza rapporto nell''anno', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/reports/'' AS url
-FROM actions a
-JOIN places p ON p.place_id = a.place_id
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-WHERE p.subproject_id = $1
-  AND a.relevant_for_reports = true
-  AND NOT EXISTS (SELECT 1
-FROM action_reports ar
-WHERE ar.action_id = a.action_id
-  AND ar.year = date_part(''year'', now())::integer)
-ORDER BY a.label'),
 ('actionsFilesMissing', 'Massnahmen (relevante) ohne Datei', 'Actions (relevant) without file', 'Actions (pertinentes) sans fichier', 'Azioni (rilevanti) senza file', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/files/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
@@ -623,21 +622,7 @@ WHERE p.subproject_id = $1
 FROM files f
 WHERE f.action_id = a.action_id)
 ORDER BY a.label'),
-('placeReportQuantitiesNoDefault', 'Ort-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place report quantities: default unit not used', 'Quantités de rapport de lieu : unité par défaut non utilisée', 'Quantità di rapporto di luogo: unità predefinita non utilizzata', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
-FROM places p
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-JOIN projects proj ON proj.project_id = sp.project_id
-WHERE p.subproject_id = $1
-  AND p.relevant_for_reports = true
-  AND (p.until IS NULL
-  OR p.until >= date_part(''year'', now())::integer)
-  AND proj.place_check_reports_default_unit_id IS NOT NULL
-  AND EXISTS (SELECT 1
-FROM place_check_reports pr
-JOIN place_check_report_quantities prq ON prq.place_check_report_id = pr.place_check_report_id
-WHERE pr.place_id = p.place_id
-  AND prq.unit_id != proj.place_check_reports_default_unit_id)
-ORDER BY p.label'),
+('placeReportQuantitiesNoDefault', 'Ort-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place report quantities: default unit not used', 'Quantités de rapport de lieu : unité par défaut non utilisée', 'Quantità di rapporto di luogo: unità predefinita non utilizzata', 'places', NULL, false, false, true, false, NULL),
 ('checkQuantitiesNoDefault', 'Kontroll-Mengen: Standard-Einheit nicht verwendet', 'Check quantities: default unit not used', 'Quantités de contrôle : unité par défaut non utilisée', 'Quantità di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
@@ -651,20 +636,21 @@ FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
 ORDER BY c.label'),
-('checkReportQuantitiesNoDefault', 'Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Check report quantities: default unit not used', 'Quantités de rapport de contrôle : unité par défaut non utilisée', 'Quantità di rapporto di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
-FROM checks c
-JOIN places p ON p.place_id = c.place_id
+('placeCheckReportQuantitiesNoDefault', 'Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place check report quantities: default unit not used', 'Quantités de rapport de contrôle de lieu : unité par défaut non utilisée', 'Quantità di rapporto di controllo di luogo: unità predefinita non utilizzata', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
 WHERE p.subproject_id = $1
-  AND c.relevant_for_reports = true
-  AND proj.check_reports_default_unit_id IS NOT NULL
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part(''year'', now())::integer)
+  AND proj.place_check_reports_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
-FROM check_reports cr
-JOIN check_report_quantities crq ON crq.check_report_id = cr.check_report_id
-WHERE cr.check_id = c.check_id
-  AND crq.unit_id != proj.check_reports_default_unit_id)
-ORDER BY c.label'),
+FROM place_check_reports pcr
+JOIN place_check_report_quantities pcrq ON pcrq.place_check_report_id = pcr.place_check_report_id
+WHERE pcr.place_id = p.place_id
+  AND pcrq.unit_id != proj.place_check_reports_default_unit_id)
+ORDER BY p.label'),
 ('checkTaxonQuantitiesNoDefault', 'Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Check taxon quantities: default unit not used', 'Quantités de taxon de contrôle : unité par défaut non utilisée', 'Quantità di taxon di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
@@ -691,20 +677,21 @@ FROM action_quantities aq
 WHERE aq.action_id = a.action_id
   AND aq.unit_id != proj.actions_default_unit_id)
 ORDER BY a.label'),
-('actionReportQuantitiesNoDefault', 'Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Action report quantities: default unit not used', 'Quantités de rapport d''actions : unité par défaut non utilisée', 'Quantità di rapporto di azioni: unità predefinita non utilizzata', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
-FROM actions a
-JOIN places p ON p.place_id = a.place_id
+('placeActionReportQuantitiesNoDefault', 'Ort-Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place action report quantities: default unit not used', 'Quantités de rapport d''action de lieu : unité par défaut non utilisée', 'Quantità di rapporto di azione di luogo: unità predefinita non utilizzata', 'actions', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
 WHERE p.subproject_id = $1
-  AND a.relevant_for_reports = true
-  AND proj.action_reports_default_unit_id IS NOT NULL
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part(''year'', now())::integer)
+  AND proj.place_action_reports_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
-FROM action_reports ar
-JOIN action_report_quantities arq ON arq.action_report_id = ar.action_report_id
-WHERE ar.action_id = a.action_id
-  AND arq.unit_id != proj.action_reports_default_unit_id)
-ORDER BY a.label'),
+FROM place_action_reports par
+JOIN place_action_report_quantities parq ON parq.place_action_report_id = par.place_action_report_id
+WHERE par.place_id = p.place_id
+  AND parq.unit_id != proj.place_action_reports_default_unit_id)
+ORDER BY p.label'),
 ('actionTaxonQuantitiesNoDefault', 'Massnahmen-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Action taxon quantities: default unit not used', 'Quantités de taxon d''actions : unité par défaut non utilisée', 'Quantità di taxon di azioni: unità predefinita non utilizzata', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
