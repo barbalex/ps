@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -16,6 +16,8 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import { CheckTaxonInline } from '../checkTaxon/Inline.tsx'
+import { Row } from '../../components/shared/Row.tsx'
+import { FileInCheck } from '../file/InCheck.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
@@ -23,13 +25,22 @@ import '../../form.css'
 
 const { Button, Tooltip } = fluentUiReactComponents
 
-export const CheckWithAll = ({ from }) => {
-  const { checkId, projectId, placeId2 } = useParams({ from })
+export const CheckWithAll = ({
+  from,
+  selectedFileId,
+}: {
+  from: string
+  selectedFileId?: string
+}) => {
+  const { checkId, projectId, placeId, placeId2, subprojectId } = useParams({
+    strict: false,
+  })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
 
   const db = usePGlite()
 
@@ -51,16 +62,30 @@ export const CheckWithAll = ({ from }) => {
   const taxa = taxaRes?.rows ?? []
 
   const placeLevelRes = useLiveQuery(
-    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
+  const filesInCheck =
+    (isDesigning || placeLevel?.check_files !== false) &&
+    placeLevel?.files_in_check !== false
   const showQuantities =
     quantitiesInCheck && (isDesigning || placeLevel?.check_quantities !== false)
   const showTaxa =
     taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
+  const showFiles = filesInCheck
+
+  // Build URLs for files section navigation
+  const checkUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
+  const filesUrl = `${checkUrl}/files`
+
+  const filesRes = useLiveQuery(
+    `SELECT file_id, label, url, mimetype FROM files WHERE check_id = $1 ORDER BY label`,
+    [checkId],
+  )
+  const files = filesRes?.rows ?? []
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -205,12 +230,98 @@ export const CheckWithAll = ({ from }) => {
                 </Tooltip>
               </Section>
             )}
+            {showFiles && (
+              <Section
+                title={formatMessage({
+                  id: 'mn58Sh',
+                  defaultMessage: 'Dateien',
+                })}
+                onHeaderClick={() => navigate({ to: filesUrl })}
+              >
+                {files.map((file, i) => {
+                  if (selectedFileId === file.file_id) {
+                    return (
+                      <div key={file.file_id}>
+                        {i > 0 && (
+                          <div
+                            style={{
+                              borderTop: '8px solid rgb(225, 247, 224)',
+                              marginLeft: -10,
+                              marginRight: -10,
+                              marginBottom: 8,
+                            }}
+                          />
+                        )}
+                        <FileInCheck
+                          fileId={file.file_id}
+                          checkId={checkId}
+                          from={from}
+                          onClose={() => navigate({ to: checkUrl })}
+                          onNavigate={(fId) =>
+                            navigate({ to: `${filesUrl}/${fId}` })
+                          }
+                        />
+                      </div>
+                    )
+                  }
+                  let imgSrc: string | undefined = undefined
+                  if (
+                    (file.mimetype?.includes('image') ||
+                      file.mimetype?.includes('pdf')) &&
+                    file.url
+                  ) {
+                    imgSrc = `${file.url}-/resize/x50/-/format/auto/-/quality/smart/`
+                  }
+                  return (
+                    <div key={file.file_id}>
+                      {i > 0 && (
+                        <div
+                          style={{
+                            borderTop: '8px solid rgb(225, 247, 224)',
+                            marginLeft: -10,
+                            marginRight: -10,
+                            marginBottom: 8,
+                          }}
+                        />
+                      )}
+                      <Row
+                        label={file.label ?? file.file_id}
+                        to=""
+                        imgSrc={imgSrc}
+                        lastHasImages={true}
+                        onClick={() =>
+                          navigate({ to: `${filesUrl}/${file.file_id}` })
+                        }
+                      />
+                    </div>
+                  )
+                })}
+                {files.length > 0 && (
+                  <div
+                    style={{
+                      borderTop: '8px solid rgb(225, 247, 224)',
+                      marginLeft: -10,
+                      marginRight: -10,
+                    }}
+                  />
+                )}
+                <Tooltip
+                  content={formatMessage({
+                    id: 'Yt5rMs',
+                    defaultMessage: 'neu',
+                  })}
+                  relationship="label"
+                >
+                  <Button
+                    icon={<FaPlus />}
+                    onClick={() => navigate({ to: filesUrl })}
+                  />
+                </Tooltip>
+              </Section>
+            )}
           </>
         ) : (
-          <NotFound
-            table="Check"
-            id={checkId}
-          />
+          <NotFound table="Check" id={checkId} />
         )}
       </div>
     </div>

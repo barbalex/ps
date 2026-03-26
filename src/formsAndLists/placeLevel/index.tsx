@@ -401,6 +401,19 @@ export const PlaceLevel = () => {
             validationState={validations?.check_files?.state}
             validationMessage={validations?.check_files?.message}
           />
+          {(isDesigning || row.check_files) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'rN5QwT',
+                defaultMessage: 'Kontrollen: Dateien in Kontrolle',
+              })}
+              name="files_in_check"
+              value={row.files_in_check ?? true}
+              onChange={onChange}
+              validationState={validations?.files_in_check?.state}
+              validationMessage={validations?.files_in_check?.message}
+            />
+          )}
           <SwitchField
             label={formatMessage({
               id: 'pH7MgC',

@@ -56,12 +56,15 @@ export const useCheckNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
+  const filesInCheck =
+    (isDesigning || placeLevel?.check_files !== false) &&
+    placeLevel?.files_in_check !== false
 
   const parentArray = [
     'data',
@@ -87,6 +90,16 @@ export const useCheckNavData = ({
     ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
+  const showQuantitiesNav =
+    !quantitiesInCheck && (isDesigning || placeLevel?.check_quantities !== false)
+  const showTaxaNav =
+    !taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
+  const showFilesNav =
+    !filesInCheck && (isDesigning || placeLevel?.check_files !== false)
+  // When all child items are shown inline (or disabled), the check form renders
+  // at the check's root URL — no need for a separate 'check' sub-nav entry
+  const allInline = !showQuantitiesNav && !showTaxaNav && !showFilesNav
+
   const navData = {
     isInActiveNodeArray,
     isActive,
@@ -99,12 +112,18 @@ export const useCheckNavData = ({
     label,
     notFound,
     navs: [
-      {
-        id: 'check',
-        label: formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' }),
-      },
-      ...(!quantitiesInCheck &&
-      (isDesigning || placeLevel?.check_quantities !== false)
+      ...(!allInline
+        ? [
+            {
+              id: 'check',
+              label: formatMessage({
+                id: 'ZCwpER',
+                defaultMessage: 'Kontrolle',
+              }),
+            },
+          ]
+        : []),
+      ...(showQuantitiesNav
         ? [
             {
               id: 'quantities',
@@ -119,7 +138,7 @@ export const useCheckNavData = ({
             },
           ]
         : []),
-      ...(!taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
+      ...(showTaxaNav
         ? [
             {
               id: 'taxa',
@@ -134,7 +153,7 @@ export const useCheckNavData = ({
             },
           ]
         : []),
-      ...(isDesigning || placeLevel?.check_files !== false
+      ...(showFilesNav
         ? [
             {
               id: 'files',
