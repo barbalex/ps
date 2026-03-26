@@ -114,12 +114,12 @@ export const usePlaceCheckReportsNavData = ({
       countFiltered,
       countUnfiltered,
       namePlural: formatMessage({
-        id: 'CiJ0SG',
+        id: 'bCSxTz',
         defaultMessage: 'Kontroll-Berichte',
       }),
     }),
     nameSingular: formatMessage({
-      id: 'Z8jucQ',
+      id: 'bCSwTx',
       defaultMessage: 'Kontroll-Bericht',
     }),
     navs,
