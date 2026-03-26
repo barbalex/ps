@@ -40,13 +40,8 @@ import { ActionsFetcher } from './ActionsFetcher.tsx'
 import { ActionFetcher } from './ActionFetcher.tsx'
 import { ActionQuantitiesFetcher } from './ActionQuantitiesFetcher.tsx'
 import { ActionQuantityFetcher } from './ActionQuantityFetcher.tsx'
-import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
-import { ActionReportFetcher } from './ActionReportFetcher.tsx'
 import { ActionTaxaFetcher } from './ActionTaxaFetcher.tsx'
 import { ActionTaxonFetcher } from './ActionTaxonFetcher.tsx'
-import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
-import { ActionReportQuantitiesFetcher } from './ActionReportQuantitiesFetcher.tsx'
-import { ActionReportQuantityFetcher } from './ActionReportQuantityFetcher.tsx'
 import { PlaceCheckReportsFetcher } from './PlaceCheckReportsFetcher.tsx'
 import { PlaceCheckReportFetcher } from './PlaceCheckReportFetcher.tsx'
 import { PlaceCheckReportReportFetcher } from './PlaceCheckReportReportFetcher.tsx'
@@ -288,61 +283,6 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <ActionTaxonFetcher params={params} {...other} />
-    }
-    case 'useActionReportsNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.actionId
-      )
-        return null
-      return <ActionReportsFetcher params={params} {...other} />
-    }
-    case 'useActionReportNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.actionId ||
-        !params.actionReportId
-      )
-        return null
-      return <ActionReportFetcher params={params} {...other} />
-    }
-    case 'useActionReportReportNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.actionId ||
-        !params.actionReportId
-      )
-        return null
-      return <ActionReportReportFetcher params={params} {...other} />
-    }
-    case 'useActionReportQuantitiesNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.actionId ||
-        !params.actionReportId
-      )
-        return null
-      return <ActionReportQuantitiesFetcher params={params} {...other} />
-    }
-    case 'useActionReportQuantityNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.actionId ||
-        !params.actionReportId ||
-        !params.actionReportQuantityId
-      )
-        return null
-      return <ActionReportQuantityFetcher params={params} {...other} />
     }
     case 'usePlaceCheckReportsNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)

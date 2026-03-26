@@ -76,15 +76,6 @@ export default interface PlaceLevels {
 
   action_taxa_in_action: boolean | null;
 
-  /** Are action reports used? Preset: true */
-  action_reports: boolean | null;
-
-  /** Are action report quantities used? Preset: true */
-  action_report_quantities: boolean | null;
-
-  /** Show action report quantities inside the action report form instead of a separate route? Preset: true */
-  action_report_quantities_in_report: boolean | null;
-
   /** Are checks used? Preset: true */
   checks: boolean | null;
 
@@ -221,24 +212,6 @@ export interface PlaceLevelsInitializer {
   action_taxa_in_action?: boolean | null;
 
   /**
-   * Are action reports used? Preset: true
-   * Default value: true
-   */
-  action_reports?: boolean | null;
-
-  /**
-   * Are action report quantities used? Preset: true
-   * Default value: true
-   */
-  action_report_quantities?: boolean | null;
-
-  /**
-   * Show action report quantities inside the action report form instead of a separate route? Preset: true
-   * Default value: true
-   */
-  action_report_quantities_in_report?: boolean | null;
-
-  /**
    * Are checks used? Preset: true
    * Default value: true
    */
@@ -366,15 +339,6 @@ export interface PlaceLevelsMutator {
   action_taxa?: boolean | null;
 
   action_taxa_in_action?: boolean | null;
-
-  /** Are action reports used? Preset: true */
-  action_reports?: boolean | null;
-
-  /** Are action report quantities used? Preset: true */
-  action_report_quantities?: boolean | null;
-
-  /** Show action report quantities inside the action report form instead of a separate route? Preset: true */
-  action_report_quantities_in_report?: boolean | null;
 
   /** Are checks used? Preset: true */
   checks?: boolean | null;

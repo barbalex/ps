@@ -36,7 +36,6 @@ export const useActionNavData = ({
   const sql = `
       WITH
         action_quantities_count AS (SELECT count(*) FROM action_quantities WHERE action_id = '${actionId}'),
-        action_reports_count AS (SELECT count(*) FROM action_reports WHERE action_id = '${actionId}'),
         files_count AS (SELECT count(*) FROM files WHERE action_id = '${actionId}')
       SELECT
         action_id AS id,
@@ -57,7 +56,7 @@ export const useActionNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT action_quantities, action_quantities_in_action, action_reports, action_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_quantities, action_quantities_in_action, action_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -103,7 +102,8 @@ export const useActionNavData = ({
         id: 'action',
         label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
       },
-      ...(!quantitiesInAction && (isDesigning || placeLevel?.action_quantities !== false)
+      ...(!quantitiesInAction &&
+      (isDesigning || placeLevel?.action_quantities !== false)
         ? [
             {
               id: 'quantities',
@@ -113,21 +113,6 @@ export const useActionNavData = ({
                 namePlural: formatMessage({
                   id: 'Xuj/Gy',
                   defaultMessage: 'Mengen',
-                }),
-              }),
-            },
-          ]
-        : []),
-      ...(isDesigning || placeLevel?.action_reports !== false
-        ? [
-            {
-              id: 'reports',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.action_reports_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'CiJ0SG',
-                  defaultMessage: 'Berichte',
                 }),
               }),
             },
