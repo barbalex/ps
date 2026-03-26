@@ -5,7 +5,6 @@ import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'
 import { CheckQuantitiesNode } from './CheckQuantities.tsx'
-import { CheckReportsNode } from './CheckReports.tsx'
 import { CheckTaxaNode } from './CheckTaxa.tsx'
 import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -114,16 +113,6 @@ export const CheckNode = ({
                 level={level + 1}
               />
             )}
-          {(isDesigning || placeLevel?.check_reports !== false) && (
-            <CheckReportsNode
-              projectId={projectId}
-              subprojectId={subprojectId}
-              placeId={placeId}
-              placeId2={placeId2}
-              checkId={nav.id}
-              level={level + 1}
-            />
-          )}
           {!taxaInCheck &&
             (isDesigning || placeLevel?.check_taxa !== false) && (
               <CheckTaxaNode
