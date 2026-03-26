@@ -242,34 +242,34 @@ export const PlaceLevel = () => {
             })}
           </SectionDescription>
           <SwitchField
-            label={`${placeName}: ${formatMessage({ id: 'nF5KeA', defaultMessage: 'Berichte' })}`}
-            name="place_reports"
-            value={row.place_reports ?? false}
+            label={`${placeName}: ${formatMessage({ id: 'nF5KeA', defaultMessage: 'Kontroll-Berichte' })}`}
+            name="place_check_reports"
+            value={row.place_check_reports ?? false}
             onChange={onChange}
-            validationState={validations?.place_reports?.state}
-            validationMessage={validations?.place_reports?.message}
+            validationState={validations?.place_check_reports?.state}
+            validationMessage={validations?.place_check_reports?.message}
           />
-          {(isDesigning || row.place_reports) && (
+          {(isDesigning || row.place_check_reports) && (
             <SwitchField
-              label={`${placeName}: ${formatMessage({ id: 'oG6LfB', defaultMessage: 'Bericht-Mengen' })}`}
-              name="place_report_quantities"
-              value={row.place_report_quantities ?? false}
+              label={`${placeName}: ${formatMessage({ id: 'oG6LfB', defaultMessage: 'Kontroll-Bericht-Mengen' })}`}
+              name="place_check_report_quantities"
+              value={row.place_check_report_quantities ?? false}
               onChange={onChange}
-              validationState={validations?.place_report_quantities?.state}
-              validationMessage={validations?.place_report_quantities?.message}
+              validationState={validations?.place_check_report_quantities?.state}
+              validationMessage={validations?.place_check_report_quantities?.message}
             />
           )}
-          {(isDesigning || row.place_report_quantities) && (
+          {(isDesigning || row.place_check_report_quantities) && (
             <SwitchField
-              label={`${placeName}: ${formatMessage({ id: 'qH7MpR4', defaultMessage: 'Bericht-Mengen im Bericht' })}`}
-              name="place_report_quantities_in_report"
-              value={row.place_report_quantities_in_report ?? true}
+              label={`${placeName}: ${formatMessage({ id: 'qH7MpR4', defaultMessage: 'Kontroll-Bericht-Mengen im Bericht' })}`}
+              name="place_check_report_quantities_in_report"
+              value={row.place_check_report_quantities_in_report ?? true}
               onChange={onChange}
               validationState={
-                validations?.place_report_quantities_in_report?.state
+                validations?.place_check_report_quantities_in_report?.state
               }
               validationMessage={
-                validations?.place_report_quantities_in_report?.message
+                validations?.place_check_report_quantities_in_report?.message
               }
             />
           )}

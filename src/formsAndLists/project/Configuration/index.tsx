@@ -262,17 +262,20 @@ export const Configuration = ({ from }) => {
           <RadioGroupField
             label={formatMessage({
               id: 'cU1DvF',
-              defaultMessage: 'Standard-Einheit für Ort-Bericht-Mengen',
+              defaultMessage:
+                'Standard-Einheit für Ort-Kontroll-Bericht-Mengen',
             })}
-            name="place_reports_default_unit_id"
+            name="place_check_reports_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.place_reports_default_unit_id ?? ''}
+            value={row.place_check_reports_default_unit_id ?? ''}
             onChange={onChange}
-            validationState={validations?.place_reports_default_unit_id?.state}
+            validationState={
+              validations?.place_check_reports_default_unit_id?.state
+            }
             validationMessage={
-              validations?.place_reports_default_unit_id?.message
+              validations?.place_check_reports_default_unit_id?.message
             }
           />
           <RadioGroupField

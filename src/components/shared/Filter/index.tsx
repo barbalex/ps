@@ -54,7 +54,9 @@ const getFilterStrings = ({
     whereUnfiltered = parentFilter
   }
   if (
-    ['actions', 'checks', 'place_reports', 'place_users'].includes(tableName)
+    ['actions', 'checks', 'place_check_reports', 'place_users'].includes(
+      tableName,
+    )
   ) {
     const placeFilter = { place_id: placeId2 ?? placeId }
     for (const orFilter of workingFilter) {
@@ -128,7 +130,7 @@ const getTitle = ({
                     })
                   : tableName === 'subproject_reports'
                     ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
-                    : tableName === 'place_reports'
+                    : tableName === 'place_check_reports'
                       ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
                       : tableName === 'places'
                         ? placeNamePlural
@@ -240,27 +242,25 @@ const getTitle = ({
                                                                   )
                                                                 : tableName ===
                                                                     'project_reports'
-                                                                    ? formatMessage(
-                                                                        {
-                                                                          id: 'CiJ0SG',
-                                                                          defaultMessage:
-                                                                            'Berichte',
-                                                                        },
+                                                                  ? formatMessage(
+                                                                      {
+                                                                        id: 'CiJ0SG',
+                                                                        defaultMessage:
+                                                                          'Berichte',
+                                                                      },
+                                                                    )
+                                                                  : tableName
+                                                                      .split(
+                                                                        '_',
                                                                       )
-                                                                    : tableName
-                                                                        .split(
-                                                                          '_',
-                                                                        )
-                                                                        .map(
-                                                                          (w) =>
-                                                                            w[0].toUpperCase() +
-                                                                            w.slice(
-                                                                              1,
-                                                                            ),
-                                                                        )
-                                                                        .join(
-                                                                          ' ',
-                                                                        )
+                                                                      .map(
+                                                                        (w) =>
+                                                                          w[0].toUpperCase() +
+                                                                          w.slice(
+                                                                            1,
+                                                                          ),
+                                                                      )
+                                                                      .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
@@ -268,10 +268,12 @@ const getTitle = ({
   )
 }
 
+// this used to be always 'thing/things_id/reports/report_id/quantities/quantity_id'. But now we also have 'thing/things_id/check-reports/report_id/quantities/quantity_id'. And soon we will have 'thing/things_id/action-reports/report_id/quantities/quantity_id'
 const getTableName = (urlPath) => {
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
   let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+  console.log('Filter.getTableName, tableName:', tableName)
   // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
   if (tableName === 'reports') {
     // reports can be of multiple types: action, place, goal, subproject, project
@@ -279,6 +281,9 @@ const getTableName = (urlPath) => {
     const grandParent = urlPath[urlPath.length - 4]
     // the prefix to the tableName is the grandParent without its last character (s)
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
+  }
+  if (tableName === 'check_reports') {
+    tableName = 'place_check_reports'
   }
   if (tableName === 'users') {
     const usersIndex = urlPath.lastIndexOf('users')

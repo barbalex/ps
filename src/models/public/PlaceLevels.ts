@@ -46,14 +46,14 @@ export default interface PlaceLevels {
   /** Italian plural name. Preset: "Popolazioni" */
   name_plural_it: string | null;
 
-  /** Are reports used? Preset: true */
-  place_reports: boolean | null;
+  /** Are check reports for places used? Preset: true */
+  place_check_reports: boolean | null;
 
-  /** Are report quantities used? Preset: true */
-  place_report_quantities: boolean | null;
+  /** Are place check report quantities used? Preset: true */
+  place_check_report_quantities: boolean | null;
 
-  /** Show report quantities inside the report form instead of a separate route? Preset: true */
-  place_report_quantities_in_report: boolean | null;
+  /** Show place check report quantities inside the report form instead of a separate route? Preset: true */
+  place_check_report_quantities_in_report: boolean | null;
 
   /** Are actions used? Preset: true */
   actions: boolean | null;
@@ -162,22 +162,22 @@ export interface PlaceLevelsInitializer {
   name_plural_it?: string | null;
 
   /**
-   * Are reports used? Preset: true
+   * Are check reports for places used? Preset: true
    * Default value: true
    */
-  place_reports?: boolean | null;
+  place_check_reports?: boolean | null;
 
   /**
-   * Are report quantities used? Preset: true
+   * Are place check report quantities used? Preset: true
    * Default value: true
    */
-  place_report_quantities?: boolean | null;
+  place_check_report_quantities?: boolean | null;
 
   /**
-   * Show report quantities inside the report form instead of a separate route? Preset: true
+   * Show place check report quantities inside the report form instead of a separate route? Preset: true
    * Default value: true
    */
-  place_report_quantities_in_report?: boolean | null;
+  place_check_report_quantities_in_report?: boolean | null;
 
   /**
    * Are actions used? Preset: true
@@ -329,14 +329,14 @@ export interface PlaceLevelsMutator {
   /** Italian plural name. Preset: "Popolazioni" */
   name_plural_it?: string | null;
 
-  /** Are reports used? Preset: true */
-  place_reports?: boolean | null;
+  /** Are check reports for places used? Preset: true */
+  place_check_reports?: boolean | null;
 
-  /** Are report quantities used? Preset: true */
-  place_report_quantities?: boolean | null;
+  /** Are place check report quantities used? Preset: true */
+  place_check_report_quantities?: boolean | null;
 
-  /** Show report quantities inside the report form instead of a separate route? Preset: true */
-  place_report_quantities_in_report?: boolean | null;
+  /** Show place check report quantities inside the report form instead of a separate route? Preset: true */
+  place_check_report_quantities_in_report?: boolean | null;
 
   /** Are actions used? Preset: true */
   actions?: boolean | null;

@@ -54,7 +54,7 @@ WHERE nullif(f.table_name, '''') IS NULL
 ORDER BY f.label'),
 ('fieldsLevelMissing', 'Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
-WHERE f.table_name IN (''places'', ''checks'', ''actions'', ''place_reports'', ''check_reports'', ''action_reports'')
+WHERE f.table_name IN (''places'', ''checks'', ''actions'', ''place_check_reports'', ''check_reports'', ''action_reports'')
   AND f.level IS NULL
 ORDER BY f.label'),
 ('fieldsNameMissing', 'Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
@@ -468,7 +468,7 @@ WHERE p.subproject_id = $1
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
   AND NOT EXISTS (SELECT 1
-FROM place_reports pr
+FROM place_check_reports pr
 WHERE pr.place_id = p.place_id)
 ORDER BY p.label'),
 ('placesReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/reports/'' AS url
@@ -479,7 +479,7 @@ WHERE p.subproject_id = $1
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
   AND NOT EXISTS (SELECT 1
-FROM place_reports pr
+FROM place_check_reports pr
 WHERE pr.place_id = p.place_id
   AND pr.year = date_part(''year'', now())::integer)
 ORDER BY p.label'),
@@ -631,12 +631,12 @@ WHERE p.subproject_id = $1
   AND p.relevant_for_reports = true
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
-  AND proj.place_reports_default_unit_id IS NOT NULL
+  AND proj.place_check_reports_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
-FROM place_reports pr
-JOIN place_report_quantities prq ON prq.place_report_id = pr.place_report_id
+FROM place_check_reports pr
+JOIN place_check_report_quantities prq ON prq.place_check_report_id = pr.place_check_report_id
 WHERE pr.place_id = p.place_id
-  AND prq.unit_id != proj.place_reports_default_unit_id)
+  AND prq.unit_id != proj.place_check_reports_default_unit_id)
 ORDER BY p.label'),
 ('checkQuantitiesNoDefault', 'Kontroll-Mengen: Standard-Einheit nicht verwendet', 'Check quantities: default unit not used', 'Quantités de contrôle : unité par défaut non utilisée', 'Quantità di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
