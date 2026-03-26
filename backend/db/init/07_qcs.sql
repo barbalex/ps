@@ -54,7 +54,7 @@ WHERE nullif(f.table_name, '''') IS NULL
 ORDER BY f.label'),
 ('fieldsLevelMissing', 'Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
-WHERE f.table_name IN (''places'', ''checks'', ''actions'', ''place_check_reports'', ''check_reports'', ''action_reports'')
+  AND f.table_name IN (''places'', ''checks'', ''actions'', ''place_check_reports'', ''action_reports'')
   AND f.level IS NULL
 ORDER BY f.label'),
 ('fieldsNameMissing', 'Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
@@ -545,17 +545,6 @@ WHERE p.subproject_id = $1
 FROM check_taxa ct
 WHERE ct.check_id = c.check_id)
 ORDER BY c.label'),
-('checksReportMissingInYear', 'Kontrollen (relevante) ohne Bericht in Jahr', 'Checks (relevant) without report in year', 'Contrôles (pertinents) sans rapport dans l''année', 'Controlli (rilevanti) senza rapporto nell''anno', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/reports/'' AS url
-FROM checks c
-JOIN places p ON p.place_id = c.place_id
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-WHERE p.subproject_id = $1
-  AND c.relevant_for_reports = true
-  AND NOT EXISTS (SELECT 1
-FROM check_reports cr
-WHERE cr.check_id = c.check_id
-  AND cr.year = date_part(''year'', now())::integer)
-ORDER BY c.label'),
 ('checksFilesMissing', 'Kontrollen (relevante) ohne Datei', 'Checks (relevant) without file', 'Contrôles (pertinents) sans fichier', 'Controlli (rilevanti) senza file', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/files/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
@@ -650,20 +639,6 @@ WHERE p.subproject_id = $1
 FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
-ORDER BY c.label'),
-('checkReportQuantitiesNoDefault', 'Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Check report quantities: default unit not used', 'Quantités de rapport de contrôle : unité par défaut non utilisée', 'Quantità di rapporto di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
-FROM checks c
-JOIN places p ON p.place_id = c.place_id
-JOIN subprojects sp ON sp.subproject_id = p.subproject_id
-JOIN projects proj ON proj.project_id = sp.project_id
-WHERE p.subproject_id = $1
-  AND c.relevant_for_reports = true
-  AND proj.check_reports_default_unit_id IS NOT NULL
-  AND EXISTS (SELECT 1
-FROM check_reports cr
-JOIN check_report_quantities crq ON crq.check_report_id = cr.check_report_id
-WHERE cr.check_id = c.check_id
-  AND crq.unit_id != proj.check_reports_default_unit_id)
 ORDER BY c.label'),
 ('checkTaxonQuantitiesNoDefault', 'Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Check taxon quantities: default unit not used', 'Quantités de taxon de contrôle : unité par défaut non utilisée', 'Quantità di taxon di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
