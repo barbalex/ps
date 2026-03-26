@@ -11,13 +11,13 @@ import { accountTables } from '../../formsAndLists/field/accountTables.ts'
 import '../../form.css'
 
 const projectTables = [
-  'action_reports',
   'actions',
   'checks',
   'goal_reports',
   'goals',
   'lists',
   'place_check_reports',
+  'place_action_reports',
   'places',
   'project_reports',
   'subproject_reports',

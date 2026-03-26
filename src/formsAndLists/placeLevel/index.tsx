@@ -464,45 +464,6 @@ export const PlaceLevel = () => {
           )}
           <SwitchField
             label={formatMessage({
-              id: 'rJ9OiE',
-              defaultMessage: 'Massnahmen: Berichte',
-            })}
-            name="action_reports"
-            value={row.action_reports ?? false}
-            onChange={onChange}
-            validationState={validations?.action_reports?.state}
-            validationMessage={validations?.action_reports?.message}
-          />
-          <SwitchField
-            label={formatMessage({
-              id: 'aR7VqN',
-              defaultMessage: 'Massnahmen: Bericht-Mengen',
-            })}
-            name="action_report_quantities"
-            value={row.action_report_quantities ?? false}
-            onChange={onChange}
-            validationState={validations?.action_report_quantities?.state}
-            validationMessage={validations?.action_report_quantities?.message}
-          />
-          {(isDesigning || row.action_report_quantities) && (
-            <SwitchField
-              label={formatMessage({
-                id: 'aS8UcQ',
-                defaultMessage: 'Massnahmen: Bericht-Mengen im Bericht',
-              })}
-              name="action_report_quantities_in_report"
-              value={row.action_report_quantities_in_report ?? true}
-              onChange={onChange}
-              validationState={
-                validations?.action_report_quantities_in_report?.state
-              }
-              validationMessage={
-                validations?.action_report_quantities_in_report?.message
-              }
-            />
-          )}
-          <SwitchField
-            label={formatMessage({
               id: 'fG2HiJ',
               defaultMessage: 'Massnahmen: Dateien',
             })}
