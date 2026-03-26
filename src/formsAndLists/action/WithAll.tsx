@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
-import { useParams } from '@tanstack/react-router'
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  Outlet,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -14,7 +19,6 @@ import { ActionForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import { ActionQuantityInline } from '../actionQuantity/Inline.tsx'
 import { ActionTaxonInline } from '../actionTaxon/Inline.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Actions from '../../models/public/Actions.ts'
@@ -24,12 +28,16 @@ import '../../form.css'
 const { Button, Tooltip } = fluentUiReactComponents
 
 export const ActionWithAll = ({ from }) => {
-  const { actionId, projectId, placeId2 } = useParams({ from })
+  const { actionId, projectId, placeId, placeId2, subprojectId } = useParams({
+    strict: false,
+  })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const db = usePGlite()
 
@@ -38,11 +46,11 @@ export const ActionWithAll = ({ from }) => {
   ])
   const row: Actions | undefined = res?.rows?.[0]
 
-  const quantitiesRes = useLiveQuery(
-    `SELECT action_quantity_id FROM action_quantities WHERE action_id = $1 ORDER BY action_quantity_id`,
+  const quantitiesCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM action_quantities WHERE action_id = $1`,
     [actionId],
   )
-  const quantities = quantitiesRes?.rows ?? []
+  const quantitiesCount = quantitiesCountRes?.rows?.[0]?.count ?? 0
 
   const taxaRes = useLiveQuery(
     `SELECT action_taxon_id FROM action_taxa WHERE action_id = $1 ORDER BY action_taxon_id`,
@@ -93,9 +101,33 @@ export const ActionWithAll = ({ from }) => {
     })
   }
 
+  const isQuantitiesOpen =
+    location.pathname.endsWith('/quantities') ||
+    location.pathname.includes('/quantities/')
+  const isQuantitiesList = location.pathname.endsWith('/quantities')
+
+  const actionBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/actions/${actionId}`
+  const actionUrl = `${actionBaseUrl}/action`
+  const quantitiesUrl = `${actionBaseUrl}/quantities`
+
   const addQuantity = async () => {
-    await createActionQuantity({ actionId, projectId })
+    const id = await createActionQuantity({ actionId, projectId })
+    if (!id) return
+    navigate({ to: `${quantitiesUrl}/${id}` })
   }
+
+  const quantitiesHeaderActions =
+    showQuantities && isQuantitiesList ? (
+      <Button
+        size="medium"
+        title={formatMessage({
+          id: 'V6iUlF',
+          defaultMessage: 'Menge hinzufügen',
+        })}
+        icon={<FaPlus />}
+        onClick={addQuantity}
+      />
+    ) : undefined
 
   const addTaxon = async () => {
     await createActionTaxon({ actionId })
@@ -116,50 +148,24 @@ export const ActionWithAll = ({ from }) => {
               autoFocusRef={autoFocusRef}
               from={from}
             />
-            {showQuantities && (
+            {showQuantities ? (
               <Section
-                title={formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                })}
+                title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
+                onNavigate={() => navigate({ to: quantitiesUrl })}
+                onHeaderClick={() =>
+                  isQuantitiesOpen
+                    ? navigate({ to: actionUrl })
+                    : navigate({ to: quantitiesUrl })
+                }
+                isOpen={isQuantitiesOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={quantitiesHeaderActions}
               >
-                {quantities.map((q, i) => (
-                  <div key={q.action_quantity_id}>
-                    {i > 0 && (
-                      <div
-                        style={{
-                          borderTop: '8px solid rgb(225, 247, 224)',
-                          marginLeft: -10,
-                          marginRight: -10,
-                          marginBottom: 8,
-                        }}
-                      />
-                    )}
-                    <ActionQuantityInline
-                      actionQuantityId={q.action_quantity_id}
-                      projectId={projectId}
-                    />
-                  </div>
-                ))}
-                {quantities.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
-                )}
-                <Tooltip
-                  content={formatMessage({
-                    id: 'V6iUlF',
-                    defaultMessage: 'Menge hinzufügen',
-                  })}
-                  relationship="label"
-                >
-                  <Button icon={<FaPlus />} onClick={addQuantity} />
-                </Tooltip>
+                {isQuantitiesOpen && <Outlet />}
               </Section>
+            ) : (
+              isQuantitiesOpen && <Outlet />
             )}
             {showTaxa && (
               <Section

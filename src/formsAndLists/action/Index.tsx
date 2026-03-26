@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Action } from './index.tsx'
-import { ActionWithQuantities } from './WithQuantities.tsx'
 import { ActionWithAll } from './WithAll.tsx'
 
 export const ActionIndex = ({ from }) => {
@@ -15,8 +14,6 @@ export const ActionIndex = ({ from }) => {
   const quantitiesInAction =
     res?.rows?.[0]?.action_quantities_in_action !== false
   const taxaInAction = res?.rows?.[0]?.action_taxa_in_action !== false
-  if (quantitiesInAction && taxaInAction) return <ActionWithAll from={from} />
-  if (quantitiesInAction) return <ActionWithQuantities from={from} />
-  if (taxaInAction) return <ActionWithAll from={from} />
+  if (quantitiesInAction || taxaInAction) return <ActionWithAll from={from} />
   return <Action from={from} />
 }
