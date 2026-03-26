@@ -47,11 +47,13 @@ export const Section = ({
             <span
               style={{
                 fontSize: '1.3em',
-                padding: '2px 7px',
+                width: 32,
+                height: 31.2,
                 borderRadius: 4,
                 background: 'rgba(0,0,0,0.10)',
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
               }}
               onClick={() => onHeaderClick?.()}
             >

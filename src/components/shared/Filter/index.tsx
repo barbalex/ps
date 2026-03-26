@@ -54,9 +54,13 @@ const getFilterStrings = ({
     whereUnfiltered = parentFilter
   }
   if (
-    ['actions', 'checks', 'place_check_reports', 'place_action_reports', 'place_users'].includes(
-      tableName,
-    )
+    [
+      'actions',
+      'checks',
+      'place_check_reports',
+      'place_action_reports',
+      'place_users',
+    ].includes(tableName)
   ) {
     const placeFilter = { place_id: placeId2 ?? placeId }
     for (const orFilter of workingFilter) {
@@ -133,136 +137,145 @@ const getTitle = ({
                     : tableName === 'place_check_reports'
                       ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
                       : tableName === 'place_action_reports'
-                        ? formatMessage({ id: 'mARBts', defaultMessage: 'Massnahmen-Berichte' })
+                        ? formatMessage({
+                            id: 'mARBts',
+                            defaultMessage: 'Massnahmen-Berichte',
+                          })
                         : tableName === 'places'
-                        ? placeNamePlural
-                        : tableName === 'crs'
-                          ? formatMessage({
-                              id: 'OzBS9Z',
-                              defaultMessage: 'KBS',
-                            })
-                          : tableName === 'subproject_users'
-                            ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-                            : tableName === 'subproject_taxa'
-                              ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
-                              : tableName === 'place_users'
-                                ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
-                                : tableName === 'taxonomies'
-                                  ? formatMessage({
-                                      id: 'noT0gR',
-                                      defaultMessage: 'Taxonomien',
-                                    })
-                                  : tableName === 'users'
+                          ? placeNamePlural
+                          : tableName === 'crs'
+                            ? formatMessage({
+                                id: 'OzBS9Z',
+                                defaultMessage: 'KBS',
+                              })
+                            : tableName === 'subproject_users'
+                              ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+                              : tableName === 'subproject_taxa'
+                                ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
+                                : tableName === 'place_users'
+                                  ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+                                  : tableName === 'taxonomies'
                                     ? formatMessage({
-                                        id: 'eZ3yEB',
-                                        defaultMessage: 'Benutzer',
+                                        id: 'noT0gR',
+                                        defaultMessage: 'Taxonomien',
                                       })
-                                    : tableName === 'wfs_services'
+                                    : tableName === 'users'
                                       ? formatMessage({
-                                          id: 'HzltY9',
-                                          defaultMessage: 'WFS-Dienste',
+                                          id: 'eZ3yEB',
+                                          defaultMessage: 'Benutzer',
                                         })
-                                      : tableName === 'wms_layers'
+                                      : tableName === 'wfs_services'
                                         ? formatMessage({
-                                            id: 'IKLYLz',
-                                            defaultMessage: 'WMS-Ebenen',
+                                            id: 'HzltY9',
+                                            defaultMessage: 'WFS-Dienste',
                                           })
-                                        : tableName === 'files'
+                                        : tableName === 'wms_layers'
                                           ? formatMessage({
-                                              id: 'mn58Sh',
-                                              defaultMessage: 'Dateien',
+                                              id: 'IKLYLz',
+                                              defaultMessage: 'WMS-Ebenen',
                                             })
-                                          : tableName === 'fields'
+                                          : tableName === 'files'
                                             ? formatMessage({
-                                                id: 'I+dTZE',
-                                                defaultMessage: 'Felder',
+                                                id: 'mn58Sh',
+                                                defaultMessage: 'Dateien',
                                               })
-                                            : tableName === 'widgets_for_fields'
+                                            : tableName === 'fields'
                                               ? formatMessage({
-                                                  id: 'bDoJBk',
-                                                  defaultMessage:
-                                                    'Widgets für Felder',
+                                                  id: 'I+dTZE',
+                                                  defaultMessage: 'Felder',
                                                 })
-                                              : tableName === 'widget_types'
+                                              : tableName ===
+                                                  'widgets_for_fields'
                                                 ? formatMessage({
-                                                    id: 'U55pI0',
+                                                    id: 'bDoJBk',
                                                     defaultMessage:
-                                                      'Widget-Typen',
+                                                      'Widgets für Felder',
                                                   })
-                                                : tableName === 'field_types'
+                                                : tableName === 'widget_types'
                                                   ? formatMessage({
-                                                      id: 'Yx8gIR',
+                                                      id: 'U55pI0',
                                                       defaultMessage:
-                                                        'Feld-Typen',
+                                                        'Widget-Typen',
                                                     })
-                                                  : tableName === 'accounts'
+                                                  : tableName === 'field_types'
                                                     ? formatMessage({
-                                                        id: '/40i9A',
+                                                        id: 'Yx8gIR',
                                                         defaultMessage:
-                                                          'Konten',
+                                                          'Feld-Typen',
                                                       })
-                                                    : tableName === 'projects'
+                                                    : tableName === 'accounts'
                                                       ? formatMessage({
-                                                          id: 'x9x+dX',
+                                                          id: '/40i9A',
                                                           defaultMessage:
-                                                            'Projekte',
+                                                            'Konten',
                                                         })
-                                                      : tableName === 'units'
+                                                      : tableName === 'projects'
                                                         ? formatMessage({
-                                                            id: 'nVkh0Z',
+                                                            id: 'x9x+dX',
                                                             defaultMessage:
-                                                              'Einheiten',
+                                                              'Projekte',
                                                           })
-                                                        : tableName === 'lists'
+                                                        : tableName === 'units'
                                                           ? formatMessage({
-                                                              id: 'zhvWvI',
+                                                              id: 'nVkh0Z',
                                                               defaultMessage:
-                                                                'Listen',
+                                                                'Einheiten',
                                                             })
                                                           : tableName ===
-                                                              'project_users'
+                                                              'lists'
                                                             ? formatMessage({
-                                                                id: 'gi+ubY',
+                                                                id: 'zhvWvI',
                                                                 defaultMessage:
-                                                                  'Projekt-Benutzer',
+                                                                  'Listen',
                                                               })
                                                             : tableName ===
-                                                                'vector_layers'
+                                                                'project_users'
                                                               ? formatMessage({
-                                                                  id: 'nauDh5',
+                                                                  id: 'gi+ubY',
                                                                   defaultMessage:
-                                                                    'Vektor-Ebenen',
+                                                                    'Projekt-Benutzer',
                                                                 })
                                                               : tableName ===
-                                                                  'wms_services'
+                                                                  'vector_layers'
                                                                 ? formatMessage(
                                                                     {
-                                                                      id: '0pm66C',
+                                                                      id: 'nauDh5',
                                                                       defaultMessage:
-                                                                        'WMS-Dienste',
+                                                                        'Vektor-Ebenen',
                                                                     },
                                                                   )
                                                                 : tableName ===
-                                                                    'project_reports'
+                                                                    'wms_services'
                                                                   ? formatMessage(
                                                                       {
-                                                                        id: 'CiJ0SG',
+                                                                        id: '0pm66C',
                                                                         defaultMessage:
-                                                                          'Berichte',
+                                                                          'WMS-Dienste',
                                                                       },
                                                                     )
-                                                                  : tableName
-                                                                      .split(
-                                                                        '_',
+                                                                  : tableName ===
+                                                                      'project_reports'
+                                                                    ? formatMessage(
+                                                                        {
+                                                                          id: 'CiJ0SG',
+                                                                          defaultMessage:
+                                                                            'Berichte',
+                                                                        },
                                                                       )
-                                                                      .map(
-                                                                        (w) =>
-                                                                          w[0].toUpperCase() +
-                                                                          w.slice(
-                                                                            1,
-                                                                          ),
-                                                                      )
-                                                                      .join(' ')
+                                                                    : tableName
+                                                                        .split(
+                                                                          '_',
+                                                                        )
+                                                                        .map(
+                                                                          (w) =>
+                                                                            w[0].toUpperCase() +
+                                                                            w.slice(
+                                                                              1,
+                                                                            ),
+                                                                        )
+                                                                        .join(
+                                                                          ' ',
+                                                                        )
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
@@ -275,7 +288,6 @@ const getTableName = (urlPath) => {
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
   let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
-  console.log('Filter.getTableName, tableName:', tableName)
   // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
   if (tableName === 'reports') {
     // reports can be of multiple types: action, place, goal, subproject, project

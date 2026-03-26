@@ -106,9 +106,10 @@ export const CheckWithAll = ({
   const isFilesOpen =
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
+  const isFilesList = location.pathname.endsWith('/files')
 
   const fileHeaderActions =
-    showFiles && isFilesOpen ? (
+    showFiles && isFilesList ? (
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
