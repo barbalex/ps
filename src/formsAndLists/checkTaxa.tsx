@@ -7,7 +7,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const CheckTaxa = ({ from }) => {
+export const CheckTaxa = ({ from, hideTitle = false }) => {
   const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({
     from,
   })
@@ -33,11 +33,13 @@ export const CheckTaxa = ({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      {!hideTitle && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+        />
+      )}
       <div className="list-container">
         {loading ?
           <Loading />

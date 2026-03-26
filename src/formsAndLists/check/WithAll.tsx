@@ -20,7 +20,6 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
-import { CheckTaxonInline } from '../checkTaxon/Inline.tsx'
 import {
   addOperationAtom,
   designingAtom,
@@ -66,12 +65,6 @@ export const CheckWithAll = ({
   )
   const quantities = quantitiesRes?.rows ?? []
 
-  const taxaRes = useLiveQuery(
-    `SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY check_taxon_id`,
-    [checkId],
-  )
-  const taxa = taxaRes?.rows ?? []
-
   const placeLevelRes = useLiveQuery(
     `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
@@ -97,6 +90,12 @@ export const CheckWithAll = ({
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
+  const taxaCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM check_taxa WHERE check_id = $1`,
+    [checkId],
+  )
+  const taxaCount = taxaCountRes?.rows?.[0]?.count ?? 0
+
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
@@ -107,6 +106,10 @@ export const CheckWithAll = ({
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
   const isFilesList = location.pathname.endsWith('/files')
+
+  const isTaxaOpen =
+    location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
+  const isTaxaList = location.pathname.endsWith('/taxa')
 
   const fileHeaderActions =
     showFiles && isFilesList ? (
@@ -122,6 +125,7 @@ export const CheckWithAll = ({
     ) : undefined
   const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
   const filesUrl = `${checkBaseUrl}/files`
+  const taxaUrl = `${checkBaseUrl}/taxa`
   const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
 
   const onChange = async (e, data) => {
@@ -159,8 +163,23 @@ export const CheckWithAll = ({
   }
 
   const addTaxon = async () => {
-    await createCheckTaxon({ checkId })
+    const id = await createCheckTaxon({ checkId })
+    if (!id) return
+    navigate({ to: `${taxaUrl}/${id}` })
   }
+
+  const taxaHeaderActions =
+    showTaxa && isTaxaList ? (
+      <Button
+        size="medium"
+        title={formatMessage({
+          id: 'jH7LwO',
+          defaultMessage: 'Taxon hinzufügen',
+        })}
+        icon={<FaPlus />}
+        onClick={addTaxon}
+      />
+    ) : undefined
 
   return (
     <div className="form-outer-container">
@@ -224,47 +243,19 @@ export const CheckWithAll = ({
             )}
             {showTaxa && (
               <Section
-                title={formatMessage({
-                  id: '7sVbg1',
-                  defaultMessage: 'Taxa',
-                })}
+                title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
+                onNavigate={() => navigate({ to: taxaUrl })}
+                onHeaderClick={() =>
+                  isTaxaOpen
+                    ? navigate({ to: checkUrl })
+                    : navigate({ to: taxaUrl })
+                }
+                isOpen={isTaxaOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={taxaHeaderActions}
               >
-                {taxa.map((t, i) => (
-                  <div key={t.check_taxon_id}>
-                    {i > 0 && (
-                      <div
-                        style={{
-                          borderTop: '8px solid rgb(225, 247, 224)',
-                          marginLeft: -10,
-                          marginRight: -10,
-                          marginBottom: 8,
-                        }}
-                      />
-                    )}
-                    <CheckTaxonInline
-                      checkTaxonId={t.check_taxon_id}
-                      projectId={projectId}
-                    />
-                  </div>
-                ))}
-                {taxa.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
-                )}
-                <Tooltip
-                  content={formatMessage({
-                    id: 'jH7LwO',
-                    defaultMessage: 'Taxon hinzufügen',
-                  })}
-                  relationship="label"
-                >
-                  <Button icon={<FaPlus />} onClick={addTaxon} />
-                </Tooltip>
+                {isTaxaOpen && <Outlet />}
               </Section>
             )}
             {showFiles && (
@@ -281,7 +272,7 @@ export const CheckWithAll = ({
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}
                 headerActions={fileHeaderActions}
               >
-                <Outlet />
+                {isFilesOpen && <Outlet />}
               </Section>
             )}
           </>
