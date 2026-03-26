@@ -486,6 +486,19 @@ export const PlaceLevel = () => {
             validationState={validations?.action_files?.state}
             validationMessage={validations?.action_files?.message}
           />
+          {(isDesigning || row.action_files) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'gH3IjK',
+                defaultMessage: 'Massnahmen: Dateien in Massnahme',
+              })}
+              name="files_in_action"
+              value={row.files_in_action ?? true}
+              onChange={onChange}
+              validationState={validations?.files_in_action?.state}
+              validationMessage={validations?.files_in_action?.message}
+            />
+          )}
         </Section>
       </div>
     </div>

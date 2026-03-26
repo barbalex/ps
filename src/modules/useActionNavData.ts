@@ -18,6 +18,7 @@ type NavData = {
   id: string
   label: string
   action_quantities_count: number
+  action_taxa_count: number
   files_count: number
 }
 
@@ -35,15 +36,18 @@ export const useActionNavData = ({
   const sql = `
       WITH
         action_quantities_count AS (SELECT count(*) FROM action_quantities WHERE action_id = '${actionId}'),
+        action_taxa_count AS (SELECT count(*) FROM action_taxa WHERE action_id = '${actionId}'),
         files_count AS (SELECT count(*) FROM files WHERE action_id = '${actionId}')
       SELECT
         action_id AS id,
         label,
         action_quantities_count.count AS action_quantities_count,
+        action_taxa_count.count AS action_taxa_count,
         files_count.count AS files_count
       FROM 
         actions,
         action_quantities_count,
+        action_taxa_count,
         files_count
       WHERE 
         actions.action_id = '${actionId}'`
@@ -53,11 +57,16 @@ export const useActionNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT action_quantities, action_quantities_in_action, action_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
   const quantitiesInAction = placeLevel?.action_quantities_in_action !== false
+  const taxaInAction = placeLevel?.action_taxa_in_action !== false
+  const filesInAction =
+    (isDesigning || placeLevel?.action_files !== false) &&
+    placeLevel?.files_in_action !== false
+  const allInline = quantitiesInAction && taxaInAction && filesInAction
 
   const parentArray = [
     'data',
@@ -95,10 +104,14 @@ export const useActionNavData = ({
     label,
     notFound,
     navs: [
-      {
-        id: 'action',
-        label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
-      },
+      ...(!allInline
+        ? [
+            {
+              id: 'action',
+              label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
+            },
+          ]
+        : []),
       ...(!quantitiesInAction &&
       (isDesigning || placeLevel?.action_quantities !== false)
         ? [
@@ -115,7 +128,22 @@ export const useActionNavData = ({
             },
           ]
         : []),
-      ...(isDesigning || placeLevel?.action_files !== false
+      ...(!taxaInAction && (isDesigning || placeLevel?.action_taxa !== false)
+        ? [
+            {
+              id: 'taxa',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.action_taxa_count ?? 0,
+                namePlural: formatMessage({
+                  id: '7sVbg1',
+                  defaultMessage: 'Taxa',
+                }),
+              }),
+            },
+          ]
+        : []),
+      ...(!filesInAction && (isDesigning || placeLevel?.action_files !== false)
         ? [
             {
               id: 'files',

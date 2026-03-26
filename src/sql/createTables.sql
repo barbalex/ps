@@ -244,6 +244,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   observations boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
   action_files boolean DEFAULT TRUE,
+  files_in_action boolean DEFAULT TRUE,
   check_files boolean DEFAULT TRUE,
   files_in_check boolean DEFAULT TRUE,
   -- label depends on language, thus generated in the app code
@@ -291,6 +292,7 @@ COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true'
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
 COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
 COMMENT ON COLUMN place_levels.action_files IS 'Are files used for actions on this level? Preset: false';
+COMMENT ON COLUMN place_levels.files_in_action IS 'Render files inside the action form? Preset: true';
 COMMENT ON COLUMN place_levels.check_files IS 'Are files used for checks on this level? Preset: false';
 COMMENT ON COLUMN place_levels.files_in_check IS 'Render files inside the check form? Preset: true';
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';

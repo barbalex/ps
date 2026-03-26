@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useContext } from 'react'
 import {
   useParams,
   useNavigate,
@@ -12,20 +12,36 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createActionQuantity, createActionTaxon } from '../../modules/createRows.ts'
+import {
+  createActionQuantity,
+  createActionTaxon,
+} from '../../modules/createRows.ts'
 import { Header } from './Header.tsx'
 import { ActionForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import { addOperationAtom, designingAtom } from '../../store.ts'
+import {
+  addOperationAtom,
+  designingAtom,
+  filesFilterAtom,
+} from '../../store.ts'
+import { FilterButton } from '../../components/shared/FilterButton.tsx'
+import { UploaderContext } from '../../UploaderContext.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Actions from '../../models/public/Actions.ts'
 
 import '../../form.css'
 
 const { Button } = fluentUiReactComponents
 
-export const ActionWithAll = ({ from }) => {
+export const ActionWithAll = ({
+  from,
+  allInline,
+}: {
+  from: string
+  allInline?: boolean
+}) => {
   const { actionId, projectId, placeId, placeId2, subprojectId } = useParams({
     strict: false,
   })
@@ -57,17 +73,30 @@ export const ActionWithAll = ({ from }) => {
   const taxaCount = taxaCountRes?.rows?.[0]?.count ?? 0
 
   const placeLevelRes = useLiveQuery(
-    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
   const quantitiesInAction = placeLevel?.action_quantities_in_action !== false
   const taxaInAction = placeLevel?.action_taxa_in_action !== false
+  const filesInAction =
+    (isDesigning || placeLevel?.action_files !== false) &&
+    placeLevel?.files_in_action !== false
   const showQuantities =
     quantitiesInAction &&
     (isDesigning || placeLevel?.action_quantities !== false)
   const showTaxa =
     taxaInAction && (isDesigning || placeLevel?.action_taxa !== false)
+  const showFiles = filesInAction
+
+  const allInlineComputed = quantitiesInAction && taxaInAction && filesInAction
+  const isAllInline = allInline ?? allInlineComputed
+
+  const filesCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM files WHERE action_id = $1`,
+    [actionId],
+  )
+  const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -105,13 +134,37 @@ export const ActionWithAll = ({ from }) => {
   const isQuantitiesList = location.pathname.endsWith('/quantities')
 
   const actionBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/actions/${actionId}`
-  const actionUrl = `${actionBaseUrl}/action`
+  const actionUrl = isAllInline ? actionBaseUrl : `${actionBaseUrl}/action`
   const quantitiesUrl = `${actionBaseUrl}/quantities`
   const taxaUrl = `${actionBaseUrl}/taxa`
+  const filesUrl = `${actionBaseUrl}/files`
+
+  const isFilesOpen =
+    location.pathname.endsWith('/files') ||
+    location.pathname.includes('/files/')
+  const isFilesList = location.pathname.endsWith('/files')
+
+  const [filesFilter] = useAtom(filesFilterAtom)
+  const filesIsFiltered = !!filterStringFromFilter(filesFilter)
+  const uploaderCtx = useContext(UploaderContext)
+  const uploaderApi = uploaderCtx?.current?.getAPI?.()
+  const onClickAddFile = () => uploaderApi?.initFlow?.()
+
+  const fileHeaderActions =
+    showFiles && isFilesList ? (
+      <>
+        <FilterButton isFiltered={filesIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddFile}
+        />
+      </>
+    ) : undefined
 
   const isTaxaOpen =
-    location.pathname.endsWith('/taxa') ||
-    location.pathname.includes('/taxa/')
+    location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
   const isTaxaList = location.pathname.endsWith('/taxa')
 
   const addQuantity = async () => {
@@ -154,7 +207,7 @@ export const ActionWithAll = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} from={from} allInline={isAllInline} />
       <div className="form-container">
         {!res ? (
           <Loading />
@@ -204,6 +257,25 @@ export const ActionWithAll = ({ from }) => {
               </Section>
             ) : (
               isTaxaOpen && <Outlet />
+            )}
+            {showFiles ? (
+              <Section
+                title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
+                onNavigate={() => navigate({ to: filesUrl })}
+                onHeaderClick={() =>
+                  isFilesOpen
+                    ? navigate({ to: actionUrl })
+                    : navigate({ to: filesUrl })
+                }
+                isOpen={isFilesOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={fileHeaderActions}
+              >
+                {isFilesOpen && <Outlet />}
+              </Section>
+            ) : (
+              isFilesOpen && <Outlet />
             )}
           </>
         ) : (

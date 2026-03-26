@@ -15,6 +15,7 @@ export const RouteComponent = () => {
       subprojectId={subprojectId}
       placeId={placeId}
       actionId={actionId}
+      hideTitle={true}
     />
   )
 }

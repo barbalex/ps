@@ -1,11 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ActionList } from '../../../../../../../../../../../../formsAndLists/action/List.tsx'
+import { ActionIndex } from '../../../../../../../../../../../../formsAndLists/action/Index.tsx'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/'
 
 export const Route = createFileRoute(from)({
   component: () => (
-    <ActionList from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/" />
+    <ActionIndex
+      from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/"
+      isRootRoute={true}
+    />
   ),
 })

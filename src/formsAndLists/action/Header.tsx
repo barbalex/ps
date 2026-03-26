@@ -21,7 +21,7 @@ import {
 } from '../../store.ts'
 import type Actions from '../../models/public/Actions.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const { formatMessage } = useIntl()
   const isForm =
     from ===
@@ -67,7 +67,13 @@ export const Header = ({ autoFocusRef, from }) => {
     })
     if (!id) return
     navigate({
-      to: isForm ? `../../${id}/action` : `../${id}/action`,
+      to: allInline
+        ? isForm
+          ? `../../${id}`
+          : `../${id}`
+        : isForm
+          ? `../../${id}/action`
+          : `../${id}/action`,
       params: (prev) => ({ ...prev, actionId: id }),
     })
     autoFocusRef?.current?.focus()

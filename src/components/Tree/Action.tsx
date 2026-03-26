@@ -27,7 +27,7 @@ export const ActionNode = ({
   const navigate = useNavigate()
 
   const res = useLiveQuery(
-    `SELECT action_files, action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action
+    `SELECT action_files, files_in_action, action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
 
@@ -35,8 +35,13 @@ export const ActionNode = ({
   )
   const row = res?.rows?.[0]
   const showFiles = isDesigning || row?.action_files !== false
+  const filesInAction =
+    (isDesigning || row?.action_files !== false) &&
+    row?.files_in_action !== false
   const quantitiesInAction = row?.action_quantities_in_action !== false
   const taxaInAction = row?.action_taxa_in_action !== false
+  const allInline = quantitiesInAction && taxaInAction && filesInAction
+  const showFilesNav = !filesInAction && showFiles
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -81,11 +86,11 @@ export const ActionNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={11}
+        childrenCount={allInline ? 0 : 11}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && (
+      {isOpen && !allInline && (
         <>
           <Node
             label={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
@@ -119,7 +124,7 @@ export const ActionNode = ({
               level={level + 1}
             />
           )}
-          {showFiles && (
+          {showFilesNav && (
             <FilesNode
               projectId={projectId}
               subprojectId={subprojectId}
