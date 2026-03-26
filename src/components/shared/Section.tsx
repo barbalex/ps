@@ -8,14 +8,15 @@ export const Section = ({
   title,
   children,
   onHeaderClick = undefined,
+  onNavigate = undefined,
   isOpen = undefined,
 }) => (
   <section>
     <h2
       className={styles.title}
-      onClick={onHeaderClick}
+      onClick={onNavigate ?? onHeaderClick}
       style={
-        onHeaderClick
+        onHeaderClick || onNavigate
           ? {
               cursor: 'pointer',
               display: 'flex',
@@ -27,7 +28,17 @@ export const Section = ({
     >
       {title}
       {isOpen !== undefined && (
-        <span style={{ fontSize: '1em' }}>
+        <span
+          style={{ fontSize: '1em', padding: '0 0 0 35px' }}
+          onClick={
+            onNavigate
+              ? (e) => {
+                  e.stopPropagation()
+                  onHeaderClick?.()
+                }
+              : undefined
+          }
+        >
           {isOpen ? <FaChevronDown /> : <FaChevronUp />}
         </span>
       )}

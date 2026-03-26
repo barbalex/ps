@@ -239,6 +239,7 @@ export const CheckWithAll = ({
                   },
                   { count: filesCount },
                 )}
+                onNavigate={() => navigate({ to: filesUrl })}
                 onHeaderClick={() =>
                   isFilesOpen
                     ? navigate({ to: checkUrl })
