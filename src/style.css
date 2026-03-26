@@ -213,6 +213,7 @@ https://stackoverflow.com/a/21541021/712005 */
       user-select: none;
       &:last-child {
         border-bottom: rgba(55, 118, 28, 0.5) solid 1px;
+        /* without cv visible, border is not drawn */
         content-visibility: visible;
       }
       &:hover {
