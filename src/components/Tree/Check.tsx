@@ -42,6 +42,13 @@ export const CheckNode = ({
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
 
+  const showQuantitiesNav =
+    !quantitiesInCheck && (isDesigning || placeLevel?.check_quantities !== false)
+  const showTaxaNav =
+    !taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
+  const showFilesNav = !filesInCheck && showFiles
+  const allInline = !showQuantitiesNav && !showTaxaNav && !showFilesNav
+
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
     'data',
@@ -87,21 +94,13 @@ export const CheckNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={11}
+        childrenCount={allInline ? 0 : 1}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
         <>
           {(() => {
-            const showQuantitiesNav =
-              !quantitiesInCheck &&
-              (isDesigning || placeLevel?.check_quantities !== false)
-            const showTaxaNav =
-              !taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
-            const showFilesNav = !filesInCheck && showFiles
-            const allInline =
-              !showQuantitiesNav && !showTaxaNav && !showFilesNav
             return (
               <>
                 {!allInline && (

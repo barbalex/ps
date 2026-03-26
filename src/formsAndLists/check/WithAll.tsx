@@ -244,13 +244,7 @@ export const CheckWithAll = ({
             )}
             {showFiles && (
               <Section
-                title={formatMessage(
-                  {
-                    id: 'mn58Sh',
-                    defaultMessage: 'Dateien ({count})',
-                  },
-                  { count: filesCount },
-                )}
+                title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
                 onNavigate={() => navigate({ to: filesUrl })}
                 onHeaderClick={() =>
                   isFilesOpen
