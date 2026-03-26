@@ -499,11 +499,14 @@ export const createPlaceLevel = async ({ project_id }) => {
   const db = store.get(pgliteDbAtom)
   const place_level_id = uuidv7()
   await db.query(
-    `insert into place_levels (place_level_id, project_id, level, place_check_reports, place_check_report_quantities, place_check_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, action_reports, action_report_quantities, action_report_quantities_in_report, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_files, action_files, check_files) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`,
+    `insert into place_levels (place_level_id, project_id, level, place_check_reports, place_check_report_quantities, place_check_report_quantities_in_report, place_action_reports, place_action_report_quantities, place_action_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, action_reports, action_report_quantities, action_report_quantities_in_report, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_files, action_files, check_files) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)`,
     [
       place_level_id,
       project_id,
       1,
+      true,
+      true,
+      true,
       true,
       true,
       true,
@@ -535,6 +538,9 @@ export const createPlaceLevel = async ({ project_id }) => {
       place_check_reports: true,
       place_check_report_quantities: true,
       place_check_report_quantities_in_report: true,
+      place_action_reports: true,
+      place_action_report_quantities: true,
+      place_action_report_quantities_in_report: true,
       actions: true,
       action_quantities: true,
       action_quantities_in_action: true,

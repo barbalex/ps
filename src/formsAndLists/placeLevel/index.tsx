@@ -278,6 +278,42 @@ export const PlaceLevel = () => {
             />
           )}
           <SwitchField
+            label={`${placeName}: ${formatMessage({ id: 'eV3FxH', defaultMessage: 'Massnahmen-Berichte' })}`}
+            name="place_action_reports"
+            value={row.place_action_reports ?? false}
+            onChange={onChange}
+            validationState={validations?.place_action_reports?.state}
+            validationMessage={validations?.place_action_reports?.message}
+          />
+          {(isDesigning || row.place_action_reports) && (
+            <SwitchField
+              label={`${placeName}: ${formatMessage({ id: 'fW4GyI', defaultMessage: 'Massnahmen-Bericht-Mengen' })}`}
+              name="place_action_report_quantities"
+              value={row.place_action_report_quantities ?? false}
+              onChange={onChange}
+              validationState={
+                validations?.place_action_report_quantities?.state
+              }
+              validationMessage={
+                validations?.place_action_report_quantities?.message
+              }
+            />
+          )}
+          {(isDesigning || row.place_action_report_quantities) && (
+            <SwitchField
+              label={`${placeName}: ${formatMessage({ id: 'gX5HzJ', defaultMessage: 'Massnahmen-Bericht-Mengen in Population' })}`}
+              name="place_action_report_quantities_in_report"
+              value={row.place_action_report_quantities_in_report ?? true}
+              onChange={onChange}
+              validationState={
+                validations?.place_action_report_quantities_in_report?.state
+              }
+              validationMessage={
+                validations?.place_action_report_quantities_in_report?.message
+              }
+            />
+          )}
+          <SwitchField
             label={`${placeName}: ${formatMessage({ id: 'vN3SmI', defaultMessage: 'Beobachtungen zugeordnet' })}`}
             name="observations"
             value={row.observations ?? false}
