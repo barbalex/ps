@@ -13,11 +13,7 @@ export const Section = ({
   titleStyle = undefined,
   childrenStyle = undefined,
 }) => (
-  <section
-    style={
-      isOpen ? { borderBottom: '1px solid #ccc', marginBottom: 8 } : undefined
-    }
-  >
+  <section>
     <h2
       className={styles.title}
       onClick={onNavigate ?? onHeaderClick}
@@ -59,7 +55,14 @@ export const Section = ({
       )}
     </h2>
     {isOpen !== false && (
-      <div className={styles.children} style={childrenStyle}>
+      <div
+        className={styles.children}
+        style={
+          isOpen
+            ? { borderTop: '1px solid #cccccc9d', ...childrenStyle }
+            : childrenStyle
+        }
+      >
         {children}
       </div>
     )}
