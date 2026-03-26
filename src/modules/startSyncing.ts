@@ -91,9 +91,9 @@ export const startSyncing = async () => {
                 'name_plural_en',
                 'name_plural_fr',
                 'name_plural_it',
-                'place_reports',
-                'place_report_quantities',
-                'place_report_quantities_in_report',
+                'place_check_reports',
+                'place_check_report_quantities',
+                'place_check_report_quantities_in_report',
                 'actions',
                 'action_quantities',
                 'action_quantities_in_action',
@@ -447,13 +447,13 @@ export const startSyncing = async () => {
           table: 'action_taxa',
           primaryKey: ['action_taxon_id'],
         },
-        place_reports: {
+        place_check_reports: {
           shape: {
             url,
             params: {
-              table: 'place_reports',
+              table: 'place_check_reports',
               columns: [
-                'place_report_id',
+                'place_check_report_id',
                 'account_id',
                 'place_id',
                 'year',
@@ -464,18 +464,18 @@ export const startSyncing = async () => {
               ],
             },
           },
-          table: 'place_reports',
-          primaryKey: ['place_report_id'],
+          table: 'place_check_reports',
+          primaryKey: ['place_check_report_id'],
         },
-        place_report_quantities: {
+        place_check_report_quantities: {
           shape: {
             url,
             params: {
-              table: 'place_report_quantities',
+              table: 'place_check_report_quantities',
             },
           },
-          table: 'place_report_quantities',
-          primaryKey: ['place_report_quantity_id'],
+          table: 'place_check_report_quantities',
+          primaryKey: ['place_check_report_quantity_id'],
         },
         messages: {
           shape: {

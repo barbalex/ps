@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ActionReportQuantity } from '../../../../../../../../../../../../../../../../../formsAndLists/actionReportQuantity/index.tsx'
+import { ActionReportQuantity } from '../../../../../../../../../../../../../../../formsAndLists/actionReportQuantity/index.tsx'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/reports/$actionReportId_/quantities/$actionReportQuantityId/'
 
@@ -27,8 +27,13 @@ export const Route = createFileRoute(from)({
     if (!params.actionReportId || params.actionReportId === 'undefined') {
       throw new Error('Invalid or missing actionReportId in route parameters')
     }
-    if (!params.actionReportQuantityId || params.actionReportQuantityId === 'undefined') {
-      throw new Error('Invalid or missing actionReportQuantityId in route parameters')
+    if (
+      !params.actionReportQuantityId ||
+      params.actionReportQuantityId === 'undefined'
+    ) {
+      throw new Error(
+        'Invalid or missing actionReportQuantityId in route parameters',
+      )
     }
     return {
       navDataFetcher: 'useActionReportQuantityNavData',

@@ -1062,7 +1062,10 @@
     "defaultMessage": "Ort-Benutzer"
   },
   "bCSwTx": {
-    "defaultMessage": "Bericht"
+    "defaultMessage": "Kontroll-Bericht"
+  },
+  "bCSxTz": {
+    "defaultMessage": "Kontroll-Berichte"
   },
   "bCTxUy": {
     "defaultMessage": "Ort-Bericht"
