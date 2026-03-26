@@ -34,7 +34,7 @@ export const Widget = ({
   ref,
   from,
 }) => {
-  const { placeId, placeId2 } = useParams({ from })
+  const { placeId, placeId2 } = useParams({ strict: false })
   const location = useLocation()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)

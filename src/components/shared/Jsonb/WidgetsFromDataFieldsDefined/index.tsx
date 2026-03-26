@@ -33,7 +33,7 @@ export const WidgetsFromDataFieldsDefined = ({
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   // TODO: drag and drop to order
   // only if editing
   // not if editingField

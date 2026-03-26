@@ -50,7 +50,7 @@ export const Jsonb = ({
   from,
 }: Props) => {
   const isAccountTable = accountTables.includes(table)
-  const { projectId, placeId, placeId2 } = useParams({ from })
+  const { projectId, placeId, placeId2 } = useParams({ strict: false })
   const location = useLocation()
   const db = usePGlite()
 

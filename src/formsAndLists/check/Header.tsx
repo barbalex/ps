@@ -36,7 +36,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, placeId, placeId2, checkId } = useParams({ from })
+  const { projectId, placeId, placeId2, checkId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const db = usePGlite()

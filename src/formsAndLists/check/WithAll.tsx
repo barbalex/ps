@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, useLocation, Outlet } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -16,8 +16,6 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import { CheckTaxonInline } from '../checkTaxon/Inline.tsx'
-import { Row } from '../../components/shared/Row.tsx'
-import { FileInCheck } from '../file/InCheck.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
@@ -27,10 +25,8 @@ const { Button, Tooltip } = fluentUiReactComponents
 
 export const CheckWithAll = ({
   from,
-  selectedFileId,
 }: {
   from: string
-  selectedFileId?: string
 }) => {
   const { checkId, projectId, placeId, placeId2, subprojectId } = useParams({
     strict: false,
@@ -41,6 +37,7 @@ export const CheckWithAll = ({
   const [validations, setValidations] = useState({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
+  const location = useLocation()
 
   const db = usePGlite()
 
@@ -77,15 +74,18 @@ export const CheckWithAll = ({
     taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
   const showFiles = filesInCheck
 
-  // Build URLs for files section navigation
-  const checkUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
-  const filesUrl = `${checkUrl}/files`
-
-  const filesRes = useLiveQuery(
-    `SELECT file_id, label, url, mimetype FROM files WHERE check_id = $1 ORDER BY label`,
+  const filesCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM files WHERE check_id = $1`,
     [checkId],
   )
-  const files = filesRes?.rows ?? []
+  const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
+
+  // Detect if the files section is open based on the current URL
+  const isFilesOpen = location.pathname.endsWith('/files') || location.pathname.includes('/files/')
+
+  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
+  const filesUrl = `${checkBaseUrl}/files`
+  const checkUrl = `${checkBaseUrl}/check`
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -232,91 +232,21 @@ export const CheckWithAll = ({
             )}
             {showFiles && (
               <Section
-                title={formatMessage({
-                  id: 'mn58Sh',
-                  defaultMessage: 'Dateien',
-                })}
-                onHeaderClick={() => navigate({ to: filesUrl })}
-              >
-                {files.map((file, i) => {
-                  if (selectedFileId === file.file_id) {
-                    return (
-                      <div key={file.file_id}>
-                        {i > 0 && (
-                          <div
-                            style={{
-                              borderTop: '8px solid rgb(225, 247, 224)',
-                              marginLeft: -10,
-                              marginRight: -10,
-                              marginBottom: 8,
-                            }}
-                          />
-                        )}
-                        <FileInCheck
-                          fileId={file.file_id}
-                          checkId={checkId}
-                          from={from}
-                          onClose={() => navigate({ to: checkUrl })}
-                          onNavigate={(fId) =>
-                            navigate({ to: `${filesUrl}/${fId}` })
-                          }
-                        />
-                      </div>
-                    )
-                  }
-                  let imgSrc: string | undefined = undefined
-                  if (
-                    (file.mimetype?.includes('image') ||
-                      file.mimetype?.includes('pdf')) &&
-                    file.url
-                  ) {
-                    imgSrc = `${file.url}-/resize/x50/-/format/auto/-/quality/smart/`
-                  }
-                  return (
-                    <div key={file.file_id}>
-                      {i > 0 && (
-                        <div
-                          style={{
-                            borderTop: '8px solid rgb(225, 247, 224)',
-                            marginLeft: -10,
-                            marginRight: -10,
-                            marginBottom: 8,
-                          }}
-                        />
-                      )}
-                      <Row
-                        label={file.label ?? file.file_id}
-                        to=""
-                        imgSrc={imgSrc}
-                        lastHasImages={true}
-                        onClick={() =>
-                          navigate({ to: `${filesUrl}/${file.file_id}` })
-                        }
-                      />
-                    </div>
-                  )
-                })}
-                {files.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
+                title={formatMessage(
+                  {
+                    id: 'mn58Sh',
+                    defaultMessage: 'Dateien ({count})',
+                  },
+                  { count: filesCount },
                 )}
-                <Tooltip
-                  content={formatMessage({
-                    id: 'Yt5rMs',
-                    defaultMessage: 'neu',
-                  })}
-                  relationship="label"
-                >
-                  <Button
-                    icon={<FaPlus />}
-                    onClick={() => navigate({ to: filesUrl })}
-                  />
-                </Tooltip>
+                onHeaderClick={() =>
+                  isFilesOpen
+                    ? navigate({ to: checkUrl })
+                    : navigate({ to: filesUrl })
+                }
+                isOpen={isFilesOpen}
+              >
+                <Outlet />
               </Section>
             )}
           </>

@@ -19,7 +19,7 @@ import styles from './AddField.module.css'
 //    - a search param in the url: editingField=fieldId
 export const AddField = ({ tableName, level, from }) => {
   const [designing] = useAtom(designingAtom)
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const location = useLocation()
   const { formatMessage } = useIntl()
