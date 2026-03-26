@@ -1,4 +1,4 @@
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { FaChevronDown } from 'react-icons/fa'
 
 import styles from './Section.module.css'
 
@@ -57,7 +57,12 @@ export const Section = ({
               }}
               onClick={() => onHeaderClick?.()}
             >
-              {isOpen ? <FaChevronDown /> : <FaChevronUp />}
+              <FaChevronDown
+                style={{
+                  transition: 'transform 0.25s ease',
+                  transform: isOpen ? 'rotate(0deg)' : 'rotate(-180deg)',
+                }}
+              />
             </span>
           )}
         </span>
