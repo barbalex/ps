@@ -10,6 +10,8 @@ export const Section = ({
   onHeaderClick = undefined,
   onNavigate = undefined,
   isOpen = undefined,
+  titleStyle = undefined,
+  childrenStyle = undefined,
 }) => (
   <section>
     <h2
@@ -22,8 +24,9 @@ export const Section = ({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              ...titleStyle,
             }
-          : undefined
+          : titleStyle
       }
     >
       {title}
@@ -43,6 +46,6 @@ export const Section = ({
         </span>
       )}
     </h2>
-    {isOpen !== false && <div className={styles.children}>{children}</div>}
+    {isOpen !== false && <div className={styles.children} style={childrenStyle}>{children}</div>}
   </section>
 )

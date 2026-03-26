@@ -1,5 +1,5 @@
 .title {
-  margin: 5px 0 0 0;
+  margin: 5px 0 10px 0;
   padding: 5px 10px;
   background-color: rgb(225, 247, 224);
   font-size: 1em;
@@ -15,6 +15,4 @@
   display: flex;
   flex-direction: column;
   row-gap: 15px;
-  margin-left: -10px;
-  margin-right: -10px;
 }

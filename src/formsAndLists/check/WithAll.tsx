@@ -258,6 +258,8 @@ export const CheckWithAll = ({
                     : navigate({ to: filesUrl })
                 }
                 isOpen={isFilesOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
               >
                 <Outlet />
               </Section>
