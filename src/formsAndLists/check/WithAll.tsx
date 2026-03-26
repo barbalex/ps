@@ -241,7 +241,7 @@ export const CheckWithAll = ({
                 </Tooltip>
               </Section>
             )}
-            {showTaxa && (
+            {showTaxa ? (
               <Section
                 title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
                 onNavigate={() => navigate({ to: taxaUrl })}
@@ -257,8 +257,10 @@ export const CheckWithAll = ({
               >
                 {isTaxaOpen && <Outlet />}
               </Section>
+            ) : (
+              isTaxaOpen && <Outlet />
             )}
-            {showFiles && (
+            {showFiles ? (
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
                 onNavigate={() => navigate({ to: filesUrl })}
@@ -274,6 +276,8 @@ export const CheckWithAll = ({
               >
                 {isFilesOpen && <Outlet />}
               </Section>
+            ) : (
+              isFilesOpen && <Outlet />
             )}
           </>
         ) : (
