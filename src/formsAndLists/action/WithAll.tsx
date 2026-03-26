@@ -258,7 +258,7 @@ export const ActionWithAll = ({
             ) : (
               isTaxaOpen && <Outlet />
             )}
-            {showFiles ? (
+            {showFiles && (
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
                 onNavigate={() => navigate({ to: filesUrl })}
@@ -274,8 +274,6 @@ export const ActionWithAll = ({
               >
                 {isFilesOpen && <Outlet />}
               </Section>
-            ) : (
-              isFilesOpen && <Outlet />
             )}
           </>
         ) : (

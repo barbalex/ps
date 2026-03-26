@@ -1,4 +1,5 @@
 import { getRouteApi } from '@tanstack/react-router'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Files } from '../../../../../../../../../../../../../formsAndLists/files.tsx'
 
@@ -10,6 +11,12 @@ export const RouteComponent = () => {
   const { projectId, subprojectId, placeId, placeId2, actionId } =
     routeApi.useParams()
 
+  const placeLevelRes = useLiveQuery(
+    `SELECT files_in_action FROM place_levels WHERE project_id = $1 AND level = 2`,
+    [projectId],
+  )
+  const filesInAction = placeLevelRes?.rows?.[0]?.files_in_action !== false
+
   return (
     <Files
       projectId={projectId}
@@ -17,7 +24,7 @@ export const RouteComponent = () => {
       placeId={placeId}
       placeId2={placeId2}
       actionId={actionId}
-      hideTitle={true}
+      hideTitle={filesInAction}
     />
   )
 }
