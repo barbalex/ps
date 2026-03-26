@@ -308,6 +308,25 @@ export const Configuration = ({ from }) => {
           />
           <RadioGroupField
             label={formatMessage({
+              id: 'dV2EwG',
+              defaultMessage:
+                'Standard-Einheit für Ort-Massnahmen-Bericht-Mengen',
+            })}
+            name="place_action_reports_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.place_action_reports_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={
+              validations?.place_action_reports_default_unit_id?.state
+            }
+            validationMessage={
+              validations?.place_action_reports_default_unit_id?.message
+            }
+          />
+          <RadioGroupField
+            label={formatMessage({
               id: 'nR6StU',
               defaultMessage: 'Standard-Einheit für Massnahmen-Mengen',
             })}
