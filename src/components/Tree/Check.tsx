@@ -29,13 +29,15 @@ export const CheckNode = ({
 
   // need project to know whether to show files
   const res = useLiveQuery(
-    `SELECT check_files, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check
+    `SELECT check_files, files_in_check, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
   )
   const row = res?.rows?.[0]
   const showFiles = isDesigning || row?.check_files !== false
+  const filesInCheck =
+    (isDesigning || row?.check_files !== false) && row?.files_in_check !== false
   const placeLevel = row
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
@@ -91,49 +93,66 @@ export const CheckNode = ({
       />
       {isOpen && (
         <>
-          <Node
-            label={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
-            level={level + 1}
-            isInActiveNodeArray={
-              ownArray.every((part, i) => urlPath[i] === part) &&
-              urlPath[ownArray.length] === 'check'
-            }
-            isActive={isEqual([...ownArray, 'check'], urlPath)}
-            childrenCount={0}
-            to={`${ownUrl}/check`}
-          />
-          {!quantitiesInCheck &&
-            (isDesigning || placeLevel?.check_quantities !== false) && (
-              <CheckQuantitiesNode
-                projectId={projectId}
-                subprojectId={subprojectId}
-                placeId={placeId}
-                placeId2={placeId2}
-                checkId={nav.id}
-                level={level + 1}
-              />
-            )}
-          {!taxaInCheck &&
-            (isDesigning || placeLevel?.check_taxa !== false) && (
-              <CheckTaxaNode
-                projectId={projectId}
-                subprojectId={subprojectId}
-                placeId={placeId}
-                placeId2={placeId2}
-                checkId={nav.id}
-                level={level + 1}
-              />
-            )}
-          {showFiles && (
-            <FilesNode
-              projectId={projectId}
-              subprojectId={subprojectId}
-              placeId={placeId}
-              placeId2={placeId2}
-              checkId={nav.id}
-              level={level + 1}
-            />
-          )}
+          {(() => {
+            const showQuantitiesNav =
+              !quantitiesInCheck &&
+              (isDesigning || placeLevel?.check_quantities !== false)
+            const showTaxaNav =
+              !taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
+            const showFilesNav = !filesInCheck && showFiles
+            const allInline =
+              !showQuantitiesNav && !showTaxaNav && !showFilesNav
+            return (
+              <>
+                {!allInline && (
+                  <Node
+                    label={formatMessage({
+                      id: 'ZCwpER',
+                      defaultMessage: 'Kontrolle',
+                    })}
+                    level={level + 1}
+                    isInActiveNodeArray={
+                      ownArray.every((part, i) => urlPath[i] === part) &&
+                      urlPath[ownArray.length] === 'check'
+                    }
+                    isActive={isEqual([...ownArray, 'check'], urlPath)}
+                    childrenCount={0}
+                    to={`${ownUrl}/check`}
+                  />
+                )}
+                {showQuantitiesNav && (
+                  <CheckQuantitiesNode
+                    projectId={projectId}
+                    subprojectId={subprojectId}
+                    placeId={placeId}
+                    placeId2={placeId2}
+                    checkId={nav.id}
+                    level={level + 1}
+                  />
+                )}
+                {showTaxaNav && (
+                  <CheckTaxaNode
+                    projectId={projectId}
+                    subprojectId={subprojectId}
+                    placeId={placeId}
+                    placeId2={placeId2}
+                    checkId={nav.id}
+                    level={level + 1}
+                  />
+                )}
+                {showFilesNav && (
+                  <FilesNode
+                    projectId={projectId}
+                    subprojectId={subprojectId}
+                    placeId={placeId}
+                    placeId2={placeId2}
+                    checkId={nav.id}
+                    level={level + 1}
+                  />
+                )}
+              </>
+            )
+          })()}
         </>
       )}
     </>

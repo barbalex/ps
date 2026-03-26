@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
-import { useParams } from '@tanstack/react-router'
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  Outlet,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -23,13 +28,23 @@ import '../../form.css'
 
 const { Button, Tooltip } = fluentUiReactComponents
 
-export const CheckWithAll = ({ from }) => {
-  const { checkId, projectId, placeId2 } = useParams({ from })
+export const CheckWithAll = ({
+  from,
+  allInline,
+}: {
+  from: string
+  allInline?: boolean
+}) => {
+  const { checkId, projectId, placeId, placeId2, subprojectId } = useParams({
+    strict: false,
+  })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const db = usePGlite()
 
@@ -51,16 +66,38 @@ export const CheckWithAll = ({ from }) => {
   const taxa = taxaRes?.rows ?? []
 
   const placeLevelRes = useLiveQuery(
-    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
+  const filesInCheck =
+    (isDesigning || placeLevel?.check_files !== false) &&
+    placeLevel?.files_in_check !== false
   const showQuantities =
     quantitiesInCheck && (isDesigning || placeLevel?.check_quantities !== false)
   const showTaxa =
     taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
+  const showFiles = filesInCheck
+  const allInlineComputed = quantitiesInCheck && taxaInCheck && filesInCheck
+  // allInline prop from parent (CheckIndex) takes precedence when provided
+  const isAllInline = allInline ?? allInlineComputed
+
+  const filesCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM files WHERE check_id = $1`,
+    [checkId],
+  )
+  const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
+
+  // Detect if the files section is open based on the current URL
+  const isFilesOpen =
+    location.pathname.endsWith('/files') ||
+    location.pathname.includes('/files/')
+
+  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
+  const filesUrl = `${checkBaseUrl}/files`
+  const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -102,7 +139,7 @@ export const CheckWithAll = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} from={from} allInline={isAllInline} />
       <div className="form-container">
         {!res ? (
           <Loading />
@@ -205,12 +242,31 @@ export const CheckWithAll = ({ from }) => {
                 </Tooltip>
               </Section>
             )}
+            {showFiles && (
+              <Section
+                title={formatMessage(
+                  {
+                    id: 'mn58Sh',
+                    defaultMessage: 'Dateien ({count})',
+                  },
+                  { count: filesCount },
+                )}
+                onNavigate={() => navigate({ to: filesUrl })}
+                onHeaderClick={() =>
+                  isFilesOpen
+                    ? navigate({ to: checkUrl })
+                    : navigate({ to: filesUrl })
+                }
+                isOpen={isFilesOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+              >
+                <Outlet />
+              </Section>
+            )}
           </>
         ) : (
-          <NotFound
-            table="Check"
-            id={checkId}
-          />
+          <NotFound table="Check" id={checkId} />
         )}
       </div>
     </div>

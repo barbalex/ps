@@ -1,10 +1,70 @@
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+
 import styles from './Section.module.css'
 
 // need to place children under their own parent
 // because some have position: relative which makes them overlay the section title
-export const Section = ({ title, children }) => (
+export const Section = ({
+  title,
+  children,
+  onHeaderClick = undefined,
+  onNavigate = undefined,
+  isOpen = undefined,
+  titleStyle = undefined,
+  childrenStyle = undefined,
+}) => (
   <section>
-    <h2 className={styles.title}>{title}</h2>
-    <div className={styles.children}>{children}</div>
+    <h2
+      className={styles.title}
+      onClick={onNavigate ?? onHeaderClick}
+      style={
+        onHeaderClick || onNavigate
+          ? {
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              ...titleStyle,
+            }
+          : titleStyle
+      }
+    >
+      {title}
+      {isOpen !== undefined && (
+        <span
+          style={{
+            fontSize: '1.3em',
+            padding: '2px 7px',
+            marginLeft: 35,
+            borderRadius: 4,
+            background: 'rgba(0,0,0,0.10)',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+          onClick={
+            onNavigate
+              ? (e) => {
+                  e.stopPropagation()
+                  onHeaderClick?.()
+                }
+              : undefined
+          }
+        >
+          {isOpen ? <FaChevronDown /> : <FaChevronUp />}
+        </span>
+      )}
+    </h2>
+    {isOpen !== false && (
+      <div
+        className={styles.children}
+        style={
+          isOpen
+            ? { borderTop: '1px solid #cccccc9d', ...childrenStyle }
+            : childrenStyle
+        }
+      >
+        {children}
+      </div>
+    )}
   </section>
 )

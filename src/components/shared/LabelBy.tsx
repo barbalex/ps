@@ -24,7 +24,7 @@ export const LabelBy = ({
   name,
   from,
 }: Props) => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
 
   const res = useLiveQuery(
     `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,

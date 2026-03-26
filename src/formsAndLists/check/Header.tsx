@@ -24,7 +24,7 @@ import {
 } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/check' ||
@@ -36,7 +36,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, placeId, placeId2, checkId } = useParams({ from })
+  const { projectId, placeId, placeId2, checkId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -60,7 +60,13 @@ export const Header = ({ autoFocusRef, from }) => {
     })
     if (!id) return
     navigate({
-      to: isForm ? `../../${id}/check` : `../${id}/check`,
+      to: allInline
+        ? isForm
+          ? `../../${id}`
+          : `../${id}`
+        : isForm
+          ? `../../${id}/check`
+          : `../${id}/check`,
       params: (prev) => ({ ...prev, checkId: id }),
     })
     autoFocusRef?.current?.focus()
@@ -98,7 +104,13 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const next = checks[(index + 1) % len]
       navigate({
-        to: isForm ? `../../${next.check_id}/check` : `../${next.check_id}`,
+        to: allInline
+          ? isForm
+            ? `../../${next.check_id}`
+            : `../${next.check_id}`
+          : isForm
+            ? `../../${next.check_id}/check`
+            : `../${next.check_id}`,
         params: (prev) => ({ ...prev, checkId: next.check_id }),
       })
     } catch (error) {
@@ -117,9 +129,13 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const previous = checks[(index + len - 1) % len]
       navigate({
-        to: isForm
-          ? `../../${previous.check_id}/check`
-          : `../${previous.check_id}`,
+        to: allInline
+          ? isForm
+            ? `../../${previous.check_id}`
+            : `../${previous.check_id}`
+          : isForm
+            ? `../../${previous.check_id}/check`
+            : `../${previous.check_id}`,
         params: (prev) => ({ ...prev, checkId: previous.check_id }),
       })
     } catch (error) {

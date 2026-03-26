@@ -27,7 +27,7 @@ export const FieldList = ({
   valueArray = [],
   from,
 }: Props) => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
 
   const addOperation = useSetAtom(addOperationAtom)
 
