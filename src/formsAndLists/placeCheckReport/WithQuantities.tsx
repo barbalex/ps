@@ -120,7 +120,7 @@ export const PlaceCheckReportWithQuantities = ({ from }) => {
                       />
                     )}
                     <PlaceCheckReportQuantityInline
-                      placeReportQuantityId={q.place_check_report_quantity_id}
+                      placeCheckReportQuantityId={q.place_check_report_quantity_id}
                       projectId={projectId}
                     />
                   </div>
