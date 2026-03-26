@@ -15,4 +15,6 @@
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+  margin-left: -10px;
+  margin-right: -10px;
 }
