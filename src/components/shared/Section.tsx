@@ -1,4 +1,4 @@
-import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
 
 import styles from './Section.module.css'
 
@@ -14,14 +14,23 @@ export const Section = ({
     <h2
       className={styles.title}
       onClick={onHeaderClick}
-      style={onHeaderClick ? { cursor: 'pointer' } : undefined}
+      style={
+        onHeaderClick
+          ? {
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }
+          : undefined
+      }
     >
+      {title}
       {isOpen !== undefined && (
-        <span style={{ marginRight: 6, fontSize: '0.75em' }}>
-          {isOpen ? <FaChevronDown /> : <FaChevronRight />}
+        <span style={{ fontSize: '1em' }}>
+          {isOpen ? <FaChevronDown /> : <FaChevronUp />}
         </span>
       )}
-      {title}
     </h2>
     {isOpen !== false && <div className={styles.children}>{children}</div>}
   </section>
