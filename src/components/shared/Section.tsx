@@ -60,7 +60,7 @@ export const Section = ({
               <FaChevronDown
                 style={{
                   transition: 'transform 0.25s ease',
-                  transform: isOpen ? 'rotate(0deg)' : 'rotate(-180deg)',
+                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 }}
               />
             </span>
