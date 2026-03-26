@@ -7,7 +7,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const PlaceCheckReportQuantities = ({ from }) => {
+export const PlaceCheckReportQuantities = ({ from, hideTitle = false }) => {
   const { projectId, subprojectId, placeId, placeId2, placeCheckReportId } =
     useParams({
       from,
@@ -34,7 +34,9 @@ export const PlaceCheckReportQuantities = ({ from }) => {
 
   return (
     <div className="list-view">
-      <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      {!hideTitle && (
+        <ListHeader label={label} nameSingular={nameSingular} addRow={add} />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />

@@ -7,7 +7,10 @@ const from =
 
 export const Route = createFileRoute(from)({
   component: () => (
-    <PlaceCheckReportQuantities from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/check-reports/$placeCheckReportId_/quantities/" />
+    <PlaceCheckReportQuantities
+      from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/check-reports/$placeCheckReportId_/quantities/"
+      hideTitle={true}
+    />
   ),
   notFoundComponent: NotFound,
 })
