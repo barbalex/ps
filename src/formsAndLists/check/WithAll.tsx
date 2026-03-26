@@ -19,7 +19,6 @@ import { CheckForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import {
   addOperationAtom,
   designingAtom,
@@ -32,7 +31,7 @@ import type Checks from '../../models/public/Checks.ts'
 
 import '../../form.css'
 
-const { Button, Tooltip } = fluentUiReactComponents
+const { Button } = fluentUiReactComponents
 
 export const CheckWithAll = ({
   from,
@@ -59,11 +58,11 @@ export const CheckWithAll = ({
   ])
   const row: Checks | undefined = res?.rows?.[0]
 
-  const quantitiesRes = useLiveQuery(
-    `SELECT check_quantity_id FROM check_quantities WHERE check_id = $1 ORDER BY check_quantity_id`,
+  const quantitiesCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM check_quantities WHERE check_id = $1`,
     [checkId],
   )
-  const quantities = quantitiesRes?.rows ?? []
+  const quantitiesCount = quantitiesCountRes?.rows?.[0]?.count ?? 0
 
   const placeLevelRes = useLiveQuery(
     `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -102,6 +101,11 @@ export const CheckWithAll = ({
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
+  const isQuantitiesOpen =
+    location.pathname.endsWith('/quantities') ||
+    location.pathname.includes('/quantities/')
+  const isQuantitiesList = location.pathname.endsWith('/quantities')
+
   const isFilesOpen =
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
@@ -124,6 +128,7 @@ export const CheckWithAll = ({
       </>
     ) : undefined
   const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
+  const quantitiesUrl = `${checkBaseUrl}/quantities`
   const filesUrl = `${checkBaseUrl}/files`
   const taxaUrl = `${checkBaseUrl}/taxa`
   const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
@@ -159,8 +164,23 @@ export const CheckWithAll = ({
   }
 
   const addQuantity = async () => {
-    await createCheckQuantity({ checkId })
+    const id = await createCheckQuantity({ checkId })
+    if (!id) return
+    navigate({ to: `${quantitiesUrl}/${id}` })
   }
+
+  const quantitiesHeaderActions =
+    showQuantities && isQuantitiesList ? (
+      <Button
+        size="medium"
+        title={formatMessage({
+          id: 'V6iUlF',
+          defaultMessage: 'Menge hinzufügen',
+        })}
+        icon={<FaPlus />}
+        onClick={addQuantity}
+      />
+    ) : undefined
 
   const addTaxon = async () => {
     const id = await createCheckTaxon({ checkId })
@@ -196,50 +216,24 @@ export const CheckWithAll = ({
               autoFocusRef={autoFocusRef}
               from={from}
             />
-            {showQuantities && (
+            {showQuantities ? (
               <Section
-                title={formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                })}
+                title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
+                onNavigate={() => navigate({ to: quantitiesUrl })}
+                onHeaderClick={() =>
+                  isQuantitiesOpen
+                    ? navigate({ to: checkUrl })
+                    : navigate({ to: quantitiesUrl })
+                }
+                isOpen={isQuantitiesOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={quantitiesHeaderActions}
               >
-                {quantities.map((q, i) => (
-                  <div key={q.check_quantity_id}>
-                    {i > 0 && (
-                      <div
-                        style={{
-                          borderTop: '8px solid rgb(225, 247, 224)',
-                          marginLeft: -10,
-                          marginRight: -10,
-                          marginBottom: 8,
-                        }}
-                      />
-                    )}
-                    <CheckQuantityInline
-                      checkQuantityId={q.check_quantity_id}
-                      projectId={projectId}
-                    />
-                  </div>
-                ))}
-                {quantities.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
-                )}
-                <Tooltip
-                  content={formatMessage({
-                    id: 'V6iUlF',
-                    defaultMessage: 'Menge hinzufügen',
-                  })}
-                  relationship="label"
-                >
-                  <Button icon={<FaPlus />} onClick={addQuantity} />
-                </Tooltip>
+                {isQuantitiesOpen && <Outlet />}
               </Section>
+            ) : (
+              isQuantitiesOpen && <Outlet />
             )}
             {showTaxa ? (
               <Section
