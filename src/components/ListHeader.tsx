@@ -14,6 +14,7 @@ interface Props {
   deleteConfirmLabel?: string
   menus?: unknown[]
   info?: unknown
+  hideTitle?: boolean
 }
 
 // this is the version of ListViewHeader that is used with used...NavData hooks
@@ -30,10 +31,11 @@ export const ListHeader = ({
   deleteConfirmLabel,
   menus,
   info,
+  hideTitle = false,
 }: Props) => (
   <>
     <div className="list-view-header">
-      <h1>{label}</h1>
+      {!hideTitle && <h1>{label}</h1>}
       <FormMenu
         addRow={addRow}
         addRowDisabled={addRowDisabled}

@@ -21,6 +21,7 @@ export const Files = ({
   placeId2,
   actionId,
   checkId,
+  hideTitle = false,
 }) => {
   const { loading, navData, isFiltered } = useFilesNavData({
     projectId,
@@ -44,6 +45,7 @@ export const Files = ({
       <ListHeader
         label={label}
         nameSingular={nameSingular}
+        hideTitle={hideTitle}
         menus={[
           <FilterButton key="filter" isFiltered={isFiltered} />,
           <Button
