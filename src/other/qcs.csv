@@ -462,10 +462,52 @@ WHERE p.subproject_id = $1
 FROM places p2
 WHERE p2.parent_id = p.place_id)
 ORDER BY p.label";;
-Orte (relevante und aktuell existierende) ohne Kontroll-Bericht;;;;placesCheckReportsMissing;places;1, 2;false;false;true;false;;;
-Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr;;;;placesCheckReportsMissingInYear;places;1, 2;false;false;true;false;;;
-Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht;;;;placesActionReportsMissing;places;1, 2;false;false;true;false;;;
-Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr;;;;placesActionReportsMissingInYear;places;1, 2;false;false;true;false;;;
+Orte (relevante und aktuell existierende) ohne Kontroll-Bericht;Places (relevant and currently existing) without check report;Lieux (pertinents et actuellement existants) sans rapport de contrôle;Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo;placesCheckReportsMissing;places;1, 2;false;false;true;false;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/check-reports/' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_check_reports pcr
+WHERE pcr.place_id = p.place_id)
+ORDER BY p.label";;
+Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr;Places (relevant and currently existing) without check report in year;Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l'année;Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell'anno;placesCheckReportsMissingInYear;places;1, 2;false;false;true;false;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/check-reports/' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_check_reports pcr
+WHERE pcr.place_id = p.place_id
+  AND pcr.year = date_part('year', now())::integer)
+ORDER BY p.label";;
+Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht;Places (relevant and currently existing) without action report;Lieux (pertinents et actuellement existants) sans rapport d'action;Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione;placesActionReportsMissing;places;1, 2;false;false;true;false;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/action-reports/' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_action_reports par
+WHERE par.place_id = p.place_id)
+ORDER BY p.label";;
+Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr;Places (relevant and currently existing) without action report in year;Lieux (pertinents et actuellement existants) sans rapport d'action dans l'année;Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell'anno;placesActionReportsMissingInYear;places;1, 2;false;false;true;false;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/action-reports/' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM place_action_reports par
+WHERE par.place_id = p.place_id
+  AND par.year = date_part('year', now())::integer)
+ORDER BY p.label";;
 Ort-Benutzer ohne Benutzer;Place users without user;Utilisateurs de lieu sans utilisateur;Utenti di luogo senza utente;placeUsersUserMissing;place_users;1, 2;false;false;true;false;"SELECT pu.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || pu.place_id || '/users/' || pu.place_user_id || '/' AS url
 FROM place_users pu
 JOIN places p ON p.place_id = pu.place_id
@@ -586,7 +628,21 @@ FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
 ORDER BY c.label";;
-Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet;;;;placeCheckReportQuantitiesNoDefault;places;1, 2;false;false;true;true;;;
+Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet;Place check report quantities: default unit not used;Quantités de rapport de contrôle de lieu : unité par défaut non utilisée;Quantità di rapporto di controllo di luogo: unità predefinita non utilizzata;placeCheckReportQuantitiesNoDefault;places;1, 2;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/check-reports/' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+JOIN projects proj ON proj.project_id = sp.project_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND proj.place_check_reports_default_unit_id IS NOT NULL
+  AND EXISTS (SELECT 1
+FROM place_check_reports pcr
+JOIN place_check_report_quantities pcrq ON pcrq.place_check_report_id = pcr.place_check_report_id
+WHERE pcr.place_id = p.place_id
+  AND pcrq.unit_id != proj.place_check_reports_default_unit_id)
+ORDER BY p.label";;
 Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet;Check taxon quantities: default unit not used;Quantités de taxon de contrôle : unité par défaut non utilisée;Quantità di taxon di controllo: unità predefinita non utilizzata;checkTaxonQuantitiesNoDefault;checks;1, 2;false;false;true;true;"SELECT c.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || c.place_id || '/checks/' || c.check_id || '/check' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
@@ -613,7 +669,21 @@ FROM action_quantities aq
 WHERE aq.action_id = a.action_id
   AND aq.unit_id != proj.actions_default_unit_id)
 ORDER BY a.label";;
-Ort-Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet;;;;placeActionReportQuantitiesNoDefault;actions;1, 2;false;false;true;true;;;
+Ort-Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet;Place action report quantities: default unit not used;Quantités de rapport d'action de lieu : unité par défaut non utilisée;Quantità di rapporto di azione di luogo: unità predefinita non utilizzata;placeActionReportQuantitiesNoDefault;actions;1, 2;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/action-reports/' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+JOIN projects proj ON proj.project_id = sp.project_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND proj.place_action_reports_default_unit_id IS NOT NULL
+  AND EXISTS (SELECT 1
+FROM place_action_reports par
+JOIN place_action_report_quantities parq ON parq.place_action_report_id = par.place_action_report_id
+WHERE par.place_id = p.place_id
+  AND parq.unit_id != proj.place_action_reports_default_unit_id)
+ORDER BY p.label";;
 Massnahmen-Taxon-Mengen: Standard-Einheit nicht verwendet;Action taxon quantities: default unit not used;Quantités de taxon d'actions : unité par défaut non utilisée;Quantità di taxon di azioni: unità predefinita non utilizzata;actionTaxonQuantitiesNoDefault;actions;1, 2;false;false;true;true;"SELECT a.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || a.place_id || '/actions/' || a.action_id || '/action' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
