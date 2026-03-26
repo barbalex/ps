@@ -18,7 +18,6 @@ type NavData = {
   id: string
   label: string
   action_quantities_count: number
-  action_reports_count: number
   files_count: number
 }
 
@@ -41,12 +40,10 @@ export const useActionNavData = ({
         action_id AS id,
         label,
         action_quantities_count.count AS action_quantities_count,
-        action_reports_count.count AS action_reports_count,
         files_count.count AS files_count
       FROM 
         actions,
         action_quantities_count,
-        action_reports_count,
         files_count
       WHERE 
         actions.action_id = '${actionId}'`
