@@ -37,8 +37,12 @@ export const Tree = () => {
           <FilesNode level={1} />
         </>
       )}
-      <RootQcsNode />
-      <RootQcsRunNode />
+      {designing && (
+        <>
+          <RootQcsNode />
+          <RootQcsRunNode />
+        </>
+      )}
       <MessagesNode />
     </div>
   )
