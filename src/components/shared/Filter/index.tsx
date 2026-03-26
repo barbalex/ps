@@ -284,9 +284,6 @@ const getTableName = (urlPath) => {
     // the prefix to the tableName is the grandParent without its last character (s)
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
-  if (tableName === 'check_reports') {
-    tableName = 'place_check_reports'
-  }
   if (tableName === 'action_reports') {
     tableName = 'place_action_reports'
   }
