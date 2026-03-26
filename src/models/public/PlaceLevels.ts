@@ -55,6 +55,15 @@ export default interface PlaceLevels {
   /** Show place check report quantities inside the report form instead of a separate route? Preset: true */
   place_check_report_quantities_in_report: boolean | null;
 
+  /** Are action reports for places used? Preset: true */
+  place_action_reports: boolean | null;
+
+  /** Are place action report quantities used? Preset: true */
+  place_action_report_quantities: boolean | null;
+
+  /** Show place action report quantities inside the report form instead of a separate route? Preset: true */
+  place_action_report_quantities_in_report: boolean | null;
+
   /** Are actions used? Preset: true */
   actions: boolean | null;
 
@@ -178,6 +187,24 @@ export interface PlaceLevelsInitializer {
    * Default value: true
    */
   place_check_report_quantities_in_report?: boolean | null;
+
+  /**
+   * Are action reports for places used? Preset: true
+   * Default value: true
+   */
+  place_action_reports?: boolean | null;
+
+  /**
+   * Are place action report quantities used? Preset: true
+   * Default value: true
+   */
+  place_action_report_quantities?: boolean | null;
+
+  /**
+   * Show place action report quantities inside the report form instead of a separate route? Preset: true
+   * Default value: true
+   */
+  place_action_report_quantities_in_report?: boolean | null;
 
   /**
    * Are actions used? Preset: true
@@ -337,6 +364,15 @@ export interface PlaceLevelsMutator {
 
   /** Show place check report quantities inside the report form instead of a separate route? Preset: true */
   place_check_report_quantities_in_report?: boolean | null;
+
+  /** Are action reports for places used? Preset: true */
+  place_action_reports?: boolean | null;
+
+  /** Are place action report quantities used? Preset: true */
+  place_action_report_quantities?: boolean | null;
+
+  /** Show place action report quantities inside the report form instead of a separate route? Preset: true */
+  place_action_report_quantities_in_report?: boolean | null;
 
   /** Are actions used? Preset: true */
   actions?: boolean | null;

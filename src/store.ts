@@ -357,6 +357,14 @@ export const placeCheckReports2FilterAtom = atomWithStorage(
   'placeCheckReports2FilterAtom',
   [],
 )
+export const placeActionReports1FilterAtom = atomWithStorage(
+  'placeActionReports1FilterAtom',
+  [],
+)
+export const placeActionReports2FilterAtom = atomWithStorage(
+  'placeActionReports2FilterAtom',
+  [],
+)
 export const qcsFilterAtom = atomWithStorage('qcsFilterAtom', [])
 // TODO: add
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
@@ -411,6 +419,8 @@ export const filterAtoms = {
   actions2: actions2FilterAtom,
   placeCheckReports1: placeCheckReports1FilterAtom,
   placeCheckReports2: placeCheckReports2FilterAtom,
+  placeActionReports1: placeActionReports1FilterAtom,
+  placeActionReports2: placeActionReports2FilterAtom,
   files: filesFilterAtom,
 }
 

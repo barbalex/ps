@@ -11,6 +11,8 @@ import {
   actions2FilterAtom,
   placeCheckReports1FilterAtom,
   placeCheckReports2FilterAtom,
+  placeActionReports1FilterAtom,
+  placeActionReports2FilterAtom,
   filesFilterAtom,
   treeOpenNodesAtom,
   languageAtom,
@@ -40,6 +42,8 @@ type NavData = {
   actions_count_filtered: number
   place_check_reports_count_unfiltered: number
   place_check_reports_count_filtered: number
+  place_action_reports_count_unfiltered: number
+  place_action_reports_count_filtered: number
   place_histories_count: number
   observations_count: number
   place_users_count: number
@@ -82,6 +86,14 @@ export const usePlaceNavData = ({
   )
   const placeCheckReportsIsFiltered = !!placeCheckReportsFilterString
 
+  const [placeActionReportsFilter] = useAtom(
+    placeId2 ? placeActionReports2FilterAtom : placeActionReports1FilterAtom,
+  )
+  const placeActionReportsFilterString = filterStringFromFilter(
+    placeActionReportsFilter,
+  )
+  const placeActionReportsIsFiltered = !!placeActionReportsFilterString
+
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesFilterString = filterStringFromFilter(filesFilter)
   const filesIsFiltered = !!filesFilterString
@@ -102,6 +114,8 @@ export const usePlaceNavData = ({
         actions_count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}' ${actionsIsFiltered ? ` AND ${actionsFilterString}` : ''}),
         place_check_reports_count_unfiltered AS (SELECT count(*) FROM place_check_reports WHERE place_id = '${placeId2 ?? placeId}'),
         place_check_reports_count_filtered AS (SELECT count(*) FROM place_check_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeCheckReportsIsFiltered ? ` AND ${placeCheckReportsFilterString}` : ''}),
+        place_action_reports_count_unfiltered AS (SELECT count(*) FROM place_action_reports WHERE place_id = '${placeId2 ?? placeId}'),
+        place_action_reports_count_filtered AS (SELECT count(*) FROM place_action_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeActionReportsIsFiltered ? ` AND ${placeActionReportsFilterString}` : ''}),
         place_histories_count AS (SELECT count(*) FROM place_histories WHERE place_id = '${placeId2 ?? placeId}'),
         observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
         place_users_count AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
@@ -120,6 +134,8 @@ export const usePlaceNavData = ({
         actions_count_filtered.count AS actions_count_filtered,
         place_check_reports_count_unfiltered.count AS place_check_reports_count_unfiltered,
         place_check_reports_count_filtered.count AS place_check_reports_count_filtered,
+        place_action_reports_count_unfiltered.count AS place_action_reports_count_unfiltered,
+        place_action_reports_count_filtered.count AS place_action_reports_count_filtered,
         place_histories_count.count AS place_histories_count,
         observations_count.count AS observations_count,
         place_users_count.count AS place_users_count,
@@ -137,6 +153,8 @@ export const usePlaceNavData = ({
         actions_count_filtered,
         place_check_reports_count_unfiltered,
         place_check_reports_count_filtered,
+        place_action_reports_count_unfiltered,
+        place_action_reports_count_filtered,
         place_histories_count,
         observations_count,
         place_users_count,
@@ -256,6 +274,19 @@ export const usePlaceNavData = ({
           namePlural: formatMessage({
             id: 'CiJ0SG',
             defaultMessage: 'Kontroll-Berichte',
+          }),
+        }),
+      },
+      {
+        id: 'action-reports',
+        label: buildNavLabel({
+          loading,
+          isFiltered: placeActionReportsIsFiltered,
+          countFiltered: nav?.place_action_reports_count_filtered ?? 0,
+          countUnfiltered: nav?.place_action_reports_count_unfiltered ?? 0,
+          namePlural: formatMessage({
+            id: 'mARBts',
+            defaultMessage: 'Massnahmen-Berichte',
           }),
         }),
       },

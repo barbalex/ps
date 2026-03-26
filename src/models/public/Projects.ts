@@ -78,6 +78,9 @@ export default interface Projects {
   /** Default unit for place check report quantities. Can be overwritten in place_check_reports */
   place_check_reports_default_unit_id: UnitsUnitId | null;
 
+  /** Default unit for place action report quantities. Can be overwritten in place_action_reports */
+  place_action_reports_default_unit_id: UnitsUnitId | null;
+
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels: string | null;
 
@@ -205,6 +208,9 @@ export interface ProjectsInitializer {
 
   /** Default unit for place check report quantities. Can be overwritten in place_check_reports */
   place_check_reports_default_unit_id?: UnitsUnitId | null;
+
+  /** Default unit for place action report quantities. Can be overwritten in place_action_reports */
+  place_action_reports_default_unit_id?: UnitsUnitId | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels?: string | null;
@@ -362,6 +368,9 @@ export interface ProjectsMutator {
 
   /** Default unit for place check report quantities. Can be overwritten in place_check_reports */
   place_check_reports_default_unit_id?: UnitsUnitId | null;
+
+  /** Default unit for place action report quantities. Can be overwritten in place_action_reports */
+  place_action_reports_default_unit_id?: UnitsUnitId | null;
 
   /** One of: "use first", "use second", "use all". Preset: "use first" */
   values_on_multiple_levels?: string | null;
