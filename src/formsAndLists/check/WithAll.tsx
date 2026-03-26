@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
-import { useParams, useNavigate, useLocation, Outlet } from '@tanstack/react-router'
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  Outlet,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -25,8 +30,10 @@ const { Button, Tooltip } = fluentUiReactComponents
 
 export const CheckWithAll = ({
   from,
+  allInline,
 }: {
   from: string
+  allInline?: boolean
 }) => {
   const { checkId, projectId, placeId, placeId2, subprojectId } = useParams({
     strict: false,
@@ -73,6 +80,9 @@ export const CheckWithAll = ({
   const showTaxa =
     taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
   const showFiles = filesInCheck
+  const allInlineComputed = quantitiesInCheck && taxaInCheck && filesInCheck
+  // allInline prop from parent (CheckIndex) takes precedence when provided
+  const isAllInline = allInline ?? allInlineComputed
 
   const filesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM files WHERE check_id = $1`,
@@ -81,11 +91,13 @@ export const CheckWithAll = ({
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
   // Detect if the files section is open based on the current URL
-  const isFilesOpen = location.pathname.endsWith('/files') || location.pathname.includes('/files/')
+  const isFilesOpen =
+    location.pathname.endsWith('/files') ||
+    location.pathname.includes('/files/')
 
   const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
   const filesUrl = `${checkBaseUrl}/files`
-  const checkUrl = `${checkBaseUrl}/check`
+  const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -127,7 +139,7 @@ export const CheckWithAll = ({
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} from={from} allInline={isAllInline} />
       <div className="form-container">
         {!res ? (
           <Loading />
