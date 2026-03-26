@@ -12,20 +12,18 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createActionQuantity } from '../../modules/createRows.ts'
-import { createActionTaxon } from '../../modules/createRows.ts'
+import { createActionQuantity, createActionTaxon } from '../../modules/createRows.ts'
 import { Header } from './Header.tsx'
 import { ActionForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import { ActionTaxonInline } from '../actionTaxon/Inline.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Actions from '../../models/public/Actions.ts'
 
 import '../../form.css'
 
-const { Button, Tooltip } = fluentUiReactComponents
+const { Button } = fluentUiReactComponents
 
 export const ActionWithAll = ({ from }) => {
   const { actionId, projectId, placeId, placeId2, subprojectId } = useParams({
@@ -52,11 +50,11 @@ export const ActionWithAll = ({ from }) => {
   )
   const quantitiesCount = quantitiesCountRes?.rows?.[0]?.count ?? 0
 
-  const taxaRes = useLiveQuery(
-    `SELECT action_taxon_id FROM action_taxa WHERE action_id = $1 ORDER BY action_taxon_id`,
+  const taxaCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM action_taxa WHERE action_id = $1`,
     [actionId],
   )
-  const taxa = taxaRes?.rows ?? []
+  const taxaCount = taxaCountRes?.rows?.[0]?.count ?? 0
 
   const placeLevelRes = useLiveQuery(
     `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -109,6 +107,12 @@ export const ActionWithAll = ({ from }) => {
   const actionBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/actions/${actionId}`
   const actionUrl = `${actionBaseUrl}/action`
   const quantitiesUrl = `${actionBaseUrl}/quantities`
+  const taxaUrl = `${actionBaseUrl}/taxa`
+
+  const isTaxaOpen =
+    location.pathname.endsWith('/taxa') ||
+    location.pathname.includes('/taxa/')
+  const isTaxaList = location.pathname.endsWith('/taxa')
 
   const addQuantity = async () => {
     const id = await createActionQuantity({ actionId, projectId })
@@ -130,8 +134,23 @@ export const ActionWithAll = ({ from }) => {
     ) : undefined
 
   const addTaxon = async () => {
-    await createActionTaxon({ actionId })
+    const id = await createActionTaxon({ actionId })
+    if (!id) return
+    navigate({ to: `${taxaUrl}/${id}` })
   }
+
+  const taxaHeaderActions =
+    showTaxa && isTaxaList ? (
+      <Button
+        size="medium"
+        title={formatMessage({
+          id: 'jH7LwO',
+          defaultMessage: 'Taxon hinzufügen',
+        })}
+        icon={<FaPlus />}
+        onClick={addTaxon}
+      />
+    ) : undefined
 
   return (
     <div className="form-outer-container">
@@ -167,50 +186,24 @@ export const ActionWithAll = ({ from }) => {
             ) : (
               isQuantitiesOpen && <Outlet />
             )}
-            {showTaxa && (
+            {showTaxa ? (
               <Section
-                title={formatMessage({
-                  id: '7sVbg1',
-                  defaultMessage: 'Taxa',
-                })}
+                title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
+                onNavigate={() => navigate({ to: taxaUrl })}
+                onHeaderClick={() =>
+                  isTaxaOpen
+                    ? navigate({ to: actionUrl })
+                    : navigate({ to: taxaUrl })
+                }
+                isOpen={isTaxaOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={taxaHeaderActions}
               >
-                {taxa.map((t, i) => (
-                  <div key={t.action_taxon_id}>
-                    {i > 0 && (
-                      <div
-                        style={{
-                          borderTop: '8px solid rgb(225, 247, 224)',
-                          marginLeft: -10,
-                          marginRight: -10,
-                          marginBottom: 8,
-                        }}
-                      />
-                    )}
-                    <ActionTaxonInline
-                      actionTaxonId={t.action_taxon_id}
-                      projectId={projectId}
-                    />
-                  </div>
-                ))}
-                {taxa.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
-                )}
-                <Tooltip
-                  content={formatMessage({
-                    id: 'jH7LwO',
-                    defaultMessage: 'Taxon hinzufügen',
-                  })}
-                  relationship="label"
-                >
-                  <Button icon={<FaPlus />} onClick={addTaxon} />
-                </Tooltip>
+                {isTaxaOpen && <Outlet />}
               </Section>
+            ) : (
+              isTaxaOpen && <Outlet />
             )}
           </>
         ) : (
