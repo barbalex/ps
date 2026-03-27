@@ -104,16 +104,16 @@ export const CheckWithAll = ({
   const isQuantitiesOpen =
     location.pathname.endsWith('/quantities') ||
     location.pathname.includes('/quantities/')
-  const isQuantitiesList = location.pathname.endsWith('/quantities')
+  const isQuantitiesList = /\/quantities\/?$/.test(location.pathname)
 
   const isFilesOpen =
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
-  const isFilesList = location.pathname.endsWith('/files')
+  const isFilesList = /\/files\/?$/.test(location.pathname)
 
   const isTaxaOpen =
     location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
-  const isTaxaList = location.pathname.endsWith('/taxa')
+  const isTaxaList = /\/taxa\/?$/.test(location.pathname)
 
   const fileHeaderActions =
     showFiles && isFilesList ? (
@@ -219,9 +219,8 @@ export const CheckWithAll = ({
             {showQuantities ? (
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
-                onNavigate={() => navigate({ to: quantitiesUrl })}
                 onHeaderClick={() =>
-                  isQuantitiesOpen
+                  isQuantitiesList
                     ? navigate({ to: checkUrl })
                     : navigate({ to: quantitiesUrl })
                 }
@@ -238,9 +237,8 @@ export const CheckWithAll = ({
             {showTaxa ? (
               <Section
                 title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
-                onNavigate={() => navigate({ to: taxaUrl })}
                 onHeaderClick={() =>
-                  isTaxaOpen
+                  isTaxaList
                     ? navigate({ to: checkUrl })
                     : navigate({ to: taxaUrl })
                 }
@@ -257,9 +255,8 @@ export const CheckWithAll = ({
             {showFiles ? (
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
-                onNavigate={() => navigate({ to: filesUrl })}
                 onHeaderClick={() =>
-                  isFilesOpen
+                  isFilesList
                     ? navigate({ to: checkUrl })
                     : navigate({ to: filesUrl })
                 }

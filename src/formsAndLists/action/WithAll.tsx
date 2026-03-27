@@ -131,7 +131,7 @@ export const ActionWithAll = ({
   const isQuantitiesOpen =
     location.pathname.endsWith('/quantities') ||
     location.pathname.includes('/quantities/')
-  const isQuantitiesList = location.pathname.endsWith('/quantities')
+  const isQuantitiesList = /\/quantities\/?$/.test(location.pathname)
 
   const actionBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/actions/${actionId}`
   const actionUrl = isAllInline ? actionBaseUrl : `${actionBaseUrl}/action`
@@ -142,7 +142,7 @@ export const ActionWithAll = ({
   const isFilesOpen =
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
-  const isFilesList = location.pathname.endsWith('/files')
+  const isFilesList = /\/files\/?$/.test(location.pathname)
 
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
@@ -165,7 +165,7 @@ export const ActionWithAll = ({
 
   const isTaxaOpen =
     location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
-  const isTaxaList = location.pathname.endsWith('/taxa')
+  const isTaxaList = /\/taxa\/?$/.test(location.pathname)
 
   const addQuantity = async () => {
     const id = await createActionQuantity({ actionId, projectId })
@@ -223,9 +223,8 @@ export const ActionWithAll = ({
             {showQuantities ? (
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
-                onNavigate={() => navigate({ to: quantitiesUrl })}
                 onHeaderClick={() =>
-                  isQuantitiesOpen
+                  isQuantitiesList
                     ? navigate({ to: actionUrl })
                     : navigate({ to: quantitiesUrl })
                 }
@@ -242,9 +241,8 @@ export const ActionWithAll = ({
             {showTaxa ? (
               <Section
                 title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
-                onNavigate={() => navigate({ to: taxaUrl })}
                 onHeaderClick={() =>
-                  isTaxaOpen
+                  isTaxaList
                     ? navigate({ to: actionUrl })
                     : navigate({ to: taxaUrl })
                 }
@@ -261,9 +259,8 @@ export const ActionWithAll = ({
             {showFiles && (
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
-                onNavigate={() => navigate({ to: filesUrl })}
                 onHeaderClick={() =>
-                  isFilesOpen
+                  isFilesList
                     ? navigate({ to: actionUrl })
                     : navigate({ to: filesUrl })
                 }

@@ -91,7 +91,7 @@ export const PlaceCheckReportWithQuantities = ({ from }) => {
   const isQuantitiesOpen =
     location.pathname.endsWith('/quantities') ||
     location.pathname.includes('/quantities/')
-  const isQuantitiesList = location.pathname.endsWith('/quantities')
+  const isQuantitiesList = /\/quantities\/?$/.test(location.pathname)
 
   const checkReportBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/check-reports/${placeCheckReportId}`
   const quantitiesUrl = `${checkReportBaseUrl}/quantities`
@@ -133,9 +133,8 @@ export const PlaceCheckReportWithQuantities = ({ from }) => {
             {showQuantities ? (
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
-                onNavigate={() => navigate({ to: quantitiesUrl })}
                 onHeaderClick={() =>
-                  isQuantitiesOpen
+                  isQuantitiesList
                     ? navigate({ to: checkReportBaseUrl })
                     : navigate({ to: quantitiesUrl })
                 }
