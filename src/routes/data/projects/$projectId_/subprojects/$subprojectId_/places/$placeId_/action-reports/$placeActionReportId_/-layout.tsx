@@ -5,7 +5,7 @@ import { PlaceActionReportWithQuantities } from '../../../../../../../../../../f
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$placeActionReportId_'
 
-export const QuantitiesWrapper = () => {
+export const PlaceActionReportLayout = () => {
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(
     `SELECT place_action_report_quantities_in_report FROM place_levels WHERE project_id = $1 AND level = 1`,
