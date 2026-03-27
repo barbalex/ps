@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS projects(
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
+  project_files_in_project boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_files_in_subproject boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
@@ -206,6 +207,7 @@ COMMENT ON COLUMN projects.taxa IS 'Whether subproject taxa are shown. Preset: t
 COMMENT ON COLUMN projects.charts IS 'Whether charts (subproject) are shown. Preset: true.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
+COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the project form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN projects.subproject_files_in_subproject IS 'Render files inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';

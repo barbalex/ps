@@ -1,9 +1,10 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
+import { ProjectLayout } from './-layout.tsx'
 
 import { NotFound } from '../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_')({
-  component: Outlet,
+  component: ProjectLayout,
   notFoundComponent: NotFound,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {

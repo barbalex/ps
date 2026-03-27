@@ -38,7 +38,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const showFiles = designing || (nav.files_active_projects ?? false)
 
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
@@ -47,7 +46,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
 
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
-    `SELECT project_id, wms_layers, vector_layers, project_reports FROM projects WHERE project_id = $1`,
+    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_files_in_project FROM projects WHERE project_id = $1`,
     [nav.id],
   )
   const project = resultProject?.rows?.[0]
@@ -58,6 +57,9 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const showWmsNodes = designing || (project?.wms_layers ?? false)
   const showVectorNodes = designing || (project?.vector_layers ?? false)
   const showProjectReports = designing || (project?.project_reports ?? true)
+  const showFiles = designing || (project?.files_active_projects ?? false)
+  const filesInProject = project?.project_files_in_project !== false
+  const showFilesNav = showFiles && !filesInProject
 
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -118,7 +120,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {showWmsNodes && <WmsLayersNode projectId={nav.id} />}
           {showVectorNodes && <WfsServicesNode projectId={nav.id} />}
           {showVectorNodes && <VectorLayersNode projectId={nav.id} />}
-          {showFiles && <FilesNode projectId={nav.id} level={3} />}
+          {showFilesNav && <FilesNode projectId={nav.id} level={3} />}
           {showDesigningNodes && (
             <>
               <ProjectUsersNode projectId={nav.id} />

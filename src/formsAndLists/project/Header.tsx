@@ -19,7 +19,9 @@ interface Props {
 // add this only if user's account equals the account of the project
 export const Header = ({ autoFocusRef, from, label }: Props) => {
   const { formatMessage } = useIntl()
-  const isForm = from === '/data/projects/$projectId_/project'
+  const isForm =
+    from === '/data/projects/$projectId_/project' ||
+    from === '/data/projects/$projectId_'
   const { projectId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)

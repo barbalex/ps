@@ -468,6 +468,21 @@ export const Configuration = ({ from }) => {
               validationState={validations?.files_active_projects?.state}
               validationMessage={validations?.files_active_projects?.message}
             />
+            {(row.files_active_projects ?? false) && (
+              <SwitchField
+                label={formatMessage({
+                  id: 'qP7PrjFileInPrj',
+                  defaultMessage: 'Dateien im Projekt anzeigen',
+                })}
+                name="project_files_in_project"
+                value={row.project_files_in_project ?? true}
+                onChange={onChange}
+                validationState={validations?.project_files_in_project?.state}
+                validationMessage={
+                  validations?.project_files_in_project?.message
+                }
+              />
+            )}
             <SwitchField
               label={`${subprojectName}: ${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`}
               name="subproject_reports"

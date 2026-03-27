@@ -8,6 +8,7 @@ import {
   projectReportsFilterAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
+  filesFilterAtom,
   listsFilterAtom,
   unitsFilterAtom,
   fieldsFilterAtom,
@@ -38,6 +39,8 @@ type NavData = {
   occurrences?: boolean | null
   taxa?: boolean | null
   charts?: boolean | null
+  files_active_projects?: boolean | null
+  project_files_in_project?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
@@ -51,6 +54,8 @@ type NavDataNotForBreadcrumb = {
   occurrences?: boolean | null
   taxa?: boolean | null
   charts?: boolean | null
+  files_active_projects?: boolean | null
+  project_files_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -63,6 +68,8 @@ type NavDataNotForBreadcrumb = {
   wfs_services_count_unfiltered?: number
   vector_layers_count_unfiltered?: number
   vector_layers_count_filtered?: number
+  files_count_unfiltered?: number
+  files_count_filtered?: number
 }
 
 type NavDataNotForBreadcrumbDesigning = {
@@ -76,6 +83,8 @@ type NavDataNotForBreadcrumbDesigning = {
   occurrences?: boolean | null
   taxa?: boolean | null
   charts?: boolean | null
+  files_active_projects?: boolean | null
+  project_files_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -88,6 +97,8 @@ type NavDataNotForBreadcrumbDesigning = {
   wfs_services_count_unfiltered?: number
   vector_layers_count_unfiltered?: number
   vector_layers_count_filtered?: number
+  files_count_unfiltered?: number
+  files_count_filtered?: number
   project_users_count_unfiltered?: number
   lists_count_unfiltered?: number
   lists_count_filtered?: number
@@ -126,6 +137,10 @@ export const useProjectNavData = ({
   const vectorLayersFilterString = filterStringFromFilter(vectorLayersFilter)
   const vectorLayersIsFiltered = !!vectorLayersFilterString
 
+  const [filesFilter] = useAtom(filesFilterAtom)
+  const filesFilterString = filterStringFromFilter(filesFilter)
+  const filesIsFiltered = !!filesFilterString
+
   const [listsFilter] = useAtom(listsFilterAtom)
   const listsFilterString = filterStringFromFilter(listsFilter)
   const listsIsFiltered = !!listsFilterString
@@ -154,7 +169,9 @@ export const useProjectNavData = ({
             wms_layers_count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${wmsLayersIsFiltered ? ` AND ${wmsLayersFilterString}` : ''}),
             wfs_services_count_unfiltered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}'),
             vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
-            vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''})
+            vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''}),
+            files_count_unfiltered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}'),
+            files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
             ${
               designing
                 ? `, project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
@@ -181,7 +198,9 @@ export const useProjectNavData = ({
         goals,
         occurrences,
         taxa,
-        charts
+        charts,
+        files_active_projects,
+        project_files_in_project
         ${
           !forBreadcrumb
             ? `,
@@ -196,7 +215,9 @@ export const useProjectNavData = ({
             wms_layers_count_filtered.count AS wms_layers_count_filtered,
             wfs_services_count_unfiltered.count AS wfs_services_count_unfiltered,
             vector_layers_count_unfiltered.count AS vector_layers_count_unfiltered,
-            vector_layers_count_filtered.count AS vector_layers_count_filtered
+            vector_layers_count_filtered.count AS vector_layers_count_filtered,
+            files_count_unfiltered.count AS files_count_unfiltered,
+            files_count_filtered.count AS files_count_filtered
             ${
               designing
                 ? `, project_users_count_unfiltered.count AS project_users_count_unfiltered,
@@ -228,7 +249,9 @@ export const useProjectNavData = ({
             wms_layers_count_filtered,
             wfs_services_count_unfiltered,
             vector_layers_count_unfiltered,
-            vector_layers_count_filtered
+            vector_layers_count_filtered,
+            files_count_unfiltered,
+            files_count_filtered
             ${
               designing
                 ? `, project_users_count_unfiltered,
@@ -377,6 +400,24 @@ export const useProjectNavData = ({
                     namePlural: formatMessage({
                       id: 'nauDh5',
                       defaultMessage: 'Vektor-Ebenen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+          ...((designing || (nav?.files_active_projects ?? false)) &&
+          nav?.project_files_in_project === false
+            ? [
+                {
+                  id: 'files',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: filesIsFiltered,
+                    countFiltered: nav?.files_count_filtered ?? 0,
+                    countUnfiltered: nav?.files_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'mn58Sh',
+                      defaultMessage: 'Dateien',
                     }),
                   }),
                 },
