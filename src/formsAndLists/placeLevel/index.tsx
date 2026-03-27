@@ -125,6 +125,7 @@ export const PlaceLevel = () => {
           label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Stufe' })}
           name="level"
           list={[1, 2]}
+          layout="horizontal"
           value={row.level ?? ''}
           onChange={onChange}
           validationState={validations?.level?.state}
@@ -297,7 +298,8 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'dR0VsL',
-                      defaultMessage: 'Kontrollen: Mengen in Kontrolle',
+                      defaultMessage:
+                        'Kontrollen: Mengen in Kontrolle anzeigen',
                     })}
                     name="check_quantities_in_check"
                     value={row.check_quantities_in_check ?? true}
@@ -325,7 +327,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'gE4ItL',
-                      defaultMessage: 'Kontrollen: Taxa in Kontrolle',
+                      defaultMessage: 'Kontrollen: Taxa in Kontrolle anzeigen',
                     })}
                     name="check_taxa_in_check"
                     value={row.check_taxa_in_check ?? true}
@@ -351,7 +353,8 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'rN5QwT',
-                      defaultMessage: 'Kontrollen: Dateien in Kontrolle',
+                      defaultMessage:
+                        'Kontrollen: Dateien in Kontrolle anzeigen',
                     })}
                     name="files_in_check"
                     value={row.files_in_check ?? true}
@@ -393,7 +396,7 @@ export const PlaceLevel = () => {
                         label={formatMessage({
                           id: 'qH7MpR4',
                           defaultMessage:
-                            'Kontroll-Berichte: Mengen im Bericht',
+                            'Kontroll-Berichte: Mengen im Bericht anzeigen',
                         })}
                         name="place_check_report_quantities_in_report"
                         value={
@@ -450,7 +453,8 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'fD5OsU',
-                      defaultMessage: 'Massnahmen: Mengen in Massnahme',
+                      defaultMessage:
+                        'Massnahmen: Mengen in Massnahme anzeigen',
                     })}
                     name="action_quantities_in_action"
                     value={row.action_quantities_in_action ?? true}
@@ -478,7 +482,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'rS3TuV',
-                      defaultMessage: 'Massnahmen: Taxa in Massnahme',
+                      defaultMessage: 'Massnahmen: Taxa in Massnahme anzeigen',
                     })}
                     name="action_taxa_in_action"
                     value={row.action_taxa_in_action ?? true}
@@ -504,7 +508,8 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'gH3IjK',
-                      defaultMessage: 'Massnahmen: Dateien in Massnahme',
+                      defaultMessage:
+                        'Massnahmen: Dateien in Massnahme anzeigen',
                     })}
                     name="files_in_action"
                     value={row.files_in_action ?? true}
@@ -546,7 +551,7 @@ export const PlaceLevel = () => {
                         label={formatMessage({
                           id: 'gX5HzJ',
                           defaultMessage:
-                            'Massnahmen-Berichte: Mengen im Massnahmen-Bericht',
+                            'Massnahmen-Berichte: Mengen im Massnahmen-Bericht anzeigen',
                         })}
                         name="place_action_report_quantities_in_report"
                         value={
