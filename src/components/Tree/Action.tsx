@@ -27,7 +27,7 @@ export const ActionNode = ({
   const navigate = useNavigate()
 
   const res = useLiveQuery(
-    `SELECT action_files, files_in_action, action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action
+    `SELECT action_files, action_files_in_action, action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
 
@@ -37,7 +37,7 @@ export const ActionNode = ({
   const showFiles = isDesigning || row?.action_files !== false
   const filesInAction =
     (isDesigning || row?.action_files !== false) &&
-    row?.files_in_action !== false
+    row?.action_files_in_action !== false
   const quantitiesInAction = row?.action_quantities_in_action !== false
   const taxaInAction = row?.action_taxa_in_action !== false
   const allInline = quantitiesInAction && taxaInAction && filesInAction

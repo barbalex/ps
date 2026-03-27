@@ -374,11 +374,11 @@ export const PlaceLevel = () => {
                       id: 'rN5QwT',
                       defaultMessage: 'Dateien in Kontrolle anzeigen',
                     })}
-                    name="files_in_check"
-                    value={row.files_in_check ?? true}
+                    name="check_files_in_check"
+                    value={row.check_files_in_check ?? true}
                     onChange={onChange}
-                    validationState={validations?.files_in_check?.state}
-                    validationMessage={validations?.files_in_check?.message}
+                    validationState={validations?.check_files_in_check?.state}
+                    validationMessage={validations?.check_files_in_check?.message}
                   />
                 )}
                 <SwitchField
@@ -525,11 +525,11 @@ export const PlaceLevel = () => {
                       id: 'gH3IjK',
                       defaultMessage: 'Dateien in Massnahme anzeigen',
                     })}
-                    name="files_in_action"
-                    value={row.files_in_action ?? true}
+                    name="action_files_in_action"
+                    value={row.action_files_in_action ?? true}
                     onChange={onChange}
-                    validationState={validations?.files_in_action?.state}
-                    validationMessage={validations?.files_in_action?.message}
+                    validationState={validations?.action_files_in_action?.state}
+                    validationMessage={validations?.action_files_in_action?.message}
                   />
                 )}
                 <SwitchField

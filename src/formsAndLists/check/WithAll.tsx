@@ -65,7 +65,7 @@ export const CheckWithAll = ({
   const quantitiesCount = quantitiesCountRes?.rows?.[0]?.count ?? 0
 
   const placeLevelRes = useLiveQuery(
-    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, check_files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
@@ -73,7 +73,7 @@ export const CheckWithAll = ({
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
   const filesInCheck =
     (isDesigning || placeLevel?.check_files !== false) &&
-    placeLevel?.files_in_check !== false
+    placeLevel?.check_files_in_check !== false
   const showQuantities =
     quantitiesInCheck && (isDesigning || placeLevel?.check_quantities !== false)
   const showTaxa =

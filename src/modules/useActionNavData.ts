@@ -57,7 +57,7 @@ export const useActionNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, action_files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -65,7 +65,7 @@ export const useActionNavData = ({
   const taxaInAction = placeLevel?.action_taxa_in_action !== false
   const filesInAction =
     (isDesigning || placeLevel?.action_files !== false) &&
-    placeLevel?.files_in_action !== false
+    placeLevel?.action_files_in_action !== false
   const allInline = quantitiesInAction && taxaInAction && filesInAction
 
   const parentArray = [

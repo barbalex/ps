@@ -8,13 +8,13 @@ const from =
 export const ActionLayout = () => {
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(
-    `SELECT action_quantities_in_action, action_taxa_in_action, files_in_action FROM place_levels WHERE project_id = $1 AND level = 2`,
+    `SELECT action_quantities_in_action, action_taxa_in_action, action_files_in_action FROM place_levels WHERE project_id = $1 AND level = 2`,
     [projectId],
   )
   const quantitiesInAction =
     res?.rows?.[0]?.action_quantities_in_action !== false
   const taxaInAction = res?.rows?.[0]?.action_taxa_in_action !== false
-  const filesInAction = res?.rows?.[0]?.files_in_action !== false
+  const filesInAction = res?.rows?.[0]?.action_files_in_action !== false
   const allInline = quantitiesInAction && taxaInAction && filesInAction
   if (quantitiesInAction || taxaInAction || filesInAction)
     return <ActionWithAll from={from} allInline={allInline} />

@@ -29,7 +29,7 @@ export const CheckNode = ({
 
   // need project to know whether to show files
   const res = useLiveQuery(
-    `SELECT check_files, files_in_check, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check
+    `SELECT check_files, check_files_in_check, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check
      FROM place_levels
      WHERE project_id = $1 AND (level IS NULL OR level = $2)`,
     [projectId, placeId2 ? 2 : 1],
@@ -37,7 +37,7 @@ export const CheckNode = ({
   const row = res?.rows?.[0]
   const showFiles = isDesigning || row?.check_files !== false
   const filesInCheck =
-    (isDesigning || row?.check_files !== false) && row?.files_in_check !== false
+    (isDesigning || row?.check_files !== false) && row?.check_files_in_check !== false
   const placeLevel = row
   const quantitiesInCheck = placeLevel?.check_quantities_in_check !== false
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false

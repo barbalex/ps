@@ -56,7 +56,7 @@ export const useCheckNavData = ({
   const nav: NavData | undefined = res?.rows?.[0]
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, check_files, check_files_in_check FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
@@ -64,7 +64,7 @@ export const useCheckNavData = ({
   const taxaInCheck = placeLevel?.check_taxa_in_check !== false
   const filesInCheck =
     (isDesigning || placeLevel?.check_files !== false) &&
-    placeLevel?.files_in_check !== false
+    placeLevel?.check_files_in_check !== false
 
   const parentArray = [
     'data',

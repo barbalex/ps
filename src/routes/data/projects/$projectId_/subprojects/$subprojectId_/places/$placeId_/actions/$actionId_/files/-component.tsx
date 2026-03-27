@@ -11,10 +11,10 @@ export const RouteComponent = () => {
   const { projectId, subprojectId, placeId, actionId } = routeApi.useParams()
 
   const placeLevelRes = useLiveQuery(
-    `SELECT files_in_action FROM place_levels WHERE project_id = $1 AND level = 1`,
+    `SELECT action_files_in_action FROM place_levels WHERE project_id = $1 AND level = 1`,
     [projectId],
   )
-  const filesInAction = placeLevelRes?.rows?.[0]?.files_in_action !== false
+  const filesInAction = placeLevelRes?.rows?.[0]?.action_files_in_action !== false
 
   return (
     <Files

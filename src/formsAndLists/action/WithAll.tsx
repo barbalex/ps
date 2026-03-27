@@ -73,7 +73,7 @@ export const ActionWithAll = ({
   const taxaCount = taxaCountRes?.rows?.[0]?.count ?? 0
 
   const placeLevelRes = useLiveQuery(
-    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, action_files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
@@ -81,7 +81,7 @@ export const ActionWithAll = ({
   const taxaInAction = placeLevel?.action_taxa_in_action !== false
   const filesInAction =
     (isDesigning || placeLevel?.action_files !== false) &&
-    placeLevel?.files_in_action !== false
+    placeLevel?.action_files_in_action !== false
   const showQuantities =
     quantitiesInAction &&
     (isDesigning || placeLevel?.action_quantities !== false)
