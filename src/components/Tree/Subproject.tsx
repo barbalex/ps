@@ -36,6 +36,9 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
+  const filesInSubproject =
+    project?.subproject_files_in_subproject !== false
+  const showFilesNav = showFiles && !filesInSubproject
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
   const showGoals = isDesigning || (project?.goals ?? true)
@@ -151,7 +154,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             <SubprojectQcsNode projectId={projectId} subprojectId={nav.id} />
           )}
           <SubprojectQcsRunNode projectId={projectId} subprojectId={nav.id} />
-          {showFiles && (
+          {showFilesNav && (
             <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}
           {showCharts && (
