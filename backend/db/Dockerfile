@@ -22,6 +22,7 @@ RUN apt-get install -y \
 RUN pgxn install temporal_tables
 
 # now jobmon and partman
+# TODO: check for newer versions
 ARG JOBMON_VERSION
 ARG PARTMAN_VERSION
 ARG JOBMON_CHECKSUM="db67c068ecdc136305eafb25bd8fc737f6b9944d4ef3d59ecf7006933686e272995b1733f1fa1a72bd932443669b26e25647701190d92419226b774707d8cc44"
