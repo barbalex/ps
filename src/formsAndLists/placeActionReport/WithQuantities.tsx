@@ -133,7 +133,6 @@ export const PlaceActionReportWithQuantities = ({ from }) => {
             {showQuantities ? (
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
-                onNavigate={() => navigate({ to: quantitiesUrl })}
                 onHeaderClick={() =>
                   isQuantitiesList
                     ? navigate({ to: actionReportBaseUrl })
