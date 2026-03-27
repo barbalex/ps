@@ -27,7 +27,7 @@ services:
       - wal_level=logical
     restart: always
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql
     networks:
       - network
     healthcheck:
