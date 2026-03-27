@@ -485,7 +485,12 @@ export const Configuration = ({ from }) => {
                 onChange={onChange}
                 validationState={validations?.project_files_in_project?.state}
                 validationMessage={
-                  validations?.project_files_in_project?.message
+                  validations?.project_files_in_project?.message ??
+                  formatMessage({
+                    id: 'altInOwnFormNav',
+                    defaultMessage:
+                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                  })
                 }
               />
             )}
@@ -565,7 +570,12 @@ export const Configuration = ({ from }) => {
                   validations?.subproject_files_in_subproject?.state
                 }
                 validationMessage={
-                  validations?.subproject_files_in_subproject?.message
+                  validations?.subproject_files_in_subproject?.message ??
+                  formatMessage({
+                    id: 'altInOwnFormNav',
+                    defaultMessage:
+                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                  })
                 }
               />
             )}

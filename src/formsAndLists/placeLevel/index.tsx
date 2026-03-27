@@ -280,7 +280,14 @@ export const PlaceLevel = () => {
                 value={row.place_files_in_place ?? true}
                 onChange={onChange}
                 validationState={validations?.place_files_in_place?.state}
-                validationMessage={validations?.place_files_in_place?.message}
+                validationMessage={
+                  validations?.place_files_in_place?.message ??
+                  formatMessage({
+                    id: 'altInOwnFormNav',
+                    defaultMessage:
+                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                  })
+                }
               />
             )}
           </SectionLevel2>
@@ -327,7 +334,12 @@ export const PlaceLevel = () => {
                       validations?.check_quantities_in_check?.state
                     }
                     validationMessage={
-                      validations?.check_quantities_in_check?.message
+                      validations?.check_quantities_in_check?.message ??
+                      formatMessage({
+                        id: 'altInOwnFormNav',
+                        defaultMessage:
+                          'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                      })
                     }
                   />
                 )}
@@ -353,7 +365,12 @@ export const PlaceLevel = () => {
                     onChange={onChange}
                     validationState={validations?.check_taxa_in_check?.state}
                     validationMessage={
-                      validations?.check_taxa_in_check?.message
+                      validations?.check_taxa_in_check?.message ??
+                      formatMessage({
+                        id: 'altInOwnFormNav',
+                        defaultMessage:
+                          'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                      })
                     }
                   />
                 )}
@@ -378,7 +395,14 @@ export const PlaceLevel = () => {
                     value={row.check_files_in_check ?? true}
                     onChange={onChange}
                     validationState={validations?.check_files_in_check?.state}
-                    validationMessage={validations?.check_files_in_check?.message}
+                    validationMessage={
+                      validations?.check_files_in_check?.message ??
+                      formatMessage({
+                        id: 'altInOwnFormNav',
+                        defaultMessage:
+                          'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                      })
+                    }
                   />
                 )}
                 <SwitchField
@@ -426,7 +450,12 @@ export const PlaceLevel = () => {
                         }
                         validationMessage={
                           validations?.place_check_report_quantities_in_report
-                            ?.message
+                            ?.message ??
+                          formatMessage({
+                            id: 'altInOwnFormNav',
+                            defaultMessage:
+                              'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                          })
                         }
                       />
                     )}
@@ -478,7 +507,12 @@ export const PlaceLevel = () => {
                       validations?.action_quantities_in_action?.state
                     }
                     validationMessage={
-                      validations?.action_quantities_in_action?.message
+                      validations?.action_quantities_in_action?.message ??
+                      formatMessage({
+                        id: 'altInOwnFormNav',
+                        defaultMessage:
+                          'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                      })
                     }
                   />
                 )}
@@ -504,7 +538,12 @@ export const PlaceLevel = () => {
                     onChange={onChange}
                     validationState={validations?.action_taxa_in_action?.state}
                     validationMessage={
-                      validations?.action_taxa_in_action?.message
+                      validations?.action_taxa_in_action?.message ??
+                      formatMessage({
+                        id: 'altInOwnFormNav',
+                        defaultMessage:
+                          'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                      })
                     }
                   />
                 )}
@@ -529,7 +568,14 @@ export const PlaceLevel = () => {
                     value={row.action_files_in_action ?? true}
                     onChange={onChange}
                     validationState={validations?.action_files_in_action?.state}
-                    validationMessage={validations?.action_files_in_action?.message}
+                    validationMessage={
+                      validations?.action_files_in_action?.message ??
+                      formatMessage({
+                        id: 'altInOwnFormNav',
+                        defaultMessage:
+                          'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                      })
+                    }
                   />
                 )}
                 <SwitchField
@@ -577,7 +623,12 @@ export const PlaceLevel = () => {
                         }
                         validationMessage={
                           validations?.place_action_report_quantities_in_report
-                            ?.message
+                            ?.message ??
+                          formatMessage({
+                            id: 'altInOwnFormNav',
+                            defaultMessage:
+                              'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                          })
                         }
                       />
                     )}
