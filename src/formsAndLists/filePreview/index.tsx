@@ -57,11 +57,12 @@ export const FilePreview = ({ from }) => {
   const isNotViewable = !isImage && !isPdf && !isReactDocViewable
 
   return (
-    <>
-      <Uploader />
-      <div ref={previewRef} className={styles.container}>
-        <Header row={row} previewRef={previewRef} />
-        <div className={styles.file} ref={ref}>
+    <div ref={previewRef} className="form-outer-container">
+      <div style={{ height: 0, overflow: 'hidden' }}>
+        <Uploader from={from} />
+      </div>
+      <Header row={row} previewRef={previewRef} from={from} />
+      <div className={styles.file} ref={ref}>
           {isImage && row.url && width && (
             <img
               src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
@@ -106,8 +107,7 @@ export const FilePreview = ({ from }) => {
               className={styles.text}
             >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
           )}
-        </div>
       </div>
-    </>
+    </div>
   )
 }
