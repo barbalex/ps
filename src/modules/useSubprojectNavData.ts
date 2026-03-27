@@ -45,6 +45,8 @@ type NavData = {
   subproject_users_count?: number | null
   files_count_filtered?: number | null
   files_count_unfiltered?: number | null
+  files_active_subprojects?: boolean | null
+  subproject_files_in_subproject?: boolean | null
   charts?: boolean | null
   charts_count?: number | null
 }
@@ -100,6 +102,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         p.occurrences AS occurrences,
         p.taxa AS taxa,
         p.charts AS charts,
+        p.files_active_subprojects AS files_active_subprojects,
+        p.subproject_files_in_subproject AS subproject_files_in_subproject,
         places_count_unfiltered.count AS places_count_unfiltered,
         places_count_filtered.count AS places_count_filtered,
         place_name_plural.name_plural_${language} AS place_name_plural,
@@ -302,19 +306,24 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             },
           ]
         : []),
-      {
-        id: 'files',
-        label: buildNavLabel({
-          loading,
-          isFiltered: filesIsFiltered,
-          countFiltered: nav?.files_count_filtered ?? 0,
-          countUnfiltered: nav?.files_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'mn58Sh',
-            defaultMessage: 'Dateien',
-          }),
-        }),
-      },
+      ...((designing || (nav?.files_active_subprojects ?? true)) &&
+      nav?.subproject_files_in_subproject === false
+        ? [
+            {
+              id: 'files',
+              label: buildNavLabel({
+                loading,
+                isFiltered: filesIsFiltered,
+                countFiltered: nav?.files_count_filtered ?? 0,
+                countUnfiltered: nav?.files_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'mn58Sh',
+                  defaultMessage: 'Dateien',
+                }),
+              }),
+            },
+          ]
+        : []),
       ...(designing || (nav?.charts ?? true)
         ? [
             {

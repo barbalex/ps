@@ -119,6 +119,9 @@ export default interface Projects {
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects: boolean | null;
 
+  /** Render files inside the subproject form? Preset: true */
+  subproject_files_in_subproject: boolean | null;
+
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs: string | null;
 
@@ -275,6 +278,12 @@ export interface ProjectsInitializer {
    */
   files_active_subprojects?: boolean | null;
 
+  /**
+   * Render files inside the subproject form? Preset: true
+   * Default value: true
+   */
+  subproject_files_in_subproject?: boolean | null;
+
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs?: string | null;
 
@@ -397,6 +406,9 @@ export interface ProjectsMutator {
 
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects?: boolean | null;
+
+  /** Render files inside the subproject form? Preset: true */
+  subproject_files_in_subproject?: boolean | null;
 
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs?: string | null;

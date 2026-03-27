@@ -164,6 +164,7 @@ CREATE TABLE IF NOT EXISTS projects(
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
+  subproject_files_in_subproject boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -206,6 +207,7 @@ COMMENT ON COLUMN projects.charts IS 'Whether charts (subproject) are shown. Pre
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
+COMMENT ON COLUMN projects.subproject_files_in_subproject IS 'Render files inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 

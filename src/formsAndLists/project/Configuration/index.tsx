@@ -52,6 +52,10 @@ export const Configuration = ({ from }) => {
     row?.[`subproject_name_plural_${lang}`] ??
     row?.subproject_name_plural ??
     'Arten'
+  const subprojectNameSingular =
+    row?.[`subproject_name_singular_${lang}`] ??
+    row?.subproject_name_singular ??
+    'Teilprojekt'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -512,6 +516,27 @@ export const Configuration = ({ from }) => {
               validationState={validations?.files_active_subprojects?.state}
               validationMessage={validations?.files_active_subprojects?.message}
             />
+            {(row.files_active_subprojects ?? false) && (
+              <SwitchField
+                label={formatMessage(
+                  {
+                    id: 'fH8JmQ',
+                    defaultMessage:
+                      'Dateien in {subprojectNameSingular} anzeigen',
+                  },
+                  { subprojectNameSingular },
+                )}
+                name="subproject_files_in_subproject"
+                value={row.subproject_files_in_subproject ?? true}
+                onChange={onChange}
+                validationState={
+                  validations?.subproject_files_in_subproject?.state
+                }
+                validationMessage={
+                  validations?.subproject_files_in_subproject?.message
+                }
+              />
+            )}
           </div>
         </Section>
         <Section
