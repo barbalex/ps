@@ -8,6 +8,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
+import { SectionLevel2 } from '../../components/shared/SectionLevel2.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -242,9 +243,8 @@ export const PlaceLevel = () => {
                 'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert.',
             })}
           </SectionDescription>
-          <Section
+          <SectionLevel2
             title={placeName}
-            titleStyle={{ position: 'relative', top: 'auto' }}
           >
             <SwitchField
               label={formatMessage({
@@ -265,13 +265,12 @@ export const PlaceLevel = () => {
               validationState={validations?.place_files?.state}
               validationMessage={validations?.place_files?.message}
             />
-          </Section>
-          <Section
+          </SectionLevel2>
+          <SectionLevel2
             title={formatMessage({
               id: 'sK0PjF',
               defaultMessage: 'Kontrollen',
             })}
-            titleStyle={{ position: 'relative', top: 'auto' }}
           >
             <SwitchField
               label={formatMessage({
@@ -417,13 +416,12 @@ export const PlaceLevel = () => {
                 )}
               </>
             )}
-          </Section>
-          <Section
+          </SectionLevel2>
+          <SectionLevel2
             title={formatMessage({
               id: 'pH7MgC',
               defaultMessage: 'Massnahmen',
             })}
-            titleStyle={{ position: 'relative', top: 'auto' }}
           >
             <SwitchField
               label={formatMessage({
@@ -569,7 +567,7 @@ export const PlaceLevel = () => {
                 )}
               </>
             )}
-          </Section>
+          </SectionLevel2>
         </Section>
       </div>
     </div>
