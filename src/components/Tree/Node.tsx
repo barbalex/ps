@@ -50,6 +50,7 @@ export const Node = ({
       <Button
         aria-label="toggle"
         size="small"
+        appearance="transparent"
         icon={
           !childrenCount ? (
             <NoChildrenIcon className={styles.svg} />

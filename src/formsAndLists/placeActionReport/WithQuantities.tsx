@@ -91,7 +91,7 @@ export const PlaceActionReportWithQuantities = ({ from }) => {
   const isQuantitiesOpen =
     location.pathname.endsWith('/quantities') ||
     location.pathname.includes('/quantities/')
-  const isQuantitiesList = location.pathname.endsWith('/quantities')
+  const isQuantitiesList = /\/quantities\/?$/.test(location.pathname)
 
   const actionReportBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/action-reports/${placeActionReportId}`
   const quantitiesUrl = `${actionReportBaseUrl}/quantities`
@@ -152,7 +152,10 @@ export const PlaceActionReportWithQuantities = ({ from }) => {
           </>
         ) : (
           <NotFound
-            table={formatMessage({ id: 'YMGqLf', defaultMessage: 'Massnahmen-Bericht' })}
+            table={formatMessage({
+              id: 'YMGqLf',
+              defaultMessage: 'Massnahmen-Bericht',
+            })}
             id={placeActionReportId}
           />
         )}
