@@ -280,7 +280,7 @@ export const PlaceLevel = () => {
               validationState={validations?.checks?.state}
               validationMessage={validations?.checks?.message}
             />
-            {(isDesigning || row.checks) && (
+            {(row.checks) && (
               <>
                 <SwitchField
                   label={formatMessage({
@@ -293,7 +293,7 @@ export const PlaceLevel = () => {
                   validationState={validations?.check_quantities?.state}
                   validationMessage={validations?.check_quantities?.message}
                 />
-                {(isDesigning || row.check_quantities) && (
+                {(row.check_quantities) && (
                   <SwitchField
                     label={formatMessage({
                       id: 'dR0VsL',
@@ -321,7 +321,7 @@ export const PlaceLevel = () => {
                   validationState={validations?.check_taxa?.state}
                   validationMessage={validations?.check_taxa?.message}
                 />
-                {(isDesigning || row.check_taxa) && (
+                {(row.check_taxa) && (
                   <SwitchField
                     label={formatMessage({
                       id: 'gE4ItL',
@@ -347,7 +347,7 @@ export const PlaceLevel = () => {
                   validationState={validations?.check_files?.state}
                   validationMessage={validations?.check_files?.message}
                 />
-                {(isDesigning || row.check_files) && (
+                {(row.check_files) && (
                   <SwitchField
                     label={formatMessage({
                       id: 'rN5QwT',
@@ -363,7 +363,7 @@ export const PlaceLevel = () => {
               </>
             )}
           </Section>
-          {(isDesigning || row.checks) && (
+          {(row.checks) && (
             <Section
               title={formatMessage({
                 id: 'nF5KeA',
@@ -382,7 +382,7 @@ export const PlaceLevel = () => {
                 validationState={validations?.place_check_reports?.state}
                 validationMessage={validations?.place_check_reports?.message}
               />
-              {(isDesigning || row.place_check_reports) && (
+              {(row.place_check_reports) && (
                 <>
                   <SwitchField
                     label={formatMessage({
@@ -399,7 +399,7 @@ export const PlaceLevel = () => {
                       validations?.place_check_report_quantities?.message
                     }
                   />
-                  {(isDesigning || row.place_check_report_quantities) && (
+                  {(row.place_check_report_quantities) && (
                     <SwitchField
                       label={formatMessage({
                         id: 'qH7MpR4',
@@ -442,7 +442,7 @@ export const PlaceLevel = () => {
               validationState={validations?.actions?.state}
               validationMessage={validations?.actions?.message}
             />
-            {(isDesigning || row.actions) && (
+            {(row.actions) && (
               <>
                 <SwitchField
                   label={formatMessage({
@@ -455,7 +455,7 @@ export const PlaceLevel = () => {
                   validationState={validations?.action_quantities?.state}
                   validationMessage={validations?.action_quantities?.message}
                 />
-                {(isDesigning || row.action_quantities) && (
+                {(row.action_quantities) && (
                   <SwitchField
                     label={formatMessage({
                       id: 'fD5OsU',
@@ -483,7 +483,7 @@ export const PlaceLevel = () => {
                   validationState={validations?.action_taxa?.state}
                   validationMessage={validations?.action_taxa?.message}
                 />
-                {(isDesigning || row.action_taxa) && (
+                {(row.action_taxa) && (
                   <SwitchField
                     label={formatMessage({
                       id: 'rS3TuV',
@@ -509,7 +509,7 @@ export const PlaceLevel = () => {
                   validationState={validations?.action_files?.state}
                   validationMessage={validations?.action_files?.message}
                 />
-                {(isDesigning || row.action_files) && (
+                {(row.action_files) && (
                   <SwitchField
                     label={formatMessage({
                       id: 'gH3IjK',
@@ -525,7 +525,7 @@ export const PlaceLevel = () => {
               </>
             )}
           </Section>
-          {(isDesigning || row.actions) && (
+          {(row.actions) && (
             <Section
               title={formatMessage({
                 id: 'eV3FxH',
@@ -544,7 +544,7 @@ export const PlaceLevel = () => {
                 validationState={validations?.place_action_reports?.state}
                 validationMessage={validations?.place_action_reports?.message}
               />
-              {(isDesigning || row.place_action_reports) && (
+              {(row.place_action_reports) && (
                 <>
                   <SwitchField
                     label={formatMessage({
@@ -561,7 +561,7 @@ export const PlaceLevel = () => {
                       validations?.place_action_report_quantities?.message
                     }
                   />
-                  {(isDesigning || row.place_action_report_quantities) && (
+                  {(row.place_action_report_quantities) && (
                     <SwitchField
                       label={formatMessage({
                         id: 'gX5HzJ',
