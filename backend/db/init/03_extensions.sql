@@ -1,0 +1,2 @@
+CREATE EXTENSION temporal_tables;
+CREATE EXTENSION postgis;
