@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   files_in_action boolean DEFAULT TRUE,
   check_files boolean DEFAULT TRUE,
   files_in_check boolean DEFAULT TRUE,
-  -- label depends on language, thus generated in the app code
+  -- label depends on language, thus generated in app code
   label text GENERATED ALWAYS AS (
     CASE
       WHEN name_plural_de IS NULL THEN place_level_id::text
