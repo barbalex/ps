@@ -13,6 +13,7 @@ import { LabelBy } from '../../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../../components/shared/SwitchField.tsx'
 import { Section } from '../../../components/shared/Section.tsx'
+import { SectionLevel2 } from '../../../components/shared/SectionLevel2.tsx'
 import { SectionDescription } from '../../../components/shared/SectionDescription.tsx'
 import { Type } from './Type.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
@@ -429,9 +430,14 @@ export const Configuration = ({ from }) => {
                 'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert.',
             })}
           </SectionDescription>
-          <div className="checkboxfield-list">
+          <SectionLevel2
+            title={formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}
+          >
             <SwitchField
-              label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`}
+              label={formatMessage({
+                id: 'CiJ0SG',
+                defaultMessage: 'Berichte',
+              })}
               name="project_reports"
               value={row.project_reports ?? true}
               onChange={onChange}
@@ -441,7 +447,7 @@ export const Configuration = ({ from }) => {
             <SwitchField
               label={formatMessage({
                 id: 'tV2WxY',
-                defaultMessage: 'Projekte: WMS-Dienste und WMS-Ebenen',
+                defaultMessage: 'WMS-Dienste und WMS-Ebenen',
               })}
               name="wms_layers"
               value={row.wms_layers ?? false}
@@ -452,7 +458,7 @@ export const Configuration = ({ from }) => {
             <SwitchField
               label={formatMessage({
                 id: 'vX4YzA',
-                defaultMessage: 'Projekte: WFS-Dienste und Vektor-Ebenen',
+                defaultMessage: 'WFS-Dienste und Vektor-Ebenen',
               })}
               name="vector_layers"
               value={row.vector_layers ?? false}
@@ -461,7 +467,7 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.vector_layers?.message}
             />
             <SwitchField
-              label={`${formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
+              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
               name="files_active_projects"
               value={row.files_active_projects ?? false}
               onChange={onChange}
@@ -483,8 +489,13 @@ export const Configuration = ({ from }) => {
                 }
               />
             )}
+          </SectionLevel2>
+          <SectionLevel2 title={subprojectName}>
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`}
+              label={formatMessage({
+                id: 'CiJ0SG',
+                defaultMessage: 'Berichte',
+              })}
               name="subproject_reports"
               value={row.subproject_reports ?? true}
               onChange={onChange}
@@ -492,7 +503,7 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.subproject_reports?.message}
             />
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })}`}
+              label={formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })}
               name="goals"
               value={row.goals ?? true}
               onChange={onChange}
@@ -500,7 +511,10 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.goals?.message}
             />
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: 'yK5Pq6', defaultMessage: 'Beobachtungen (inkl. Importe)' })}`}
+              label={formatMessage({
+                id: 'yK5Pq6',
+                defaultMessage: 'Beobachtungen (inkl. Importe)',
+              })}
               name="occurrences"
               value={row.occurrences ?? true}
               onChange={onChange}
@@ -508,7 +522,7 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.occurrences?.message}
             />
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`}
+              label={formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}
               name="taxa"
               value={row.taxa ?? true}
               onChange={onChange}
@@ -516,7 +530,10 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.taxa?.message}
             />
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' })}`}
+              label={formatMessage({
+                id: 'ZPEO8P',
+                defaultMessage: 'Diagramme',
+              })}
               name="charts"
               value={row.charts ?? true}
               onChange={onChange}
@@ -524,7 +541,7 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.charts?.message}
             />
             <SwitchField
-              label={`${subprojectName}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
+              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
               name="files_active_subprojects"
               value={row.files_active_subprojects ?? false}
               onChange={onChange}
@@ -552,7 +569,7 @@ export const Configuration = ({ from }) => {
                 }
               />
             )}
-          </div>
+          </SectionLevel2>
         </Section>
         <Section
           title={formatMessage({
