@@ -1,10 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { FilesWrapper } from '../-files-wrapper.tsx'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files',
 )({
-  component: FilesWrapper,
+  component: Outlet,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')

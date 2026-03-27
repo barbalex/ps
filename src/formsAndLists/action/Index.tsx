@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Action } from './index.tsx'
-import { ActionWithAll } from './WithAll.tsx'
 import { ActionList } from './List.tsx'
 
 export const ActionIndex = ({
@@ -22,10 +21,9 @@ export const ActionIndex = ({
     res?.rows?.[0]?.action_quantities_in_action !== false
   const taxaInAction = res?.rows?.[0]?.action_taxa_in_action !== false
   const filesInAction = res?.rows?.[0]?.files_in_action !== false
-  const allInline = quantitiesInAction && taxaInAction && filesInAction
 
-  if (isRootRoute && !allInline) return <ActionList from={from} />
-  if (quantitiesInAction || taxaInAction || filesInAction)
-    return <ActionWithAll from={from} allInline={allInline} />
+  // Layout route renders ActionWithAll when any sub-section is enabled
+  if (quantitiesInAction || taxaInAction || filesInAction) return null
+  if (isRootRoute) return <ActionList from={from} />
   return <Action from={from} />
 }

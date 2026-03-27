@@ -1,13 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { PlaceCheckReportWithQuantities } from '../../../../../../../../../../../../../formsAndLists/placeCheckReport/WithQuantities.tsx'
-
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$placeCheckReportId_'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$placeCheckReportId_/quantities',
 )({
-  component: () => <PlaceCheckReportWithQuantities from={from} />,
+  component: Outlet,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')

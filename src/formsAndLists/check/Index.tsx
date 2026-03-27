@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Check } from './index.tsx'
-import { CheckWithAll } from './WithAll.tsx'
 import { CheckList } from './List.tsx'
 
 export const CheckIndex = ({
@@ -23,14 +22,9 @@ export const CheckIndex = ({
   const filesInCheck =
     res?.rows?.[0]?.check_files !== false &&
     res?.rows?.[0]?.files_in_check !== false
-  const allInline = quantitiesInCheck && taxaInCheck && filesInCheck
 
-  if (isRootRoute && !allInline) {
-    return <CheckList from={from} />
-  }
-  return quantitiesInCheck || taxaInCheck || filesInCheck ? (
-    <CheckWithAll from={from} allInline={allInline} />
-  ) : (
-    <Check from={from} />
-  )
+  // Layout route renders CheckWithAll when any sub-section is enabled
+  if (quantitiesInCheck || taxaInCheck || filesInCheck) return null
+  if (isRootRoute) return <CheckList from={from} />
+  return <Check from={from} />
 }

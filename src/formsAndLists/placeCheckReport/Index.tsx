@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { PlaceCheckReportList } from './List.tsx'
-import { PlaceCheckReportWithQuantities } from './WithQuantities.tsx'
 
 export const PlaceCheckReportIndex = ({ from }) => {
   const { projectId, placeId2 } = useParams({ from })
@@ -13,9 +12,7 @@ export const PlaceCheckReportIndex = ({ from }) => {
   if (res === undefined) return null
   const quantitiesInReport =
     res?.rows?.[0]?.place_check_report_quantities_in_report !== false
-  return quantitiesInReport ? (
-    <PlaceCheckReportWithQuantities from={from} />
-  ) : (
-    <PlaceCheckReportList from={from} />
-  )
+  // Layout route renders PlaceCheckReportWithQuantities when enabled
+  if (quantitiesInReport) return null
+  return <PlaceCheckReportList from={from} />
 }
