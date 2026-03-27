@@ -289,7 +289,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'tL1QkG',
-                    defaultMessage: 'Kontrollen: Mengen',
+                    defaultMessage: 'Kontroll-Mengen',
                   })}
                   name="check_quantities"
                   value={row.check_quantities ?? false}
@@ -301,8 +301,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'dR0VsL',
-                      defaultMessage:
-                        'Kontrollen: Mengen in Kontrolle anzeigen',
+                      defaultMessage: 'Kontroll-Mengen in Kontrolle anzeigen',
                     })}
                     name="check_quantities_in_check"
                     value={row.check_quantities_in_check ?? true}
@@ -318,7 +317,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'uM2RlH',
-                    defaultMessage: 'Kontrollen: Taxa',
+                    defaultMessage: 'Taxa',
                   })}
                   name="check_taxa"
                   value={row.check_taxa ?? false}
@@ -330,7 +329,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'gE4ItL',
-                      defaultMessage: 'Kontrollen: Taxa in Kontrolle anzeigen',
+                      defaultMessage: 'Taxa in Kontrolle anzeigen',
                     })}
                     name="check_taxa_in_check"
                     value={row.check_taxa_in_check ?? true}
@@ -344,7 +343,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'kL3MnO',
-                    defaultMessage: 'Kontrollen: Dateien',
+                    defaultMessage: 'Dateien',
                   })}
                   name="check_files"
                   value={row.check_files ?? false}
@@ -356,8 +355,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'rN5QwT',
-                      defaultMessage:
-                        'Kontrollen: Dateien in Kontrolle anzeigen',
+                      defaultMessage: 'Dateien in Kontrolle anzeigen',
                     })}
                     name="files_in_check"
                     value={row.files_in_check ?? true}
@@ -369,7 +367,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'nF5KeA',
-                    defaultMessage: 'Kontroll-Berichte',
+                    defaultMessage: 'Berichte',
                   })}
                   name="place_check_reports"
                   value={row.place_check_reports ?? false}
@@ -382,7 +380,7 @@ export const PlaceLevel = () => {
                     <SwitchField
                       label={formatMessage({
                         id: 'oG6LfB',
-                        defaultMessage: 'Kontroll-Berichte: Mengen',
+                        defaultMessage: 'Bericht-Mengen',
                       })}
                       name="place_check_report_quantities"
                       value={row.place_check_report_quantities ?? false}
@@ -398,8 +396,7 @@ export const PlaceLevel = () => {
                       <SwitchField
                         label={formatMessage({
                           id: 'qH7MpR4',
-                          defaultMessage:
-                            'Kontroll-Berichte: Mengen im Bericht anzeigen',
+                          defaultMessage: 'Bericht-Mengen im Bericht anzeigen',
                         })}
                         name="place_check_report_quantities_in_report"
                         value={
@@ -444,7 +441,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'qI8NhD',
-                    defaultMessage: 'Massnahmen: Mengen',
+                    defaultMessage: 'Massnahmen-Mengen',
                   })}
                   name="action_quantities"
                   value={row.action_quantities ?? false}
@@ -456,8 +453,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'fD5OsU',
-                      defaultMessage:
-                        'Massnahmen: Mengen in Massnahme anzeigen',
+                      defaultMessage: 'Massnahmen-Mengen in Massnahme anzeigen',
                     })}
                     name="action_quantities_in_action"
                     value={row.action_quantities_in_action ?? true}
@@ -473,7 +469,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'pQ2RsT',
-                    defaultMessage: 'Massnahmen: Taxa',
+                    defaultMessage: 'Taxa',
                   })}
                   name="action_taxa"
                   value={row.action_taxa ?? false}
@@ -485,7 +481,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'rS3TuV',
-                      defaultMessage: 'Massnahmen: Taxa in Massnahme anzeigen',
+                      defaultMessage: 'Taxa in Massnahme anzeigen',
                     })}
                     name="action_taxa_in_action"
                     value={row.action_taxa_in_action ?? true}
@@ -499,7 +495,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'fG2HiJ',
-                    defaultMessage: 'Massnahmen: Dateien',
+                    defaultMessage: 'Dateien',
                   })}
                   name="action_files"
                   value={row.action_files ?? false}
@@ -511,8 +507,7 @@ export const PlaceLevel = () => {
                   <SwitchField
                     label={formatMessage({
                       id: 'gH3IjK',
-                      defaultMessage:
-                        'Massnahmen: Dateien in Massnahme anzeigen',
+                      defaultMessage: 'Dateien in Massnahme anzeigen',
                     })}
                     name="files_in_action"
                     value={row.files_in_action ?? true}
@@ -524,7 +519,7 @@ export const PlaceLevel = () => {
                 <SwitchField
                   label={formatMessage({
                     id: 'eV3FxH',
-                    defaultMessage: 'Massnahmen-Berichte',
+                    defaultMessage: 'Berichte',
                   })}
                   name="place_action_reports"
                   value={row.place_action_reports ?? false}
@@ -537,7 +532,7 @@ export const PlaceLevel = () => {
                     <SwitchField
                       label={formatMessage({
                         id: 'fW4GyI',
-                        defaultMessage: 'Massnahmen-Berichte: Mengen',
+                        defaultMessage: 'Bericht-Mengen',
                       })}
                       name="place_action_report_quantities"
                       value={row.place_action_report_quantities ?? false}
@@ -553,8 +548,7 @@ export const PlaceLevel = () => {
                       <SwitchField
                         label={formatMessage({
                           id: 'gX5HzJ',
-                          defaultMessage:
-                            'Massnahmen-Berichte: Mengen im Bericht anzeigen',
+                          defaultMessage: 'Bericht-Mengen im Bericht anzeigen',
                         })}
                         name="place_action_report_quantities_in_report"
                         value={
