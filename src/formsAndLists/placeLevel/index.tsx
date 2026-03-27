@@ -247,7 +247,10 @@ export const PlaceLevel = () => {
             titleStyle={{ position: 'relative', top: 'auto' }}
           >
             <SwitchField
-              label={`${placeName}: ${formatMessage({ id: 'vN3SmI', defaultMessage: 'Beobachtungen zugeordnet' })}`}
+              label={formatMessage({
+                id: 'vN3SmI',
+                defaultMessage: 'Beobachtungen zugeordnet',
+              })}
               name="observations"
               value={row.observations ?? false}
               onChange={onChange}
@@ -255,7 +258,7 @@ export const PlaceLevel = () => {
               validationMessage={validations?.observations?.message}
             />
             <SwitchField
-              label={`${placeName}: ${formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}`}
+              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
               name="place_files"
               value={row.place_files ?? false}
               onChange={onChange}
@@ -551,7 +554,7 @@ export const PlaceLevel = () => {
                         label={formatMessage({
                           id: 'gX5HzJ',
                           defaultMessage:
-                            'Massnahmen-Berichte: Mengen im Massnahmen-Bericht anzeigen',
+                            'Massnahmen-Berichte: Mengen im Bericht anzeigen',
                         })}
                         name="place_action_report_quantities_in_report"
                         value={
