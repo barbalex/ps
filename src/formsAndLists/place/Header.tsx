@@ -45,7 +45,11 @@ export const Header = ({
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
     from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/place/'
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/place' ||
+    from ===
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_' ||
+    from ===
+      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)

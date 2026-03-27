@@ -37,6 +37,8 @@ export const PlaceChildren = ({
 
   // need place_level to know whether to show files
   const showFiles = isDesigning || placeLevel?.place_files !== false
+  const filesInPlace = placeLevel?.place_files_in_place !== false
+  const showFilesNav = showFiles && !filesInPlace
 
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -132,7 +134,7 @@ export const PlaceChildren = ({
         placeId2={placeId2}
         level={level + 1}
       />
-      {showFiles && (
+      {showFilesNav && (
         <FilesNode
           projectId={projectId}
           subprojectId={subprojectId}

@@ -172,10 +172,12 @@ export const usePlaceNavData = ({
   const projectType = projectTypeRes?.rows?.[0]?.type
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
+  const showFiles = isDesigning || placeLevel?.place_files !== false
+  const filesInPlace = placeLevel?.place_files_in_place !== false
   const currentLevel: 1 | 2 = placeId2 ? 2 : 1
   const fallbackCurrent = getPlaceFallbackNames(
     projectType,
@@ -323,7 +325,7 @@ export const usePlaceNavData = ({
           }),
         }),
       },
-      ...(isDesigning || placeLevel?.place_files !== false
+      ...(showFiles && !filesInPlace
         ? [
             {
               id: 'files',

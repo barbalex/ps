@@ -40,6 +40,8 @@ export const PlaceLevel = () => {
   const row: PlaceLevels | undefined = res?.rows?.[0]
 
   const lang = locale.split('-')[0]
+  const placeNameSingular =
+    row?.[`name_singular_${lang}`] ?? row?.name_singular_de ?? 'Ort'
   const placeName =
     row?.[`name_plural_${lang}`] ?? row?.name_plural_de ?? 'Orte'
 
@@ -265,6 +267,22 @@ export const PlaceLevel = () => {
               validationState={validations?.place_files?.state}
               validationMessage={validations?.place_files?.message}
             />
+            {row.place_files && (
+              <SwitchField
+                label={formatMessage(
+                  {
+                    id: 'wQ9LmN',
+                    defaultMessage: 'Dateien in {placeNameSingular} anzeigen',
+                  },
+                  { placeNameSingular },
+                )}
+                name="place_files_in_place"
+                value={row.place_files_in_place ?? true}
+                onChange={onChange}
+                validationState={validations?.place_files_in_place?.state}
+                validationMessage={validations?.place_files_in_place?.message}
+              />
+            )}
           </SectionLevel2>
           <SectionLevel2
             title={formatMessage({

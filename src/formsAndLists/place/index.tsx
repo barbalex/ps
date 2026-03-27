@@ -21,6 +21,7 @@ export const Place = ({ from }) => {
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const currentPlaceId = placeId2 ?? placeId
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -30,7 +31,7 @@ export const Place = ({ from }) => {
     FROM
       places
     WHERE place_id = $1`,
-    [placeId2 ?? placeId],
+    [currentPlaceId],
   )
   const row: Places | undefined = res?.rows?.[0]
 
@@ -59,7 +60,7 @@ export const Place = ({ from }) => {
     try {
       await db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
         value,
-        placeId,
+        currentPlaceId,
       ])
     } catch (error) {
       setValidations((prev) => ({
@@ -76,7 +77,7 @@ export const Place = ({ from }) => {
     addOperation({
       table: 'places',
       rowIdName: 'place_id',
-      rowId: placeId,
+      rowId: currentPlaceId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },

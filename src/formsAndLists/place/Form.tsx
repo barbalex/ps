@@ -22,6 +22,7 @@ export const PlaceForm = ({
   orIndex,
   from,
   autoFocusRef,
+  withContainer = true,
 }) => {
   const { formatMessage } = useIntl()
   const { subprojectId, projectId, placeId2 } = useParams({ from })
@@ -46,8 +47,8 @@ export const PlaceForm = ({
   // TODO: only show parent place if level 2 exists in place_levels
   const parentPlaceWhere = `level = 1 and subproject_id = '${subprojectId}'`
 
-  return (
-    <div className="form-container">
+  const content = (
+    <>
       {!isFilter && (
         <>
           {designing && (
@@ -123,7 +124,10 @@ export const PlaceForm = ({
         ref={row.level !== 2 ? autoFocusRef : undefined}
       />
       <SwitchField
-        label={formatMessage({ id: 'bEpPuU', defaultMessage: 'Relevant für Berichte' })}
+        label={formatMessage({
+          id: 'bEpPuU',
+          defaultMessage: 'Relevant für Berichte',
+        })}
         name="relevant_for_reports"
         value={row.relevant_for_reports}
         onChange={onChange}
@@ -131,6 +135,10 @@ export const PlaceForm = ({
         validationMessage={validations?.relevant_for_reports?.message}
       />
       <EditingGeometry row={row} table="places" />
-    </div>
+    </>
   )
+
+  if (!withContainer) return content
+
+  return <div className="form-container">{content}</div>
 }
