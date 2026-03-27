@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
-import { useParams } from '@tanstack/react-router'
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  Outlet,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -13,21 +18,23 @@ import { PlaceActionReportForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import { PlaceActionReportQuantityInline } from '../placeActionReportQuantity/Inline.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type PlaceActionReports from '../../models/public/PlaceActionReports.ts'
 
 import '../../form.css'
 
-const { Button, Tooltip } = fluentUiReactComponents
+const { Button } = fluentUiReactComponents
 
 export const PlaceActionReportWithQuantities = ({ from }) => {
-  const { placeActionReportId, projectId, placeId2 } = useParams({ from })
+  const { placeActionReportId, projectId, placeId, placeId2, subprojectId } =
+    useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const db = usePGlite()
 
@@ -37,11 +44,11 @@ export const PlaceActionReportWithQuantities = ({ from }) => {
   )
   const row: PlaceActionReports | undefined = res?.rows?.[0]
 
-  const quantitiesRes = useLiveQuery(
-    `SELECT place_action_report_quantity_id FROM place_action_report_quantities WHERE place_action_report_id = $1 ORDER BY place_action_report_quantity_id`,
+  const quantitiesCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM place_action_report_quantities WHERE place_action_report_id = $1`,
     [placeActionReportId],
   )
-  const quantities = quantitiesRes?.rows ?? []
+  const quantitiesCount = quantitiesCountRes?.rows?.[0]?.count ?? 0
 
   const placeLevelRes = useLiveQuery(
     `SELECT place_action_report_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -81,9 +88,32 @@ export const PlaceActionReportWithQuantities = ({ from }) => {
     })
   }
 
+  const isQuantitiesOpen =
+    location.pathname.endsWith('/quantities') ||
+    location.pathname.includes('/quantities/')
+  const isQuantitiesList = location.pathname.endsWith('/quantities')
+
+  const actionReportBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/action-reports/${placeActionReportId}`
+  const quantitiesUrl = `${actionReportBaseUrl}/quantities`
+
   const addQuantity = async () => {
-    await createPlaceActionReportQuantity({ placeActionReportId })
+    const id = await createPlaceActionReportQuantity({ placeActionReportId })
+    if (!id) return
+    navigate({ to: `${quantitiesUrl}/${id}` })
   }
+
+  const quantitiesHeaderActions =
+    showQuantities && isQuantitiesList ? (
+      <Button
+        size="medium"
+        title={formatMessage({
+          id: 'V6iUlF',
+          defaultMessage: 'Menge hinzufügen',
+        })}
+        icon={<FaPlus />}
+        onClick={addQuantity}
+      />
+    ) : undefined
 
   return (
     <div className="form-outer-container">
@@ -100,50 +130,24 @@ export const PlaceActionReportWithQuantities = ({ from }) => {
               autoFocusRef={autoFocusRef}
               from={from}
             />
-            {showQuantities && (
+            {showQuantities ? (
               <Section
-                title={formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                })}
+                title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
+                onNavigate={() => navigate({ to: quantitiesUrl })}
+                onHeaderClick={() =>
+                  isQuantitiesOpen
+                    ? navigate({ to: actionReportBaseUrl })
+                    : navigate({ to: quantitiesUrl })
+                }
+                isOpen={isQuantitiesOpen}
+                titleStyle={{ marginBottom: 0 }}
+                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                headerActions={quantitiesHeaderActions}
               >
-                {quantities.map((q, i) => (
-                  <div key={q.place_action_report_quantity_id}>
-                    {i > 0 && (
-                      <div
-                        style={{
-                          borderTop: '8px solid rgb(225, 247, 224)',
-                          marginLeft: -10,
-                          marginRight: -10,
-                          marginBottom: 8,
-                        }}
-                      />
-                    )}
-                    <PlaceActionReportQuantityInline
-                      placeActionReportQuantityId={q.place_action_report_quantity_id}
-                      projectId={projectId}
-                    />
-                  </div>
-                ))}
-                {quantities.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
-                )}
-                <Tooltip
-                  content={formatMessage({
-                    id: 'V6iUlF',
-                    defaultMessage: 'Menge hinzufügen',
-                  })}
-                  relationship="label"
-                >
-                  <Button icon={<FaPlus />} onClick={addQuantity} />
-                </Tooltip>
+                {isQuantitiesOpen && <Outlet />}
               </Section>
+            ) : (
+              isQuantitiesOpen && <Outlet />
             )}
           </>
         ) : (
