@@ -30,7 +30,7 @@ services:
       - -c
       - pg_partman_bgw.dbname=${POSTGRES_DB}
       - -c
-      - pg_partman_bgw.role=${POSTGRES_USER}
+      - pg_partman_bgw.role=partman_user
       - -c
       - pg_partman_bgw.interval=3600
     restart: always
