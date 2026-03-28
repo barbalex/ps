@@ -10,7 +10,6 @@ import {
   createHistoryFieldLabelFormatter,
   getDiffFields,
   getDisplayFields,
-  stringifyHistoryValue,
 } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
@@ -356,19 +355,15 @@ export const PlaceHistoryCompare = ({
       displayFields={displayFields}
       differentFields={diffFields}
       formatFieldLabel={formatFieldLabel}
-      formatFieldValue={(field, history) =>
-        field === 'deleted'
-          ? history.deleted
-            ? formatMessage({
-                id: 'bCommonYes',
-                defaultMessage: 'Ja',
-              })
-            : formatMessage({
-                id: 'bCommonNo',
-                defaultMessage: 'Nein',
-              })
-          : stringifyHistoryValue(history[field])
-      }
+      defaultBooleanFieldLabels={{
+        deleted: {
+          trueLabel: formatMessage({ id: 'bCommonYes', defaultMessage: 'Ja' }),
+          falseLabel: formatMessage({
+            id: 'bCommonNo',
+            defaultMessage: 'Nein',
+          }),
+        },
+      }}
       onRestoreDiffValues={onRestoreDiffValues}
       restoreLabel={formatMessage({
         id: 'bPlaceRestoreRedValues',

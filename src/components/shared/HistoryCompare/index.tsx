@@ -3,6 +3,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { TbArrowLeft, TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
 import { Loading } from '../Loading.tsx'
+import { stringifyHistoryValue } from './utils.ts'
 
 import styles from './index.module.css'
 
@@ -26,7 +27,11 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   displayFields: string[]
   differentFields: string[]
   formatFieldLabel: (field: string) => ReactNode
-  formatFieldValue: (field: string, history: THistory) => ReactNode
+  formatFieldValue?: (field: string, history: THistory) => ReactNode
+  defaultBooleanFieldLabels?: Record<
+    string,
+    { trueLabel: ReactNode; falseLabel: ReactNode }
+  >
   onRestoreDiffValues: () => void
   restoreLabel: string
   restoreDisabled: boolean
@@ -51,10 +56,22 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   differentFields,
   formatFieldLabel,
   formatFieldValue,
+  defaultBooleanFieldLabels,
   onRestoreDiffValues,
   restoreLabel,
   restoreDisabled,
 }: HistoryCompareProps<THistory>) {
+  const resolveFieldValue = (field: string, history: THistory) => {
+    if (formatFieldValue) return formatFieldValue(field, history)
+
+    const booleanLabels = defaultBooleanFieldLabels?.[field]
+    if (booleanLabels) {
+      return history[field] ? booleanLabels.trueLabel : booleanLabels.falseLabel
+    }
+
+    return stringifyHistoryValue(history[field])
+  }
+
   if (unavailable) {
     return (
       <div className="form-outer-container">
@@ -145,7 +162,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                         >
                           <dl className={styles.valueList}>
                             {displayFields.map((field) => {
-                              const value = formatFieldValue(field, history)
+                              const value = resolveFieldValue(field, history)
                               const isDifferent = differentFields.includes(field)
 
                               return (
