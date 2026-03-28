@@ -365,11 +365,6 @@ export const PlaceHistoryCompare = ({
         },
       }}
       onRestoreDiffValues={onRestoreDiffValues}
-      restoreLabel={formatMessage({
-        id: 'bPlaceRestoreRedValues',
-        defaultMessage: 'Rote Werte wiederherstellen',
-      })}
-      restoreDisabled={!diffFields.length}
     />
   )
 }

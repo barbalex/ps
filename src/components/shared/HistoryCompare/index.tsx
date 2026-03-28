@@ -1,6 +1,7 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { TbArrowLeft, TbChevronLeft, TbChevronRight } from 'react-icons/tb'
+import { useIntl } from 'react-intl'
 
 import { Loading } from '../Loading.tsx'
 import { stringifyHistoryValue } from './utils.ts'
@@ -33,8 +34,6 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
     { trueLabel: ReactNode; falseLabel: ReactNode }
   >
   onRestoreDiffValues: () => void
-  restoreLabel: string
-  restoreDisabled: boolean
 }
 
 export function HistoryCompare<THistory extends Record<string, unknown>>({
@@ -58,9 +57,9 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   formatFieldValue,
   defaultBooleanFieldLabels,
   onRestoreDiffValues,
-  restoreLabel,
-  restoreDisabled,
 }: HistoryCompareProps<THistory>) {
+  const { formatMessage } = useIntl()
+
   const resolveFieldValue = (field: string, history: THistory) => {
     if (formatFieldValue) return formatFieldValue(field, history)
 
@@ -163,10 +162,14 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                           <dl className={styles.valueList}>
                             {displayFields.map((field) => {
                               const value = resolveFieldValue(field, history)
-                              const isDifferent = differentFields.includes(field)
+                              const isDifferent =
+                                differentFields.includes(field)
 
                               return (
-                                <div key={field} style={{ display: 'contents' }}>
+                                <div
+                                  key={field}
+                                  style={{ display: 'contents' }}
+                                >
                                   <dt className={styles.label}>
                                     {formatFieldLabel(field)}
                                   </dt>
@@ -191,9 +194,12 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
               <Button
                 appearance="primary"
                 onClick={onRestoreDiffValues}
-                disabled={restoreDisabled}
+                disabled={!differentFields.length}
               >
-                {restoreLabel}
+                {formatMessage({
+                  id: 'bPlaceRestoreRedValues',
+                  defaultMessage: 'Rote Werte wiederherstellen',
+                })}
               </Button>
             </div>
           </div>
