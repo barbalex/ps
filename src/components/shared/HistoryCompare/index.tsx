@@ -11,13 +11,9 @@ import styles from './index.module.css'
 const { Button, Caption1, Text } = fluentUiReactComponents
 
 type HistoryCompareProps<THistory extends Record<string, unknown>> = {
-  headerTitle: string
-  backLabel: string
+  online: boolean
+  historiesEnabled: boolean
   onBack: () => void
-  unavailable: boolean
-  unavailableText: string
-  leftTitle: string
-  rightTitle: string
   leftContent: ReactNode
   histories: THistory[]
   selectedHistoryIndex: number
@@ -32,13 +28,9 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
 }
 
 export function HistoryCompare<THistory extends Record<string, unknown>>({
-  headerTitle,
-  backLabel,
+  online,
+  historiesEnabled,
   onBack,
-  unavailable,
-  unavailableText,
-  leftTitle,
-  rightTitle,
   leftContent,
   histories,
   selectedHistoryIndex,
@@ -52,6 +44,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   onRestoreDiffValues,
 }: HistoryCompareProps<THistory>) {
   const { formatMessage } = useIntl()
+  const unavailable = !online || !historiesEnabled
 
   const resolveFieldValue = (field: string, history: THistory) => {
     if (formatFieldValue) return formatFieldValue(field, history)
@@ -69,13 +62,27 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
     return (
       <div className="form-outer-container">
         <div className="form-header">
-          <h1>{headerTitle}</h1>
+          <h1>
+            {formatMessage({
+              id: 'bPlaceHistoryFeature',
+              defaultMessage: 'Geschichte',
+            })}
+          </h1>
           <Button icon={<TbArrowLeft />} onClick={onBack} size="small">
-            {backLabel}
+            {formatMessage({
+              id: 'bPlaceHistoryBack',
+              defaultMessage: 'Zurück',
+            })}
           </Button>
         </div>
         <div className="form-container">
-          <Text>{unavailableText}</Text>
+          <Text>
+            {formatMessage({
+              id: 'bPlaceHistoryUnavailable',
+              defaultMessage:
+                'Geschichte ist nur online und bei aktivierter Projekt-Option verfügbar.',
+            })}
+          </Text>
         </div>
       </div>
     )
@@ -84,20 +91,38 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   return (
     <div className="form-outer-container">
       <div className="form-header">
-        <h1>{headerTitle}</h1>
+        <h1>
+          {formatMessage({
+            id: 'bPlaceHistoryFeature',
+            defaultMessage: 'Geschichte',
+          })}
+        </h1>
         <Button icon={<TbArrowLeft />} onClick={onBack} size="small">
-          {backLabel}
+          {formatMessage({
+            id: 'bPlaceHistoryBack',
+            defaultMessage: 'Zurück',
+          })}
         </Button>
       </div>
 
       <div className={styles.container}>
         <section className={styles.panel}>
-          <h2 className={styles.panelTitle}>{leftTitle}</h2>
+          <h2 className={styles.panelTitle}>
+            {formatMessage({
+              id: 'bPlaceCurrentVersion',
+              defaultMessage: 'Aktuelle Version',
+            })}
+          </h2>
           <div className={styles.leftContent}>{leftContent}</div>
         </section>
 
         <section className={styles.panel}>
-          <h2 className={styles.panelTitle}>{rightTitle}</h2>
+          <h2 className={styles.panelTitle}>
+            {formatMessage({
+              id: 'bPlaceHistoricalVersion',
+              defaultMessage: 'Historische Version',
+            })}
+          </h2>
           <div className={styles.rightContent}>
             <div className={styles.sliderHeader}>
               <Button

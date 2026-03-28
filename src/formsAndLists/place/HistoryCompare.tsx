@@ -310,29 +310,9 @@ export const PlaceHistoryCompare = ({
 
   return (
     <HistoryCompare
-      headerTitle={formatMessage({
-        id: 'bPlaceHistoryFeature',
-        defaultMessage: 'Geschichte',
-      })}
-      backLabel={formatMessage({
-        id: 'bPlaceHistoryBack',
-        defaultMessage: 'Zurück',
-      })}
+      online={online}
+      historiesEnabled={historiesEnabled}
       onBack={() => navigate({ to: placePath })}
-      unavailable={!online || !historiesEnabled}
-      unavailableText={formatMessage({
-        id: 'bPlaceHistoryUnavailable',
-        defaultMessage:
-          'Geschichte ist nur online und bei aktivierter Projekt-Option verfügbar.',
-      })}
-      leftTitle={formatMessage({
-        id: 'bPlaceCurrentVersion',
-        defaultMessage: 'Aktuelle Version',
-      })}
-      rightTitle={formatMessage({
-        id: 'bPlaceHistoricalVersion',
-        defaultMessage: 'Historische Version',
-      })}
       leftContent={
         <PlaceForm
           row={row}
