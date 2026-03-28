@@ -261,6 +261,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
       ELSE level::text || '. ' || name_plural_de
     END
   ) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -377,6 +378,7 @@ CREATE TABLE IF NOT EXISTS project_users(
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -401,6 +403,7 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1014,6 +1017,7 @@ CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1050,6 +1054,7 @@ CREATE TABLE IF NOT EXISTS place_users(
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT 'reader',
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1155,6 +1160,7 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_report_design_id::text)) STORED,
   active boolean DEFAULT FALSE,
   design jsonb DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
@@ -1214,6 +1220,7 @@ CREATE TABLE IF NOT EXISTS project_report_subdesigns(
   name text DEFAULT NULL,
   design jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_subdesign_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1239,6 +1246,7 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_design_id::text)) STORED,
   active boolean DEFAULT FALSE,
   design jsonb DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
@@ -1280,6 +1288,7 @@ CREATE TABLE IF NOT EXISTS files(
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
   preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1524,6 +1533,7 @@ CREATE TABLE IF NOT EXISTS wms_services(
   info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL, -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
   label text GENERATED ALWAYS AS (coalesce(nullif(url, ''), wms_service_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1546,6 +1556,7 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL,
   legend_image bytea DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1568,6 +1579,7 @@ CREATE TABLE IF NOT EXISTS wms_layers(
   label text DEFAULT NULL,
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1595,6 +1607,7 @@ CREATE TABLE IF NOT EXISTS wfs_services(
   info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL, -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
   label text GENERATED ALWAYS AS (coalesce(nullif(url, ''), wfs_service_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1617,6 +1630,7 @@ CREATE TABLE IF NOT EXISTS wfs_service_layers(
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1661,6 +1675,7 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
   polygon_count integer DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
@@ -1757,6 +1772,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_rule vector_layer_fill_rules_enum DEFAULT 'evenodd',
   -- TODO: translate
   label text GENERATED ALWAYS AS (coalesce(nullif(display_property_value, ''), 'Single')) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1841,6 +1857,7 @@ CREATE TABLE IF NOT EXISTS charts(
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (COALESCE(NULLIF(name, ''), chart_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1895,6 +1912,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   fill_graded boolean DEFAULT TRUE,
   connect_nulls boolean DEFAULT TRUE,
   sort integer DEFAULT 0,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1988,6 +2006,7 @@ CREATE TABLE IF NOT EXISTS qcs(
   is_subproject_level boolean DEFAULT false,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
@@ -2011,6 +2030,7 @@ CREATE TABLE IF NOT EXISTS qcs_assignment(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   qc_id uuid NOT NULL REFERENCES qcs(qcs_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
