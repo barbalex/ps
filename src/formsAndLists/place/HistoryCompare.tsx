@@ -310,7 +310,6 @@ export const PlaceHistoryCompare = ({
 
   return (
     <HistoryCompare
-      online={online}
       historiesEnabled={historiesEnabled}
       onBack={() => navigate({ to: placePath })}
       leftContent={

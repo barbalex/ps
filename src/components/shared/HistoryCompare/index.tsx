@@ -1,17 +1,18 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { TbArrowLeft, TbChevronLeft, TbChevronRight } from 'react-icons/tb'
+import { useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { Loading } from '../Loading.tsx'
 import { stringifyHistoryValue } from './utils.ts'
+import { onlineAtom } from '../../../store.ts'
 
 import styles from './index.module.css'
 
 const { Button, Caption1, Text } = fluentUiReactComponents
 
 type HistoryCompareProps<THistory extends Record<string, unknown>> = {
-  online: boolean
   historiesEnabled: boolean
   onBack: () => void
   leftContent: ReactNode
@@ -28,7 +29,6 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
 }
 
 export function HistoryCompare<THistory extends Record<string, unknown>>({
-  online,
   historiesEnabled,
   onBack,
   leftContent,
@@ -44,6 +44,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   onRestoreDiffValues,
 }: HistoryCompareProps<THistory>) {
   const { formatMessage } = useIntl()
+  const online = useAtomValue(onlineAtom)
   const unavailable = !online || !historiesEnabled
 
   const resolveFieldValue = (field: string, history: THistory) => {
