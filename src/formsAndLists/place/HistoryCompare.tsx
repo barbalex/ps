@@ -4,7 +4,12 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-import { TbChevronLeft, TbChevronRight, TbHistory } from 'react-icons/tb'
+import {
+  TbArrowLeft,
+  TbChevronLeft,
+  TbChevronRight,
+  TbHistory,
+} from 'react-icons/tb'
 
 import { PlaceForm } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -398,13 +403,13 @@ export const PlaceHistoryCompare = ({
           })}
         </h1>
         <Button
-          icon={<TbHistory />}
+          icon={<TbArrowLeft />}
           onClick={() => navigate({ to: placePath })}
           size="small"
         >
           {formatMessage({
-            id: 'bPlaceHistoryToggle',
-            defaultMessage: 'Geschichte',
+            id: 'bPlaceHistoryBack',
+            defaultMessage: 'Zurück',
           })}
         </Button>
       </div>
