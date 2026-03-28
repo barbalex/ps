@@ -763,5 +763,6 @@
   "qc.sql.hintSubproject": "Subproject level: $1 = subproject_id (uuid)",
   "qc.sql.hintNone": "Set is_root_level, is_project_level or is_subproject_level to see available parameters.",
   "subprojectQcsRun.openInDialog": "Open in dialog",
+  "bHistProjSetting": "Compare history",
   "altInOwnFormNav": "Alternative: Show in its own form, with its own folder in the navigation tree"
 }

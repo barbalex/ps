@@ -108,6 +108,9 @@ export default interface Projects {
   /** Whether charts (subproject) are shown. Preset: true. */
   charts: boolean | null;
 
+  /** Whether history comparison is enabled for places. Preset: false. */
+  enable_histories: boolean | null;
+
   /** Room for project specific data, defined in "fields" table */
   data: unknown | null;
 
@@ -266,6 +269,12 @@ export interface ProjectsInitializer {
    */
   charts?: boolean | null;
 
+  /**
+   * Whether history comparison is enabled for places. Preset: false.
+   * Default value: false
+   */
+  enable_histories?: boolean | null;
+
   /** Room for project specific data, defined in "fields" table */
   data?: unknown | null;
 
@@ -410,6 +419,9 @@ export interface ProjectsMutator {
 
   /** Whether charts (subproject) are shown. Preset: true. */
   charts?: boolean | null;
+
+  /** Whether history comparison is enabled for places. Preset: false. */
+  enable_histories?: boolean | null;
 
   /** Room for project specific data, defined in "fields" table */
   data?: unknown | null;

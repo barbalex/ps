@@ -80,6 +80,8 @@ export default interface ProjectsHistory {
 
   charts: boolean | null;
 
+  enable_histories: boolean | null;
+
   data: unknown | null;
 
   files_offline: boolean | null;
@@ -191,6 +193,9 @@ export interface ProjectsHistoryInitializer {
   /** Default value: true */
   charts?: boolean | null;
 
+  /** Default value: false */
+  enable_histories?: boolean | null;
+
   data?: unknown | null;
 
   /** Default value: false */
@@ -298,6 +303,8 @@ export interface ProjectsHistoryMutator {
   taxa?: boolean | null;
 
   charts?: boolean | null;
+
+  enable_histories?: boolean | null;
 
   data?: unknown | null;
 

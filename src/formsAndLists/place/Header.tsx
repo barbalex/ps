@@ -1,12 +1,12 @@
-import { useParams, useNavigate } from '@tanstack/react-router'
-import { TbZoomScan } from 'react-icons/tb'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
+import { TbZoomScan, TbHistory } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { bbox } from '@turf/bbox'
 
 import { buffer } from '@turf/buffer'
-import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useAtom, useSetAtom, useAtomValue } from 'jotai'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -23,6 +23,7 @@ import {
   addOperationAtom,
   addNotificationAtom,
   mapLayerSortingAtom,
+  onlineAtom,
 } from '../../store.ts'
 
 import type Places from '../../models/public/Places.ts'
@@ -52,13 +53,26 @@ export const Header = ({
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const online = useAtomValue(onlineAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const navigate = useNavigate()
+  const location = useLocation()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
   const db = usePGlite()
+  const projectRes = useLiveQuery(
+    `SELECT enable_histories FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const historiesEnabled = projectRes?.rows?.[0]?.enable_histories === true
+  const basePath = placeId2 ?
+      `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`
+  const historyPath = `${basePath}/history`
+  const placePath = `${basePath}/place`
+  const isHistoryRoute = location.pathname === historyPath
 
   // Keep a ref to the current placeId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -256,6 +270,10 @@ export const Header = ({
     setMapBounds(bounds)
   }
 
+  const onClickHistory = () => {
+    navigate({ to: isHistoryRoute ? placePath : historyPath })
+  }
+
   return (
     <FormHeader
       title={nameSingular ?? 'Place'}
@@ -265,15 +283,33 @@ export const Header = ({
       toPrevious={toPrevious}
       tableName={nameSingular}
       siblings={
-        <Button
-          size="medium"
-          icon={<TbZoomScan />}
-          onClick={onClickZoomTo}
-          title={formatMessage(
-            { id: 'bDBFGH', defaultMessage: 'Auf {place} in Karte zoomen' },
-            { place: nameSingular },
+        <>
+          <Button
+            size="medium"
+            icon={<TbZoomScan />}
+            onClick={onClickZoomTo}
+            title={formatMessage(
+              { id: 'bDBFGH', defaultMessage: 'Auf {place} in Karte zoomen' },
+              { place: nameSingular },
+            )}
+          />
+          {online && historiesEnabled && (
+            <Button
+              size="medium"
+              icon={<TbHistory />}
+              onClick={onClickHistory}
+              title={formatMessage({
+                id: 'bPlaceHistoryToggle',
+                defaultMessage: 'Geschichte',
+              })}
+            >
+              {formatMessage({
+                id: 'bPlaceHistoryToggle',
+                defaultMessage: 'Geschichte',
+              })}
+            </Button>
           )}
-        />
+        </>
       }
     />
   )

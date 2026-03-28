@@ -430,6 +430,20 @@ export const Configuration = ({ from }) => {
                 'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert.',
             })}
           </SectionDescription>
+          <SwitchField
+            label={formatMessage({
+              id: 'bHistProjSetting',
+              defaultMessage: 'Geschichte vergleichen',
+            })}
+            name="enable_histories"
+            value={
+              (row as Projects & { enable_histories?: boolean | null })
+                .enable_histories ?? false
+            }
+            onChange={onChange}
+            validationState={validations?.enable_histories?.state}
+            validationMessage={validations?.enable_histories?.message}
+          />
           <SectionLevel2
             title={formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}
           >

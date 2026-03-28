@@ -77,6 +77,8 @@ export default interface TemplatePublicProjectsHistory {
 
   charts: boolean | null;
 
+  enable_histories: boolean | null;
+
   data: unknown | null;
 
   files_offline: boolean | null;
@@ -174,6 +176,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   charts?: boolean | null;
 
+  enable_histories?: boolean | null;
+
   data?: unknown | null;
 
   files_offline?: boolean | null;
@@ -270,6 +274,8 @@ export interface TemplatePublicProjectsHistoryMutator {
   taxa?: boolean | null;
 
   charts?: boolean | null;
+
+  enable_histories?: boolean | null;
 
   data?: unknown | null;
 
