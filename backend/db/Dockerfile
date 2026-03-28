@@ -14,7 +14,6 @@ RUN apt-get -qq update && apt-get install -y -qq \
   build-essential \
   wget \
   make \
-  musl-dev \
   $DOCKER_PG_LLVM_DEPS && rm -rf /var/lib/apt/lists/*
 
 # see: https://pgxn.org/dist/temporal_tables/
