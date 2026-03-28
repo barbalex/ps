@@ -24,7 +24,6 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   setSelectedHistoryIndex: Dispatch<SetStateAction<number>>
   loadingHistories: boolean
   historyError: string | null
-  noHistoryText: string
   displayFields: string[]
   differentFields: string[]
   formatFieldLabel: (field: string) => ReactNode
@@ -46,7 +45,6 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   setSelectedHistoryIndex,
   loadingHistories,
   historyError,
-  noHistoryText,
   displayFields,
   differentFields,
   formatFieldLabel,
@@ -139,7 +137,12 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                 <div className={styles.empty}>{historyError}</div>
               )}
               {!loadingHistories && !historyError && histories.length === 0 && (
-                <div className={styles.empty}>{noHistoryText}</div>
+                <div className={styles.empty}>
+                  {formatMessage({
+                    id: 'bPlaceNoHistory',
+                    defaultMessage: 'Keine historischen Versionen gefunden.',
+                  })}
+                </div>
               )}
               {!loadingHistories && !historyError && histories.length > 0 && (
                 <div className={styles.valueListScrollerWrap}>

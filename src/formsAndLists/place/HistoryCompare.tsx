@@ -348,10 +348,6 @@ export const PlaceHistoryCompare = ({
       setSelectedHistoryIndex={setSelectedHistoryIndex}
       loadingHistories={loadingHistories}
       historyError={historyError}
-      noHistoryText={formatMessage({
-        id: 'bPlaceNoHistory',
-        defaultMessage: 'Keine historischen Versionen gefunden.',
-      })}
       displayFields={displayFields}
       differentFields={diffFields}
       formatFieldLabel={formatFieldLabel}
