@@ -33,6 +33,8 @@ services:
       - pg_partman_bgw.role=partman_user
       - -c
       - pg_partman_bgw.interval=3600
+      - -c
+      - pg_partman_bgw.jobmon=off
     restart: always
     volumes:
       - pg_data:/var/lib/postgresql
