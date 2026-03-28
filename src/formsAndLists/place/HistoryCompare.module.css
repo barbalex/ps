@@ -25,7 +25,28 @@
 }
 
 .leftContent {
-  overflow: visible;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #2f5f19 #dff3e2;
+}
+
+.leftContent::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.leftContent::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  border: 1px solid #dff3e2;
+  background: #2f5f19;
+}
+
+.leftContent::-webkit-scrollbar-track {
+  border-radius: 6px;
+  background: #dff3e2;
 }
 
 .rightContent {
