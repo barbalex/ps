@@ -16,6 +16,19 @@ type GetDisplayFieldsArgs<TRow extends HistoryRowLike> = {
   metaFields?: string[]
 }
 
+type HistoryFieldLabel = {
+  id: string
+  defaultMessage: string
+  values?: Record<string, unknown>
+}
+
+type HistoryFieldLabelMap = Record<string, HistoryFieldLabel>
+
+type FormatMessage = (
+  descriptor: { id: string; defaultMessage: string },
+  values?: Record<string, unknown>,
+) => string
+
 export const stringifyHistoryValue = (value: unknown) => {
   if (value === null || value === undefined) return ''
   if (typeof value === 'object') {
@@ -69,4 +82,36 @@ export const getDisplayFields = <TRow extends HistoryRowLike>({
   )
 
   return [...currentFields, ...visibleMetaFields]
+}
+
+export const formatHistoryFieldLabel = ({
+  field,
+  formatMessage,
+  fieldLabelMap,
+}: {
+  field: string
+  formatMessage: FormatMessage
+  fieldLabelMap: HistoryFieldLabelMap
+}) => {
+  const configuredLabel = fieldLabelMap[field]
+  if (!configuredLabel) return field
+
+  return formatMessage(
+    {
+      id: configuredLabel.id,
+      defaultMessage: configuredLabel.defaultMessage,
+    },
+    configuredLabel.values,
+  )
+}
+
+export const createHistoryFieldLabelFormatter = ({
+  formatMessage,
+  fieldLabelMap,
+}: {
+  formatMessage: FormatMessage
+  fieldLabelMap: HistoryFieldLabelMap
+}) => {
+  return (field: string) =>
+    formatHistoryFieldLabel({ field, formatMessage, fieldLabelMap })
 }

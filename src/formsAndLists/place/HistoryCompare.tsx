@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { PlaceForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import {
+  createHistoryFieldLabelFormatter,
   getDiffFields,
   getDisplayFields,
   stringifyHistoryValue,
@@ -25,60 +26,6 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 type HistoryRow = Record<string, unknown> & {
   updated_at?: string
   updated_by?: string | null
-}
-
-const formatFieldLabel = (
-  field: string,
-  formatMessage: ReturnType<typeof useIntl>['formatMessage'],
-  nameSingular: string,
-) => {
-  switch (field) {
-    case 'level':
-      return formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })
-    case 'parent_id':
-      return formatMessage({
-        id: 'bElLqQ',
-        defaultMessage: 'Übergeordneter Ort',
-      })
-    case 'since':
-      return formatMessage(
-        {
-          id: 'bEmMrR',
-          defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
-        },
-        { nameSingular },
-      )
-    case 'until':
-      return formatMessage(
-        {
-          id: 'bEnNsS',
-          defaultMessage: 'Bis zu welchem Jahr existierte die {nameSingular}?',
-        },
-        { nameSingular },
-      )
-    case 'relevant_for_reports':
-      return formatMessage({
-        id: 'bEpPuU',
-        defaultMessage: 'Relevant für Berichte',
-      })
-    case 'updated_at':
-      return formatMessage({
-        id: 'bPlaceHistUpdatedAt',
-        defaultMessage: 'Geändert am',
-      })
-    case 'updated_by':
-      return formatMessage({
-        id: 'bPlaceHistUpdatedBy',
-        defaultMessage: 'Geändert von',
-      })
-    case 'deleted':
-      return formatMessage({
-        id: 'bPlaceHistDeleted',
-        defaultMessage: 'Gelöscht',
-      })
-    default:
-      return field
-  }
 }
 
 const excludedDisplayFields = new Set(['sys_period', 'created_at'])
@@ -245,6 +192,45 @@ export const PlaceHistoryCompare = ({
     })
   }, [selectedHistory, visibleCurrentFields])
 
+  const formatFieldLabel = useMemo(
+    () =>
+      createHistoryFieldLabelFormatter({
+        formatMessage,
+        fieldLabelMap: {
+          level: { id: 'bDeHkI', defaultMessage: 'Stufe' },
+          parent_id: {
+            id: 'bElLqQ',
+            defaultMessage: 'Übergeordneter Ort',
+          },
+          since: {
+            id: 'bEmMrR',
+            defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
+            values: { nameSingular },
+          },
+          until: {
+            id: 'bEnNsS',
+            defaultMessage:
+              'Bis zu welchem Jahr existierte die {nameSingular}?',
+            values: { nameSingular },
+          },
+          relevant_for_reports: {
+            id: 'bEpPuU',
+            defaultMessage: 'Relevant für Berichte',
+          },
+          updated_at: {
+            id: 'bPlaceHistUpdatedAt',
+            defaultMessage: 'Geändert am',
+          },
+          updated_by: {
+            id: 'bPlaceHistUpdatedBy',
+            defaultMessage: 'Geändert von',
+          },
+          deleted: { id: 'bPlaceHistDeleted', defaultMessage: 'Gelöscht' },
+        },
+      }),
+    [formatMessage, nameSingular],
+  )
+
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
     if (!row || row[name] === value) return
@@ -369,9 +355,7 @@ export const PlaceHistoryCompare = ({
       })}
       displayFields={displayFields}
       differentFields={diffFields}
-      formatFieldLabel={(field) =>
-        formatFieldLabel(field, formatMessage, nameSingular)
-      }
+      formatFieldLabel={formatFieldLabel}
       formatFieldValue={(field, history) =>
         field === 'deleted'
           ? history.deleted
