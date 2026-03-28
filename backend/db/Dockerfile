@@ -7,6 +7,7 @@ FROM postgis/postgis:18-3.6
 # mount SQL files directly into the Postgres containers’ initialization directory
 COPY ./init/ /docker-entrypoint-initdb.d/
 
+# TODO: which do we not need because we removed checksums?
 RUN apt-get -qq update && apt-get install -y -qq \
   postgresql-server-dev-18 \
   pgxnclient \
@@ -25,17 +26,13 @@ RUN pgxn install temporal_tables
 # TODO: check for newer versions
 ARG JOBMON_VERSION
 ARG PARTMAN_VERSION
-ARG JOBMON_CHECKSUM="db67c068ecdc136305eafb25bd8fc737f6b9944d4ef3d59ecf7006933686e272995b1733f1fa1a72bd932443669b26e25647701190d92419226b774707d8cc44"
-ARG PARTMAN_CHECKSUM="8328a00ce1a55a5c9173d4adbf251e784fed62413fb76bba89dd893749a720a5ecb25ee668eb0b826b8e1f2b89d9dd7da219fd797bfd9ab1a43d05f5b3ac494f"
 
 RUN wget "https://github.com/omniti-labs/pg_jobmon/archive/refs/tags/${JOBMON_VERSION}.tar.gz" \
-  && echo "${JOBMON_CHECKSUM}  ${JOBMON_VERSION}.tar.gz" | sha512sum -c \
   && tar zxf ${JOBMON_VERSION}.tar.gz && cd pg_jobmon-${JOBMON_VERSION#v}\
   && make \
   && make install
 
 RUN wget "https://github.com/pgpartman/pg_partman/archive/refs/tags/${PARTMAN_VERSION}.tar.gz" \
-  && echo "${PARTMAN_CHECKSUM}  ${PARTMAN_VERSION}.tar.gz" | sha512sum -c \
   && tar zxf ${PARTMAN_VERSION}.tar.gz && cd pg_partman-${PARTMAN_VERSION#v}\
   && make \
   && make install
