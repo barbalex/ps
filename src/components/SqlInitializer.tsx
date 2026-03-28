@@ -80,6 +80,11 @@ export const SqlInitializer = () => {
       } catch (error) {
         console.error('Error executing uuidv7Sql:', error)
       }
+      try {
+        await db.exec(`CREATE EXTENSION IF NOT EXISTS postgis;`)
+      } catch (error) {
+        console.error('Error creating postgis extension:', error)
+      }
       const createSql = (await import(`../sql/createTables.sql?raw`)).default
       try {
         await db.exec(createSql)
