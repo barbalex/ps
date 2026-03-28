@@ -31,6 +31,9 @@ export default interface WmsServices {
 
   label: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -60,6 +63,9 @@ export interface WmsServicesInitializer {
   info_format?: string | null;
 
   default_crs?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 
   /** Default value: now() */
   created_at?: Date;
@@ -91,6 +97,9 @@ export interface WmsServicesMutator {
   info_format?: string | null;
 
   default_crs?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 

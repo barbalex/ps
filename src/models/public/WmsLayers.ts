@@ -31,6 +31,9 @@ export default interface WmsLayers {
   /** Array of bounds and their size of locally saved image data */
   local_data_bounds: unknown | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -61,6 +64,9 @@ export interface WmsLayersInitializer {
 
   /** Array of bounds and their size of locally saved image data */
   local_data_bounds?: unknown | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 
   /** Default value: now() */
   created_at?: Date;
@@ -93,6 +99,9 @@ export interface WmsLayersMutator {
 
   /** Array of bounds and their size of locally saved image data */
   local_data_bounds?: unknown | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 

@@ -53,6 +53,9 @@ export default interface VectorLayers {
   /** Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features */
   polygon_count: number | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -106,6 +109,9 @@ export interface VectorLayersInitializer {
   /** Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features */
   polygon_count?: number | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   /** Default value: now() */
   created_at?: Date;
 
@@ -157,6 +163,9 @@ export interface VectorLayersMutator {
 
   /** Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features */
   polygon_count?: number | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 

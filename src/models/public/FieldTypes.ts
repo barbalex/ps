@@ -16,6 +16,9 @@ export default interface FieldTypes {
 
   label: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -33,6 +36,9 @@ export interface FieldTypesInitializer {
   sort?: number | null;
 
   comment?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 
   /** Default value: now() */
   created_at?: Date;
@@ -52,6 +58,9 @@ export interface FieldTypesMutator {
   sort?: number | null;
 
   comment?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 

@@ -27,6 +27,9 @@ export default interface SubprojectReports {
 
   label: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -56,6 +59,9 @@ export interface SubprojectReportsInitializer {
   /** Room for subproject report specific data, defined in "fields" table */
   data?: unknown | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   /** Default value: now() */
   created_at?: Date;
 
@@ -82,6 +88,9 @@ export interface SubprojectReportsMutator {
 
   /** Room for subproject report specific data, defined in "fields" table */
   data?: unknown | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 

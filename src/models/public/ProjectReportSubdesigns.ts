@@ -26,6 +26,9 @@ export default interface ProjectReportSubdesigns {
 
   label: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -50,6 +53,9 @@ export interface ProjectReportSubdesignsInitializer {
 
   /** JSON design of the project report subdesign. */
   design?: unknown | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 
   /** Default value: now() */
   created_at?: Date;
@@ -76,6 +82,9 @@ export interface ProjectReportSubdesignsMutator {
 
   /** JSON design of the project report subdesign. */
   design?: unknown | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 

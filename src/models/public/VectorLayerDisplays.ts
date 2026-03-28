@@ -70,6 +70,9 @@ export default interface VectorLayerDisplays {
 
   label: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
@@ -164,6 +167,9 @@ export interface VectorLayerDisplaysInitializer {
    */
   fill_rule?: VectorLayerFillRulesEnum | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   /** Default value: now() */
   created_at?: Date;
 
@@ -229,6 +235,9 @@ export interface VectorLayerDisplaysMutator {
 
   /** A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule */
   fill_rule?: VectorLayerFillRulesEnum | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 
   created_at?: Date;
 
