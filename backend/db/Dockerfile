@@ -13,7 +13,6 @@ RUN apt-get -qq update && apt-get install -y -qq \
   pgxnclient \
   build-essential \
   wget \
-  # gcc \
   make \
   musl-dev \
   $DOCKER_PG_LLVM_DEPS && rm -rf /var/lib/apt/lists/*
