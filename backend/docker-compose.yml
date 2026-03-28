@@ -25,6 +25,14 @@ services:
       - listen_addresses=*
       - -c
       - wal_level=logical
+      - -c
+      - shared_preload_libraries=pg_partman_bgw
+      - -c
+      - pg_partman_bgw.dbname=${POSTGRES_DB}
+      - -c
+      - pg_partman_bgw.role=${POSTGRES_USER}
+      - -c
+      - pg_partman_bgw.interval=3600
     restart: always
     volumes:
       - pg_data:/var/lib/postgresql
