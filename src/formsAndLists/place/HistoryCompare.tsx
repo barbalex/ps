@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -11,6 +11,8 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import {
   addOperationAtom,
+  designingAtom,
+  languageAtom,
   onlineAtom,
   postgrestClientAtom,
 } from '../../store.ts'
@@ -43,15 +45,35 @@ const areSame = (a: unknown, b: unknown) =>
 const formatFieldLabel = (
   field: string,
   formatMessage: ReturnType<typeof useIntl>['formatMessage'],
+  nameSingular: string,
 ) => {
   switch (field) {
+    case 'level':
+      return formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })
+    case 'parent_id':
+      return formatMessage({
+        id: 'bElLqQ',
+        defaultMessage: 'Übergeordneter Ort',
+      })
     case 'since':
-      return formatMessage({ id: 'bPlaceHistSince', defaultMessage: 'Seit' })
+      return formatMessage(
+        {
+          id: 'bEmMrR',
+          defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
+        },
+        { nameSingular },
+      )
     case 'until':
-      return formatMessage({ id: 'bPlaceHistUntil', defaultMessage: 'Bis' })
+      return formatMessage(
+        {
+          id: 'bEnNsS',
+          defaultMessage: 'Bis zu welchem Jahr existierte die {nameSingular}?',
+        },
+        { nameSingular },
+      )
     case 'relevant_for_reports':
       return formatMessage({
-        id: 'bPlaceHistRelevant',
+        id: 'bEpPuU',
         defaultMessage: 'Relevant für Berichte',
       })
     case 'updated_at':
@@ -97,6 +119,7 @@ export const PlaceHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({
     from,
     strict: false,
@@ -106,6 +129,8 @@ export const PlaceHistoryCompare = ({
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/place`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/place`
   const online = useAtomValue(onlineAtom)
+  const designing = useAtomValue(designingAtom)
+  const language = useAtomValue(languageAtom)
   const postgrestClient = useAtomValue(postgrestClientAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
@@ -127,6 +152,14 @@ export const PlaceHistoryCompare = ({
     [projectId],
   )
   const historiesEnabled = projectRes?.rows?.[0]?.enable_histories === true
+
+  const levelForLabel = (row?.level as number | undefined) ?? (placeId2 ? 2 : 1)
+  const nameRes = useLiveQuery(
+    `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [projectId, levelForLabel],
+  )
+  const nameSingular =
+    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
 
   useEffect(() => {
     setSelectedHistoryIndex(0)
@@ -189,11 +222,25 @@ export const PlaceHistoryCompare = ({
   ])
 
   const selectedHistory = histories[selectedHistoryIndex]
+  const isFilter = pathname.endsWith('filter')
+  const visibleCurrentFields = useMemo(() => {
+    const visible = new Set(['since', 'until', 'relevant_for_reports'])
+    const effectiveLevel =
+      (row?.level as number | undefined) ?? (placeId2 ? 2 : 1)
+
+    if (!isFilter) {
+      if (designing) visible.add('level')
+      if (effectiveLevel === 2) visible.add('parent_id')
+    }
+
+    return visible
+  }, [designing, isFilter, placeId2, row?.level])
 
   const diffFields = useMemo(() => {
     if (!row || !selectedHistory) return [] as string[]
 
     return Object.keys(selectedHistory).filter((field) => {
+      if (!visibleCurrentFields.has(field)) return false
       if (excludedDisplayFields.has(field)) return false
       if (
         field === 'updated_at' ||
@@ -204,18 +251,31 @@ export const PlaceHistoryCompare = ({
       }
       return !areSame(selectedHistory[field], row[field])
     })
-  }, [row, selectedHistory])
+  }, [row, selectedHistory, visibleCurrentFields])
 
   const displayFields = useMemo(() => {
     if (!selectedHistory) return [] as string[]
-    const base = Object.keys(selectedHistory).filter(
-      (field) => !excludedDisplayFields.has(field),
+    const preferredOrder = [
+      'level',
+      'parent_id',
+      'since',
+      'until',
+      'relevant_for_reports',
+    ]
+
+    const currentFields = preferredOrder.filter(
+      (field) =>
+        visibleCurrentFields.has(field) &&
+        !excludedDisplayFields.has(field) &&
+        Object.hasOwn(selectedHistory, field),
     )
-    const ordered = base.filter(
-      (field) => !['updated_at', 'updated_by', 'deleted'].includes(field),
+
+    const metaFields = ['updated_at', 'updated_by', 'deleted'].filter((field) =>
+      Object.hasOwn(selectedHistory, field),
     )
-    return [...ordered, 'updated_at', 'updated_by', 'deleted']
-  }, [selectedHistory])
+
+    return [...currentFields, ...metaFields]
+  }, [selectedHistory, visibleCurrentFields])
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -457,7 +517,11 @@ export const PlaceHistoryCompare = ({
                                   style={{ display: 'contents' }}
                                 >
                                   <dt className={styles.label}>
-                                    {formatFieldLabel(field, formatMessage)}
+                                    {formatFieldLabel(
+                                      field,
+                                      formatMessage,
+                                      nameSingular,
+                                    )}
                                   </dt>
                                   <dd
                                     className={`${styles.value} ${isDifferent ? styles.valueRed : ''}`}
