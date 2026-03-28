@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS accounts(
   period_end date DEFAULT NULL,
   projects_label_by text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -442,6 +443,7 @@ CREATE TABLE IF NOT EXISTS taxonomies(
       else name || ' (' || immutabletaxonomytype(type) || ')'
     END
   ) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -478,6 +480,7 @@ CREATE TABLE IF NOT EXISTS taxa(
   data jsonb DEFAULT NULL,
   url text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -532,6 +535,7 @@ CREATE TABLE IF NOT EXISTS lists(
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), list_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -564,6 +568,7 @@ CREATE TABLE IF NOT EXISTS list_values(
   value_datetime timestamptz DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(value_integer::text, value_numeric::text, nullif(value_text, ''), immutabledate(value_date), immutabletimestamptz(value_datetime), list_value_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -710,6 +715,7 @@ CREATE TABLE IF NOT EXISTS actions(
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text GENERATED ALWAYS AS (coalesce(immutabledate(date), action_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -741,6 +747,7 @@ CREATE TABLE IF NOT EXISTS action_quantities(
   quantity_numeric double precision DEFAULT NULL,
   quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -773,6 +780,7 @@ CREATE TABLE IF NOT EXISTS action_taxa(
   quantity_numeric double precision DEFAULT NULL,
   quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -802,6 +810,7 @@ CREATE TABLE IF NOT EXISTS checks(
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -832,6 +841,7 @@ CREATE TABLE IF NOT EXISTS check_quantities(
   quantity_numeric double precision DEFAULT NULL,
   quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -864,6 +874,7 @@ CREATE TABLE IF NOT EXISTS check_taxa(
   quantity_numeric double precision DEFAULT NULL,
   quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -890,6 +901,7 @@ CREATE TABLE IF NOT EXISTS place_check_reports(
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(year::text, place_check_report_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -917,6 +929,7 @@ CREATE TABLE IF NOT EXISTS place_check_report_quantities(
   quantity_numeric double precision DEFAULT NULL,
   quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -946,6 +959,7 @@ CREATE TABLE IF NOT EXISTS place_action_reports(
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(year::text, place_action_report_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -973,6 +987,7 @@ CREATE TABLE IF NOT EXISTS place_action_report_quantities(
   quantity_numeric double precision DEFAULT NULL,
   quantity_text text DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1066,6 +1081,7 @@ CREATE TABLE IF NOT EXISTS goals(
       else year || ': ' || name 
     END
   ) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1088,6 +1104,7 @@ CREATE TABLE IF NOT EXISTS goal_reports(
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   data jsonb DEFAULT NULL,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1111,6 +1128,7 @@ CREATE TABLE IF NOT EXISTS subproject_reports(
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(year::text, subproject_report_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1164,6 +1182,7 @@ CREATE TABLE IF NOT EXISTS project_reports(
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(year::text, project_report_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1292,6 +1311,7 @@ CREATE TABLE IF NOT EXISTS field_types(
   sort smallint DEFAULT NULL,
   comment text,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1362,6 +1382,7 @@ CREATE TABLE IF NOT EXISTS fields(
       ELSE table_name || '.' || name || ' ' || level
     END
   ) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1436,6 +1457,7 @@ CREATE TABLE IF NOT EXISTS observation_imports(
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), observation_import_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1467,6 +1489,7 @@ CREATE TABLE IF NOT EXISTS observations(
   id_in_source text DEFAULT NULL, -- extracted from data using observation_import_id.id_field
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using observation_import_id.geometry_method and it's field(s)
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
