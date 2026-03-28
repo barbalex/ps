@@ -36,6 +36,12 @@ RUN wget -q "https://github.com/pgpartman/pg_partman/archive/refs/tags/${PARTMAN
 
 FROM postgis/postgis:18-3.6
 
+# ensure pgxnclient is available in the final build
+RUN apt-get -qq update \
+  && apt-get install -y -qq --no-install-recommends \
+  pgxnclient \
+  && rm -rf /var/lib/apt/lists/*
+
 # mount SQL files directly into the Postgres containers’ initialization directory
 COPY ./init/ /docker-entrypoint-initdb.d/
 
