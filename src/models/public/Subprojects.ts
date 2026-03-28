@@ -38,6 +38,9 @@ export default interface Subprojects {
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
@@ -72,6 +75,9 @@ export interface SubprojectsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
@@ -103,4 +109,7 @@ export interface SubprojectsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }

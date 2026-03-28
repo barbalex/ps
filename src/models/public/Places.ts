@@ -51,6 +51,9 @@ export default interface Places {
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
@@ -109,6 +112,9 @@ export interface PlacesInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
@@ -155,4 +161,7 @@ export interface PlacesMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }

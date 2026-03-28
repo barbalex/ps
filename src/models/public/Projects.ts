@@ -133,6 +133,9 @@ export default interface Projects {
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
@@ -303,6 +306,9 @@ export interface ProjectsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
@@ -430,4 +436,7 @@ export interface ProjectsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }
