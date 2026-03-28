@@ -1,7 +1,7 @@
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { TbZoomScan, TbHistory } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
+const { Button, Tooltip } = fluentUiReactComponents
 import { bbox } from '@turf/bbox'
 
 import { buffer } from '@turf/buffer'
@@ -284,30 +284,28 @@ export const Header = ({
       tableName={nameSingular}
       siblings={
         <>
-          <Button
-            size="medium"
-            icon={<TbZoomScan />}
-            onClick={onClickZoomTo}
-            title={formatMessage(
-              { id: 'bDBFGH', defaultMessage: 'Auf {place} in Karte zoomen' },
-              { place: nameSingular },
-            )}
-          />
-          {online && historiesEnabled && (
+          <Tooltip
+            content={formatMessage({ id: 'bPlaceZoomTo', defaultMessage: 'zoomen' })}
+          >
             <Button
               size="medium"
-              icon={<TbHistory />}
-              onClick={onClickHistory}
-              title={formatMessage({
-                id: 'bPlaceHistoryToggle',
-                defaultMessage: 'Geschichte',
+              icon={<TbZoomScan />}
+              onClick={onClickZoomTo}
+            />
+          </Tooltip>
+          {online && historiesEnabled && (
+            <Tooltip
+              content={formatMessage({
+                id: 'bPlaceHistoryToggleShort',
+                defaultMessage: 'geschichte',
               })}
             >
-              {formatMessage({
-                id: 'bPlaceHistoryToggle',
-                defaultMessage: 'Geschichte',
-              })}
-            </Button>
+              <Button
+                size="medium"
+                icon={<TbHistory />}
+                onClick={onClickHistory}
+              />
+            </Tooltip>
           )}
         </>
       }
