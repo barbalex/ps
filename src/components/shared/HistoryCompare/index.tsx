@@ -29,10 +29,6 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   differentFields: string[]
   formatFieldLabel: (field: string) => ReactNode
   formatFieldValue?: (field: string, history: THistory) => ReactNode
-  defaultBooleanFieldLabels?: Record<
-    string,
-    { trueLabel: ReactNode; falseLabel: ReactNode }
-  >
   onRestoreDiffValues: () => void
 }
 
@@ -55,7 +51,6 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   differentFields,
   formatFieldLabel,
   formatFieldValue,
-  defaultBooleanFieldLabels,
   onRestoreDiffValues,
 }: HistoryCompareProps<THistory>) {
   const { formatMessage } = useIntl()
@@ -63,9 +58,10 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   const resolveFieldValue = (field: string, history: THistory) => {
     if (formatFieldValue) return formatFieldValue(field, history)
 
-    const booleanLabels = defaultBooleanFieldLabels?.[field]
-    if (booleanLabels) {
-      return history[field] ? booleanLabels.trueLabel : booleanLabels.falseLabel
+    if (field === 'deleted') {
+      return history[field]
+        ? formatMessage({ id: 'bCommonYes', defaultMessage: 'Ja' })
+        : formatMessage({ id: 'bCommonNo', defaultMessage: 'Nein' })
     }
 
     return stringifyHistoryValue(history[field])

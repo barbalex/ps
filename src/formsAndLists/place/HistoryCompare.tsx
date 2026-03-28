@@ -355,15 +355,6 @@ export const PlaceHistoryCompare = ({
       displayFields={displayFields}
       differentFields={diffFields}
       formatFieldLabel={formatFieldLabel}
-      defaultBooleanFieldLabels={{
-        deleted: {
-          trueLabel: formatMessage({ id: 'bCommonYes', defaultMessage: 'Ja' }),
-          falseLabel: formatMessage({
-            id: 'bCommonNo',
-            defaultMessage: 'Nein',
-          }),
-        },
-      }}
       onRestoreDiffValues={onRestoreDiffValues}
     />
   )
