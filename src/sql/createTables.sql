@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users(
   -- example: subproject_names in projects table
   -- problem: to know user, login is needed - but not yet implemented
   -- language text DEFAULT 'en',
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );

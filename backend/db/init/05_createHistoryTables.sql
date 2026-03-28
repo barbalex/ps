@@ -7,6 +7,55 @@
 -- 5. Configure retention/jobmon per history table in partman.part_config.
 
 --------------------------------------------------------------
+-- users -> users_history
+-- Retention: 5 years
+--
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE users
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE users
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN users.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS users_history (
+	LIKE users INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE users_history OWNER TO partman_user;
+
+COMMENT ON TABLE users_history IS 'System-versioned history of users. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN users_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS users_history_updated_at_idx
+ON users_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS users_history_user_id_updated_at_idx
+ON users_history USING btree (user_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS users_history_sys_period_idx
+ON users_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_users_trigger'
+			AND tgrelid = 'users'::regclass
+	) THEN
+		CREATE TRIGGER versioning_users_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON users
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'users_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
 -- projects -> projects_history
 -- Retention: keep forever
 --
@@ -170,6 +219,23 @@ $$;
 SET ROLE partman_user;
 
 SELECT partman.create_parent(
+	p_parent_table := 'public.users_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.users_history'
+);
+
+SELECT partman.create_parent(
 	p_parent_table := 'public.projects_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
@@ -224,6 +290,13 @@ WHERE NOT EXISTS (
 -- pg_partman runtime config
 -- retention = NULL means keep forever for these three history tables
 --
+UPDATE partman.part_config
+SET jobmon = false,
+	retention = '5 years',
+	retention_keep_table = false,
+	retention_keep_index = false
+WHERE parent_table = 'public.users_history';
+
 UPDATE partman.part_config
 SET jobmon = false,
 	retention = NULL,
