@@ -91,13 +91,13 @@ export default interface TemplatePublicProjectsHistory {
 
   map_presentation_crs: string | null;
 
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
-
-  sys_period: string;
 }
 
 /** Represents the initializer for the table partman.template_public_projects_history */
@@ -188,13 +188,13 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   map_presentation_crs?: string | null;
 
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by?: string | null;
-
-  sys_period: string;
 }
 
 /** Represents the mutator for the table partman.template_public_projects_history */
@@ -285,11 +285,11 @@ export interface TemplatePublicProjectsHistoryMutator {
 
   map_presentation_crs?: string | null;
 
+  sys_period?: string;
+
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  sys_period?: string;
 }

@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS projects(
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_files_in_subproject boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -313,6 +314,7 @@ CREATE TABLE IF NOT EXISTS subprojects(
   end_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -633,6 +635,7 @@ CREATE TABLE IF NOT EXISTS places(
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL

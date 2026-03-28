@@ -27,13 +27,13 @@ export default interface TemplatePublicPlacesHistory {
 
   label: string | null;
 
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
-
-  sys_period: string;
 }
 
 /** Represents the initializer for the table partman.template_public_places_history */
@@ -62,13 +62,13 @@ export interface TemplatePublicPlacesHistoryInitializer {
 
   label?: string | null;
 
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by?: string | null;
-
-  sys_period: string;
 }
 
 /** Represents the mutator for the table partman.template_public_places_history */
@@ -97,11 +97,11 @@ export interface TemplatePublicPlacesHistoryMutator {
 
   label?: string | null;
 
+  sys_period?: string;
+
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  sys_period?: string;
 }

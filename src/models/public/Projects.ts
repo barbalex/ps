@@ -128,14 +128,14 @@ export default interface Projects {
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
-
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
 }
 
 /**
@@ -299,6 +299,9 @@ export interface ProjectsInitializer {
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs?: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   /** Default value: now() */
   created_at?: Date;
 
@@ -306,9 +309,6 @@ export interface ProjectsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
 }
 
 /**
@@ -431,12 +431,12 @@ export interface ProjectsMutator {
   /** Coordinate Reference System for presentation of map. Preset: "EPSG:4326" */
   map_presentation_crs?: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
+
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period?: string;
 }
