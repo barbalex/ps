@@ -11,7 +11,8 @@ COPY ./init/ /docker-entrypoint-initdb.d/
 # see: https://pgxn.org/dist/temporal_tables/
 RUN apt-get -qq update
 # needed for building pgxnclient, see: https://stackoverflow.com/a/61877103/712005
-RUN apt-get install postgresql-server-dev-18 -y -qq
+RUN apt-get install -y -qq \
+  postgresql-server-dev-18
 # Install pgxnclient using apt-get, not pip
 RUN apt-get install -y \
   pgxnclient \
