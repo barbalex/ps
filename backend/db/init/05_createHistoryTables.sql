@@ -1,3 +1,15 @@
+-- Temporal history tables used only on the server.
+-- Pattern per live table:
+-- 1. Add sys_period to the live table and backfill it from updated_at.
+-- 2. Create a partitioned *_history table on updated_at.
+-- 3. Attach temporal_tables versioning trigger to archive old row versions.
+-- 4. Register the *_history table with pg_partman for yearly partitions.
+-- 5. Configure retention/jobmon per history table in partman.part_config.
+
+--------------------------------------------------------------
+-- projects -> projects_history
+-- Retention: keep forever
+--
 ALTER TABLE projects
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
@@ -43,6 +55,10 @@ BEGIN
 END
 $$;
 
+--------------------------------------------------------------
+-- subprojects -> subprojects_history
+-- Retention: keep forever
+--
 ALTER TABLE subprojects
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
@@ -99,6 +115,10 @@ BEGIN
 END
 $$;
 
+--------------------------------------------------------------
+-- places -> places_history
+-- Retention: keep forever
+--
 ALTER TABLE places
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
@@ -144,6 +164,9 @@ BEGIN
 END
 $$;
 
+--------------------------------------------------------------
+-- pg_partman registration
+--
 SET ROLE partman_user;
 
 SELECT partman.create_parent(
@@ -197,6 +220,10 @@ WHERE NOT EXISTS (
 	WHERE parent_table = 'public.places_history'
 );
 
+--------------------------------------------------------------
+-- pg_partman runtime config
+-- retention = NULL means keep forever for these three history tables
+--
 UPDATE partman.part_config
 SET jobmon = false,
 	retention = NULL,
