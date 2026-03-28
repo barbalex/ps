@@ -3,15 +3,9 @@ import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-import {
-  TbArrowLeft,
-  TbChevronLeft,
-  TbChevronRight,
-  TbHistory,
-} from 'react-icons/tb'
 
 import { PlaceForm } from './Form.tsx'
+import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import {
@@ -22,10 +16,6 @@ import {
   postgrestClientAtom,
 } from '../../store.ts'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-
-import styles from './HistoryCompare.module.css'
-
-const { Button, Caption1, Text } = fluentUiReactComponents
 
 type HistoryRow = Record<string, unknown> & {
   updated_at?: string
@@ -300,6 +290,7 @@ export const PlaceHistoryCompare = ({
     }
 
     setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -359,207 +350,74 @@ export const PlaceHistoryCompare = ({
     )
   }
 
-  if (!online || !historiesEnabled) {
-    return (
-      <div className="form-outer-container">
-        <div className="form-header">
-          <h1>
-            {formatMessage({
-              id: 'bPlaceHistoryFeature',
-              defaultMessage: 'Geschichte',
-            })}
-          </h1>
-          <Button
-            icon={<TbHistory />}
-            onClick={() => navigate({ to: '..' })}
-            size="small"
-          >
-            {formatMessage({
-              id: 'bPlaceHistoryBack',
-              defaultMessage: 'Zurück',
-            })}
-          </Button>
-        </div>
-        <div className="form-container">
-          <Text>
-            {formatMessage({
-              id: 'bPlaceHistoryUnavailable',
-              defaultMessage:
-                'Geschichte ist nur online und bei aktivierter Projekt-Option verfügbar.',
-            })}
-          </Text>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="form-outer-container">
-      <div className="form-header">
-        <h1>
-          {formatMessage({
-            id: 'bPlaceHistoryFeature',
-            defaultMessage: 'Geschichte',
-          })}
-        </h1>
-        <Button
-          icon={<TbArrowLeft />}
-          onClick={() => navigate({ to: placePath })}
-          size="small"
-        >
-          {formatMessage({
-            id: 'bPlaceHistoryBack',
-            defaultMessage: 'Zurück',
-          })}
-        </Button>
-      </div>
-      <div className={styles.container}>
-        <section className={styles.panel}>
-          <h2 className={styles.panelTitle}>
-            {formatMessage({
-              id: 'bPlaceCurrentVersion',
-              defaultMessage: 'Aktuelle Version',
-            })}
-          </h2>
-          <div className={styles.leftContent}>
-            <PlaceForm
-              row={row}
-              onChange={onChange}
-              validations={validations}
-              autoFocusRef={autoFocusRef}
-              from={from}
-              withContainer={false}
-            />
-          </div>
-        </section>
-
-        <section className={styles.panel}>
-          <h2 className={styles.panelTitle}>
-            {formatMessage({
-              id: 'bPlaceHistoricalVersion',
-              defaultMessage: 'Historische Version',
-            })}
-          </h2>
-          <div className={styles.rightContent}>
-            <div className={styles.sliderHeader}>
-              <Button
-                icon={<TbChevronLeft />}
-                disabled={histories.length <= 1}
-                onClick={() =>
-                  setSelectedHistoryIndex((prev) =>
-                    histories.length
-                      ? (prev + histories.length - 1) % histories.length
-                      : 0,
-                  )
-                }
-              />
-              <Caption1>
-                {histories.length > 0
-                  ? `${selectedHistoryIndex + 1} / ${histories.length}`
-                  : '0 / 0'}
-              </Caption1>
-              <Button
-                icon={<TbChevronRight />}
-                disabled={histories.length <= 1}
-                onClick={() =>
-                  setSelectedHistoryIndex((prev) =>
-                    histories.length ? (prev + 1) % histories.length : 0,
-                  )
-                }
-              />
-            </div>
-
-            <div className={styles.sliderShell}>
-              {loadingHistories && (
-                <div className={styles.empty}>
-                  <Loading />
-                </div>
-              )}
-              {!loadingHistories && historyError && (
-                <div className={styles.empty}>{historyError}</div>
-              )}
-              {!loadingHistories && !historyError && histories.length === 0 && (
-                <div className={styles.empty}>
-                  {formatMessage({
-                    id: 'bPlaceNoHistory',
-                    defaultMessage: 'Keine historischen Versionen gefunden.',
-                  })}
-                </div>
-              )}
-              {!loadingHistories && !historyError && histories.length > 0 && (
-                <div className={styles.valueListScrollerWrap}>
-                  <div className={styles.valueListScroller}>
-                    <div
-                      className={styles.sliderTrack}
-                      style={{
-                        transform: `translateX(-${selectedHistoryIndex * 100}%)`,
-                      }}
-                    >
-                      {histories.map((history, index) => (
-                        <div
-                          key={`${history.updated_at ?? 'no-date'}-${index}`}
-                          className={styles.slide}
-                        >
-                          <dl className={styles.valueList}>
-                            {displayFields.map((field) => {
-                              const value =
-                                field === 'deleted'
-                                  ? history.deleted
-                                    ? formatMessage({
-                                        id: 'bCommonYes',
-                                        defaultMessage: 'Ja',
-                                      })
-                                    : formatMessage({
-                                        id: 'bCommonNo',
-                                        defaultMessage: 'Nein',
-                                      })
-                                  : stringifyValue(history[field])
-                              const isDifferent = diffFields.includes(field)
-
-                              return (
-                                <div
-                                  key={field}
-                                  style={{ display: 'contents' }}
-                                >
-                                  <dt className={styles.label}>
-                                    {formatFieldLabel(
-                                      field,
-                                      formatMessage,
-                                      nameSingular,
-                                    )}
-                                  </dt>
-                                  <dd
-                                    className={`${styles.value} ${isDifferent ? styles.valueRed : ''}`}
-                                  >
-                                    {value}
-                                  </dd>
-                                </div>
-                              )
-                            })}
-                          </dl>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className={styles.footer}>
-              <Button
-                appearance="primary"
-                onClick={onRestoreDiffValues}
-                disabled={!diffFields.length}
-              >
-                {formatMessage({
-                  id: 'bPlaceRestoreRedValues',
-                  defaultMessage: 'Rote Werte wiederherstellen',
-                })}
-              </Button>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
+    <HistoryCompare
+      headerTitle={formatMessage({
+        id: 'bPlaceHistoryFeature',
+        defaultMessage: 'Geschichte',
+      })}
+      backLabel={formatMessage({
+        id: 'bPlaceHistoryBack',
+        defaultMessage: 'Zurück',
+      })}
+      onBack={() => navigate({ to: placePath })}
+      unavailable={!online || !historiesEnabled}
+      unavailableText={formatMessage({
+        id: 'bPlaceHistoryUnavailable',
+        defaultMessage:
+          'Geschichte ist nur online und bei aktivierter Projekt-Option verfügbar.',
+      })}
+      leftTitle={formatMessage({
+        id: 'bPlaceCurrentVersion',
+        defaultMessage: 'Aktuelle Version',
+      })}
+      rightTitle={formatMessage({
+        id: 'bPlaceHistoricalVersion',
+        defaultMessage: 'Historische Version',
+      })}
+      leftContent={
+        <PlaceForm
+          row={row}
+          onChange={onChange}
+          validations={validations}
+          autoFocusRef={autoFocusRef}
+          from={from}
+          withContainer={false}
+        />
+      }
+      histories={histories}
+      selectedHistoryIndex={selectedHistoryIndex}
+      setSelectedHistoryIndex={setSelectedHistoryIndex}
+      loadingHistories={loadingHistories}
+      historyError={historyError}
+      noHistoryText={formatMessage({
+        id: 'bPlaceNoHistory',
+        defaultMessage: 'Keine historischen Versionen gefunden.',
+      })}
+      displayFields={displayFields}
+      differentFields={diffFields}
+      formatFieldLabel={(field) =>
+        formatFieldLabel(field, formatMessage, nameSingular)
+      }
+      formatFieldValue={(field, history) =>
+        field === 'deleted'
+          ? history.deleted
+            ? formatMessage({
+                id: 'bCommonYes',
+                defaultMessage: 'Ja',
+              })
+            : formatMessage({
+                id: 'bCommonNo',
+                defaultMessage: 'Nein',
+              })
+          : stringifyValue(history[field])
+      }
+      onRestoreDiffValues={onRestoreDiffValues}
+      restoreLabel={formatMessage({
+        id: 'bPlaceRestoreRedValues',
+        defaultMessage: 'Rote Werte wiederherstellen',
+      })}
+      restoreDisabled={!diffFields.length}
+    />
   )
 }
