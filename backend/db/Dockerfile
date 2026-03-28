@@ -1,6 +1,6 @@
 # JOBMON and PARTMAN inspired by: https://github.com/dbsystel/postgresql-partman-container/blob/main/Dockerfile
 ARG JOBMON_VERSION="v1.4.1"
-ARG PARTMAN_VERSION="v5.2.4"
+ARG PARTMAN_VERSION="v5.4.3"
 
 FROM postgis/postgis:18-3.6
 
@@ -12,7 +12,6 @@ RUN apt-get -qq update && apt-get install -y -qq \
   postgresql-server-dev-18 \
   pgxnclient \
   build-essential \
-  git \
   wget \
   gcc \
   make \
