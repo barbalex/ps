@@ -16,7 +16,11 @@ RUN apt-get install -y -qq \
   pgxnclient \
   build-essential \
   git \
-  && rm -rf /var/lib/apt/lists/*
+  wget \
+  gcc \
+  make \
+  musl-dev \
+  $DOCKER_PG_LLVM_DEPS && rm -rf /var/lib/apt/lists/*
 
 # see: https://pgxn.org/dist/temporal_tables/
 RUN pgxn install temporal_tables
@@ -27,9 +31,8 @@ ARG JOBMON_VERSION
 ARG PARTMAN_VERSION
 ARG JOBMON_CHECKSUM="db67c068ecdc136305eafb25bd8fc737f6b9944d4ef3d59ecf7006933686e272995b1733f1fa1a72bd932443669b26e25647701190d92419226b774707d8cc44"
 ARG PARTMAN_CHECKSUM="8328a00ce1a55a5c9173d4adbf251e784fed62413fb76bba89dd893749a720a5ecb25ee668eb0b826b8e1f2b89d9dd7da219fd797bfd9ab1a43d05f5b3ac494f"
-# possible that this could replace installing postgresql-server-dev-18 or vice versa
-# RUN apk add --no-cache wget gcc make musl-dev postgresql-dev $DOCKER_PG_LLVM_DEPS
-RUN apt-get update && apt-get install -y wget gcc make musl-dev $DOCKER_PG_LLVM_DEPS
+
+# RUN apt-get update && apt-get install -y wget gcc make musl-dev $DOCKER_PG_LLVM_DEPS
 
 RUN wget "https://github.com/omniti-labs/pg_jobmon/archive/refs/tags/${JOBMON_VERSION}.tar.gz" \
   && echo "${JOBMON_CHECKSUM}  ${JOBMON_VERSION}.tar.gz" | sha512sum -c \
