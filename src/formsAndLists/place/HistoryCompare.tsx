@@ -6,6 +6,11 @@ import { useIntl } from 'react-intl'
 
 import { PlaceForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
+import {
+  getDiffFields,
+  getDisplayFields,
+  stringifyHistoryValue,
+} from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import {
@@ -21,21 +26,6 @@ type HistoryRow = Record<string, unknown> & {
   updated_at?: string
   updated_by?: string | null
 }
-
-const stringifyValue = (value: unknown) => {
-  if (value === null || value === undefined) return ''
-  if (typeof value === 'object') {
-    try {
-      return JSON.stringify(value, null, 2)
-    } catch {
-      return String(value)
-    }
-  }
-  return String(value)
-}
-
-const areSame = (a: unknown, b: unknown) =>
-  stringifyValue(a) === stringifyValue(b)
 
 const formatFieldLabel = (
   field: string,
@@ -232,44 +222,27 @@ export const PlaceHistoryCompare = ({
   }, [designing, isFilter, placeId2, row?.level])
 
   const diffFields = useMemo(() => {
-    if (!row || !selectedHistory) return [] as string[]
-
-    return Object.keys(selectedHistory).filter((field) => {
-      if (!visibleCurrentFields.has(field)) return false
-      if (excludedDisplayFields.has(field)) return false
-      if (
-        field === 'updated_at' ||
-        field === 'updated_by' ||
-        field === 'deleted'
-      ) {
-        return false
-      }
-      return !areSame(selectedHistory[field], row[field])
+    return getDiffFields({
+      row: row as HistoryRow | undefined,
+      selectedHistory,
+      visibleCurrentFields,
+      excludedDisplayFields,
     })
   }, [row, selectedHistory, visibleCurrentFields])
 
   const displayFields = useMemo(() => {
-    if (!selectedHistory) return [] as string[]
-    const preferredOrder = [
-      'level',
-      'parent_id',
-      'since',
-      'until',
-      'relevant_for_reports',
-    ]
-
-    const currentFields = preferredOrder.filter(
-      (field) =>
-        visibleCurrentFields.has(field) &&
-        !excludedDisplayFields.has(field) &&
-        Object.hasOwn(selectedHistory, field),
-    )
-
-    const metaFields = ['updated_at', 'updated_by', 'deleted'].filter((field) =>
-      Object.hasOwn(selectedHistory, field),
-    )
-
-    return [...currentFields, ...metaFields]
+    return getDisplayFields({
+      selectedHistory,
+      preferredOrder: [
+        'level',
+        'parent_id',
+        'since',
+        'until',
+        'relevant_for_reports',
+      ],
+      visibleCurrentFields,
+      excludedDisplayFields,
+    })
   }, [selectedHistory, visibleCurrentFields])
 
   const onChange = async (e, data) => {
@@ -410,7 +383,7 @@ export const PlaceHistoryCompare = ({
                 id: 'bCommonNo',
                 defaultMessage: 'Nein',
               })
-          : stringifyValue(history[field])
+          : stringifyHistoryValue(history[field])
       }
       onRestoreDiffValues={onRestoreDiffValues}
       restoreLabel={formatMessage({
