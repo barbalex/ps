@@ -39,24 +39,16 @@ export const getPlaceFallbackNames = (
   }
 }
 
-export const getPlaceHistoryNameSingular = (
-  projectType: string | null | undefined,
-  level: 1 | 2,
-  formatMessage: FM,
-): string => {
-  const singular = getPlaceFallbackNames(projectType, level, formatMessage).singular
-  return formatMessage(
-    { id: 'tnPosW', defaultMessage: '{place}-Geschichte' },
-    { place: singular },
-  )
-}
-
 export const getPlaceReportValueNameSingular = (
   projectType: string | null | undefined,
   level: 1 | 2,
   formatMessage: FM,
 ): string => {
-  const singular = getPlaceFallbackNames(projectType, level, formatMessage).singular
+  const singular = getPlaceFallbackNames(
+    projectType,
+    level,
+    formatMessage,
+  ).singular
   return formatMessage(
     { id: 'DQ73WF', defaultMessage: '{place}-Bericht-Menge' },
     { place: singular },

@@ -10132,27 +10132,11 @@ INSERT INTO places(account_id, place_id, subproject_id, level, since, data, geom
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"007 seventh"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 eighth"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 nineth"}', null);
--- place_histories
-INSERT INTO place_histories(account_id, place_id, year) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', 2020),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', 2021),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', 2022),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', 2023),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', 2024),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', 2025);
 -- places 2
 INSERT INTO places(account_id, place_id, parent_id, subproject_id, level, since, data, geometry) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}', null);
--- place_histories
-INSERT INTO place_histories(account_id, place_id, year) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', 2020),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', 2021),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', 2022),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', 2023),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', 2024),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', 2025);
 -- checks
 INSERT INTO checks(account_id, check_id, place_id, date) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2025-03-03'),

@@ -447,34 +447,6 @@ export const startSyncing = async () => {
           table: 'place_users',
           primaryKey: ['place_user_id'],
         },
-        place_histories: {
-          shape: {
-            url,
-            params: {
-              table: 'place_histories',
-              // add all columns except label. Reason: always generated
-              columns: [
-                'place_history_id',
-                'place_id',
-                'year',
-                'account_id',
-                'subproject_id',
-                'parent_id',
-                'level',
-                'since',
-                'until',
-                'data',
-                'geometry',
-                'bbox',
-                'created_at',
-                'updated_at',
-                'updated_by',
-              ],
-            },
-          },
-          table: 'place_histories',
-          primaryKey: ['place_history_id'],
-        },
         goals: {
           shape: {
             url,

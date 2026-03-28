@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -23,8 +31,15 @@ import {
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 type HistoryRow = Record<string, unknown> & {
+  place_history_id?: string
   updated_at?: string
   updated_by?: string | null
+}
+
+const getHistoryRecordId = (history: HistoryRow) => {
+  if (history.place_history_id) return history.place_history_id
+  if (history.updated_at) return String(history.updated_at)
+  return null
 }
 
 const excludedDisplayFields = new Set(['sys_period', 'created_at'])
@@ -46,19 +61,27 @@ export const PlaceHistoryCompare = ({
 }: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/history'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/history/$placeHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/histories/$placeHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/history'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/history/$placeHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/histories/$placeHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, subprojectId, placeId, placeId2, placeHistoryId } =
+    useParams({
+      from,
+      strict: false,
+    })
   const currentPlaceId = placeId2 ?? placeId
   const placePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/place`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/place`
+  const historyPath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/histories`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/histories`
   const online = useAtomValue(onlineAtom)
   const designing = useAtomValue(designingAtom)
   const language = useAtomValue(languageAtom)
@@ -69,7 +92,6 @@ export const PlaceHistoryCompare = ({
 
   const [validations, setValidations] = useState<Record<string, unknown>>({})
   const [histories, setHistories] = useState<HistoryRow[]>([])
-  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(0)
   const [loadingHistories, setLoadingHistories] = useState(false)
   const [historyError, setHistoryError] = useState<string | null>(null)
 
@@ -91,10 +113,6 @@ export const PlaceHistoryCompare = ({
   )
   const nameSingular =
     nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
-
-  useEffect(() => {
-    setSelectedHistoryIndex(0)
-  }, [currentPlaceId])
 
   useEffect(() => {
     let cancelled = false
@@ -151,6 +169,46 @@ export const PlaceHistoryCompare = ({
     row,
     formatMessage,
   ])
+
+  useEffect(() => {
+    if (!histories.length) return
+    const hasMatchingRouteHistory =
+      !!placeHistoryId &&
+      histories.some((history) => getHistoryRecordId(history) === placeHistoryId)
+    if (hasMatchingRouteHistory) return
+
+    const firstHistoryId = getHistoryRecordId(histories[0])
+    if (!firstHistoryId) return
+
+    navigate({ to: `${historyPath}/${firstHistoryId}`, replace: true })
+  }, [histories, historyPath, navigate, placeHistoryId])
+
+  const selectedHistoryIndex = useMemo(() => {
+    if (!histories.length || !placeHistoryId) return 0
+    const index = histories.findIndex(
+      (history) => getHistoryRecordId(history) === placeHistoryId,
+    )
+    return index >= 0 ? index : 0
+  }, [histories, placeHistoryId])
+
+  const setSelectedHistoryIndex: Dispatch<SetStateAction<number>> = useCallback(
+    (nextIndexOrUpdater) => {
+      if (!histories.length) return
+
+      const nextIndex =
+        typeof nextIndexOrUpdater === 'function'
+          ? nextIndexOrUpdater(selectedHistoryIndex)
+          : nextIndexOrUpdater
+
+      const normalizedIndex =
+        ((nextIndex % histories.length) + histories.length) % histories.length
+      const nextHistoryId = getHistoryRecordId(histories[normalizedIndex])
+
+      if (!nextHistoryId) return
+      navigate({ to: `${historyPath}/${nextHistoryId}` })
+    },
+    [histories, historyPath, navigate, selectedHistoryIndex],
+  )
 
   const selectedHistory = histories[selectedHistoryIndex]
   const isFilter = pathname.endsWith('filter')

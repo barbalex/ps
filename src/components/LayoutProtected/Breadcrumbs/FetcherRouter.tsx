@@ -27,8 +27,6 @@ import { VectorLayerVectorLayerFetcher } from './VectorLayerVectorLayerFetcher.t
 
 import { PlacesFetcher } from './PlacesFetcher.tsx'
 import { PlaceFetcher } from './PlaceFetcher.tsx'
-import { PlaceHistoriesFetcher } from './PlaceHistoriesFetcher.tsx'
-import { PlaceHistoryFetcher } from './PlaceHistoryFetcher.tsx'
 
 import { ChecksFetcher } from './ChecksFetcher.tsx'
 import { CheckFetcher } from './CheckFetcher.tsx'
@@ -427,21 +425,6 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <SubprojectHistoryFetcher params={params} {...other} />
-    }
-    case 'usePlaceHistoriesNavData': {
-      if (!params.projectId || !params.subprojectId || !params.placeId)
-        return null
-      return <PlaceHistoriesFetcher params={params} {...other} />
-    }
-    case 'usePlaceHistoryNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.placeHistoryId
-      )
-        return null
-      return <PlaceHistoryFetcher params={params} {...other} />
     }
     case 'useGoalsNavData': {
       if (!params.projectId || !params.subprojectId) return null

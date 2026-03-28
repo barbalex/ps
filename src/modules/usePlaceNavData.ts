@@ -44,7 +44,6 @@ type NavData = {
   place_check_reports_count_filtered: number
   place_action_reports_count_unfiltered: number
   place_action_reports_count_filtered: number
-  place_histories_count: number
   observations_count: number
   place_users_count: number
   files_count_unfiltered: number
@@ -116,7 +115,6 @@ export const usePlaceNavData = ({
         place_check_reports_count_filtered AS (SELECT count(*) FROM place_check_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeCheckReportsIsFiltered ? ` AND ${placeCheckReportsFilterString}` : ''}),
         place_action_reports_count_unfiltered AS (SELECT count(*) FROM place_action_reports WHERE place_id = '${placeId2 ?? placeId}'),
         place_action_reports_count_filtered AS (SELECT count(*) FROM place_action_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeActionReportsIsFiltered ? ` AND ${placeActionReportsFilterString}` : ''}),
-        place_histories_count AS (SELECT count(*) FROM place_histories WHERE place_id = '${placeId2 ?? placeId}'),
         observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
         place_users_count AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}'),
@@ -136,7 +134,6 @@ export const usePlaceNavData = ({
         place_check_reports_count_filtered.count AS place_check_reports_count_filtered,
         place_action_reports_count_unfiltered.count AS place_action_reports_count_unfiltered,
         place_action_reports_count_filtered.count AS place_action_reports_count_filtered,
-        place_histories_count.count AS place_histories_count,
         observations_count.count AS observations_count,
         place_users_count.count AS place_users_count,
         files_count_unfiltered.count AS files_count_unfiltered,
@@ -155,7 +152,6 @@ export const usePlaceNavData = ({
         place_check_reports_count_filtered,
         place_action_reports_count_unfiltered,
         place_action_reports_count_filtered,
-        place_histories_count,
         observations_count,
         place_users_count,
         files_count_unfiltered,
@@ -311,17 +307,6 @@ export const usePlaceNavData = ({
           namePlural: formatMessage({
             id: 'eZ3yEB',
             defaultMessage: 'Benutzer',
-          }),
-        }),
-      },
-      {
-        id: 'histories',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.place_histories_count ?? 0,
-          namePlural: formatMessage({
-            id: 'KkLxJl',
-            defaultMessage: 'Geschichte',
           }),
         }),
       },

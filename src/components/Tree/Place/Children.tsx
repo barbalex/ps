@@ -10,7 +10,6 @@ import { PlaceCheckReportsNode } from '../PlaceCheckReports.tsx'
 import { PlaceActionReportsNode } from '../PlaceActionReports.tsx'
 import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
-import { PlaceHistoriesNode } from '../PlaceHistories.tsx'
 import { ObservationsAssignedNode } from '../ObservationsAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
@@ -127,13 +126,6 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      <PlaceHistoriesNode
-        projectId={projectId}
-        subprojectId={subprojectId}
-        placeId={placeId}
-        placeId2={placeId2}
-        level={level + 1}
-      />
       {showFilesNav && (
         <FilesNode
           projectId={projectId}
