@@ -1,13 +1,4 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -20,42 +11,24 @@ import {
   getDiffFields,
   getDisplayFields,
 } from '../../components/shared/HistoryCompare/utils.ts'
+import { useHistoryRecords } from '../../components/shared/HistoryCompare/useHistoryRecords.ts'
+import { restoreDiffFields } from '../../components/shared/HistoryCompare/restoreDiffFields.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import {
-  addOperationAtom,
-  designingAtom,
-  languageAtom,
-  onlineAtom,
-  postgrestClientAtom,
-} from '../../store.ts'
+import { addOperationAtom, designingAtom, languageAtom } from '../../store.ts'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import {
+  excludedDisplayFields,
+  excludedRestoreFields,
+  preferredOrder,
+  getHistoryRecordId,
+} from './historyCompareConfig.ts'
 
 type HistoryRow = Record<string, unknown> & {
   place_history_id?: string
   updated_at?: string
   updated_by?: string | null
 }
-
-const getHistoryRecordId = (history: HistoryRow) => {
-  if (history.place_history_id) return history.place_history_id
-  if (history.updated_at) return String(history.updated_at)
-  return null
-}
-
-const excludedDisplayFields = new Set(['sys_period', 'created_at'])
-const excludedRestoreFields = new Set([
-  'place_id',
-  'account_id',
-  'subproject_id',
-  'label',
-  'sys_period',
-  'created_at',
-  'updated_at',
-  'updated_by',
-  'bbox',
-  'deleted',
-])
 
 export const PlaceHistoryCompare = ({
   from,
@@ -78,10 +51,8 @@ export const PlaceHistoryCompare = ({
   const historyPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/histories`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/histories`
-  const online = useAtomValue(onlineAtom)
   const designing = useAtomValue(designingAtom)
   const language = useAtomValue(languageAtom)
-  const postgrestClient = useAtomValue(postgrestClientAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -103,86 +74,24 @@ export const PlaceHistoryCompare = ({
     `Place Level ${levelForLabel}`
 
   const {
-    data: historiesRaw,
-    isLoading: loadingHistories,
-    error: historyQueryError,
-  } = useQuery({
-    queryKey: ['places_history', currentPlaceId],
-    queryFn: async ({ signal }) => {
-      const { data, error } = await postgrestClient!
-        .from('places_history')
-        .select('*')
-        .eq('place_id', currentPlaceId)
-        .order('updated_at', { ascending: false })
-        .abortSignal(signal)
-      if (error) throw new Error(error.message)
-      return data
-    },
-    enabled: online && !!currentPlaceId,
-    staleTime: 30_000,
+    histories,
+    loadingHistories,
+    historyError,
+    selectedHistoryIndex,
+    setSelectedHistoryIndex,
+    selectedHistory,
+  } = useHistoryRecords<HistoryRow>({
+    historyTable: 'places_history',
+    rowIdField: 'place_id',
+    rowId: currentPlaceId,
+    historyPath,
+    routeHistoryId: placeHistoryId,
+    getHistoryRecordId,
+    currentRow: row,
   })
 
-  const histories: HistoryRow[] = useMemo(() => {
-    if (!historiesRaw) return []
-    const currentRowMissing = !row
-    return historiesRaw.map((history, index) => ({
-      ...history,
-      deleted: currentRowMissing && index === 0,
-    })) as HistoryRow[]
-  }, [historiesRaw, row])
-
-  const historyError: string | null = historyQueryError
-    ? historyQueryError.message
-    : null
-
-  // Keeps the route parameter in sync with available history records by
-  // redirecting to the first valid history id when the current one is missing (was deleted)
-  useEffect(() => {
-    if (!histories.length) return
-    const hasMatchingRouteHistory =
-      !!placeHistoryId &&
-      histories.some(
-        (history) => getHistoryRecordId(history) === placeHistoryId,
-      )
-    if (hasMatchingRouteHistory) return
-
-    const firstHistoryId = getHistoryRecordId(histories[0])
-    if (!firstHistoryId) return
-
-    navigate({ to: `${historyPath}/${firstHistoryId}`, replace: true })
-  }, [histories, historyPath, navigate, placeHistoryId])
-
-  const selectedHistoryIndex = useMemo(() => {
-    if (!histories.length || !placeHistoryId) return 0
-    const index = histories.findIndex(
-      (history) => getHistoryRecordId(history) === placeHistoryId,
-    )
-    return index >= 0 ? index : 0
-  }, [histories, placeHistoryId])
-
-  const setSelectedHistoryIndex: Dispatch<SetStateAction<number>> = useCallback(
-    (nextIndexOrUpdater) => {
-      if (!histories.length) return
-
-      const nextIndex =
-        typeof nextIndexOrUpdater === 'function'
-          ? nextIndexOrUpdater(selectedHistoryIndex)
-          : nextIndexOrUpdater
-
-      const normalizedIndex =
-        ((nextIndex % histories.length) + histories.length) % histories.length
-      const nextHistoryId = getHistoryRecordId(histories[normalizedIndex])
-
-      if (!nextHistoryId) return
-      navigate({ to: `${historyPath}/${nextHistoryId}` })
-    },
-    [histories, historyPath, navigate, selectedHistoryIndex],
-  )
-
-  const selectedHistory = histories[selectedHistoryIndex]
   const visibleCurrentFields = useMemo(() => {
     const visible = new Set(['since', 'until', 'relevant_for_reports'])
-
     if (designing) visible.add('level')
 
     return visible
@@ -200,7 +109,7 @@ export const PlaceHistoryCompare = ({
   const displayFields = useMemo(() => {
     return getDisplayFields({
       selectedHistory,
-      preferredOrder: ['level', 'since', 'until', 'relevant_for_reports'],
+      preferredOrder,
       visibleCurrentFields,
       excludedDisplayFields,
     })
@@ -268,26 +177,23 @@ export const PlaceHistoryCompare = ({
   const onRestoreDiffValues = async () => {
     if (!row || !selectedHistory || !diffFields.length) return
 
-    const restoreEntries = diffFields
-      .filter((field) => !excludedRestoreFields.has(field))
-      .map((field) => [field, selectedHistory[field]])
-
-    if (!restoreEntries.length) return
-
-    const setClauses = restoreEntries
-      .map(([field], i) => `${field} = $${i + 1}`)
-      .join(', ')
-    const values = restoreEntries.map(([, value]) => value)
-
+    let restoreEntries: [string, unknown][]
     try {
-      await db.query(
-        `UPDATE places SET ${setClauses} WHERE place_id = $${values.length + 1}`,
-        [...values, currentPlaceId],
-      )
+      restoreEntries = await restoreDiffFields({
+        db,
+        table: 'places',
+        rowIdField: 'place_id',
+        rowId: currentPlaceId!,
+        diffFields,
+        selectedHistory,
+        excludedRestoreFields,
+      })
     } catch (error) {
       console.error(error)
       return
     }
+
+    if (!restoreEntries.length) return
 
     addOperation({
       table: 'places',
