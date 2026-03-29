@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -66,7 +66,6 @@ export const PlaceHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { pathname } = useLocation()
   const { projectId, subprojectId, placeId, placeId2, placeHistoryId } =
     useParams({
       from,
@@ -137,7 +136,7 @@ export const PlaceHistoryCompare = ({
     : null
 
   // Keeps the route parameter in sync with available history records by
-  // redirecting to the first valid history id when the current one is missing.
+  // redirecting to the first valid history id when the current one is missing (was deleted)
   useEffect(() => {
     if (!histories.length) return
     const hasMatchingRouteHistory =
@@ -181,19 +180,13 @@ export const PlaceHistoryCompare = ({
   )
 
   const selectedHistory = histories[selectedHistoryIndex]
-  const isFilter = pathname.endsWith('filter')
   const visibleCurrentFields = useMemo(() => {
     const visible = new Set(['since', 'until', 'relevant_for_reports'])
-    const effectiveLevel =
-      (row?.level as number | undefined) ?? (placeId2 ? 2 : 1)
 
-    if (!isFilter) {
-      if (designing) visible.add('level')
-      if (effectiveLevel === 2) visible.add('parent_id')
-    }
+    if (designing) visible.add('level')
 
     return visible
-  }, [designing, isFilter, placeId2, row?.level])
+  }, [designing])
 
   const diffFields = useMemo(() => {
     return getDiffFields({
@@ -207,13 +200,7 @@ export const PlaceHistoryCompare = ({
   const displayFields = useMemo(() => {
     return getDisplayFields({
       selectedHistory,
-      preferredOrder: [
-        'level',
-        'parent_id',
-        'since',
-        'until',
-        'relevant_for_reports',
-      ],
+      preferredOrder: ['level', 'since', 'until', 'relevant_for_reports'],
       visibleCurrentFields,
       excludedDisplayFields,
     })
@@ -225,10 +212,6 @@ export const PlaceHistoryCompare = ({
         formatMessage,
         fieldLabelMap: {
           level: { id: 'bDeHkI', defaultMessage: 'Stufe' },
-          parent_id: {
-            id: 'bElLqQ',
-            defaultMessage: 'Übergeordneter Ort',
-          },
           since: {
             id: 'bEmMrR',
             defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
