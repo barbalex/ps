@@ -1,3 +1,4 @@
+// this _could_ be always the same? Maybe we can move this to the shared folder
 export const excludedDisplayFields = new Set(['sys_period', 'created_at'])
 
 export const excludedRestoreFields = new Set([

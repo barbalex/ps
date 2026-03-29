@@ -16,7 +16,6 @@ type AddOperation = (params: {
 type CreateRestoreDiffValuesHandlerArgs = {
   db: DbLike
   table: string
-  rowIdField: string
   rowIdName: string
   rowId: string | undefined
   row: Record<string, unknown> | undefined
@@ -33,7 +32,6 @@ type CreateRestoreDiffValuesHandlerArgs = {
 export const createRestoreDiffValuesHandler = ({
   db,
   table,
-  rowIdField,
   rowIdName,
   rowId,
   row,
@@ -50,7 +48,7 @@ export const createRestoreDiffValuesHandler = ({
       restoreEntries = await restoreDiffFields({
         db,
         table,
-        rowIdField,
+        rowIdField: rowIdName,
         rowId: rowId!,
         diffFields,
         selectedHistory,

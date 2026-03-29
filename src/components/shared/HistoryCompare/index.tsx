@@ -40,7 +40,6 @@ type HistoryConfig = {
 type RestoreConfig = {
   db: DbLike
   table: string
-  rowIdField: string
   rowIdName: string
   rowId: string | undefined
   excludedRestoreFields: Set<string>
@@ -122,7 +121,6 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   const onRestoreDiffValues = createRestoreDiffValuesHandler({
     db: restoreConfig.db,
     table: restoreConfig.table,
-    rowIdField: restoreConfig.rowIdField,
     rowIdName: restoreConfig.rowIdName,
     rowId: restoreConfig.rowId,
     row,

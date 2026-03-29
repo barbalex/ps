@@ -161,7 +161,6 @@ export const PlaceHistoryCompare = ({
       restoreConfig={{
         db,
         table: 'places',
-        rowIdField: 'place_id',
         rowIdName: 'place_id',
         rowId: currentPlaceId,
         excludedRestoreFields,
