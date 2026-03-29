@@ -70,9 +70,9 @@ export const Header = ({
   const basePath = placeId2 ?
       `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`
-  const historyPath = `${basePath}/history`
+  const historiesPath = `${basePath}/histories`
   const placePath = `${basePath}/place`
-  const isHistoryRoute = location.pathname === historyPath
+  const isHistoryRoute = location.pathname.startsWith(`${historiesPath}/`)
 
   // Keep a ref to the current placeId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -270,8 +270,43 @@ export const Header = ({
     setMapBounds(bounds)
   }
 
-  const onClickHistory = () => {
-    navigate({ to: isHistoryRoute ? placePath : historyPath })
+  const onClickHistory = async () => {
+    if (isHistoryRoute) {
+      navigate({ to: placePath })
+      return
+    }
+
+    const place_id = placeId2 ?? placeId
+    const res = await db.query(
+      `SELECT place_history_id, updated_at
+       FROM places_history
+       WHERE place_id = $1
+       ORDER BY updated_at DESC
+       LIMIT 1`,
+      [place_id],
+    )
+
+    const latest = res?.rows?.[0] as
+      | { place_history_id?: string; updated_at?: string }
+      | undefined
+    const historyId = latest?.place_history_id ?? latest?.updated_at
+
+    if (historyId) {
+      navigate({ to: `${historiesPath}/${historyId}` })
+      return
+    }
+
+    addNotification({
+      title: formatMessage({
+        id: 'bPlaceNoHistoryTitle',
+        defaultMessage: 'Keine Geschichte vorhanden',
+      }),
+      body: formatMessage({
+        id: 'bPlaceNoHistoryBody',
+        defaultMessage: 'Für diesen Ort gibt es noch keine gespeicherten Änderungen.',
+      }),
+      intent: 'warning',
+    })
   }
 
   return (

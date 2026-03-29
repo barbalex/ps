@@ -60,9 +60,7 @@ export const PlaceHistoryCompare = ({
   from,
 }: {
   from:
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/history'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/histories/$placeHistoryId'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/history'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/histories/$placeHistoryId'
 }) => {
   const { formatMessage } = useIntl()
