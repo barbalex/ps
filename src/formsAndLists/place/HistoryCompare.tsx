@@ -270,15 +270,6 @@ export const PlaceHistoryCompare = ({
             id: 'bEpPuU',
             defaultMessage: 'Relevant für Berichte',
           },
-          updated_at: {
-            id: 'bPlaceHistUpdatedAt',
-            defaultMessage: 'Geändert am',
-          },
-          updated_by: {
-            id: 'bPlaceHistUpdatedBy',
-            defaultMessage: 'Geändert von',
-          },
-          deleted: { id: 'bPlaceHistDeleted', defaultMessage: 'Gelöscht' },
         },
       }),
     [formatMessage, nameSingular],

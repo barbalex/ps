@@ -24,6 +24,21 @@ type HistoryFieldLabel = {
 
 type HistoryFieldLabelMap = Record<string, HistoryFieldLabel>
 
+const defaultHistoryFieldLabelMap: HistoryFieldLabelMap = {
+  updated_at: {
+    id: 'bPlaceHistUpdatedAt',
+    defaultMessage: 'Geändert am',
+  },
+  updated_by: {
+    id: 'bPlaceHistUpdatedBy',
+    defaultMessage: 'Geändert von',
+  },
+  deleted: {
+    id: 'bPlaceHistDeleted',
+    defaultMessage: 'Gelöscht',
+  },
+}
+
 type HistoryFieldValueDescriptor = {
   id: string
   defaultMessage: string
@@ -132,8 +147,17 @@ export const createHistoryFieldLabelFormatter = ({
   formatMessage: FormatMessage
   fieldLabelMap: HistoryFieldLabelMap
 }) => {
+  const mergedFieldLabelMap = {
+    ...defaultHistoryFieldLabelMap,
+    ...fieldLabelMap,
+  }
+
   return (field: string) =>
-    formatHistoryFieldLabel({ field, formatMessage, fieldLabelMap })
+    formatHistoryFieldLabel({
+      field,
+      formatMessage,
+      fieldLabelMap: mergedFieldLabelMap,
+    })
 }
 
 export const formatHistoryFieldValue = <TRow extends HistoryRowLike>({
@@ -159,7 +183,9 @@ export const formatHistoryFieldValue = <TRow extends HistoryRowLike>({
   }
 
   if (configuredValue.format) {
-    return stringifyHistoryValue(configuredValue.format(history[field], history))
+    return stringifyHistoryValue(
+      configuredValue.format(history[field], history),
+    )
   }
 
   return stringifyHistoryValue(history[field])
