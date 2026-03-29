@@ -12,7 +12,6 @@ import {
   getDisplayFields,
 } from '../../components/shared/HistoryCompare/utils.ts'
 import { useHistoryRecords } from '../../components/shared/HistoryCompare/useHistoryRecords.ts'
-import { restoreDiffFields } from '../../components/shared/HistoryCompare/restoreDiffFields.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom, designingAtom, languageAtom } from '../../store.ts'
@@ -174,37 +173,6 @@ export const PlaceHistoryCompare = ({
     })
   }
 
-  const onRestoreDiffValues = async () => {
-    if (!row || !selectedHistory || !diffFields.length) return
-
-    let restoreEntries: [string, unknown][]
-    try {
-      restoreEntries = await restoreDiffFields({
-        db,
-        table: 'places',
-        rowIdField: 'place_id',
-        rowId: currentPlaceId!,
-        diffFields,
-        selectedHistory,
-        excludedRestoreFields,
-      })
-    } catch (error) {
-      console.error(error)
-      return
-    }
-
-    if (!restoreEntries.length) return
-
-    addOperation({
-      table: 'places',
-      rowIdName: 'place_id',
-      rowId: currentPlaceId,
-      operation: 'update',
-      draft: Object.fromEntries(restoreEntries),
-      prev: { ...row },
-    })
-  }
-
   if (!rowRes) return <Loading />
 
   if (!row) {
@@ -237,7 +205,18 @@ export const PlaceHistoryCompare = ({
       displayFields={displayFields}
       differentFields={diffFields}
       formatFieldLabel={formatFieldLabel}
-      onRestoreDiffValues={onRestoreDiffValues}
+      row={row}
+      selectedHistory={selectedHistory}
+      diffFields={diffFields}
+      restoreConfig={{
+        db,
+        table: 'places',
+        rowIdField: 'place_id',
+        rowIdName: 'place_id',
+        rowId: currentPlaceId,
+        excludedRestoreFields,
+        addOperation,
+      }}
     />
   )
 }

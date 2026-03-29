@@ -6,11 +6,35 @@ import { useIntl } from 'react-intl'
 
 import { Loading } from '../Loading.tsx'
 import { stringifyHistoryValue } from './utils.ts'
+import { createRestoreDiffValuesHandler } from './createRestoreDiffValuesHandler.ts'
 import { onlineAtom } from '../../../store.ts'
 
 import styles from './index.module.css'
 
 const { Button, Caption1, Text } = fluentUiReactComponents
+
+interface DbLike {
+  query(sql: string, params?: unknown[]): Promise<unknown>
+}
+
+type AddOperation = (params: {
+  table: string
+  rowIdName: string
+  rowId: string | undefined
+  operation: string
+  draft: Record<string, unknown>
+  prev: Record<string, unknown>
+}) => void
+
+type RestoreConfig = {
+  db: DbLike
+  table: string
+  rowIdField: string
+  rowIdName: string
+  rowId: string | undefined
+  excludedRestoreFields: Set<string>
+  addOperation: AddOperation
+}
 
 type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   onBack: () => void
@@ -24,7 +48,10 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   differentFields: string[]
   formatFieldLabel: (field: string) => ReactNode
   formatFieldValue?: (field: string, history: THistory) => ReactNode
-  onRestoreDiffValues: () => void
+  row: Record<string, unknown> | undefined
+  selectedHistory: THistory | undefined
+  diffFields: string[]
+  restoreConfig: RestoreConfig
 }
 
 export function HistoryCompare<THistory extends Record<string, unknown>>({
@@ -39,11 +66,27 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   differentFields,
   formatFieldLabel,
   formatFieldValue,
-  onRestoreDiffValues,
+  row,
+  selectedHistory,
+  diffFields,
+  restoreConfig,
 }: HistoryCompareProps<THistory>) {
   const { formatMessage } = useIntl()
   const online = useAtomValue(onlineAtom)
   const unavailable = !online
+
+  const onRestoreDiffValues = createRestoreDiffValuesHandler({
+    db: restoreConfig.db,
+    table: restoreConfig.table,
+    rowIdField: restoreConfig.rowIdField,
+    rowIdName: restoreConfig.rowIdName,
+    rowId: restoreConfig.rowId,
+    row,
+    selectedHistory,
+    diffFields,
+    excludedRestoreFields: restoreConfig.excludedRestoreFields,
+    addOperation: restoreConfig.addOperation,
+  })
 
   const resolveFieldValue = (field: string, history: THistory) => {
     if (formatFieldValue) return formatFieldValue(field, history)
