@@ -188,6 +188,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
         </Button>
       </div>
 
+      <div className={styles.containerWrap}>
       <div className={styles.container}>
         <section className={styles.panelLeft}>
           <h2 className={styles.panelTitle}>
@@ -310,6 +311,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
             </Button>
           </div>
         </section>
+      </div>
       </div>
     </div>
   )

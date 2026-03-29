@@ -1,11 +1,19 @@
+.containerWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: 46px minmax(0, 1fr) auto;
   align-items: stretch;
   gap: 0;
+
   min-height: 0;
-  max-height: 60vh;
 }
 
 .panelLeft {
@@ -79,6 +87,8 @@
 .sliderShell {
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2f5f19 #dff3e2;
   position: relative;
   min-height: 0;
   min-width: 0;
