@@ -6,7 +6,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Node } from './Node.tsx'
 import { PlacesNode } from './Places.tsx'
 import { SubprojectReportsNode } from './SubprojectReports.tsx'
-import { SubprojectHistoriesNode } from './SubprojectHistories.tsx'
 import { GoalsNode } from './Goals.tsx'
 import { ObservationsToAssessNode } from './ObservationsToAssess.tsx'
 import { ObservationsNotToAssignNode } from './ObservationsNotToAssign.tsx'
@@ -36,8 +35,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
-  const filesInSubproject =
-    project?.subproject_files_in_subproject !== false
+  const filesInSubproject = project?.subproject_files_in_subproject !== false
   const showFilesNav = showFiles && !filesInSubproject
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
@@ -119,10 +117,6 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
               subprojectId={nav.id}
             />
           )}
-          <SubprojectHistoriesNode
-            projectId={projectId}
-            subprojectId={nav.id}
-          />
           {showGoals && (
             <GoalsNode projectId={projectId} subprojectId={nav.id} />
           )}

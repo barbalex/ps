@@ -162,7 +162,6 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteIm
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/route'
-import { Route as DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/histories/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/charts/route'
@@ -180,7 +179,6 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRouteIm
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/index'
-import { Route as DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/histories/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/charts/index'
@@ -194,7 +192,6 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesFilterRouteI
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/filter'
-import { Route as DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId'
@@ -1278,13 +1275,6 @@ const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute =
         DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
     } as any,
   )
-const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteImport.update({
-    id: '/histories',
-    path: '/histories',
-    getParentRoute: () =>
-      DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
-  } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteImport.update({
     id: '/goals',
@@ -1411,13 +1401,6 @@ const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute =
         DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute,
     } as any,
   )
-const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () =>
-      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute,
-  } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRouteImport.update({
     id: '/',
@@ -1513,15 +1496,6 @@ const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute 
       path: '/filter',
       getParentRoute: () =>
         DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute,
-    } as any,
-  )
-const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRouteImport.update(
-    {
-      id: '/$subprojectHistoryId',
-      path: '/$subprojectHistoryId',
-      getParentRoute: () =>
-        DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute,
     } as any,
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute =
@@ -3282,7 +3256,6 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/charts': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/goals': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren
-  '/data/projects/$projectId/subprojects/$subprojectId/histories': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/observation-imports': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren
@@ -3324,7 +3297,6 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/histories/$subprojectHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessFilterRoute
@@ -3338,7 +3310,6 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/charts/': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/histories/': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRoute
@@ -3630,7 +3601,6 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/histories/$subprojectHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessFilterRoute
@@ -3644,7 +3614,6 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/charts': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRoute
-  '/data/projects/$projectId/subprojects/$subprojectId/histories': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observation-imports': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRoute
@@ -3908,7 +3877,6 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren
-  '/data/projects/$projectId_/subprojects/$subprojectId_/histories': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren
@@ -3950,7 +3918,6 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsFilterRoute
-  '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessFilterRoute
@@ -3964,7 +3931,6 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsIndexRoute
-  '/data/projects/$projectId_/subprojects/$subprojectId_/histories/': typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessIndexRoute
@@ -4280,7 +4246,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts'
     | '/data/projects/$projectId/subprojects/$subprojectId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals'
-    | '/data/projects/$projectId/subprojects/$subprojectId/histories'
     | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess'
@@ -4322,7 +4287,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/filter'
-    | '/data/projects/$projectId/subprojects/$subprojectId/histories/$subprojectHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/filter'
@@ -4336,7 +4300,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/'
-    | '/data/projects/$projectId/subprojects/$subprojectId/histories/'
     | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/'
@@ -4628,7 +4591,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/filter'
-    | '/data/projects/$projectId/subprojects/$subprojectId/histories/$subprojectHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/filter'
@@ -4642,7 +4604,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts'
     | '/data/projects/$projectId/subprojects/$subprojectId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals'
-    | '/data/projects/$projectId/subprojects/$subprojectId/histories'
     | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess'
@@ -4905,7 +4866,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/charts'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/histories'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess'
@@ -4947,7 +4907,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/filter'
@@ -4961,7 +4920,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/charts/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals/'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/histories/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/'
@@ -6231,13 +6189,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
     }
-    '/data/projects/$projectId_/subprojects/$subprojectId_/histories': {
-      id: '/data/projects/$projectId_/subprojects/$subprojectId_/histories'
-      path: '/histories'
-      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories'
-      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteImport
-      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute
-    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals'
       path: '/goals'
@@ -6357,13 +6308,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute
     }
-    '/data/projects/$projectId_/subprojects/$subprojectId_/histories/': {
-      id: '/data/projects/$projectId_/subprojects/$subprojectId_/histories/'
-      path: '/'
-      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories/'
-      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRouteImport
-      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute
-    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals/'
       path: '/'
@@ -6454,13 +6398,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/filter'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute
-    }
-    '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId': {
-      id: '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId'
-      path: '/$subprojectHistoryId'
-      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/histories/$subprojectHistoryId'
-      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRouteImport
-      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals/filter'
@@ -8288,24 +8225,6 @@ const DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren =
     DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteChildren,
   )
 
-interface DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren {
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute
-}
-
-const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren =
-  {
-    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesSubprojectHistoryIdRoute,
-    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesIndexRoute,
-  }
-
-const DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren =
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute._addFileChildren(
-    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteChildren,
-  )
-
 interface DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute
   DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute
@@ -9531,7 +9450,6 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren
-  DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessRouteRouteWithChildren
@@ -9553,8 +9471,6 @@ const DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteChildren: DataProjec
       DataProjectsProjectIdSubprojectsSubprojectIdFilesRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdGoalsRouteRouteWithChildren,
-    DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRoute:
-      DataProjectsProjectIdSubprojectsSubprojectIdHistoriesRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteWithChildren,
     DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRoute:

@@ -343,35 +343,6 @@ COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, define
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
 --------------------------------------------------------------
--- subproject_histories
---
-CREATE TABLE IF NOT EXISTS subproject_histories(
-  subproject_history_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  year integer DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  name text DEFAULT NULL,
-  start_year integer DEFAULT NULL,
-  end_year integer DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (COALESCE(year::text, subproject_history_id::text)) STORED,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL,
-  CONSTRAINT unique_subproject_year UNIQUE NULLS NOT DISTINCT(subproject_id, year)
-);
-
-CREATE INDEX IF NOT EXISTS subproject_histories_subproject_id_idx ON subproject_histories USING btree(subproject_id);
-CREATE INDEX IF NOT EXISTS subproject_histories_year_idx ON subproject_histories USING btree(year);
-CREATE INDEX IF NOT EXISTS subproject_histories_account_id_idx ON subproject_histories USING btree(account_id);
-CREATE INDEX IF NOT EXISTS subproject_histories_project_id_idx ON subproject_histories USING btree(project_id);
-
-COMMENT ON COLUMN subproject_histories.year IS 'One history entry per year per subproject';
-COMMENT ON COLUMN subproject_histories.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON TABLE subproject_histories IS 'History of subprojects. Used to analyze subproject development over the years.';
-
---------------------------------------------------------------
 -- project_users
 --
 CREATE TYPE user_roles_enum AS ENUM ('manager', 'editor', 'reader');

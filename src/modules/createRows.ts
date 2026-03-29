@@ -752,36 +752,6 @@ export const createSubprojectTaxon = async ({ subprojectId }) => {
   return subproject_taxon_id
 }
 
-export const createSubprojectHistory = async ({ subprojectId }) => {
-  const db = store.get(pgliteDbAtom)
-
-  const subproject_history_id = uuidv7()
-  const data = {
-    subproject_history_id,
-    subproject_id: subprojectId,
-  }
-
-  const columns = Object.keys(data).join(',')
-  const values = Object.values(data)
-    .map((_, i) => `$${i + 1}`)
-    .join(',')
-
-  await db.query(
-    `insert into subproject_histories (${columns}) values (${values})`,
-    Object.values(data),
-  )
-
-  store.set(addOperationAtom, {
-    table: 'subproject_histories',
-    operation: 'insert',
-    rowIdName: 'subproject_history_id',
-    rowId: subproject_history_id,
-    draft: data,
-  })
-
-  return subproject_history_id
-}
-
 export const createSubprojectReport = async ({ projectId, subprojectId }) => {
   const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column

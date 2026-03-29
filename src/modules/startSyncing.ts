@@ -158,31 +158,6 @@ export const startSyncing = async () => {
           table: 'subproject_users',
           primaryKey: ['subproject_user_id'],
         },
-        subproject_histories: {
-          shape: {
-            url,
-            params: {
-              table: 'subproject_histories',
-              // add all columns except label. Reason: always generated
-              columns: [
-                'subproject_history_id',
-                'subproject_id',
-                'year',
-                'account_id',
-                'project_id',
-                'name',
-                'start_year',
-                'end_year',
-                'data',
-                'created_at',
-                'updated_at',
-                'updated_by',
-              ],
-            },
-          },
-          table: 'subproject_histories',
-          primaryKey: ['subproject_history_id'],
-        },
         taxonomies: {
           shape: {
             url,

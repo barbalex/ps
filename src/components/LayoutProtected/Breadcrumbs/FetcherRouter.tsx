@@ -56,8 +56,6 @@ import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
 import { PlaceUserFetcher } from './PlaceUserFetcher.tsx'
 import { SubprojectReportsFetcher } from './SubprojectReportsFetcher.tsx'
 import { SubprojectReportFetcher } from './SubprojectReportFetcher.tsx'
-import { SubprojectHistoriesFetcher } from './SubprojectHistoriesFetcher.tsx'
-import { SubprojectHistoryFetcher } from './SubprojectHistoryFetcher.tsx'
 import { GoalsFetcher } from './GoalsFetcher.tsx'
 import { GoalFetcher } from './GoalFetcher.tsx'
 import { GoalGoalFetcher } from './GoalGoalFetcher.tsx'
@@ -412,19 +410,6 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <SubprojectReportFetcher params={params} {...other} />
-    }
-    case 'useSubprojectHistoriesNavData': {
-      if (!params.projectId || !params.subprojectId) return null
-      return <SubprojectHistoriesFetcher params={params} {...other} />
-    }
-    case 'useSubprojectHistoryNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.subprojectHistoryId
-      )
-        return null
-      return <SubprojectHistoryFetcher params={params} {...other} />
     }
     case 'useGoalsNavData': {
       if (!params.projectId || !params.subprojectId) return null
