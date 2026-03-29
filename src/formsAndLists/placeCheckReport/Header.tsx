@@ -6,12 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createPlaceCheckReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, placeId, placeId2, placeCheckReportId } = useParams({
-    from,
-  })
+  const { projectId, subprojectId, placeId, placeId2, placeCheckReportId } =
+    useParams({
+      from,
+    })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -34,6 +36,9 @@ export const Header = ({ autoFocusRef, from }) => {
   const rowCount = combinedRes?.rows?.[0]?.count ?? 2
 
   const title = formatMessage({ id: 'bCSwTx', defaultMessage: 'Kontroll-Bericht' })
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/check-reports/${placeCheckReportId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/check-reports/${placeCheckReportId}`
 
   const addRow = async () => {
     const id = await createPlaceCheckReport({
@@ -133,6 +138,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="place report"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={`${basePath}/report`}
+          historyTable="place_check_reports_history"
+          rowIdField="place_check_report_id"
+          rowId={placeCheckReportId}
+        />
+      }
     />
   )
 }

@@ -1,4 +1,4 @@
-import { Outlet, useParams } from '@tanstack/react-router'
+import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { PlaceCheckReportWithQuantities } from '../../../../../../../../../../../../formsAndLists/placeCheckReport/WithQuantities.tsx'
 
@@ -6,6 +6,7 @@ const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$placeCheckReportId_'
 
 export const PlaceCheckReportLayout = () => {
+  const location = useLocation()
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(
     `SELECT place_check_report_quantities_in_report FROM place_levels WHERE project_id = $1 AND level = 2`,
@@ -13,7 +14,8 @@ export const PlaceCheckReportLayout = () => {
   )
   const quantitiesInReport =
     res?.rows?.[0]?.place_check_report_quantities_in_report !== false
-  if (quantitiesInReport)
+  const isHistoryRoute = location.pathname.includes('/histories/')
+  if (quantitiesInReport && !isHistoryRoute)
     return <PlaceCheckReportWithQuantities from={from} />
   return <Outlet />
 }
