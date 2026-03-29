@@ -13,13 +13,18 @@ import { onlineAtom, postgrestClientAtom } from '../../../store.ts'
 
 type HistoryRowLike = Record<string, unknown>
 
-type UseHistoryRecordsArgs<TRow extends HistoryRowLike> = {
+const getHistoryRecordId = (history: HistoryRowLike): string | null => {
+  const updatedAt = history.updated_at
+  if (updatedAt) return String(updatedAt)
+  return null
+}
+
+type UseHistoryRecordsArgs = {
   historyTable: string
   rowIdField: string
   rowId: string | undefined
   historyPath: string
-  routeHistoryId: string | undefined
-  getHistoryRecordId: (history: TRow) => string | null
+  routeHistoryUpdatedAt: string | undefined
   currentRow: Record<string, unknown> | undefined
 }
 
@@ -37,10 +42,9 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
   rowIdField,
   rowId,
   historyPath,
-  routeHistoryId,
-  getHistoryRecordId,
+  routeHistoryUpdatedAt,
   currentRow,
-}: UseHistoryRecordsArgs<TRow>): UseHistoryRecordsResult<TRow> => {
+}: UseHistoryRecordsArgs): UseHistoryRecordsResult<TRow> => {
   const online = useAtomValue(onlineAtom)
   const postgrestClient = useAtomValue(postgrestClientAtom)
   const navigate = useNavigate()
@@ -83,9 +87,9 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
   useEffect(() => {
     if (!histories.length) return
     const hasMatchingRouteHistory =
-      !!routeHistoryId &&
+      !!routeHistoryUpdatedAt &&
       histories.some(
-        (history) => getHistoryRecordId(history) === routeHistoryId,
+        (history) => getHistoryRecordId(history) === routeHistoryUpdatedAt,
       )
     if (hasMatchingRouteHistory) return
 
@@ -93,12 +97,12 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
     if (!firstHistoryId) return
 
     navigate({ to: `${historyPath}/${firstHistoryId}`, replace: true })
-  }, [histories, historyPath, navigate, routeHistoryId, getHistoryRecordId])
+  }, [histories, historyPath, navigate, routeHistoryUpdatedAt])
 
   const selectedHistoryIndex = (() => {
-    if (!histories.length || !routeHistoryId) return 0
+    if (!histories.length || !routeHistoryUpdatedAt) return 0
     const index = histories.findIndex(
-      (history) => getHistoryRecordId(history) === routeHistoryId,
+      (history) => getHistoryRecordId(history) === routeHistoryUpdatedAt,
     )
     return index >= 0 ? index : 0
   })()
@@ -124,7 +128,6 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
       historyPath,
       navigate,
       selectedHistoryIndex,
-      getHistoryRecordId,
     ],
   )
 

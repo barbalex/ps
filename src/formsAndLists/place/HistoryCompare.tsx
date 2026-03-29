@@ -15,7 +15,6 @@ import {
   excludedDisplayFields,
   excludedRestoreFields,
   preferredOrder,
-  getHistoryRecordId,
 } from './historyCompareConfig.ts'
 
 export const PlaceHistoryCompare = ({
@@ -156,8 +155,7 @@ export const PlaceHistoryCompare = ({
         rowIdField: 'place_id',
         rowId: currentPlaceId,
         historyPath,
-        routeHistoryId: placeHistoryId,
-        getHistoryRecordId,
+        routeHistoryUpdatedAt: placeHistoryId,
         currentRow: row,
       }}
       restoreConfig={{

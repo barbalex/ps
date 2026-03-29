@@ -28,13 +28,12 @@ type AddOperation = (params: {
   prev: Record<string, unknown>
 }) => void
 
-type HistoryConfig<THistory extends Record<string, unknown>> = {
+type HistoryConfig = {
   historyTable: string
   rowIdField: string
   rowId: string | undefined
   historyPath: string
-  routeHistoryId: string | undefined
-  getHistoryRecordId: (history: THistory) => string | null
+  routeHistoryUpdatedAt: string | undefined
   currentRow: Record<string, unknown> | undefined
 }
 
@@ -61,7 +60,7 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   formatFieldLabel: (field: string) => ReactNode
   formatFieldValue?: (field: string, history: THistory) => ReactNode
   row: Record<string, unknown> | undefined
-  historyConfig: HistoryConfig<THistory>
+  historyConfig: HistoryConfig
   restoreConfig: RestoreConfig
 }
 
