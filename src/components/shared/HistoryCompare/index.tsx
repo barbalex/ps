@@ -189,129 +189,136 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
       </div>
 
       <div className={styles.containerWrap}>
-      <div className={styles.container}>
-        <section className={styles.panelLeft}>
-          <h2 className={styles.panelTitle}>
-            {formatMessage({
-              id: 'bPlaceCurrentVersion',
-              defaultMessage: 'Aktuelle Version',
-            })}
-          </h2>
-          <div className={styles.leftContent}>{leftContent}</div>
-        </section>
+        <div className={styles.container}>
+          <section className={styles.panelLeft}>
+            <h2 className={styles.panelTitle}>
+              {formatMessage({
+                id: 'bPlaceCurrentVersion',
+                defaultMessage: 'Aktuelle Version',
+              })}
+            </h2>
+            <div className={styles.leftContent}>{leftContent}</div>
+          </section>
 
-        <section className={styles.panelRight}>
-          <h2 className={styles.panelTitle}>
-            {formatMessage({
-              id: 'bPlaceHistoricalVersion',
-              defaultMessage: 'Historische Version',
-            })}
-          </h2>
-          <div className={styles.rightContent}>
-            <div className={styles.sliderHeader}>
-              <Button
-                icon={<TbChevronLeft />}
-                disabled={histories.length <= 1}
-                onClick={() =>
-                  setSelectedHistoryIndex((prev) =>
-                    histories.length
-                      ? (prev + histories.length - 1) % histories.length
-                      : 0,
-                  )
-                }
-              />
-              <Caption1>
-                {histories.length > 0
-                  ? `${selectedHistoryIndex + 1} / ${histories.length}`
-                  : '0 / 0'}
-              </Caption1>
-              <Button
-                icon={<TbChevronRight />}
-                disabled={histories.length <= 1}
-                onClick={() =>
-                  setSelectedHistoryIndex((prev) =>
-                    histories.length ? (prev + 1) % histories.length : 0,
-                  )
-                }
-              />
-            </div>
+          <section className={styles.panelRight}>
+            <h2 className={styles.panelTitle}>
+              {formatMessage({
+                id: 'bPlaceHistoricalVersion',
+                defaultMessage: 'Historische Version',
+              })}
+            </h2>
+            <div className={styles.rightContent}>
+              <div className={styles.sliderHeader}>
+                <Button
+                  icon={<TbChevronLeft />}
+                  disabled={histories.length <= 1}
+                  onClick={() =>
+                    setSelectedHistoryIndex((prev) =>
+                      histories.length
+                        ? (prev + histories.length - 1) % histories.length
+                        : 0,
+                    )
+                  }
+                />
+                <Caption1>
+                  {histories.length > 0
+                    ? `${selectedHistoryIndex + 1} / ${histories.length}`
+                    : '0 / 0'}
+                </Caption1>
+                <Button
+                  icon={<TbChevronRight />}
+                  disabled={histories.length <= 1}
+                  onClick={() =>
+                    setSelectedHistoryIndex((prev) =>
+                      histories.length ? (prev + 1) % histories.length : 0,
+                    )
+                  }
+                />
+              </div>
 
-            <div className={styles.sliderShell}>
-              {loadingHistories && (
-                <div className={styles.empty}>
-                  <Loading />
-                </div>
-              )}
-              {!loadingHistories && !!historyError && (
-                <div className={styles.empty}>{historyError}</div>
-              )}
-              {!loadingHistories && !historyError && histories.length === 0 && (
-                <div className={styles.empty}>
-                  {formatMessage({
-                    id: 'bPlaceNoHistory',
-                    defaultMessage: 'Keine historischen Versionen gefunden.',
-                  })}
-                </div>
-              )}
-              {!loadingHistories && !historyError && histories.length > 0 && (
-                <div className={styles.valueListScrollerWrap}>
-                  <div className={styles.valueListScroller}>
-                    <div
-                      className={styles.sliderTrack}
-                      style={{
-                        transform: `translateX(-${selectedHistoryIndex * 100}%)`,
-                      }}
-                    >
-                      {histories.map((history, index) => (
-                        <div
-                          key={`${String(history.updated_at ?? 'no-date')}-${index}`}
-                          className={styles.slide}
-                        >
-                          <dl className={styles.valueList}>
-                            {displayFields.map((field) => {
-                              const value = resolveFieldValue(field, history)
-                              const isDifferent =
-                                differentFields.includes(field)
+              <div className={styles.sliderShell}>
+                {loadingHistories && (
+                  <div className={styles.empty}>
+                    <Loading />
+                  </div>
+                )}
+                {!loadingHistories && !!historyError && (
+                  <div className={styles.empty}>{historyError}</div>
+                )}
+                {!loadingHistories &&
+                  !historyError &&
+                  histories.length === 0 && (
+                    <div className={styles.empty}>
+                      {formatMessage({
+                        id: 'bPlaceNoHistory',
+                        defaultMessage:
+                          'Keine historischen Versionen gefunden.',
+                      })}
+                    </div>
+                  )}
+                {!loadingHistories && !historyError && histories.length > 0 && (
+                  <div className={styles.valueListScrollerWrap}>
+                    <div className={styles.valueListScroller}>
+                      <div
+                        className={styles.sliderTrack}
+                        style={{
+                          transform: `translateX(-${selectedHistoryIndex * 100}%)`,
+                        }}
+                      >
+                        {histories.map((history, index) => (
+                          <div
+                            key={`${String(history.updated_at ?? 'no-date')}-${index}`}
+                            className={styles.slide}
+                          >
+                            <dl className={styles.valueList}>
+                              {displayFields.map((field, fieldIndex) => {
+                                const value = resolveFieldValue(field, history)
+                                const isDifferent =
+                                  differentFields.includes(field)
+                                const isLast =
+                                  fieldIndex === displayFields.length - 1
 
-                              return (
-                                <div
-                                  key={field}
-                                  style={{ display: 'contents' }}
-                                >
-                                  <dt className={styles.label}>
-                                    {formatFieldLabel(field)}
-                                  </dt>
-                                  <dd
-                                    className={`${styles.value} ${isDifferent ? styles.valueRed : ''}`}
+                                return (
+                                  <div
+                                    key={field}
+                                    style={{ display: 'contents' }}
                                   >
-                                    {value}
-                                  </dd>
-                                </div>
-                              )
-                            })}
-                          </dl>
-                        </div>
-                      ))}
+                                    <dt
+                                      className={`${styles.label}${isLast ? ` ${styles.noBorder}` : ''}`}
+                                    >
+                                      {formatFieldLabel(field)}
+                                    </dt>
+                                    <dd
+                                      className={`${styles.value}${isDifferent ? ` ${styles.valueRed}` : ''}${isLast ? ` ${styles.noBorder}` : ''}`}
+                                    >
+                                      {value}
+                                    </dd>
+                                  </div>
+                                )
+                              })}
+                            </dl>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-          <div className={styles.footer}>
-            <Button
-              appearance="primary"
-              onClick={onRestoreDiffValues}
-              disabled={!differentFields.length}
-            >
-              {formatMessage({
-                id: 'bPlaceRestoreRedValues',
-                defaultMessage: 'Rote Werte wiederherstellen',
-              })}
-            </Button>
-          </div>
-        </section>
-      </div>
+            <div className={styles.footer}>
+              <Button
+                appearance="primary"
+                onClick={onRestoreDiffValues}
+                disabled={!differentFields.length}
+              >
+                {formatMessage({
+                  id: 'bPlaceRestoreRedValues',
+                  defaultMessage: 'Rote Werte wiederherstellen',
+                })}
+              </Button>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   )
