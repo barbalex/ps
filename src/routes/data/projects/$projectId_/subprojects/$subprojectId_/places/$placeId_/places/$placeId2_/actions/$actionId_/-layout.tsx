@@ -17,17 +17,19 @@ export const ActionLayout = () => {
   const taxaInAction = res?.rows?.[0]?.action_taxa_in_action !== false
   const filesInAction = res?.rows?.[0]?.action_files_in_action !== false
   const allInline = quantitiesInAction && taxaInAction && filesInAction
-  const isHistoryRoute = location.pathname.includes('/histories/')
-  const isInlineSubformHistoryRoute =
-    isHistoryRoute &&
-    (location.pathname.includes('/quantities/') ||
-      location.pathname.includes('/taxa/'))
-  const isStandaloneHistoryRoute =
-    isHistoryRoute && !isInlineSubformHistoryRoute
-  if (
-    (quantitiesInAction || taxaInAction || filesInAction) &&
-    !isStandaloneHistoryRoute
-  )
+  const isQuantitiesRoute = /\/quantities(\/|$)/.test(location.pathname)
+  const isTaxaRoute = /\/taxa(\/|$)/.test(location.pathname)
+  const isFilesRoute = /\/files(\/|$)/.test(location.pathname)
+  const isSubsectionRoute =
+    isQuantitiesRoute || isTaxaRoute || isFilesRoute
+  const shouldRenderWithAll = isSubsectionRoute
+    ? (isQuantitiesRoute && quantitiesInAction) ||
+      (isTaxaRoute && taxaInAction) ||
+      (isFilesRoute && filesInAction)
+    : quantitiesInAction || taxaInAction || filesInAction
+  const isTaxaListRoute = /\/taxa\/?$/.test(location.pathname)
+  if (isTaxaListRoute) return <Outlet />
+  if (shouldRenderWithAll)
     return <ActionWithAll from={from} allInline={allInline} />
   return <Outlet />
 }

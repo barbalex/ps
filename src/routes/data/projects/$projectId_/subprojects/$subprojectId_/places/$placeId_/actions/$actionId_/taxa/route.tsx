@@ -3,14 +3,14 @@ import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { ActionTaxa } from '../../../../../../../../../../../formsAndLists/actionTaxa.tsx'
 
 const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/taxa/'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/taxa'
 
 const TaxaRouteContent = () => {
   const location = useLocation()
   const isTaxaList = /\/taxa\/?$/.test(location.pathname)
 
   if (isTaxaList) {
-    return <ActionTaxa from={from} hideTitle={true} />
+    return <ActionTaxa from={from} />
   }
 
   return <Outlet />
