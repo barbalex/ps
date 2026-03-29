@@ -27,8 +27,8 @@ export const ActionQuantityHistoryCompare = ({
   from,
 }: {
   from:
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId/histories/$actionQuantityHistoryId'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId/histories/$actionQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
