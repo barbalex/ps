@@ -113,7 +113,7 @@
 .valueList {
   display: grid;
   grid-template-columns: minmax(110px, 1fr) minmax(160px, 2fr);
-  gap: 8px 12px;
+  gap: 0;
   margin: 0;
 }
 
@@ -149,11 +149,15 @@
 }
 
 .label {
-  font-weight: 600;
+  color: rgb(0, 0, 0, 0.54);
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .value {
   margin: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: anywhere;
