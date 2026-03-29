@@ -4,6 +4,7 @@
   "bPlaceCurrentVersion": "Current Version",
   "bPlaceHistoricalVersion": "Historical Version",
   "bPlaceRestoreRedValues": "Restore Red Values",
+  "bPlaceHistoryToggleShort": "History",
   "bPlaceHistUpdatedAt": "Updated at",
   "bPlaceHistUpdatedBy": "Updated by",
   "bPlaceHistDeleted": "Deleted",

@@ -108,7 +108,7 @@ export const HistoryToggleButton = ({
     <Tooltip
       content={formatMessage({
         id: 'bPlaceHistoryToggleShort',
-        defaultMessage: 'history',
+        defaultMessage: 'Geschichte',
       })}
     >
       <Button size="medium" icon={<TbHistory />} onClick={onClickHistory} />
