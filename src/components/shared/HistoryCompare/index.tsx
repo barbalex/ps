@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useMemo } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { TbArrowLeft, TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 import { useAtomValue } from 'jotai'
@@ -98,23 +97,26 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   const loadingHistories = loadingHistoriesOverride ?? loadingHistoriesHook
   const historyError = historyErrorOverride ?? historyErrorHook
 
-  const diffFields = useMemo(() => {
+  const diffFields = (() => {
     return getDiffFields({
       row: row as THistory | undefined,
       selectedHistory,
       visibleCurrentFields,
       excludedDisplayFields,
     })
-  }, [row, selectedHistory, visibleCurrentFields, excludedDisplayFields])
+  })()
 
-  const displayFields = useMemo(() => {
-    return displayFieldsOverride ?? getDisplayFields({
-      selectedHistory,
-      preferredOrder,
-      visibleCurrentFields,
-      excludedDisplayFields,
-    })
-  }, [displayFieldsOverride, selectedHistory, preferredOrder, visibleCurrentFields, excludedDisplayFields])
+  const displayFields = (() => {
+    return (
+      displayFieldsOverride ??
+      getDisplayFields({
+        selectedHistory,
+        preferredOrder,
+        visibleCurrentFields,
+        excludedDisplayFields,
+      })
+    )
+  })()
 
   const differentFields = differentFieldsOverride ?? diffFields
 

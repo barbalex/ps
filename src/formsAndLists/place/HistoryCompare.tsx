@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -61,38 +61,33 @@ export const PlaceHistoryCompare = ({
     nameRes?.rows?.[0]?.[`name_singular_${language}`] ??
     `Place Level ${levelForLabel}`
 
-  const visibleCurrentFields = useMemo(() => {
-    const visible = new Set(['since', 'until', 'relevant_for_reports'])
-    if (designing) visible.add('level')
+  const visibleCurrentFields = new Set([
+    'since',
+    'until',
+    'relevant_for_reports',
+    ...(designing ? ['level'] : []),
+  ])
 
-    return visible
-  }, [designing])
-
-  const formatFieldLabel = useMemo(
-    () =>
-      createHistoryFieldLabelFormatter({
-        formatMessage,
-        fieldLabelMap: {
-          level: { id: 'bDeHkI', defaultMessage: 'Stufe' },
-          since: {
-            id: 'bEmMrR',
-            defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
-            values: { nameSingular },
-          },
-          until: {
-            id: 'bEnNsS',
-            defaultMessage:
-              'Bis zu welchem Jahr existierte die {nameSingular}?',
-            values: { nameSingular },
-          },
-          relevant_for_reports: {
-            id: 'bEpPuU',
-            defaultMessage: 'Relevant für Berichte',
-          },
-        },
-      }),
-    [formatMessage, nameSingular],
-  )
+  const formatFieldLabel = createHistoryFieldLabelFormatter({
+    formatMessage,
+    fieldLabelMap: {
+      level: { id: 'bDeHkI', defaultMessage: 'Stufe' },
+      since: {
+        id: 'bEmMrR',
+        defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
+        values: { nameSingular },
+      },
+      until: {
+        id: 'bEnNsS',
+        defaultMessage: 'Bis zu welchem Jahr existierte die {nameSingular}?',
+        values: { nameSingular },
+      },
+      relevant_for_reports: {
+        id: 'bEpPuU',
+        defaultMessage: 'Relevant für Berichte',
+      },
+    },
+  })
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)

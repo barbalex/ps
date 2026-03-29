@@ -95,13 +95,13 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
     navigate({ to: `${historyPath}/${firstHistoryId}`, replace: true })
   }, [histories, historyPath, navigate, routeHistoryId, getHistoryRecordId])
 
-  const selectedHistoryIndex = useMemo(() => {
+  const selectedHistoryIndex = (() => {
     if (!histories.length || !routeHistoryId) return 0
     const index = histories.findIndex(
       (history) => getHistoryRecordId(history) === routeHistoryId,
     )
     return index >= 0 ? index : 0
-  }, [histories, routeHistoryId, getHistoryRecordId])
+  })()
 
   const setSelectedHistoryIndex: Dispatch<SetStateAction<number>> = useCallback(
     (nextIndexOrUpdater) => {
