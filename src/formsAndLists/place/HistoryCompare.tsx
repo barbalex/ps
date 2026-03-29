@@ -110,6 +110,8 @@ export const PlaceHistoryCompare = ({
   const nameSingular =
     nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
 
+  // Loads historical versions for the current place from the server and marks
+  // the newest history row as deleted when the current row no longer exists.
   useEffect(() => {
     let cancelled = false
     const run = async () => {
@@ -166,11 +168,15 @@ export const PlaceHistoryCompare = ({
     formatMessage,
   ])
 
+  // Keeps the route parameter in sync with available history records by
+  // redirecting to the first valid history id when the current one is missing.
   useEffect(() => {
     if (!histories.length) return
     const hasMatchingRouteHistory =
       !!placeHistoryId &&
-      histories.some((history) => getHistoryRecordId(history) === placeHistoryId)
+      histories.some(
+        (history) => getHistoryRecordId(history) === placeHistoryId,
+      )
     if (hasMatchingRouteHistory) return
 
     const firstHistoryId = getHistoryRecordId(histories[0])
