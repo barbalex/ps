@@ -6,12 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createPlaceActionReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, placeId, placeId2, placeActionReportId } = useParams({
-    from,
-  })
+  const { projectId, subprojectId, placeId, placeId2, placeActionReportId } =
+    useParams({
+      from,
+    })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -35,6 +37,9 @@ export const Header = ({ autoFocusRef, from }) => {
     id: 'YMGqLf',
     defaultMessage: 'Massnahmen-Bericht',
   })
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${placeActionReportId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${placeActionReportId}`
 
   const addRow = async () => {
     const id = await createPlaceActionReport({
@@ -134,6 +139,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="place action report"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={`${basePath}/report`}
+          historyTable="place_action_reports_history"
+          rowIdField="place_action_report_id"
+          rowId={placeActionReportId}
+        />
+      }
     />
   )
 }
