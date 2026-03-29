@@ -176,7 +176,7 @@ export const formatHistoryFieldValue = <TRow extends HistoryRowLike>({
 
   if (configuredValue.booleanLabels) {
     return formatMessage(
-      Boolean(history[field])
+      history[field]
         ? configuredValue.booleanLabels.trueLabel
         : configuredValue.booleanLabels.falseLabel,
     )
