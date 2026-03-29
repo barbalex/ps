@@ -7,6 +7,13 @@ import { useIntl } from 'react-intl'
 
 import styles from './DateField.module.css'
 
+const toDateOnlyString = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 // Strings containing {0} interpolation (used by Fluent UI's own formatter,
 // not react-intl — cannot be passed through the ICU parser).
 const calendarFormatStrings: Record<string, Partial<CalendarStrings>> = {
@@ -132,7 +139,13 @@ export const DateField = ({
           value={value}
           onChange={onChange}
           onSelectDate={(date) =>
-            onChange({ target: { name, value: date, type: 'date' } })
+            onChange({
+              target: {
+                name,
+                value: date ? toDateOnlyString(date) : null,
+                type: 'date',
+              },
+            })
           }
           firstDayOfWeek={1}
           allowTextInput
