@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -23,6 +24,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
     from === '/data/projects/$projectId_/project' ||
     from === '/data/projects/$projectId_'
   const { projectId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -123,6 +125,15 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="project"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={`${basePath}/project`}
+          historyTable="projects_history"
+          rowIdField="project_id"
+          rowId={projectId}
+        />
+      }
     />
   )
 }
