@@ -63,8 +63,6 @@ export const Header = ({
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`
-  const historiesPath = `${basePath}/histories`
-  const placePath = `${basePath}/place`
 
   // Keep a ref to the current placeId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -285,8 +283,8 @@ export const Header = ({
             />
           </Tooltip>
           <HistoryToggleButton
-            historiesPath={historiesPath}
-            formPath={placePath}
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/place`}
             historyTable="places_history"
             rowIdField="place_id"
             rowId={placeId2 ?? placeId}
