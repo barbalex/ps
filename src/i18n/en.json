@@ -8,6 +8,8 @@
   "bPlaceHistUpdatedAt": "Updated at",
   "bPlaceHistUpdatedBy": "Updated by",
   "bPlaceHistDeleted": "Deleted",
+  "bQuantityNumeric": "Quantity (numeric)",
+  "bQuantityText": "Quantity (text)",
   "+EKK8l": "Population",
   "/40i9A": "Accounts",
   "/WXiU2": "Previous year",

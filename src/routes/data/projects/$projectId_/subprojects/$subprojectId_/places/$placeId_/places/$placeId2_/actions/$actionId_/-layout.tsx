@@ -18,10 +18,12 @@ export const ActionLayout = () => {
   const filesInAction = res?.rows?.[0]?.action_files_in_action !== false
   const allInline = quantitiesInAction && taxaInAction && filesInAction
   const isHistoryRoute = location.pathname.includes('/histories/')
-  const isQuantityHistoryRoute =
-    location.pathname.includes('/quantities/') && isHistoryRoute
+  const isInlineSubformHistoryRoute =
+    isHistoryRoute &&
+    (location.pathname.includes('/quantities/') ||
+      location.pathname.includes('/taxa/'))
   const isStandaloneHistoryRoute =
-    isHistoryRoute && !isQuantityHistoryRoute
+    isHistoryRoute && !isInlineSubformHistoryRoute
   if (
     (quantitiesInAction || taxaInAction || filesInAction) &&
     !isStandaloneHistoryRoute

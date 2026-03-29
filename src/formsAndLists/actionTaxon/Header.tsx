@@ -6,13 +6,18 @@ import { useIntl } from 'react-intl'
 
 import { createActionTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from = undefined }) => {
-  const { actionId, actionTaxonId } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, actionId, actionTaxonId } =
+    useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/taxa/${actionTaxonId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/taxa/${actionTaxonId}`
 
   const db = usePGlite()
 
@@ -122,6 +127,15 @@ export const Header = ({ autoFocusRef, from = undefined }) => {
         id: 'mN1OpQ',
         defaultMessage: 'Massnahmen-Taxon',
       })}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="action_taxa_history"
+          rowIdField="action_taxon_id"
+          rowId={actionTaxonId}
+        />
+      }
     />
   )
 }
