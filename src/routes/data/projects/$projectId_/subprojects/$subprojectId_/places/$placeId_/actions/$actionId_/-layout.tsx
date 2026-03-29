@@ -28,7 +28,7 @@ export const ActionLayout = () => {
       (isFilesRoute && filesInAction)
     : quantitiesInAction || taxaInAction || filesInAction
   const isTaxaListRoute = /\/taxa\/?$/.test(location.pathname)
-  if (isTaxaListRoute) return <Outlet />
+  if (isTaxaListRoute && !taxaInAction) return <Outlet />
   if (shouldRenderWithAll)
     return <ActionWithAll from={from} allInline={allInline} />
   return <Outlet />
