@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl'
 
 import { createAction, createLayerPresentation } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import {
   tabsAtom,
@@ -34,7 +35,12 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
 
-  const { projectId, placeId, placeId2, actionId } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({
+    from,
+  })
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}`
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -216,16 +222,25 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       toPreviousDisabled={rowCount <= 1}
       tableName="action"
       siblings={
-        <Button
-          size="medium"
-          icon={<TbZoomScan />}
-          onClick={onClickZoomTo}
-          disabled={!hasGeometry}
-          title={formatMessage({
-            id: 'bCVzWA',
-            defaultMessage: 'Zur Massnahme in Karte zoomen',
-          })}
-        />
+        <>
+          <Button
+            size="medium"
+            icon={<TbZoomScan />}
+            onClick={onClickZoomTo}
+            disabled={!hasGeometry}
+            title={formatMessage({
+              id: 'bCVzWA',
+              defaultMessage: 'Zur Massnahme in Karte zoomen',
+            })}
+          />
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/action`}
+            historyTable="actions_history"
+            rowIdField="action_id"
+            rowId={actionId}
+          />
+        </>
       }
     />
   )
