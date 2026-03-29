@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -87,9 +88,6 @@ export const PlaceHistoryCompare = ({
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const [validations, setValidations] = useState<Record<string, unknown>>({})
-  const [histories, setHistories] = useState<HistoryRow[]>([])
-  const [loadingHistories, setLoadingHistories] = useState(false)
-  const [historyError, setHistoryError] = useState<string | null>(null)
 
   const rowRes = useLiveQuery(`SELECT * FROM places WHERE place_id = $1`, [
     currentPlaceId,
@@ -102,58 +100,48 @@ export const PlaceHistoryCompare = ({
     [projectId, levelForLabel],
   )
   const nameSingular =
-    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
+    nameRes?.rows?.[0]?.[`name_singular_${language}`] ??
+    `Place Level ${levelForLabel}`
 
-  // Loads historical versions for the current place from the server and marks
-  // the newest history row as deleted when the current row no longer exists.
-  useEffect(() => {
-    let cancelled = false
-    const run = async () => {
-      if (!online || !currentPlaceId || !postgrestClient) {
-        if (!cancelled) {
-          setHistories([])
-          setLoadingHistories(false)
-          setHistoryError(
-            !postgrestClient
-              ? formatMessage({
-                  id: 'bPlaceHistoryNoConnection',
-                  defaultMessage:
-                    'Keine Server-Verbindung für Geschichtsabfrage verfügbar.',
-                })
-              : null,
-          )
-        }
-        return
-      }
+  const noConnection = !postgrestClient
+    ? formatMessage({
+        id: 'bPlaceHistoryNoConnection',
+        defaultMessage:
+          'Keine Server-Verbindung für Geschichtsabfrage verfügbar.',
+      })
+    : null
 
-      setLoadingHistories(true)
-      setHistoryError(null)
-      const { data, error } = await postgrestClient
+  const {
+    data: historiesRaw,
+    isLoading: loadingHistories,
+    error: historyQueryError,
+  } = useQuery({
+    queryKey: ['places_history', currentPlaceId],
+    queryFn: async ({ signal }) => {
+      const { data, error } = await postgrestClient!
         .from('places_history')
         .select('*')
         .eq('place_id', currentPlaceId)
         .order('updated_at', { ascending: false })
+        .abortSignal(signal)
+      if (error) throw new Error(error.message)
+      return data
+    },
+    enabled: online && !!currentPlaceId && !!postgrestClient,
+    staleTime: 30_000,
+  })
 
-      if (cancelled) return
+  const histories: HistoryRow[] = useMemo(() => {
+    if (!historiesRaw) return []
+    const currentRowMissing = !row
+    return historiesRaw.map((history, index) => ({
+      ...history,
+      deleted: currentRowMissing && index === 0,
+    })) as HistoryRow[]
+  }, [historiesRaw, row])
 
-      if (error) {
-        setHistoryError(error.message)
-        setHistories([])
-      } else {
-        const currentRowMissing = !row
-        const withDeleted = (data ?? []).map((history, index) => ({
-          ...history,
-          deleted: currentRowMissing && index === 0,
-        }))
-        setHistories(withDeleted as HistoryRow[])
-      }
-      setLoadingHistories(false)
-    }
-    run()
-    return () => {
-      cancelled = true
-    }
-  }, [currentPlaceId, online, postgrestClient, row, formatMessage])
+  const historyError: string | null =
+    noConnection ?? (historyQueryError ? historyQueryError.message : null)
 
   // Keeps the route parameter in sync with available history records by
   // redirecting to the first valid history id when the current one is missing.

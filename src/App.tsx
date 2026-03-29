@@ -1,5 +1,9 @@
 import { createRef, useEffect } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
+import {
+  QueryClient,
+  QueryClientProvider as TanstackQueryClientProvider,
+} from '@tanstack/react-query'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
@@ -68,6 +72,8 @@ if (import.meta.env.DEV) {
   window.__jotai_store__ = store
 }
 
+const tanstackQueryClient = new QueryClient()
+
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
   const language = useAtomValue(languageAtom, { store })
@@ -110,7 +116,9 @@ export const App = () => {
             ></uc-upload-ctx-provider>
             <div id="router-container" className={styles.routerContainer}>
               <UploaderContext.Provider value={uploaderRef}>
-                <RouterProvider router={router} />
+                <TanstackQueryClientProvider client={tanstackQueryClient}>
+                  <RouterProvider router={router} />
+                </TanstackQueryClientProvider>
               </UploaderContext.Provider>
             </div>
           </FluentProvider>
