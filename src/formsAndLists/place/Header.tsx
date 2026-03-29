@@ -1,12 +1,12 @@
-import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
-import { TbZoomScan, TbHistory } from 'react-icons/tb'
+import { useParams, useNavigate } from '@tanstack/react-router'
+import { TbZoomScan } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Tooltip } = fluentUiReactComponents
 import { bbox } from '@turf/bbox'
 
 import { buffer } from '@turf/buffer'
-import { useAtom, useSetAtom, useAtomValue } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -16,6 +16,7 @@ import {
   createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import {
   tabsAtom,
@@ -23,8 +24,6 @@ import {
   addOperationAtom,
   addNotificationAtom,
   mapLayerSortingAtom,
-  onlineAtom,
-  postgrestClientAtom,
 } from '../../store.ts'
 
 import type Places from '../../models/public/Places.ts'
@@ -54,27 +53,18 @@ export const Header = ({
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_'
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
-  const online = useAtomValue(onlineAtom)
-  const postgrestClient = useAtomValue(postgrestClientAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const navigate = useNavigate()
-  const location = useLocation()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
 
   const db = usePGlite()
-  const projectRes = useLiveQuery(
-    `SELECT enable_histories FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const historiesEnabled = projectRes?.rows?.[0]?.enable_histories === true
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`
   const historiesPath = `${basePath}/histories`
   const placePath = `${basePath}/place`
-  const isHistoryRoute = location.pathname.startsWith(`${historiesPath}/`)
 
   // Keep a ref to the current placeId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -272,65 +262,6 @@ export const Header = ({
     setMapBounds(bounds)
   }
 
-  const onClickHistory = async () => {
-    if (isHistoryRoute) {
-      navigate({ to: placePath })
-      return
-    }
-
-    try {
-      const place_id = placeId2 ?? placeId
-      const { data, error } = await postgrestClient
-        .from('places_history')
-        .select('updated_at')
-        .eq('place_id', place_id)
-        .order('updated_at', { ascending: false })
-        .limit(1)
-
-      if (error) {
-        addNotification({
-          title: formatMessage({
-            id: 'bPlaceHistoryLoadFailedTitle',
-            defaultMessage: 'Geschichte konnte nicht geladen werden',
-          }),
-          body: error.message,
-          intent: 'error',
-        })
-        return
-      }
-
-      const latest = data?.[0] as { updated_at?: string } | undefined
-      const historyId = latest?.updated_at
-
-      if (historyId) {
-        navigate({ to: `${historiesPath}/${historyId}` })
-        return
-      }
-
-      addNotification({
-        title: formatMessage({
-          id: 'bPlaceNoHistoryTitle',
-          defaultMessage: 'Keine Geschichte vorhanden',
-        }),
-        body: formatMessage({
-          id: 'bPlaceNoHistoryBody',
-          defaultMessage:
-            'Für diesen Ort gibt es noch keine gespeicherten Änderungen.',
-        }),
-        intent: 'warning',
-      })
-    } catch (error) {
-      addNotification({
-        title: formatMessage({
-          id: 'bPlaceHistoryLoadFailedTitle',
-          defaultMessage: 'Geschichte konnte nicht geladen werden',
-        }),
-        body: error instanceof Error ? error.message : String(error),
-        intent: 'error',
-      })
-    }
-  }
-
   return (
     <FormHeader
       title={nameSingular ?? 'Place'}
@@ -353,20 +284,13 @@ export const Header = ({
               onClick={onClickZoomTo}
             />
           </Tooltip>
-          {online && historiesEnabled && (
-            <Tooltip
-              content={formatMessage({
-                id: 'bPlaceHistoryToggleShort',
-                defaultMessage: 'geschichte',
-              })}
-            >
-              <Button
-                size="medium"
-                icon={<TbHistory />}
-                onClick={onClickHistory}
-              />
-            </Tooltip>
-          )}
+          <HistoryToggleButton
+            historiesPath={historiesPath}
+            formPath={placePath}
+            historyTable="places_history"
+            rowIdField="place_id"
+            rowId={placeId2 ?? placeId}
+          />
         </>
       }
     />
