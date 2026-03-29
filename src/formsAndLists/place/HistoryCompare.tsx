@@ -6,12 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { PlaceForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
-import {
-  createHistoryFieldLabelFormatter,
-  getDiffFields,
-  getDisplayFields,
-} from '../../components/shared/HistoryCompare/utils.ts'
-import { useHistoryRecords } from '../../components/shared/HistoryCompare/useHistoryRecords.ts'
+import { createHistoryFieldLabelFormatter } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom, designingAtom, languageAtom } from '../../store.ts'
@@ -22,12 +17,6 @@ import {
   preferredOrder,
   getHistoryRecordId,
 } from './historyCompareConfig.ts'
-
-type HistoryRow = Record<string, unknown> & {
-  place_history_id?: string
-  updated_at?: string
-  updated_by?: string | null
-}
 
 export const PlaceHistoryCompare = ({
   from,
@@ -72,47 +61,12 @@ export const PlaceHistoryCompare = ({
     nameRes?.rows?.[0]?.[`name_singular_${language}`] ??
     `Place Level ${levelForLabel}`
 
-  const {
-    histories,
-    loadingHistories,
-    historyError,
-    selectedHistoryIndex,
-    setSelectedHistoryIndex,
-    selectedHistory,
-  } = useHistoryRecords<HistoryRow>({
-    historyTable: 'places_history',
-    rowIdField: 'place_id',
-    rowId: currentPlaceId,
-    historyPath,
-    routeHistoryId: placeHistoryId,
-    getHistoryRecordId,
-    currentRow: row,
-  })
-
   const visibleCurrentFields = useMemo(() => {
     const visible = new Set(['since', 'until', 'relevant_for_reports'])
     if (designing) visible.add('level')
 
     return visible
   }, [designing])
-
-  const diffFields = useMemo(() => {
-    return getDiffFields({
-      row: row as HistoryRow | undefined,
-      selectedHistory,
-      visibleCurrentFields,
-      excludedDisplayFields,
-    })
-  }, [row, selectedHistory, visibleCurrentFields])
-
-  const displayFields = useMemo(() => {
-    return getDisplayFields({
-      selectedHistory,
-      preferredOrder,
-      visibleCurrentFields,
-      excludedDisplayFields,
-    })
-  }, [selectedHistory, visibleCurrentFields])
 
   const formatFieldLabel = useMemo(
     () =>
@@ -197,17 +151,20 @@ export const PlaceHistoryCompare = ({
           withContainer={false}
         />
       }
-      histories={histories}
-      selectedHistoryIndex={selectedHistoryIndex}
-      setSelectedHistoryIndex={setSelectedHistoryIndex}
-      loadingHistories={loadingHistories}
-      historyError={historyError}
-      displayFields={displayFields}
-      differentFields={diffFields}
+      visibleCurrentFields={visibleCurrentFields}
+      excludedDisplayFields={excludedDisplayFields}
+      preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       row={row}
-      selectedHistory={selectedHistory}
-      diffFields={diffFields}
+      historyConfig={{
+        historyTable: 'places_history',
+        rowIdField: 'place_id',
+        rowId: currentPlaceId,
+        historyPath,
+        routeHistoryId: placeHistoryId,
+        getHistoryRecordId,
+        currentRow: row,
+      }}
       restoreConfig={{
         db,
         table: 'places',

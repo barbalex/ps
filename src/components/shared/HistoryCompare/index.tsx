@@ -1,4 +1,5 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { ReactNode } from 'react'
+import { useMemo } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { TbArrowLeft, TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 import { useAtomValue } from 'jotai'
@@ -7,6 +8,8 @@ import { useIntl } from 'react-intl'
 import { Loading } from '../Loading.tsx'
 import { stringifyHistoryValue } from './utils.ts'
 import { createRestoreDiffValuesHandler } from './createRestoreDiffValuesHandler.ts'
+import { useHistoryRecords } from './useHistoryRecords.ts'
+import { getDiffFields, getDisplayFields } from './utils.ts'
 import { onlineAtom } from '../../../store.ts'
 
 import styles from './index.module.css'
@@ -26,6 +29,16 @@ type AddOperation = (params: {
   prev: Record<string, unknown>
 }) => void
 
+type HistoryConfig<THistory extends Record<string, unknown>> = {
+  historyTable: string
+  rowIdField: string
+  rowId: string | undefined
+  historyPath: string
+  routeHistoryId: string | undefined
+  getHistoryRecordId: (history: THistory) => string | null
+  currentRow: Record<string, unknown> | undefined
+}
+
 type RestoreConfig = {
   db: DbLike
   table: string
@@ -39,41 +52,71 @@ type RestoreConfig = {
 type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   onBack: () => void
   leftContent: ReactNode
-  histories: THistory[]
-  selectedHistoryIndex: number
-  setSelectedHistoryIndex: Dispatch<SetStateAction<number>>
-  loadingHistories: boolean
-  historyError: string | null
-  displayFields: string[]
-  differentFields: string[]
+  loadingHistories?: boolean
+  historyError?: string | null
+  displayFields?: string[]
+  visibleCurrentFields: Set<string>
+  excludedDisplayFields: Set<string>
+  preferredOrder: string[]
+  differentFields?: string[]
   formatFieldLabel: (field: string) => ReactNode
   formatFieldValue?: (field: string, history: THistory) => ReactNode
   row: Record<string, unknown> | undefined
-  selectedHistory: THistory | undefined
-  diffFields: string[]
+  historyConfig: HistoryConfig<THistory>
   restoreConfig: RestoreConfig
 }
 
 export function HistoryCompare<THistory extends Record<string, unknown>>({
   onBack,
   leftContent,
-  histories,
-  selectedHistoryIndex,
-  setSelectedHistoryIndex,
-  loadingHistories,
-  historyError,
-  displayFields,
-  differentFields,
+  loadingHistories: loadingHistoriesOverride,
+  historyError: historyErrorOverride,
+  displayFields: displayFieldsOverride,
+  visibleCurrentFields,
+  excludedDisplayFields,
+  preferredOrder,
+  differentFields: differentFieldsOverride,
   formatFieldLabel,
   formatFieldValue,
   row,
-  selectedHistory,
-  diffFields,
+  historyConfig,
   restoreConfig,
 }: HistoryCompareProps<THistory>) {
   const { formatMessage } = useIntl()
   const online = useAtomValue(onlineAtom)
   const unavailable = !online
+
+  const {
+    histories,
+    loadingHistories: loadingHistoriesHook,
+    historyError: historyErrorHook,
+    selectedHistoryIndex,
+    setSelectedHistoryIndex,
+    selectedHistory,
+  } = useHistoryRecords<THistory>(historyConfig)
+
+  const loadingHistories = loadingHistoriesOverride ?? loadingHistoriesHook
+  const historyError = historyErrorOverride ?? historyErrorHook
+
+  const diffFields = useMemo(() => {
+    return getDiffFields({
+      row: row as THistory | undefined,
+      selectedHistory,
+      visibleCurrentFields,
+      excludedDisplayFields,
+    })
+  }, [row, selectedHistory, visibleCurrentFields, excludedDisplayFields])
+
+  const displayFields = useMemo(() => {
+    return displayFieldsOverride ?? getDisplayFields({
+      selectedHistory,
+      preferredOrder,
+      visibleCurrentFields,
+      excludedDisplayFields,
+    })
+  }, [displayFieldsOverride, selectedHistory, preferredOrder, visibleCurrentFields, excludedDisplayFields])
+
+  const differentFields = differentFieldsOverride ?? diffFields
 
   const onRestoreDiffValues = createRestoreDiffValuesHandler({
     db: restoreConfig.db,
