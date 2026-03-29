@@ -3,10 +3,15 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
 
 import { isOnline } from '../modules/isOnline.ts'
-import { onlineAtom, shortTermOnlineAtom, postgrestClientAtom } from '../store.ts'
+import {
+  onlineAtom,
+  shortTermOnlineAtom,
+  postgrestClientAtom,
+} from '../store.ts'
 
 const pollInterval = 5000
 
+// api is reachable if we can reach is api and have a postgrest client, which is needed to actually do something with the api
 export const ApiDetector = () => {
   const [online, setOnline] = useAtom(onlineAtom)
   const [shortTermOnline, setShortTermOnline] = useAtom(shortTermOnlineAtom)
@@ -37,7 +42,7 @@ export const ApiDetector = () => {
         }
       })
     }, pollInterval)
-  }, [online, postgrestClient, setOnline, setShortTermOnline, shortTermOnline])
+  }, [online, setOnline, setShortTermOnline, shortTermOnline, postgrestClient])
 
   return null
 }

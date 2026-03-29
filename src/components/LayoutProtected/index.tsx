@@ -11,7 +11,6 @@ import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { ObservationAssignChooser } from '../ObservationAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
-import { PostgrestClientInitator } from '../PostgrestClientInitator.tsx'
 import { ApiDetector } from '../ApiDetector.tsx'
 import { TreeOpenNodesSetter } from '../TreeOpenNodesSetter.tsx'
 import { OperationsObserver } from '../OperationsObserver.tsx'
@@ -45,7 +44,6 @@ export const LayoutProtected = () => {
         <OwnVectorLayerPropertiesProvider />
         <ObservationAssignChooser />
         <IsDesktopViewSetter />
-        <PostgrestClientInitator />
         <ApiDetector />
         <TreeOpenNodesSetter />
         <AutoFetchCapabilities />

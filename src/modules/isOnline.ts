@@ -15,7 +15,7 @@ export const isOnline = async () => {
   let res
   try {
     res = await axios.head(postgrestUri, { timeout })
-  } catch (error) {
+  } catch {
     // error can also be caused by timeout or net::ERR_CONNECTION_REFUSED
     return false
   }

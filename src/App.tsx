@@ -35,6 +35,9 @@ import { lightTheme } from './modules/theme.ts'
 import { UploaderContext } from './UploaderContext.ts'
 import { store, pgliteDbAtom, languageAtom, intlAtom } from './store.ts'
 
+import { createPostgrestClient } from './modules/createPostgrestClient.ts'
+createPostgrestClient()
+
 const IntlSetter = () => {
   const intl = useIntl()
   store.set(intlAtom, intl)
