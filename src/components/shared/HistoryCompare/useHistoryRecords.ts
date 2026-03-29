@@ -24,7 +24,7 @@ type UseHistoryRecordsArgs = {
   rowIdField: string
   rowId: string | undefined
   historyPath: string
-  routeHistoryUpdatedAt: string | undefined
+  routeHistoryId: string | undefined
   currentRow: Record<string, unknown> | undefined
 }
 
@@ -42,7 +42,7 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
   rowIdField,
   rowId,
   historyPath,
-  routeHistoryUpdatedAt,
+  routeHistoryId,
   currentRow,
 }: UseHistoryRecordsArgs): UseHistoryRecordsResult<TRow> => {
   const online = useAtomValue(onlineAtom)
@@ -87,9 +87,9 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
   useEffect(() => {
     if (!histories.length) return
     const hasMatchingRouteHistory =
-      !!routeHistoryUpdatedAt &&
+      !!routeHistoryId &&
       histories.some(
-        (history) => getHistoryRecordId(history) === routeHistoryUpdatedAt,
+        (history) => getHistoryRecordId(history) === routeHistoryId,
       )
     if (hasMatchingRouteHistory) return
 
@@ -97,12 +97,12 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
     if (!firstHistoryId) return
 
     navigate({ to: `${historyPath}/${firstHistoryId}`, replace: true })
-  }, [histories, historyPath, navigate, routeHistoryUpdatedAt])
+  }, [histories, historyPath, navigate, routeHistoryId])
 
   const selectedHistoryIndex = (() => {
-    if (!histories.length || !routeHistoryUpdatedAt) return 0
+    if (!histories.length || !routeHistoryId) return 0
     const index = histories.findIndex(
-      (history) => getHistoryRecordId(history) === routeHistoryUpdatedAt,
+      (history) => getHistoryRecordId(history) === routeHistoryId,
     )
     return index >= 0 ? index : 0
   })()
@@ -123,12 +123,7 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
       if (!nextHistoryId) return
       navigate({ to: `${historyPath}/${nextHistoryId}` })
     },
-    [
-      histories,
-      historyPath,
-      navigate,
-      selectedHistoryIndex,
-    ],
+    [histories, historyPath, navigate, selectedHistoryIndex],
   )
 
   const selectedHistory = histories[selectedHistoryIndex]

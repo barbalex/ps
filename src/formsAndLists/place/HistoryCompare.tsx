@@ -155,7 +155,7 @@ export const PlaceHistoryCompare = ({
         rowIdField: 'place_id',
         rowId: currentPlaceId,
         historyPath,
-        routeHistoryUpdatedAt: placeHistoryId,
+        routeHistoryId: placeHistoryId,
         currentRow: row,
       }}
       restoreConfig={{

@@ -33,7 +33,7 @@ type HistoryConfig = {
   rowIdField: string
   rowId: string | undefined
   historyPath: string
-  routeHistoryUpdatedAt: string | undefined
+  routeHistoryId: string | undefined
   currentRow: Record<string, unknown> | undefined
 }
 
