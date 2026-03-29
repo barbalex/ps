@@ -14,6 +14,7 @@ import {
   createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import {
   tabsAtom,
@@ -36,7 +37,12 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, placeId, placeId2, checkId } = useParams({ strict: false })
+  const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({
+    strict: false,
+  })
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}`
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -223,15 +229,24 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       toPreviousDisabled={rowCount <= 1}
       tableName={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
       siblings={
-        <Button
-          size="medium"
-          icon={<TbZoomScan />}
-          onClick={onClickZoomTo}
-          title={formatMessage({
-            id: 'fNN4oO',
-            defaultMessage: 'Zur Kontrolle in Karte zoomen',
-          })}
-        />
+        <>
+          <Button
+            size="medium"
+            icon={<TbZoomScan />}
+            onClick={onClickZoomTo}
+            title={formatMessage({
+              id: 'fNN4oO',
+              defaultMessage: 'Zur Kontrolle in Karte zoomen',
+            })}
+          />
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/check`}
+            historyTable="checks_history"
+            rowIdField="check_id"
+            rowId={checkId}
+          />
+        </>
       }
     />
   )
