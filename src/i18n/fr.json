@@ -1,4 +1,9 @@
 {
+  "bPlaceHistoryFeature": "Histoire",
+  "bPlaceHistoryBack": "Retour",
+  "bPlaceCurrentVersion": "Version actuelle",
+  "bPlaceHistoricalVersion": "Version historique",
+  "bPlaceRestoreRedValues": "Restaurer les valeurs rouges",
   "bPlaceHistUpdatedAt": "Modifié le",
   "bPlaceHistUpdatedBy": "Modifié par",
   "bPlaceHistDeleted": "Supprimé",

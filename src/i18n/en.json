@@ -1,4 +1,9 @@
 {
+  "bPlaceHistoryFeature": "History",
+  "bPlaceHistoryBack": "Back",
+  "bPlaceCurrentVersion": "Current Version",
+  "bPlaceHistoricalVersion": "Historical Version",
+  "bPlaceRestoreRedValues": "Restore Red Values",
   "bPlaceHistUpdatedAt": "Updated at",
   "bPlaceHistUpdatedBy": "Updated by",
   "bPlaceHistDeleted": "Deleted",

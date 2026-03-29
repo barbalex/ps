@@ -5,6 +5,7 @@ import { useRef, useEffect } from 'react'
 
 import { createSubproject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
@@ -15,6 +16,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
+  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}`
 
   // Keep a ref to the current subprojectId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -133,6 +135,15 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName={nameSingularLower}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={`${basePath}/subproject`}
+          historyTable="subprojects_history"
+          rowIdField="subproject_id"
+          rowId={subprojectId}
+        />
+      }
     />
   )
 }
