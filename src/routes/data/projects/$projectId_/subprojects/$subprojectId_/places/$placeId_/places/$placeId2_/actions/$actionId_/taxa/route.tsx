@@ -1,9 +1,25 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
+
+import { ActionTaxa } from '../../../../../../../../../../../../../formsAndLists/actionTaxa.tsx'
+
+const from =
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa/'
+
+const TaxaRouteContent = () => {
+  const location = useLocation()
+  const isTaxaList = /\/taxa\/?$/.test(location.pathname)
+
+  if (isTaxaList) {
+    return <ActionTaxa from={from} hideTitle={true} />
+  }
+
+  return <Outlet />
+}
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa',
 )({
-  component: Outlet,
+  component: TaxaRouteContent,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
