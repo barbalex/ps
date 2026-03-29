@@ -7,14 +7,28 @@
   min-height: 0;
 }
 
-.panel {
+.panelLeft {
   border: 1px solid var(--colorNeutralStroke2);
   border-radius: 8px;
   background: var(--colorNeutralBackground1);
   margin: 5px;
   padding: 5px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: 46px auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panelRight {
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: 8px;
+  background: var(--colorNeutralBackground1);
+  margin: 5px;
+  padding: 5px;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: 46px auto 46px;
   min-height: 0;
   overflow: hidden;
 }

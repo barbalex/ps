@@ -189,7 +189,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
       </div>
 
       <div className={styles.container}>
-        <section className={styles.panel}>
+        <section className={styles.panelLeft}>
           <h2 className={styles.panelTitle}>
             {formatMessage({
               id: 'bPlaceCurrentVersion',
@@ -199,7 +199,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
           <div className={styles.leftContent}>{leftContent}</div>
         </section>
 
-        <section className={styles.panel}>
+        <section className={styles.panelRight}>
           <h2 className={styles.panelTitle}>
             {formatMessage({
               id: 'bPlaceHistoricalVersion',
@@ -296,19 +296,18 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                 </div>
               )}
             </div>
-
-            <div className={styles.footer}>
-              <Button
-                appearance="primary"
-                onClick={onRestoreDiffValues}
-                disabled={!differentFields.length}
-              >
-                {formatMessage({
-                  id: 'bPlaceRestoreRedValues',
-                  defaultMessage: 'Rote Werte wiederherstellen',
-                })}
-              </Button>
-            </div>
+          </div>
+          <div className={styles.footer}>
+            <Button
+              appearance="primary"
+              onClick={onRestoreDiffValues}
+              disabled={!differentFields.length}
+            >
+              {formatMessage({
+                id: 'bPlaceRestoreRedValues',
+                defaultMessage: 'Rote Werte wiederherstellen',
+              })}
+            </Button>
           </div>
         </section>
       </div>
