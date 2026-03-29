@@ -24,6 +24,7 @@ import {
   addNotificationAtom,
   mapLayerSortingAtom,
   onlineAtom,
+  postgrestClientAtom,
 } from '../../store.ts'
 
 import type Places from '../../models/public/Places.ts'
@@ -54,6 +55,7 @@ export const Header = ({
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const online = useAtomValue(onlineAtom)
+  const postgrestClient = useAtomValue(postgrestClientAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
@@ -67,8 +69,8 @@ export const Header = ({
     [projectId],
   )
   const historiesEnabled = projectRes?.rows?.[0]?.enable_histories === true
-  const basePath = placeId2 ?
-      `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`
   const historiesPath = `${basePath}/histories`
   const placePath = `${basePath}/place`
@@ -276,37 +278,73 @@ export const Header = ({
       return
     }
 
-    const place_id = placeId2 ?? placeId
-    const res = await db.query(
-      `SELECT place_history_id, updated_at
-       FROM places_history
-       WHERE place_id = $1
-       ORDER BY updated_at DESC
-       LIMIT 1`,
-      [place_id],
-    )
-
-    const latest = res?.rows?.[0] as
-      | { place_history_id?: string; updated_at?: string }
-      | undefined
-    const historyId = latest?.place_history_id ?? latest?.updated_at
-
-    if (historyId) {
-      navigate({ to: `${historiesPath}/${historyId}` })
+    if (!postgrestClient) {
+      addNotification({
+        title: formatMessage({
+          id: 'bPlaceHistoryNoConnectionTitle',
+          defaultMessage: 'Geschichte nicht verfügbar',
+        }),
+        body: formatMessage({
+          id: 'bPlaceHistoryNoConnectionBody',
+          defaultMessage:
+            'Keine Server-Verbindung für Geschichtsabfrage verfügbar.',
+        }),
+        intent: 'warning',
+      })
       return
     }
 
-    addNotification({
-      title: formatMessage({
-        id: 'bPlaceNoHistoryTitle',
-        defaultMessage: 'Keine Geschichte vorhanden',
-      }),
-      body: formatMessage({
-        id: 'bPlaceNoHistoryBody',
-        defaultMessage: 'Für diesen Ort gibt es noch keine gespeicherten Änderungen.',
-      }),
-      intent: 'warning',
-    })
+    try {
+      const place_id = placeId2 ?? placeId
+      const { data, error } = await postgrestClient
+        .from('places_history')
+        .select('updated_at')
+        .eq('place_id', place_id)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+
+      if (error) {
+        addNotification({
+          title: formatMessage({
+            id: 'bPlaceHistoryLoadFailedTitle',
+            defaultMessage: 'Geschichte konnte nicht geladen werden',
+          }),
+          body: error.message,
+          intent: 'error',
+        })
+        return
+      }
+
+      const latest = data?.[0] as { updated_at?: string } | undefined
+      const historyId = latest?.updated_at
+
+      if (historyId) {
+        navigate({ to: `${historiesPath}/${historyId}` })
+        return
+      }
+
+      addNotification({
+        title: formatMessage({
+          id: 'bPlaceNoHistoryTitle',
+          defaultMessage: 'Keine Geschichte vorhanden',
+        }),
+        body: formatMessage({
+          id: 'bPlaceNoHistoryBody',
+          defaultMessage:
+            'Für diesen Ort gibt es noch keine gespeicherten Änderungen.',
+        }),
+        intent: 'warning',
+      })
+    } catch (error) {
+      addNotification({
+        title: formatMessage({
+          id: 'bPlaceHistoryLoadFailedTitle',
+          defaultMessage: 'Geschichte konnte nicht geladen werden',
+        }),
+        body: error instanceof Error ? error.message : String(error),
+        intent: 'error',
+      })
+    }
   }
 
   return (
@@ -320,7 +358,10 @@ export const Header = ({
       siblings={
         <>
           <Tooltip
-            content={formatMessage({ id: 'bPlaceZoomTo', defaultMessage: 'zoomen' })}
+            content={formatMessage({
+              id: 'bPlaceZoomTo',
+              defaultMessage: 'zoomen',
+            })}
           >
             <Button
               size="medium"
