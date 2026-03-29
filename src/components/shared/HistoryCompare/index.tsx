@@ -307,7 +307,6 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
             </div>
             <div className={styles.footer}>
               <Button
-                appearance="primary"
                 onClick={onRestoreDiffValues}
                 disabled={!differentFields.length}
               >
