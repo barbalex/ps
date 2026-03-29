@@ -278,22 +278,6 @@ export const Header = ({
       return
     }
 
-    if (!postgrestClient) {
-      addNotification({
-        title: formatMessage({
-          id: 'bPlaceHistoryNoConnectionTitle',
-          defaultMessage: 'Geschichte nicht verfügbar',
-        }),
-        body: formatMessage({
-          id: 'bPlaceHistoryNoConnectionBody',
-          defaultMessage:
-            'Keine Server-Verbindung für Geschichtsabfrage verfügbar.',
-        }),
-        intent: 'warning',
-      })
-      return
-    }
-
     try {
       const place_id = placeId2 ?? placeId
       const { data, error } = await postgrestClient

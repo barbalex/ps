@@ -103,14 +103,6 @@ export const PlaceHistoryCompare = ({
     nameRes?.rows?.[0]?.[`name_singular_${language}`] ??
     `Place Level ${levelForLabel}`
 
-  const noConnection = !postgrestClient
-    ? formatMessage({
-        id: 'bPlaceHistoryNoConnection',
-        defaultMessage:
-          'Keine Server-Verbindung für Geschichtsabfrage verfügbar.',
-      })
-    : null
-
   const {
     data: historiesRaw,
     isLoading: loadingHistories,
@@ -127,7 +119,7 @@ export const PlaceHistoryCompare = ({
       if (error) throw new Error(error.message)
       return data
     },
-    enabled: online && !!currentPlaceId && !!postgrestClient,
+    enabled: online && !!currentPlaceId,
     staleTime: 30_000,
   })
 
@@ -140,8 +132,9 @@ export const PlaceHistoryCompare = ({
     })) as HistoryRow[]
   }, [historiesRaw, row])
 
-  const historyError: string | null =
-    noConnection ?? (historyQueryError ? historyQueryError.message : null)
+  const historyError: string | null = historyQueryError
+    ? historyQueryError.message
+    : null
 
   // Keeps the route parameter in sync with available history records by
   // redirecting to the first valid history id when the current one is missing.

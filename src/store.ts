@@ -7,19 +7,6 @@ import { uuidv7 } from '@kripod/uuidv7'
 
 export const store = createStore()
 
-function atomWithToggleAndStorage(key, initialValue, storage) {
-  const anAtom = atomWithStorage(key, initialValue, storage)
-  const derivedAtom = atom(
-    (get) => get(anAtom),
-    (get, set, nextValue) => {
-      const update = nextValue ?? !get(anAtom)
-      set(anAtom, update)
-    },
-  )
-
-  return derivedAtom
-}
-
 // nav stuff
 
 export const enforceDesktopNavigationAtom = atomWithStorage(
@@ -439,6 +426,7 @@ export const postgrestClientAtom = atom(null)
 // - prev: object with key-value pairs of previous value for reverting the operation
 export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
 export const addOperationAtom = atom(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
   (get, set, opDraft) => {
     const opQueue = get(operationsQueueAtom)
@@ -452,6 +440,7 @@ export const addOperationAtom = atom(
   },
 )
 export const removeOperationAtom = atom(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
   (get, set, id) => {
     const opQueue = get(operationsQueueAtom)
@@ -482,6 +471,7 @@ export const pgliteDbAtom = atom(null)
 // - actionArgument?
 export const notificationsAtom = atom([])
 export const updateNotificationAtom = atom(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
   (get, set, { id, draft }) => {
     const notifications = get(notificationsAtom)
@@ -498,6 +488,7 @@ export const updateNotificationAtom = atom(
   },
 )
 export const removeNotificationAtom = atom(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
   (get, set, id) => {
     const notifications = get(notificationsAtom)
@@ -508,10 +499,10 @@ export const removeNotificationAtom = atom(
   },
 )
 export const addNotificationAtom = atom(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
   (get, set, draft) => {
     const notifications = get(notificationsAtom)
-    const removeNotification = get(removeNotificationAtom)
     // do not stack same messages
     const notificationsWithSameMessage = notifications.filter(
       (n) => n.body !== undefined && n.body === draft.body,
