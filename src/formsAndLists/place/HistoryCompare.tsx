@@ -96,12 +96,6 @@ export const PlaceHistoryCompare = ({
   ])
   const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
 
-  const projectRes = useLiveQuery(
-    `SELECT enable_histories FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const historiesEnabled = projectRes?.rows?.[0]?.enable_histories === true
-
   const levelForLabel = (row?.level as number | undefined) ?? (placeId2 ? 2 : 1)
   const nameRes = useLiveQuery(
     `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -115,7 +109,7 @@ export const PlaceHistoryCompare = ({
   useEffect(() => {
     let cancelled = false
     const run = async () => {
-      if (!online || !historiesEnabled || !currentPlaceId || !postgrestClient) {
+      if (!online || !currentPlaceId || !postgrestClient) {
         if (!cancelled) {
           setHistories([])
           setLoadingHistories(false)
@@ -159,14 +153,7 @@ export const PlaceHistoryCompare = ({
     return () => {
       cancelled = true
     }
-  }, [
-    currentPlaceId,
-    online,
-    historiesEnabled,
-    postgrestClient,
-    row,
-    formatMessage,
-  ])
+  }, [currentPlaceId, online, postgrestClient, row, formatMessage])
 
   // Keeps the route parameter in sync with available history records by
   // redirecting to the first valid history id when the current one is missing.
@@ -348,7 +335,7 @@ export const PlaceHistoryCompare = ({
     })
   }
 
-  if (!rowRes || !projectRes) return <Loading />
+  if (!rowRes) return <Loading />
 
   if (!row) {
     return (
@@ -361,7 +348,6 @@ export const PlaceHistoryCompare = ({
 
   return (
     <HistoryCompare
-      historiesEnabled={historiesEnabled}
       onBack={() => navigate({ to: placePath })}
       leftContent={
         <PlaceForm

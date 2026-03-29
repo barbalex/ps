@@ -13,7 +13,6 @@ import styles from './index.module.css'
 const { Button, Caption1, Text } = fluentUiReactComponents
 
 type HistoryCompareProps<THistory extends Record<string, unknown>> = {
-  historiesEnabled: boolean
   onBack: () => void
   leftContent: ReactNode
   histories: THistory[]
@@ -29,7 +28,6 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
 }
 
 export function HistoryCompare<THistory extends Record<string, unknown>>({
-  historiesEnabled,
   onBack,
   leftContent,
   histories,
@@ -45,7 +43,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
 }: HistoryCompareProps<THistory>) {
   const { formatMessage } = useIntl()
   const online = useAtomValue(onlineAtom)
-  const unavailable = !online || !historiesEnabled
+  const unavailable = !online
 
   const resolveFieldValue = (field: string, history: THistory) => {
     if (formatFieldValue) return formatFieldValue(field, history)
@@ -80,8 +78,7 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
           <Text>
             {formatMessage({
               id: 'bPlaceHistoryUnavailable',
-              defaultMessage:
-                'Geschichte ist nur online und bei aktivierter Projekt-Option verfügbar.',
+              defaultMessage: 'Geschichte ist nur online verfügbar.',
             })}
           </Text>
         </div>
