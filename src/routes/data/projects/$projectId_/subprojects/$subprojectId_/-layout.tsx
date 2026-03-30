@@ -9,9 +9,12 @@ export const SubprojectLayout = () => {
   const { projectId, subprojectId } = useParams({ strict: false })
   const location = useLocation()
   const res = useLiveQuery(
-    `SELECT files_active_subprojects, subproject_users_in_subproject, subproject_files_in_subproject FROM projects WHERE project_id = $1`,
+    `SELECT taxa, files_active_subprojects, subproject_taxa_in_subproject, subproject_users_in_subproject, subproject_files_in_subproject FROM projects WHERE project_id = $1`,
     [projectId],
   )
+  const showTaxa = res?.rows?.[0]?.taxa !== false
+  const taxaInSubproject =
+    res?.rows?.[0]?.subproject_taxa_in_subproject !== false
   const showFiles = res?.rows?.[0]?.files_active_subprojects !== false
   const usersInSubproject =
     res?.rows?.[0]?.subproject_users_in_subproject !== false
@@ -23,12 +26,19 @@ export const SubprojectLayout = () => {
   const isUsersRoute =
     location.pathname === `${baseUrl}/users` ||
     location.pathname.startsWith(`${baseUrl}/users/`)
+  const isTaxaRoute =
+    location.pathname === `${baseUrl}/taxa` ||
+    location.pathname.startsWith(`${baseUrl}/taxa/`)
   const isFilesRoute =
     location.pathname === `${baseUrl}/files` ||
     location.pathname.startsWith(`${baseUrl}/files/`)
 
   if (
-    (isSubprojectRoute && (usersInSubproject || (showFiles && filesInSubproject))) ||
+    (isSubprojectRoute &&
+      ((showTaxa && taxaInSubproject) ||
+        usersInSubproject ||
+        (showFiles && filesInSubproject))) ||
+    (isTaxaRoute && showTaxa && taxaInSubproject) ||
     (isUsersRoute && usersInSubproject) ||
     (isFilesRoute && showFiles && filesInSubproject)
   ) {

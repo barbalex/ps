@@ -41,6 +41,7 @@ type NavData = {
   observations_not_to_assign_count?: number | null
   taxa?: boolean | null
   subproject_taxa_count?: number | null
+  subproject_taxa_in_subproject?: boolean | null
   subproject_users_count?: number | null
   subproject_users_in_subproject?: boolean | null
   files_count_filtered?: number | null
@@ -100,6 +101,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         p.goals AS goals,
         p.occurrences AS occurrences,
         p.taxa AS taxa,
+        p.subproject_taxa_in_subproject AS subproject_taxa_in_subproject,
         p.charts AS charts,
         p.subproject_users_in_subproject AS subproject_users_in_subproject,
         p.files_active_subprojects AS files_active_subprojects,
@@ -263,7 +265,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             },
           ]
         : []),
-      ...(designing || (nav?.taxa ?? true)
+      ...((designing || (nav?.taxa ?? true)) &&
+      nav?.subproject_taxa_in_subproject === false
         ? [
             {
               id: 'taxa',

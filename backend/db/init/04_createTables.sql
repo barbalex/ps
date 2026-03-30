@@ -169,6 +169,7 @@ CREATE TABLE IF NOT EXISTS projects(
   units_in_project boolean DEFAULT TRUE,
   fields_in_project boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
+  subproject_taxa_in_subproject boolean DEFAULT TRUE,
   subproject_users_in_subproject boolean DEFAULT TRUE,
   subproject_files_in_subproject boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
@@ -222,6 +223,7 @@ COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users ins
 COMMENT ON COLUMN projects.units_in_project IS 'Render units inside the project form? Preset: true';
 COMMENT ON COLUMN projects.fields_in_project IS 'Render fields inside the project form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
+COMMENT ON COLUMN projects.subproject_taxa_in_subproject IS 'Render subproject taxa inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.subproject_users_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.subproject_files_in_subproject IS 'Render files inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';

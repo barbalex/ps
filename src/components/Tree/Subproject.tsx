@@ -35,15 +35,17 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
+  const showTaxa = isDesigning || (project?.taxa ?? true)
+  const taxaInSubproject = project?.subproject_taxa_in_subproject !== false
   const usersInSubproject = project?.subproject_users_in_subproject !== false
   const filesInSubproject = project?.subproject_files_in_subproject !== false
+  const showTaxaNav = showTaxa && !taxaInSubproject
   const showUsersNav = !usersInSubproject
   const showFilesNav = showFiles && !filesInSubproject
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
   const showGoals = isDesigning || (project?.goals ?? true)
   const showOccurrences = isDesigning || (project?.occurrences ?? true)
-  const showTaxa = isDesigning || (project?.taxa ?? true)
   const showCharts = isDesigning || (project?.charts ?? true)
 
   // TODO: Check if user is account owner for the parent project (auth not yet implemented, assume yes if project exists)
@@ -140,7 +142,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
               subprojectId={nav.id}
             />
           )}
-          {showTaxa && (
+          {showTaxaNav && (
             <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
           )}
           {showDesigningNodes && showUsersNav && (

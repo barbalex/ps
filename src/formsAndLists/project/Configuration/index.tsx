@@ -597,6 +597,29 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.taxa?.message}
             />
             <SwitchField
+              label={formatMessage(
+                {
+                  id: 'sP8TaxInSubprj',
+                  defaultMessage: 'Taxa in {subprojectNameSingular} anzeigen',
+                },
+                { subprojectNameSingular },
+              )}
+              name="subproject_taxa_in_subproject"
+              value={row.subproject_taxa_in_subproject ?? true}
+              onChange={onChange}
+              validationState={
+                validations?.subproject_taxa_in_subproject?.state
+              }
+              validationMessage={
+                validations?.subproject_taxa_in_subproject?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
+            <SwitchField
               label={formatMessage({
                 id: 'ZPEO8P',
                 defaultMessage: 'Diagramme',

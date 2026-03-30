@@ -95,6 +95,8 @@ export default interface TemplatePublicProjectsHistory {
 
   files_active_subprojects: boolean | null;
 
+  subproject_taxa_in_subproject: boolean | null;
+
   subproject_users_in_subproject: boolean | null;
 
   subproject_files_in_subproject: boolean | null;
@@ -202,6 +204,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   files_active_subprojects?: boolean | null;
 
+  subproject_taxa_in_subproject?: boolean | null;
+
   subproject_users_in_subproject?: boolean | null;
 
   subproject_files_in_subproject?: boolean | null;
@@ -308,6 +312,8 @@ export interface TemplatePublicProjectsHistoryMutator {
   fields_in_project?: boolean | null;
 
   files_active_subprojects?: boolean | null;
+
+  subproject_taxa_in_subproject?: boolean | null;
 
   subproject_users_in_subproject?: boolean | null;
 

@@ -13,11 +13,12 @@ import { languageAtom } from '../store.ts'
 import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
 import '../form.css'
 
-export const SubprojectTaxa = ({ from }) => {
-  const { projectId, subprojectId } = useParams({ from })
+export const SubprojectTaxa = ({ from, hideHeader = false }) => {
+  const { projectId, subprojectId } = useParams({ strict: false, from })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
+  const taxaBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/taxa`
 
   const projectRes = useLiveQuery(
     `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
@@ -32,42 +33,41 @@ export const SubprojectTaxa = ({ from }) => {
   })
   const { navs, label, nameSingular } = navData
   const canFilter =
+    !hideHeader &&
     from === '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/'
 
   const add = async () => {
     const id = await createSubprojectTaxon({ subprojectId })
     if (!id) return
-    navigate({
-      to: id,
-      params: (prev) => ({
-        ...prev,
-        subprojectTaxonId: id,
-      }),
-    })
+    navigate({ to: `${taxaBaseUrl}/${id}/` })
   }
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        menus={canFilter ? <FilterButton isFiltered={isFiltered} /> : undefined}
-        description={formatMessage(
-          {
-            id: 'gP1QrT',
-            defaultMessage:
-              'Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
-          },
-          { subprojectNameSingular },
-        )}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          menus={
+            canFilter ? <FilterButton isFiltered={isFiltered} /> : undefined
+          }
+          description={formatMessage(
+            {
+              id: 'gP1QrT',
+              defaultMessage:
+                'Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
+            },
+            { subprojectNameSingular },
+          )}
+        />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />
         ) : (
           navs.map(({ id, label }) => (
-            <Row key={id} to={id} label={label ?? id} />
+            <Row key={id} to={`${taxaBaseUrl}/${id}/`} label={label ?? id} />
           ))
         )}
       </div>

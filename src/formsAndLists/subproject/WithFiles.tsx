@@ -13,18 +13,20 @@ import { FaPlus } from 'react-icons/fa'
 
 import { Header } from './Header.tsx'
 import { SubprojectForm as Form } from './Form.tsx'
+import { SubprojectTaxa } from '../subprojectTaxa.tsx'
 import { SubprojectUsers } from '../subprojectUsers.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createSubprojectUser } from '../../modules/createRows.ts'
+import { createSubprojectTaxon, createSubprojectUser } from '../../modules/createRows.ts'
 import {
   addOperationAtom,
   designingAtom,
   filesFilterAtom,
   languageAtom,
+  subprojectTaxaFilterAtom,
   subprojectUsersFilterAtom,
 } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
@@ -46,6 +48,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
   const [isDesigning] = useAtom(designingAtom)
+  const [subprojectTaxaFilter] = useAtom(subprojectTaxaFilterAtom)
   const [subprojectUsersFilter] = useAtom(subprojectUsersFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
@@ -60,7 +63,9 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     `SELECT
       subprojects.*,
       ${subprojectNameSingularExpr(language, 'projects')} AS subproject_name_singular,
+      projects.taxa,
       projects.files_active_subprojects,
+      projects.subproject_taxa_in_subproject,
       projects.subproject_users_in_subproject,
       projects.subproject_files_in_subproject
     FROM subprojects
@@ -82,9 +87,20 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   )
   const subprojectUsersCount = subprojectUsersCountRes?.rows?.[0]?.count ?? 0
 
+  const subprojectTaxaCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM subproject_taxa WHERE subproject_id = $1`,
+    [subprojectId],
+  )
+  const subprojectTaxaCount = subprojectTaxaCountRes?.rows?.[0]?.count ?? 0
+
+  const showTaxa = isDesigning || row?.taxa !== false
+  const taxaInSubproject = row?.subproject_taxa_in_subproject !== false
   const usersInSubproject = row?.subproject_users_in_subproject !== false
   const showFiles = isDesigning || row?.files_active_subprojects !== false
 
+  const isTaxaOpen =
+    location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
+  const isTaxaList = /\/taxa\/?$/.test(location.pathname)
   const isUsersOpen =
     location.pathname.endsWith('/users') || location.pathname.includes('/users/')
   const isUsersList = /\/users\/?$/.test(location.pathname)
@@ -94,9 +110,11 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
 
   const subprojectBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}`
   const subprojectUrl = `${subprojectBaseUrl}/subproject`
+  const taxaUrl = `${subprojectBaseUrl}/taxa`
   const usersUrl = `${subprojectBaseUrl}/users`
   const filesUrl = `${subprojectBaseUrl}/files`
 
+  const subprojectTaxaIsFiltered = !!filterStringFromFilter(subprojectTaxaFilter)
   const subprojectUsersIsFiltered = !!filterStringFromFilter(subprojectUsersFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
@@ -106,7 +124,25 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     if (!id) return
     navigate({ to: `${usersUrl}/${id}/` })
   }
+  const onClickAddSubprojectTaxon = async () => {
+    const id = await createSubprojectTaxon({ subprojectId })
+    if (!id) return
+    navigate({ to: `${taxaUrl}/${id}/` })
+  }
   const onClickAddFile = () => uploaderApi?.initFlow?.()
+
+  const subprojectTaxaHeaderActions =
+    showTaxa && taxaInSubproject && isTaxaList ? (
+      <>
+        <FilterButton isFiltered={subprojectTaxaIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddSubprojectTaxon}
+        />
+      </>
+    ) : undefined
 
   const subprojectUserHeaderActions =
     isDesigning && usersInSubproject && isUsersList ? (
@@ -186,6 +222,25 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           from={from}
           validations={validations}
         />
+        {showTaxa && taxaInSubproject ? (
+          <Section
+            title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${subprojectTaxaCount})`}
+            onHeaderClick={() =>
+              isTaxaList
+                ? navigate({ to: subprojectUrl })
+                : navigate({ to: taxaUrl })
+            }
+            isOpen={isTaxaOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={subprojectTaxaHeaderActions}
+          >
+            {isTaxaOpen &&
+              (isTaxaList ? <SubprojectTaxa from={from} hideHeader /> : <Outlet />)}
+          </Section>
+        ) : (
+          isTaxaOpen && <Outlet />
+        )}
         {isDesigning && usersInSubproject ? (
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${subprojectUsersCount})`}
