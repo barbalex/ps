@@ -579,6 +579,24 @@ export const Configuration = ({ from }) => {
             />
             <SwitchField
               label={formatMessage({
+                id: 'gRinGoal',
+                defaultMessage: 'Ziel-Berichte im Ziel anzeigen',
+              })}
+              name="goal_reports_in_goal"
+              value={row.goal_reports_in_goal ?? true}
+              onChange={onChange}
+              validationState={validations?.goal_reports_in_goal?.state}
+              validationMessage={
+                validations?.goal_reports_in_goal?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
+            <SwitchField
+              label={formatMessage({
                 id: 'yK5Pq6',
                 defaultMessage: 'Beobachtungen (inkl. Importe)',
               })}

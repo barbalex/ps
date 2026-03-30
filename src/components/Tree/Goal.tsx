@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
@@ -14,6 +15,17 @@ export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
   const { formatMessage } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
+
+  const res = useLiveQuery(
+    `SELECT p.goal_reports_in_goal
+      FROM goals g
+      INNER JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+      INNER JOIN projects p ON p.project_id = sp.project_id
+      WHERE g.goal_id = $1`,
+    [nav.id],
+  )
+  const goalReportsInGoal = res?.rows?.[0]?.goal_reports_in_goal !== false
+  const showReportsNav = !goalReportsInGoal
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = [
@@ -55,7 +67,7 @@ export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={2}
+        childrenCount={showReportsNav ? 2 : 1}
         to={ownUrl}
         onClickButton={onClickButton}
       />
@@ -71,11 +83,13 @@ export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
             isActive={isEqual(urlPath, [...ownArray, 'goal'])}
             to={`${ownUrl}/goal`}
           />
-          <GoalReportsNode
-            projectId={projectId}
-            subprojectId={subprojectId}
-            goalId={nav.id}
-          />
+          {showReportsNav && (
+            <GoalReportsNode
+              projectId={projectId}
+              subprojectId={subprojectId}
+              goalId={nav.id}
+            />
+          )}
         </>
       )}
     </>

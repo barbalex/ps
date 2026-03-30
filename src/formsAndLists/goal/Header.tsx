@@ -8,11 +8,8 @@ import { createGoal } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
-  const isForm =
-    from ===
-    '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal'
-  const { projectId, subprojectId, goalId } = useParams({ from })
+export const Header = ({ autoFocusRef }) => {
+  const { projectId, subprojectId, goalId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -27,7 +24,8 @@ export const Header = ({ autoFocusRef, from }) => {
   }, [goalId])
 
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM goals WHERE subproject_id = '${subprojectId}'`,
+    `SELECT COUNT(*) as count FROM goals WHERE subproject_id = $1`,
+    [subprojectId ?? null],
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
@@ -35,8 +33,7 @@ export const Header = ({ autoFocusRef, from }) => {
     const id = await createGoal({ projectId, subprojectId })
     if (!id) return
     navigate({
-      to: isForm ? `../../${id}/goal` : `../${id}/goal`,
-      params: (prev) => ({ ...prev, goalId: id }),
+      to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${id}/goal`,
     })
     autoFocusRef?.current?.focus()
   }
@@ -55,7 +52,7 @@ export const Header = ({ autoFocusRef, from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals` })
     } catch (error) {
       console.error(error)
     }
@@ -72,8 +69,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const next = goals[(index + 1) % len]
       navigate({
-        to: isForm ? `../../${next.goal_id}/goal` : `../${next.goal_id}`,
-        params: (prev) => ({ ...prev, goalId: next.goal_id }),
+        to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${next.goal_id}/goal`,
       })
     } catch (error) {
       console.error(error)
@@ -91,9 +87,7 @@ export const Header = ({ autoFocusRef, from }) => {
       const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const previous = goals[(index + len - 1) % len]
       navigate({
-        to:
-          isForm ? `../../${previous.goal_id}/goal` : `../${previous.goal_id}`,
-        params: (prev) => ({ ...prev, goalId: previous.goal_id }),
+        to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${previous.goal_id}/goal`,
       })
     } catch (error) {
       console.error(error)

@@ -16,6 +16,7 @@ type NavData = {
   id: string
   label: string | null
   goal_reports_count: number
+  goal_reports_in_goal?: boolean | null
 }
 
 export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
@@ -27,14 +28,17 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
       WITH 
         goal_reports_count AS (SELECT count(*) FROM goal_reports WHERE goal_id = '${goalId}')
       SELECT
-        goal_id AS id,
-        label,
+        g.goal_id AS id,
+        g.label,
+        p.goal_reports_in_goal AS goal_reports_in_goal,
         goal_reports_count.count AS goal_reports_count
       FROM 
-        goals,
+        goals g
+        INNER JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+        INNER JOIN projects p ON p.project_id = sp.project_id,
         goal_reports_count
       WHERE 
-        goals.goal_id = '${goalId}'`,
+        g.goal_id = '${goalId}'`,
   )
   const loading = res === undefined
 
@@ -79,17 +83,21 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
         id: 'goal',
         label: formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' }),
       },
-      {
-        id: 'reports',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.goal_reports_count ?? 0,
-          namePlural: formatMessage({
-            id: 'SmwFfB',
-            defaultMessage: 'Ziel-Berichte',
-          }),
-        }),
-      },
+      ...(nav?.goal_reports_in_goal === false
+        ? [
+            {
+              id: 'reports',
+              label: buildNavLabel({
+                loading,
+                countFiltered: nav?.goal_reports_count ?? 0,
+                namePlural: formatMessage({
+                  id: 'SmwFfB',
+                  defaultMessage: 'Ziel-Berichte',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 

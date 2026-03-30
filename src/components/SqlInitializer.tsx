@@ -62,6 +62,7 @@ export const SqlInitializer = () => {
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS fields_in_project boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS units_in_project boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_taxa_in_subproject boolean DEFAULT true;
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS goal_reports_in_goal boolean DEFAULT true;
           `)
         } catch (error) {
           console.error('Error running schema migration:', error)

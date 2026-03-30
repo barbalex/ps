@@ -7,12 +7,10 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/'
-
-export const GoalReports = () => {
-  const { projectId, subprojectId, goalId } = useParams({ from })
+export const GoalReports = ({ hideHeader = false }) => {
+  const { projectId, subprojectId, goalId } = useParams({ strict: false })
   const navigate = useNavigate()
+  const reportsBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}/reports`
 
   const { loading, navData } = useGoalReportsNavData({
     projectId,
@@ -29,19 +27,18 @@ export const GoalReports = () => {
 
     if (!id) return
 
-    navigate({
-      to: id,
-      params: (prev) => ({ ...prev, goalReportId: id }),
-    })
+    navigate({ to: `${reportsBaseUrl}/${id}/` })
   }
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+        />
+      )}
       <div className="list-container">
         {loading ?
           <Loading />
@@ -49,7 +46,7 @@ export const GoalReports = () => {
             <Row
               key={id}
               label={label ?? id}
-              to={id}
+              to={`${reportsBaseUrl}/${id}/`}
             />
           ))
         }

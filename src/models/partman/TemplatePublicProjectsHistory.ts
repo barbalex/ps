@@ -69,6 +69,8 @@ export default interface TemplatePublicProjectsHistory {
 
   subproject_reports: boolean | null;
 
+  goal_reports_in_goal: boolean | null;
+
   goals: boolean | null;
 
   occurrences: boolean | null;
@@ -178,6 +180,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   subproject_reports?: boolean | null;
 
+  goal_reports_in_goal?: boolean | null;
+
   goals?: boolean | null;
 
   occurrences?: boolean | null;
@@ -286,6 +290,8 @@ export interface TemplatePublicProjectsHistoryMutator {
   project_reports?: boolean | null;
 
   subproject_reports?: boolean | null;
+
+  goal_reports_in_goal?: boolean | null;
 
   goals?: boolean | null;
 

@@ -45,6 +45,7 @@ export const createProject = async () => {
     units_in_project: true,
     fields_in_project: true,
     files_active_subprojects: true,
+    goal_reports_in_goal: true,
     subproject_taxa_in_subproject: true,
     subproject_users_in_subproject: true,
     subproject_files_in_subproject: true,

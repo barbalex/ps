@@ -96,6 +96,9 @@ export default interface Projects {
   /** Whether subproject-reports are shown. Preset: true. */
   subproject_reports: boolean | null;
 
+  /** Render goal reports inside the goal form? Preset: true */
+  goal_reports_in_goal: boolean | null;
+
   /** Whether goals (subproject) are shown. Preset: true. */
   goals: boolean | null;
 
@@ -259,6 +262,12 @@ export interface ProjectsInitializer {
    * Default value: true
    */
   subproject_reports?: boolean | null;
+
+  /**
+   * Render goal reports inside the goal form? Preset: true
+   * Default value: true
+   */
+  goal_reports_in_goal?: boolean | null;
 
   /**
    * Whether goals (subproject) are shown. Preset: true.
@@ -452,6 +461,9 @@ export interface ProjectsMutator {
 
   /** Whether subproject-reports are shown. Preset: true. */
   subproject_reports?: boolean | null;
+
+  /** Render goal reports inside the goal form? Preset: true */
+  goal_reports_in_goal?: boolean | null;
 
   /** Whether goals (subproject) are shown. Preset: true. */
   goals?: boolean | null;

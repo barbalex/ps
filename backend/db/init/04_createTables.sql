@@ -156,6 +156,7 @@ CREATE TABLE IF NOT EXISTS projects(
   vector_layers boolean DEFAULT TRUE,
   project_reports boolean DEFAULT TRUE,
   subproject_reports boolean DEFAULT TRUE,
+  goal_reports_in_goal boolean DEFAULT TRUE,
   goals boolean DEFAULT TRUE,
   occurrences boolean DEFAULT TRUE,
   taxa boolean DEFAULT TRUE,
@@ -211,6 +212,7 @@ COMMENT ON COLUMN projects.wms_layers IS 'Whether wms-services and wms-layers ar
 COMMENT ON COLUMN projects.vector_layers IS 'Whether vector-layers and wfs-services are shown. Preset: false.';
 COMMENT ON COLUMN projects.project_reports IS 'Whether project-reports are shown. Preset: true.';
 COMMENT ON COLUMN projects.subproject_reports IS 'Whether subproject-reports are shown. Preset: true.';
+COMMENT ON COLUMN projects.goal_reports_in_goal IS 'Render goal reports inside the goal form? Preset: true';
 COMMENT ON COLUMN projects.goals IS 'Whether goals (subproject) are shown. Preset: true.';
 COMMENT ON COLUMN projects.occurrences IS 'Whether occurrences (observation imports, to assess, not to assign) are shown. Preset: true.';
 COMMENT ON COLUMN projects.taxa IS 'Whether subproject taxa are shown. Preset: true.';
