@@ -57,7 +57,7 @@ const getFilterStrings = ({
     [
       'actions',
       'checks',
-      'place_check_reports',
+      'check_reports',
       'place_action_reports',
       'place_users',
     ].includes(tableName)
@@ -134,7 +134,7 @@ const getTitle = ({
                     })
                   : tableName === 'subproject_reports'
                     ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
-                    : tableName === 'place_check_reports'
+                    : tableName === 'check_reports'
                       ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
                       : tableName === 'place_action_reports'
                         ? formatMessage({

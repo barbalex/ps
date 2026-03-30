@@ -17,7 +17,7 @@ const projectTables = [
   'goal_reports',
   'goals',
   'lists',
-  'place_check_reports',
+  'check_reports',
   'place_action_reports',
   'places',
   'project_reports',

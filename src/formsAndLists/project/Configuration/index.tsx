@@ -270,17 +270,17 @@ export const Configuration = ({ from }) => {
               defaultMessage:
                 'Standard-Einheit für Ort-Kontroll-Bericht-Mengen',
             })}
-            name="place_check_reports_default_unit_id"
+            name="check_reports_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.place_check_reports_default_unit_id ?? ''}
+            value={row.check_reports_default_unit_id ?? ''}
             onChange={onChange}
             validationState={
-              validations?.place_check_reports_default_unit_id?.state
+              validations?.check_reports_default_unit_id?.state
             }
             validationMessage={
-              validations?.place_check_reports_default_unit_id?.message
+              validations?.check_reports_default_unit_id?.message
             }
           />
           <RadioGroupField

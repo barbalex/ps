@@ -47,13 +47,13 @@ export default interface PlaceLevels {
   name_plural_it: string | null;
 
   /** Are check reports for places used? Preset: true */
-  place_check_reports: boolean | null;
+  check_reports: boolean | null;
 
   /** Are place check report quantities used? Preset: true */
-  place_check_report_quantities: boolean | null;
+  check_report_quantities: boolean | null;
 
   /** Show place check report quantities inside the report form instead of a separate route? Preset: true */
-  place_check_report_quantities_in_report: boolean | null;
+  check_report_quantities_in_report: boolean | null;
 
   /** Are action reports for places used? Preset: true */
   place_action_reports: boolean | null;
@@ -170,19 +170,19 @@ export interface PlaceLevelsInitializer {
    * Are check reports for places used? Preset: true
    * Default value: true
    */
-  place_check_reports?: boolean | null;
+  check_reports?: boolean | null;
 
   /**
    * Are place check report quantities used? Preset: true
    * Default value: true
    */
-  place_check_report_quantities?: boolean | null;
+  check_report_quantities?: boolean | null;
 
   /**
    * Show place check report quantities inside the report form instead of a separate route? Preset: true
    * Default value: true
    */
-  place_check_report_quantities_in_report?: boolean | null;
+  check_report_quantities_in_report?: boolean | null;
 
   /**
    * Are action reports for places used? Preset: true
@@ -344,13 +344,13 @@ export interface PlaceLevelsMutator {
   name_plural_it?: string | null;
 
   /** Are check reports for places used? Preset: true */
-  place_check_reports?: boolean | null;
+  check_reports?: boolean | null;
 
   /** Are place check report quantities used? Preset: true */
-  place_check_report_quantities?: boolean | null;
+  check_report_quantities?: boolean | null;
 
   /** Show place check report quantities inside the report form instead of a separate route? Preset: true */
-  place_check_report_quantities_in_report?: boolean | null;
+  check_report_quantities_in_report?: boolean | null;
 
   /** Are action reports for places used? Preset: true */
   place_action_reports?: boolean | null;

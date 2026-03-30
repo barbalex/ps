@@ -9,8 +9,8 @@ import {
   checks2FilterAtom,
   actions1FilterAtom,
   actions2FilterAtom,
-  placeCheckReports1FilterAtom,
-  placeCheckReports2FilterAtom,
+  checkReports1FilterAtom,
+  checkReports2FilterAtom,
   placeActionReports1FilterAtom,
   placeActionReports2FilterAtom,
   filesFilterAtom,
@@ -40,8 +40,8 @@ type NavData = {
   checks_count_filtered: number
   actions_count_unfiltered: number
   actions_count_filtered: number
-  place_check_reports_count_unfiltered: number
-  place_check_reports_count_filtered: number
+  check_reports_count_unfiltered: number
+  check_reports_count_filtered: number
   place_action_reports_count_unfiltered: number
   place_action_reports_count_filtered: number
   observations_count: number
@@ -77,13 +77,13 @@ export const usePlaceNavData = ({
   const actionsFilterString = filterStringFromFilter(actionsFilter)
   const actionsIsFiltered = !!actionsFilterString
 
-  const [placeCheckReportsFilter] = useAtom(
-    placeId2 ? placeCheckReports2FilterAtom : placeCheckReports1FilterAtom,
+  const [checkReportsFilter] = useAtom(
+    placeId2 ? checkReports2FilterAtom : checkReports1FilterAtom,
   )
-  const placeCheckReportsFilterString = filterStringFromFilter(
-    placeCheckReportsFilter,
+  const checkReportsFilterString = filterStringFromFilter(
+    checkReportsFilter,
   )
-  const placeCheckReportsIsFiltered = !!placeCheckReportsFilterString
+  const checkReportsIsFiltered = !!checkReportsFilterString
 
   const [placeActionReportsFilter] = useAtom(
     placeId2 ? placeActionReports2FilterAtom : placeActionReports1FilterAtom,
@@ -111,8 +111,8 @@ export const usePlaceNavData = ({
         checks_count_filtered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}' ${checksIsFiltered ? ` AND ${checksFilterString}` : ''}),
         actions_count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'),
         actions_count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}' ${actionsIsFiltered ? ` AND ${actionsFilterString}` : ''}),
-        place_check_reports_count_unfiltered AS (SELECT count(*) FROM place_check_reports WHERE place_id = '${placeId2 ?? placeId}'),
-        place_check_reports_count_filtered AS (SELECT count(*) FROM place_check_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeCheckReportsIsFiltered ? ` AND ${placeCheckReportsFilterString}` : ''}),
+        check_reports_count_unfiltered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}'),
+        check_reports_count_filtered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}' ${checkReportsIsFiltered ? ` AND ${checkReportsFilterString}` : ''}),
         place_action_reports_count_unfiltered AS (SELECT count(*) FROM place_action_reports WHERE place_id = '${placeId2 ?? placeId}'),
         place_action_reports_count_filtered AS (SELECT count(*) FROM place_action_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeActionReportsIsFiltered ? ` AND ${placeActionReportsFilterString}` : ''}),
         observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
@@ -130,8 +130,8 @@ export const usePlaceNavData = ({
         checks_count_filtered.count AS checks_count_filtered,
         actions_count_unfiltered.count AS actions_count_unfiltered,
         actions_count_filtered.count AS actions_count_filtered,
-        place_check_reports_count_unfiltered.count AS place_check_reports_count_unfiltered,
-        place_check_reports_count_filtered.count AS place_check_reports_count_filtered,
+        check_reports_count_unfiltered.count AS check_reports_count_unfiltered,
+        check_reports_count_filtered.count AS check_reports_count_filtered,
         place_action_reports_count_unfiltered.count AS place_action_reports_count_unfiltered,
         place_action_reports_count_filtered.count AS place_action_reports_count_filtered,
         observations_count.count AS observations_count,
@@ -148,8 +148,8 @@ export const usePlaceNavData = ({
         checks_count_filtered,
         actions_count_unfiltered,
         actions_count_filtered,
-        place_check_reports_count_unfiltered,
-        place_check_reports_count_filtered,
+        check_reports_count_unfiltered,
+        check_reports_count_filtered,
         place_action_reports_count_unfiltered,
         place_action_reports_count_filtered,
         observations_count,
@@ -266,9 +266,9 @@ export const usePlaceNavData = ({
         id: 'check-reports',
         label: buildNavLabel({
           loading,
-          isFiltered: placeCheckReportsIsFiltered,
-          countFiltered: nav?.place_check_reports_count_filtered ?? 0,
-          countUnfiltered: nav?.place_check_reports_count_unfiltered ?? 0,
+          isFiltered: checkReportsIsFiltered,
+          countFiltered: nav?.check_reports_count_filtered ?? 0,
+          countUnfiltered: nav?.check_reports_count_unfiltered ?? 0,
           namePlural: formatMessage({
             id: 'CiJ0SG',
             defaultMessage: 'Kontroll-Berichte',

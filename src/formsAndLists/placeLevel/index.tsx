@@ -410,46 +410,46 @@ export const PlaceLevel = () => {
                     id: 'nF5KeA',
                     defaultMessage: 'Berichte',
                   })}
-                  name="place_check_reports"
-                  value={row.place_check_reports ?? false}
+                  name="check_reports"
+                  value={row.check_reports ?? false}
                   onChange={onChange}
-                  validationState={validations?.place_check_reports?.state}
-                  validationMessage={validations?.place_check_reports?.message}
+                  validationState={validations?.check_reports?.state}
+                  validationMessage={validations?.check_reports?.message}
                 />
-                {row.place_check_reports && (
+                {row.check_reports && (
                   <>
                     <SwitchField
                       label={formatMessage({
                         id: 'oG6LfB',
                         defaultMessage: 'Bericht-Mengen',
                       })}
-                      name="place_check_report_quantities"
-                      value={row.place_check_report_quantities ?? false}
+                      name="check_report_quantities"
+                      value={row.check_report_quantities ?? false}
                       onChange={onChange}
                       validationState={
-                        validations?.place_check_report_quantities?.state
+                        validations?.check_report_quantities?.state
                       }
                       validationMessage={
-                        validations?.place_check_report_quantities?.message
+                        validations?.check_report_quantities?.message
                       }
                     />
-                    {row.place_check_report_quantities && (
+                    {row.check_report_quantities && (
                       <SwitchField
                         label={formatMessage({
                           id: 'qH7MpR4',
                           defaultMessage: 'Bericht-Mengen im Bericht anzeigen',
                         })}
-                        name="place_check_report_quantities_in_report"
+                        name="check_report_quantities_in_report"
                         value={
-                          row.place_check_report_quantities_in_report ?? true
+                          row.check_report_quantities_in_report ?? true
                         }
                         onChange={onChange}
                         validationState={
-                          validations?.place_check_report_quantities_in_report
+                          validations?.check_report_quantities_in_report
                             ?.state
                         }
                         validationMessage={
-                          validations?.place_check_report_quantities_in_report
+                          validations?.check_report_quantities_in_report
                             ?.message ??
                           formatMessage({
                             id: 'altInOwnFormNav',

@@ -6,7 +6,7 @@ import { useAtom } from 'jotai'
 import { Node } from '../Node.tsx'
 import { ChecksNode } from '../Checks.tsx'
 import { ActionsNode } from '../Actions.tsx'
-import { PlaceCheckReportsNode } from '../PlaceCheckReports.tsx'
+import { CheckReportsNode } from '../CheckReports.tsx'
 import { PlaceActionReportsNode } from '../PlaceActionReports.tsx'
 import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
@@ -81,8 +81,8 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.place_check_reports) && (
-        <PlaceCheckReportsNode
+      {(isDesigning || !!placeLevel?.check_reports) && (
+        <CheckReportsNode
           projectId={projectId}
           subprojectId={subprojectId}
           placeId={placeId}

@@ -69,8 +69,8 @@ export default interface Projects {
   /** Default unit for action taxa values. Can be overwritten in action_taxa */
   action_taxa_default_unit_id: UnitsUnitId | null;
 
-  /** Default unit for place check report quantities. Can be overwritten in place_check_reports */
-  place_check_reports_default_unit_id: UnitsUnitId | null;
+  /** Default unit for place check report quantities. Can be overwritten in check_reports */
+  check_reports_default_unit_id: UnitsUnitId | null;
 
   /** Default unit for place action report quantities. Can be overwritten in place_action_reports */
   place_action_reports_default_unit_id: UnitsUnitId | null;
@@ -206,8 +206,8 @@ export interface ProjectsInitializer {
   /** Default unit for action taxa values. Can be overwritten in action_taxa */
   action_taxa_default_unit_id?: UnitsUnitId | null;
 
-  /** Default unit for place check report quantities. Can be overwritten in place_check_reports */
-  place_check_reports_default_unit_id?: UnitsUnitId | null;
+  /** Default unit for place check report quantities. Can be overwritten in check_reports */
+  check_reports_default_unit_id?: UnitsUnitId | null;
 
   /** Default unit for place action report quantities. Can be overwritten in place_action_reports */
   place_action_reports_default_unit_id?: UnitsUnitId | null;
@@ -381,8 +381,8 @@ export interface ProjectsMutator {
   /** Default unit for action taxa values. Can be overwritten in action_taxa */
   action_taxa_default_unit_id?: UnitsUnitId | null;
 
-  /** Default unit for place check report quantities. Can be overwritten in place_check_reports */
-  place_check_reports_default_unit_id?: UnitsUnitId | null;
+  /** Default unit for place check report quantities. Can be overwritten in check_reports */
+  check_reports_default_unit_id?: UnitsUnitId | null;
 
   /** Default unit for place action report quantities. Can be overwritten in place_action_reports */
   place_action_reports_default_unit_id?: UnitsUnitId | null;

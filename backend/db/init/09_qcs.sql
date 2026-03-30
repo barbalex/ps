@@ -478,7 +478,7 @@ WHERE p.subproject_id = $1
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
   AND NOT EXISTS (SELECT 1
-FROM place_check_reports pcr
+FROM check_reports pcr
 WHERE pcr.place_id = p.place_id)
 ORDER BY p.label'),
 ('placesCheckReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr', 'Places (relevant and currently existing) without check report in year', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell''anno', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
@@ -489,7 +489,7 @@ WHERE p.subproject_id = $1
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
   AND NOT EXISTS (SELECT 1
-FROM place_check_reports pcr
+FROM check_reports pcr
 WHERE pcr.place_id = p.place_id
   AND pcr.year = date_part(''year'', now())::integer)
 ORDER BY p.label'),
@@ -636,7 +636,7 @@ FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
 ORDER BY c.label'),
-('placeCheckReportQuantitiesNoDefault', 'Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place check report quantities: default unit not used', 'Quantités de rapport de contrôle de lieu : unité par défaut non utilisée', 'Quantità di rapporto di controllo di luogo: unità predefinita non utilizzata', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+('checkReportQuantitiesNoDefault', 'Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place check report quantities: default unit not used', 'Quantités de rapport de contrôle de lieu : unité par défaut non utilisée', 'Quantità di rapporto di controllo di luogo: unità predefinita non utilizzata', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
@@ -644,12 +644,12 @@ WHERE p.subproject_id = $1
   AND p.relevant_for_reports = true
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
-  AND proj.place_check_reports_default_unit_id IS NOT NULL
+  AND proj.check_reports_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
-FROM place_check_reports pcr
-JOIN place_check_report_quantities pcrq ON pcrq.place_check_report_id = pcr.place_check_report_id
+FROM check_reports pcr
+JOIN check_report_quantities pcrq ON pcrq.place_check_report_id = pcr.place_check_report_id
 WHERE pcr.place_id = p.place_id
-  AND pcrq.unit_id != proj.place_check_reports_default_unit_id)
+  AND pcrq.unit_id != proj.check_reports_default_unit_id)
 ORDER BY p.label'),
 ('checkTaxonQuantitiesNoDefault', 'Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Check taxon quantities: default unit not used', 'Quantités de taxon de contrôle : unité par défaut non utilisée', 'Quantità di taxon di controllo: unità predefinita non utilizzata', 'checks', NULL, false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c

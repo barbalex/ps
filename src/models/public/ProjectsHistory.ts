@@ -54,7 +54,7 @@ export default interface ProjectsHistory {
 
   action_taxa_default_unit_id: string | null;
 
-  place_check_reports_default_unit_id: string | null;
+  check_reports_default_unit_id: string | null;
 
   place_action_reports_default_unit_id: string | null;
 
@@ -159,7 +159,7 @@ export interface ProjectsHistoryInitializer {
 
   action_taxa_default_unit_id?: string | null;
 
-  place_check_reports_default_unit_id?: string | null;
+  check_reports_default_unit_id?: string | null;
 
   place_action_reports_default_unit_id?: string | null;
 
@@ -278,7 +278,7 @@ export interface ProjectsHistoryMutator {
 
   action_taxa_default_unit_id?: string | null;
 
-  place_check_reports_default_unit_id?: string | null;
+  check_reports_default_unit_id?: string | null;
 
   place_action_reports_default_unit_id?: string | null;
 

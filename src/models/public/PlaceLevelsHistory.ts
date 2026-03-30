@@ -30,11 +30,11 @@ export default interface PlaceLevelsHistory {
 
   name_plural_it: string | null;
 
-  place_check_reports: boolean | null;
+  check_reports: boolean | null;
 
-  place_check_report_quantities: boolean | null;
+  check_report_quantities: boolean | null;
 
-  place_check_report_quantities_in_report: boolean | null;
+  check_report_quantities_in_report: boolean | null;
 
   place_action_reports: boolean | null;
 
@@ -120,13 +120,13 @@ export interface PlaceLevelsHistoryInitializer {
   name_plural_it?: string | null;
 
   /** Default value: true */
-  place_check_reports?: boolean | null;
+  check_reports?: boolean | null;
 
   /** Default value: true */
-  place_check_report_quantities?: boolean | null;
+  check_report_quantities?: boolean | null;
 
   /** Default value: true */
-  place_check_report_quantities_in_report?: boolean | null;
+  check_report_quantities_in_report?: boolean | null;
 
   /** Default value: true */
   place_action_reports?: boolean | null;
@@ -231,11 +231,11 @@ export interface PlaceLevelsHistoryMutator {
 
   name_plural_it?: string | null;
 
-  place_check_reports?: boolean | null;
+  check_reports?: boolean | null;
 
-  place_check_report_quantities?: boolean | null;
+  check_report_quantities?: boolean | null;
 
-  place_check_report_quantities_in_report?: boolean | null;
+  check_report_quantities_in_report?: boolean | null;
 
   place_action_reports?: boolean | null;
 

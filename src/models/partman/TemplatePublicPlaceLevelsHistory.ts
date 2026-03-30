@@ -27,11 +27,11 @@ export default interface TemplatePublicPlaceLevelsHistory {
 
   name_plural_it: string | null;
 
-  place_check_reports: boolean | null;
+  check_reports: boolean | null;
 
-  place_check_report_quantities: boolean | null;
+  check_report_quantities: boolean | null;
 
-  place_check_report_quantities_in_report: boolean | null;
+  check_report_quantities_in_report: boolean | null;
 
   place_action_reports: boolean | null;
 
@@ -110,11 +110,11 @@ export interface TemplatePublicPlaceLevelsHistoryInitializer {
 
   name_plural_it?: string | null;
 
-  place_check_reports?: boolean | null;
+  check_reports?: boolean | null;
 
-  place_check_report_quantities?: boolean | null;
+  check_report_quantities?: boolean | null;
 
-  place_check_report_quantities_in_report?: boolean | null;
+  check_report_quantities_in_report?: boolean | null;
 
   place_action_reports?: boolean | null;
 
@@ -193,11 +193,11 @@ export interface TemplatePublicPlaceLevelsHistoryMutator {
 
   name_plural_it?: string | null;
 
-  place_check_reports?: boolean | null;
+  check_reports?: boolean | null;
 
-  place_check_report_quantities?: boolean | null;
+  check_report_quantities?: boolean | null;
 
-  place_check_report_quantities_in_report?: boolean | null;
+  check_report_quantities_in_report?: boolean | null;
 
   place_action_reports?: boolean | null;
 
