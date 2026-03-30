@@ -183,6 +183,14 @@ export const useDataNavData = () => {
         }),
       },
       {
+        id: 'accounts',
+        label: buildNavLabel({
+          loading,
+          countFiltered: row?.accounts_count_unfiltered ?? 0,
+          namePlural: formatMessage({ id: '/40i9A', defaultMessage: 'Konten' }),
+        }),
+      },
+      {
         id: 'users',
         label: buildNavLabel({
           loading,
@@ -191,14 +199,6 @@ export const useDataNavData = () => {
             id: 'eZ3yEB',
             defaultMessage: 'Benutzer',
           }),
-        }),
-      },
-      {
-        id: 'accounts',
-        label: buildNavLabel({
-          loading,
-          countFiltered: row?.accounts_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: '/40i9A', defaultMessage: 'Konten' }),
         }),
       },
       ...(designing
@@ -276,17 +276,6 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'mn58Sh',
                   defaultMessage: 'Dateien',
-                }),
-              }),
-            },
-            {
-              id: 'widgets',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
-                namePlural: formatMessage({
-                  id: 'jgOqxt',
-                  defaultMessage: 'Widgets',
                 }),
               }),
             },
