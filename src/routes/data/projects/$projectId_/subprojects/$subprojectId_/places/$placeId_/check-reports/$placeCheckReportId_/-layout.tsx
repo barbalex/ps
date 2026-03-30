@@ -14,8 +14,10 @@ export const PlaceCheckReportLayout = () => {
   )
   const quantitiesInReport =
     res?.rows?.[0]?.place_check_report_quantities_in_report !== false
-  const isHistoryRoute = location.pathname.includes('/histories/')
-  if (quantitiesInReport && !isHistoryRoute)
+  const isReportHistoryRoute =
+    location.pathname.includes('/histories/') &&
+    !location.pathname.includes('/quantities/')
+  if (quantitiesInReport && !isReportHistoryRoute)
     return <PlaceCheckReportWithQuantities from={from} />
   return <Outlet />
 }
