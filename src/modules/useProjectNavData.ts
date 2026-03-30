@@ -42,6 +42,7 @@ type NavData = {
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
+  fields_in_project?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
@@ -58,6 +59,7 @@ type NavDataNotForBreadcrumb = {
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
+  fields_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -88,6 +90,7 @@ type NavDataNotForBreadcrumbDesigning = {
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
+  fields_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -204,7 +207,8 @@ export const useProjectNavData = ({
         charts,
         files_active_projects,
         project_users_in_project,
-        project_files_in_project
+        project_files_in_project,
+        fields_in_project
         ${
           !forBreadcrumb
             ? `,
@@ -499,6 +503,10 @@ export const useProjectNavData = ({
                     }),
                   }),
                 },
+              ]
+            : []),
+          ...(designing && nav?.fields_in_project === false
+            ? [
                 {
                   id: 'fields',
                   label: buildNavLabel({

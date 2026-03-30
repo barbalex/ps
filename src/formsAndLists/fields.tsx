@@ -8,9 +8,11 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useFieldsNavData } from '../modules/useFieldsNavData.ts'
 import '../form.css'
 
-export const Fields = ({ from }) => {
-  const { projectId } = useParams({ from })
+export const Fields = ({ from, hideHeader = false, projectId: projectIdProp }) => {
+  const { projectId: routeProjectId } = useParams({ strict: false, from })
+  const projectId = projectIdProp ?? routeProjectId
   const navigate = useNavigate()
+  const fieldsBaseUrl = `/data/projects/${projectId}/fields`
 
   const { loading, navData, isFiltered } = useFieldsNavData({ projectId })
   const { navs, label, nameSingular } = navData
@@ -18,26 +20,25 @@ export const Fields = ({ from }) => {
   const add = async () => {
     const id = await createField({ projectId })
     if (!id) return
-    navigate({
-      to: id,
-      params: (prev) => ({ ...prev, fieldId: id }),
-    })
+    navigate({ to: `${fieldsBaseUrl}/${id}` })
   }
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          menus={<FilterButton isFiltered={isFiltered} />}
+        />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />
         ) : (
           navs.map(({ id, label }) => (
-            <Row key={id} label={label ?? id} to={id} />
+            <Row key={id} label={label ?? id} to={`${fieldsBaseUrl}/${id}`} />
           ))
         )}
       </div>
