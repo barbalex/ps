@@ -92,6 +92,8 @@ export default interface ProjectsHistory {
 
   files_active_subprojects: boolean | null;
 
+  subproject_users_in_subproject: boolean | null;
+
   subproject_files_in_subproject: boolean | null;
 
   map_presentation_crs: string | null;
@@ -211,6 +213,9 @@ export interface ProjectsHistoryInitializer {
   files_active_subprojects?: boolean | null;
 
   /** Default value: true */
+  subproject_users_in_subproject?: boolean | null;
+
+  /** Default value: true */
   subproject_files_in_subproject?: boolean | null;
 
   map_presentation_crs?: string | null;
@@ -315,6 +320,8 @@ export interface ProjectsHistoryMutator {
   project_files_in_project?: boolean | null;
 
   files_active_subprojects?: boolean | null;
+
+  subproject_users_in_subproject?: boolean | null;
 
   subproject_files_in_subproject?: boolean | null;
 

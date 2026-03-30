@@ -13,16 +13,19 @@ import { FaPlus } from 'react-icons/fa'
 
 import { Header } from './Header.tsx'
 import { SubprojectForm as Form } from './Form.tsx'
+import { SubprojectUsers } from '../subprojectUsers.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { createSubprojectUser } from '../../modules/createRows.ts'
 import {
   addOperationAtom,
   designingAtom,
   filesFilterAtom,
   languageAtom,
+  subprojectUsersFilterAtom,
 } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
@@ -43,6 +46,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
   const [isDesigning] = useAtom(designingAtom)
+  const [subprojectUsersFilter] = useAtom(subprojectUsersFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
@@ -57,6 +61,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
       subprojects.*,
       ${subprojectNameSingularExpr(language, 'projects')} AS subproject_name_singular,
       projects.files_active_subprojects,
+      projects.subproject_users_in_subproject,
       projects.subproject_files_in_subproject
     FROM subprojects
     INNER JOIN projects ON projects.project_id = subprojects.project_id
@@ -71,20 +76,50 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
+  const subprojectUsersCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM subproject_users WHERE subproject_id = $1`,
+    [subprojectId],
+  )
+  const subprojectUsersCount = subprojectUsersCountRes?.rows?.[0]?.count ?? 0
+
+  const usersInSubproject = row?.subproject_users_in_subproject !== false
   const showFiles = isDesigning || row?.files_active_subprojects !== false
 
+  const isUsersOpen =
+    location.pathname.endsWith('/users') || location.pathname.includes('/users/')
+  const isUsersList = /\/users\/?$/.test(location.pathname)
   const isFilesOpen =
     location.pathname.endsWith('/files') || location.pathname.includes('/files/')
   const isFilesList = /\/files\/?$/.test(location.pathname)
 
   const subprojectBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}`
   const subprojectUrl = `${subprojectBaseUrl}/subproject`
+  const usersUrl = `${subprojectBaseUrl}/users`
   const filesUrl = `${subprojectBaseUrl}/files`
 
+  const subprojectUsersIsFiltered = !!filterStringFromFilter(subprojectUsersFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
+  const onClickAddSubprojectUser = async () => {
+    const id = await createSubprojectUser({ subprojectId })
+    if (!id) return
+    navigate({ to: `${usersUrl}/${id}/` })
+  }
   const onClickAddFile = () => uploaderApi?.initFlow?.()
+
+  const subprojectUserHeaderActions =
+    usersInSubproject && isUsersList ? (
+      <>
+        <FilterButton isFiltered={subprojectUsersIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddSubprojectUser}
+        />
+      </>
+    ) : undefined
 
   const fileHeaderActions =
     showFiles && isFilesList ? (
@@ -151,6 +186,25 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           from={from}
           validations={validations}
         />
+        {usersInSubproject ? (
+          <Section
+            title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${subprojectUsersCount})`}
+            onHeaderClick={() =>
+              isUsersList
+                ? navigate({ to: subprojectUrl })
+                : navigate({ to: usersUrl })
+            }
+            isOpen={isUsersOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={subprojectUserHeaderActions}
+          >
+            {isUsersOpen &&
+              (isUsersList ? <SubprojectUsers hideHeader /> : <Outlet />)}
+          </Section>
+        ) : (
+          isUsersOpen && <Outlet />
+        )}
         {showFiles ? (
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}

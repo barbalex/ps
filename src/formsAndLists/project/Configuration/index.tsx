@@ -349,9 +349,7 @@ export const Configuration = ({ from }) => {
             isLoading={unitsRes === undefined}
             value={row.action_reports_default_unit_id ?? ''}
             onChange={onChange}
-            validationState={
-              validations?.action_reports_default_unit_id?.state
-            }
+            validationState={validations?.action_reports_default_unit_id?.state}
             validationMessage={
               validations?.action_reports_default_unit_id?.message
             }
@@ -554,6 +552,30 @@ export const Configuration = ({ from }) => {
               onChange={onChange}
               validationState={validations?.charts?.state}
               validationMessage={validations?.charts?.message}
+            />
+            <SwitchField
+              label={formatMessage(
+                {
+                  id: 'N3qLx9',
+                  defaultMessage:
+                    'Benutzer in {subprojectNameSingular} anzeigen',
+                },
+                { subprojectNameSingular },
+              )}
+              name="subproject_users_in_subproject"
+              value={row.subproject_users_in_subproject ?? true}
+              onChange={onChange}
+              validationState={
+                validations?.subproject_users_in_subproject?.state
+              }
+              validationMessage={
+                validations?.subproject_users_in_subproject?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
             />
             <SwitchField
               label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}

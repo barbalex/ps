@@ -89,6 +89,8 @@ export default interface TemplatePublicProjectsHistory {
 
   files_active_subprojects: boolean | null;
 
+  subproject_users_in_subproject: boolean | null;
+
   subproject_files_in_subproject: boolean | null;
 
   map_presentation_crs: string | null;
@@ -188,6 +190,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   files_active_subprojects?: boolean | null;
 
+  subproject_users_in_subproject?: boolean | null;
+
   subproject_files_in_subproject?: boolean | null;
 
   map_presentation_crs?: string | null;
@@ -286,6 +290,8 @@ export interface TemplatePublicProjectsHistoryMutator {
   project_files_in_project?: boolean | null;
 
   files_active_subprojects?: boolean | null;
+
+  subproject_users_in_subproject?: boolean | null;
 
   subproject_files_in_subproject?: boolean | null;
 

@@ -35,7 +35,9 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   ])
   const project: Projects | undefined = res?.rows?.[0]
   const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
+  const usersInSubproject = project?.subproject_users_in_subproject !== false
   const filesInSubproject = project?.subproject_files_in_subproject !== false
+  const showUsersNav = !usersInSubproject
   const showFilesNav = showFiles && !filesInSubproject
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
@@ -141,7 +143,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
           {showTaxa && (
             <SubprojectTaxaNode projectId={projectId} subprojectId={nav.id} />
           )}
-          {showDesigningNodes && (
+          {showDesigningNodes && showUsersNav && (
             <SubprojectUsersNode projectId={projectId} subprojectId={nav.id} />
           )}
           {showDesigningNodes && (
