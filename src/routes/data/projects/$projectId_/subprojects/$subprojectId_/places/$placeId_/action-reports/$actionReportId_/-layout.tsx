@@ -14,8 +14,10 @@ export const ActionReportLayout = () => {
   )
   const quantitiesInReport =
     res?.rows?.[0]?.action_report_quantities_in_report !== false
-  const isHistoryRoute = location.pathname.includes('/histories/')
-  if (quantitiesInReport && !isHistoryRoute)
+  const isReportHistoryRoute =
+    location.pathname.includes('/histories/') &&
+    !location.pathname.includes('/quantities/')
+  if (quantitiesInReport && !isReportHistoryRoute)
     return <ActionReportWithQuantities from={from} />
   return <Outlet />
 }
