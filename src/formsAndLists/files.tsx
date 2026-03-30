@@ -59,7 +59,13 @@ export const Files = ({
         />
       )}
       <div className="list-container">
-        <Uploader />
+        <Uploader
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId2 ?? placeId}
+          actionId={actionId}
+          checkId={checkId}
+        />
         {loading ? (
           <Loading />
         ) : (

@@ -1,1 +1,1 @@
-export const accountTables = ['projects', 'files']
+export const accountTables = ['projects']

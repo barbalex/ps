@@ -31,12 +31,36 @@ defineLocale('it', itLocale)
 
 import '../../form.css'
 
-export const Uploader = ({ from }) => {
+type UploaderProps = {
+  from?: string
+  projectId?: string | null
+  subprojectId?: string | null
+  placeId?: string | null
+  actionId?: string | null
+  checkId?: string | null
+}
+
+export const Uploader = ({
+  from,
+  projectId: projectIdProp,
+  subprojectId: subprojectIdProp,
+  placeId: placeIdProp,
+  actionId: actionIdProp,
+  checkId: checkIdProp,
+}: UploaderProps) => {
   const language = useAtomValue(languageAtom)
+  // Keep `from` in the public props API; this marks it as intentionally unused.
+  void from
   const ucConfigRef = useRef<HTMLElement>(null)
   const navigate = useNavigate()
-  const { projectId, subprojectId, placeId, placeId2, actionId, checkId } =
-    useParams({ strict: false })
+  const {
+    projectId: routeProjectId,
+    subprojectId: routeSubprojectId,
+    placeId: routePlaceId,
+    placeId2,
+    actionId: routeActionId,
+    checkId: routeCheckId,
+  } = useParams({ strict: false })
 
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
@@ -47,6 +71,11 @@ export const Uploader = ({ from }) => {
   const db = usePGlite()
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
+  const projectId = projectIdProp ?? routeProjectId ?? null
+  const subprojectId = subprojectIdProp ?? routeSubprojectId ?? null
+  const placeId = placeIdProp ?? placeId2 ?? routePlaceId ?? null
+  const actionId = actionIdProp ?? routeActionId ?? null
+  const checkId = checkIdProp ?? routeCheckId ?? null
 
   const navigateToFile = async (fileId: string) => {
     navigate({
@@ -100,8 +129,6 @@ export const Uploader = ({ from }) => {
       fileInput.actionId = actionId
     } else if (checkId) {
       fileInput.checkId = checkId
-    } else if (placeId2) {
-      fileInput.placeId = placeId2
     } else if (placeId) {
       fileInput.placeId = placeId
     } else if (subprojectId) {

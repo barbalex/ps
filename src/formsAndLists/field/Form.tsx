@@ -13,6 +13,7 @@ import '../../form.css'
 const projectTables = [
   'actions',
   'checks',
+  'files',
   'goal_reports',
   'goals',
   'lists',

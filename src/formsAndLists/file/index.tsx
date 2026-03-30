@@ -44,7 +44,14 @@ export const File = ({ from }) => {
 
   return (
     <div className="form-outer-container" ref={ref}>
-      <Uploader from={from} />
+      <Uploader
+        from={from}
+        projectId={row.project_id}
+        subprojectId={row.subproject_id}
+        placeId={row.place_id}
+        actionId={row.action_id}
+        checkId={row.check_id}
+      />
       <Header from={from} />
       <div className="form-container">
         {(row.mimetype.includes('image') || row.mimetype.includes('pdf')) &&

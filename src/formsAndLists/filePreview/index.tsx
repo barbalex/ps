@@ -59,54 +59,61 @@ export const FilePreview = ({ from }) => {
   return (
     <div ref={previewRef} className="form-outer-container">
       <div style={{ height: 0, overflow: 'hidden' }}>
-        <Uploader from={from} />
+        <Uploader
+          from={from}
+          projectId={row.project_id}
+          subprojectId={row.subproject_id}
+          placeId={row.place_id}
+          actionId={row.action_id}
+          checkId={row.check_id}
+        />
       </div>
       <Header row={row} previewRef={previewRef} from={from} />
       <div className={styles.file} ref={ref}>
-          {isImage && row.url && width && (
-            <img
-              src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
-                height,
-              )}/-/format/auto/-/quality/smart/`}
-              alt={row.name}
-              width={width}
-              height={
-                row.width && row.height
-                  ? (width / row.width) * row.height
-                  : undefined
-              }
-              className={styles.image}
+        {isImage && row.url && width && (
+          <img
+            src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
+              height,
+            )}/-/format/auto/-/quality/smart/`}
+            alt={row.name}
+            width={width}
+            height={
+              row.width && row.height
+                ? (width / row.width) * row.height
+                : undefined
+            }
+            className={styles.image}
+          />
+        )}
+        {isPdf && row.url && (
+          <object
+            data={row.url}
+            type="application/pdf"
+            style={{ width }}
+            className={styles.object}
+          />
+        )}
+        {isReactDocViewable && (
+          <div className={styles.object}>
+            <DocViewer
+              key={width}
+              documents={[
+                {
+                  uri: row.url,
+                  mimeType: row.mimetype,
+                },
+              ]}
+              renderers={DocViewerRenderers}
+              config={{ header: { disableHeader: true } }}
+              className={styles.docViewer}
             />
-          )}
-          {isPdf && row.url && (
-            <object
-              data={row.url}
-              type="application/pdf"
-              style={{ width }}
-              className={styles.object}
-            />
-          )}
-          {isReactDocViewable && (
-            <div className={styles.object}>
-              <DocViewer
-                key={width}
-                documents={[
-                  {
-                    uri: row.url,
-                    mimeType: row.mimetype,
-                  },
-                ]}
-                renderers={DocViewerRenderers}
-                config={{ header: { disableHeader: true } }}
-                className={styles.docViewer}
-              />
-            </div>
-          )}
-          {isNotViewable && (
-            <div
-              className={styles.text}
-            >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
-          )}
+          </div>
+        )}
+        {isNotViewable && (
+          <div
+            className={styles.text}
+          >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
+        )}
       </div>
     </div>
   )
