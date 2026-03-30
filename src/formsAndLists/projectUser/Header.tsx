@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createProjectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/users/$projectUserId/'
@@ -15,6 +16,7 @@ export const Header = ({ autoFocusRef }) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const basePath = `/data/projects/${projectId}/users/${projectUserId}`
 
   const db = usePGlite()
 
@@ -117,6 +119,15 @@ export const Header = ({ autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="project user"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="project_users_history"
+          rowIdField="project_user_id"
+          rowId={projectUserId}
+        />
+      }
     />
   )
 }

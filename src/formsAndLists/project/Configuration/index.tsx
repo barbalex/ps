@@ -475,6 +475,34 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.vector_layers?.message}
             />
             <SwitchField
+              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
+              name="files_active_projects"
+              value={row.files_active_projects ?? false}
+              onChange={onChange}
+              validationState={validations?.files_active_projects?.state}
+              validationMessage={validations?.files_active_projects?.message}
+            />
+            {(row.files_active_projects ?? false) && (
+              <SwitchField
+                label={formatMessage({
+                  id: 'qP7PrjFileInPrj',
+                  defaultMessage: 'Dateien im Projekt anzeigen',
+                })}
+                name="project_files_in_project"
+                value={row.project_files_in_project ?? true}
+                onChange={onChange}
+                validationState={validations?.project_files_in_project?.state}
+                validationMessage={
+                  validations?.project_files_in_project?.message ??
+                  formatMessage({
+                    id: 'altInOwnFormNav',
+                    defaultMessage:
+                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                  })
+                }
+              />
+            )}
+            <SwitchField
               label={formatMessage({
                 id: 'mQ4PrjUsersInPrj',
                 defaultMessage: 'Benutzer im Projekt anzeigen',
@@ -510,34 +538,6 @@ export const Configuration = ({ from }) => {
                 })
               }
             />
-            <SwitchField
-              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
-              name="files_active_projects"
-              value={row.files_active_projects ?? false}
-              onChange={onChange}
-              validationState={validations?.files_active_projects?.state}
-              validationMessage={validations?.files_active_projects?.message}
-            />
-            {(row.files_active_projects ?? false) && (
-              <SwitchField
-                label={formatMessage({
-                  id: 'qP7PrjFileInPrj',
-                  defaultMessage: 'Dateien im Projekt anzeigen',
-                })}
-                name="project_files_in_project"
-                value={row.project_files_in_project ?? true}
-                onChange={onChange}
-                validationState={validations?.project_files_in_project?.state}
-                validationMessage={
-                  validations?.project_files_in_project?.message ??
-                  formatMessage({
-                    id: 'altInOwnFormNav',
-                    defaultMessage:
-                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                  })
-                }
-              />
-            )}
             <SwitchField
               label={formatMessage({
                 id: 'pR8FldInPrj',

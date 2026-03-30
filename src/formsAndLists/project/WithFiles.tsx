@@ -237,25 +237,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           from={from}
           autoFocusRef={autoFocusRef}
         />
-        {isDesigning && usersInProject ? (
-          <Section
-            title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${projectUsersCount})`}
-            onHeaderClick={() =>
-              isUsersList
-                ? navigate({ to: projectUrl })
-                : navigate({ to: usersUrl })
-            }
-            isOpen={isUsersOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
-            headerActions={projectUserHeaderActions}
-          >
-            {isUsersOpen &&
-              (isUsersList ? <ProjectUsers hideHeader /> : <Outlet />)}
-          </Section>
-        ) : (
-          isUsersOpen && <Outlet />
-        )}
         {showFiles && filesInProject ? (
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
@@ -278,6 +259,25 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           </Section>
         ) : (
           isFilesOpen && <Outlet />
+        )}
+        {isDesigning && usersInProject ? (
+          <Section
+            title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${projectUsersCount})`}
+            onHeaderClick={() =>
+              isUsersList
+                ? navigate({ to: projectUrl })
+                : navigate({ to: usersUrl })
+            }
+            isOpen={isUsersOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={projectUserHeaderActions}
+          >
+            {isUsersOpen &&
+              (isUsersList ? <ProjectUsers hideHeader /> : <Outlet />)}
+          </Section>
+        ) : (
+          isUsersOpen && <Outlet />
         )}
         {isDesigning && unitsInProject ? (
           <Section
