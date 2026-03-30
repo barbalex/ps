@@ -36,7 +36,7 @@ export const Uploader = ({ from }) => {
   const ucConfigRef = useRef<HTMLElement>(null)
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2, actionId, checkId } =
-    useParams({ from })
+    useParams({ strict: false })
 
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
@@ -48,6 +48,25 @@ export const Uploader = ({ from }) => {
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
 
+  const navigateToFile = async (fileId: string) => {
+    navigate({
+      to: `${!isFileList ? '.' : ''}./${fileId}${isPreview ? '/preview' : ''}`,
+      params: (prev) => ({ ...prev, fileId }),
+    })
+  }
+
+  const waitForFile = async (fileId: string) => {
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      const res = await db.query(
+        `SELECT file_id FROM files WHERE file_id = $1`,
+        [fileId],
+      )
+      if (res?.rows?.length) return true
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    }
+    return false
+  }
+
   useEffect(() => {
     ucConfigRef.current?.setAttribute('locale-name', language)
   }, [language])
@@ -55,11 +74,18 @@ export const Uploader = ({ from }) => {
   // ISSUE: the event is called THREE times
   // Solution: query files with the uuid and only create if it doesn't exist
   const onUploadSuccess = async (event: CustomEvent) => {
-    const resFiles = await db.query(`SELECT * FROM files WHERE uuid = $1`, [
-      event.detail.uuid,
-    ])
+    const resFiles = await db.query(
+      `SELECT file_id FROM files WHERE uuid = $1`,
+      [event.detail.uuid],
+    )
     const files = resFiles?.rows ?? []
-    if (files.length) return
+    if (files.length) {
+      const existingFileId = files[0]?.file_id
+      if (existingFileId) {
+        await navigateToFile(existingFileId)
+      }
+      return
+    }
 
     const fileInput = {
       name: event.detail.name,
@@ -84,10 +110,8 @@ export const Uploader = ({ from }) => {
       fileInput.projectId = projectId
     }
     const fileId = await createFile(fileInput)
-    navigate({
-      to: `${!isFileList ? '.' : ''}./${fileId}${isPreview ? '/preview' : ''}`,
-      params: (prev) => ({ ...prev, fileId }),
-    })
+    await waitForFile(fileId)
+    await navigateToFile(fileId)
     // close the uploader or it will be open when navigating to the list
     api?.doneFlow?.()
     // clear the uploader or it will show the last uploaded file when opened next time
