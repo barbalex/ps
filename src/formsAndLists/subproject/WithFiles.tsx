@@ -109,7 +109,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const subprojectUserHeaderActions =
-    usersInSubproject && isUsersList ? (
+    isDesigning && usersInSubproject && isUsersList ? (
       <>
         <FilterButton isFiltered={subprojectUsersIsFiltered} />
         <Button
@@ -186,7 +186,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           from={from}
           validations={validations}
         />
-        {usersInSubproject ? (
+        {isDesigning && usersInSubproject ? (
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${subprojectUsersCount})`}
             onHeaderClick={() =>

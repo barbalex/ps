@@ -94,7 +94,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const projectUserHeaderActions =
-    usersInProject && isUsersList ? (
+    isDesigning && usersInProject && isUsersList ? (
       <>
         <FilterButton isFiltered={projectUsersIsFiltered} />
         <Button
@@ -167,7 +167,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           from={from}
           autoFocusRef={autoFocusRef}
         />
-        {usersInProject ? (
+        {isDesigning && usersInProject ? (
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${projectUsersCount})`}
             onHeaderClick={() =>

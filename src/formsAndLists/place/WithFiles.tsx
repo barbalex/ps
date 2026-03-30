@@ -133,7 +133,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const placeUserHeaderActions =
-    usersInPlace && isUsersList ? (
+    isDesigning && usersInPlace && isUsersList ? (
       <>
         <FilterButton isFiltered={placeUsersIsFiltered} />
         <Button
@@ -223,7 +223,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           from={from}
           withContainer={false}
         />
-        {usersInPlace ? (
+        {isDesigning && usersInPlace ? (
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${placeUsersCount})`}
             onHeaderClick={() =>
