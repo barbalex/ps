@@ -6,11 +6,13 @@ import { useIntl } from 'react-intl'
 
 import { createPlaceUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
-  const { projectId, placeId, placeId2, placeUserId } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, placeUserId } =
+    useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
@@ -25,6 +27,9 @@ export const Header = ({ autoFocusRef, from }) => {
     placeLevel?.name_singular ??
     formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
   const title = `${placeNameSingular}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/users/${placeUserId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/users/${placeUserId}`
 
   const db = usePGlite()
 
@@ -118,6 +123,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="place user"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="place_users_history"
+          rowIdField="place_user_id"
+          rowId={placeUserId}
+        />
+      }
     />
   )
 }
