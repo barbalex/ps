@@ -18,8 +18,12 @@ export const CheckLayout = () => {
     res?.rows?.[0]?.check_files !== false &&
     res?.rows?.[0]?.check_files_in_check !== false
   const allInline = quantitiesInCheck && taxaInCheck && filesInCheck
-  const isHistoryRoute = location.pathname.includes('/histories/')
-  if ((quantitiesInCheck || taxaInCheck || filesInCheck) && !isHistoryRoute)
+  const isCheckHistoryRoute =
+    location.pathname.includes('/histories/') &&
+    !location.pathname.includes('/quantities/') &&
+    !location.pathname.includes('/taxa/') &&
+    !location.pathname.includes('/files/')
+  if ((quantitiesInCheck || taxaInCheck || filesInCheck) && !isCheckHistoryRoute)
     return <CheckWithAll from={from} allInline={allInline} />
   return <Outlet />
 }

@@ -5,14 +5,25 @@ import { useRef, useEffect } from 'react'
 
 import { createCheckQuantity } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 import { useIntl } from 'react-intl'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { checkId, checkQuantityId } = useParams({ from })
+  const {
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    checkId,
+    checkQuantityId,
+  } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/quantities/${checkQuantityId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/quantities/${checkQuantityId}`
 
   const db = usePGlite()
 
@@ -113,6 +124,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName={formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="check_quantities_history"
+          rowIdField="check_quantity_id"
+          rowId={checkQuantityId}
+        />
+      }
     />
   )
 }
