@@ -751,5 +751,7 @@
   "qc.sql.hintNone": "Imposta is_root_level, is_project_level o is_subproject_level per vedere i parametri disponibili.",
   "subprojectQcsRun.openInDialog": "Apri nella finestra di dialogo",
   "bHistProjSetting": "Confronta cronologia",
-  "altInOwnFormNav": "Alternativa: Mostrare nel proprio modulo, con la propria cartella nell'albero di navigazione"
+  "altInOwnFormNav": "Alternativa: Mostra nel suo modulo, con la sua cartella nell'albero di navigazione",
+  "cU1DvF": "Unità predefinita per le quantità del rapporto di controllo",
+  "dV2EwG": "Unità predefinita per le quantità del rapporto di misura"
 }

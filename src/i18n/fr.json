@@ -751,5 +751,7 @@
   "qc.sql.hintNone": "Définissez is_root_level, is_project_level ou is_subproject_level pour voir les paramètres disponibles.",
   "subprojectQcsRun.openInDialog": "Ouvrir dans une boîte de dialogue",
   "bHistProjSetting": "Comparer l'historique",
-  "altInOwnFormNav": "Alternative\u00a0: Afficher dans son propre formulaire, avec son propre dossier dans l'arbre de navigation"
+  "altInOwnFormNav": "Alternative : Afficher dans son propre formulaire, avec son propre dossier dans l'arborescence de navigation",
+  "cU1DvF": "Unité par défaut pour les quantités de rapport de contrôle",
+  "dV2EwG": "Unité par défaut pour les quantités de rapport de mesure"
 }

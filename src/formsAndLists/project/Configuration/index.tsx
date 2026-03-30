@@ -266,25 +266,6 @@ export const Configuration = ({ from }) => {
           </SectionDescription>
           <RadioGroupField
             label={formatMessage({
-              id: 'cU1DvF',
-              defaultMessage:
-                'Standard-Einheit für Ort-Kontroll-Bericht-Mengen',
-            })}
-            name="check_reports_default_unit_id"
-            list={unitIds}
-            labelMap={unitLabelMap}
-            isLoading={unitsRes === undefined}
-            value={row.check_reports_default_unit_id ?? ''}
-            onChange={onChange}
-            validationState={
-              validations?.check_reports_default_unit_id?.state
-            }
-            validationMessage={
-              validations?.check_reports_default_unit_id?.message
-            }
-          />
-          <RadioGroupField
-            label={formatMessage({
               id: 'qB8CdE',
               defaultMessage: 'Standard-Einheit für Kontroll-Mengen',
             })}
@@ -313,21 +294,18 @@ export const Configuration = ({ from }) => {
           />
           <RadioGroupField
             label={formatMessage({
-              id: 'dV2EwG',
-              defaultMessage:
-                'Standard-Einheit für Ort-Massnahmen-Bericht-Mengen',
+              id: 'cU1DvF',
+              defaultMessage: 'Standard-Einheit für Kontroll-Bericht-Mengen',
             })}
-            name="place_action_reports_default_unit_id"
+            name="check_reports_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.place_action_reports_default_unit_id ?? ''}
+            value={row.check_reports_default_unit_id ?? ''}
             onChange={onChange}
-            validationState={
-              validations?.place_action_reports_default_unit_id?.state
-            }
+            validationState={validations?.check_reports_default_unit_id?.state}
             validationMessage={
-              validations?.place_action_reports_default_unit_id?.message
+              validations?.check_reports_default_unit_id?.message
             }
           />
           <RadioGroupField
@@ -360,6 +338,24 @@ export const Configuration = ({ from }) => {
               validations?.action_taxa_default_unit_id?.message
             }
           />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'dV2EwG',
+              defaultMessage: 'Standard-Einheit für Massnahmen-Bericht-Mengen',
+            })}
+            name="place_action_reports_default_unit_id"
+            list={unitIds}
+            labelMap={unitLabelMap}
+            isLoading={unitsRes === undefined}
+            value={row.place_action_reports_default_unit_id ?? ''}
+            onChange={onChange}
+            validationState={
+              validations?.place_action_reports_default_unit_id?.state
+            }
+            validationMessage={
+              validations?.place_action_reports_default_unit_id?.message
+            }
+          />
         </Section>
         <Section
           title={formatMessage({
@@ -387,23 +383,6 @@ export const Configuration = ({ from }) => {
           />
           <RadioGroupField
             label={formatMessage({
-              id: 'kD5EfG',
-              defaultMessage:
-                '...mehrere Massnahmen-Mengen auf gleicher Ort-Stufe',
-            })}
-            name="multiple_action_quantities_on_same_level"
-            list={['first', 'last', 'all']}
-            value={row.multiple_action_quantities_on_same_level ?? ''}
-            onChange={onChange}
-            validationState={
-              validations.multiple_action_quantities_on_same_level?.state
-            }
-            validationMessage={
-              validations.multiple_action_quantities_on_same_level?.message
-            }
-          />
-          <RadioGroupField
-            label={formatMessage({
               id: 'lH6IjK',
               defaultMessage:
                 '...mehrere Kontroll-Mengen auf gleicher Ort-Stufe',
@@ -417,6 +396,23 @@ export const Configuration = ({ from }) => {
             }
             validationMessage={
               validations.multiple_check_quantities_on_same_level?.message
+            }
+          />
+          <RadioGroupField
+            label={formatMessage({
+              id: 'kD5EfG',
+              defaultMessage:
+                '...mehrere Massnahmen-Mengen auf gleicher Ort-Stufe',
+            })}
+            name="multiple_action_quantities_on_same_level"
+            list={['first', 'last', 'all']}
+            value={row.multiple_action_quantities_on_same_level ?? ''}
+            onChange={onChange}
+            validationState={
+              validations.multiple_action_quantities_on_same_level?.state
+            }
+            validationMessage={
+              validations.multiple_action_quantities_on_same_level?.message
             }
           />
         </Section>
