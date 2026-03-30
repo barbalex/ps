@@ -6,11 +6,22 @@ import { useIntl } from 'react-intl'
 
 import { createActionReportQuantity } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { actionReportId, actionReportQuantityId } = useParams({ from })
+  const {
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionReportId,
+    actionReportQuantityId,
+  } = useParams({ from })
   const navigate = useNavigate()
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${actionReportId}/quantities/${actionReportQuantityId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${actionReportId}/quantities/${actionReportQuantityId}`
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
@@ -70,7 +81,9 @@ export const Header = ({ autoFocusRef, from }) => {
       const quantities = res?.rows
       const len = quantities.length
       const index = quantities.findIndex(
-        (p) => p.place_action_report_quantity_id === actionReportQuantityIdRef.current,
+        (p) =>
+          p.place_action_report_quantity_id ===
+          actionReportQuantityIdRef.current,
       )
       const next = quantities[(index + 1) % len]
       navigate({
@@ -81,7 +94,10 @@ export const Header = ({ autoFocusRef, from }) => {
         }),
       })
     } catch (error) {
-      console.error('Error navigating to next place action report quantity:', error)
+      console.error(
+        'Error navigating to next place action report quantity:',
+        error,
+      )
     }
   }
 
@@ -94,7 +110,9 @@ export const Header = ({ autoFocusRef, from }) => {
       const quantities = res?.rows
       const len = quantities.length
       const index = quantities.findIndex(
-        (p) => p.place_action_report_quantity_id === actionReportQuantityIdRef.current,
+        (p) =>
+          p.place_action_report_quantity_id ===
+          actionReportQuantityIdRef.current,
       )
       const previous = quantities[(index + len - 1) % len]
       navigate({
@@ -125,6 +143,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="place action report quantity"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="place_action_report_quantities_history"
+          rowIdField="place_action_report_quantity_id"
+          rowId={actionReportQuantityId}
+        />
+      }
     />
   )
 }

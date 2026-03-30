@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS projects(
   occurrences boolean DEFAULT TRUE,
   taxa boolean DEFAULT TRUE,
   charts boolean DEFAULT TRUE,
-  enable_histories boolean DEFAULT FALSE,
+  enable_histories boolean DEFAULT TRUE,
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT FALSE,
   files_active_projects boolean DEFAULT TRUE,
@@ -185,7 +185,7 @@ CREATE INDEX IF NOT EXISTS projects_check_reports_default_unit_id_idx ON project
 CREATE INDEX IF NOT EXISTS projects_place_action_reports_default_unit_id_idx ON projects USING btree(action_reports_default_unit_id);
 
 ALTER TABLE projects
-ADD COLUMN IF NOT EXISTS enable_histories boolean DEFAULT FALSE;
+ADD COLUMN IF NOT EXISTS enable_histories boolean DEFAULT TRUE;
 
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
@@ -210,7 +210,7 @@ COMMENT ON COLUMN projects.goals IS 'Whether goals (subproject) are shown. Prese
 COMMENT ON COLUMN projects.occurrences IS 'Whether occurrences (observation imports, to assess, not to assign) are shown. Preset: true.';
 COMMENT ON COLUMN projects.taxa IS 'Whether subproject taxa are shown. Preset: true.';
 COMMENT ON COLUMN projects.charts IS 'Whether charts (subproject) are shown. Preset: true.';
-COMMENT ON COLUMN projects.enable_histories IS 'Whether history comparison is enabled for places. Preset: false.';
+COMMENT ON COLUMN projects.enable_histories IS 'Whether history comparison is enabled for places. Preset: true.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the project form? Preset: true';
