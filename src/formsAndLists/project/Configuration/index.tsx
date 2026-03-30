@@ -475,6 +475,24 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.vector_layers?.message}
             />
             <SwitchField
+              label={formatMessage({
+                id: 'mQ4PrjUsersInPrj',
+                defaultMessage: 'Benutzer im Projekt anzeigen',
+              })}
+              name="project_users_in_project"
+              value={row.project_users_in_project ?? true}
+              onChange={onChange}
+              validationState={validations?.project_users_in_project?.state}
+              validationMessage={
+                validations?.project_users_in_project?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
+            <SwitchField
               label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
               name="files_active_projects"
               value={row.files_active_projects ?? false}

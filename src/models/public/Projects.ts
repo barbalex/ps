@@ -122,6 +122,9 @@ export default interface Projects {
   /** Render files inside the project form? Preset: true */
   project_files_in_project: boolean | null;
 
+  /** Render project users inside the project form? Preset: true */
+  project_users_in_project: boolean | null;
+
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects: boolean | null;
 
@@ -297,6 +300,12 @@ export interface ProjectsInitializer {
   project_files_in_project?: boolean | null;
 
   /**
+   * Render project users inside the project form? Preset: true
+   * Default value: true
+   */
+  project_users_in_project?: boolean | null;
+
+  /**
    * Whether files are used in table subprojects. Preset: true
    * Default value: true
    */
@@ -442,6 +451,9 @@ export interface ProjectsMutator {
 
   /** Render files inside the project form? Preset: true */
   project_files_in_project?: boolean | null;
+
+  /** Render project users inside the project form? Preset: true */
+  project_users_in_project?: boolean | null;
 
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects?: boolean | null;

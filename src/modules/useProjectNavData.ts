@@ -41,6 +41,7 @@ type NavData = {
   charts?: boolean | null
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
+  project_users_in_project?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
@@ -56,6 +57,7 @@ type NavDataNotForBreadcrumb = {
   charts?: boolean | null
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
+  project_users_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -85,6 +87,7 @@ type NavDataNotForBreadcrumbDesigning = {
   charts?: boolean | null
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
+  project_users_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -200,6 +203,7 @@ export const useProjectNavData = ({
         taxa,
         charts,
         files_active_projects,
+        project_users_in_project,
         project_files_in_project
         ${
           !forBreadcrumb
@@ -423,7 +427,7 @@ export const useProjectNavData = ({
                 },
               ]
             : []),
-          ...(designing
+          ...(designing && nav?.project_users_in_project === false
             ? [
                 {
                   id: 'users',

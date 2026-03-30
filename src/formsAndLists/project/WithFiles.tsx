@@ -13,12 +13,19 @@ import { FaPlus } from 'react-icons/fa'
 
 import { Header } from './Header.tsx'
 import { ProjectForm as Form } from './Form.tsx'
+import { ProjectUsers } from '../projectUsers.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { addOperationAtom, designingAtom, filesFilterAtom } from '../../store.ts'
+import { createProjectUser } from '../../modules/createRows.ts'
+import {
+  addOperationAtom,
+  designingAtom,
+  filesFilterAtom,
+  projectUsersFilterAtom,
+} from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import type Projects from '../../models/public/Projects.ts'
@@ -31,6 +38,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const { projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
+  const [projectUsersFilter] = useAtom(projectUsersFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
@@ -51,20 +59,50 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
+  const projectUsersCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM project_users WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectUsersCount = projectUsersCountRes?.rows?.[0]?.count ?? 0
+
+  const usersInProject = row?.project_users_in_project !== false
   const showFiles = isDesigning || row?.files_active_projects !== false
 
+  const isUsersOpen =
+    location.pathname.endsWith('/users') || location.pathname.includes('/users/')
+  const isUsersList = /\/users\/?$/.test(location.pathname)
   const isFilesOpen =
     location.pathname.endsWith('/files') || location.pathname.includes('/files/')
   const isFilesList = /\/files\/?$/.test(location.pathname)
 
   const projectBaseUrl = `/data/projects/${projectId}`
   const projectUrl = `${projectBaseUrl}/project`
+  const usersUrl = `${projectBaseUrl}/users`
   const filesUrl = `${projectBaseUrl}/files`
 
+  const projectUsersIsFiltered = !!filterStringFromFilter(projectUsersFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
+  const onClickAddProjectUser = async () => {
+    const id = await createProjectUser({ projectId })
+    if (!id) return
+    navigate({ to: `${usersUrl}/${id}/` })
+  }
   const onClickAddFile = () => uploaderApi?.initFlow?.()
+
+  const projectUserHeaderActions =
+    usersInProject && isUsersList ? (
+      <>
+        <FilterButton isFiltered={projectUsersIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddProjectUser}
+        />
+      </>
+    ) : undefined
 
   const fileHeaderActions =
     showFiles && isFilesList ? (
@@ -127,6 +165,25 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           from={from}
           autoFocusRef={autoFocusRef}
         />
+        {usersInProject ? (
+          <Section
+            title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${projectUsersCount})`}
+            onHeaderClick={() =>
+              isUsersList
+                ? navigate({ to: projectUrl })
+                : navigate({ to: usersUrl })
+            }
+            isOpen={isUsersOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={projectUserHeaderActions}
+          >
+            {isUsersOpen &&
+              (isUsersList ? <ProjectUsers hideHeader /> : <Outlet />)}
+          </Section>
+        ) : (
+          isUsersOpen && <Outlet />
+        )}
         {showFiles ? (
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}

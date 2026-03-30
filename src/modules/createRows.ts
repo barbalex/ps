@@ -41,6 +41,7 @@ export const createProject = async () => {
     multiple_check_quantities_on_same_level: 'last',
     files_active_projects: true,
     project_files_in_project: true,
+    project_users_in_project: true,
     files_active_subprojects: true,
     subproject_users_in_subproject: true,
     subproject_files_in_subproject: true,
