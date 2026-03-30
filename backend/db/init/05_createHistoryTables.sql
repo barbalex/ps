@@ -497,7 +497,7 @@ END
 $$;
 
 --------------------------------------------------------------
--- action_reports -> place_action_reports_history
+-- action_reports -> action_reports_history
 -- Retention: 5 years
 --
 ALTER TABLE action_reports
@@ -512,41 +512,41 @@ ALTER COLUMN sys_period SET NOT NULL;
 
 COMMENT ON COLUMN action_reports.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
-CREATE TABLE IF NOT EXISTS place_action_reports_history (
+CREATE TABLE IF NOT EXISTS action_reports_history (
 	LIKE action_reports INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
-ALTER TABLE place_action_reports_history OWNER TO partman_user;
+ALTER TABLE action_reports_history OWNER TO partman_user;
 
-COMMENT ON TABLE place_action_reports_history IS 'System-versioned history of action_reports. Managed by temporal_tables and partitioned yearly by updated_at.';
-COMMENT ON COLUMN place_action_reports_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+COMMENT ON TABLE action_reports_history IS 'System-versioned history of action_reports. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN action_reports_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
 
-CREATE INDEX IF NOT EXISTS place_action_reports_history_updated_at_idx
-ON place_action_reports_history USING btree (updated_at);
+CREATE INDEX IF NOT EXISTS action_reports_history_updated_at_idx
+ON action_reports_history USING btree (updated_at);
 
-CREATE INDEX IF NOT EXISTS place_action_reports_history_place_action_report_id_updated_at_idx
-ON place_action_reports_history USING btree (place_action_report_id, updated_at);
+CREATE INDEX IF NOT EXISTS action_reports_history_place_action_report_id_updated_at_idx
+ON action_reports_history USING btree (place_action_report_id, updated_at);
 
-CREATE INDEX IF NOT EXISTS place_action_reports_history_sys_period_idx
-ON place_action_reports_history USING gist (sys_period);
+CREATE INDEX IF NOT EXISTS action_reports_history_sys_period_idx
+ON action_reports_history USING gist (sys_period);
 
 DO $$
 BEGIN
 	IF NOT EXISTS (
 		SELECT 1
 		FROM pg_trigger
-		WHERE tgname = 'versioning_place_action_reports_trigger'
+		WHERE tgname = 'versioning_action_reports_trigger'
 			AND tgrelid = 'action_reports'::regclass
 	) THEN
-		CREATE TRIGGER versioning_place_action_reports_trigger
+		CREATE TRIGGER versioning_action_reports_trigger
 		BEFORE INSERT OR UPDATE OR DELETE ON action_reports
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'place_action_reports_history', true);
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'action_reports_history', true);
 	END IF;
 END
 $$;
 
 --------------------------------------------------------------
--- action_report_quantities -> place_action_report_quantities_history
+-- action_report_quantities -> action_report_quantities_history
 -- Retention: 5 years
 --
 ALTER TABLE action_report_quantities
@@ -561,35 +561,35 @@ ALTER COLUMN sys_period SET NOT NULL;
 
 COMMENT ON COLUMN action_report_quantities.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
-CREATE TABLE IF NOT EXISTS place_action_report_quantities_history (
+CREATE TABLE IF NOT EXISTS action_report_quantities_history (
 	LIKE action_report_quantities INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
-ALTER TABLE place_action_report_quantities_history OWNER TO partman_user;
+ALTER TABLE action_report_quantities_history OWNER TO partman_user;
 
-COMMENT ON TABLE place_action_report_quantities_history IS 'System-versioned history of action_report_quantities. Managed by temporal_tables and partitioned yearly by updated_at.';
-COMMENT ON COLUMN place_action_report_quantities_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+COMMENT ON TABLE action_report_quantities_history IS 'System-versioned history of action_report_quantities. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN action_report_quantities_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
 
-CREATE INDEX IF NOT EXISTS place_action_report_quantities_history_updated_at_idx
-ON place_action_report_quantities_history USING btree (updated_at);
+CREATE INDEX IF NOT EXISTS action_report_quantities_history_updated_at_idx
+ON action_report_quantities_history USING btree (updated_at);
 
-CREATE INDEX IF NOT EXISTS place_action_report_quantities_history_quantity_id_updated_at_idx
-ON place_action_report_quantities_history USING btree (place_action_report_quantity_id, updated_at);
+CREATE INDEX IF NOT EXISTS action_report_quantities_history_quantity_id_updated_at_idx
+ON action_report_quantities_history USING btree (place_action_report_quantity_id, updated_at);
 
-CREATE INDEX IF NOT EXISTS place_action_report_quantities_history_sys_period_idx
-ON place_action_report_quantities_history USING gist (sys_period);
+CREATE INDEX IF NOT EXISTS action_report_quantities_history_sys_period_idx
+ON action_report_quantities_history USING gist (sys_period);
 
 DO $$
 BEGIN
 	IF NOT EXISTS (
 		SELECT 1
 		FROM pg_trigger
-		WHERE tgname = 'versioning_place_action_report_quantities_trigger'
+		WHERE tgname = 'versioning_action_report_quantities_trigger'
 			AND tgrelid = 'action_report_quantities'::regclass
 	) THEN
-		CREATE TRIGGER versioning_place_action_report_quantities_trigger
+		CREATE TRIGGER versioning_action_report_quantities_trigger
 		BEFORE INSERT OR UPDATE OR DELETE ON action_report_quantities
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'place_action_report_quantities_history', true);
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'action_report_quantities_history', true);
 	END IF;
 END
 $$;
@@ -2496,7 +2496,7 @@ WHERE NOT EXISTS (
 );
 
 SELECT partman.create_parent(
-	p_parent_table := 'public.place_action_reports_history',
+	p_parent_table := 'public.action_reports_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
 	p_type := 'range',
@@ -2509,11 +2509,11 @@ SELECT partman.create_parent(
 WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
-	WHERE parent_table = 'public.place_action_reports_history'
+	WHERE parent_table = 'public.action_reports_history'
 );
 
 SELECT partman.create_parent(
-	p_parent_table := 'public.place_action_report_quantities_history',
+	p_parent_table := 'public.action_report_quantities_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
 	p_type := 'range',
@@ -2526,7 +2526,7 @@ SELECT partman.create_parent(
 WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
-	WHERE parent_table = 'public.place_action_report_quantities_history'
+	WHERE parent_table = 'public.action_report_quantities_history'
 );
 
 SELECT partman.create_parent(
@@ -3203,14 +3203,14 @@ SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
-WHERE parent_table = 'public.place_action_reports_history';
+WHERE parent_table = 'public.action_reports_history';
 
 UPDATE partman.part_config
 SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
-WHERE parent_table = 'public.place_action_report_quantities_history';
+WHERE parent_table = 'public.action_report_quantities_history';
 
 UPDATE partman.part_config
 SET jobmon = false,

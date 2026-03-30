@@ -193,7 +193,7 @@ export interface ProjectsHistoryInitializer {
   /** Default value: true */
   charts?: boolean | null;
 
-  /** Default value: false */
+  /** Default value: true */
   enable_histories?: boolean | null;
 
   data?: unknown | null;

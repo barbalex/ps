@@ -134,7 +134,7 @@ export const ActionReportHistoryCompare = ({
       formatFieldLabel={formatFieldLabel}
       row={row}
       historyConfig={{
-        historyTable: 'place_action_reports_history',
+        historyTable: 'action_reports_history',
         rowIdField: 'place_action_report_id',
         rowId: actionReportId,
         historyPath,

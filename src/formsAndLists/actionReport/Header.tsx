@@ -143,7 +143,7 @@ export const Header = ({ autoFocusRef, from }) => {
         <HistoryToggleButton
           historiesPath={`${basePath}/histories`}
           formPath={`${basePath}/report`}
-          historyTable="place_action_reports_history"
+          historyTable="action_reports_history"
           rowIdField="place_action_report_id"
           rowId={actionReportId}
         />
