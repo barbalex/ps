@@ -57,7 +57,7 @@ export const GoalWithReports = ({ from }) => {
   const reportsCount = reportsCountRes?.rows?.[0]?.count ?? 0
 
   const goalBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}`
-  const goalUrl = `${goalBaseUrl}/goal`
+  const goalUrl = goalBaseUrl
   const reportsUrl = `${goalBaseUrl}/reports`
 
   const isReportsOpen =

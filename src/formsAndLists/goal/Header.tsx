@@ -28,12 +28,23 @@ export const Header = ({ autoFocusRef }) => {
     [subprojectId ?? null],
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const settingsRes = useLiveQuery(
+    `SELECT p.goal_reports_in_goal
+      FROM goals g
+      INNER JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+      INNER JOIN projects p ON p.project_id = sp.project_id
+      WHERE g.goal_id = $1`,
+    [goalId ?? null],
+  )
+  const goalReportsInGoal = settingsRes?.rows?.[0]?.goal_reports_in_goal !== false
 
   const addRow = async () => {
     const id = await createGoal({ projectId, subprojectId })
     if (!id) return
     navigate({
-      to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${id}/goal`,
+      to: goalReportsInGoal
+        ? `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${id}`
+        : `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${id}/goal`,
     })
     autoFocusRef?.current?.focus()
   }
@@ -69,7 +80,9 @@ export const Header = ({ autoFocusRef }) => {
       const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const next = goals[(index + 1) % len]
       navigate({
-        to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${next.goal_id}/goal`,
+        to: goalReportsInGoal
+          ? `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${next.goal_id}`
+          : `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${next.goal_id}/goal`,
       })
     } catch (error) {
       console.error(error)
@@ -87,7 +100,9 @@ export const Header = ({ autoFocusRef }) => {
       const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const previous = goals[(index + len - 1) % len]
       navigate({
-        to: `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${previous.goal_id}/goal`,
+        to: goalReportsInGoal
+          ? `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${previous.goal_id}`
+          : `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${previous.goal_id}/goal`,
       })
     } catch (error) {
       console.error(error)

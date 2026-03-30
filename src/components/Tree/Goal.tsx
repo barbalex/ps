@@ -43,7 +43,7 @@ export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
-  const isActive = isEqual(urlPath, ownArray)
+  const isActive = goalReportsInGoal ? isInActiveNodeArray : isEqual(urlPath, ownArray)
 
   const onClickButton = () => {
     if (isOpen) {
@@ -67,11 +67,11 @@ export const GoalNode = ({ projectId, subprojectId, nav, level = 6 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={showReportsNav ? 2 : 1}
+        childrenCount={goalReportsInGoal ? 0 : showReportsNav ? 2 : 1}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && (
+      {isOpen && !goalReportsInGoal && (
         <>
           <Node
             label={formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' })}

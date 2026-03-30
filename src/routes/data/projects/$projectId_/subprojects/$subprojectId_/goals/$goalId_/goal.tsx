@@ -1,12 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Goal } from '../../../../../../../../formsAndLists/goal/index.tsx'
-const from =
+const routePath =
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal'
+const from = '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute(routePath)({
   component: () => (
-    <Goal from="/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal" />
+    <Goal from="/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_" />
   ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {

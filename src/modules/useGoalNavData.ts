@@ -79,10 +79,14 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
     label,
     notFound,
     navs: [
-      {
-        id: 'goal',
-        label: formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' }),
-      },
+      ...(nav?.goal_reports_in_goal === false
+        ? [
+            {
+              id: 'goal',
+              label: formatMessage({ id: 'Ikw+kl', defaultMessage: 'Ziel' }),
+            },
+          ]
+        : []),
       ...(nav?.goal_reports_in_goal === false
         ? [
             {

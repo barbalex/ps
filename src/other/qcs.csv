@@ -326,21 +326,24 @@ JOIN subprojects sp ON sp.subproject_id = st.subproject_id
 WHERE st.subproject_id = $1
   AND st.taxon_id IS NULL
 ORDER BY st.label";;
-Ziele ohne Jahr;Goals without year;Objectifs sans année;Obiettivi senza anno;goalsYearMissing;goals;;false;false;true;false;"SELECT g.label, '/data/projects/' || sp.project_id || '/subprojects/' || g.subproject_id || '/goals/' || g.goal_id || '/goal' AS url
+Ziele ohne Jahr;Goals without year;Objectifs sans année;Obiettivi senza anno;goalsYearMissing;goals;;false;false;true;false;"SELECT g.label, '/data/projects/' || sp.project_id || '/subprojects/' || g.subproject_id || '/goals/' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN '/goal' ELSE '' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND g.year IS NULL
 ORDER BY g.label";;
-Ziele ohne Namen;Goals without name;Objectifs sans nom;Obiettivi senza nome;goalsNameMissing;goals;;false;false;true;true;"SELECT g.label, '/data/projects/' || sp.project_id || '/subprojects/' || g.subproject_id || '/goals/' || g.goal_id || '/goal' AS url
+Ziele ohne Namen;Goals without name;Objectifs sans nom;Obiettivi senza nome;goalsNameMissing;goals;;false;false;true;true;"SELECT g.label, '/data/projects/' || sp.project_id || '/subprojects/' || g.subproject_id || '/goals/' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN '/goal' ELSE '' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND nullif(g.name, '') IS NULL
 ORDER BY g.label";;
-Ziele ohne Bericht;Goals without report;Objectifs sans rapport;Obiettivi senza rapporto;goalsReportMissing;goals;;false;false;true;true;"SELECT g.label, '/data/projects/' || sp.project_id || '/subprojects/' || g.subproject_id || '/goals/' || g.goal_id || '/goal' AS url
+Ziele ohne Bericht;Goals without report;Objectifs sans rapport;Obiettivi senza rapporto;goalsReportMissing;goals;;false;false;true;true;"SELECT g.label, '/data/projects/' || sp.project_id || '/subprojects/' || g.subproject_id || '/goals/' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN '/goal' ELSE '' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM goal_reports gr

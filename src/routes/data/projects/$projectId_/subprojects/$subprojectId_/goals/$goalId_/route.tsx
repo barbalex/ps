@@ -4,7 +4,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { GoalWithReports } from '../../../../../../../../formsAndLists/goal/WithReports.tsx'
 
 const goalFrom =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/goal'
+  '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_'
 
 const GoalLayout = () => {
   const { projectId, subprojectId, goalId } = useParams({ strict: false })
@@ -20,6 +20,8 @@ const GoalLayout = () => {
   const goalReportsInGoal = res?.rows?.[0]?.goal_reports_in_goal !== false
 
   const baseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}`
+  const isBaseRoute =
+    location.pathname === baseUrl || location.pathname === `${baseUrl}/`
   const isGoalRoute = location.pathname === `${baseUrl}/goal`
   const isReportsRoute =
     location.pathname === `${baseUrl}/reports` ||
@@ -27,7 +29,7 @@ const GoalLayout = () => {
 
   if (
     goalReportsInGoal &&
-    (isGoalRoute || isReportsRoute)
+    (isBaseRoute || isGoalRoute || isReportsRoute)
   ) {
     return <GoalWithReports from={goalFrom} />
   }
