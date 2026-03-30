@@ -166,6 +166,7 @@ CREATE TABLE IF NOT EXISTS projects(
   files_active_projects boolean DEFAULT TRUE,
   project_files_in_project boolean DEFAULT TRUE,
   project_users_in_project boolean DEFAULT TRUE,
+  units_in_project boolean DEFAULT TRUE,
   fields_in_project boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_users_in_subproject boolean DEFAULT TRUE,
@@ -218,6 +219,7 @@ COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the project form? Preset: true';
 COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users inside the project form? Preset: true';
+COMMENT ON COLUMN projects.units_in_project IS 'Render units inside the project form? Preset: true';
 COMMENT ON COLUMN projects.fields_in_project IS 'Render fields inside the project form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN projects.subproject_users_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';

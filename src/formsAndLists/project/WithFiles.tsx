@@ -14,6 +14,7 @@ import { FaPlus } from 'react-icons/fa'
 import { Header } from './Header.tsx'
 import { ProjectForm as Form } from './Form.tsx'
 import { ProjectUsers } from '../projectUsers.tsx'
+import { Units } from '../units.tsx'
 import { Fields } from '../fields.tsx'
 import { Files } from '../files.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -21,13 +22,14 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createField, createProjectUser } from '../../modules/createRows.ts'
+import { createField, createProjectUser, createUnit } from '../../modules/createRows.ts'
 import {
   addOperationAtom,
   designingAtom,
   fieldsFilterAtom,
   filesFilterAtom,
   projectUsersFilterAtom,
+  unitsFilterAtom,
 } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
@@ -42,6 +44,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const [projectUsersFilter] = useAtom(projectUsersFilterAtom)
+  const [unitsFilter] = useAtom(unitsFilterAtom)
   const [fieldsFilter] = useAtom(fieldsFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
@@ -75,7 +78,14 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   )
   const fieldsCount = fieldsCountRes?.rows?.[0]?.count ?? 0
 
+  const unitsCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM units WHERE project_id = $1`,
+    [projectId],
+  )
+  const unitsCount = unitsCountRes?.rows?.[0]?.count ?? 0
+
   const usersInProject = row?.project_users_in_project !== false
+  const unitsInProject = row?.units_in_project !== false
   const fieldsInProject = row?.fields_in_project !== false
   const filesInProject = row?.project_files_in_project !== false
   const showFiles = isDesigning || row?.files_active_projects !== false
@@ -84,6 +94,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     location.pathname.endsWith('/users') ||
     location.pathname.includes('/users/')
   const isUsersList = /\/users\/?$/.test(location.pathname)
+  const isUnitsOpen =
+    location.pathname.endsWith('/units') ||
+    location.pathname.includes('/units/')
+  const isUnitsList = /\/units\/?$/.test(location.pathname)
   const isFieldsOpen =
     location.pathname.endsWith('/fields') ||
     location.pathname.includes('/fields/')
@@ -96,10 +110,12 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const projectBaseUrl = `/data/projects/${projectId}`
   const projectUrl = `${projectBaseUrl}/project`
   const usersUrl = `${projectBaseUrl}/users`
+  const unitsUrl = `${projectBaseUrl}/units`
   const fieldsUrl = `${projectBaseUrl}/fields`
   const filesUrl = `${projectBaseUrl}/files`
 
   const projectUsersIsFiltered = !!filterStringFromFilter(projectUsersFilter)
+  const unitsIsFiltered = !!filterStringFromFilter(unitsFilter)
   const fieldsIsFiltered = !!filterStringFromFilter(fieldsFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
@@ -108,6 +124,11 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     const id = await createProjectUser({ projectId })
     if (!id) return
     navigate({ to: `${usersUrl}/${id}/` })
+  }
+  const onClickAddUnit = async () => {
+    const id = await createUnit({ projectId })
+    if (!id) return
+    navigate({ to: `${unitsUrl}/${id}/` })
   }
   const onClickAddField = async () => {
     const id = await createField({ projectId })
@@ -151,6 +172,19 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
           icon={<FaPlus />}
           onClick={onClickAddField}
+        />
+      </>
+    ) : undefined
+
+  const unitsHeaderActions =
+    isDesigning && unitsInProject && isUnitsList ? (
+      <>
+        <FilterButton isFiltered={unitsIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddUnit}
         />
       </>
     ) : undefined
@@ -244,6 +278,25 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           </Section>
         ) : (
           isFilesOpen && <Outlet />
+        )}
+        {isDesigning && unitsInProject ? (
+          <Section
+            title={`${formatMessage({ id: 'nVkh0Z', defaultMessage: 'Einheiten' })} (${unitsCount})`}
+            onHeaderClick={() =>
+              isUnitsList
+                ? navigate({ to: projectUrl })
+                : navigate({ to: unitsUrl })
+            }
+            isOpen={isUnitsOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={unitsHeaderActions}
+          >
+            {isUnitsOpen &&
+              (isUnitsList ? <Units projectId={projectId} hideHeader /> : <Outlet />)}
+          </Section>
+        ) : (
+          isUnitsOpen && <Outlet />
         )}
         {isDesigning && fieldsInProject ? (
           <Section

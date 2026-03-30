@@ -493,6 +493,24 @@ export const Configuration = ({ from }) => {
               }
             />
             <SwitchField
+              label={formatMessage({
+                id: 'uN9UntInPrj',
+                defaultMessage: 'Einheiten im Projekt anzeigen',
+              })}
+              name="units_in_project"
+              value={row.units_in_project ?? true}
+              onChange={onChange}
+              validationState={validations?.units_in_project?.state}
+              validationMessage={
+                validations?.units_in_project?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
+            <SwitchField
               label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
               name="files_active_projects"
               value={row.files_active_projects ?? false}

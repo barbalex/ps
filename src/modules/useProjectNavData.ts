@@ -42,6 +42,7 @@ type NavData = {
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
+  units_in_project?: boolean | null
   fields_in_project?: boolean | null
 }
 
@@ -59,6 +60,7 @@ type NavDataNotForBreadcrumb = {
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
+  units_in_project?: boolean | null
   fields_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
@@ -90,6 +92,7 @@ type NavDataNotForBreadcrumbDesigning = {
   files_active_projects?: boolean | null
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
+  units_in_project?: boolean | null
   fields_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
@@ -208,6 +211,7 @@ export const useProjectNavData = ({
         files_active_projects,
         project_users_in_project,
         project_files_in_project,
+        units_in_project,
         fields_in_project
         ${
           !forBreadcrumb
@@ -469,19 +473,6 @@ export const useProjectNavData = ({
                   }),
                 },
                 {
-                  id: 'units',
-                  label: buildNavLabel({
-                    loading,
-                    isFiltered: unitsIsFiltered,
-                    countFiltered: nav?.units_count_filtered ?? 0,
-                    countUnfiltered: nav?.units_count_unfiltered ?? 0,
-                    namePlural: formatMessage({
-                      id: 'nVkh0Z',
-                      defaultMessage: 'Einheiten',
-                    }),
-                  }),
-                },
-                {
                   id: 'crs',
                   label: buildNavLabel({
                     loading,
@@ -500,6 +491,23 @@ export const useProjectNavData = ({
                     namePlural: formatMessage({
                       id: 'aYuCCc',
                       defaultMessage: 'Ort-Stufen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+          ...(designing && nav?.units_in_project === false
+            ? [
+                {
+                  id: 'units',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: unitsIsFiltered,
+                    countFiltered: nav?.units_count_filtered ?? 0,
+                    countUnfiltered: nav?.units_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'nVkh0Z',
+                      defaultMessage: 'Einheiten',
                     }),
                   }),
                 },

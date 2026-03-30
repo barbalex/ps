@@ -46,7 +46,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
 
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
-    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, fields_in_project FROM projects WHERE project_id = $1`,
+    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project FROM projects WHERE project_id = $1`,
     [nav.id],
   )
   const project = resultProject?.rows?.[0]
@@ -60,9 +60,11 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const showFiles = designing || (project?.files_active_projects ?? false)
   const usersInProject = project?.project_users_in_project !== false
   const filesInProject = project?.project_files_in_project !== false
+  const unitsInProject = project?.units_in_project !== false
   const fieldsInProject = project?.fields_in_project !== false
   const showUsersNav = !usersInProject
   const showFilesNav = showFiles && !filesInProject
+  const showUnitsNav = !unitsInProject
   const showFieldsNav = !fieldsInProject
 
   // needs to work not only works for urlPath, for all opened paths!
@@ -130,7 +132,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
               {showUsersNav && <ProjectUsersNode projectId={nav.id} />}
               <ListsNode projectId={nav.id} />
               <TaxonomiesNode projectId={nav.id} />
-              <UnitsNode projectId={nav.id} />
+              {showUnitsNav && <UnitsNode projectId={nav.id} />}
               <ProjectCrssNode projectId={nav.id} />
               <PlaceLevelsNode projectId={nav.id} />
               {showFieldsNav && <FieldsNode projectId={nav.id} />}

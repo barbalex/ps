@@ -8,11 +8,11 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/units/'
-
-export const Units = () => {
-  const { projectId } = useParams({ from })
+export const Units = ({ hideHeader = false, projectId: projectIdProp }) => {
+  const { projectId: routeProjectId } = useParams({ strict: false })
+  const projectId = projectIdProp ?? routeProjectId
   const navigate = useNavigate()
+  const unitsBaseUrl = `/data/projects/${projectId}/units`
 
   const { loading, navData, isFiltered } = useUnitsNavData({ projectId })
   const { navs, label, nameSingular } = navData
@@ -20,20 +20,19 @@ export const Units = () => {
   const add = async () => {
     const id = await createUnit({ projectId })
     if (!id) return
-    navigate({
-      to: id,
-      params: (prev) => ({ ...prev, unitId: id }),
-    })
+    navigate({ to: `${unitsBaseUrl}/${id}/` })
   }
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          menus={<FilterButton isFiltered={isFiltered} />}
+        />
+      )}
       <div className="list-container">
         {loading ?
           <Loading />
@@ -41,7 +40,7 @@ export const Units = () => {
             <Row
               key={id}
               label={label ?? id}
-              to={id}
+              to={`${unitsBaseUrl}/${id}/`}
             />
           ))
         }

@@ -42,6 +42,7 @@ export const createProject = async () => {
     files_active_projects: true,
     project_files_in_project: true,
     project_users_in_project: true,
+    units_in_project: true,
     fields_in_project: true,
     files_active_subprojects: true,
     subproject_users_in_subproject: true,
