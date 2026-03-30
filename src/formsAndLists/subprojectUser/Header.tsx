@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createSubprojectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
@@ -26,6 +27,7 @@ export const Header = ({ autoFocusRef }) => {
   const title = subprojectNameSingular
     ? `${subprojectNameSingular}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
     : formatMessage({ id: '1M9eWP', defaultMessage: 'Teilprojekt-Benutzer' })
+  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/users/${subprojectUserId}`
 
   const db = usePGlite()
 
@@ -130,6 +132,15 @@ export const Header = ({ autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="subproject user"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="subproject_users_history"
+          rowIdField="subproject_user_id"
+          rowId={subprojectUserId}
+        />
+      }
     />
   )
 }
