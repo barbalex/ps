@@ -27,7 +27,10 @@ export const Header = ({ row, previewRef, from }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
-  const basePath = placeId2
+  const actionBasePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/files/${fileId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/files/${fileId}`
+  const checkBasePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/files/${fileId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/files/${fileId}`
   const { formatMessage } = useIntl()
@@ -172,10 +175,19 @@ export const Header = ({ row, previewRef, from }) => {
             onClick={onClickPreview}
           />
           {isPreview && <FullscreenControl previewRef={previewRef} />}
+          {!!actionId && (
+            <HistoryToggleButton
+              historiesPath={`${actionBasePath}/histories`}
+              formPath={actionBasePath}
+              historyTable="files_history"
+              rowIdField="file_id"
+              rowId={fileId}
+            />
+          )}
           {!!checkId && (
             <HistoryToggleButton
-              historiesPath={`${basePath}/histories`}
-              formPath={basePath}
+              historiesPath={`${checkBasePath}/histories`}
+              formPath={checkBasePath}
               historyTable="files_history"
               rowIdField="file_id"
               rowId={fileId}
