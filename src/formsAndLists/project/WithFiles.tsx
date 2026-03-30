@@ -14,6 +14,7 @@ import { FaPlus } from 'react-icons/fa'
 import { Header } from './Header.tsx'
 import { ProjectForm as Form } from './Form.tsx'
 import { ProjectUsers } from '../projectUsers.tsx'
+import { Files } from '../files.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
@@ -66,6 +67,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const projectUsersCount = projectUsersCountRes?.rows?.[0]?.count ?? 0
 
   const usersInProject = row?.project_users_in_project !== false
+  const filesInProject = row?.project_files_in_project !== false
   const showFiles = isDesigning || row?.files_active_projects !== false
 
   const isUsersOpen =
@@ -105,7 +107,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     ) : undefined
 
   const fileHeaderActions =
-    showFiles && isFilesList ? (
+    showFiles && filesInProject && isFilesList ? (
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
@@ -184,7 +186,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         ) : (
           isUsersOpen && <Outlet />
         )}
-        {showFiles ? (
+        {showFiles && filesInProject ? (
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
             onHeaderClick={() =>
@@ -197,7 +199,12 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
             headerActions={fileHeaderActions}
           >
-            {isFilesOpen && <Outlet />}
+            {isFilesOpen &&
+              (isFilesList ? (
+                <Files projectId={projectId} hideTitle />
+              ) : (
+                <Outlet />
+              ))}
           </Section>
         ) : (
           isFilesOpen && <Outlet />
