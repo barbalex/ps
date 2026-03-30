@@ -33,6 +33,9 @@ export const Header = ({ row, previewRef, from }) => {
   const checkBasePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/files/${fileId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/files/${fileId}`
+  const subprojectBasePath =
+    `/data/projects/${projectId}/subprojects/${subprojectId}/files/${fileId}`
+  const projectBasePath = `/data/projects/${projectId}/files/${fileId}`
   const { formatMessage } = useIntl()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -188,6 +191,24 @@ export const Header = ({ row, previewRef, from }) => {
             <HistoryToggleButton
               historiesPath={`${checkBasePath}/histories`}
               formPath={checkBasePath}
+              historyTable="files_history"
+              rowIdField="file_id"
+              rowId={fileId}
+            />
+          )}
+          {!!projectId && !subprojectId && !placeId && !actionId && !checkId && (
+            <HistoryToggleButton
+              historiesPath={`${projectBasePath}/histories`}
+              formPath={projectBasePath}
+              historyTable="files_history"
+              rowIdField="file_id"
+              rowId={fileId}
+            />
+          )}
+          {!!projectId && !!subprojectId && !placeId && !actionId && !checkId && (
+            <HistoryToggleButton
+              historiesPath={`${subprojectBasePath}/histories`}
+              formPath={subprojectBasePath}
               historyTable="files_history"
               rowIdField="file_id"
               rowId={fileId}

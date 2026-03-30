@@ -8,7 +8,7 @@ import { createHistoryFieldLabelFormatter } from '../../components/shared/Histor
 import { stringifyHistoryValue } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
+import { FileForm } from './index.tsx'
 import { addOperationAtom } from '../../store.ts'
 import {
   excludedDisplayFields,
@@ -23,6 +23,8 @@ export const FileHistoryCompare = ({
   from,
 }: {
   from:
+    | '/data/projects/$projectId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
@@ -44,9 +46,13 @@ export const FileHistoryCompare = ({
     ? placeId2
       ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/files/${fileId}`
       : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/files/${fileId}`
-    : placeId2
-      ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/files/${fileId}`
-      : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/files/${fileId}`
+    : checkId
+      ? placeId2
+        ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/files/${fileId}`
+        : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/files/${fileId}`
+      : subprojectId
+        ? `/data/projects/${projectId}/subprojects/${subprojectId}/files/${fileId}`
+        : `/data/projects/${projectId}/files/${fileId}`
   const historyPath = `${filePath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
@@ -65,54 +71,6 @@ export const FileHistoryCompare = ({
       />
     )
   }
-
-  const leftContent = (
-    <>
-      <TextFieldInactive
-        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
-        name="name"
-        value={row.name ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({ id: '2D6IvE', defaultMessage: 'Grösse' })}
-        name="size"
-        value={row.size ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({ id: 'DIgaIu', defaultMessage: 'Mimetype' })}
-        name="mimetype"
-        value={row.mimetype ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({ id: 'TpzCEx', defaultMessage: 'Url' })}
-        name="url"
-        value={row.url ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({ id: 'gw/Eg0', defaultMessage: 'Uuid' })}
-        name="uuid"
-        value={row.uuid ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({
-          id: 'bFilePreviewUuid',
-          defaultMessage: 'Preview Uuid',
-        })}
-        name="preview_uuid"
-        value={row.preview_uuid ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({ id: 'bFileWidth', defaultMessage: 'Breite' })}
-        name="width"
-        value={row.width?.toString() ?? ''}
-      />
-      <TextFieldInactive
-        label={formatMessage({ id: 'bFileHeight', defaultMessage: 'Höhe' })}
-        name="height"
-        value={row.height?.toString() ?? ''}
-      />
-    </>
-  )
 
   const visibleCurrentFields = new Set([
     'name',
@@ -150,7 +108,7 @@ export const FileHistoryCompare = ({
   return (
     <HistoryCompare<FilesHistory>
       onBack={() => navigate({ to: filePath })}
-      leftContent={leftContent}
+      leftContent={<FileForm row={row as Files & { id: Files['file_id'] }} from={from} withContainer={false} />}
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
