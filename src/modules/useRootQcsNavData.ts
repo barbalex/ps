@@ -16,7 +16,7 @@ export const useRootQcsNavData = () => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'qcs-choose']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
     `SELECT count(*) AS count
@@ -44,8 +44,8 @@ export const useRootQcsNavData = () => {
       isFiltered: false,
       countFiltered: count,
       countUnfiltered: count,
-      namePlural: formatMessage({
-        id: 'rootQcs.title',
+        namePlural: formatMessage({
+          id: 'subprojectQcs.title',
         defaultMessage: 'Qualitätskontrollen: wählen',
       }),
     }),

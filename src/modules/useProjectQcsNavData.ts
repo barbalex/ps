@@ -52,8 +52,8 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
       isFiltered: false,
       countFiltered: count,
       countUnfiltered: count,
-      namePlural: formatMessage({
-        id: 'projectQcs.title',
+        namePlural: formatMessage({
+          id: 'subprojectQcs.title',
         defaultMessage: 'Qualitätskontrollen: wählen',
       }),
     }),

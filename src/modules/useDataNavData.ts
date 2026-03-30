@@ -28,6 +28,8 @@ type NavDataFiltered = {
   projects_count_filtered: number
   users_count_unfiltered: number
   accounts_count_unfiltered: number
+  qcs_count_unfiltered?: number
+  root_qcs_count_unfiltered?: number
   field_types_count_unfiltered?: number
   field_types_count_filtered?: number
   widget_types_count_unfiltered?: number
@@ -89,6 +91,8 @@ export const useDataNavData = () => {
             widget_types_count_filtered AS (SELECT count(*) FROM widget_types ${widgetTypesIsFiltered ? ` WHERE ${widgetTypesFilterString}` : ''}),
             widgets_for_fields_count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
             widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
+            qcs_count_unfiltered AS (SELECT count(*) FROM qcs),
+            root_qcs_count_unfiltered AS (SELECT count(*) FROM qcs_assignment WHERE project_id IS NULL AND subproject_id IS NULL),
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id IS NULL),
             fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id IS NULL ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
             crs_count_unfiltered AS (SELECT count(*) FROM crs),
@@ -112,6 +116,8 @@ export const useDataNavData = () => {
               widget_types_count_filtered.count AS widget_types_count_filtered,
               widgets_for_fields_count_unfiltered.count AS widgets_for_fields_count_unfiltered,
               widgets_for_fields_count_filtered.count AS widgets_for_fields_count_filtered,
+              qcs_count_unfiltered.count AS qcs_count_unfiltered,
+              root_qcs_count_unfiltered.count AS root_qcs_count_unfiltered,
               fields_count_unfiltered.count AS fields_count_unfiltered,
               fields_count_filtered.count AS fields_count_filtered,
               crs_count_unfiltered.count AS crs_count_unfiltered,
@@ -135,6 +141,8 @@ export const useDataNavData = () => {
               widget_types_count_filtered,
               widgets_for_fields_count_unfiltered,
               widgets_for_fields_count_filtered,
+              qcs_count_unfiltered,
+              root_qcs_count_unfiltered,
               fields_count_unfiltered,
               fields_count_filtered,
               crs_count_unfiltered,
@@ -239,6 +247,39 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'bDoJBk',
                   defaultMessage: 'Widgets für Felder',
+                }),
+              }),
+            },
+            {
+              id: 'qcs',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.qcs_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'qcs.namePlural',
+                  defaultMessage: 'Qualitätskontrollen',
+                }),
+              }),
+            },
+            {
+              id: 'qcs-choose',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.root_qcs_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'subprojectQcs.title',
+                  defaultMessage: 'Qualitätskontrollen: wählen',
+                }),
+              }),
+            },
+            {
+              id: 'qcs-run',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.root_qcs_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'subprojectQcsRun.title',
+                  defaultMessage: 'Qualitätskontrollen: ausführen',
                 }),
               }),
             },

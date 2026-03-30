@@ -57,7 +57,7 @@ export const useRootQcsRunNavData = () => {
       countFiltered,
       countUnfiltered: count,
       namePlural: formatMessage({
-        id: 'rootQcsRun.title',
+        id: 'subprojectQcsRun.title',
         defaultMessage: 'Qualitätskontrollen: ausführen',
       }),
     }),
