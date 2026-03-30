@@ -86,7 +86,7 @@ export const CheckTaxon = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         {!res ? (
           <Loading />
