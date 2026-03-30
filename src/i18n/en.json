@@ -776,5 +776,7 @@
   "bHistProjSetting": "Compare history",
   "altInOwnFormNav": "Alternative: Show in its own form, with its own folder in the navigation tree",
   "cU1DvF": "Default unit for check report quantities",
-  "dV2EwG": "Default unit for action report quantities"
+  "dV2EwG": "Default unit for action report quantities",
+  "nR6StU": "Default unit for action values",
+  "bT0CsE": "Default unit for action taxon quantities"
 }

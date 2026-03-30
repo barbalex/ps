@@ -753,5 +753,7 @@
   "bHistProjSetting": "Comparer l'historique",
   "altInOwnFormNav": "Alternative : Afficher dans son propre formulaire, avec son propre dossier dans l'arborescence de navigation",
   "cU1DvF": "Unité par défaut pour les quantités de rapport de contrôle",
-  "dV2EwG": "Unité par défaut pour les quantités de rapport de mesure"
+  "dV2EwG": "Unité par défaut pour les quantités de rapport de mesure",
+  "nR6StU": "Unité par défaut pour les valeurs de mesure",
+  "bT0CsE": "Unité par défaut pour les quantités de taxons de mesure"
 }

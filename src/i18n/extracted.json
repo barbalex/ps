@@ -1140,5 +1140,11 @@
   },
   "dV2EwG": {
     "defaultMessage": "Standard-Einheit für Massnahmen-Bericht-Mengen"
+  },
+  "nR6StU": {
+    "defaultMessage": "Standard-Einheit für Massnahmen-Mengen"
+  },
+  "bT0CsE": {
+    "defaultMessage": "Standard-Einheit für Massnahmen-Taxon-Mengen"
   }
 }
