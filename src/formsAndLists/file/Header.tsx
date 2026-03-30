@@ -11,6 +11,7 @@ import { useSetAtom } from 'jotai'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ row, previewRef, from }) => {
@@ -26,6 +27,9 @@ export const Header = ({ row, previewRef, from }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
+  const basePath = placeId2
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/files/${fileId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/files/${fileId}`
   const { formatMessage } = useIntl()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -168,6 +172,15 @@ export const Header = ({ row, previewRef, from }) => {
             onClick={onClickPreview}
           />
           {isPreview && <FullscreenControl previewRef={previewRef} />}
+          {!!checkId && (
+            <HistoryToggleButton
+              historiesPath={`${basePath}/histories`}
+              formPath={basePath}
+              historyTable="files_history"
+              rowIdField="file_id"
+              rowId={fileId}
+            />
+          )}
         </>
       }
     />
