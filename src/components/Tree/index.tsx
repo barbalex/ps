@@ -32,15 +32,11 @@ export const Tree = () => {
           <WidgetsForFieldsNode />
           {/* TODO: restrict editing to super managers once auth supports it */}
           <QcsNode />
+          <RootQcsNode />
+          <RootQcsRunNode />
           <FieldsNode />
           <CrssNode />
           <FilesNode level={1} />
-        </>
-      )}
-      {designing && (
-        <>
-          <RootQcsNode />
-          <RootQcsRunNode />
         </>
       )}
       <MessagesNode />
