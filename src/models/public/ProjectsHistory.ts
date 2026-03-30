@@ -72,6 +72,8 @@ export default interface ProjectsHistory {
 
   subproject_reports: boolean | null;
 
+  subproject_reports_in_subproject: boolean | null;
+
   goal_reports_in_goal: boolean | null;
 
   goals: boolean | null;
@@ -192,6 +194,9 @@ export interface ProjectsHistoryInitializer {
 
   /** Default value: true */
   subproject_reports?: boolean | null;
+
+  /** Default value: true */
+  subproject_reports_in_subproject?: boolean | null;
 
   /** Default value: true */
   goal_reports_in_goal?: boolean | null;
@@ -325,6 +330,8 @@ export interface ProjectsHistoryMutator {
   project_reports?: boolean | null;
 
   subproject_reports?: boolean | null;
+
+  subproject_reports_in_subproject?: boolean | null;
 
   goal_reports_in_goal?: boolean | null;
 

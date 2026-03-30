@@ -13,6 +13,7 @@ import { FaPlus } from 'react-icons/fa'
 
 import { Header } from './Header.tsx'
 import { SubprojectForm as Form } from './Form.tsx'
+import { SubprojectReports } from '../subprojectReports.tsx'
 import { SubprojectTaxa } from '../subprojectTaxa.tsx'
 import { SubprojectUsers } from '../subprojectUsers.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -20,7 +21,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createSubprojectTaxon, createSubprojectUser } from '../../modules/createRows.ts'
+import { createSubprojectTaxon, createSubprojectUser, createSubprojectReport } from '../../modules/createRows.ts'
 import {
   addOperationAtom,
   designingAtom,
@@ -67,7 +68,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
       projects.files_active_subprojects,
       projects.subproject_taxa_in_subproject,
       projects.subproject_users_in_subproject,
-      projects.subproject_files_in_subproject
+      projects.subproject_files_in_subproject,
+      projects.subproject_reports_in_subproject
     FROM subprojects
     INNER JOIN projects ON projects.project_id = subprojects.project_id
     WHERE subproject_id = $1`,
@@ -80,6 +82,12 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     [subprojectId],
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
+
+  const subprojectReportsCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM subproject_reports WHERE subproject_id = $1`,
+    [subprojectId],
+  )
+  const subprojectReportsCount = subprojectReportsCountRes?.rows?.[0]?.count ?? 0
 
   const subprojectUsersCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM subproject_users WHERE subproject_id = $1`,
@@ -97,6 +105,11 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const taxaInSubproject = row?.subproject_taxa_in_subproject !== false
   const usersInSubproject = row?.subproject_users_in_subproject !== false
   const showFiles = isDesigning || row?.files_active_subprojects !== false
+  const reportsInSubproject = row?.subproject_reports_in_subproject !== false
+
+  const isReportsOpen =
+    location.pathname.endsWith('/reports') || location.pathname.includes('/reports/')
+  const isReportsList = /\/reports\/?$/.test(location.pathname)
 
   const isTaxaOpen =
     location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
@@ -110,6 +123,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
 
   const subprojectBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}`
   const subprojectUrl = `${subprojectBaseUrl}/subproject`
+  const reportsUrl = `${subprojectBaseUrl}/reports`
   const taxaUrl = `${subprojectBaseUrl}/taxa`
   const usersUrl = `${subprojectBaseUrl}/users`
   const filesUrl = `${subprojectBaseUrl}/files`
@@ -119,6 +133,11 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
+  const onClickAddSubprojectReport = async () => {
+    const id = await createSubprojectReport({ projectId, subprojectId })
+    if (!id) return
+    navigate({ to: `${reportsUrl}/${id}/` })
+  }
   const onClickAddSubprojectUser = async () => {
     const id = await createSubprojectUser({ subprojectId })
     if (!id) return
@@ -130,6 +149,18 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     navigate({ to: `${taxaUrl}/${id}/` })
   }
   const onClickAddFile = () => uploaderApi?.initFlow?.()
+
+  const subprojectReportHeaderActions =
+    reportsInSubproject && isReportsList ? (
+      <>
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddSubprojectReport}
+        />
+      </>
+    ) : undefined
 
   const subprojectTaxaHeaderActions =
     showTaxa && taxaInSubproject && isTaxaList ? (
@@ -222,6 +253,25 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           from={from}
           validations={validations}
         />
+        {reportsInSubproject ? (
+          <Section
+            title={`${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })} (${subprojectReportsCount})`}
+            onHeaderClick={() =>
+              isReportsList
+                ? navigate({ to: subprojectUrl })
+                : navigate({ to: reportsUrl })
+            }
+            isOpen={isReportsOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={subprojectReportHeaderActions}
+          >
+            {isReportsOpen &&
+              (isReportsList ? <SubprojectReports hideHeader /> : <Outlet />)}
+          </Section>
+        ) : (
+          isReportsOpen && <Outlet />
+        )}
         {showTaxa && taxaInSubproject ? (
           <Section
             title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${subprojectTaxaCount})`}

@@ -87,7 +87,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const usersInProject = row?.project_users_in_project !== false
   const unitsInProject = row?.units_in_project !== false
   const fieldsInProject = row?.fields_in_project !== false
-  const filesInProject = row?.project_files_in_project !== false
+  const filesInProject = row?.project_files_in_project === true
   const showFiles = isDesigning || row?.files_active_projects !== false
 
   const isUsersOpen =

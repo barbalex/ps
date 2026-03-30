@@ -156,6 +156,7 @@ CREATE TABLE IF NOT EXISTS projects(
   vector_layers boolean DEFAULT TRUE,
   project_reports boolean DEFAULT TRUE,
   subproject_reports boolean DEFAULT TRUE,
+  subproject_reports_in_subproject boolean DEFAULT TRUE,
   goal_reports_in_goal boolean DEFAULT TRUE,
   goals boolean DEFAULT TRUE,
   occurrences boolean DEFAULT TRUE,
@@ -212,6 +213,7 @@ COMMENT ON COLUMN projects.wms_layers IS 'Whether wms-services and wms-layers ar
 COMMENT ON COLUMN projects.vector_layers IS 'Whether vector-layers and wfs-services are shown. Preset: false.';
 COMMENT ON COLUMN projects.project_reports IS 'Whether project-reports are shown. Preset: true.';
 COMMENT ON COLUMN projects.subproject_reports IS 'Whether subproject-reports are shown. Preset: true.';
+COMMENT ON COLUMN projects.subproject_reports_in_subproject IS 'Render subproject reports inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.goal_reports_in_goal IS 'Render goal reports inside the goal form? Preset: true';
 COMMENT ON COLUMN projects.goals IS 'Whether goals (subproject) are shown. Preset: true.';
 COMMENT ON COLUMN projects.occurrences IS 'Whether occurrences (observation imports, to assess, not to assign) are shown. Preset: true.';
@@ -430,9 +432,9 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   data jsonb DEFAULT NULL, -- TODO: not in use?
   label text GENERATED ALWAYS AS (
     CASE 
-      when name IS NULL THEN taxonomy_id::text
+      when nullif(name, '') IS NULL THEN taxonomy_id::text
       WHEN type IS NULL THEN taxonomy_id::text 
-      when name IS NULL THEN taxonomy_id::text 
+      when nullif(name, '') IS NULL THEN taxonomy_id::text 
       else name || ' (' || immutabletaxonomytype(type) || ')'
     END
   ) STORED,
@@ -1342,7 +1344,7 @@ CREATE TABLE IF NOT EXISTS fields(
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN table_name is null then field_id::text 
-      WHEN name is null then table_name || '.' || field_id::text 
+      WHEN nullif(name, '') is null then table_name || '.' || field_id::text 
       WHEN level is null then table_name || '.' || name
       ELSE table_name || '.' || name || ' ' || level
     END

@@ -752,6 +752,7 @@
   "subprojectQcsRun.openInDialog": "Ouvrir dans une boîte de dialogue",
   "bHistProjSetting": "Comparer l'historique",
   "altInOwnFormNav": "Alternative : Afficher dans son propre formulaire, avec son propre dossier dans l'arborescence de navigation",
+  "sPRinSP": "Afficher les rapports de {subprojectNameSingular} dans {subprojectNameSingular}",
   "cU1DvF": "Unité par défaut pour les quantités de rapport de contrôle",
   "dV2EwG": "Unité par défaut pour les quantités de rapport de mesure",
   "nR6StU": "Unité par défaut pour les valeurs de mesure",

@@ -39,11 +39,14 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const taxaInSubproject = project?.subproject_taxa_in_subproject !== false
   const usersInSubproject = project?.subproject_users_in_subproject !== false
   const filesInSubproject = project?.subproject_files_in_subproject !== false
+  const reportsInSubproject = project?.subproject_reports_in_subproject !== false
   const showTaxaNav = showTaxa && !taxaInSubproject
   const showUsersNav = !usersInSubproject
   const showFilesNav = showFiles && !filesInSubproject
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
+  const showSubprojectReportsNav =
+    showSubprojectReports && !reportsInSubproject
   const showGoals = isDesigning || (project?.goals ?? true)
   const showOccurrences = isDesigning || (project?.occurrences ?? true)
   const showCharts = isDesigning || (project?.charts ?? true)
@@ -115,7 +118,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             to={`${ownUrl}/subproject`}
           />
           <PlacesNode projectId={projectId} subprojectId={nav.id} level={5} />
-          {showSubprojectReports && (
+          {showSubprojectReportsNav && (
             <SubprojectReportsNode
               projectId={projectId}
               subprojectId={nav.id}

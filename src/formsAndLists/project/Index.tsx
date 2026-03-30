@@ -16,7 +16,7 @@ export const ProjectIndex = ({ from }: { from: string }) => {
 
   const showFiles = res?.rows?.[0]?.files_active_projects !== false
   const usersInProject = res?.rows?.[0]?.project_users_in_project !== false
-  const filesInProject = res?.rows?.[0]?.project_files_in_project !== false
+  const filesInProject = res?.rows?.[0]?.project_files_in_project === true
   const unitsInProject = res?.rows?.[0]?.units_in_project !== false
   const fieldsInProject = res?.rows?.[0]?.fields_in_project !== false
 

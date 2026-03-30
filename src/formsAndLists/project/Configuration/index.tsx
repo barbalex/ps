@@ -559,15 +559,39 @@ export const Configuration = ({ from }) => {
           </SectionLevel2>
           <SectionLevel2 title={subprojectName}>
             <SwitchField
-              label={formatMessage({
+              label={`${subprojectNameSingular}-${formatMessage({
                 id: 'CiJ0SG',
                 defaultMessage: 'Berichte',
-              })}
+              })}`}
               name="subproject_reports"
               value={row.subproject_reports ?? true}
               onChange={onChange}
               validationState={validations?.subproject_reports?.state}
               validationMessage={validations?.subproject_reports?.message}
+            />
+            <SwitchField
+              label={formatMessage(
+                {
+                  id: 'sPRinSP',
+                  defaultMessage:
+                    '{subprojectNameSingular}-Berichte in {subprojectNameSingular} anzeigen',
+                },
+                { subprojectNameSingular },
+              )}
+              name="subproject_reports_in_subproject"
+              value={row.subproject_reports_in_subproject ?? true}
+              onChange={onChange}
+              validationState={
+                validations?.subproject_reports_in_subproject?.state
+              }
+              validationMessage={
+                validations?.subproject_reports_in_subproject?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
             />
             <SwitchField
               label={formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })}

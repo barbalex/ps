@@ -59,7 +59,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const showProjectReports = designing || (project?.project_reports ?? true)
   const showFiles = designing || (project?.files_active_projects ?? false)
   const usersInProject = project?.project_users_in_project !== false
-  const filesInProject = project?.project_files_in_project !== false
+  const filesInProject = project?.project_files_in_project === true
   const unitsInProject = project?.units_in_project !== false
   const fieldsInProject = project?.fields_in_project !== false
   const showUsersNav = !usersInProject

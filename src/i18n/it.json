@@ -752,6 +752,7 @@
   "subprojectQcsRun.openInDialog": "Apri nella finestra di dialogo",
   "bHistProjSetting": "Confronta cronologia",
   "altInOwnFormNav": "Alternativa: Mostra nel suo modulo, con la sua cartella nell'albero di navigazione",
+  "sPRinSP": "Mostrare i rapporti di {subprojectNameSingular} in {subprojectNameSingular}",
   "cU1DvF": "Unità predefinita per le quantità del rapporto di controllo",
   "dV2EwG": "Unità predefinita per le quantità del rapporto di misura",
   "nR6StU": "Unità predefinita per i valori di misura",

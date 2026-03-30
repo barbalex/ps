@@ -44,6 +44,7 @@ type NavData = {
   subproject_taxa_in_subproject?: boolean | null
   subproject_users_count?: number | null
   subproject_users_in_subproject?: boolean | null
+  subproject_reports_in_subproject?: boolean | null
   files_count_filtered?: number | null
   files_count_unfiltered?: number | null
   files_active_subprojects?: boolean | null
@@ -104,6 +105,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         p.subproject_taxa_in_subproject AS subproject_taxa_in_subproject,
         p.charts AS charts,
         p.subproject_users_in_subproject AS subproject_users_in_subproject,
+        p.subproject_reports_in_subproject AS subproject_reports_in_subproject,
         p.files_active_subprojects AS files_active_subprojects,
         p.subproject_files_in_subproject AS subproject_files_in_subproject,
         places_count_unfiltered.count AS places_count_unfiltered,
@@ -196,19 +198,23 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
       },
       ...(designing || (nav?.subproject_reports ?? true)
         ? [
-            {
-              id: 'reports',
-              label: buildNavLabel({
-                loading,
-                isFiltered: subprojectReportsIsFiltered,
-                countFiltered: nav?.subproject_reports_count_filtered ?? 0,
-                countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'CiJ0SG',
-                  defaultMessage: 'Berichte',
-                }),
-              }),
-            },
+            ...(nav?.subproject_reports_in_subproject === false
+              ? [
+                  {
+                    id: 'reports',
+                    label: buildNavLabel({
+                      loading,
+                      isFiltered: subprojectReportsIsFiltered,
+                      countFiltered: nav?.subproject_reports_count_filtered ?? 0,
+                      countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
+                      namePlural: formatMessage({
+                        id: 'CiJ0SG',
+                        defaultMessage: 'Berichte',
+                      }),
+                    }),
+                  },
+                ]
+              : []),
           ]
         : []),
       ...(designing || (nav?.goals ?? true)
