@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import { createHistoryFieldLabelFormatter } from '../../components/shared/HistoryCompare/utils.ts'
+import { stringifyHistoryValue } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -331,7 +332,7 @@ export const ActionQuantityHistoryCompare = ({
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return undefined
+    return stringifyHistoryValue(history[field])
   }
 
   return (

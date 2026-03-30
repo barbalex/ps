@@ -67,6 +67,7 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
     },
     enabled: online && !!rowId,
     staleTime: 30_000,
+    refetchInterval: online && !!rowId ? 2_000 : false,
   })
 
   const histories = useMemo(() => {
