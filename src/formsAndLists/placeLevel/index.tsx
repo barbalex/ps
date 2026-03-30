@@ -583,46 +583,46 @@ export const PlaceLevel = () => {
                     id: 'eV3FxH',
                     defaultMessage: 'Berichte',
                   })}
-                  name="place_action_reports"
-                  value={row.place_action_reports ?? false}
+                  name="action_reports"
+                  value={row.action_reports ?? false}
                   onChange={onChange}
-                  validationState={validations?.place_action_reports?.state}
-                  validationMessage={validations?.place_action_reports?.message}
+                  validationState={validations?.action_reports?.state}
+                  validationMessage={validations?.action_reports?.message}
                 />
-                {row.place_action_reports && (
+                {row.action_reports && (
                   <>
                     <SwitchField
                       label={formatMessage({
                         id: 'fW4GyI',
                         defaultMessage: 'Bericht-Mengen',
                       })}
-                      name="place_action_report_quantities"
-                      value={row.place_action_report_quantities ?? false}
+                      name="action_report_quantities"
+                      value={row.action_report_quantities ?? false}
                       onChange={onChange}
                       validationState={
-                        validations?.place_action_report_quantities?.state
+                        validations?.action_report_quantities?.state
                       }
                       validationMessage={
-                        validations?.place_action_report_quantities?.message
+                        validations?.action_report_quantities?.message
                       }
                     />
-                    {row.place_action_report_quantities && (
+                    {row.action_report_quantities && (
                       <SwitchField
                         label={formatMessage({
                           id: 'gX5HzJ',
                           defaultMessage: 'Bericht-Mengen im Bericht anzeigen',
                         })}
-                        name="place_action_report_quantities_in_report"
+                        name="action_report_quantities_in_report"
                         value={
-                          row.place_action_report_quantities_in_report ?? true
+                          row.action_report_quantities_in_report ?? true
                         }
                         onChange={onChange}
                         validationState={
-                          validations?.place_action_report_quantities_in_report
+                          validations?.action_report_quantities_in_report
                             ?.state
                         }
                         validationMessage={
-                          validations?.place_action_report_quantities_in_report
+                          validations?.action_report_quantities_in_report
                             ?.message ??
                           formatMessage({
                             id: 'altInOwnFormNav',

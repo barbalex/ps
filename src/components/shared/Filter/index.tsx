@@ -58,7 +58,7 @@ const getFilterStrings = ({
       'actions',
       'checks',
       'check_reports',
-      'place_action_reports',
+      'action_reports',
       'place_users',
     ].includes(tableName)
   ) {
@@ -136,7 +136,7 @@ const getTitle = ({
                     ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
                     : tableName === 'check_reports'
                       ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
-                      : tableName === 'place_action_reports'
+                      : tableName === 'action_reports'
                         ? formatMessage({
                             id: 'mARBts',
                             defaultMessage: 'Massnahmen-Berichte',
@@ -297,7 +297,7 @@ const getTableName = (urlPath) => {
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
   if (tableName === 'action_reports') {
-    tableName = 'place_action_reports'
+    tableName = 'action_reports'
   }
   if (tableName === 'users') {
     const usersIndex = urlPath.lastIndexOf('users')

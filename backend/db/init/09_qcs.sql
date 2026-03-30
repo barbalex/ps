@@ -501,7 +501,7 @@ WHERE p.subproject_id = $1
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
   AND NOT EXISTS (SELECT 1
-FROM place_action_reports par
+FROM action_reports par
 WHERE par.place_id = p.place_id)
 ORDER BY p.label'),
 ('placesActionReportsMissingInYear', 'Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr', 'Places (relevant and currently existing) without action report in year', 'Lieux (pertinents et actuellement existants) sans rapport d''action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell''anno', 'places', NULL, false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
@@ -512,7 +512,7 @@ WHERE p.subproject_id = $1
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
   AND NOT EXISTS (SELECT 1
-FROM place_action_reports par
+FROM action_reports par
 WHERE par.place_id = p.place_id
   AND par.year = date_part(''year'', now())::integer)
 ORDER BY p.label'),
@@ -685,12 +685,12 @@ WHERE p.subproject_id = $1
   AND p.relevant_for_reports = true
   AND (p.until IS NULL
   OR p.until >= date_part(''year'', now())::integer)
-  AND proj.place_action_reports_default_unit_id IS NOT NULL
+  AND proj.action_reports_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
-FROM place_action_reports par
-JOIN place_action_report_quantities parq ON parq.place_action_report_id = par.place_action_report_id
+FROM action_reports par
+JOIN action_report_quantities parq ON parq.place_action_report_id = par.place_action_report_id
 WHERE par.place_id = p.place_id
-  AND parq.unit_id != proj.place_action_reports_default_unit_id)
+  AND parq.unit_id != proj.action_reports_default_unit_id)
 ORDER BY p.label'),
 ('actionTaxonQuantitiesNoDefault', 'Massnahmen-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Action taxon quantities: default unit not used', 'Quantités de taxon d''actions : unité par défaut non utilisée', 'Quantità di taxon di azioni: unità predefinita non utilizzata', 'actions', NULL, false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
 FROM actions a

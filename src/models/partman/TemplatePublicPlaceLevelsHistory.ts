@@ -33,11 +33,11 @@ export default interface TemplatePublicPlaceLevelsHistory {
 
   check_report_quantities_in_report: boolean | null;
 
-  place_action_reports: boolean | null;
+  action_reports: boolean | null;
 
-  place_action_report_quantities: boolean | null;
+  action_report_quantities: boolean | null;
 
-  place_action_report_quantities_in_report: boolean | null;
+  action_report_quantities_in_report: boolean | null;
 
   actions: boolean | null;
 
@@ -116,11 +116,11 @@ export interface TemplatePublicPlaceLevelsHistoryInitializer {
 
   check_report_quantities_in_report?: boolean | null;
 
-  place_action_reports?: boolean | null;
+  action_reports?: boolean | null;
 
-  place_action_report_quantities?: boolean | null;
+  action_report_quantities?: boolean | null;
 
-  place_action_report_quantities_in_report?: boolean | null;
+  action_report_quantities_in_report?: boolean | null;
 
   actions?: boolean | null;
 
@@ -199,11 +199,11 @@ export interface TemplatePublicPlaceLevelsHistoryMutator {
 
   check_report_quantities_in_report?: boolean | null;
 
-  place_action_reports?: boolean | null;
+  action_reports?: boolean | null;
 
-  place_action_report_quantities?: boolean | null;
+  action_report_quantities?: boolean | null;
 
-  place_action_report_quantities_in_report?: boolean | null;
+  action_report_quantities_in_report?: boolean | null;
 
   actions?: boolean | null;
 

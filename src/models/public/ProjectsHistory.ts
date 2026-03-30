@@ -56,7 +56,7 @@ export default interface ProjectsHistory {
 
   check_reports_default_unit_id: string | null;
 
-  place_action_reports_default_unit_id: string | null;
+  action_reports_default_unit_id: string | null;
 
   values_on_multiple_levels: string | null;
 
@@ -161,7 +161,7 @@ export interface ProjectsHistoryInitializer {
 
   check_reports_default_unit_id?: string | null;
 
-  place_action_reports_default_unit_id?: string | null;
+  action_reports_default_unit_id?: string | null;
 
   values_on_multiple_levels?: string | null;
 
@@ -280,7 +280,7 @@ export interface ProjectsHistoryMutator {
 
   check_reports_default_unit_id?: string | null;
 
-  place_action_reports_default_unit_id?: string | null;
+  action_reports_default_unit_id?: string | null;
 
   values_on_multiple_levels?: string | null;
 

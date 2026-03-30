@@ -343,17 +343,17 @@ export const Configuration = ({ from }) => {
               id: 'dV2EwG',
               defaultMessage: 'Standard-Einheit für Massnahmen-Bericht-Mengen',
             })}
-            name="place_action_reports_default_unit_id"
+            name="action_reports_default_unit_id"
             list={unitIds}
             labelMap={unitLabelMap}
             isLoading={unitsRes === undefined}
-            value={row.place_action_reports_default_unit_id ?? ''}
+            value={row.action_reports_default_unit_id ?? ''}
             onChange={onChange}
             validationState={
-              validations?.place_action_reports_default_unit_id?.state
+              validations?.action_reports_default_unit_id?.state
             }
             validationMessage={
-              validations?.place_action_reports_default_unit_id?.message
+              validations?.action_reports_default_unit_id?.message
             }
           />
         </Section>

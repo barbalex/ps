@@ -501,7 +501,7 @@ export const createPlaceLevel = async ({ project_id }) => {
   const db = store.get(pgliteDbAtom)
   const place_level_id = uuidv7()
   await db.query(
-    `insert into place_levels (place_level_id, project_id, level, check_reports, check_report_quantities, check_report_quantities_in_report, place_action_reports, place_action_report_quantities, place_action_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_files, place_files_in_place, action_files, check_files, check_files_in_check) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)`,
+    `insert into place_levels (place_level_id, project_id, level, check_reports, check_report_quantities, check_report_quantities_in_report, action_reports, action_report_quantities, action_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_files, place_files_in_place, action_files, check_files, check_files_in_check) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)`,
     [
       place_level_id,
       project_id,
@@ -539,9 +539,9 @@ export const createPlaceLevel = async ({ project_id }) => {
       check_reports: true,
       check_report_quantities: true,
       check_report_quantities_in_report: true,
-      place_action_reports: true,
-      place_action_report_quantities: true,
-      place_action_report_quantities_in_report: true,
+      action_reports: true,
+      action_report_quantities: true,
+      action_report_quantities_in_report: true,
       actions: true,
       action_quantities: true,
       action_quantities_in_action: true,
@@ -1099,12 +1099,12 @@ export const createCheckReportQuantity = async ({
   return place_check_report_quantity_id
 }
 
-export const createPlaceActionReport = async ({ projectId, placeId }) => {
+export const createActionReport = async ({ projectId, placeId }) => {
   const db = store.get(pgliteDbAtom)
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
-    table: 'place_action_reports',
+    table: 'action_reports',
   })
 
   const place_action_report_id = uuidv7()
@@ -1121,12 +1121,12 @@ export const createPlaceActionReport = async ({ projectId, placeId }) => {
     .join(',')
 
   await db.query(
-    `insert into place_action_reports (${columns}) values (${values})`,
+    `insert into action_reports (${columns}) values (${values})`,
     Object.values(data),
   )
 
   store.set(addOperationAtom, {
-    table: 'place_action_reports',
+    table: 'action_reports',
     operation: 'insert',
     draft: data,
   })
@@ -1134,26 +1134,26 @@ export const createPlaceActionReport = async ({ projectId, placeId }) => {
   return place_action_report_id
 }
 
-export const createPlaceActionReportQuantity = async ({
+export const createActionReportQuantity = async ({
   placeActionReportId,
 }) => {
   const db = store.get(pgliteDbAtom)
 
   // inherit the project's default unit if set
   const projectRes = await db.query<{
-    place_action_reports_default_unit_id: string | null
+    action_reports_default_unit_id: string | null
   }>(
-    `SELECT p.place_action_reports_default_unit_id
+    `SELECT p.action_reports_default_unit_id
      FROM projects p
      JOIN subprojects sp ON sp.project_id = p.project_id
      JOIN places pl ON pl.subproject_id = sp.subproject_id
-     JOIN place_action_reports pr ON pr.place_id = pl.place_id
+     JOIN action_reports pr ON pr.place_id = pl.place_id
      WHERE pr.place_action_report_id = $1
      LIMIT 1`,
     [placeActionReportId],
   )
   const defaultUnitId =
-    projectRes.rows?.[0]?.place_action_reports_default_unit_id ?? null
+    projectRes.rows?.[0]?.action_reports_default_unit_id ?? null
 
   const place_action_report_quantity_id = uuidv7()
   const draft = {
@@ -1166,12 +1166,12 @@ export const createPlaceActionReportQuantity = async ({
     .map((_, i) => `$${i + 1}`)
     .join(', ')
   await db.query(
-    `INSERT INTO place_action_report_quantities (${cols}) VALUES (${vals})`,
+    `INSERT INTO action_report_quantities (${cols}) VALUES (${vals})`,
     Object.values(draft),
   )
 
   store.set(addOperationAtom, {
-    table: 'place_action_report_quantities',
+    table: 'action_report_quantities',
     operation: 'insert',
     draft,
   })

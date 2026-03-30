@@ -53,7 +53,7 @@ export default interface TemplatePublicProjectsHistory {
 
   check_reports_default_unit_id: string | null;
 
-  place_action_reports_default_unit_id: string | null;
+  action_reports_default_unit_id: string | null;
 
   values_on_multiple_levels: string | null;
 
@@ -152,7 +152,7 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   check_reports_default_unit_id?: string | null;
 
-  place_action_reports_default_unit_id?: string | null;
+  action_reports_default_unit_id?: string | null;
 
   values_on_multiple_levels?: string | null;
 
@@ -251,7 +251,7 @@ export interface TemplatePublicProjectsHistoryMutator {
 
   check_reports_default_unit_id?: string | null;
 
-  place_action_reports_default_unit_id?: string | null;
+  action_reports_default_unit_id?: string | null;
 
   values_on_multiple_levels?: string | null;
 

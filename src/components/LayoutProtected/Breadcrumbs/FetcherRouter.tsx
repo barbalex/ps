@@ -45,11 +45,11 @@ import { CheckReportFetcher } from './CheckReportFetcher.tsx'
 import { CheckReportReportFetcher } from './CheckReportReportFetcher.tsx'
 import { CheckReportQuantitiesFetcher } from './CheckReportQuantitiesFetcher.tsx'
 import { CheckReportQuantityFetcher } from './CheckReportQuantityFetcher.tsx'
-import { PlaceActionReportsFetcher } from './PlaceActionReportsFetcher.tsx'
-import { PlaceActionReportFetcher } from './PlaceActionReportFetcher.tsx'
-import { PlaceActionReportReportFetcher } from './PlaceActionReportReportFetcher.tsx'
-import { PlaceActionReportQuantitiesFetcher } from './PlaceActionReportQuantitiesFetcher.tsx'
-import { PlaceActionReportQuantityFetcher } from './PlaceActionReportQuantityFetcher.tsx'
+import { ActionReportsFetcher } from './ActionReportsFetcher.tsx'
+import { ActionReportFetcher } from './ActionReportFetcher.tsx'
+import { ActionReportReportFetcher } from './ActionReportReportFetcher.tsx'
+import { ActionReportQuantitiesFetcher } from './ActionReportQuantitiesFetcher.tsx'
+import { ActionReportQuantityFetcher } from './ActionReportQuantityFetcher.tsx'
 import { ObservationsAssignedFetcher } from './ObservationsAssignedFetcher.tsx'
 import { ObservationAssignedFetcher } from './ObservationAssignedFetcher.tsx'
 import { PlaceUsersFetcher } from './PlaceUsersFetcher.tsx'
@@ -326,51 +326,51 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
         return null
       return <CheckReportQuantityFetcher params={params} {...other} />
     }
-    case 'usePlaceActionReportsNavData': {
+    case 'useActionReportsNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
-      return <PlaceActionReportsFetcher params={params} {...other} />
+      return <ActionReportsFetcher params={params} {...other} />
     }
-    case 'usePlaceActionReportNavData': {
+    case 'useActionReportNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.placeActionReportId
+        !params.actionReportId
       )
         return null
-      return <PlaceActionReportFetcher params={params} {...other} />
+      return <ActionReportFetcher params={params} {...other} />
     }
-    case 'usePlaceActionReportReportNavData': {
+    case 'useActionReportReportNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.placeActionReportId
+        !params.actionReportId
       )
         return null
-      return <PlaceActionReportReportFetcher params={params} {...other} />
+      return <ActionReportReportFetcher params={params} {...other} />
     }
-    case 'usePlaceActionReportQuantitiesNavData': {
+    case 'useActionReportQuantitiesNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.placeActionReportId
+        !params.actionReportId
       )
         return null
-      return <PlaceActionReportQuantitiesFetcher params={params} {...other} />
+      return <ActionReportQuantitiesFetcher params={params} {...other} />
     }
-    case 'usePlaceActionReportQuantityNavData': {
+    case 'useActionReportQuantityNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.placeActionReportId ||
-        !params.placeActionReportQuantityId
+        !params.actionReportId ||
+        !params.actionReportQuantityId
       )
         return null
-      return <PlaceActionReportQuantityFetcher params={params} {...other} />
+      return <ActionReportQuantityFetcher params={params} {...other} />
     }
     case 'useObservationsAssignedNavData': {
       if (!params.projectId || !params.subprojectId || !params.placeId)
