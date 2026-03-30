@@ -9,6 +9,7 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { SectionDescription } from '../components/shared/SectionDescription.tsx'
 import { languageAtom } from '../store.ts'
 import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
 import '../form.css'
@@ -35,6 +36,14 @@ export const SubprojectTaxa = ({ from, hideHeader = false }) => {
   const canFilter =
     !hideHeader &&
     from === '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/'
+  const description = formatMessage(
+    {
+      id: 'gP1QrT',
+      defaultMessage:
+        'Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
+    },
+    { subprojectNameSingular },
+  )
 
   const add = async () => {
     const id = await createSubprojectTaxon({ subprojectId })
@@ -52,15 +61,13 @@ export const SubprojectTaxa = ({ from, hideHeader = false }) => {
           menus={
             canFilter ? <FilterButton isFiltered={isFiltered} /> : undefined
           }
-          description={formatMessage(
-            {
-              id: 'gP1QrT',
-              defaultMessage:
-                'Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden.',
-            },
-            { subprojectNameSingular },
-          )}
+          description={description}
         />
+      )}
+      {hideHeader && (
+        <div style={{ padding: '10px 10px 0 10px' }}>
+          <SectionDescription>{description}</SectionDescription>
+        </div>
       )}
       <div className="list-container">
         {loading ? (
