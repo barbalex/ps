@@ -61,6 +61,8 @@ export default interface TemplatePublicPlaceLevelsHistory {
 
   observations: boolean | null;
 
+  place_users_in_place: boolean | null;
+
   place_files: boolean | null;
 
   place_files_in_place: boolean | null;
@@ -144,6 +146,8 @@ export interface TemplatePublicPlaceLevelsHistoryInitializer {
 
   observations?: boolean | null;
 
+  place_users_in_place?: boolean | null;
+
   place_files?: boolean | null;
 
   place_files_in_place?: boolean | null;
@@ -226,6 +230,8 @@ export interface TemplatePublicPlaceLevelsHistoryMutator {
   check_taxa_in_check?: boolean | null;
 
   observations?: boolean | null;
+
+  place_users_in_place?: boolean | null;
 
   place_files?: boolean | null;
 

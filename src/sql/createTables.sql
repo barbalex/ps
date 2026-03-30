@@ -252,6 +252,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_taxa boolean DEFAULT TRUE,
   check_taxa_in_check boolean DEFAULT TRUE,
   observations boolean DEFAULT TRUE,
+  place_users_in_place boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
   place_files_in_place boolean DEFAULT TRUE,
   action_files boolean DEFAULT TRUE,
@@ -302,6 +303,7 @@ COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Prese
 COMMENT ON COLUMN place_levels.check_quantities_in_check IS 'Show check quantities inside the check form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
+COMMENT ON COLUMN place_levels.place_users_in_place IS 'Render place users inside the place form? Preset: true';
 COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
 COMMENT ON COLUMN place_levels.place_files_in_place IS 'Render files inside the place form? Preset: true';
 COMMENT ON COLUMN place_levels.action_files IS 'Are files used for actions on this level? Preset: false';

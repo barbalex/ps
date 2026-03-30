@@ -267,6 +267,28 @@ export const PlaceLevel = () => {
               validationState={validations?.place_files?.state}
               validationMessage={validations?.place_files?.message}
             />
+            <SwitchField
+              label={formatMessage(
+                {
+                  id: 'rP1UsQ',
+                  defaultMessage:
+                    '{placeNameSingular}-Benutzer in {placeNameSingular} anzeigen',
+                },
+                { placeNameSingular },
+              )}
+              name="place_users_in_place"
+              value={row.place_users_in_place ?? true}
+              onChange={onChange}
+              validationState={validations?.place_users_in_place?.state}
+              validationMessage={
+                validations?.place_users_in_place?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
             {row.place_files && (
               <SwitchField
                 label={formatMessage(

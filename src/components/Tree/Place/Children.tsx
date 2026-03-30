@@ -35,8 +35,10 @@ export const PlaceChildren = ({
   const placeLevel: PlaceLevels = resPlaceLevels?.rows?.[0]
 
   // need place_level to know whether to show files
+  const usersInPlace = placeLevel?.place_users_in_place !== false
   const showFiles = isDesigning || placeLevel?.place_files !== false
   const filesInPlace = placeLevel?.place_files_in_place !== false
+  const showUsersNav = !usersInPlace
   const showFilesNav = showFiles && !filesInPlace
 
   const location = useLocation()
@@ -117,7 +119,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {isDesigning && (
+      {showUsersNav && (
         <PlaceUsersNode
           projectId={projectId}
           subprojectId={subprojectId}

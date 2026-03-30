@@ -8,9 +8,10 @@ import { Row } from "../components/shared/Row.tsx";
 import { Loading } from "../components/shared/Loading.tsx";
 import "../form.css";
 
-export const PlaceUsers = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from });
+export const PlaceUsers = ({ from, hideHeader = false }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false });
   const navigate = useNavigate();
+  const usersBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/users`;
 
   const { loading, navData, isFiltered } = usePlaceUsersNavData({
     projectId,
@@ -23,26 +24,25 @@ export const PlaceUsers = ({ from }) => {
   const add = async () => {
     const id = await createPlaceUser({ placeId: placeId2 ?? placeId });
     if (!id) return;
-    navigate({
-      to: id,
-      params: (prev) => ({ ...prev, placeUserId: id }),
-    });
+    navigate({ to: `${usersBaseUrl}/${id}/` });
   };
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          menus={<FilterButton isFiltered={isFiltered} />}
+        />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />
         ) : (
           navs.map(({ id, label }) => (
-            <Row key={id} to={id} label={label ?? id} />
+            <Row key={id} to={`${usersBaseUrl}/${id}/`} label={label ?? id} />
           ))
         )}
       </div>

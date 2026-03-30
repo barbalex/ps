@@ -110,6 +110,7 @@ export const startSyncing = async () => {
                 'check_files',
                 'check_files_in_check',
                 'observations',
+                'place_users_in_place',
                 'place_files_in_place',
                 'created_at',
                 'updated_at',

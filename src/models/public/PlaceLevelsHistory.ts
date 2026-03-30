@@ -64,6 +64,8 @@ export default interface PlaceLevelsHistory {
 
   observations: boolean | null;
 
+  place_users_in_place: boolean | null;
+
   place_files: boolean | null;
 
   place_files_in_place: boolean | null;
@@ -171,6 +173,9 @@ export interface PlaceLevelsHistoryInitializer {
   observations?: boolean | null;
 
   /** Default value: true */
+  place_users_in_place?: boolean | null;
+
+  /** Default value: true */
   place_files?: boolean | null;
 
   /** Default value: true */
@@ -264,6 +269,8 @@ export interface PlaceLevelsHistoryMutator {
   check_taxa_in_check?: boolean | null;
 
   observations?: boolean | null;
+
+  place_users_in_place?: boolean | null;
 
   place_files?: boolean | null;
 

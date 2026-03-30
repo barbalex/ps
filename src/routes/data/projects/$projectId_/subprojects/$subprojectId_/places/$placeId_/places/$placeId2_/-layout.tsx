@@ -12,19 +12,27 @@ export const PlaceLayout = () => {
   })
   const location = useLocation()
   const res = useLiveQuery(
-    `SELECT place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = 2`,
+    `SELECT place_users_in_place, place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = 2`,
     [projectId],
   )
+  const usersInPlace = res?.rows?.[0]?.place_users_in_place !== false
   const showFiles = res?.rows?.[0]?.place_files !== false
   const filesInPlace = res?.rows?.[0]?.place_files_in_place !== false
 
   const baseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
   const isPlaceRoute = location.pathname === `${baseUrl}/place`
+  const isUsersRoute =
+    location.pathname === `${baseUrl}/users` ||
+    location.pathname.startsWith(`${baseUrl}/users/`)
   const isFilesRoute =
     location.pathname === `${baseUrl}/files` ||
     location.pathname.startsWith(`${baseUrl}/files/`)
 
-  if (showFiles && filesInPlace && (isPlaceRoute || isFilesRoute)) {
+  if (
+    (isPlaceRoute && (usersInPlace || (showFiles && filesInPlace))) ||
+    (isUsersRoute && usersInPlace) ||
+    (isFilesRoute && showFiles && filesInPlace)
+  ) {
     return <PlaceWithFiles from={from} />
   }
   return <Outlet />
