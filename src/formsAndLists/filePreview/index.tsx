@@ -60,7 +60,6 @@ export const FilePreview = ({ from }) => {
     <div ref={previewRef} className="form-outer-container">
       <div style={{ height: 0, overflow: 'hidden' }}>
         <Uploader
-          from={from}
           projectId={row.project_id}
           subprojectId={row.subproject_id}
           placeId={row.place_id}

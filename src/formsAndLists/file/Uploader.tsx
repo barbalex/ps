@@ -32,7 +32,6 @@ defineLocale('it', itLocale)
 import '../../form.css'
 
 type UploaderProps = {
-  from?: string
   projectId?: string | null
   subprojectId?: string | null
   placeId?: string | null
@@ -41,7 +40,6 @@ type UploaderProps = {
 }
 
 export const Uploader = ({
-  from,
   projectId: projectIdProp,
   subprojectId: subprojectIdProp,
   placeId: placeIdProp,
@@ -49,8 +47,6 @@ export const Uploader = ({
   checkId: checkIdProp,
 }: UploaderProps) => {
   const language = useAtomValue(languageAtom)
-  // Keep `from` in the public props API; this marks it as intentionally unused.
-  void from
   const ucConfigRef = useRef<HTMLElement>(null)
   const navigate = useNavigate()
   const {

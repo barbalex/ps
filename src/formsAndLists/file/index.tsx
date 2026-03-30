@@ -45,7 +45,6 @@ export const File = ({ from }) => {
   return (
     <div className="form-outer-container" ref={ref}>
       <Uploader
-        from={from}
         projectId={row.project_id}
         subprojectId={row.subproject_id}
         placeId={row.place_id}
