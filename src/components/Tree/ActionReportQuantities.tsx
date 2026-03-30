@@ -65,7 +65,7 @@ export const ActionReportQuantitiesNode = ({
       />
       {showNavs &&
         navs.map((nav, i) => (
-          <PlaceActionReportQuantityNode
+          <ActionReportQuantityNode
             key={`${nav.id}-${i}`}
             projectId={projectId}
             subprojectId={subprojectId}

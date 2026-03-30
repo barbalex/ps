@@ -5,7 +5,7 @@
  * Represents the table public.place_action_reports_history
  * System-versioned history of action_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export default interface PlaceActionReportsHistory {
+export default interface ActionReportsHistory {
   place_action_report_id: string;
 
   account_id: string | null;
@@ -32,7 +32,7 @@ export default interface PlaceActionReportsHistory {
  * Represents the initializer for the table public.place_action_reports_history
  * System-versioned history of action_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface PlaceActionReportsHistoryInitializer {
+export interface ActionReportsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_action_report_id?: string;
 
@@ -63,7 +63,7 @@ export interface PlaceActionReportsHistoryInitializer {
  * Represents the mutator for the table public.place_action_reports_history
  * System-versioned history of action_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface PlaceActionReportsHistoryMutator {
+export interface ActionReportsHistoryMutator {
   place_action_report_id?: string;
 
   account_id?: string | null;

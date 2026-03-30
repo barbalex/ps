@@ -19,12 +19,12 @@ export const ActionReportQuantities = ({ from, hideTitle = false }) => {
     subprojectId,
     placeId,
     placeId2,
-    placeActionReportId,
+    actionReportId,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createActionReportQuantity({ placeActionReportId })
+    const id = await createActionReportQuantity({ actionReportId })
     if (!id) return
     navigate({
       to: id,

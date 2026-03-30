@@ -1,3 +1,4 @@
+import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { useActionReportNavData } from '../../modules/useActionReportNavData.ts'
@@ -19,7 +20,7 @@ export const ActionReportList = ({ from }) => {
   const { navs, notFound } = navData
 
   if (notFound) {
-    return <NotFound table="Report" id={placeActionReportId} />
+    return <NotFound table="Report" id={actionReportId} />
   }
 
   return (

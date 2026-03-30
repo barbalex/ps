@@ -12,7 +12,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
-  placeActionReportId: string
+  actionReportId: string
 }
 
 type NavData = {
@@ -25,7 +25,7 @@ export const useActionReportQuantitiesNavData = ({
   subprojectId,
   placeId,
   placeId2,
-  placeActionReportId,
+  actionReportId,
 }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -39,7 +39,7 @@ export const useActionReportQuantitiesNavData = ({
       FROM action_report_quantities 
       WHERE place_action_report_id = $1 
       ORDER BY label`,
-    [placeActionReportId],
+    [actionReportId],
   )
 
   const loading = res === undefined
@@ -55,7 +55,7 @@ export const useActionReportQuantitiesNavData = ({
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
     'action-reports',
-    placeActionReportId,
+    actionReportId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'quantities']

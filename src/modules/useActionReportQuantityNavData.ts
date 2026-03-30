@@ -11,7 +11,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
-  placeActionReportId: string
+  actionReportId: string
   actionReportQuantityId: string
 }
 
@@ -25,7 +25,7 @@ export const useActionReportQuantityNavData = ({
   subprojectId,
   placeId,
   placeId2,
-  placeActionReportId,
+  actionReportId,
   actionReportQuantityId,
 }: Props) => {
   const { formatMessage } = useIntl()
@@ -55,7 +55,7 @@ export const useActionReportQuantityNavData = ({
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
     'action-reports',
-    placeActionReportId,
+    actionReportId,
     'quantities',
   ]
   const parentUrl = `/${parentArray.join('/')}`

@@ -5,7 +5,7 @@ import { ActionReportWithQuantities } from '../../../../../../../../../../formsA
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_'
 
-export const PlaceActionReportLayout = () => {
+export const ActionReportLayout = () => {
   const location = useLocation()
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(

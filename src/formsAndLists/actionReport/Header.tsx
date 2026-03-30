@@ -10,7 +10,7 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, subprojectId, placeId, placeId2, placeActionReportId } =
+  const { projectId, subprojectId, placeId, placeId2, actionReportId } =
     useParams({
       from,
     })
@@ -20,10 +20,10 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const db = usePGlite()
 
-  const placeActionReportIdRef = useRef(placeActionReportId)
+  const actionReportIdRef = useRef(actionReportId)
   useEffect(() => {
-    placeActionReportIdRef.current = placeActionReportId
-  }, [placeActionReportId])
+    actionReportIdRef.current = actionReportId
+  }, [actionReportId])
 
   const combinedRes = useLiveQuery(
     `SELECT (SELECT COUNT(*) FROM action_reports WHERE place_id = $1) AS count
@@ -38,8 +38,8 @@ export const Header = ({ autoFocusRef, from }) => {
     defaultMessage: 'Massnahmen-Bericht',
   })
   const basePath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${placeActionReportId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${placeActionReportId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${actionReportId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${actionReportId}`
 
   const addRow = async () => {
     const id = await createActionReport({
@@ -51,7 +51,7 @@ export const Header = ({ autoFocusRef, from }) => {
       to: `../${id}`,
       params: (prev) => ({
         ...prev,
-        placeActionReportId: id,
+        actionReportId: id,
       }),
     })
     autoFocusRef?.current?.focus()
@@ -61,17 +61,17 @@ export const Header = ({ autoFocusRef, from }) => {
     try {
       const prevRes = await db.query(
         `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
-        [placeActionReportId],
+        [actionReportId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
       db.query(
         `DELETE FROM action_reports WHERE place_action_report_id = $1`,
-        [placeActionReportId],
+        [actionReportId],
       )
       addOperation({
         table: 'action_reports',
         rowIdName: 'place_action_report_id',
-        rowId: placeActionReportId,
+        rowId: actionReportId,
         operation: 'delete',
         prev,
       })
@@ -90,14 +90,14 @@ export const Header = ({ autoFocusRef, from }) => {
       const placeReports = res?.rows
       const len = placeReports.length
       const index = placeReports.findIndex(
-        (p) => p.place_action_report_id === placeActionReportIdRef.current,
+        (p) => p.place_action_report_id === actionReportIdRef.current,
       )
       const next = placeReports[(index + 1) % len]
       navigate({
         to: `../${next.place_action_report_id}`,
         params: (prev) => ({
           ...prev,
-          placeActionReportId: next.place_action_report_id,
+          actionReportId: next.place_action_report_id,
         }),
       })
     } catch (error) {
@@ -114,14 +114,14 @@ export const Header = ({ autoFocusRef, from }) => {
       const placeReports = res?.rows
       const len = placeReports.length
       const index = placeReports.findIndex(
-        (p) => p.place_action_report_id === placeActionReportIdRef.current,
+        (p) => p.place_action_report_id === actionReportIdRef.current,
       )
       const previous = placeReports[(index + len - 1) % len]
       navigate({
         to: `../${previous.place_action_report_id}`,
         params: (prev) => ({
           ...prev,
-          placeActionReportId: previous.place_action_report_id,
+          actionReportId: previous.place_action_report_id,
         }),
       })
     } catch (error) {
@@ -145,7 +145,7 @@ export const Header = ({ autoFocusRef, from }) => {
           formPath={`${basePath}/report`}
           historyTable="place_action_reports_history"
           rowIdField="place_action_report_id"
-          rowId={placeActionReportId}
+          rowId={actionReportId}
         />
       }
     />

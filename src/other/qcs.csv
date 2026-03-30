@@ -628,7 +628,7 @@ FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
 ORDER BY c.label";;
-Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet;Place check report quantities: default unit not used;Quantités de rapport de contrôle de lieu : unité par défaut non utilisée;Quantità di rapporto di controllo di luogo: unità predefinita non utilizzata;checkReportQuantitiesNoDefault;places;1, 2;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/check-reports/' AS url
+Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet;Check report quantities: default unit not used;Quantités de rapport de contrôle: unité par défaut non utilisée;Quantità di rapporto di controllo: unità predefinita non utilizzata;checkReportQuantitiesNoDefault;places;1, 2;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/check-reports/' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
@@ -669,7 +669,7 @@ FROM action_quantities aq
 WHERE aq.action_id = a.action_id
   AND aq.unit_id != proj.actions_default_unit_id)
 ORDER BY a.label";;
-Ort-Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet;Place action report quantities: default unit not used;Quantités de rapport d'action de lieu : unité par défaut non utilisée;Quantità di rapporto di azione di luogo: unità predefinita non utilizzata;placeActionReportQuantitiesNoDefault;actions;1, 2;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/action-reports/' AS url
+Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet;Place action report quantities: default unit not used;Quantités de rapport d'action de lieu : unité par défaut non utilisée;Quantità di rapporto di azione di luogo: unità predefinita non utilizzata;actionReportQuantitiesNoDefault;actions;1, 2;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/action-reports/' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id

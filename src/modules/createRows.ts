@@ -1135,7 +1135,7 @@ export const createActionReport = async ({ projectId, placeId }) => {
 }
 
 export const createActionReportQuantity = async ({
-  placeActionReportId,
+  actionReportId,
 }) => {
   const db = store.get(pgliteDbAtom)
 
@@ -1150,7 +1150,7 @@ export const createActionReportQuantity = async ({
      JOIN action_reports pr ON pr.place_id = pl.place_id
      WHERE pr.place_action_report_id = $1
      LIMIT 1`,
-    [placeActionReportId],
+    [actionReportId],
   )
   const defaultUnitId =
     projectRes.rows?.[0]?.action_reports_default_unit_id ?? null
@@ -1158,7 +1158,7 @@ export const createActionReportQuantity = async ({
   const place_action_report_quantity_id = uuidv7()
   const draft = {
     place_action_report_quantity_id,
-    place_action_report_id: placeActionReportId,
+    place_action_report_id: actionReportId,
     ...(defaultUnitId ? { unit_id: defaultUnitId } : {}),
   }
   const cols = Object.keys(draft).join(', ')

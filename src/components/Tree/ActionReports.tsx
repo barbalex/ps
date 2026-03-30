@@ -63,7 +63,7 @@ export const ActionReportsNode = ({
       />
       {showNavs &&
         navs.map((nav, i) => (
-          <PlaceActionReportNode
+          <ActionReportNode
             key={`${nav.id}-${i}`}
             projectId={projectId}
             subprojectId={subprojectId}

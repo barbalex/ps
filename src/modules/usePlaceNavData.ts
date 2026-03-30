@@ -11,8 +11,8 @@ import {
   actions2FilterAtom,
   checkReports1FilterAtom,
   checkReports2FilterAtom,
-  placeActionReports1FilterAtom,
-  placeActionReports2FilterAtom,
+  actionReports1FilterAtom,
+  actionReports2FilterAtom,
   filesFilterAtom,
   treeOpenNodesAtom,
   languageAtom,
@@ -42,8 +42,8 @@ type NavData = {
   actions_count_filtered: number
   check_reports_count_unfiltered: number
   check_reports_count_filtered: number
-  place_action_reports_count_unfiltered: number
-  place_action_reports_count_filtered: number
+  action_reports_count_unfiltered: number
+  action_reports_count_filtered: number
   observations_count: number
   place_users_count: number
   files_count_unfiltered: number
@@ -80,18 +80,14 @@ export const usePlaceNavData = ({
   const [checkReportsFilter] = useAtom(
     placeId2 ? checkReports2FilterAtom : checkReports1FilterAtom,
   )
-  const checkReportsFilterString = filterStringFromFilter(
-    checkReportsFilter,
-  )
+  const checkReportsFilterString = filterStringFromFilter(checkReportsFilter)
   const checkReportsIsFiltered = !!checkReportsFilterString
 
-  const [placeActionReportsFilter] = useAtom(
-    placeId2 ? placeActionReports2FilterAtom : placeActionReports1FilterAtom,
+  const [actionReportsFilter] = useAtom(
+    placeId2 ? actionReports2FilterAtom : actionReports1FilterAtom,
   )
-  const placeActionReportsFilterString = filterStringFromFilter(
-    placeActionReportsFilter,
-  )
-  const placeActionReportsIsFiltered = !!placeActionReportsFilterString
+  const actionReportsFilterString = filterStringFromFilter(actionReportsFilter)
+  const actionReportsIsFiltered = !!actionReportsFilterString
 
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesFilterString = filterStringFromFilter(filesFilter)
@@ -113,8 +109,8 @@ export const usePlaceNavData = ({
         actions_count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}' ${actionsIsFiltered ? ` AND ${actionsFilterString}` : ''}),
         check_reports_count_unfiltered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}'),
         check_reports_count_filtered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}' ${checkReportsIsFiltered ? ` AND ${checkReportsFilterString}` : ''}),
-        place_action_reports_count_unfiltered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}'),
-        place_action_reports_count_filtered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}' ${placeActionReportsIsFiltered ? ` AND ${placeActionReportsFilterString}` : ''}),
+        action_reports_count_unfiltered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}'),
+        action_reports_count_filtered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}' ${actionReportsIsFiltered ? ` AND ${actionReportsFilterString}` : ''}),
         observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
         place_users_count AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}'),
@@ -132,8 +128,8 @@ export const usePlaceNavData = ({
         actions_count_filtered.count AS actions_count_filtered,
         check_reports_count_unfiltered.count AS check_reports_count_unfiltered,
         check_reports_count_filtered.count AS check_reports_count_filtered,
-        place_action_reports_count_unfiltered.count AS place_action_reports_count_unfiltered,
-        place_action_reports_count_filtered.count AS place_action_reports_count_filtered,
+        action_reports_count_unfiltered.count AS action_reports_count_unfiltered,
+        action_reports_count_filtered.count AS action_reports_count_filtered,
         observations_count.count AS observations_count,
         place_users_count.count AS place_users_count,
         files_count_unfiltered.count AS files_count_unfiltered,
@@ -150,8 +146,8 @@ export const usePlaceNavData = ({
         actions_count_filtered,
         check_reports_count_unfiltered,
         check_reports_count_filtered,
-        place_action_reports_count_unfiltered,
-        place_action_reports_count_filtered,
+        action_reports_count_unfiltered,
+        action_reports_count_filtered,
         observations_count,
         place_users_count,
         files_count_unfiltered,
@@ -279,9 +275,9 @@ export const usePlaceNavData = ({
         id: 'action-reports',
         label: buildNavLabel({
           loading,
-          isFiltered: placeActionReportsIsFiltered,
-          countFiltered: nav?.place_action_reports_count_filtered ?? 0,
-          countUnfiltered: nav?.place_action_reports_count_unfiltered ?? 0,
+          isFiltered: actionReportsIsFiltered,
+          countFiltered: nav?.action_reports_count_filtered ?? 0,
+          countUnfiltered: nav?.action_reports_count_unfiltered ?? 0,
           namePlural: formatMessage({
             id: 'mARBts',
             defaultMessage: 'Massnahmen-Berichte',

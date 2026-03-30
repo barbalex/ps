@@ -3,12 +3,12 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const PlaceActionReportQuantityNode = ({
+export const ActionReportQuantityNode = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
-  placeActionReportId,
+  actionReportId,
   nav,
   level = 10,
 }) => {
@@ -25,7 +25,7 @@ export const PlaceActionReportQuantityNode = ({
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
     'action-reports',
-    placeActionReportId,
+    actionReportId,
     'quantities',
   ]
   const ownArray = [...parentArray, nav.id]

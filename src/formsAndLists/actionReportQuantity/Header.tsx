@@ -9,7 +9,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { placeActionReportId, actionReportQuantityId } = useParams({ from })
+  const { actionReportId, actionReportQuantityId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -23,12 +23,12 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM action_report_quantities WHERE place_action_report_id = $1`,
-    [placeActionReportId],
+    [actionReportId],
   )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
-    const id = await createActionReportQuantity({ placeActionReportId })
+    const id = await createActionReportQuantity({ actionReportId })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -65,7 +65,7 @@ export const Header = ({ autoFocusRef, from }) => {
     try {
       const res = await db.query(
         'SELECT place_action_report_quantity_id FROM action_report_quantities WHERE place_action_report_id = $1 ORDER BY label',
-        [placeActionReportId],
+        [actionReportId],
       )
       const quantities = res?.rows
       const len = quantities.length
@@ -89,7 +89,7 @@ export const Header = ({ autoFocusRef, from }) => {
     try {
       const res = await db.query(
         'SELECT place_action_report_quantity_id FROM action_report_quantities WHERE place_action_report_id = $1 ORDER BY label',
-        [placeActionReportId],
+        [actionReportId],
       )
       const quantities = res?.rows
       const len = quantities.length

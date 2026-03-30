@@ -10,12 +10,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
-  placeActionReportId: string
-}
-
-type NavData = {
-  id: string
-  label: string | null
+  actionReportId: string
 }
 
 export const useActionReportReportNavData = ({
@@ -23,18 +18,18 @@ export const useActionReportReportNavData = ({
   subprojectId,
   placeId,
   placeId2,
-  placeActionReportId,
+  actionReportId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
 
-  const placeActionReportQuery = useLiveQuery(/* sql */ `
+  const actionReportQuery = useLiveQuery(/* sql */ `
     SELECT
       label,
       place_action_report_id as id
     FROM action_reports
-    WHERE place_action_report_id = '${placeActionReportId}'`)
-  const placeActionReport = placeActionReportQuery?.rows?.[0]
+    WHERE place_action_report_id = '${actionReportId}'`)
+  const actionReport = actionReportQuery?.rows?.[0]
 
   const parentArray = [
     'data',
@@ -46,7 +41,7 @@ export const useActionReportReportNavData = ({
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
     'action-reports',
-    placeActionReportId,
+    actionReportId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'report']
@@ -56,7 +51,7 @@ export const useActionReportReportNavData = ({
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const notFound = !!placeActionReportQuery && !placeActionReport
+  const notFound = !!actionReportQuery && !actionReport
   const label = notFound
     ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' })
@@ -75,7 +70,7 @@ export const useActionReportReportNavData = ({
     navs: [],
   }
 
-  const loading = placeActionReportQuery === undefined
+  const loading = actionReportQuery === undefined
 
   return { navData, loading }
 }

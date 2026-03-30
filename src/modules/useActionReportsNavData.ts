@@ -7,8 +7,8 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  placeActionReports1FilterAtom,
-  placeActionReports2FilterAtom,
+  actionReports1FilterAtom,
+  actionReports2FilterAtom,
   treeOpenNodesAtom,
 } from '../store.ts'
 
@@ -55,7 +55,7 @@ export const useActionReportsNavData = ({
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const [filter] = useAtom(
-    placeId2 ? placeActionReports2FilterAtom : placeActionReports1FilterAtom,
+    placeId2 ? actionReports2FilterAtom : actionReports1FilterAtom,
   )
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString

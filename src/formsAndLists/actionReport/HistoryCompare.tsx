@@ -17,7 +17,7 @@ import {
   preferredOrder,
 } from './historyCompareConfig.ts'
 
-import type PlaceActionReportsHistory from '../../models/public/PlaceActionReportsHistory.ts'
+import type ActionReportsHistory from '../../models/public/ActionReportsHistory.ts'
 
 export const ActionReportHistoryCompare = ({
   from,
@@ -33,7 +33,7 @@ export const ActionReportHistoryCompare = ({
     subprojectId,
     placeId,
     placeId2,
-    placeActionReportId,
+    actionReportId,
     actionReportHistoryId,
   } = useParams({
     from,
@@ -41,12 +41,12 @@ export const ActionReportHistoryCompare = ({
   })
 
   const reportPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${placeActionReportId}/report`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${placeActionReportId}/report`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${actionReportId}/report`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${actionReportId}/report`
 
   const historyPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${placeActionReportId}/histories`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${placeActionReportId}/histories`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${actionReportId}/histories`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${actionReportId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
@@ -56,7 +56,7 @@ export const ActionReportHistoryCompare = ({
 
   const rowRes = useLiveQuery(
     `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
-    [placeActionReportId],
+    [actionReportId],
   )
   const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
 
@@ -76,7 +76,7 @@ export const ActionReportHistoryCompare = ({
     try {
       await db.query(
         `UPDATE action_reports SET ${name} = $1 WHERE place_action_report_id = $2`,
-        [value, placeActionReportId],
+        [value, actionReportId],
       )
     } catch (error) {
       setValidations((prev) => ({
@@ -95,7 +95,7 @@ export const ActionReportHistoryCompare = ({
     addOperation({
       table: 'action_reports',
       rowIdName: 'place_action_report_id',
-      rowId: placeActionReportId,
+      rowId: actionReportId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -111,13 +111,13 @@ export const ActionReportHistoryCompare = ({
           id: 'YMGqLf',
           defaultMessage: 'Massnahmen-Bericht',
         })}
-        id={placeActionReportId}
+        id={actionReportId}
       />
     )
   }
 
   return (
-    <HistoryCompare<PlaceActionReportsHistory>
+    <HistoryCompare<ActionReportsHistory>
       onBack={() => navigate({ to: reportPath })}
       leftContent={
         <ActionReportForm
@@ -136,7 +136,7 @@ export const ActionReportHistoryCompare = ({
       historyConfig={{
         historyTable: 'place_action_reports_history',
         rowIdField: 'place_action_report_id',
-        rowId: placeActionReportId,
+        rowId: actionReportId,
         historyPath,
         routeHistoryId: actionReportHistoryId,
         currentRow: row,
@@ -145,7 +145,7 @@ export const ActionReportHistoryCompare = ({
         db,
         table: 'action_reports',
         rowIdName: 'place_action_report_id',
-        rowId: placeActionReportId,
+        rowId: actionReportId,
         excludedRestoreFields,
         addOperation,
       }}

@@ -1,3 +1,4 @@
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createActionReport } from '../modules/createRows.ts'
@@ -28,7 +29,7 @@ export const ActionReports = ({ from }) => {
     if (!id) return
     navigate({
       to: id,
-      params: (prev) => ({ ...prev, placeActionReportId: id }),
+      params: (prev) => ({ ...prev, actionReportId: id }),
     })
   }
 

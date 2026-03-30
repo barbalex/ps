@@ -5,12 +5,12 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
-import { PlaceActionReportQuantitiesNode } from './ActionReportQuantities.tsx'
+import { ActionReportQuantitiesNode } from './ActionReportQuantities.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
-export const PlaceActionReportNode = ({
+export const ActionReportNode = ({
   projectId,
   subprojectId,
   placeId,
@@ -110,12 +110,12 @@ export const PlaceActionReportNode = ({
           />
           {(isDesigning ||
             placeLevel?.action_report_quantities !== false) && (
-            <PlaceActionReportQuantitiesNode
+            <ActionReportQuantitiesNode
               projectId={projectId}
               subprojectId={subprojectId}
               placeId={placeId}
               placeId2={placeId2}
-              placeActionReportId={nav.id}
+              actionReportId={nav.id}
               level={level + 1}
             />
           )}

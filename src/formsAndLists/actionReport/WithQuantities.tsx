@@ -26,7 +26,7 @@ import '../../form.css'
 const { Button } = fluentUiReactComponents
 
 export const ActionReportWithQuantities = ({ from }) => {
-  const { placeActionReportId, projectId, placeId, placeId2, subprojectId } =
+  const { actionReportId, projectId, placeId, placeId2, subprojectId } =
     useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
@@ -40,13 +40,13 @@ export const ActionReportWithQuantities = ({ from }) => {
 
   const res = useLiveQuery(
     `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
-    [placeActionReportId],
+    [actionReportId],
   )
   const row: ActionReports | undefined = res?.rows?.[0]
 
   const quantitiesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM action_report_quantities WHERE place_action_report_id = $1`,
-    [placeActionReportId],
+    [actionReportId],
   )
   const quantitiesCount = quantitiesCountRes?.rows?.[0]?.count ?? 0
 
@@ -64,7 +64,7 @@ export const ActionReportWithQuantities = ({ from }) => {
     try {
       await db.query(
         `UPDATE action_reports SET ${name} = $1 WHERE place_action_report_id = $2`,
-        [value, placeActionReportId],
+        [value, actionReportId],
       )
     } catch (error) {
       setValidations((prev) => ({
@@ -81,7 +81,7 @@ export const ActionReportWithQuantities = ({ from }) => {
     addOperation({
       table: 'action_reports',
       rowIdName: 'place_action_report_id',
-      rowId: placeActionReportId,
+      rowId: actionReportId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -93,11 +93,11 @@ export const ActionReportWithQuantities = ({ from }) => {
     location.pathname.includes('/quantities/')
   const isQuantitiesList = /\/quantities\/?$/.test(location.pathname)
 
-  const actionReportBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/action-reports/${placeActionReportId}`
+  const actionReportBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/action-reports/${actionReportId}`
   const quantitiesUrl = `${actionReportBaseUrl}/quantities`
 
   const addQuantity = async () => {
-    const id = await createActionReportQuantity({ placeActionReportId })
+    const id = await createActionReportQuantity({ actionReportId })
     if (!id) return
     navigate({ to: `${quantitiesUrl}/${id}` })
   }
@@ -155,7 +155,7 @@ export const ActionReportWithQuantities = ({ from }) => {
               id: 'YMGqLf',
               defaultMessage: 'Massnahmen-Bericht',
             })}
-            id={placeActionReportId}
+            id={actionReportId}
           />
         )}
       </div>

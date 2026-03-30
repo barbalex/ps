@@ -17,15 +17,15 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing placeId in route parameters')
     }
     if (
-      !params.placeActionReportId ||
-      params.placeActionReportId === 'undefined'
+      !params.actionReportId ||
+      params.actionReportId === 'undefined'
     ) {
       throw new Error(
-        'Invalid or missing placeActionReportId in route parameters',
+        'Invalid or missing actionReportId in route parameters',
       )
     }
     return {
-      navDataFetcher: 'usePlaceActionReportQuantitiesNavData',
+      navDataFetcher: 'useActionReportQuantitiesNavData',
     }
   },
 })

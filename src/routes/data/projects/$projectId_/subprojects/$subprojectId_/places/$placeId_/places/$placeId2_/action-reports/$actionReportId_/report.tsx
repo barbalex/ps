@@ -9,6 +9,6 @@ export const Route = createFileRoute(from)({
     <ActionReport from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/report" />
   ),
   beforeLoad: () => ({
-    navDataFetcher: 'usePlaceActionReportReportNavData',
+    navDataFetcher: 'useActionReportReportNavData',
   }),
 })

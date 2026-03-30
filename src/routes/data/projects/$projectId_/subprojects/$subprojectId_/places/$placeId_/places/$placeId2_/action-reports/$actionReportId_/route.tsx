@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { PlaceActionReportLayout } from './-layout.tsx'
+import { ActionReportLayout } from './-layout.tsx'
 import { NotFound } from '../../../../../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_',
 )({
-  component: PlaceActionReportLayout,
+  component: ActionReportLayout,
   notFoundComponent: NotFound,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
@@ -21,15 +21,15 @@ export const Route = createFileRoute(
       throw new Error('Invalid or missing placeId2 in route parameters')
     }
     if (
-      !params.placeActionReportId ||
-      params.placeActionReportId === 'undefined'
+      !params.actionReportId ||
+      params.actionReportId === 'undefined'
     ) {
       throw new Error(
-        'Invalid or missing placeActionReportId in route parameters',
+        'Invalid or missing actionReportId in route parameters',
       )
     }
     return {
-      navDataFetcher: 'usePlaceActionReportNavData',
+      navDataFetcher: 'useActionReportNavData',
     }
   },
 })

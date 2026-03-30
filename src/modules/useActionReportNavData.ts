@@ -11,7 +11,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
-  placeActionReportId: string
+  actionReportId: string
 }
 
 type NavData = {
@@ -25,7 +25,7 @@ export const useActionReportNavData = ({
   subprojectId,
   placeId,
   placeId2,
-  placeActionReportId,
+  actionReportId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
@@ -33,7 +33,7 @@ export const useActionReportNavData = ({
 
   const sql = `
       WITH
-        place_action_report_quantities_count AS (SELECT count(*) FROM action_report_quantities WHERE place_action_report_id = '${placeActionReportId}')
+        place_action_report_quantities_count AS (SELECT count(*) FROM action_report_quantities WHERE place_action_report_id = '${actionReportId}')
       SELECT
         place_action_report_id AS id,
         label,
@@ -42,7 +42,7 @@ export const useActionReportNavData = ({
         action_reports,
         place_action_report_quantities_count
       WHERE 
-        action_reports.place_action_report_id = '${placeActionReportId}'`
+        action_reports.place_action_report_id = '${actionReportId}'`
   const res = useLiveQuery(sql)
   const loading = res === undefined
 

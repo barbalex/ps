@@ -15,7 +15,7 @@ import type ActionReports from '../../models/public/ActionReports.ts'
 import '../../form.css'
 
 export const ActionReport = ({ from }) => {
-  const { placeActionReportId } = useParams({ from })
+  const { actionReportId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
@@ -26,7 +26,7 @@ export const ActionReport = ({ from }) => {
   const db = usePGlite()
   const res = useLiveQuery(
     `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
-    [placeActionReportId],
+    [actionReportId],
   )
   const row: ActionReports | undefined = res?.rows?.[0]
 
@@ -37,7 +37,7 @@ export const ActionReport = ({ from }) => {
     try {
       await db.query(
         `UPDATE action_reports SET ${name} = $1 WHERE place_action_report_id = $2`,
-        [value, placeActionReportId],
+        [value, actionReportId],
       )
     } catch (error) {
       setValidations((prev) => ({
@@ -54,7 +54,7 @@ export const ActionReport = ({ from }) => {
     addOperation({
       table: 'action_reports',
       rowIdName: 'place_action_report_id',
-      rowId: placeActionReportId,
+      rowId: actionReportId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -81,7 +81,7 @@ export const ActionReport = ({ from }) => {
               id: 'YMGqLf',
               defaultMessage: 'Massnahmen-Bericht',
             })}
-            id={placeActionReportId}
+            id={actionReportId}
           />
         )}
       </div>
