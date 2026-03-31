@@ -17,10 +17,10 @@ type Opt = { id: string; table_name: string; level: number | null }
 // mirroring the nav tree order
 const opts: Opt[] = [
   // ── Subproject scope (no place-level) ──────────────────────────
-  { id: 'subprojects',       table_name: 'subprojects',       level: null },
   { id: 'project_reports',   table_name: 'project_reports',   level: null },
   { id: 'lists',             table_name: 'lists',             level: null },
   { id: 'taxonomies',        table_name: 'taxonomies',        level: null },
+  { id: 'subprojects',       table_name: 'subprojects',       level: null },
   { id: 'subproject_reports', table_name: 'subproject_reports', level: null },
   { id: 'goals',             table_name: 'goals',             level: null },
   { id: 'goal_reports',      table_name: 'goal_reports',      level: null },
