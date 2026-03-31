@@ -8,12 +8,13 @@ import { useFieldsNavData } from '../../modules/useFieldsNavData.ts'
 
 interface Props {
   projectId?: string
+  accountId?: string
 }
 
-export const FieldsNode = ({ projectId }: Props) => {
+export const FieldsNode = ({ projectId, accountId }: Props) => {
   const navigate = useNavigate()
 
-  const { navData } = useFieldsNavData({ projectId })
+  const { navData } = useFieldsNavData({ projectId, accountId })
   const {
     label,
     parentUrl,
@@ -49,7 +50,7 @@ export const FieldsNode = ({ projectId }: Props) => {
     <>
       <Node
         label={label}
-        level={projectId ? 3 : 1}
+        level={projectId || accountId ? 3 : 1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
@@ -63,6 +64,7 @@ export const FieldsNode = ({ projectId }: Props) => {
             key={`${nav.id}-${i}`}
             nav={nav}
             projectId={projectId}
+            accountId={accountId}
           />
         ))}
     </>

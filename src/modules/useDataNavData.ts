@@ -7,7 +7,6 @@ import {
   fieldTypesFilterAtom,
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
-  fieldsFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
 } from '../store.ts'
@@ -35,8 +34,6 @@ type NavDataFiltered = {
   widget_types_count_filtered?: number
   widgets_for_fields_count_unfiltered?: number
   widgets_for_fields_count_filtered?: number
-  fields_count_unfiltered?: number
-  fields_count_filtered?: number
   crs_count_unfiltered?: number
   messages_count_unfiltered: number
 }
@@ -64,10 +61,6 @@ export const useDataNavData = () => {
   )
   const widgetsForFieldsIsFiltered = !!widgetsForFieldsFilterString
 
-  const [fieldsFilter] = useAtom(fieldsFilterAtom)
-  const fieldsFilterString = filterStringFromFilter(fieldsFilter)
-  const fieldsIsFiltered = !!fieldsFilterString
-
   const res = useLiveQuery(
     `
       WITH 
@@ -86,8 +79,6 @@ export const useDataNavData = () => {
             widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
             qcs_count_unfiltered AS (SELECT count(*) FROM qcs),
             root_qcs_count_unfiltered AS (SELECT count(*) FROM qcs_assignment WHERE project_id IS NULL AND subproject_id IS NULL),
-            fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id IS NULL),
-            fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id IS NULL ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
             crs_count_unfiltered AS (SELECT count(*) FROM crs),
           `
             : ''
@@ -109,8 +100,6 @@ export const useDataNavData = () => {
               widgets_for_fields_count_filtered.count AS widgets_for_fields_count_filtered,
               qcs_count_unfiltered.count AS qcs_count_unfiltered,
               root_qcs_count_unfiltered.count AS root_qcs_count_unfiltered,
-              fields_count_unfiltered.count AS fields_count_unfiltered,
-              fields_count_filtered.count AS fields_count_filtered,
               crs_count_unfiltered.count AS crs_count_unfiltered,
             `
             : ''
@@ -132,8 +121,6 @@ export const useDataNavData = () => {
               widgets_for_fields_count_filtered,
               qcs_count_unfiltered,
               root_qcs_count_unfiltered,
-              fields_count_unfiltered,
-              fields_count_filtered,
               crs_count_unfiltered,
             `
             : ''
@@ -221,19 +208,6 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'U55pI0',
                   defaultMessage: 'Widget-Typen',
-                }),
-              }),
-            },
-            {
-              id: 'fields',
-              label: buildNavLabel({
-                loading,
-                isFiltered: fieldsIsFiltered,
-                countFiltered: row?.fields_count_filtered ?? 0,
-                countUnfiltered: row?.fields_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'I+dTZE',
-                  defaultMessage: 'Felder',
                 }),
               }),
             },

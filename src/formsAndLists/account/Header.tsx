@@ -9,7 +9,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type Accounts from '../../models/public/Accounts.ts'
 
-const from = '/data/accounts/$accountId'
+const from = '/data/accounts/$accountId_/'
 
 export const Header = ({ autoFocusRef }) => {
   const { formatMessage } = useIntl()

@@ -9,16 +9,19 @@ import { useFieldsNavData } from '../modules/useFieldsNavData.ts'
 import '../form.css'
 
 export const Fields = ({ from, hideHeader = false, projectId: projectIdProp }) => {
-  const { projectId: routeProjectId } = useParams({ strict: false, from })
+  const { projectId: routeProjectId, accountId: routeAccountId } = useParams({ strict: false, from })
   const projectId = projectIdProp ?? routeProjectId
+  const accountId = routeAccountId
   const navigate = useNavigate()
-  const fieldsBaseUrl = `/data/projects/${projectId}/fields`
+  const fieldsBaseUrl = projectId
+    ? `/data/projects/${projectId}/fields`
+    : `/data/accounts/${accountId}/project-fields`
 
-  const { loading, navData, isFiltered } = useFieldsNavData({ projectId })
+  const { loading, navData, isFiltered } = useFieldsNavData({ projectId, accountId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createField({ projectId })
+    const id = await createField({ projectId, accountId })
     if (!id) return
     navigate({ to: `${fieldsBaseUrl}/${id}` })
   }

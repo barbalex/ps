@@ -3,15 +3,16 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const FieldNode = ({ projectId, nav }) => {
-  const level: number = projectId ? 4 : 2
+export const FieldNode = ({ projectId, accountId, nav }) => {
+  const level: number = projectId || accountId ? 4 : 2
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const fieldsSegment = projectId ? 'fields' : accountId ? 'project-fields' : 'fields'
   const ownArray = [
     'data',
-    ...(projectId ? ['projects', projectId] : []),
-    'fields',
+    ...(projectId ? ['projects', projectId] : accountId ? ['accounts', accountId] : []),
+    fieldsSegment,
     nav.id,
   ]
   const ownUrl = `/${ownArray.join('/')}`

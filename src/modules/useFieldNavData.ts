@@ -8,6 +8,7 @@ import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId?: string
+  accountId?: string
   fieldId: string
 }
 
@@ -16,10 +17,17 @@ type NavData = {
   label: string | null
 }
 
-export const useFieldNavData = ({ projectId, fieldId }: Props) => {
+export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
+
+  const whereScope = projectId
+    ? `project_id = '${projectId}'`
+    : accountId
+      ? `project_id IS NULL AND account_id = '${accountId}'`
+      : 'project_id IS NULL'
+  const fieldsSegment = projectId ? 'fields' : accountId ? 'project-fields' : 'fields'
 
   const res = useLiveQuery(
     `
@@ -28,7 +36,7 @@ export const useFieldNavData = ({ projectId, fieldId }: Props) => {
         label
       FROM fields
       WHERE 
-        project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
+        ${whereScope}
         AND field_id = $1
     `,
     [fieldId],
@@ -40,8 +48,8 @@ export const useFieldNavData = ({ projectId, fieldId }: Props) => {
 
   const parentArray = [
     'data',
-    ...(projectId ? ['projects', projectId] : []),
-    'fields',
+    ...(projectId ? ['projects', projectId] : accountId ? ['accounts', accountId] : []),
+    fieldsSegment,
   ]
   const ownArray = [...parentArray, nav?.id]
   // needs to work not only works for urlPath, for all opened paths!

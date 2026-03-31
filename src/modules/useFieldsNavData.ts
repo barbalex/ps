@@ -9,7 +9,8 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import { fieldsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
-  projectId: string
+  projectId?: string
+  accountId?: string
 }
 
 type NavDataOpen = {
@@ -24,14 +25,24 @@ type NavDataClosed = {
   count_filtered: number
 }[]
 
-export const useFieldsNavData = ({ projectId }: Props) => {
+export const useFieldsNavData = ({ projectId, accountId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const parentArray = ['data', ...(projectId ? ['projects', projectId] : [])]
+  const whereScope = projectId
+    ? `project_id = '${projectId}'`
+    : accountId
+      ? `project_id IS NULL AND account_id = '${accountId}'`
+      : 'project_id IS NULL'
+  const fieldsSegment = projectId ? 'fields' : accountId ? 'project-fields' : 'fields'
 
-  const ownArray = [...parentArray, 'fields']
+  const parentArray = [
+    'data',
+    ...(projectId ? ['projects', projectId] : accountId ? ['accounts', accountId] : []),
+  ]
+
+  const ownArray = [...parentArray, fieldsSegment]
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
@@ -42,22 +53,22 @@ export const useFieldsNavData = ({ projectId }: Props) => {
   const sql = isOpen
     ? `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}),
-        count_filtered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM fields WHERE ${whereScope}),
+        count_filtered AS (SELECT count(*) FROM fields WHERE ${whereScope}${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         field_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM fields, count_unfiltered, count_filtered
-      WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
+      WHERE ${whereScope}
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY table_name, name, level
     `
     : `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}),
-        count_filtered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM fields WHERE ${whereScope}),
+        count_filtered AS (SELECT count(*) FROM fields WHERE ${whereScope}${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered

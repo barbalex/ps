@@ -324,16 +324,18 @@ export const createProjectCrs = async ({ projectId }) => {
 
 export const createField = async ({
   projectId = null,
+  accountId = null,
   table_name = null,
   level = null,
 }) => {
   const db = store.get(pgliteDbAtom)
   const field_id = uuidv7()
   await db.query(
-    `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6)`,
+    `insert into fields (field_id, project_id, account_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6, $7)`,
     [
       field_id,
       projectId,
+      accountId,
       table_name,
       level,
       '018ca19e-7a23-7bf4-8523-ff41e3b60807',
@@ -347,6 +349,7 @@ export const createField = async ({
     draft: {
       field_id,
       project_id: projectId,
+      account_id: accountId,
       table_name,
       level,
       field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',

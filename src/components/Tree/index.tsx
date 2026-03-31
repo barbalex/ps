@@ -9,7 +9,6 @@ import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
 import { QcsNode } from './Qcs.tsx'
 import { RootQcsNode } from './RootQcs.tsx'
 import { RootQcsRunNode } from './RootQcsRun.tsx'
-import { FieldsNode } from './Fields.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
 import { designingAtom } from '../../store.ts'
@@ -28,7 +27,6 @@ export const Tree = () => {
           <UsersNode />
           <FieldTypesNode />
           <WidgetTypesNode />
-          <FieldsNode />
           <WidgetsForFieldsNode />
           {/* TODO: restrict editing to app administrator once auth supports it */}
           <QcsNode />

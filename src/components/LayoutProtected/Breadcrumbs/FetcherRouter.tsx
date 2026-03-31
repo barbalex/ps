@@ -794,11 +794,13 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       return <WidgetForFieldFetcher params={params} {...other} />
     }
     case 'useFieldsNavData': {
-      if (!params.projectId) return null
+      if (!params.projectId && !params.accountId) return null
       return <FieldsFetcher params={params} {...other} />
     }
     case 'useFieldNavData': {
-      if (!params.projectId || !params.fieldId) return null
+      if ((!params.projectId && !params.accountId) || !params.fieldId) {
+        return null
+      }
       return <FieldFetcher params={params} {...other} />
     }
     case 'useCrssNavData': {

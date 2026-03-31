@@ -16,7 +16,7 @@ import { accountTypeOptions } from '../../modules/constants.ts'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 
-const from = '/data/accounts/$accountId'
+const from = '/data/accounts/$accountId_/'
 
 export const Account = () => {
   const { accountId } = useParams({ from })
