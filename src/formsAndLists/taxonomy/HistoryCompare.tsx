@@ -1,13 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
-import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
+import { TaxonomyForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import {
   createHistoryFieldLabelFormatter,
@@ -17,7 +14,6 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { taxonomyTypeOptions } from '../../modules/constants.ts'
 import {
   excludedDisplayFields,
   excludedRestoreFields,
@@ -42,6 +38,7 @@ export const TaxonomyHistoryCompare = () => {
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
+  const autoFocusRef = useRef<HTMLInputElement>(null)
   const [validations, setValidations] = useState<Record<string, unknown>>({})
 
   const rowRes = useLiveQuery(
@@ -94,64 +91,15 @@ export const TaxonomyHistoryCompare = () => {
     )
   }
 
-  const taxonomyTypeLabelMap = Object.fromEntries(
-    taxonomyTypeOptions.map((o) => [
-      o.value,
-      formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
-    ]),
-  )
-  const taxonomyTypeList = taxonomyTypeOptions.map((o) => o.value)
-
   const leftContent = (
     <div className="form-container">
-      <>
-        <TextField
-          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
-          name="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          validationState={validations?.name?.state}
-          validationMessage={validations?.name?.message}
-        />
-        <RadioGroupField
-          label={formatMessage({ id: 'xTeBn/', defaultMessage: 'Typ' })}
-          name="type"
-          list={taxonomyTypeList}
-          value={row.type ?? ''}
-          onChange={onChange}
-          validationState={validations?.type?.state}
-          validationMessage={validations?.type?.message}
-          labelMap={taxonomyTypeLabelMap}
-        />
-        <DropdownField
-          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-          name="unit_id"
-          table="units"
-          idField="unit_id"
-          where={`project_id = '${row.project_id}'`}
-          value={row.unit_id ?? ''}
-          onChange={onChange}
-          validationState={validations?.unit_id?.state}
-          validationMessage={validations?.unit_id?.message}
-        />
-        <TextField
-          label={formatMessage({ id: 'TpzCEx', defaultMessage: 'Url' })}
-          name="url"
-          type="url"
-          value={row.url ?? ''}
-          onChange={onChange}
-          validationState={validations?.url?.state}
-          validationMessage={validations?.url?.message}
-        />
-        <SwitchField
-          label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}
-          name="obsolete"
-          value={row.obsolete ?? false}
-          onChange={onChange}
-          validationState={validations?.obsolete?.state}
-          validationMessage={validations?.obsolete?.message}
-        />
-      </>
+      <TaxonomyForm
+        row={row}
+        onChange={onChange}
+        validations={validations as Record<string, { state: string; message: string }>}
+        autoFocusRef={autoFocusRef}
+        projectId={projectId}
+      />
     </div>
   )
 
