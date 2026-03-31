@@ -47,7 +47,7 @@ export const ListForm = ({
         validationMessage={validations?.name?.message}
       />
       <RadioGroupField
-        label={formatMessage({ id: 'lVr8Zn', defaultMessage: 'Werttyp' })}
+        label={formatMessage({ id: 'lVr8Zn', defaultMessage: 'Wert-Typ' })}
         name="value_type"
         list={listValueTypes}
         value={row.value_type ?? ''}

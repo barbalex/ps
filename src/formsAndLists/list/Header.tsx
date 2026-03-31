@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createList } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
@@ -16,6 +17,8 @@ export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
+  const basePath = `/data/projects/${projectId}/lists/${listId}`
+  const formPath = isForm ? `${basePath}/list` : basePath
 
   // Keep a ref to the current listId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -107,6 +110,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="list"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={formPath}
+          historyTable="lists_history"
+          rowIdField="list_id"
+          rowId={listId}
+        />
+      }
     />
   )
 }
