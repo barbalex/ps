@@ -43,13 +43,14 @@ export const ProjectHistoryCompare = ({
   ])
   const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
 
-  const visibleCurrentFields = new Set(['name', 'label'])
+  const visibleCurrentFields = new Set(['name', 'label', 'data'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
       label: { id: 'XlAbCd', defaultMessage: 'Bezeichnung' },
+      data: { id: 'bDbEhF', defaultMessage: 'Daten' },
     },
   })
 

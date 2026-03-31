@@ -4,7 +4,10 @@
 /** Identifier type for public.field_types */
 export type FieldTypesFieldTypeId = string & { __brand: 'public.field_types' };
 
-/** Represents the table public.field_types */
+/**
+ * Represents the table public.field_types
+ * Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.
+ */
 export default interface FieldTypes {
   field_type_id: FieldTypesFieldTypeId;
 
@@ -16,17 +19,20 @@ export default interface FieldTypes {
 
   label: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
-/** Represents the initializer for the table public.field_types */
+/**
+ * Represents the initializer for the table public.field_types
+ * Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.
+ */
 export interface FieldTypesInitializer {
   /** Default value: uuid_generate_v7() */
   field_type_id?: FieldTypesFieldTypeId;
@@ -37,9 +43,6 @@ export interface FieldTypesInitializer {
 
   comment?: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -47,9 +50,15 @@ export interface FieldTypesInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
-/** Represents the mutator for the table public.field_types */
+/**
+ * Represents the mutator for the table public.field_types
+ * Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.
+ */
 export interface FieldTypesMutator {
   field_type_id?: FieldTypesFieldTypeId;
 
@@ -59,12 +68,12 @@ export interface FieldTypesMutator {
 
   comment?: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period?: string;
-
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }

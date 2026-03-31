@@ -6,7 +6,7 @@ export type QcsQcsId = string & { __brand: 'public.qcs' };
 
 /**
  * Represents the table public.qcs
- * Quality controls for data. Surface suspicious data.
+ * Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.
  */
 export default interface Qcs {
   qcs_id: QcsQcsId;
@@ -41,19 +41,19 @@ export default interface Qcs {
 
   sql: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
  * Represents the initializer for the table public.qcs
- * Quality controls for data. Surface suspicious data.
+ * Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.
  */
 export interface QcsInitializer {
   /** Default value: uuid_generate_v7() */
@@ -93,9 +93,6 @@ export interface QcsInitializer {
 
   sql?: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -103,11 +100,14 @@ export interface QcsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
  * Represents the mutator for the table public.qcs
- * Quality controls for data. Surface suspicious data.
+ * Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.
  */
 export interface QcsMutator {
   qcs_id?: QcsQcsId;
@@ -142,12 +142,12 @@ export interface QcsMutator {
 
   sql?: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period?: string;
-
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }

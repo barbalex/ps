@@ -13,6 +13,7 @@ import { useIntl } from 'react-intl'
 
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
@@ -46,6 +47,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const subprojectNameSingular =
     combinedRes?.rows?.[0]?.subproject_name_singular
   const rowCount = combinedRes?.rows?.[0]?.count ?? 2
+  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/reports/${subprojectReportId}`
 
   const isPrintView = location.pathname.endsWith('/print')
 
@@ -170,14 +172,23 @@ export const Header = ({ autoFocusRef, from }) => {
       />
     </>
   ) : (
-    <Button
-      icon={<EyeRegular />}
-      onClick={onClickPdf}
-      title={formatMessage({
-        id: 'bB2DeF',
-        defaultMessage: 'Bericht-Vorschau',
-      })}
-    />
+    <>
+      <HistoryToggleButton
+        historiesPath={`${basePath}/histories`}
+        formPath={basePath}
+        historyTable="subproject_reports_history"
+        rowIdField="subproject_report_id"
+        rowId={subprojectReportId}
+      />
+      <Button
+        icon={<EyeRegular />}
+        onClick={onClickPdf}
+        title={formatMessage({
+          id: 'bB2DeF',
+          defaultMessage: 'Bericht-Vorschau',
+        })}
+      />
+    </>
   )
 
   const title = isPrintView

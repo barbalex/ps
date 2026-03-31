@@ -6,13 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createSubprojectTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
 
 export const Header = ({ autoFocusRef }) => {
-  const { subprojectId, subprojectTaxonId } = useParams({ from })
+  const { subprojectId, subprojectTaxonId, projectId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -120,6 +121,8 @@ export const Header = ({ autoFocusRef }) => {
     }
   }
 
+  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/taxa/${subprojectTaxonId}`
+
   return (
     <FormHeader
       title={title}
@@ -130,6 +133,15 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={toDisabled}
       toPreviousDisabled={toDisabled}
       tableName="subproject taxon"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="subproject_taxa_history"
+          rowIdField="subproject_taxon_id"
+          rowId={subprojectTaxonId}
+        />
+      }
     />
   )
 }

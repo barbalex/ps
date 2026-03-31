@@ -64,6 +64,7 @@ export const PlaceHistoryCompare = ({
     'since',
     'until',
     'relevant_for_reports',
+    'data',
     ...(designing ? ['level'] : []),
   ])
 
@@ -85,6 +86,7 @@ export const PlaceHistoryCompare = ({
         id: 'bEpPuU',
         defaultMessage: 'Relevant für Berichte',
       },
+      data: { id: 'bDbEhF', defaultMessage: 'Daten' },
     },
   })
 

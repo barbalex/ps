@@ -12,7 +12,7 @@ export type FieldsFieldId = string & { __brand: 'public.fields' };
 
 /**
  * Represents the table public.fields
- * Fields are used to define the data structure of data jsonb fields in other tables.
+ * Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.
  */
 export default interface Fields {
   field_id: FieldsFieldId;
@@ -44,19 +44,19 @@ export default interface Fields {
 
   label: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
  * Represents the initializer for the table public.fields
- * Fields are used to define the data structure of data jsonb fields in other tables.
+ * Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.
  */
 export interface FieldsInitializer {
   /** Default value: uuid_generate_v7() */
@@ -91,9 +91,6 @@ export interface FieldsInitializer {
   /** Default value: false */
   obsolete?: boolean | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -101,11 +98,14 @@ export interface FieldsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
  * Represents the mutator for the table public.fields
- * Fields are used to define the data structure of data jsonb fields in other tables.
+ * Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.
  */
 export interface FieldsMutator {
   field_id?: FieldsFieldId;
@@ -135,12 +135,12 @@ export interface FieldsMutator {
 
   obsolete?: boolean | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period?: string;
-
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }

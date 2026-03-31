@@ -6,7 +6,7 @@ export type MessagesMessageId = string & { __brand: 'public.messages' };
 
 /**
  * Represents the table public.messages
- * messages for the user. Mostly informing about updates
+ * System messages for users. No history tracking needed as these are transient notifications managed by the system.
  */
 export default interface Messages {
   message_id: MessagesMessageId;
@@ -15,19 +15,19 @@ export default interface Messages {
 
   message: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
  * Represents the initializer for the table public.messages
- * messages for the user. Mostly informing about updates
+ * System messages for users. No history tracking needed as these are transient notifications managed by the system.
  */
 export interface MessagesInitializer {
   /** Default value: uuid_generate_v7() */
@@ -38,9 +38,6 @@ export interface MessagesInitializer {
 
   message?: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -48,11 +45,14 @@ export interface MessagesInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
 }
 
 /**
  * Represents the mutator for the table public.messages
- * messages for the user. Mostly informing about updates
+ * System messages for users. No history tracking needed as these are transient notifications managed by the system.
  */
 export interface MessagesMutator {
   message_id?: MessagesMessageId;
@@ -61,12 +61,12 @@ export interface MessagesMutator {
 
   message?: string | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period?: string;
-
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
 }

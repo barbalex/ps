@@ -1288,7 +1288,7 @@ CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name)
 CREATE INDEX IF NOT EXISTS field_types_sort_idx ON field_types USING btree(sort);
 CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(label);
 
-COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.'
+COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.';
 
 --------------------------------------------------------------
 -- widget_types

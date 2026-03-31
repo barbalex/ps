@@ -9,13 +9,13 @@ export default interface TemplatePublicMessagesHistory {
 
   message: string | null;
 
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
+
+  sys_period: string;
 }
 
 /** Represents the initializer for the table partman.template_public_messages_history */
@@ -26,13 +26,13 @@ export interface TemplatePublicMessagesHistoryInitializer {
 
   message?: string | null;
 
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by?: string | null;
+
+  sys_period: string;
 }
 
 /** Represents the mutator for the table partman.template_public_messages_history */
@@ -43,11 +43,11 @@ export interface TemplatePublicMessagesHistoryMutator {
 
   message?: string | null;
 
-  sys_period?: string;
-
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  sys_period?: string;
 }

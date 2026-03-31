@@ -8,7 +8,7 @@ export type CrsCrsId = string & { __brand: 'public.crs' };
 
 /**
  * Represents the table public.crs
- * List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.
+ * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
  */
 export default interface Crs {
   crs_id: CrsCrsId;
@@ -33,7 +33,7 @@ export default interface Crs {
 
 /**
  * Represents the initializer for the table public.crs
- * List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.
+ * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
  */
 export interface CrsInitializer {
   /** Default value: uuid_generate_v7() */
@@ -59,7 +59,7 @@ export interface CrsInitializer {
 
 /**
  * Represents the mutator for the table public.crs
- * List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.
+ * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
  */
 export interface CrsMutator {
   crs_id?: CrsCrsId;

@@ -503,6 +503,7 @@ CREATE TABLE IF NOT EXISTS subproject_taxa(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -595,6 +596,7 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type unit_types_enum DEFAULT NULL, -- TODO: not in use?
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -977,6 +979,7 @@ CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1279,6 +1282,7 @@ CREATE TABLE IF NOT EXISTS field_types(
   sort smallint DEFAULT NULL,
   comment text,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1288,7 +1292,7 @@ CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name)
 CREATE INDEX IF NOT EXISTS field_types_sort_idx ON field_types USING btree(sort);
 CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(label);
 
-COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.'
+COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.';
 
 --------------------------------------------------------------
 -- widget_types
@@ -1355,6 +1359,7 @@ CREATE TABLE IF NOT EXISTS fields(
       ELSE table_name || '.' || name || ' ' || level
     END
   ) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1969,6 +1974,7 @@ CREATE TABLE IF NOT EXISTS qcs(
   is_subproject_level boolean DEFAULT false,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,

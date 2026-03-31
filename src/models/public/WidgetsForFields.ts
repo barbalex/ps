@@ -7,7 +7,10 @@ import type { WidgetTypesWidgetTypeId } from './WidgetTypes';
 /** Identifier type for public.widgets_for_fields */
 export type WidgetsForFieldsWidgetForFieldId = string & { __brand: 'public.widgets_for_fields' };
 
-/** Represents the table public.widgets_for_fields */
+/**
+ * Represents the table public.widgets_for_fields
+ * Mapping of field types to widget types. No history tracking needed as this is root-level configuration managed by administrators.
+ */
 export default interface WidgetsForFields {
   widget_for_field_id: WidgetsForFieldsWidgetForFieldId;
 
@@ -24,7 +27,10 @@ export default interface WidgetsForFields {
   updated_by: string | null;
 }
 
-/** Represents the initializer for the table public.widgets_for_fields */
+/**
+ * Represents the initializer for the table public.widgets_for_fields
+ * Mapping of field types to widget types. No history tracking needed as this is root-level configuration managed by administrators.
+ */
 export interface WidgetsForFieldsInitializer {
   /** Default value: uuid_generate_v7() */
   widget_for_field_id?: WidgetsForFieldsWidgetForFieldId;
@@ -44,7 +50,10 @@ export interface WidgetsForFieldsInitializer {
   updated_by?: string | null;
 }
 
-/** Represents the mutator for the table public.widgets_for_fields */
+/**
+ * Represents the mutator for the table public.widgets_for_fields
+ * Mapping of field types to widget types. No history tracking needed as this is root-level configuration managed by administrators.
+ */
 export interface WidgetsForFieldsMutator {
   widget_for_field_id?: WidgetsForFieldsWidgetForFieldId;
 

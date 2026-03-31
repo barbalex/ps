@@ -63,7 +63,10 @@ export interface AccountsInitializer {
   /** Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name" */
   projects_label_by?: string | null;
 
-  /** Render project fields inside the account form? Preset: true */
+  /**
+   * Render project fields inside the account form? Preset: true
+   * Default value: true
+   */
   project_fields_in_account?: boolean | null;
 
   label?: string | null;

@@ -60,12 +60,13 @@ export const ActionReportHistoryCompare = ({
   )
   const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
 
-  const visibleCurrentFields = new Set(['year'])
+  const visibleCurrentFields = new Set(['year', 'data'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
       year: { id: 'bB4FgH', defaultMessage: 'Jahr' },
+      data: { id: 'bDbEhF', defaultMessage: 'Daten' },
     },
   })
 

@@ -4,7 +4,10 @@
 /** Identifier type for public.widget_types */
 export type WidgetTypesWidgetTypeId = string & { __brand: 'public.widget_types' };
 
-/** Represents the table public.widget_types */
+/**
+ * Represents the table public.widget_types
+ * Root-level widget type definitions. No history tracking needed as these are application-level configuration managed by administrators.
+ */
 export default interface WidgetTypes {
   widget_type_id: WidgetTypesWidgetTypeId;
 
@@ -25,7 +28,10 @@ export default interface WidgetTypes {
   updated_by: string | null;
 }
 
-/** Represents the initializer for the table public.widget_types */
+/**
+ * Represents the initializer for the table public.widget_types
+ * Root-level widget type definitions. No history tracking needed as these are application-level configuration managed by administrators.
+ */
 export interface WidgetTypesInitializer {
   /** Default value: uuid_generate_v7() */
   widget_type_id?: WidgetTypesWidgetTypeId;
@@ -48,7 +54,10 @@ export interface WidgetTypesInitializer {
   updated_by?: string | null;
 }
 
-/** Represents the mutator for the table public.widget_types */
+/**
+ * Represents the mutator for the table public.widget_types
+ * Root-level widget type definitions. No history tracking needed as these are application-level configuration managed by administrators.
+ */
 export interface WidgetTypesMutator {
   widget_type_id?: WidgetTypesWidgetTypeId;
 

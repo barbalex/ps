@@ -44,7 +44,7 @@ export const SubprojectHistoryCompare = ({
   )
   const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
 
-  const visibleCurrentFields = new Set(['name', 'start_year'])
+  const visibleCurrentFields = new Set(['name', 'start_year', 'data'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -52,6 +52,7 @@ export const SubprojectHistoryCompare = ({
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
       start_year: { id: 'bEkKpP', defaultMessage: 'Startjahr' },
       end_year: { id: 'bSubprojectEndYear', defaultMessage: 'Endjahr' },
+      data: { id: 'bDbEhF', defaultMessage: 'Daten' },
     },
   })
 

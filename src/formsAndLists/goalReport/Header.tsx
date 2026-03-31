@@ -7,15 +7,17 @@ import { useIntl } from 'react-intl'
 
 import { createGoalReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, goalId, goalReportId } = useParams({ from })
+  const { projectId, subprojectId, goalId, goalReportId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const { formatMessage } = useIntl()
+  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}/reports/${goalReportId}`
 
   // Keep a ref to the current goalReportId so it's always fresh in callbacks
   // without this users can only click toNext or toPrevious once
@@ -109,6 +111,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="goal report"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="goal_reports_history"
+          rowIdField="goal_report_id"
+          rowId={goalReportId}
+        />
+      }
     />
   )
 }

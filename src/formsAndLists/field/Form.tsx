@@ -2,31 +2,12 @@ import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { WidgetType } from './WidgetType.tsx'
-import { accountTables } from '../../formsAndLists/field/accountTables.ts'
+import { TableAndLevel } from './TableAndLevel.tsx'
 
 import '../../form.css'
-
-const projectTables = [
-  'actions',
-  'action_reports',
-  'checks',
-  'check_reports',
-  'goal_reports',
-  'goals',
-  'files',
-  'lists',
-  'observations',
-  'places',
-  'project_reports',
-  'subproject_reports',
-  'subprojects',
-  'taxa',
-  'taxonomies',
-]
 
 const widgetsNeedingList = [
   '018ca1a1-9ea1-77a0-a89e-e7dfa92e2cfe',
@@ -45,48 +26,17 @@ export const FieldForm = ({
   const { formatMessage } = useIntl()
 
   const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
-  const tableName = row?.table_name
-  const showLevelField =
-    !!tableName && !['projects', 'subprojects'].includes(tableName)
 
   return (
     <>
       {!isInForm && (
-        <>
-          <DropdownFieldSimpleOptions
-            label={formatMessage({ id: 'Tb8kLm', defaultMessage: 'Tabelle' })}
-            name="table_name"
-            value={row.table_name ?? ''}
-            onChange={onChange}
-            options={projectId ? projectTables : accountTables}
-            autoFocus
-            ref={autoFocusRef}
-            validationState={validations?.table_name?.state}
-            validationMessage={
-              validations.table_name?.message ??
-              (row.table_name
-                ? undefined
-                : formatMessage({
-                    id: 'Rq3wXp',
-                    defaultMessage: 'Pflichtfeld',
-                  }))
-            }
-          />
-          {showLevelField && (
-            <TextField
-              label={formatMessage({
-                id: 'Lv9nRx',
-                defaultMessage: 'Ort-Stufe',
-              })}
-              name="level"
-              value={row.level}
-              type="number"
-              onChange={onChange}
-              validationState={validations?.level?.state}
-              validationMessage={validations?.level?.message}
-            />
-          )}
-        </>
+        <TableAndLevel
+          projectId={projectId}
+          onChange={onChange}
+          row={row}
+          validations={validations}
+          autoFocusRef={autoFocusRef}
+        />
       )}
       <TextField
         label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}

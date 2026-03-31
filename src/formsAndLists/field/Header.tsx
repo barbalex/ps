@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
@@ -13,6 +14,9 @@ export const Header = ({ autoFocusRef, from }) => {
   const { projectId, accountId, fieldId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const basePath = projectId
+    ? `/data/projects/${projectId}/fields/${fieldId}`
+    : `/data/accounts/${accountId}/project-fields/${fieldId}`
 
   const db = usePGlite()
 
@@ -114,6 +118,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="field"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="fields_history"
+          rowIdField="field_id"
+          rowId={fieldId}
+        />
+      }
     />
   )
 }

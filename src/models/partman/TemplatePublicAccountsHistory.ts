@@ -15,6 +15,8 @@ export default interface TemplatePublicAccountsHistory {
 
   projects_label_by: string | null;
 
+  project_fields_in_account: boolean | null;
+
   label: string | null;
 
   sys_period: string;
@@ -40,6 +42,8 @@ export interface TemplatePublicAccountsHistoryInitializer {
 
   projects_label_by?: string | null;
 
+  project_fields_in_account?: boolean | null;
+
   label?: string | null;
 
   sys_period: string;
@@ -64,6 +68,8 @@ export interface TemplatePublicAccountsHistoryMutator {
   period_end?: Date | null;
 
   projects_label_by?: string | null;
+
+  project_fields_in_account?: boolean | null;
 
   label?: string | null;
 

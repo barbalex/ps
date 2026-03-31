@@ -19,4 +19,5 @@ export const preferredOrder = [
   'since',
   'until',
   'relevant_for_reports',
+  'data',
 ]

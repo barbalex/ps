@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createUnit } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/units/$unitId/'
@@ -99,6 +100,8 @@ export const Header = ({ autoFocusRef }) => {
     }
   }
 
+  const basePath = `/data/projects/${projectId}/units/${unitId}`
+
   return (
     <FormHeader
       title={formatMessage({ id: 'sTk6C3', defaultMessage: 'Einheit' })}
@@ -109,6 +112,15 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="unit"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="units_history"
+          rowIdField="unit_id"
+          rowId={unitId}
+        />
+      }
     />
   )
 }

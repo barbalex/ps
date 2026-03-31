@@ -53,7 +53,7 @@ export const ActionHistoryCompare = ({
   ])
   const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
 
-  const visibleCurrentFields = new Set(['date', 'relevant_for_reports'])
+  const visibleCurrentFields = new Set(['date', 'relevant_for_reports', 'data'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -63,6 +63,7 @@ export const ActionHistoryCompare = ({
         id: 'bEpPuU',
         defaultMessage: 'Relevant für Berichte',
       },
+      data: { id: 'bDbEhF', defaultMessage: 'Daten' },
     },
   })
 

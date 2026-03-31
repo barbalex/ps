@@ -2125,6 +2125,300 @@ END
 $$;
 
 --------------------------------------------------------------
+-- subproject_taxa -> subproject_taxa_history
+-- Retention: 5 years
+--
+ALTER TABLE subproject_taxa
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE subproject_taxa
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE subproject_taxa
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN subproject_taxa.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS subproject_taxa_history (
+	LIKE subproject_taxa INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE subproject_taxa_history OWNER TO partman_user;
+
+COMMENT ON TABLE subproject_taxa_history IS 'System-versioned history of subproject_taxa. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN subproject_taxa_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS subproject_taxa_history_updated_at_idx
+ON subproject_taxa_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS subproject_taxa_history_subproject_taxon_id_updated_at_idx
+ON subproject_taxa_history USING btree (subproject_taxon_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS subproject_taxa_history_sys_period_idx
+ON subproject_taxa_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_subproject_taxa_trigger'
+			AND tgrelid = 'subproject_taxa'::regclass
+	) THEN
+		CREATE TRIGGER versioning_subproject_taxa_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON subproject_taxa
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'subproject_taxa_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- units -> units_history
+-- Retention: 5 years
+--
+ALTER TABLE units
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE units
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE units
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN units.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS units_history (
+	LIKE units INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE units_history OWNER TO partman_user;
+
+COMMENT ON TABLE units_history IS 'System-versioned history of units. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN units_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS units_history_updated_at_idx
+ON units_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS units_history_unit_id_updated_at_idx
+ON units_history USING btree (unit_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS units_history_sys_period_idx
+ON units_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_units_trigger'
+			AND tgrelid = 'units'::regclass
+	) THEN
+		CREATE TRIGGER versioning_units_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON units
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'units_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- field_types -> field_types_history
+-- Retention: 5 years
+--
+ALTER TABLE field_types
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE field_types
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE field_types
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN field_types.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS field_types_history (
+	LIKE field_types INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE field_types_history OWNER TO partman_user;
+
+COMMENT ON TABLE field_types_history IS 'System-versioned history of field_types. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN field_types_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS field_types_history_updated_at_idx
+ON field_types_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS field_types_history_field_type_id_updated_at_idx
+ON field_types_history USING btree (field_type_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS field_types_history_sys_period_idx
+ON field_types_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_field_types_trigger'
+			AND tgrelid = 'field_types'::regclass
+	) THEN
+		CREATE TRIGGER versioning_field_types_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON field_types
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'field_types_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- fields -> fields_history
+-- Retention: 5 years
+--
+ALTER TABLE fields
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE fields
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE fields
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN fields.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS fields_history (
+	LIKE fields INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE fields_history OWNER TO partman_user;
+
+COMMENT ON TABLE fields_history IS 'System-versioned history of fields. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN fields_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS fields_history_updated_at_idx
+ON fields_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS fields_history_field_id_updated_at_idx
+ON fields_history USING btree (field_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS fields_history_sys_period_idx
+ON fields_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_fields_trigger'
+			AND tgrelid = 'fields'::regclass
+	) THEN
+		CREATE TRIGGER versioning_fields_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON fields
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'fields_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- messages -> messages_history
+-- Retention: 5 years
+--
+ALTER TABLE messages
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE messages
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE messages
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN messages.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS messages_history (
+	LIKE messages INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE messages_history OWNER TO partman_user;
+
+COMMENT ON TABLE messages_history IS 'System-versioned history of messages. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN messages_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS messages_history_updated_at_idx
+ON messages_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS messages_history_message_id_updated_at_idx
+ON messages_history USING btree (message_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS messages_history_sys_period_idx
+ON messages_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_messages_trigger'
+			AND tgrelid = 'messages'::regclass
+	) THEN
+		CREATE TRIGGER versioning_messages_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON messages
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'messages_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- qcs -> qcs_history
+-- Retention: 5 years
+--
+ALTER TABLE qcs
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE qcs
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE qcs
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN qcs.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS qcs_history (
+	LIKE qcs INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE qcs_history OWNER TO partman_user;
+
+COMMENT ON TABLE qcs_history IS 'System-versioned history of qcs. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN qcs_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS qcs_history_updated_at_idx
+ON qcs_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS qcs_history_qcs_id_updated_at_idx
+ON qcs_history USING btree (qcs_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS qcs_history_sys_period_idx
+ON qcs_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_qcs_trigger'
+			AND tgrelid = 'qcs'::regclass
+	) THEN
+		CREATE TRIGGER versioning_qcs_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON qcs
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'qcs_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
 -- pg_partman registration
 --
 SET ROLE partman_user;
@@ -2467,6 +2761,40 @@ WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
 	WHERE parent_table = 'public.fields_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.units_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.units_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.subproject_taxa_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.subproject_taxa_history'
 );
 
 SELECT partman.create_parent(

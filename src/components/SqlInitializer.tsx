@@ -73,6 +73,20 @@ export const SqlInitializer = () => {
         } catch (error) {
           console.error('Error running schema migration:', error)
         }
+
+          // Ensure locally synced tables include temporal range columns expected by server schema.
+          try {
+            await db.exec(`
+              ALTER TABLE units ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+              ALTER TABLE subproject_taxa ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+              ALTER TABLE field_types ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+              ALTER TABLE fields ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+              ALTER TABLE messages ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+              ALTER TABLE qcs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            `)
+          } catch (error) {
+            console.error('Error adding sys_period columns:', error)
+          }
         return setSqlInitializing(false)
       }
 

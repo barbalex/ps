@@ -12,14 +12,14 @@ export default interface MessagesHistory {
 
   message: string | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period: string;
-
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
+  sys_period: string;
 }
 
 /**
@@ -35,9 +35,6 @@ export interface MessagesHistoryInitializer {
 
   message?: string | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period: string;
-
   /** Default value: now() */
   created_at?: Date;
 
@@ -45,6 +42,9 @@ export interface MessagesHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
+  sys_period: string;
 }
 
 /**
@@ -58,12 +58,12 @@ export interface MessagesHistoryMutator {
 
   message?: string | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period?: string;
-
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
+  sys_period?: string;
 }

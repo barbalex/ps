@@ -10,4 +10,4 @@ export const excludedRestoreFields = new Set([
   'deleted',
 ])
 
-export const preferredOrder = ['name', 'label']
+export const preferredOrder = ['name', 'label', 'data']

@@ -98,7 +98,7 @@ export const FileHistoryCompare = ({
       },
       width: { id: 'bFileWidth', defaultMessage: 'Breite' },
       height: { id: 'bFileHeight', defaultMessage: 'Höhe' },
-      data: { id: 'jKxQ9L', defaultMessage: 'Daten' },
+      data: { id: 'bDbEhF', defaultMessage: 'Daten' },
     },
   })
 
