@@ -42,8 +42,8 @@ export const ListValueHistoryCompare = ({
   const [validations, setValidations] = useState<Record<string, unknown>>({})
 
   const rowRes = useLiveQuery(
-    `SELECT * FROM list_values WHERE list_value_id IN (SELECT list_value_id FROM list_values_history WHERE list_value_id = $1 LIMIT 1)`,
-    [listValueHistoryId?.split('-')[0] ?? ''],
+    `SELECT * FROM list_values WHERE list_value_id = $1`,
+    [listValueId],
   )
   const row = rowRes?.rows?.[0] as ListValues | undefined
 
@@ -205,16 +205,7 @@ export const ListValueHistoryCompare = ({
 
   return (
     <HistoryCompare<ListValuesHistory>
-      onBack={() =>
-        navigate({
-          to: '/data/projects/$projectId_/lists/$listId_/values/$listValueId',
-          params: {
-            projectId,
-            listId,
-            listValueId: row.list_value_id,
-          },
-        })
-      }
+      onBack={() => navigate({ to: listValuePath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

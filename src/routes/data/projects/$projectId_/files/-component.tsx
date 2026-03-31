@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { getRouteApi, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -17,13 +16,12 @@ export const RouteComponent = () => {
   const showFiles = projectRes?.rows?.[0]?.files_active_projects !== false
   const filesInProject = projectRes?.rows?.[0]?.project_files_in_project === true
 
-  useEffect(() => {
-    if (projectRes && !showFiles) {
-      navigate({ to: `/data/projects/${projectId}/project` })
-    }
-  }, [navigate, projectId, projectRes, showFiles])
+  if (projectRes && !showFiles) {
+    navigate({ to: `/data/projects/${projectId}/project` })
+    return null
+  }
 
-  if (projectRes === undefined || !showFiles) return null
+  if (projectRes === undefined) return null
 
   return <Files projectId={projectId} hideTitle={filesInProject} />
 }

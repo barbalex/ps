@@ -6,12 +6,11 @@ import { useIntl } from 'react-intl'
 
 import { createListValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
-
 export const Header = ({ autoFocusRef }) => {
-  const { listId, listValueId } = useParams({ from })
+  const { projectId, listId, listValueId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -72,7 +71,9 @@ export const Header = ({ autoFocusRef }) => {
       )
       const listValues = res?.rows
       const len = listValues.length
-      const index = listValues.findIndex((p) => p.list_value_id === listValueIdRef.current)
+      const index = listValues.findIndex(
+        (p) => p.list_value_id === listValueIdRef.current,
+      )
       const next = listValues[(index + 1) % len]
       navigate({
         to: `../${next.list_value_id}`,
@@ -91,7 +92,9 @@ export const Header = ({ autoFocusRef }) => {
       )
       const listValues = res?.rows
       const len = listValues.length
-      const index = listValues.findIndex((p) => p.list_value_id === listValueIdRef.current)
+      const index = listValues.findIndex(
+        (p) => p.list_value_id === listValueIdRef.current,
+      )
       const previous = listValues[(index + len - 1) % len]
       navigate({
         to: `../${previous.list_value_id}`,
@@ -101,6 +104,8 @@ export const Header = ({ autoFocusRef }) => {
       console.error(error)
     }
   }
+
+  const basePath = `/data/projects/${projectId}/lists/${listId}/values/${listValueId}`
 
   return (
     <FormHeader
@@ -112,6 +117,15 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="list value"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="list_values_history"
+          rowIdField="list_value_id"
+          rowId={listValueId}
+        />
+      }
     />
   )
 }

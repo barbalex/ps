@@ -20,9 +20,7 @@ const ListLayout = () => {
   const isListRoute = location.pathname === `${baseUrl}/list`
   const isValuesRoute =
     location.pathname === `${baseUrl}/values` ||
-    location.pathname === `${baseUrl}/values/` ||
-    (location.pathname.startsWith(`${baseUrl}/values/`) &&
-      !location.pathname.includes('/histories'))
+    location.pathname.startsWith(`${baseUrl}/values/`)
 
   if (listValuesInList && (isBaseRoute || isListRoute || isValuesRoute)) {
     return <ListWithValues from={from} />
