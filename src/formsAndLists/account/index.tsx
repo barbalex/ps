@@ -116,6 +116,12 @@ export const Account = () => {
     return <NotFound table="Account" id={accountId} />
   }
 
+  // If project fields are configured to be shown outside the account form,
+  // render the nested route as its own page.
+  if (isFieldsOpen && !projectFieldsInAccount) {
+    return <Outlet />
+  }
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
