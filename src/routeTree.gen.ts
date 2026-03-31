@@ -58,7 +58,6 @@ import { Route as DataAccountsFilterRouteImport } from './routes/data/accounts/f
 import { Route as DataProjectsProjectIdRouteRouteImport } from './routes/data/projects/$projectId_/route'
 import { Route as DataAccountsAccountIdRouteRouteImport } from './routes/data/accounts/$accountId_/route'
 import { Route as DataProjectsProjectIdIndexRouteImport } from './routes/data/projects/$projectId_/index'
-import { Route as DataAccountsAccountIdIndexRouteImport } from './routes/data/accounts/$accountId_/index'
 import { Route as DataProjectsProjectIdProjectRouteImport } from './routes/data/projects/$projectId_/project'
 import { Route as DataProjectsProjectIdWmsServicesRouteRouteImport } from './routes/data/projects/$projectId_/wms-services/route'
 import { Route as DataProjectsProjectIdWmsLayersRouteRouteImport } from './routes/data/projects/$projectId_/wms-layers/route'
@@ -657,12 +656,6 @@ const DataProjectsProjectIdIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
-  } as any)
-const DataAccountsAccountIdIndexRoute =
-  DataAccountsAccountIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => DataAccountsAccountIdRouteRoute,
   } as any)
 const DataProjectsProjectIdProjectRoute =
   DataProjectsProjectIdProjectRouteImport.update({
@@ -3490,7 +3483,6 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/wms-layers': typeof DataProjectsProjectIdWmsLayersRouteRouteWithChildren
   '/data/projects/$projectId/wms-services': typeof DataProjectsProjectIdWmsServicesRouteRouteWithChildren
   '/data/projects/$projectId/project': typeof DataProjectsProjectIdProjectRoute
-  '/data/accounts/$accountId/': typeof DataAccountsAccountIdIndexRoute
   '/data/projects/$projectId/': typeof DataProjectsProjectIdIndexRoute
   '/data/projects/$projectId/lists/$listId': typeof DataProjectsProjectIdListsListIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId': typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteWithChildren
@@ -3821,6 +3813,7 @@ export interface FileRoutesByTo {
   '/data/auth': typeof DataAuthRoute
   '/': typeof LayoutIndexRoute
   '/data': typeof DataIndexRoute
+  '/data/accounts/$accountId': typeof DataAccountsAccountIdRouteRouteWithChildren
   '/data/accounts/filter': typeof DataAccountsFilterRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
@@ -3849,7 +3842,6 @@ export interface FileRoutesByTo {
   '/data/widget-types': typeof DataWidgetTypesIndexRoute
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsIndexRoute
   '/data/projects/$projectId/project': typeof DataProjectsProjectIdProjectRoute
-  '/data/accounts/$accountId': typeof DataAccountsAccountIdIndexRoute
   '/data/projects/$projectId': typeof DataProjectsProjectIdIndexRoute
   '/data/accounts/$accountId/project-fields/$fieldId': typeof DataAccountsAccountIdProjectFieldsFieldIdRoute
   '/data/accounts/$accountId/project-fields/filter': typeof DataAccountsAccountIdProjectFieldsFilterRoute
@@ -4166,7 +4158,6 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/wms-layers': typeof DataProjectsProjectIdWmsLayersRouteRouteWithChildren
   '/data/projects/$projectId_/wms-services': typeof DataProjectsProjectIdWmsServicesRouteRouteWithChildren
   '/data/projects/$projectId_/project': typeof DataProjectsProjectIdProjectRoute
-  '/data/accounts/$accountId_/': typeof DataAccountsAccountIdIndexRoute
   '/data/projects/$projectId_/': typeof DataProjectsProjectIdIndexRoute
   '/data/projects/$projectId_/lists/$listId_': typeof DataProjectsProjectIdListsListIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdRouteRouteWithChildren
@@ -4562,7 +4553,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/wms-layers'
     | '/data/projects/$projectId/wms-services'
     | '/data/projects/$projectId/project'
-    | '/data/accounts/$accountId/'
     | '/data/projects/$projectId/'
     | '/data/projects/$projectId/lists/$listId'
     | '/data/projects/$projectId/subprojects/$subprojectId'
@@ -4893,6 +4883,7 @@ export interface FileRouteTypes {
     | '/data/auth'
     | '/'
     | '/data'
+    | '/data/accounts/$accountId'
     | '/data/accounts/filter'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
@@ -4921,7 +4912,6 @@ export interface FileRouteTypes {
     | '/data/widget-types'
     | '/data/widgets-for-fields'
     | '/data/projects/$projectId/project'
-    | '/data/accounts/$accountId'
     | '/data/projects/$projectId'
     | '/data/accounts/$accountId/project-fields/$fieldId'
     | '/data/accounts/$accountId/project-fields/filter'
@@ -5237,7 +5227,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/wms-layers'
     | '/data/projects/$projectId_/wms-services'
     | '/data/projects/$projectId_/project'
-    | '/data/accounts/$accountId_/'
     | '/data/projects/$projectId_/'
     | '/data/projects/$projectId_/lists/$listId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_'
@@ -5912,13 +5901,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/'
       preLoaderRoute: typeof DataProjectsProjectIdIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
-    }
-    '/data/accounts/$accountId_/': {
-      id: '/data/accounts/$accountId_/'
-      path: '/'
-      fullPath: '/data/accounts/$accountId/'
-      preLoaderRoute: typeof DataAccountsAccountIdIndexRouteImport
-      parentRoute: typeof DataAccountsAccountIdRouteRoute
     }
     '/data/projects/$projectId_/project': {
       id: '/data/projects/$projectId_/project'
@@ -8347,14 +8329,12 @@ const DataAccountsAccountIdProjectFieldsRouteRouteWithChildren =
 
 interface DataAccountsAccountIdRouteRouteChildren {
   DataAccountsAccountIdProjectFieldsRouteRoute: typeof DataAccountsAccountIdProjectFieldsRouteRouteWithChildren
-  DataAccountsAccountIdIndexRoute: typeof DataAccountsAccountIdIndexRoute
 }
 
 const DataAccountsAccountIdRouteRouteChildren: DataAccountsAccountIdRouteRouteChildren =
   {
     DataAccountsAccountIdProjectFieldsRouteRoute:
       DataAccountsAccountIdProjectFieldsRouteRouteWithChildren,
-    DataAccountsAccountIdIndexRoute: DataAccountsAccountIdIndexRoute,
   }
 
 const DataAccountsAccountIdRouteRouteWithChildren =

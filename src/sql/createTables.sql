@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS accounts(
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
   projects_label_by text DEFAULT NULL,
+  project_fields_in_account boolean DEFAULT TRUE,
   label text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -103,6 +104,7 @@ COMMENT ON TABLE accounts IS 'Goal: earn money. Separate from users to allow for
 COMMENT ON COLUMN accounts.user_id IS 'user that owns the account. null for accounts that are not owned by a user';
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
+COMMENT ON COLUMN accounts.project_fields_in_account IS 'Render project fields inside the account form? Preset: true';
 
 --------------------------------------------------------------
 -- auth_verifications

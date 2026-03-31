@@ -59,6 +59,7 @@ export const SqlInitializer = () => {
         try {
           await db.exec(`
             ALTER TABLE qcs ADD COLUMN IF NOT EXISTS filter_by_year boolean DEFAULT false;
+            ALTER TABLE accounts ADD COLUMN IF NOT EXISTS project_fields_in_account boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS project_users_in_project boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS project_files_in_project boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS fields_in_project boolean DEFAULT true;

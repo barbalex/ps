@@ -26,6 +26,9 @@ export default interface Accounts {
   /** Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name" */
   projects_label_by: string | null;
 
+  /** Render project fields inside the account form? Preset: true */
+  project_fields_in_account: boolean | null;
+
   label: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -60,6 +63,9 @@ export interface AccountsInitializer {
   /** Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name" */
   projects_label_by?: string | null;
 
+  /** Render project fields inside the account form? Preset: true */
+  project_fields_in_account?: boolean | null;
+
   label?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -93,6 +99,9 @@ export interface AccountsMutator {
 
   /** Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name" */
   projects_label_by?: string | null;
+
+  /** Render project fields inside the account form? Preset: true */
+  project_fields_in_account?: boolean | null;
 
   label?: string | null;
 

@@ -259,15 +259,16 @@ export const createFieldType = async () => {
 export const createAccount = async () => {
   const account_id = uuidv7()
   const db = store.get(pgliteDbAtom)
-  await db.query(`insert into accounts (account_id, type) values ($1, $2)`, [
+  await db.query(`insert into accounts (account_id, type, project_fields_in_account) values ($1, $2, $3)`, [
     account_id,
     'free',
+    true,
   ])
 
   store.set(addOperationAtom, {
     table: 'accounts',
     operation: 'insert',
-    draft: { account_id, type: 'free' },
+    draft: { account_id, type: 'free', project_fields_in_account: true },
   })
 
   return account_id

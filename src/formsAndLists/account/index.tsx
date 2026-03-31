@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { Outlet, useLocation, useNavigate, useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -7,19 +7,24 @@ import { useIntl } from 'react-intl'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { Section } from '../../components/shared/Section.tsx'
+import { Fields } from '../fields.tsx'
 import { addOperationAtom } from '../../store.ts'
 import { accountTypeOptions } from '../../modules/constants.ts'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 
-const from = '/data/accounts/$accountId_/'
+const from = '/data/accounts/$accountId_'
 
 export const Account = () => {
   const { accountId } = useParams({ from })
+  const navigate = useNavigate()
+  const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
 
@@ -31,6 +36,20 @@ export const Account = () => {
     accountId,
   ])
   const row: Accounts | undefined = res?.rows?.[0]
+
+  const fieldsCountRes = useLiveQuery(
+    `SELECT count(*)::int AS count FROM fields WHERE account_id = $1 AND project_id IS NULL`,
+    [accountId],
+  )
+  const fieldsCount = fieldsCountRes?.rows?.[0]?.count ?? 0
+
+  const accountUrl = `/data/accounts/${accountId}`
+  const fieldsUrl = `${accountUrl}/project-fields`
+  const projectFieldsInAccount = row?.project_fields_in_account !== false
+  const isFieldsOpen =
+    location.pathname.endsWith('/project-fields') ||
+    location.pathname.includes('/project-fields/')
+  const isFieldsList = /\/project-fields\/?$/.test(location.pathname)
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -146,6 +165,46 @@ export const Account = () => {
           validationState={validations?.period_end?.state}
           validationMessage={validations?.period_end?.message}
         />
+        <SwitchField
+          label={formatMessage({
+            id: 'account.projectFieldsInAccount.label',
+            defaultMessage: 'Projekt-Felder im Kontoformular',
+          })}
+          name="project_fields_in_account"
+          value={row.project_fields_in_account ?? true}
+          onChange={onChange}
+          validationState={validations?.project_fields_in_account?.state}
+          validationMessage={
+            validations?.project_fields_in_account?.message ??
+            formatMessage({
+              id: 'account.projectFieldsInAccount.help',
+              defaultMessage:
+                'Projekt-Felder im Kontoformular anzeigen statt in einer separaten Navigation.',
+            })
+          }
+        />
+        {projectFieldsInAccount ? (
+          <Section
+            title={`${formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })} (${fieldsCount})`}
+            onHeaderClick={() =>
+              isFieldsList
+                ? navigate({ to: accountUrl })
+                : navigate({ to: fieldsUrl })
+            }
+            isOpen={isFieldsOpen}
+            titleStyle={{ marginBottom: 0 }}
+            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+          >
+            {isFieldsOpen &&
+              (isFieldsList ? (
+                <Fields from={from} hideHeader />
+              ) : (
+                <Outlet />
+              ))}
+          </Section>
+        ) : (
+          isFieldsOpen && <Outlet />
+        )}
       </div>
     </div>
   )

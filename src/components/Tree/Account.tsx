@@ -7,6 +7,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { useAtom } from 'jotai'
 import { treeOpenNodesAtom } from '../../store.ts'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 export const AccountNode = ({ nav, level = 2 }) => {
   const location = useLocation()
@@ -17,6 +18,12 @@ export const AccountNode = ({ nav, level = 2 }) => {
   const ownArray = ['data', 'accounts', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
   const parentUrl = '/data/accounts'
+
+  const res = useLiveQuery(
+    `SELECT project_fields_in_account FROM accounts WHERE account_id = $1`,
+    [nav.id],
+  )
+  const showFieldsNav = res?.rows?.[0]?.project_fields_in_account === false
 
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
@@ -43,11 +50,11 @@ export const AccountNode = ({ nav, level = 2 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={1}
+        childrenCount={showFieldsNav ? 1 : 0}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && <FieldsNode accountId={nav.id} />}
+      {isOpen && showFieldsNav && <FieldsNode accountId={nav.id} />}
     </>
   )
 }
