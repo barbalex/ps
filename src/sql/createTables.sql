@@ -982,7 +982,7 @@ CREATE TABLE IF NOT EXISTS messages(
 
 CREATE INDEX IF NOT EXISTS messages_date_idx ON messages USING btree(date);
 
-COMMENT ON TABLE messages IS 'System messages for users. No history tracking needed as these are transient notifications managed by the system.';;
+COMMENT ON TABLE messages IS 'System messages for users. No history tracking needed as these are transient notifications managed by the system.';
 
 --------------------------------------------------------------
 -- user_messages
@@ -1039,7 +1039,7 @@ CREATE TABLE IF NOT EXISTS goals(
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN year is null then goal_id::text 
-      WHEN nullif(name, '') is null then year || ': (kein Name)' 
+      WHEN nullif(name, '') is null then year || ': (no name)' 
       else year || ': ' || name 
     END
   ) STORED,
@@ -1286,7 +1286,7 @@ CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name)
 CREATE INDEX IF NOT EXISTS field_types_sort_idx ON field_types USING btree(sort);
 CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(label);
 
-COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.';
+COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.'
 
 --------------------------------------------------------------
 -- widget_types

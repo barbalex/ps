@@ -1039,7 +1039,7 @@ CREATE TABLE IF NOT EXISTS goals(
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN year is null then goal_id::text 
-      WHEN nullif(name, '') is null then year || ': (kein Name)' 
+      WHEN nullif(name, '') is null then year || ': (no name)' 
       else year || ': ' || name 
     END
   ) STORED,
