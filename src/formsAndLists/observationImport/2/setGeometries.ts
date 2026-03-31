@@ -1,9 +1,13 @@
 import axios from 'redaxios'
-import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
-import { addOperationAtom, store, pgliteDbAtom, intlAtom } from '../../../store.ts'
+import {
+  addOperationAtom,
+  store,
+  pgliteDbAtom,
+  intlAtom,
+} from '../../../store.ts'
 import { backgroundTasks } from '../../../modules/backgroundTasks.ts'
 
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
@@ -57,7 +61,10 @@ export const setGeometries = async ({
   // Register background task
   backgroundTasks.add(
     taskId,
-    intl?.formatMessage({ id: 'bgTkScr', defaultMessage: 'Setze Koordinaten' }) ?? 'Setze Koordinaten',
+    intl?.formatMessage({
+      id: 'bgTkScr',
+      defaultMessage: 'Setze Koordinaten',
+    }) ?? 'Setze Koordinaten',
     observationsWithoutGeometry.length,
   )
 
@@ -76,11 +83,13 @@ export const setGeometries = async ({
         ]
         const position = proj4(observationImport.crs, 'EPSG:4326', coordinates)
         // TODO: why is reversing needed? is it a bug?
-        const myPoint: Point = point(position.reverse())
-        const geometry = featureCollection([myPoint])
+        const geometry = {
+          type: 'GeometryCollection',
+          geometries: [{ type: 'Point', coordinates: position.reverse() }],
+        }
         await db.query(
-          `UPDATE observations SET geometry = $1 WHERE observation_id = $2`,
-          [geometry, o.observation_id],
+          `UPDATE observations SET geometry = ST_GeomFromGeoJSON($1) WHERE observation_id = $2`,
+          [JSON.stringify(geometry), o.observation_id],
         )
         store.set(addOperationAtom, {
           table: 'observations',
