@@ -798,5 +798,14 @@
   "cU1DvF": "Default unit for check report quantities",
   "dV2EwG": "Default unit for action report quantities",
   "nR6StU": "Default unit for action values",
-  "bT0CsE": "Default unit for action taxon quantities"
+  "bT0CsE": "Default unit for action taxon quantities",
+  "qP7PrjFileInPrj": "Show files in project",
+  "mQ4PrjUsersInPrj": "Show users in project",
+  "uN9UntInPrj": "Show units in project",
+  "pR8FldInPrj": "Show fields in project",
+  "lV6LstValsInLst": "Show list values in list",
+  "gRinGoal": "Show goal reports in goal",
+  "sP8TaxInSubprj": "Show taxa in {subprojectNameSingular}",
+  "N3qLx9": "Show users in {subprojectNameSingular}",
+  "fH8JmQ": "Show files in {subprojectNameSingular}"
 }

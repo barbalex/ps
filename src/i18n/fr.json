@@ -775,5 +775,14 @@
   "cU1DvF": "Unité par défaut pour les quantités de rapport de contrôle",
   "dV2EwG": "Unité par défaut pour les quantités de rapport de mesure",
   "nR6StU": "Unité par défaut pour les valeurs de mesure",
-  "bT0CsE": "Unité par défaut pour les quantités de taxons de mesure"
+  "bT0CsE": "Unité par défaut pour les quantités de taxons de mesure",
+  "qP7PrjFileInPrj": "Afficher les fichiers dans le projet",
+  "mQ4PrjUsersInPrj": "Afficher les utilisateurs dans le projet",
+  "uN9UntInPrj": "Afficher les unités dans le projet",
+  "pR8FldInPrj": "Afficher les champs dans le projet",
+  "lV6LstValsInLst": "Afficher les valeurs de liste dans la liste",
+  "gRinGoal": "Afficher les rapports d'objectif dans l'objectif",
+  "sP8TaxInSubprj": "Afficher les taxons dans {subprojectNameSingular}",
+  "N3qLx9": "Afficher les utilisateurs dans {subprojectNameSingular}",
+  "fH8JmQ": "Afficher les fichiers dans {subprojectNameSingular}"
 }
