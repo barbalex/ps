@@ -28,7 +28,7 @@ const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 // this form is rendered from a parent or outlet
 export const ProjectCrsForm = ({ autoFocusRef }) => {
-  const { projectCrsId, projectId } = useParams({ from })
+  const { projectCrsId, projectId } = useParams({ from, strict: false })
   const addOperation = useSetAtom(addOperationAtom)
 
   const [validations, setValidations] = useState({})
