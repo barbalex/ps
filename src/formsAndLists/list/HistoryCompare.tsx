@@ -110,12 +110,14 @@ export const ListHistoryCompare = () => {
     <HistoryCompare<ListsHistory>
       onBack={() => navigate({ to: listPath })}
       leftContent={
-        <ListForm
-          row={row}
-          onChange={onChange}
-          validations={validations}
-          autoFocusRef={autoFocusRef}
-        />
+        <div className="form-container">
+          <ListForm
+            row={row}
+            onChange={onChange}
+            validations={validations}
+            autoFocusRef={autoFocusRef}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

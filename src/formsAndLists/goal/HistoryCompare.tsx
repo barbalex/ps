@@ -110,13 +110,15 @@ export const GoalHistoryCompare = () => {
     <HistoryCompare<GoalsHistory>
       onBack={() => navigate({ to: goalPath })}
       leftContent={
-        <GoalForm
-          row={row}
-          onChange={onChange}
-          validations={validations}
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        <div className="form-container">
+          <GoalForm
+            row={row}
+            onChange={onChange}
+            validations={validations}
+            autoFocusRef={autoFocusRef}
+            from={from}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}
