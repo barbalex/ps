@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createGoal } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef }) => {
@@ -37,6 +38,8 @@ export const Header = ({ autoFocusRef }) => {
     [goalId ?? null],
   )
   const goalReportsInGoal = settingsRes?.rows?.[0]?.goal_reports_in_goal !== false
+  const goalBasePath = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}`
+  const formPath = goalReportsInGoal ? goalBasePath : `${goalBasePath}/goal`
 
   const addRow = async () => {
     const id = await createGoal({ projectId, subprojectId })
@@ -119,6 +122,15 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="goal"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${goalBasePath}/histories`}
+          formPath={formPath}
+          historyTable="goals_history"
+          rowIdField="goal_id"
+          rowId={goalId}
+        />
+      }
     />
   )
 }
