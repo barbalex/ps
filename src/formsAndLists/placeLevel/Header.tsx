@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createPlaceLevel } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -16,6 +17,7 @@ const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
 export const Header = ({ autoFocusRef }: Props) => {
   const { projectId, placeLevelId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/place-levels/${placeLevelId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -119,6 +121,15 @@ export const Header = ({ autoFocusRef }: Props) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName={formatMessage({ id: 'Lf+2pw', defaultMessage: 'Ort-Stufe' })}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="place_levels_history"
+          rowIdField="place_level_id"
+          rowId={placeLevelId}
+        />
+      }
     />
   )
 }
