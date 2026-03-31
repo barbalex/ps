@@ -56,6 +56,8 @@
   "9WEWTz": "Feedback benvenuto",
   "9ZCq87": "Paga chi configura i progetti.{br}Testare e collaborare è gratuito.",
   "9oKaIi": "Account",
+  "account.projectFieldsInAccount.label": "Campi del progetto nel modulo account",
+  "account.projectFieldsInAccount.help": "Mostra i campi del progetto nel modulo account invece che in una navigazione separata.",
   "9oUdHT": "Tipo di widget",
   "9rPzs2": "Opzioni",
   "Ab1CdE": "CRS predefinito",

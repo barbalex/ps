@@ -56,6 +56,8 @@
   "9WEWTz": "Retours bienvenus",
   "9ZCq87": "Ceux qui configurent les projets paient.{br}Tester et collaborer est gratuit.",
   "9oKaIi": "Compte",
+  "account.projectFieldsInAccount.label": "Champs du projet dans le formulaire du compte",
+  "account.projectFieldsInAccount.help": "Afficher les champs du projet dans le formulaire du compte au lieu d'une navigation séparée.",
   "9oUdHT": "Type de widget",
   "9rPzs2": "Options",
   "Ab1CdE": "CRS par défaut",

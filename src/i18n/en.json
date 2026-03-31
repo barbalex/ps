@@ -56,6 +56,8 @@
   "9WEWTz": "Feedback Welcome",
   "9ZCq87": "Those who configure projects pay.{br}Testing and collaborating is free.",
   "9oKaIi": "Account",
+  "account.projectFieldsInAccount.label": "Project fields in account form",
+  "account.projectFieldsInAccount.help": "Show project fields in the account form instead of in a separate navigation.",
   "9oUdHT": "Widget Type",
   "9rPzs2": "Options",
   "Ab1CdE": "Default CRS",
