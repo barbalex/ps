@@ -299,6 +299,9 @@ const getTableName = (urlPath) => {
   if (tableName === 'action_reports') {
     tableName = 'action_reports'
   }
+  if (tableName === 'project_fields') {
+    tableName = 'fields'
+  }
   if (tableName === 'users') {
     const usersIndex = urlPath.lastIndexOf('users')
     const parentCollection = usersIndex > 1 ? urlPath[usersIndex - 2] : null
