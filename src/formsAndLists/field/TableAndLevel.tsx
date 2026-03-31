@@ -18,13 +18,13 @@ type Opt = { id: string; table_name: string; level: number | null }
 const opts: Opt[] = [
   // ── Subproject scope (no place-level) ──────────────────────────
   { id: 'subprojects',       table_name: 'subprojects',       level: null },
+  { id: 'taxonomies',        table_name: 'taxonomies',        level: null },
+  { id: 'project_reports',   table_name: 'project_reports',   level: null },
+  { id: 'lists',             table_name: 'lists',             level: null },
   { id: 'subproject_reports', table_name: 'subproject_reports', level: null },
   { id: 'goals',             table_name: 'goals',             level: null },
   { id: 'goal_reports',      table_name: 'goal_reports',      level: null },
   { id: 'taxa',              table_name: 'taxa',              level: null },
-  { id: 'taxonomies',        table_name: 'taxonomies',        level: null },
-  { id: 'project_reports',   table_name: 'project_reports',   level: null },
-  { id: 'lists',             table_name: 'lists',             level: null },
   // ── Place level 1 ─────────────────────────────────────────────
   { id: 'places_1',          table_name: 'places',            level: 1 },
   { id: 'actions_1',         table_name: 'actions',           level: 1 },
@@ -126,11 +126,11 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
     places_1: plural1,
     places_2: plural2,
     actions_1: formatMessage(
-      { id: 'bEiInN', defaultMessage: '{place}-Massnahmen' },
+      { id: 'field.actions', defaultMessage: '{place}: Massnahmen' },
       { place: singular1 },
     ),
     actions_2: formatMessage(
-      { id: 'bEiInN', defaultMessage: '{place}-Massnahmen' },
+      { id: 'field.actions', defaultMessage: '{place}: Massnahmen' },
       { place: singular2 },
     ),
     action_reports_1: formatMessage(
@@ -174,13 +174,13 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
       { place: singular2 },
     ),
     subprojects: subprojectsLabel,
-    goals: formatMessage({ id: 'field.goals', defaultMessage: 'Ziele' }),
-    goal_reports: formatMessage({ id: 'field.goalReports', defaultMessage: 'Ziel-Berichte' }),
-    project_reports: formatMessage({ id: 'field.projectReports', defaultMessage: 'Projekt-Berichte' }),
-    subproject_reports: formatMessage({ id: 'field.subprojectReports', defaultMessage: 'Teilprojekt-Berichte' }),
-    taxa: formatMessage({ id: 'field.taxa', defaultMessage: 'Taxa' }),
-    taxonomies: formatMessage({ id: 'field.taxonomies', defaultMessage: 'Taxonomien' }),
-    lists: formatMessage({ id: 'field.lists', defaultMessage: 'Listen' }),
+    goals: formatMessage({ id: 'field.goals', defaultMessage: 'Art: Ziele' }),
+    goal_reports: formatMessage({ id: 'field.goalReports', defaultMessage: 'Art: Ziel-Berichte' }),
+    project_reports: formatMessage({ id: 'field.projectReports', defaultMessage: 'Projekt: Berichte' }),
+    subproject_reports: formatMessage({ id: 'field.subprojectReports', defaultMessage: 'Art: Berichte' }),
+    taxa: formatMessage({ id: 'field.taxa', defaultMessage: 'Art: Taxa' }),
+    taxonomies: formatMessage({ id: 'field.taxonomies', defaultMessage: 'Projekt: Taxonomien' }),
+    lists: formatMessage({ id: 'field.lists', defaultMessage: 'Projekt: Listen' }),
   }
 
   const combinedValue = row.table_name

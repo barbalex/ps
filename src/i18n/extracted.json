@@ -710,6 +710,30 @@
   "vdqfwK": {
     "defaultMessage": "Widget für Feld"
   },
+  "field.actions": {
+    "defaultMessage": "{place}: Massnahmen"
+  },
+  "field.subprojectReports": {
+    "defaultMessage": "Art: Berichte"
+  },
+  "field.goals": {
+    "defaultMessage": "Art: Ziele"
+  },
+  "field.goalReports": {
+    "defaultMessage": "Art: Ziel-Berichte"
+  },
+  "field.taxa": {
+    "defaultMessage": "Art: Taxa"
+  },
+  "field.taxonomies": {
+    "defaultMessage": "Projekt: Taxonomien"
+  },
+  "field.projectReports": {
+    "defaultMessage": "Projekt: Berichte"
+  },
+  "field.lists": {
+    "defaultMessage": "Projekt: Listen"
+  },
   "w63miQ": {
     "defaultMessage": "Daten"
   },
