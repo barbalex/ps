@@ -225,6 +225,19 @@ export const useDataNavData = () => {
               }),
             },
             {
+              id: 'fields',
+              label: buildNavLabel({
+                loading,
+                isFiltered: fieldsIsFiltered,
+                countFiltered: row?.fields_count_filtered ?? 0,
+                countUnfiltered: row?.fields_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'I+dTZE',
+                  defaultMessage: 'Felder',
+                }),
+              }),
+            },
+            {
               id: 'widgets-for-fields',
               label: buildNavLabel({
                 loading,
@@ -267,19 +280,6 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'subprojectQcsRun.title',
                   defaultMessage: 'Qualitätskontrollen: ausführen',
-                }),
-              }),
-            },
-            {
-              id: 'fields',
-              label: buildNavLabel({
-                loading,
-                isFiltered: fieldsIsFiltered,
-                countFiltered: row?.fields_count_filtered ?? 0,
-                countUnfiltered: row?.fields_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'I+dTZE',
-                  defaultMessage: 'Felder',
                 }),
               }),
             },

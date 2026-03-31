@@ -28,12 +28,12 @@ export const Tree = () => {
           <UsersNode />
           <FieldTypesNode />
           <WidgetTypesNode />
+          <FieldsNode />
           <WidgetsForFieldsNode />
           {/* TODO: restrict editing to app administrator once auth supports it */}
           <QcsNode />
           <RootQcsNode />
           <RootQcsRunNode />
-          <FieldsNode />
           <CrssNode />
         </>
       )}
