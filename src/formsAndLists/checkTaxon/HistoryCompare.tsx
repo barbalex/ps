@@ -122,7 +122,8 @@ export const CheckTaxonHistoryCompare = ({
   }
 
   const leftContent = (
-    <>
+    <div className="form-container">
+      <>
       <DropdownField
         label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
         name="taxon_id"
@@ -190,7 +191,8 @@ export const CheckTaxonHistoryCompare = ({
           validationMessage={validations?.quantity_text?.message}
         />
       )}
-    </>
+      </>
+    </div>
   )
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({

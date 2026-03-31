@@ -89,7 +89,8 @@ export const SubprojectTaxonHistoryCompare = () => {
   }
 
   const leftContent = (
-    <ComboboxFilteringForTable
+    <div className="form-container">
+      <ComboboxFilteringForTable
       label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
       name="taxon_id"
       table="taxa"
@@ -99,6 +100,7 @@ export const SubprojectTaxonHistoryCompare = () => {
       validationState={validations?.taxon_id?.state}
       validationMessage={validations?.taxon_id?.message}
     />
+    </div>
   )
 
   const visibleCurrentFields = new Set(['taxon_id'])

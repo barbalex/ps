@@ -108,7 +108,11 @@ export const FileHistoryCompare = ({
   return (
     <HistoryCompare<FilesHistory>
       onBack={() => navigate({ to: filePath })}
-      leftContent={<FileForm row={row as Files & { id: Files['file_id'] }} from={from} withContainer={false} />}
+      leftContent={
+        <div className="form-container">
+          <FileForm row={row as Files & { id: Files['file_id'] }} from={from} withContainer={false} />
+        </div>
+      }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}

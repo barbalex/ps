@@ -91,7 +91,8 @@ export const ProjectUserHistoryCompare = () => {
   }
 
   const leftContent = (
-    <>
+    <div className="form-container">
+      <>
       <DropdownField
         label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
         name="user_id"
@@ -116,7 +117,8 @@ export const ProjectUserHistoryCompare = () => {
         validationState={validations?.role?.state}
         validationMessage={validations?.role?.message}
       />
-    </>
+      </>
+    </div>
   )
 
   const visibleCurrentFields = new Set(['user_id', 'role'])

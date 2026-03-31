@@ -102,13 +102,15 @@ export const ProjectHistoryCompare = ({
     <HistoryCompare<ProjectsHistory>
       onBack={() => navigate({ to: projectPath })}
       leftContent={
-        <ProjectForm
-          row={row}
-          onChange={onChange}
-          validations={validations}
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        <div className="form-container">
+          <ProjectForm
+            row={row}
+            onChange={onChange}
+            validations={validations}
+            autoFocusRef={autoFocusRef}
+            from={from}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

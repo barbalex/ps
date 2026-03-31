@@ -104,13 +104,15 @@ export const SubprojectReportHistoryCompare = () => {
     <HistoryCompare<SubprojectReportsHistory>
       onBack={() => navigate({ to: reportPath })}
       leftContent={
-        <SubprojectReportForm
-          row={row}
-          onChange={onChange}
-          validations={validations}
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        <div className="form-container">
+          <SubprojectReportForm
+            row={row}
+            onChange={onChange}
+            validations={validations}
+            autoFocusRef={autoFocusRef}
+            from={from}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

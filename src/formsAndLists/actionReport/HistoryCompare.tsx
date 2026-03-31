@@ -121,13 +121,15 @@ export const ActionReportHistoryCompare = ({
     <HistoryCompare<ActionReportsHistory>
       onBack={() => navigate({ to: reportPath })}
       leftContent={
-        <ActionReportForm
-          row={row}
-          onChange={onChange}
-          validations={validations}
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        <div className="form-container">
+          <ActionReportForm
+            row={row}
+            onChange={onChange}
+            validations={validations}
+            autoFocusRef={autoFocusRef}
+            from={from}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

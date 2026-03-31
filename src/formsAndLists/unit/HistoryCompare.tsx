@@ -100,7 +100,8 @@ export const UnitHistoryCompare = () => {
   const unitTypeList = unitTypeOptions.map((o) => o.value)
 
   const leftContent = (
-    <>
+    <div className="form-container">
+      <>
       <TextField
         label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
@@ -151,7 +152,8 @@ export const UnitHistoryCompare = () => {
         validationState={validations?.sort?.state}
         validationMessage={validations?.sort?.message}
       />
-    </>
+      </>
+    </div>
   )
 
   const visibleCurrentFields = new Set(['name', 'type', 'summable', 'list_id', 'sort'])

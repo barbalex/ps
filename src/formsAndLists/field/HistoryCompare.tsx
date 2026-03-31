@@ -136,13 +136,15 @@ export const FieldHistoryCompare = ({
     <HistoryCompare<FieldsHistory>
       onBack={() => navigate({ to: fieldPath })}
       leftContent={
-        <FieldForm
-          onChange={onChange}
-          validations={validations}
-          row={row}
-          autoFocusRef={autoFocusRef}
-          from={from}
-        />
+        <div className="form-container">
+          <FieldForm
+            onChange={onChange}
+            validations={validations}
+            row={row}
+            autoFocusRef={autoFocusRef}
+            from={from}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

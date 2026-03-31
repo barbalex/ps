@@ -138,14 +138,16 @@ export const PlaceHistoryCompare = ({
     <HistoryCompare
       onBack={() => navigate({ to: placePath })}
       leftContent={
-        <PlaceForm
-          row={row}
-          onChange={onChange}
-          validations={validations}
-          autoFocusRef={autoFocusRef}
-          from={from}
-          withContainer={false}
-        />
+        <div className="form-container">
+          <PlaceForm
+            row={row}
+            onChange={onChange}
+            validations={validations}
+            autoFocusRef={autoFocusRef}
+            from={from}
+            withContainer={false}
+          />
+        </div>
       }
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}

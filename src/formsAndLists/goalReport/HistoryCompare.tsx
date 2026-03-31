@@ -63,15 +63,17 @@ export const GoalReportHistoryCompare = () => {
     <HistoryCompare<GoalReportsHistory>
       onBack={() => navigate({ to: goalReportPath })}
       leftContent={
-        <Jsonb
-          table="goal_reports"
-          idField="goal_report_id"
-          id={row.goal_report_id}
-          data={row.data ?? {}}
-          autoFocus
-          ref={autoFocusRef}
-          from={from}
-        />
+        <div className="form-container">
+          <Jsonb
+            table="goal_reports"
+            idField="goal_report_id"
+            id={row.goal_report_id}
+            data={row.data ?? {}}
+            autoFocus
+            ref={autoFocusRef}
+            from={from}
+          />
+        </div>
       }
       visibleCurrentFields={new Set(['data'])}
       excludedDisplayFields={excludedDisplayFields}

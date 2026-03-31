@@ -189,7 +189,8 @@ export const CheckQuantityHistoryCompare = ({
   }
 
   const leftContent = (
-    <>
+    <div className="form-container">
+      <>
       <RadioGroupField
         label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
         name="unit_id"
@@ -303,7 +304,8 @@ export const CheckQuantityHistoryCompare = ({
           )}
         </>
       )}
-    </>
+      </>
+    </div>
   )
 
   const visibleCurrentFields = new Set([
