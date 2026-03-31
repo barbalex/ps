@@ -57,7 +57,7 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
 
   // Always call hooks unconditionally; use WHERE false when not in project context
   const projectRes = useLiveQuery(
-      `SELECT ${language === 'de' ? 'NULLIF(subproject_name_plural, "")' : `NULLIF(subproject_name_plural_${language}, "")`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
+    `SELECT ${language === 'de' ? "NULLIF(subproject_name_plural, '')" : `NULLIF(subproject_name_plural_${language}, '')`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
     [!!projectId, projectId ?? ''],
   )
   const placeLevelsRes = useLiveQuery(

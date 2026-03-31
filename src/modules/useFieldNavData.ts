@@ -38,7 +38,11 @@ export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
     : accountId
       ? `project_id IS NULL AND account_id = '${accountId}'`
       : 'project_id IS NULL'
-  const fieldsSegment = projectId ? 'fields' : accountId ? 'project-fields' : 'fields'
+  const fieldsSegment = projectId
+    ? 'fields'
+    : accountId
+      ? 'project-fields'
+      : 'fields'
 
   const res = useLiveQuery(
     `
@@ -57,7 +61,7 @@ export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
   )
 
   const projectRes = useLiveQuery(
-    `SELECT ${language === 'de' ? 'NULLIF(subproject_name_plural, "")' : `NULLIF(subproject_name_plural_${language}, "")`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
+    `SELECT ${language === 'de' ? "NULLIF(subproject_name_plural, '')" : `NULLIF(subproject_name_plural_${language}, '')`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
     [!!projectId, projectId ?? ''],
   )
 
@@ -86,12 +90,18 @@ export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
   const tableContext = resolveFieldTableContext({
     formatMessage,
     language,
-    projectType: (projectRes?.rows?.[0]?.type as string | null | undefined) ?? null,
-    projectNamePlural: (projectRes?.rows?.[0]?.name_plural as string | null | undefined) ?? null,
-    placeLevel1Singular: (level1Row?.name_singular as string | null | undefined) ?? null,
-    placeLevel1Plural: (level1Row?.name_plural as string | null | undefined) ?? null,
-    placeLevel2Singular: (level2Row?.name_singular as string | null | undefined) ?? null,
-    placeLevel2Plural: (level2Row?.name_plural as string | null | undefined) ?? null,
+    projectType:
+      (projectRes?.rows?.[0]?.type as string | null | undefined) ?? null,
+    projectNamePlural:
+      (projectRes?.rows?.[0]?.name_plural as string | null | undefined) ?? null,
+    placeLevel1Singular:
+      (level1Row?.name_singular as string | null | undefined) ?? null,
+    placeLevel1Plural:
+      (level1Row?.name_plural as string | null | undefined) ?? null,
+    placeLevel2Singular:
+      (level2Row?.name_singular as string | null | undefined) ?? null,
+    placeLevel2Plural:
+      (level2Row?.name_plural as string | null | undefined) ?? null,
   })
 
   const tableLabelMap = buildFieldTableLabelMap({
@@ -107,7 +117,11 @@ export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
 
   const parentArray = [
     'data',
-    ...(projectId ? ['projects', projectId] : accountId ? ['accounts', accountId] : []),
+    ...(projectId
+      ? ['projects', projectId]
+      : accountId
+        ? ['accounts', accountId]
+        : []),
     fieldsSegment,
   ]
   const ownArray = [...parentArray, nav?.id]

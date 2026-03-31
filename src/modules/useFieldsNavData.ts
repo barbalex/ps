@@ -90,7 +90,7 @@ export const useFieldsNavData = ({ projectId, accountId }: Props) => {
   const res = useLiveQuery(sql)
 
   const projectRes = useLiveQuery(
-    `SELECT ${language === 'de' ? 'NULLIF(subproject_name_plural, "")' : `NULLIF(subproject_name_plural_${language}, "")`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
+    `SELECT ${language === 'de' ? "NULLIF(subproject_name_plural, '')" : `NULLIF(subproject_name_plural_${language}, '')`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
     [!!projectId, projectId ?? ''],
   )
 
