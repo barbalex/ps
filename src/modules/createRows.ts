@@ -6,11 +6,11 @@ import { projectTypeNames } from './projectTypeNames.ts'
 const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
 
 // TODO: run insert query?
-const getPresetData = async ({ table }) => {
+const getPresetData = async ({ projectId = null, table }) => {
   const db = store.get(pgliteDbAtom)
   const fieldsWithPresetsResult = await db.query(
-    `select * from fields where table_name = $1 and preset is not null`,
-    [table],
+    `select * from fields where project_id = $1 and table_name = $2 and preset is not null`,
+    [projectId, table],
   )
   const fieldsWithPresets = fieldsWithPresetsResult?.rows ?? []
   // TODO: include field_type to set correct data type
@@ -43,6 +43,7 @@ export const createProject = async () => {
     project_files_in_project: true,
     project_users_in_project: true,
     units_in_project: true,
+    fields_in_project: true,
     files_active_subprojects: true,
     goal_reports_in_goal: true,
     subproject_reports_in_subproject: true,
@@ -321,14 +322,18 @@ export const createProjectCrs = async ({ projectId }) => {
   return project_crs_id
 }
 
-export const createField = async ({ table_name = null, level = null }) => {
+export const createField = async ({
+  projectId = null,
+  table_name = null,
+  level = null,
+}) => {
   const db = store.get(pgliteDbAtom)
   const field_id = uuidv7()
   await db.query(
-    `insert into fields (field_id, account_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6)`,
+    `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6)`,
     [
       field_id,
-      account_id,
+      projectId,
       table_name,
       level,
       '018ca19e-7a23-7bf4-8523-ff41e3b60807',
@@ -341,7 +346,7 @@ export const createField = async ({ table_name = null, level = null }) => {
     operation: 'insert',
     draft: {
       field_id,
-      account_id,
+      project_id: projectId,
       table_name,
       level,
       field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',

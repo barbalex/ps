@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createField } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -8,15 +8,17 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useFieldsNavData } from '../modules/useFieldsNavData.ts'
 import '../form.css'
 
-export const Fields = ({ hideHeader = false }) => {
+export const Fields = ({ from, hideHeader = false, projectId: projectIdProp }) => {
+  const { projectId: routeProjectId } = useParams({ strict: false, from })
+  const projectId = projectIdProp ?? routeProjectId
   const navigate = useNavigate()
-  const fieldsBaseUrl = `/data/fields`
+  const fieldsBaseUrl = `/data/projects/${projectId}/fields`
 
-  const { loading, navData, isFiltered } = useFieldsNavData()
+  const { loading, navData, isFiltered } = useFieldsNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createField({})
+    const id = await createField({ projectId })
     if (!id) return
     navigate({ to: `${fieldsBaseUrl}/${id}` })
   }

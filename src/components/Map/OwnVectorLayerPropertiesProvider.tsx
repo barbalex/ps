@@ -24,7 +24,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // places level 1
   const resPlaces1Fields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
+    [project_id],
   )
   const places1Properties = useMemo(
     () => resPlaces1Fields?.rows?.map((field) => field.name) ?? [],
@@ -33,7 +34,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // places level 2
   const resPlaces2Fields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 2`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
+    [project_id],
   )
   const places2Properties = useMemo(
     () => resPlaces2Fields?.rows?.map((field) => field.name) ?? [],
@@ -42,7 +44,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // actions level 1
   const resActions1Fields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
+    [project_id],
   )
   const actions1Properties = useMemo(
     () => resActions1Fields?.rows?.map((field) => field.name) ?? [],
@@ -51,7 +54,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // actions level 2
   const resActions2Fields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 2`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
+    [project_id],
   )
   const actions2Properties = useMemo(
     () => resActions2Fields?.rows?.map((field) => field.name) ?? [],
@@ -60,7 +64,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // checks level 1
   const resChecks1Fields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = $1`,
+    [project_id],
   )
   const checks1Properties = useMemo(
     () => resChecks1Fields?.rows?.map((field) => field.name) ?? [],
@@ -69,7 +74,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // checks level 2
   const resChecks2Fields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 2`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = $1`,
+    [project_id],
   )
   const checks2Properties = useMemo(
     () => resChecks2Fields?.rows?.map((field) => field.name) ?? [],
@@ -80,7 +86,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
   // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on observations, not fields...
   // TODO: level 1/2 i.e. query where place_id has level 1/2
   const resObservationsAssignedFields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'observations'-- AND place_id IS NOT NULL`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NOT NULL`,
+    [project_id],
   )
   const observationsAssignedFields = useMemo(
     () => resObservationsAssignedFields?.rows?.map((field) => field.name) ?? [],
@@ -94,7 +101,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // observations-to-assess
   const resObservationsToAssessFields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'observations'-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+    [project_id],
   )
   const observationsToAssessFields = useMemo(
     () => resObservationsToAssessFields?.rows?.map((field) => field.name) ?? [],
@@ -103,7 +111,8 @@ export const OwnVectorLayerPropertiesProvider = () => {
 
   // observations-not-to-assign
   const resObservationsNotToAssignFields = useLiveQuery(
-    `SELECT field_id, name FROM fields WHERE table_name = 'observations'-- AND place_id IS NULL AND not_to_assign IS TRUE`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
+    [project_id],
   )
   const observationsNotToAssignFields = useMemo(
     () =>

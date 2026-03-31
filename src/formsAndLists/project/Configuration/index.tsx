@@ -538,6 +538,24 @@ export const Configuration = ({ from }) => {
                 })
               }
             />
+            <SwitchField
+              label={formatMessage({
+                id: 'pR8FldInPrj',
+                defaultMessage: 'Felder im Projekt anzeigen',
+              })}
+              name="fields_in_project"
+              value={row.fields_in_project ?? true}
+              onChange={onChange}
+              validationState={validations?.fields_in_project?.state}
+              validationMessage={
+                validations?.fields_in_project?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
           </SectionLevel2>
           <SectionLevel2 title={subprojectName}>
             <SwitchField
@@ -741,6 +759,7 @@ export const Configuration = ({ from }) => {
             value={row.goal_reports_label_by ?? ''}
             onChange={onChange}
             extraFieldNames={['id']}
+            from={from}
             validationState={validations?.goal_reports_label_by?.state}
             validationMessage={validations?.goal_reports_label_by?.message}
           />
@@ -754,6 +773,7 @@ export const Configuration = ({ from }) => {
             value={row.places_label_by ?? ''}
             onChange={onChange}
             extraFieldNames={['id', 'level']}
+            from={from}
             validationState={validations?.places_label_by?.state}
             validationMessage={validations?.places_label_by?.message}
           />
@@ -767,6 +787,7 @@ export const Configuration = ({ from }) => {
             fieldsTable="places"
             id={projectId}
             valueArray={row.places_order_by ?? []}
+            from={from}
           />
           <TextFieldInactive
             label={formatMessage({

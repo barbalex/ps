@@ -6,10 +6,14 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useFieldsNavData } from '../../modules/useFieldsNavData.ts'
 
-export const FieldsNode = () => {
+interface Props {
+  projectId?: string
+}
+
+export const FieldsNode = ({ projectId }: Props) => {
   const navigate = useNavigate()
 
-  const { navData } = useFieldsNavData()
+  const { navData } = useFieldsNavData({ projectId })
   const {
     label,
     parentUrl,
@@ -45,7 +49,7 @@ export const FieldsNode = () => {
     <>
       <Node
         label={label}
-        level={1}
+        level={projectId ? 3 : 1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
@@ -58,6 +62,7 @@ export const FieldsNode = () => {
           <FieldNode
             key={`${nav.id}-${i}`}
             nav={nav}
+            projectId={projectId}
           />
         ))}
     </>

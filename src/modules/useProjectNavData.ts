@@ -11,6 +11,7 @@ import {
   filesFilterAtom,
   listsFilterAtom,
   unitsFilterAtom,
+  fieldsFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
   languageAtom,
@@ -42,6 +43,7 @@ type NavData = {
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
   units_in_project?: boolean | null
+  fields_in_project?: boolean | null
 }
 
 type NavDataNotForBreadcrumb = {
@@ -59,6 +61,7 @@ type NavDataNotForBreadcrumb = {
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
   units_in_project?: boolean | null
+  fields_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -90,6 +93,7 @@ type NavDataNotForBreadcrumbDesigning = {
   project_files_in_project?: boolean | null
   project_users_in_project?: boolean | null
   units_in_project?: boolean | null
+  fields_in_project?: boolean | null
   subprojects_count_unfiltered?: number
   subprojects_count_filtered?: number
   subprojects_name_singular?: string | null
@@ -112,6 +116,8 @@ type NavDataNotForBreadcrumbDesigning = {
   units_count_filtered?: number
   project_crs_count_unfiltered?: number
   place_levels_count_unfiltered?: number
+  fields_count_unfiltered?: number
+  fields_count_filtered?: number
 }
 
 export const useProjectNavData = ({
@@ -152,6 +158,10 @@ export const useProjectNavData = ({
   const unitsFilterString = filterStringFromFilter(unitsFilter)
   const unitsIsFiltered = !!unitsFilterString
 
+  const [fieldsFilter] = useAtom(fieldsFilterAtom)
+  const fieldsFilterString = filterStringFromFilter(fieldsFilter)
+  const fieldsIsFiltered = !!fieldsFilterString
+
   const res = useLiveQuery(
     `
       ${
@@ -180,7 +190,9 @@ export const useProjectNavData = ({
             units_count_unfiltered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}'),
             units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''}),
             project_crs_count_unfiltered AS (SELECT count(*) FROM project_crs WHERE project_id = '${projectId}'),
-            place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}')`
+            place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}'),
+            fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}'),
+            fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''})`
                 : ''
             }`
           : ''
@@ -199,7 +211,8 @@ export const useProjectNavData = ({
         files_active_projects,
         project_users_in_project,
         project_files_in_project,
-        units_in_project
+        units_in_project,
+        fields_in_project
         ${
           !forBreadcrumb
             ? `,
@@ -226,7 +239,9 @@ export const useProjectNavData = ({
             units_count_unfiltered.count AS units_count_unfiltered,
             units_count_filtered.count AS units_count_filtered,
             project_crs_count_unfiltered.count AS project_crs_count_unfiltered,
-            place_levels_count_unfiltered.count AS place_levels_count_unfiltered`
+            place_levels_count_unfiltered.count AS place_levels_count_unfiltered,
+            fields_count_unfiltered.count AS fields_count_unfiltered,
+            fields_count_filtered.count AS fields_count_filtered`
                 : ''
             }`
             : ''
@@ -258,7 +273,9 @@ export const useProjectNavData = ({
             units_count_unfiltered,
             units_count_filtered,
             project_crs_count_unfiltered,
-            place_levels_count_unfiltered`
+            place_levels_count_unfiltered,
+            fields_count_unfiltered,
+            fields_count_filtered`
                 : ''
             }`
             : ''
@@ -491,6 +508,23 @@ export const useProjectNavData = ({
                     namePlural: formatMessage({
                       id: 'nVkh0Z',
                       defaultMessage: 'Einheiten',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+          ...(designing && nav?.fields_in_project === false
+            ? [
+                {
+                  id: 'fields',
+                  label: buildNavLabel({
+                    loading,
+                    isFiltered: fieldsIsFiltered,
+                    countFiltered: nav?.fields_count_filtered ?? 0,
+                    countUnfiltered: nav?.fields_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'I+dTZE',
+                      defaultMessage: 'Felder',
                     }),
                   }),
                 },

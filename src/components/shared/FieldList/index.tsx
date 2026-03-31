@@ -15,6 +15,7 @@ interface Props {
   fieldsTable: string
   id: string
   valueArray: string[]
+  from: string
 }
 
 export const FieldList = ({
@@ -24,6 +25,7 @@ export const FieldList = ({
   fieldsTable,
   id,
   valueArray = [],
+  from,
 }: Props) => {
   const { projectId } = useParams({ strict: false })
 

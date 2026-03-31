@@ -2,10 +2,11 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { FaPlus } from 'react-icons/fa'
 import { useAtom } from 'jotai'
-import { useNavigate, useLocation } from '@tanstack/react-router'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { createField } from '../../../modules/createRows.ts'
+import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { designingAtom } from '../../../store.ts'
 import styles from './AddField.module.css'
 
@@ -18,12 +19,15 @@ import styles from './AddField.module.css'
 //    - a search param in the url: editingField=fieldId
 export const AddField = ({ tableName, level, from }) => {
   const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const location = useLocation()
   const { formatMessage } = useIntl()
 
   const addRow = async () => {
+    const isAccountTable = accountTables.includes(tableName)
     const newFieldParams = { table_name: tableName, level }
+    if (!isAccountTable) newFieldParams.projectId = projectId
     const id = await createField(newFieldParams)
     // TODO:
     navigate({ search: { editingField: id } })

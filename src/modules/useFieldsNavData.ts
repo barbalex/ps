@@ -8,6 +8,10 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { fieldsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
+type Props = {
+  projectId: string
+}
+
 type NavDataOpen = {
   id: string
   label: string
@@ -20,12 +24,12 @@ type NavDataClosed = {
   count_filtered: number
 }[]
 
-export const useFieldsNavData = () => {
+export const useFieldsNavData = ({ projectId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const parentArray = ['data']
+  const parentArray = ['data', ...(projectId ? ['projects', projectId] : [])]
 
   const ownArray = [...parentArray, 'fields']
   // needs to work not only works for urlPath, for all opened paths!
@@ -38,22 +42,22 @@ export const useFieldsNavData = () => {
   const sql = isOpen
     ? `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM fields),
-        count_filtered AS (SELECT count(*) FROM fields${isFiltered ? ` WHERE ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}),
+        count_filtered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         field_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM fields, count_unfiltered, count_filtered
-      WHERE 1 = 1
+      WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY table_name, name, level
     `
     : `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM fields),
-        count_filtered AS (SELECT count(*) FROM fields${isFiltered ? ` WHERE ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}),
+        count_filtered AS (SELECT count(*) FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
