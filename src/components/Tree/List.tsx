@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ListValuesNode } from './ListValues.tsx'
@@ -14,6 +15,12 @@ export const ListNode = ({ projectId, nav, level = 4 }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
+
+  const projectRes = useLiveQuery(
+    `SELECT list_values_in_list FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const listValuesInList = projectRes?.rows?.[0]?.list_values_in_list !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = ['data', 'projects', projectId, 'lists']
@@ -37,6 +44,22 @@ export const ListNode = ({ projectId, nav, level = 4 }) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
+  }
+
+  if (listValuesInList) {
+    const listFormArray = [...ownArray, 'list']
+    const listFormUrl = `${ownUrl}/list`
+    return (
+      <Node
+        label={nav.label}
+        id={nav.id}
+        level={level}
+        isInActiveNodeArray={listFormArray.every((part, i) => urlPath[i] === part)}
+        isActive={isEqual(urlPath, listFormArray)}
+        childrenCount={0}
+        to={listFormUrl}
+      />
+    )
   }
 
   return (

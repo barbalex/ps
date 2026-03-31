@@ -556,6 +556,24 @@ export const Configuration = ({ from }) => {
                 })
               }
             />
+            <SwitchField
+              label={formatMessage({
+                id: 'lV6LstValsInLst',
+                defaultMessage: 'Listen-Werte in Liste anzeigen',
+              })}
+              name="list_values_in_list"
+              value={row.list_values_in_list ?? true}
+              onChange={onChange}
+              validationState={validations?.list_values_in_list?.state}
+              validationMessage={
+                validations?.list_values_in_list?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
           </SectionLevel2>
           <SectionLevel2 title={subprojectName}>
             <SwitchField

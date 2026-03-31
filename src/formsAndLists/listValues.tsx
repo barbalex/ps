@@ -16,10 +16,8 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/lists/$listId_/values/'
-
-export const ListValues = () => {
-  const { projectId, listId } = useParams({ from })
+export const ListValues = ({ hideHeader = false }: { hideHeader?: boolean }) => {
+  const { projectId, listId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [importDialogOpen, setImportDialogOpen] = useState(false)
@@ -72,22 +70,24 @@ export const ListValues = () => {
         onClose={() => setImportDialogOpen(false)}
         onFileSelected={onImportFileSelected}
       />
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        deleteRow={deleteAllValues}
-        deleteRowDisabled={!loading && navs.length === 0}
-        deleteLabel={formatMessage({
-          id: 'lVDeleteAll',
-          defaultMessage: 'Alle Werte entfernen',
-        })}
-        deleteConfirmLabel={formatMessage({
-          id: 'lVDeleteAllConfirm',
-          defaultMessage: 'Alle Werte entfernen?',
-        })}
-        menus={[importButton]}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          deleteRow={deleteAllValues}
+          deleteRowDisabled={!loading && navs.length === 0}
+          deleteLabel={formatMessage({
+            id: 'lVDeleteAll',
+            defaultMessage: 'Alle Werte entfernen',
+          })}
+          deleteConfirmLabel={formatMessage({
+            id: 'lVDeleteAllConfirm',
+            defaultMessage: 'Alle Werte entfernen?',
+          })}
+          menus={[importButton]}
+        />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />

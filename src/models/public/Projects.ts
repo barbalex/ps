@@ -137,6 +137,9 @@ export default interface Projects {
   /** Render fields inside the project form? Preset: true */
   fields_in_project: boolean | null;
 
+  /** Render list values inside the list form? Preset: true */
+  list_values_in_list: boolean | null;
+
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects: boolean | null;
 
@@ -345,6 +348,12 @@ export interface ProjectsInitializer {
   fields_in_project?: boolean | null;
 
   /**
+   * Render list values inside the list form? Preset: true
+   * Default value: true
+   */
+  list_values_in_list?: boolean | null;
+
+  /**
    * Whether files are used in table subprojects. Preset: true
    * Default value: true
    */
@@ -511,6 +520,9 @@ export interface ProjectsMutator {
 
   /** Render fields inside the project form? Preset: true */
   fields_in_project?: boolean | null;
+
+  /** Render list values inside the list form? Preset: true */
+  list_values_in_list?: boolean | null;
 
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects?: boolean | null;

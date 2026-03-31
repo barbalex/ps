@@ -41,14 +41,14 @@ export default interface Qcs {
 
   sql: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
-
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
 }
 
 /**
@@ -93,6 +93,9 @@ export interface QcsInitializer {
 
   sql?: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period: string;
+
   /** Default value: now() */
   created_at?: Date;
 
@@ -100,9 +103,6 @@ export interface QcsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
 }
 
 /**
@@ -142,12 +142,12 @@ export interface QcsMutator {
 
   sql?: string | null;
 
+  /** System period maintained by temporal_tables for auditing and historic queries. */
+  sys_period?: string;
+
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period?: string;
 }

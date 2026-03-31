@@ -172,6 +172,7 @@ CREATE TABLE IF NOT EXISTS projects(
   project_users_in_project boolean DEFAULT TRUE,
   units_in_project boolean DEFAULT TRUE,
   fields_in_project boolean DEFAULT TRUE,
+  list_values_in_list boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_taxa_in_subproject boolean DEFAULT TRUE,
   subproject_users_in_subproject boolean DEFAULT TRUE,
@@ -228,6 +229,7 @@ COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the 
 COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users inside the project form? Preset: true';
 COMMENT ON COLUMN projects.units_in_project IS 'Render units inside the project form? Preset: true';
 COMMENT ON COLUMN projects.fields_in_project IS 'Render fields inside the project form? Preset: true';
+COMMENT ON COLUMN projects.list_values_in_list IS 'Render list values inside the list form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN projects.subproject_taxa_in_subproject IS 'Render subproject taxa inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.subproject_users_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';
@@ -503,7 +505,6 @@ CREATE TABLE IF NOT EXISTS subproject_taxa(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -596,7 +597,6 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type unit_types_enum DEFAULT NULL, -- TODO: not in use?
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -979,7 +979,6 @@ CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1282,7 +1281,6 @@ CREATE TABLE IF NOT EXISTS field_types(
   sort smallint DEFAULT NULL,
   comment text,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1359,7 +1357,6 @@ CREATE TABLE IF NOT EXISTS fields(
       ELSE table_name || '.' || name || ' ' || level
     END
   ) STORED,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL

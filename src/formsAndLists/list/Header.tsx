@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useLocation, useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
@@ -9,9 +9,10 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
-  const isForm = from === '/data/projects/$projectId_/lists/$listId_/list'
-  const { projectId, listId } = useParams({ from })
+export const Header = ({ autoFocusRef, from: _from }) => {
+  const { projectId, listId } = useParams({ strict: false })
+  const location = useLocation()
+  const isForm = /\/lists\/[^/]+\/(list|values(\/|$))/.test(location.pathname)
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()

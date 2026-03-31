@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { List } from '../../../../../../formsAndLists/list/index.tsx'
+import { ListWithValues } from '../../../../../../formsAndLists/list/WithValues.tsx'
 const from = '/data/projects/$projectId_/lists/$listId_/list'
 
 export const Route = createFileRoute(from)({
   component: () => (
-    <List from="/data/projects/$projectId_/lists/$listId_/list" />
+    <ListWithValues from="/data/projects/$projectId_/lists/$listId_/list" />
   ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {

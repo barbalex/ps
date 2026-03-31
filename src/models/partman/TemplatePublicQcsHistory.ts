@@ -33,13 +33,13 @@ export default interface TemplatePublicQcsHistory {
 
   sql: string | null;
 
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by: string | null;
-
-  sys_period: string;
 }
 
 /** Represents the initializer for the table partman.template_public_qcs_history */
@@ -74,13 +74,13 @@ export interface TemplatePublicQcsHistoryInitializer {
 
   sql?: string | null;
 
+  sys_period: string;
+
   created_at: Date;
 
   updated_at: Date;
 
   updated_by?: string | null;
-
-  sys_period: string;
 }
 
 /** Represents the mutator for the table partman.template_public_qcs_history */
@@ -115,11 +115,11 @@ export interface TemplatePublicQcsHistoryMutator {
 
   sql?: string | null;
 
+  sys_period?: string;
+
   created_at?: Date;
 
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  sys_period?: string;
 }

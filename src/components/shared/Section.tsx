@@ -51,10 +51,11 @@ export const Section = ({
             : titleStyle
         }
       >
-        {title}
+        <span style={{ minWidth: 0, flex: '1 1 auto' }}>{title}</span>
         {(headerActions || isOpen !== undefined) && (
           <span
             style={{
+              flex: '0 0 auto',
               display: 'inline-flex',
               alignItems: 'center',
               gap: 4,

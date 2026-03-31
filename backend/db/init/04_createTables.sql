@@ -172,6 +172,7 @@ CREATE TABLE IF NOT EXISTS projects(
   project_users_in_project boolean DEFAULT TRUE,
   units_in_project boolean DEFAULT TRUE,
   fields_in_project boolean DEFAULT TRUE,
+  list_values_in_list boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_taxa_in_subproject boolean DEFAULT TRUE,
   subproject_users_in_subproject boolean DEFAULT TRUE,
@@ -228,6 +229,7 @@ COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the 
 COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users inside the project form? Preset: true';
 COMMENT ON COLUMN projects.units_in_project IS 'Render units inside the project form? Preset: true';
 COMMENT ON COLUMN projects.fields_in_project IS 'Render fields inside the project form? Preset: true';
+COMMENT ON COLUMN projects.list_values_in_list IS 'Render list values inside the list form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN projects.subproject_taxa_in_subproject IS 'Render subproject taxa inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.subproject_users_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';
@@ -1969,6 +1971,7 @@ CREATE TABLE IF NOT EXISTS qcs(
   is_subproject_level boolean DEFAULT false,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,

@@ -100,6 +100,8 @@ export default interface ProjectsHistory {
 
   fields_in_project: boolean | null;
 
+  list_values_in_list: boolean | null;
+
   files_active_subprojects: boolean | null;
 
   subproject_taxa_in_subproject: boolean | null;
@@ -237,6 +239,9 @@ export interface ProjectsHistoryInitializer {
   fields_in_project?: boolean | null;
 
   /** Default value: true */
+  list_values_in_list?: boolean | null;
+
+  /** Default value: true */
   files_active_subprojects?: boolean | null;
 
   /** Default value: true */
@@ -358,6 +363,8 @@ export interface ProjectsHistoryMutator {
   units_in_project?: boolean | null;
 
   fields_in_project?: boolean | null;
+
+  list_values_in_list?: boolean | null;
 
   files_active_subprojects?: boolean | null;
 
