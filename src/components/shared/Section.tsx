@@ -8,6 +8,7 @@ export const Section = ({
   title,
   children,
   onHeaderClick = undefined,
+  onChevronClick = undefined,
   onNavigate = undefined,
   isOpen = undefined,
   titleStyle = undefined,
@@ -55,7 +56,11 @@ export const Section = ({
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onClick={() => onHeaderClick?.()}
+              onClick={() =>
+                (isOpen
+                  ? (onChevronClick ?? onHeaderClick)
+                  : onHeaderClick)?.()
+              }
             >
               <FaChevronDown
                 style={{

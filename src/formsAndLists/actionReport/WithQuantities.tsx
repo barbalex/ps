@@ -138,6 +138,7 @@ export const ActionReportWithQuantities = ({ from }) => {
                     ? navigate({ to: actionReportBaseUrl })
                     : navigate({ to: quantitiesUrl })
                 }
+                onChevronClick={() => navigate({ to: actionReportBaseUrl })}
                 isOpen={isQuantitiesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}

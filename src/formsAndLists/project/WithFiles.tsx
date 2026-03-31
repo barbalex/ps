@@ -245,6 +245,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: projectUrl })
                 : navigate({ to: filesUrl })
             }
+            onChevronClick={() => navigate({ to: projectUrl })}
             isOpen={isFilesOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -268,6 +269,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: projectUrl })
                 : navigate({ to: usersUrl })
             }
+            onChevronClick={() => navigate({ to: projectUrl })}
             isOpen={isUsersOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -287,6 +289,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: projectUrl })
                 : navigate({ to: unitsUrl })
             }
+            onChevronClick={() => navigate({ to: projectUrl })}
             isOpen={isUnitsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -306,6 +309,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: projectUrl })
                 : navigate({ to: fieldsUrl })
             }
+            onChevronClick={() => navigate({ to: projectUrl })}
             isOpen={isFieldsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}

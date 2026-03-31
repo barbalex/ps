@@ -228,6 +228,7 @@ export const ActionWithAll = ({
                     ? navigate({ to: actionUrl })
                     : navigate({ to: quantitiesUrl })
                 }
+                onChevronClick={() => navigate({ to: actionUrl })}
                 isOpen={isQuantitiesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -246,6 +247,7 @@ export const ActionWithAll = ({
                     ? navigate({ to: actionUrl })
                     : navigate({ to: taxaUrl })
                 }
+                onChevronClick={() => navigate({ to: actionUrl })}
                 isOpen={isTaxaOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -264,6 +266,7 @@ export const ActionWithAll = ({
                     ? navigate({ to: actionUrl })
                     : navigate({ to: filesUrl })
                 }
+                onChevronClick={() => navigate({ to: actionUrl })}
                 isOpen={isFilesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}

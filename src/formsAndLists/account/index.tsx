@@ -197,6 +197,7 @@ export const Account = () => {
                 ? navigate({ to: accountUrl })
                 : navigate({ to: fieldsUrl })
             }
+            onChevronClick={() => navigate({ to: accountUrl })}
             isOpen={isFieldsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}

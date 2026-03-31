@@ -261,6 +261,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: subprojectUrl })
                 : navigate({ to: reportsUrl })
             }
+            onChevronClick={() => navigate({ to: subprojectUrl })}
             isOpen={isReportsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -280,6 +281,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: subprojectUrl })
                 : navigate({ to: taxaUrl })
             }
+            onChevronClick={() => navigate({ to: subprojectUrl })}
             isOpen={isTaxaOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -299,6 +301,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: subprojectUrl })
                 : navigate({ to: usersUrl })
             }
+            onChevronClick={() => navigate({ to: subprojectUrl })}
             isOpen={isUsersOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -318,6 +321,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
                 ? navigate({ to: subprojectUrl })
                 : navigate({ to: filesUrl })
             }
+            onChevronClick={() => navigate({ to: subprojectUrl })}
             isOpen={isFilesOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}

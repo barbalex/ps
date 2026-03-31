@@ -137,6 +137,7 @@ export const GoalWithReports = ({ from }) => {
                 ? navigate({ to: goalUrl })
                 : navigate({ to: reportsUrl })
             }
+            onChevronClick={() => navigate({ to: goalUrl })}
             isOpen={isReportsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
