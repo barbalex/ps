@@ -1,30 +1,43 @@
 import { useRef, useState } from 'react'
-import { Outlet, useLocation, useParams } from '@tanstack/react-router'
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { FaPlus } from 'react-icons/fa'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { Fields } from '../fields.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { createField } from '../../modules/createRows.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { addOperationAtom, fieldsFilterAtom } from '../../store.ts'
 import { accountTypeOptions } from '../../modules/constants.ts'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 
 const from = '/data/accounts/$accountId_'
+const { Button } = fluentUiReactComponents
 
 export const Account = () => {
   const { accountId } = useParams({ from })
   const location = useLocation()
+  const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const [fieldsFilter] = useAtom(fieldsFilterAtom)
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -49,6 +62,26 @@ export const Account = () => {
     location.pathname.endsWith('/project-fields') ||
     location.pathname.includes('/project-fields/')
   const isFieldsList = /\/project-fields\/?$/.test(location.pathname)
+  const fieldsIsFiltered = !!filterStringFromFilter(fieldsFilter)
+
+  const onClickAddField = async () => {
+    const id = await createField({ accountId })
+    if (!id) return
+    navigate({ to: `${fieldsUrl}/${id}` })
+  }
+
+  const fieldsHeaderActions =
+    projectFieldsInAccount && isFieldsList ? (
+      <>
+        <FilterButton isFiltered={fieldsIsFiltered} />
+        <Button
+          size="medium"
+          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          icon={<FaPlus />}
+          onClick={onClickAddField}
+        />
+      </>
+    ) : undefined
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -196,13 +229,10 @@ export const Account = () => {
             isOpen={isFieldsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            headerActions={fieldsHeaderActions}
           >
             {isFieldsOpen &&
-              (isFieldsList ? (
-                <Fields from={from} hideHeader />
-              ) : (
-                <Outlet />
-              ))}
+              (isFieldsList ? <Fields from={from} hideHeader /> : <Outlet />)}
           </Section>
         ) : (
           isFieldsOpen && <Outlet />
