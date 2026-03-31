@@ -1,12 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
-import { TextField } from '../../components/shared/TextField.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { PlaceLevelForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import {
   createHistoryFieldLabelFormatter,
@@ -40,6 +38,7 @@ export const PlaceLevelHistoryCompare = () => {
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
+  const autoFocusRef = useRef<HTMLInputElement>(null)
   const [validations, setValidations] = useState<Record<string, unknown>>({})
 
   const rowRes = useLiveQuery(
@@ -92,273 +91,14 @@ export const PlaceLevelHistoryCompare = () => {
     )
   }
 
+
   const leftContent = (
     <div className="form-container">
-      <RadioGroupField
-        label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Stufe' })}
-        name="level"
-        list={[1, 2]}
-        layout="horizontal"
-        value={row.level ?? ''}
+      <PlaceLevelForm
+        row={row}
         onChange={onChange}
-        validationState={validations?.level?.state}
-        validationMessage={validations?.level?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'bT3YsO', defaultMessage: 'Deutsch: Einzahl' })}
-        name="name_singular_de"
-        value={row.name_singular_de ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_singular_de?.state}
-        validationMessage={validations?.name_singular_de?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'cU4ZtP', defaultMessage: 'Deutsch: Mehrzahl' })}
-        name="name_plural_de"
-        value={row.name_plural_de ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_plural_de?.state}
-        validationMessage={validations?.name_plural_de?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'eW6BvR', defaultMessage: 'Englisch: Einzahl' })}
-        name="name_singular_en"
-        value={row.name_singular_en ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_singular_en?.state}
-        validationMessage={validations?.name_singular_en?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'fX7CwS', defaultMessage: 'Englisch: Mehrzahl' })}
-        name="name_plural_en"
-        value={row.name_plural_en ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_plural_en?.state}
-        validationMessage={validations?.name_plural_en?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'hZ9EyU', defaultMessage: 'Französisch: Einzahl' })}
-        name="name_singular_fr"
-        value={row.name_singular_fr ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_singular_fr?.state}
-        validationMessage={validations?.name_singular_fr?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'iA0FzV', defaultMessage: 'Französisch: Mehrzahl' })}
-        name="name_plural_fr"
-        value={row.name_plural_fr ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_plural_fr?.state}
-        validationMessage={validations?.name_plural_fr?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'kC2HbX', defaultMessage: 'Italienisch: Einzahl' })}
-        name="name_singular_it"
-        value={row.name_singular_it ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_singular_it?.state}
-        validationMessage={validations?.name_singular_it?.message}
-      />
-      <TextField
-        label={formatMessage({ id: 'lD3IcY', defaultMessage: 'Italienisch: Mehrzahl' })}
-        name="name_plural_it"
-        value={row.name_plural_it ?? ''}
-        onChange={onChange}
-        validationState={validations?.name_plural_it?.state}
-        validationMessage={validations?.name_plural_it?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'vN3SmI', defaultMessage: 'Beobachtungen zugeordnet' })}
-        name="observations"
-        value={row.observations ?? false}
-        onChange={onChange}
-        validationState={validations?.observations?.state}
-        validationMessage={validations?.observations?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
-        name="place_files"
-        value={row.place_files ?? false}
-        onChange={onChange}
-        validationState={validations?.place_files?.state}
-        validationMessage={validations?.place_files?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'rP1UsQ', defaultMessage: 'Benutzer in Ort anzeigen' })}
-        name="place_users_in_place"
-        value={row.place_users_in_place ?? true}
-        onChange={onChange}
-        validationState={validations?.place_users_in_place?.state}
-        validationMessage={validations?.place_users_in_place?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'wQ9LmN', defaultMessage: 'Dateien in Ort anzeigen' })}
-        name="place_files_in_place"
-        value={row.place_files_in_place ?? true}
-        onChange={onChange}
-        validationState={validations?.place_files_in_place?.state}
-        validationMessage={validations?.place_files_in_place?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'sK0PjF', defaultMessage: 'Kontrollen' })}
-        name="checks"
-        value={row.checks ?? false}
-        onChange={onChange}
-        validationState={validations?.checks?.state}
-        validationMessage={validations?.checks?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'tL1QkG', defaultMessage: 'Kontroll-Mengen' })}
-        name="check_quantities"
-        value={row.check_quantities ?? false}
-        onChange={onChange}
-        validationState={validations?.check_quantities?.state}
-        validationMessage={validations?.check_quantities?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'dR0VsL', defaultMessage: 'Kontroll-Mengen in Kontrolle anzeigen' })}
-        name="check_quantities_in_check"
-        value={row.check_quantities_in_check ?? true}
-        onChange={onChange}
-        validationState={validations?.check_quantities_in_check?.state}
-        validationMessage={validations?.check_quantities_in_check?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'uM2RlH', defaultMessage: 'Taxa' })}
-        name="check_taxa"
-        value={row.check_taxa ?? false}
-        onChange={onChange}
-        validationState={validations?.check_taxa?.state}
-        validationMessage={validations?.check_taxa?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'gE4ItL', defaultMessage: 'Taxa in Kontrolle anzeigen' })}
-        name="check_taxa_in_check"
-        value={row.check_taxa_in_check ?? true}
-        onChange={onChange}
-        validationState={validations?.check_taxa_in_check?.state}
-        validationMessage={validations?.check_taxa_in_check?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'kL3MnO', defaultMessage: 'Dateien' })}
-        name="check_files"
-        value={row.check_files ?? false}
-        onChange={onChange}
-        validationState={validations?.check_files?.state}
-        validationMessage={validations?.check_files?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'rN5QwT', defaultMessage: 'Dateien in Kontrolle anzeigen' })}
-        name="check_files_in_check"
-        value={row.check_files_in_check ?? true}
-        onChange={onChange}
-        validationState={validations?.check_files_in_check?.state}
-        validationMessage={validations?.check_files_in_check?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'nF5KeA', defaultMessage: 'Berichte' })}
-        name="check_reports"
-        value={row.check_reports ?? false}
-        onChange={onChange}
-        validationState={validations?.check_reports?.state}
-        validationMessage={validations?.check_reports?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'oG6LfB', defaultMessage: 'Bericht-Mengen' })}
-        name="check_report_quantities"
-        value={row.check_report_quantities ?? false}
-        onChange={onChange}
-        validationState={validations?.check_report_quantities?.state}
-        validationMessage={validations?.check_report_quantities?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'qH7MpR4', defaultMessage: 'Bericht-Mengen im Bericht anzeigen' })}
-        name="check_report_quantities_in_report"
-        value={row.check_report_quantities_in_report ?? true}
-        onChange={onChange}
-        validationState={validations?.check_report_quantities_in_report?.state}
-        validationMessage={validations?.check_report_quantities_in_report?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'pH7MgC', defaultMessage: 'Massnahmen' })}
-        name="actions"
-        value={row.actions ?? false}
-        onChange={onChange}
-        validationState={validations?.actions?.state}
-        validationMessage={validations?.actions?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'qI8NhD', defaultMessage: 'Massnahmen-Mengen' })}
-        name="action_quantities"
-        value={row.action_quantities ?? false}
-        onChange={onChange}
-        validationState={validations?.action_quantities?.state}
-        validationMessage={validations?.action_quantities?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'fD5OsU', defaultMessage: 'Massnahmen-Mengen in Massnahme anzeigen' })}
-        name="action_quantities_in_action"
-        value={row.action_quantities_in_action ?? true}
-        onChange={onChange}
-        validationState={validations?.action_quantities_in_action?.state}
-        validationMessage={validations?.action_quantities_in_action?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'pQ2RsT', defaultMessage: 'Taxa' })}
-        name="action_taxa"
-        value={row.action_taxa ?? false}
-        onChange={onChange}
-        validationState={validations?.action_taxa?.state}
-        validationMessage={validations?.action_taxa?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'rS3TuV', defaultMessage: 'Taxa in Massnahme anzeigen' })}
-        name="action_taxa_in_action"
-        value={row.action_taxa_in_action ?? true}
-        onChange={onChange}
-        validationState={validations?.action_taxa_in_action?.state}
-        validationMessage={validations?.action_taxa_in_action?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'fG2HiJ', defaultMessage: 'Dateien' })}
-        name="action_files"
-        value={row.action_files ?? false}
-        onChange={onChange}
-        validationState={validations?.action_files?.state}
-        validationMessage={validations?.action_files?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'gH3IjK', defaultMessage: 'Dateien in Massnahme anzeigen' })}
-        name="action_files_in_action"
-        value={row.action_files_in_action ?? true}
-        onChange={onChange}
-        validationState={validations?.action_files_in_action?.state}
-        validationMessage={validations?.action_files_in_action?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'eV3FxH', defaultMessage: 'Berichte' })}
-        name="action_reports"
-        value={row.action_reports ?? false}
-        onChange={onChange}
-        validationState={validations?.action_reports?.state}
-        validationMessage={validations?.action_reports?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'fW4GyI', defaultMessage: 'Bericht-Mengen' })}
-        name="action_report_quantities"
-        value={row.action_report_quantities ?? false}
-        onChange={onChange}
-        validationState={validations?.action_report_quantities?.state}
-        validationMessage={validations?.action_report_quantities?.message}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'gX5HzJ', defaultMessage: 'Bericht-Mengen im Bericht anzeigen' })}
-        name="action_report_quantities_in_report"
-        value={row.action_report_quantities_in_report ?? true}
-        onChange={onChange}
-        validationState={validations?.action_report_quantities_in_report?.state}
-        validationMessage={validations?.action_report_quantities_in_report?.message}
+        validations={validations as Record<string, { state: string; message: string }>}
+        autoFocusRef={autoFocusRef}
       />
     </div>
   )
