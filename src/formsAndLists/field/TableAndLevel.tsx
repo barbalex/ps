@@ -13,6 +13,16 @@ const { Dropdown, Field, Option } = fluentUiReactComponents
 
 type Opt = { id: string; table_name: string; level: number | null }
 
+const placeScopedTables = new Set([
+  'places',
+  'checks',
+  'check_reports',
+  'actions',
+  'action_reports',
+  'observations',
+  'files',
+])
+
 // Options ordered hierarchically (subproject scope → place level 1 → place level 2)
 // mirroring the nav tree order
 const opts: Opt[] = [
@@ -184,7 +194,7 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
   }
 
   const combinedValue = row.table_name
-    ? row.level != null
+    ? row.level != null && placeScopedTables.has(row.table_name)
       ? `${row.table_name}_${row.level}`
       : row.table_name
     : ''
