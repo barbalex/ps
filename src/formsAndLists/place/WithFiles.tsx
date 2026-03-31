@@ -84,8 +84,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const placeLevels = nameRes?.rows ?? []
   const nameSingular =
     placeLevels?.[0]?.[`name_singular_${language}`] ?? 'Place'
-  const namePlural =
-    placeLevels?.[0]?.[`name_plural_${language}`] ?? 'Places'
+  const namePlural = placeLevels?.[0]?.[`name_plural_${language}`] ?? 'Places'
 
   const placeLevelRes = useLiveQuery(
     `SELECT place_users_in_place, place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -226,19 +225,19 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
         {isDesigning && usersInPlace ? (
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${placeUsersCount})`}
-            onHeaderClick={() =>
-              isUsersList
-                ? navigate({ to: placeUrl })
-                : navigate({ to: usersUrl })
-            }
-            onChevronClick={() => navigate({ to: placeUrl })}
+            parentUrl={placeUrl}
+            listUrl={usersUrl}
             isOpen={isUsersOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
             headerActions={placeUserHeaderActions}
           >
             {isUsersOpen &&
-              (isUsersList ? <PlaceUsers from={from} hideHeader /> : <Outlet />)}
+              (isUsersList ? (
+                <PlaceUsers from={from} hideHeader />
+              ) : (
+                <Outlet />
+              ))}
           </Section>
         ) : (
           isUsersOpen && <Outlet />
@@ -246,12 +245,8 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
         {showFiles ? (
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
-            onHeaderClick={() =>
-              isFilesList
-                ? navigate({ to: placeUrl })
-                : navigate({ to: filesUrl })
-            }
-            onChevronClick={() => navigate({ to: placeUrl })}
+            parentUrl={placeUrl}
+            listUrl={filesUrl}
             isOpen={isFilesOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}

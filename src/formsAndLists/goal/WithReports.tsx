@@ -132,12 +132,8 @@ export const GoalWithReports = ({ from }) => {
         {goalReportsInGoal ? (
           <Section
             title={`${formatMessage({ id: 'SmwFfB', defaultMessage: 'Ziel-Berichte' })} (${reportsCount})`}
-            onHeaderClick={() =>
-              isReportsList
-                ? navigate({ to: goalUrl })
-                : navigate({ to: reportsUrl })
-            }
-            onChevronClick={() => navigate({ to: goalUrl })}
+            parentUrl={goalUrl}
+            listUrl={reportsUrl}
             isOpen={isReportsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}

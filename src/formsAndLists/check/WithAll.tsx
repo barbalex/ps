@@ -219,12 +219,8 @@ export const CheckWithAll = ({
             {showQuantities ? (
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
-                onHeaderClick={() =>
-                  isQuantitiesList
-                    ? navigate({ to: checkUrl })
-                    : navigate({ to: quantitiesUrl })
-                }
-                onChevronClick={() => navigate({ to: checkUrl })}
+                parentUrl={checkUrl}
+                listUrl={quantitiesUrl}
                 isOpen={isQuantitiesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -238,12 +234,8 @@ export const CheckWithAll = ({
             {showTaxa ? (
               <Section
                 title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
-                onHeaderClick={() =>
-                  isTaxaList
-                    ? navigate({ to: checkUrl })
-                    : navigate({ to: taxaUrl })
-                }
-                onChevronClick={() => navigate({ to: checkUrl })}
+                parentUrl={checkUrl}
+                listUrl={taxaUrl}
                 isOpen={isTaxaOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -257,12 +249,8 @@ export const CheckWithAll = ({
             {showFiles ? (
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
-                onHeaderClick={() =>
-                  isFilesList
-                    ? navigate({ to: checkUrl })
-                    : navigate({ to: filesUrl })
-                }
-                onChevronClick={() => navigate({ to: checkUrl })}
+                parentUrl={checkUrl}
+                listUrl={filesUrl}
                 isOpen={isFilesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}

@@ -133,12 +133,8 @@ export const ActionReportWithQuantities = ({ from }) => {
             {showQuantities ? (
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
-                onHeaderClick={() =>
-                  isQuantitiesList
-                    ? navigate({ to: actionReportBaseUrl })
-                    : navigate({ to: quantitiesUrl })
-                }
-                onChevronClick={() => navigate({ to: actionReportBaseUrl })}
+                parentUrl={actionReportBaseUrl}
+                listUrl={quantitiesUrl}
                 isOpen={isQuantitiesOpen}
                 titleStyle={{ marginBottom: 0 }}
                 childrenStyle={{ marginLeft: -10, marginRight: -10 }}

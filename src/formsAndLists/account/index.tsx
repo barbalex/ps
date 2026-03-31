@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Outlet, useLocation, useNavigate, useParams } from '@tanstack/react-router'
+import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -23,7 +23,6 @@ const from = '/data/accounts/$accountId_'
 
 export const Account = () => {
   const { accountId } = useParams({ from })
-  const navigate = useNavigate()
   const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
@@ -192,12 +191,8 @@ export const Account = () => {
         {projectFieldsInAccount ? (
           <Section
             title={`${formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })} (${fieldsCount})`}
-            onHeaderClick={() =>
-              isFieldsList
-                ? navigate({ to: accountUrl })
-                : navigate({ to: fieldsUrl })
-            }
-            onChevronClick={() => navigate({ to: accountUrl })}
+            parentUrl={accountUrl}
+            listUrl={fieldsUrl}
             isOpen={isFieldsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}

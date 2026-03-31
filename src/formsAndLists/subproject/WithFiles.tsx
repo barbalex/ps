@@ -256,12 +256,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         {reportsInSubproject ? (
           <Section
             title={`${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })} (${subprojectReportsCount})`}
-            onHeaderClick={() =>
-              isReportsList
-                ? navigate({ to: subprojectUrl })
-                : navigate({ to: reportsUrl })
-            }
-            onChevronClick={() => navigate({ to: subprojectUrl })}
+            parentUrl={subprojectUrl}
+            listUrl={reportsUrl}
             isOpen={isReportsOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -276,12 +272,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         {showTaxa && taxaInSubproject ? (
           <Section
             title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${subprojectTaxaCount})`}
-            onHeaderClick={() =>
-              isTaxaList
-                ? navigate({ to: subprojectUrl })
-                : navigate({ to: taxaUrl })
-            }
-            onChevronClick={() => navigate({ to: subprojectUrl })}
+            parentUrl={subprojectUrl}
+            listUrl={taxaUrl}
             isOpen={isTaxaOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -296,12 +288,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         {isDesigning && usersInSubproject ? (
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${subprojectUsersCount})`}
-            onHeaderClick={() =>
-              isUsersList
-                ? navigate({ to: subprojectUrl })
-                : navigate({ to: usersUrl })
-            }
-            onChevronClick={() => navigate({ to: subprojectUrl })}
+            parentUrl={subprojectUrl}
+            listUrl={usersUrl}
             isOpen={isUsersOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
@@ -316,12 +304,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         {showFiles ? (
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
-            onHeaderClick={() =>
-              isFilesList
-                ? navigate({ to: subprojectUrl })
-                : navigate({ to: filesUrl })
-            }
-            onChevronClick={() => navigate({ to: subprojectUrl })}
+            parentUrl={subprojectUrl}
+            listUrl={filesUrl}
             isOpen={isFilesOpen}
             titleStyle={{ marginBottom: 0 }}
             childrenStyle={{ marginLeft: -10, marginRight: -10 }}
