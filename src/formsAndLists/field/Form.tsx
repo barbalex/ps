@@ -12,17 +12,19 @@ import '../../form.css'
 
 const projectTables = [
   'actions',
+  'action_reports',
   'checks',
-  'files',
+  'check_reports',
   'goal_reports',
   'goals',
+  'files',
   'lists',
-  'check_reports',
-  'action_reports',
+  'observations',
   'places',
   'project_reports',
   'subproject_reports',
   'subprojects',
+  'taxa',
   'taxonomies',
 ]
 
