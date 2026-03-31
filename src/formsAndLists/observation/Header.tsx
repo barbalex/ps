@@ -4,11 +4,21 @@ import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 
 export const Header = ({ from }) => {
-  const { observationId, placeId, placeId2 } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, observationId } =
+    useParams({ from })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
+  const base = `/data/projects/${projectId}/subprojects/${subprojectId}`
+  const basePath = from.includes('observations-to-assess')
+    ? `${base}/observations-to-assess/${observationId}`
+    : from.includes('observations-not-to-assign')
+      ? `${base}/observations-not-to-assign/${observationId}`
+      : placeId2
+        ? `${base}/places/${placeId}/places/${placeId2}/observations/${observationId}`
+        : `${base}/places/${placeId}/observations/${observationId}`
 
   const db = usePGlite()
 
@@ -67,6 +77,15 @@ export const Header = ({ from }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="observation"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="observations_history"
+          rowIdField="observation_id"
+          rowId={observationId}
+        />
+      }
     />
   )
 }
