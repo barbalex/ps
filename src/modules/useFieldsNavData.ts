@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { subprojectNamePluralExpr } from './subprojectNameCols.ts'
 import {
   buildFieldNavItemLabel,
   buildFieldTableLabelMap,
@@ -91,15 +90,15 @@ export const useFieldsNavData = ({ projectId, accountId }: Props) => {
   const res = useLiveQuery(sql)
 
   const projectRes = useLiveQuery(
-    `SELECT ${subprojectNamePluralExpr(language)} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
+    `SELECT ${language === 'de' ? 'NULLIF(subproject_name_plural, "")' : `NULLIF(subproject_name_plural_${language}, "")`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
     [!!projectId, projectId ?? ''],
   )
 
   const placeLevelsRes = useLiveQuery(
     `SELECT
       level,
-      COALESCE(NULLIF(name_singular_${language}, ''), name_singular_de) AS name_singular,
-      COALESCE(NULLIF(name_plural_${language}, ''), name_plural_de) AS name_plural
+      NULLIF(name_singular_${language}, '') AS name_singular,
+      NULLIF(name_plural_${language}, '') AS name_plural
     FROM place_levels
     WHERE $1::boolean AND project_id = $2
     ORDER BY level`,

@@ -728,6 +728,15 @@
   "field.files": {
     "defaultMessage": "{place}: Dateien"
   },
+  "field.fallbackSubprojects": {
+    "defaultMessage": "Teil-Projekt"
+  },
+  "field.fallbackPlaceLevel1": {
+    "defaultMessage": "Ort Stufe 1"
+  },
+  "field.fallbackPlaceLevel2": {
+    "defaultMessage": "Ort Stufe 2"
+  },
   "field.subprojectReports": {
     "defaultMessage": "Art: Berichte"
   },

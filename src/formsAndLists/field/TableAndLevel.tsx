@@ -5,9 +5,6 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { languageAtom } from '../../store.ts'
-import { subprojectNamePluralExpr } from '../../modules/subprojectNameCols.ts'
-import { getPlaceFallbackNames } from '../../modules/placeNameFallback.ts'
-import { projectTypeNames } from '../../modules/projectTypeNames.ts'
 
 const { Dropdown, Field, Option } = fluentUiReactComponents
 
@@ -60,13 +57,13 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
 
   // Always call hooks unconditionally; use WHERE false when not in project context
   const projectRes = useLiveQuery(
-    `SELECT ${subprojectNamePluralExpr(language)} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
+      `SELECT ${language === 'de' ? 'NULLIF(subproject_name_plural, "")' : `NULLIF(subproject_name_plural_${language}, "")`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
     [!!projectId, projectId ?? ''],
   )
   const placeLevelsRes = useLiveQuery(
     `SELECT level,
-      COALESCE(NULLIF(name_singular_${language}, ''), name_singular_de) AS name_singular,
-      COALESCE(NULLIF(name_plural_${language}, ''), name_plural_de) AS name_plural
+        NULLIF(name_singular_${language}, '') AS name_singular,
+        NULLIF(name_plural_${language}, '') AS name_plural
     FROM place_levels WHERE $1::boolean AND project_id = $2 ORDER BY level`,
     [!!projectId, projectId ?? ''],
   )
@@ -112,25 +109,28 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
   }
 
   // Project context
-  const projectType = projectRes?.rows?.[0]?.type ?? 'species'
   const subprojectsLabel =
     (projectRes?.rows?.[0]?.name_plural as string | null | undefined) ??
-    projectTypeNames[projectType]?.[
-      language !== 'de'
-        ? `subproject_name_plural_${language}`
-        : 'subproject_name_plural'
-    ] ??
-    formatMessage({ id: 'bEaAfF', defaultMessage: 'Teilprojekte' })
+    formatMessage({
+      id: 'field.fallbackSubprojects',
+      defaultMessage: 'Teil-Projekt',
+    })
 
   const level1Row = placeLevelsRes?.rows?.find((r) => r.level === 1)
   const level2Row = placeLevelsRes?.rows?.find((r) => r.level === 2)
-  const fallback1 = getPlaceFallbackNames(projectType, 1, formatMessage)
-  const fallback2 = getPlaceFallbackNames(projectType, 2, formatMessage)
+  const fallbackPlaceLevel1 = formatMessage({
+    id: 'field.fallbackPlaceLevel1',
+    defaultMessage: 'Ort Stufe 1',
+  })
+  const fallbackPlaceLevel2 = formatMessage({
+    id: 'field.fallbackPlaceLevel2',
+    defaultMessage: 'Ort Stufe 2',
+  })
 
-  const plural1 = (level1Row?.name_plural as string | null | undefined) ?? fallback1.plural
-  const singular1 = (level1Row?.name_singular as string | null | undefined) ?? fallback1.singular
-  const plural2 = (level2Row?.name_plural as string | null | undefined) ?? fallback2.plural
-  const singular2 = (level2Row?.name_singular as string | null | undefined) ?? fallback2.singular
+  const plural1 = (level1Row?.name_plural as string | null | undefined) ?? fallbackPlaceLevel1
+  const singular1 = (level1Row?.name_singular as string | null | undefined) ?? fallbackPlaceLevel1
+  const plural2 = (level2Row?.name_plural as string | null | undefined) ?? fallbackPlaceLevel2
+  const singular2 = (level2Row?.name_singular as string | null | undefined) ?? fallbackPlaceLevel2
 
   const labelMap: Record<string, string> = {
     places_1: plural1,

@@ -1,6 +1,3 @@
-import { getPlaceFallbackNames } from './placeNameFallback.ts'
-import { projectTypeNames } from './projectTypeNames.ts'
-
 type FormatMessage = (descriptor: { id: string; defaultMessage: string }, values?: Record<string, unknown>) => string
 
 type BuildFieldTableLabelMapParams = {
@@ -54,23 +51,28 @@ export const resolveFieldTableContext = ({
   placeLevel2Plural,
 }: ResolveFieldTableContextParams) => {
   const resolvedProjectType = projectType ?? 'species'
-  const subprojectsLabel =
-    projectNamePlural ??
-    projectTypeNames[resolvedProjectType]?.[
-      language !== 'de' ? `subproject_name_plural_${language}` : 'subproject_name_plural'
-    ] ??
-    formatMessage({ id: 'bEaAfF', defaultMessage: 'Teilprojekte' })
+  const fallbackSubprojects = formatMessage({
+    id: 'field.fallbackSubprojects',
+    defaultMessage: 'Teil-Projekt',
+  })
+  const fallbackPlaceLevel1 = formatMessage({
+    id: 'field.fallbackPlaceLevel1',
+    defaultMessage: 'Ort Stufe 1',
+  })
+  const fallbackPlaceLevel2 = formatMessage({
+    id: 'field.fallbackPlaceLevel2',
+    defaultMessage: 'Ort Stufe 2',
+  })
 
-  const fallback1 = getPlaceFallbackNames(resolvedProjectType, 1, formatMessage)
-  const fallback2 = getPlaceFallbackNames(resolvedProjectType, 2, formatMessage)
+  const subprojectsLabel = projectNamePlural ?? fallbackSubprojects
 
   return {
     projectType: resolvedProjectType,
     subprojectsLabel,
-    singular1: placeLevel1Singular ?? fallback1.singular,
-    plural1: placeLevel1Plural ?? fallback1.plural,
-    singular2: placeLevel2Singular ?? fallback2.singular,
-    plural2: placeLevel2Plural ?? fallback2.plural,
+    singular1: placeLevel1Singular ?? fallbackPlaceLevel1,
+    plural1: placeLevel1Plural ?? fallbackPlaceLevel1,
+    singular2: placeLevel2Singular ?? fallbackPlaceLevel2,
+    plural2: placeLevel2Plural ?? fallbackPlaceLevel2,
   }
 }
 
