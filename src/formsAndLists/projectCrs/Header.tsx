@@ -6,12 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 export const Header = ({ autoFocusRef }) => {
   const { projectId, projectCrsId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/crs/${projectCrsId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -115,6 +117,15 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName={formatMessage({ id: 'OzBS9Z', defaultMessage: 'KBS' })}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="project_crs_history"
+          rowIdField="project_crs_id"
+          rowId={projectCrsId}
+        />
+      }
     />
   )
 }

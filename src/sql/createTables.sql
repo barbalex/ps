@@ -1940,6 +1940,7 @@ CREATE TABLE IF NOT EXISTS project_crs(
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(code, ''), project_crs_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
