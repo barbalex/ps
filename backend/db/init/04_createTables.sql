@@ -975,7 +975,6 @@ CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -983,7 +982,7 @@ CREATE TABLE IF NOT EXISTS messages(
 
 CREATE INDEX IF NOT EXISTS messages_date_idx ON messages USING btree(date);
 
-COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates';
+COMMENT ON TABLE messages IS 'System messages for users. No history tracking needed as these are transient notifications managed by the system.';
 
 --------------------------------------------------------------
 -- user_messages
@@ -1278,7 +1277,6 @@ CREATE TABLE IF NOT EXISTS field_types(
   sort smallint DEFAULT NULL,
   comment text,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1287,6 +1285,8 @@ CREATE TABLE IF NOT EXISTS field_types(
 CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name);
 CREATE INDEX IF NOT EXISTS field_types_sort_idx ON field_types USING btree(sort);
 CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(label);
+
+COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.'
 
 --------------------------------------------------------------
 -- widget_types
@@ -1308,6 +1308,8 @@ CREATE INDEX IF NOT EXISTS widget_types_name_idx ON widget_types USING btree(nam
 CREATE INDEX IF NOT EXISTS widget_types_sort_idx ON widget_types USING btree(sort);
 CREATE INDEX IF NOT EXISTS widget_types_label_idx ON widget_types USING btree(label);
 
+COMMENT ON TABLE widget_types IS 'Root-level widget type definitions. No history tracking needed as these are application-level configuration managed by administrators.';
+
 --------------------------------------------------------------
 -- widgets_for_fields
 --
@@ -1324,6 +1326,8 @@ CREATE TABLE IF NOT EXISTS widgets_for_fields(
 CREATE INDEX IF NOT EXISTS widgets_for_fields_field_type_id_idx ON widgets_for_fields(field_type_id);
 CREATE INDEX IF NOT EXISTS widgets_for_fields_widget_type_id_idx ON widgets_for_fields(widget_type_id);
 CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(label);
+
+COMMENT ON TABLE widgets_for_fields IS 'Mapping of field types to widget types. No history tracking needed as this is root-level configuration managed by administrators.';
 
 --------------------------------------------------------------
 -- fields
@@ -1349,7 +1353,6 @@ CREATE TABLE IF NOT EXISTS fields(
       ELSE table_name || '.' || name || ' ' || level
     END
   ) STORED,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1368,7 +1371,7 @@ CREATE INDEX IF NOT EXISTS fields_obsolete_idx ON fields USING btree((1))
 WHERE
   obsolete;
 
-COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
+COMMENT ON TABLE fields IS 'Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.';
 COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used inside the jsob field "data"';
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
@@ -1916,7 +1919,7 @@ CREATE INDEX IF NOT EXISTS crs_account_id_idx ON crs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS crs_code_idx ON crs USING btree(code);
 CREATE INDEX IF NOT EXISTS crs_label_idx ON crs USING btree(label);
 
-COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.';
+COMMENT ON TABLE crs IS 'List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.';
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
 
 --------------------------------------------------------------
@@ -1964,7 +1967,6 @@ CREATE TABLE IF NOT EXISTS qcs(
   is_subproject_level boolean DEFAULT false,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
-  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
@@ -1977,7 +1979,7 @@ CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
 COMMENT ON COLUMN qcs.table_name IS 'The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui';
 COMMENT ON COLUMN qcs.place_level IS 'The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks';
-COMMENT ON TABLE qcs IS 'Quality controls for data. Surface suspicious data.';
+COMMENT ON TABLE qcs IS 'Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.';
 
 --------------------------------------------------------------
 -- qcs_assignment
