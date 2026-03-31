@@ -1334,7 +1334,6 @@ COMMENT ON TABLE widgets_for_fields IS 'Mapping of field types to widget types. 
 --
 CREATE TABLE IF NOT EXISTS fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   level integer DEFAULT 1,
@@ -1358,7 +1357,6 @@ CREATE TABLE IF NOT EXISTS fields(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS fields_project_id_idx ON fields USING btree(project_id);
 CREATE INDEX IF NOT EXISTS fields_account_id_idx ON fields USING btree(account_id);
 CREATE INDEX IF NOT EXISTS fields_table_name_idx ON fields USING btree(table_name);
 CREATE INDEX IF NOT EXISTS fields_level_idx ON fields USING btree(level);
@@ -1371,7 +1369,7 @@ CREATE INDEX IF NOT EXISTS fields_obsolete_idx ON fields USING btree((1))
 WHERE
   obsolete;
 
-COMMENT ON TABLE fields IS 'Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.';
+COMMENT ON TABLE fields IS 'Account-level form field definitions. Global configuration for all projects within the account. No history tracking needed as these are application-level configuration managed by administrators.';
 COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used inside the jsob field "data"';
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';

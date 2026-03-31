@@ -7,7 +7,6 @@ import { useIntl } from 'react-intl'
 import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
-  projectId?: string
   fieldId: string
 }
 
@@ -16,7 +15,7 @@ type NavData = {
   label: string | null
 }
 
-export const useFieldNavData = ({ projectId, fieldId }: Props) => {
+export const useFieldNavData = ({ fieldId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -27,9 +26,7 @@ export const useFieldNavData = ({ projectId, fieldId }: Props) => {
         field_id AS id,
         label
       FROM fields
-      WHERE 
-        project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}
-        AND field_id = $1
+      WHERE field_id = $1
     `,
     [fieldId],
   )
@@ -40,7 +37,6 @@ export const useFieldNavData = ({ projectId, fieldId }: Props) => {
 
   const parentArray = [
     'data',
-    ...(projectId ? ['projects', projectId] : []),
     'fields',
   ]
   const ownArray = [...parentArray, nav?.id]

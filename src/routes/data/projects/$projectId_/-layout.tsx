@@ -12,7 +12,7 @@ export const ProjectLayout = () => {
   const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()
   const res = useLiveQuery(
-    `SELECT files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project FROM projects WHERE project_id = $1`,
+    `SELECT files_active_projects, project_users_in_project, project_files_in_project, units_in_project FROM projects WHERE project_id = $1`,
     [projectId],
   )
 
@@ -20,7 +20,6 @@ export const ProjectLayout = () => {
   const usersInProject = res?.rows?.[0]?.project_users_in_project !== false
   const filesInProject = res?.rows?.[0]?.project_files_in_project === true
   const unitsInProject = res?.rows?.[0]?.units_in_project !== false
-  const fieldsInProject = res?.rows?.[0]?.fields_in_project !== false
 
   const baseUrl = `/data/projects/${projectId}`
   const isProjectRoute = location.pathname === `${baseUrl}/project`
@@ -30,9 +29,6 @@ export const ProjectLayout = () => {
   const isUnitsRoute =
     location.pathname === `${baseUrl}/units` ||
     location.pathname.startsWith(`${baseUrl}/units/`)
-  const isFieldsRoute =
-    location.pathname === `${baseUrl}/fields` ||
-    location.pathname.startsWith(`${baseUrl}/fields/`)
   const isFilesRoute =
     location.pathname === `${baseUrl}/files` ||
     location.pathname.startsWith(`${baseUrl}/files/`)
@@ -41,11 +37,9 @@ export const ProjectLayout = () => {
     (isProjectRoute &&
       ((isDesigning && usersInProject) ||
         (isDesigning && unitsInProject) ||
-        (isDesigning && fieldsInProject) ||
         (showFiles && filesInProject))) ||
     (isUsersRoute && isDesigning && usersInProject) ||
     (isUnitsRoute && isDesigning && unitsInProject) ||
-    (isFieldsRoute && isDesigning && fieldsInProject) ||
     (isFilesRoute && showFiles && filesInProject)
   ) {
     return <ProjectWithFiles from={from} />

@@ -22,15 +22,14 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     )
   }
 
-  const projectId = vectorLayer.project_id
   const table = vectorLayer.own_table
   const level = vectorLayer.own_table_level
   const displayByProperty = vectorLayer.display_by_property
   const properties = vectorLayer.properties
 
   const resFields = await db.query(
-    `SELECT name FROM fields WHERE table_name = $1 AND level = $2 AND project_id = $3`,
-    [table, level, projectId],
+    `SELECT name FROM fields WHERE table_name = $1 AND level = $2`,
+    [table, level],
   )
   const fields = resFields.rows
   const fieldNames = fields.map((f) => f.name)
@@ -92,8 +91,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
   // get field of displayByPropertyField
   const fieldRes = await db.query(
-    `SELECT * FROM fields WHERE name = $1 AND table_name = $2 AND level = $3 AND project_id = $4`,
-    [displayByProperty, table, level, projectId],
+    `SELECT * FROM fields WHERE name = $1 AND table_name = $2 AND level = $3`,
+    [displayByProperty, table, level],
   )
   const field = fieldRes?.rows?.[0]
 

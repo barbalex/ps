@@ -48,20 +48,20 @@ ORDER BY label'),
 FROM widgets_for_fields
 WHERE widget_type_id IS NULL
 ORDER BY label'),
-('fieldsTableNameMissing', 'Felder ohne Tabelle', 'Fields without table', 'Champs sans table', 'Campi senza tabella', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('fieldsTableNameMissing', 'Felder ohne Tabelle', 'Fields without table', 'Champs sans table', 'Campi senza tabella', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/fields/'' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.table_name, '''') IS NULL
 ORDER BY f.label'),
 ('fieldsLevelMissing', 'Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', 'fields', NULL, true, false, false, false, NULL),
-('fieldsNameMissing', 'Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('fieldsNameMissing', 'Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/fields/'' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.name, '''') IS NULL
 ORDER BY f.label'),
-('fieldsFieldTypeMissing', 'Felder ohne Feld-Typ', 'Fields without field type', 'Champs sans type de champ', 'Campi senza tipo di campo', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('fieldsFieldTypeMissing', 'Felder ohne Feld-Typ', 'Fields without field type', 'Champs sans type de champ', 'Campi senza tipo di campo', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/fields/'' || f.field_id AS url
 FROM fields f
 WHERE f.field_type_id IS NULL
 ORDER BY f.label'),
-('fieldsWidgetTypeMissing', 'Felder ohne Widget', 'Fields without widget', 'Champs sans widget', 'Campi senza widget', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('fieldsWidgetTypeMissing', 'Felder ohne Widget', 'Fields without widget', 'Champs sans widget', 'Campi senza widget', 'fields', NULL, true, false, false, false, 'SELECT f.label, ''/data/fields/'' || f.field_id AS url
 FROM fields f
 WHERE f.widget_type_id IS NULL
 ORDER BY f.label'),

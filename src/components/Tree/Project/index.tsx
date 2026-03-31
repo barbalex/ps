@@ -18,7 +18,6 @@ import { WmsLayersNode } from '../WmsLayers.tsx'
 import { VectorLayersNode } from '../VectorLayers.tsx'
 import { ProjectUsersNode } from '../ProjectUsers.tsx'
 import { PlaceLevelsNode } from '../PlaceLevels.tsx'
-import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
 import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
@@ -38,7 +37,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav.id]
@@ -46,7 +44,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
 
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
-    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project FROM projects WHERE project_id = $1`,
+    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project FROM projects WHERE project_id = $1`,
     [nav.id],
   )
   const project = resultProject?.rows?.[0]
@@ -61,11 +59,9 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const usersInProject = project?.project_users_in_project !== false
   const filesInProject = project?.project_files_in_project === true
   const unitsInProject = project?.units_in_project !== false
-  const fieldsInProject = project?.fields_in_project !== false
   const showUsersNav = !usersInProject
   const showFilesNav = showFiles && !filesInProject
   const showUnitsNav = !unitsInProject
-  const showFieldsNav = !fieldsInProject
 
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -135,7 +131,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
               {showUnitsNav && <UnitsNode projectId={nav.id} />}
               <ProjectCrssNode projectId={nav.id} />
               <PlaceLevelsNode projectId={nav.id} />
-              {showFieldsNav && <FieldsNode projectId={nav.id} />}
             </>
           )}
           <ProjectQcsNode projectId={nav.id} level={level + 1} />

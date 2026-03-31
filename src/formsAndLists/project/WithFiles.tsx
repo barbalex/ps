@@ -15,18 +15,16 @@ import { Header } from './Header.tsx'
 import { ProjectForm as Form } from './Form.tsx'
 import { ProjectUsers } from '../projectUsers.tsx'
 import { Units } from '../units.tsx'
-import { Fields } from '../fields.tsx'
 import { Files } from '../files.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createField, createProjectUser, createUnit } from '../../modules/createRows.ts'
+import { createProjectUser, createUnit } from '../../modules/createRows.ts'
 import {
   addOperationAtom,
   designingAtom,
-  fieldsFilterAtom,
   filesFilterAtom,
   projectUsersFilterAtom,
   unitsFilterAtom,
@@ -45,7 +43,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const [isDesigning] = useAtom(designingAtom)
   const [projectUsersFilter] = useAtom(projectUsersFilterAtom)
   const [unitsFilter] = useAtom(unitsFilterAtom)
-  const [fieldsFilter] = useAtom(fieldsFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState({})
@@ -72,12 +69,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   )
   const projectUsersCount = projectUsersCountRes?.rows?.[0]?.count ?? 0
 
-  const fieldsCountRes = useLiveQuery(
-    `SELECT count(*)::int AS count FROM fields WHERE project_id = $1`,
-    [projectId],
-  )
-  const fieldsCount = fieldsCountRes?.rows?.[0]?.count ?? 0
-
   const unitsCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM units WHERE project_id = $1`,
     [projectId],
@@ -86,7 +77,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
 
   const usersInProject = row?.project_users_in_project !== false
   const unitsInProject = row?.units_in_project !== false
-  const fieldsInProject = row?.fields_in_project !== false
   const filesInProject = row?.project_files_in_project === true
   const showFiles = isDesigning || row?.files_active_projects !== false
 
@@ -98,10 +88,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     location.pathname.endsWith('/units') ||
     location.pathname.includes('/units/')
   const isUnitsList = /\/units\/?$/.test(location.pathname)
-  const isFieldsOpen =
-    location.pathname.endsWith('/fields') ||
-    location.pathname.includes('/fields/')
-  const isFieldsList = /\/fields\/?$/.test(location.pathname)
   const isFilesOpen =
     location.pathname.endsWith('/files') ||
     location.pathname.includes('/files/')
@@ -111,12 +97,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const projectUrl = `${projectBaseUrl}/project`
   const usersUrl = `${projectBaseUrl}/users`
   const unitsUrl = `${projectBaseUrl}/units`
-  const fieldsUrl = `${projectBaseUrl}/fields`
   const filesUrl = `${projectBaseUrl}/files`
 
   const projectUsersIsFiltered = !!filterStringFromFilter(projectUsersFilter)
   const unitsIsFiltered = !!filterStringFromFilter(unitsFilter)
-  const fieldsIsFiltered = !!filterStringFromFilter(fieldsFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
@@ -129,11 +113,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     const id = await createUnit({ projectId })
     if (!id) return
     navigate({ to: `${unitsUrl}/${id}/` })
-  }
-  const onClickAddField = async () => {
-    const id = await createField({ projectId })
-    if (!id) return
-    navigate({ to: `${fieldsUrl}/${id}` })
   }
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
@@ -159,19 +138,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
           icon={<FaPlus />}
           onClick={onClickAddFile}
-        />
-      </>
-    ) : undefined
-
-  const fieldsHeaderActions =
-    isDesigning && fieldsInProject && isFieldsList ? (
-      <>
-        <FilterButton isFiltered={fieldsIsFiltered} />
-        <Button
-          size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
-          icon={<FaPlus />}
-          onClick={onClickAddField}
         />
       </>
     ) : undefined
@@ -293,33 +259,14 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             headerActions={unitsHeaderActions}
           >
             {isUnitsOpen &&
-              (isUnitsList ? <Units projectId={projectId} hideHeader /> : <Outlet />)}
-          </Section>
-        ) : (
-          isUnitsOpen && <Outlet />
-        )}
-        {isDesigning && fieldsInProject ? (
-          <Section
-            title={`${formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })} (${fieldsCount})`}
-            onHeaderClick={() =>
-              isFieldsList
-                ? navigate({ to: projectUrl })
-                : navigate({ to: fieldsUrl })
-            }
-            isOpen={isFieldsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
-            headerActions={fieldsHeaderActions}
-          >
-            {isFieldsOpen &&
-              (isFieldsList ? (
-                <Fields projectId={projectId} hideHeader />
+              (isUnitsList ? (
+                <Units projectId={projectId} hideHeader />
               ) : (
                 <Outlet />
               ))}
           </Section>
         ) : (
-          isFieldsOpen && <Outlet />
+          isUnitsOpen && <Outlet />
         )}
       </div>
     </div>

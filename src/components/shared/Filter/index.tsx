@@ -69,15 +69,6 @@ const getFilterStrings = ({
     if (!workingFilter.length) workingFilter.push(placeFilter)
     whereUnfiltered = placeFilter
   }
-  // tables that need to be filtered by project_id
-  if (['fields'].includes(tableName)) {
-    const projectFilter = { project_id: projectId ?? null }
-    for (const orFilter of workingFilter) {
-      Object.assign(orFilter, projectFilter)
-    }
-    if (!workingFilter.length) workingFilter.push(projectFilter)
-    whereUnfiltered = projectFilter
-  }
   if (['subproject_taxa'].includes(tableName)) {
     const subprojectFilter = { subproject_id: subprojectId ?? null }
     for (const orFilter of workingFilter) {

@@ -56,7 +56,6 @@ export const Jsonb = ({
 
   const addOperation = useSetAtom(addOperationAtom)
 
-  const useProjectId = projectId && table !== 'projects'
   const sql = `
       SELECT 
         fields.*,
@@ -66,11 +65,10 @@ export const Jsonb = ({
         INNER JOIN field_types USING (field_type_id)
         INNER JOIN widget_types USING (widget_type_id)
         LEFT JOIN unnest(
-            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name and project_id = fields.project_id)
+            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name AND project_id IS NULL)
           ) WITH ORDINALITY t(field_id, ord) USING (field_id)
       WHERE 
         fields.table_name = $1 
-        and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
         ${table === 'places' ? ` and level = $2` : ''} 
       ORDER BY t.ord`
   const params = table === 'places' ? [table, placeId2 ? 2 : 1] : [table]

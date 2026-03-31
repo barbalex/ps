@@ -10,7 +10,7 @@ import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
-  const { projectId, fieldId } = useParams({ from })
+  const { fieldId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -23,13 +23,11 @@ export const Header = ({ autoFocusRef, from }) => {
     fieldIdRef.current = fieldId
   }, [fieldId])
 
-  const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM fields WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'}`,
-  )
+  const countRes = useLiveQuery(`SELECT COUNT(*) as count FROM fields`)
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
-    const id = await createField({ projectId })
+    const id = await createField({})
     navigate({
       to: `../${id}`,
       params: (prev) => ({ ...prev, fieldId: id }),
@@ -63,7 +61,6 @@ export const Header = ({ autoFocusRef, from }) => {
       const res = await db.query(`
       SELECT field_id 
       FROM fields 
-      WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'} 
       ORDER BY label`)
       const rows = res?.rows
       const len = rows.length
@@ -84,7 +81,6 @@ export const Header = ({ autoFocusRef, from }) => {
         `
       SELECT field_id 
       FROM fields 
-      WHERE project_id ${projectId ? `= '${projectId}'` : 'IS NULL'} 
       ORDER BY label`,
       )
       const rows = res?.rows

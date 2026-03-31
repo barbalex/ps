@@ -9,7 +9,7 @@ export const ProjectIndex = ({ from }: { from: string }) => {
   const { projectId } = useParams({ strict: false })
   const [isDesigning] = useAtom(designingAtom)
   const res = useLiveQuery(
-    `SELECT files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project FROM projects WHERE project_id = $1`,
+    `SELECT files_active_projects, project_users_in_project, project_files_in_project, units_in_project FROM projects WHERE project_id = $1`,
     [projectId],
   )
   if (res === undefined) return null
@@ -18,13 +18,11 @@ export const ProjectIndex = ({ from }: { from: string }) => {
   const usersInProject = res?.rows?.[0]?.project_users_in_project !== false
   const filesInProject = res?.rows?.[0]?.project_files_in_project === true
   const unitsInProject = res?.rows?.[0]?.units_in_project !== false
-  const fieldsInProject = res?.rows?.[0]?.fields_in_project !== false
 
   // Parent layout renders ProjectWithFiles when inline sub-sections are enabled.
   if (
     (isDesigning && usersInProject) ||
     (isDesigning && unitsInProject) ||
-    (isDesigning && fieldsInProject) ||
     (showFiles && filesInProject)
   ) {
     return null

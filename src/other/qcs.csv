@@ -40,20 +40,20 @@ Widgets für Felder ohne Widget-Typ;Widgets for fields without widget type;Widge
 FROM widgets_for_fields
 WHERE widget_type_id IS NULL
 ORDER BY label";;
-Felder ohne Tabelle;Fields without table;Champs sans table;Campi senza tabella;fieldsTableNameMissing;fields;;true;false;false;false;"SELECT f.label, '/data/projects/' || f.project_id || '/fields/' || f.field_id AS url
+Felder ohne Tabelle;Fields without table;Champs sans table;Campi senza tabella;fieldsTableNameMissing;fields;;true;false;false;false;"SELECT f.label, '/data/fields/' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.table_name, '') IS NULL
 ORDER BY f.label";;
 Ort-Felder ohne Stufe;Place fields without level;Champs de lieu sans niveau;Campi di luogo senza livello;fieldsLevelMissing;fields;;true;false;false;false;;;
-Felder ohne Namen;Fields without name;Champs sans nom;Campi senza nome;fieldsNameMissing;fields;;true;false;false;false;"SELECT f.label, '/data/projects/' || f.project_id || '/fields/' || f.field_id AS url
+Felder ohne Namen;Fields without name;Champs sans nom;Campi senza nome;fieldsNameMissing;fields;;true;false;false;false;"SELECT f.label, '/data/fields/' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.name, '') IS NULL
 ORDER BY f.label";;
-Felder ohne Feld-Typ;Fields without field type;Champs sans type de champ;Campi senza tipo di campo;fieldsFieldTypeMissing;fields;;true;false;false;false;"SELECT f.label, '/data/projects/' || f.project_id || '/fields/' || f.field_id AS url
+Felder ohne Feld-Typ;Fields without field type;Champs sans type de champ;Campi senza tipo di campo;fieldsFieldTypeMissing;fields;;true;false;false;false;"SELECT f.label, '/data/fields/' || f.field_id AS url
 FROM fields f
 WHERE f.field_type_id IS NULL
 ORDER BY f.label";;
-Felder ohne Widget;Fields without widget;Champs sans widget;Campi senza widget;fieldsWidgetTypeMissing;fields;;true;false;false;false;"SELECT f.label, '/data/projects/' || f.project_id || '/fields/' || f.field_id AS url
+Felder ohne Widget;Fields without widget;Champs sans widget;Campi senza widget;fieldsWidgetTypeMissing;fields;;true;false;false;false;"SELECT f.label, '/data/fields/' || f.field_id AS url
 FROM fields f
 WHERE f.widget_type_id IS NULL
 ORDER BY f.label";;
