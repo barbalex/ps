@@ -27,18 +27,18 @@ const opts: Opt[] = [
   { id: 'taxa',              table_name: 'taxa',              level: null },
   // ── Place level 1 ─────────────────────────────────────────────
   { id: 'places_1',          table_name: 'places',            level: 1 },
-  { id: 'actions_1',         table_name: 'actions',           level: 1 },
-  { id: 'action_reports_1',  table_name: 'action_reports',    level: 1 },
   { id: 'checks_1',          table_name: 'checks',            level: 1 },
   { id: 'check_reports_1',   table_name: 'check_reports',     level: 1 },
+  { id: 'actions_1',         table_name: 'actions',           level: 1 },
+  { id: 'action_reports_1',  table_name: 'action_reports',    level: 1 },
   { id: 'observations_1',    table_name: 'observations',      level: 1 },
   { id: 'files_1',           table_name: 'files',             level: 1 },
   // ── Place level 2 ─────────────────────────────────────────────
   { id: 'places_2',          table_name: 'places',            level: 2 },
-  { id: 'actions_2',         table_name: 'actions',           level: 2 },
-  { id: 'action_reports_2',  table_name: 'action_reports',    level: 2 },
   { id: 'checks_2',          table_name: 'checks',            level: 2 },
   { id: 'check_reports_2',   table_name: 'check_reports',     level: 2 },
+  { id: 'actions_2',         table_name: 'actions',           level: 2 },
+  { id: 'action_reports_2',  table_name: 'action_reports',    level: 2 },
   { id: 'observations_2',    table_name: 'observations',      level: 2 },
   { id: 'files_2',           table_name: 'files',             level: 2 },
 ]
