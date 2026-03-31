@@ -4,6 +4,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  container-type: inline-size;
 }
 
 .container {
@@ -23,6 +24,7 @@
   margin: 5px;
   padding: 5px;
   display: grid;
+  grid-column: 1;
   grid-template-columns: subgrid;
   grid-template-rows: subgrid;
   grid-row: 1 / 4;
@@ -37,6 +39,7 @@
   margin: 5px;
   padding: 5px;
   display: grid;
+  grid-column: 2;
   grid-template-columns: subgrid;
   grid-template-rows: subgrid;
   grid-row: 1 / 4;
@@ -184,15 +187,49 @@
   padding: 16px;
 }
 
-@media (max-width: 950px) {
+/* @media (max-width: 950px) {
   .container {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
     max-height: none;
   }
 
+  .panelLeft,
+  .panelRight {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
   .leftContent,
   .rightContent {
     height: auto;
+  }
+} */
+
+@container (max-width: 700px) {
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-items: start;
+    max-height: none;
+  }
+
+  .panelLeft {
+    grid-column: 1;
+    grid-row: 1;
+    display: block;
+    overflow: visible;
+  }
+
+  .panelRight {
+    grid-column: 1;
+    grid-row: 2;
+    display: block;
+    overflow: visible;
+  }
+
+  .leftContent {
+    height: auto;
+    overflow-y: visible;
   }
 }
