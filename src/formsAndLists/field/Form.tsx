@@ -43,6 +43,9 @@ export const FieldForm = ({
   const { formatMessage } = useIntl()
 
   const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
+  const tableName = row?.table_name
+  const showLevelField =
+    !!tableName && !['projects', 'subprojects'].includes(tableName)
 
   return (
     <>
@@ -67,15 +70,20 @@ export const FieldForm = ({
                   }))
             }
           />
-          <TextField
-            label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Ort-Stufe' })}
-            name="level"
-            value={row.level}
-            type="number"
-            onChange={onChange}
-            validationState={validations?.level?.state}
-            validationMessage={validations?.level?.message}
-          />
+          {showLevelField && (
+            <TextField
+              label={formatMessage({
+                id: 'Lv9nRx',
+                defaultMessage: 'Ort-Stufe',
+              })}
+              name="level"
+              value={row.level}
+              type="number"
+              onChange={onChange}
+              validationState={validations?.level?.state}
+              validationMessage={validations?.level?.message}
+            />
+          )}
         </>
       )}
       <TextField
