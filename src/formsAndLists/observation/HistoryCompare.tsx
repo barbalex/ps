@@ -147,7 +147,7 @@ export const ObservationHistoryCompare = ({
     formatMessage,
     fieldLabelMap: {
       not_to_assign: { id: 'obs0Nta', defaultMessage: 'Nicht zuzuordnen' },
-      place_id: { id: 'obs0PlId', defaultMessage: 'Ort' },
+      place_id: { id: 'obs0Plc', defaultMessage: 'Standort' },
       comment: { id: 'obs0Cmt', defaultMessage: 'Kommentar' },
     },
   })
