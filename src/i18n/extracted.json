@@ -713,6 +713,21 @@
   "field.actions": {
     "defaultMessage": "{place}: Massnahmen"
   },
+  "field.actionReports": {
+    "defaultMessage": "{place}: Massnahmen-Berichte"
+  },
+  "field.checks": {
+    "defaultMessage": "{place}: Kontrollen"
+  },
+  "field.checkReports": {
+    "defaultMessage": "{place}: Kontroll-Berichte"
+  },
+  "field.observations": {
+    "defaultMessage": "{place}: Beobachtungen"
+  },
+  "field.files": {
+    "defaultMessage": "{place}: Dateien"
+  },
   "field.subprojectReports": {
     "defaultMessage": "Art: Berichte"
   },

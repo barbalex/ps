@@ -134,43 +134,43 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
       { place: singular2 },
     ),
     action_reports_1: formatMessage(
-      { id: 'field.actionReports', defaultMessage: '{place}-Massnahmen-Berichte' },
+      { id: 'field.actionReports', defaultMessage: '{place}: Massnahmen-Berichte' },
       { place: singular1 },
     ),
     action_reports_2: formatMessage(
-      { id: 'field.actionReports', defaultMessage: '{place}-Massnahmen-Berichte' },
+      { id: 'field.actionReports', defaultMessage: '{place}: Massnahmen-Berichte' },
       { place: singular2 },
     ),
     checks_1: formatMessage(
-      { id: 'bEgGlL', defaultMessage: '{place}-Kontrollen' },
+      { id: 'field.checks', defaultMessage: '{place}: Kontrollen' },
       { place: singular1 },
     ),
     checks_2: formatMessage(
-      { id: 'bEgGlL', defaultMessage: '{place}-Kontrollen' },
+      { id: 'field.checks', defaultMessage: '{place}: Kontrollen' },
       { place: singular2 },
     ),
     check_reports_1: formatMessage(
-      { id: 'field.checkReports', defaultMessage: '{place}-Kontroll-Berichte' },
+      { id: 'field.checkReports', defaultMessage: '{place}: Kontroll-Berichte' },
       { place: singular1 },
     ),
     check_reports_2: formatMessage(
-      { id: 'field.checkReports', defaultMessage: '{place}-Kontroll-Berichte' },
+      { id: 'field.checkReports', defaultMessage: '{place}: Kontroll-Berichte' },
       { place: singular2 },
     ),
     observations_1: formatMessage(
-      { id: 'field.observations', defaultMessage: '{place}-Beobachtungen' },
+      { id: 'field.observations', defaultMessage: '{place}: Beobachtungen' },
       { place: singular1 },
     ),
     observations_2: formatMessage(
-      { id: 'field.observations', defaultMessage: '{place}-Beobachtungen' },
+      { id: 'field.observations', defaultMessage: '{place}: Beobachtungen' },
       { place: singular2 },
     ),
     files_1: formatMessage(
-      { id: 'field.files', defaultMessage: '{place}-Dateien' },
+      { id: 'field.files', defaultMessage: '{place}: Dateien' },
       { place: singular1 },
     ),
     files_2: formatMessage(
-      { id: 'field.files', defaultMessage: '{place}-Dateien' },
+      { id: 'field.files', defaultMessage: '{place}: Dateien' },
       { place: singular2 },
     ),
     subprojects: subprojectsLabel,
