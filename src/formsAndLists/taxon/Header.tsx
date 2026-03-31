@@ -6,12 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
 export const Header = ({ autoFocusRef }) => {
-  const { taxonomyId, taxonId } = useParams({ from })
+  const { taxonomyId, taxonId, projectId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/taxonomies/${taxonomyId}/taxa/${taxonId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -102,6 +104,15 @@ export const Header = ({ autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="taxon"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="taxa_history"
+          rowIdField="taxon_id"
+          rowId={taxonId}
+        />
+      }
     />
   )
 }
