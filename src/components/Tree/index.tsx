@@ -10,7 +10,6 @@ import { QcsNode } from './Qcs.tsx'
 import { RootQcsNode } from './RootQcs.tsx'
 import { RootQcsRunNode } from './RootQcsRun.tsx'
 import { FieldsNode } from './Fields.tsx'
-import { FilesNode } from './Files.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
 import { designingAtom } from '../../store.ts'
@@ -30,13 +29,12 @@ export const Tree = () => {
           <FieldTypesNode />
           <WidgetTypesNode />
           <WidgetsForFieldsNode />
-          {/* TODO: restrict editing to super managers once auth supports it */}
+          {/* TODO: restrict editing to app administrator once auth supports it */}
           <QcsNode />
           <RootQcsNode />
           <RootQcsRunNode />
           <FieldsNode />
           <CrssNode />
-          <FilesNode level={1} />
         </>
       )}
       <MessagesNode />

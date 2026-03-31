@@ -8,7 +8,6 @@ import {
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
   fieldsFilterAtom,
-  filesFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
 } from '../store.ts'
@@ -39,8 +38,6 @@ type NavDataFiltered = {
   fields_count_unfiltered?: number
   fields_count_filtered?: number
   crs_count_unfiltered?: number
-  files_count_unfiltered?: number
-  files_count_filtered?: number
   messages_count_unfiltered: number
 }
 
@@ -71,10 +68,6 @@ export const useDataNavData = () => {
   const fieldsFilterString = filterStringFromFilter(fieldsFilter)
   const fieldsIsFiltered = !!fieldsFilterString
 
-  const [filesFilter] = useAtom(filesFilterAtom)
-  const filesFilterString = filterStringFromFilter(filesFilter)
-  const filesIsFiltered = !!filesFilterString
-
   const res = useLiveQuery(
     `
       WITH 
@@ -96,8 +89,6 @@ export const useDataNavData = () => {
             fields_count_unfiltered AS (SELECT count(*) FROM fields),
             fields_count_filtered AS (SELECT count(*) FROM fields ${fieldsIsFiltered ? ` WHERE ${fieldsFilterString}` : ''}),
             crs_count_unfiltered AS (SELECT count(*) FROM crs),
-            files_count_unfiltered AS (SELECT count(*) FROM files),
-            files_count_filtered AS (SELECT count(*) FROM files ${filesIsFiltered ? ` WHERE ${filesFilterString}` : ''}),
           `
             : ''
         }
@@ -121,8 +112,6 @@ export const useDataNavData = () => {
               fields_count_unfiltered.count AS fields_count_unfiltered,
               fields_count_filtered.count AS fields_count_filtered,
               crs_count_unfiltered.count AS crs_count_unfiltered,
-              files_count_unfiltered.count AS files_count_unfiltered,
-              files_count_filtered.count AS files_count_filtered,
             `
             : ''
         }
@@ -146,8 +135,6 @@ export const useDataNavData = () => {
               fields_count_unfiltered,
               fields_count_filtered,
               crs_count_unfiltered,
-              files_count_unfiltered,
-              files_count_filtered,
             `
             : ''
         }
@@ -304,19 +291,6 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'OzBS9Z',
                   defaultMessage: 'KBS',
-                }),
-              }),
-            },
-            {
-              id: 'files',
-              label: buildNavLabel({
-                loading,
-                isFiltered: filesIsFiltered,
-                countFiltered: row?.files_count_filtered ?? 0,
-                countUnfiltered: row?.files_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'mn58Sh',
-                  defaultMessage: 'Dateien',
                 }),
               }),
             },
