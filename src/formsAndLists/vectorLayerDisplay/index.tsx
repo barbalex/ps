@@ -249,7 +249,7 @@ export const VectorLayerDisplay = ({
         <div
           style={{
             position: 'sticky',
-            top: 29,
+            top: 31,
             zIndex: 2,
             borderTop: '1px solid #bbb',
           }}

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from '@tanstack/react-router'
 import { FaChevronDown } from 'react-icons/fa'
+import { useRef, useState, useEffect } from 'react'
 
 import styles from './Section.module.css'
 
@@ -20,6 +21,26 @@ export const Section = ({
 }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  const [isStuck, setIsStuck] = useState(false)
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+    // Find nearest scrollable ancestor (the form-container with overflow: auto)
+    let root: HTMLElement | null = sentinel.parentElement
+    while (root && root !== document.body) {
+      const { overflow, overflowY } = getComputedStyle(root)
+      if (/auto|scroll/.test(overflow + overflowY)) break
+      root = root.parentElement
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 1, root: root !== document.body ? root : null },
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [])
 
   const isAtList = listUrl
     ? pathname === listUrl || pathname === listUrl + '/'
@@ -27,17 +48,21 @@ export const Section = ({
 
   const effectiveHeaderClick =
     parentUrl && listUrl
-      ? () => (isAtList ? navigate({ to: parentUrl }) : navigate({ to: listUrl }))
+      ? () =>
+          isAtList ? navigate({ to: parentUrl }) : navigate({ to: listUrl })
       : onHeaderClick
 
   const effectiveChevronClick = parentUrl
     ? () => navigate({ to: parentUrl })
     : onChevronClick
 
+  console.log('Section, isStuck:', isStuck)
+
   return (
     <section>
+      <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
       <h2
-        className={styles.title}
+        className={`${styles.title}${isStuck ? ` ${styles.titleStuck}` : ''}`}
         onClick={onNavigate ?? effectiveHeaderClick}
         style={
           effectiveHeaderClick || onNavigate
