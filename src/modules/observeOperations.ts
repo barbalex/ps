@@ -71,6 +71,7 @@ export const observeOperations = () =>
       }
       // if network error: return, setting shortTermOnline false
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
+      return
     }
     // if successful: return remove operation
     return removeOperation(firstOperation)

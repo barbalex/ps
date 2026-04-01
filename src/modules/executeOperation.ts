@@ -12,9 +12,8 @@ export const executeOperation = async (o) => {
       title: 'No database connection',
       body: 'Cannot execute queued operation because there is no database connection.',
     })
-    return
+    throw new Error('No PostgREST client available')
   }
-  queryFunction
 
   const {
     time,
@@ -58,7 +57,7 @@ export const executeOperation = async (o) => {
     // add filtering
     const queryFunction =
       rowIdName && rowId
-        ? baseQueryFunction.eq(rowIdName, rowId)
+        ? baseQueryFunction.eq(rowIdName, rowId).select(rowIdName).limit(1)
         : filter.function === 'eq'
           ? baseQueryFunction.eq(filter.column, filter.value)
           : filter.function === 'neq'
@@ -66,9 +65,15 @@ export const executeOperation = async (o) => {
             : filter.function === 'in'
               ? baseQueryFunction.in(filter.column, filter.value)
               : baseQueryFunction
-    const { error } = await queryFunction
+    const { data, error } = await queryFunction
 
     if (error) throw error
+
+    if (rowIdName && rowId && Array.isArray(data) && data.length === 0) {
+      throw new Error(
+        `Update matched 0 rows for ${table}.${rowIdName}=${rowId}`,
+      )
+    }
   }
   if (operation === 'upsert') {
     // enable passing rowId and column as part of draft
