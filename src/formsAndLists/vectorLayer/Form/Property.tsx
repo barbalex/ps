@@ -10,7 +10,7 @@ import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisp
 import { addOperationAtom } from '../../../store.ts'
 
 export const Property = ({ vectorLayer, from }) => {
-  const { projectId, vectorLayerId } = useParams({ from })
+  const { projectId, vectorLayerId } = useParams({ from, strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 

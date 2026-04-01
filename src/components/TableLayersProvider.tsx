@@ -92,7 +92,6 @@ export const TableLayersProvider = () => {
             label:
               pl1Plural ??
               formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
-            skipOperationQueue: true,
           })
         }
 
@@ -121,7 +120,6 @@ export const TableLayersProvider = () => {
                   { place: pl1Singular },
                 )
               : formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
-            skipOperationQueue: true,
           })
         }
 
@@ -150,7 +148,6 @@ export const TableLayersProvider = () => {
                   { place: pl1Singular },
                 )
               : formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
-            skipOperationQueue: true,
           })
         }
 
@@ -186,7 +183,6 @@ export const TableLayersProvider = () => {
                     id: 'OaXR/X',
                     defaultMessage: 'Beobachtungen zugewiesen',
                   }),
-              skipOperationQueue: true,
             })
           }
 
@@ -230,7 +226,6 @@ export const TableLayersProvider = () => {
                       }),
                     },
                   ),
-              skipOperationQueue: true,
             })
           }
         }
@@ -257,7 +252,6 @@ export const TableLayersProvider = () => {
                 id: 'aeUjud',
                 defaultMessage: 'Zu beurteilende Beobachtungen',
               }),
-              skipOperationQueue: true,
             })
           }
         }
@@ -286,7 +280,6 @@ export const TableLayersProvider = () => {
                 id: '3oZh5s',
                 defaultMessage: 'Nicht zuzuweisende Beobachtungen',
               }),
-              skipOperationQueue: true,
             })
           }
         }
@@ -314,7 +307,6 @@ export const TableLayersProvider = () => {
               label:
                 pl2Plural ??
                 formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
-              skipOperationQueue: true,
             })
           }
         }
@@ -345,7 +337,6 @@ export const TableLayersProvider = () => {
                     { place: pl2Singular },
                   )
                 : formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
-              skipOperationQueue: true,
             })
           }
         }
@@ -376,7 +367,6 @@ export const TableLayersProvider = () => {
                     { place: pl2Singular },
                   )
                 : formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
-              skipOperationQueue: true,
             })
           }
         }
@@ -413,7 +403,6 @@ export const TableLayersProvider = () => {
                     id: 'OaXR/X',
                     defaultMessage: 'Beobachtungen zugewiesen',
                   }),
-              skipOperationQueue: true,
             })
           }
 
@@ -457,7 +446,6 @@ export const TableLayersProvider = () => {
                       }),
                     },
                   ),
-              skipOperationQueue: true,
             })
           }
         }

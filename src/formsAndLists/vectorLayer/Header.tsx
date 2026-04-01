@@ -12,6 +12,7 @@ import { useRef, useEffect } from 'react'
 
 import { createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import {
   tabsAtom,
   draggableLayersAtom,
@@ -35,6 +36,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
+  const basePath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}`
+  const formPath = `${basePath}/vector-layer`
 
   const db = usePGlite()
 
@@ -220,19 +223,27 @@ export const Header = ({ autoFocusRef, row, from }) => {
       toPrevious={toPrevious}
       tableName="vector layer"
       siblings={
-        isDraggable ? (
-          <Button
-            size="medium"
-            icon={<TreasureMapLinePulsating />}
-            onClick={onClickToggleAssign}
-            title={formatMessage({
-              id: 'Il2JmO',
-              defaultMessage: 'Zuweisung stoppen',
-            })}
+        <>
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={formPath}
+            historyTable="vector_layers_history"
+            rowIdField="vector_layer_id"
+            rowId={vectorLayerId}
           />
-        ) : (
-          <Menu>
-            <MenuTrigger disableButtonEnhancement>
+          {isDraggable ? (
+            <Button
+              size="medium"
+              icon={<TreasureMapLinePulsating />}
+              onClick={onClickToggleAssign}
+              title={formatMessage({
+                id: 'Il2JmO',
+                defaultMessage: 'Zuweisung stoppen',
+              })}
+            />
+          ) : (
+            <Menu>
+              <MenuTrigger disableButtonEnhancement>
               <Button
                 size="medium"
                 icon={<TreasureMapLine />}
@@ -253,7 +264,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
               </MenuList>
             </MenuPopover>
           </Menu>
-        )
+          )}
+        </>
       }
     />
   )
