@@ -12,6 +12,7 @@ import {
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
 import { addOperationAtom } from '../../../store.ts'
+import { projectTypeOptions } from '../../../modules/constants.ts'
 import {
   excludedDisplayFields,
   excludedRestoreFields,
@@ -135,8 +136,22 @@ export const ProjectConfigurationHistoryCompare = () => {
     },
   })
 
-  const formatFieldValue = (field: string, history: ProjectsHistory) =>
-    stringifyHistoryValue(history[field])
+  const projectTypeLabelMap = Object.fromEntries(
+    projectTypeOptions.map(({ value, labelId, defaultMessage }) => [
+      value,
+      formatMessage({ id: labelId, defaultMessage }),
+    ]),
+  )
+
+  const formatFieldValue = (field: string, history: ProjectsHistory) => {
+    if (field === 'type') {
+      const value = history[field]
+      if (typeof value === 'string') {
+        return projectTypeLabelMap[value] ?? value
+      }
+    }
+    return stringifyHistoryValue(history[field])
+  }
 
   return (
     <HistoryCompare<ProjectsHistory>
