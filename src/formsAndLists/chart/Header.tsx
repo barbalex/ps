@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { designingAtom, addOperationAtom } from '../../store.ts'
 
 const getFilter = ({ placeId, placeId2, projectId, subprojectId }) => {
@@ -40,6 +41,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
     from,
   })
+  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -141,6 +143,17 @@ export const Header = ({ autoFocusRef, from }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="chart"
+      siblings={
+        subRoute === 'settings' ? (
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/settings`}
+            historyTable="charts_history"
+            rowIdField="chart_id"
+            rowId={chartId}
+          />
+        ) : undefined
+      }
     />
   )
 }
