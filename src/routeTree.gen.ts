@@ -145,6 +145,7 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdSubprojectRouteImp
 import { Route as DataProjectsProjectIdReportsProjectReportIdPrintRouteImport } from './routes/data/projects/$projectId_/reports/$projectReportId.print'
 import { Route as DataProjectsProjectIdListsListIdListRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/list'
 import { Route as DataProjectsProjectIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/files/$fileId_/preview'
+import { Route as DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRouteImport } from './routes/data/projects/$projectId_/configuration/histories/$projectConfigurationHistoryId'
 import { Route as DataProjectsProjectIdWmsServicesWmsServiceIdLayersRouteRouteImport } from './routes/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/route'
 import { Route as DataProjectsProjectIdWfsServicesWfsServiceIdLayersRouteRouteImport } from './routes/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers/route'
 import { Route as DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysRouteRouteImport } from './routes/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/route'
@@ -1218,6 +1219,14 @@ const DataProjectsProjectIdFilesFileIdPreviewRoute =
     path: '/$fileId/preview',
     getParentRoute: () => DataProjectsProjectIdFilesRouteRoute,
   } as any)
+const DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute =
+  DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRouteImport.update(
+    {
+      id: '/histories/$projectConfigurationHistoryId',
+      path: '/histories/$projectConfigurationHistoryId',
+      getParentRoute: () => DataProjectsProjectIdConfigurationRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdWmsServicesWmsServiceIdLayersRouteRoute =
   DataProjectsProjectIdWmsServicesWmsServiceIdLayersRouteRouteImport.update({
     id: '/layers',
@@ -3814,6 +3823,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/vector-layers/$vectorLayerId/displays': typeof DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysRouteRouteWithChildren
   '/data/projects/$projectId/wfs-services/$wfsServiceId/layers': typeof DataProjectsProjectIdWfsServicesWfsServiceIdLayersRouteRouteWithChildren
   '/data/projects/$projectId/wms-services/$wmsServiceId/layers': typeof DataProjectsProjectIdWmsServicesWmsServiceIdLayersRouteRouteWithChildren
+  '/data/projects/$projectId/configuration/histories/$projectConfigurationHistoryId': typeof DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute
   '/data/projects/$projectId/files/$fileId/preview': typeof DataProjectsProjectIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId/lists/$listId/list': typeof DataProjectsProjectIdListsListIdListRoute
   '/data/projects/$projectId/reports/$projectReportId/print': typeof DataProjectsProjectIdReportsProjectReportIdPrintRoute
@@ -4179,6 +4189,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/wfs-services': typeof DataProjectsProjectIdWfsServicesIndexRoute
   '/data/projects/$projectId/wms-layers': typeof DataProjectsProjectIdWmsLayersIndexRoute
   '/data/projects/$projectId/wms-services': typeof DataProjectsProjectIdWmsServicesIndexRoute
+  '/data/projects/$projectId/configuration/histories/$projectConfigurationHistoryId': typeof DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute
   '/data/projects/$projectId/lists/$listId/list': typeof DataProjectsProjectIdListsListIdListRoute
   '/data/projects/$projectId/reports/$projectReportId/print': typeof DataProjectsProjectIdReportsProjectReportIdPrintRoute
   '/data/projects/$projectId/subprojects/$subprojectId/subproject': typeof DataProjectsProjectIdSubprojectsSubprojectIdSubprojectRoute
@@ -4547,6 +4558,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays': typeof DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysRouteRouteWithChildren
   '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers': typeof DataProjectsProjectIdWfsServicesWfsServiceIdLayersRouteRouteWithChildren
   '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers': typeof DataProjectsProjectIdWmsServicesWmsServiceIdLayersRouteRouteWithChildren
+  '/data/projects/$projectId_/configuration/histories/$projectConfigurationHistoryId': typeof DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute
   '/data/projects/$projectId_/files/$fileId_/preview': typeof DataProjectsProjectIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId_/lists/$listId_/list': typeof DataProjectsProjectIdListsListIdListRoute
   '/data/projects/$projectId_/reports/$projectReportId/print': typeof DataProjectsProjectIdReportsProjectReportIdPrintRoute
@@ -4971,6 +4983,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers/$vectorLayerId/displays'
     | '/data/projects/$projectId/wfs-services/$wfsServiceId/layers'
     | '/data/projects/$projectId/wms-services/$wmsServiceId/layers'
+    | '/data/projects/$projectId/configuration/histories/$projectConfigurationHistoryId'
     | '/data/projects/$projectId/files/$fileId/preview'
     | '/data/projects/$projectId/lists/$listId/list'
     | '/data/projects/$projectId/reports/$projectReportId/print'
@@ -5336,6 +5349,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/wfs-services'
     | '/data/projects/$projectId/wms-layers'
     | '/data/projects/$projectId/wms-services'
+    | '/data/projects/$projectId/configuration/histories/$projectConfigurationHistoryId'
     | '/data/projects/$projectId/lists/$listId/list'
     | '/data/projects/$projectId/reports/$projectReportId/print'
     | '/data/projects/$projectId/subprojects/$subprojectId/subproject'
@@ -5703,6 +5717,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays'
     | '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers'
     | '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers'
+    | '/data/projects/$projectId_/configuration/histories/$projectConfigurationHistoryId'
     | '/data/projects/$projectId_/files/$fileId_/preview'
     | '/data/projects/$projectId_/lists/$listId_/list'
     | '/data/projects/$projectId_/reports/$projectReportId/print'
@@ -6953,6 +6968,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/files/$fileId/preview'
       preLoaderRoute: typeof DataProjectsProjectIdFilesFileIdPreviewRouteImport
       parentRoute: typeof DataProjectsProjectIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/configuration/histories/$projectConfigurationHistoryId': {
+      id: '/data/projects/$projectId_/configuration/histories/$projectConfigurationHistoryId'
+      path: '/histories/$projectConfigurationHistoryId'
+      fullPath: '/data/projects/$projectId/configuration/histories/$projectConfigurationHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdConfigurationRouteRoute
     }
     '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers': {
       id: '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers'
@@ -9052,12 +9074,15 @@ const DataMessagesRouteRouteWithChildren =
 
 interface DataProjectsProjectIdConfigurationRouteRouteChildren {
   DataProjectsProjectIdConfigurationIndexRoute: typeof DataProjectsProjectIdConfigurationIndexRoute
+  DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute: typeof DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute
 }
 
 const DataProjectsProjectIdConfigurationRouteRouteChildren: DataProjectsProjectIdConfigurationRouteRouteChildren =
   {
     DataProjectsProjectIdConfigurationIndexRoute:
       DataProjectsProjectIdConfigurationIndexRoute,
+    DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute:
+      DataProjectsProjectIdConfigurationHistoriesProjectConfigurationHistoryIdRoute,
   }
 
 const DataProjectsProjectIdConfigurationRouteRouteWithChildren =

@@ -19,6 +19,7 @@ import { Type } from './Type.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
 import { FormHeader } from '../../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../../store.ts'
 import { projectTypeNames } from '../../../modules/projectTypeNames.ts'
@@ -133,6 +134,8 @@ export const Configuration = ({ from }) => {
     )
   }
 
+  const basePath = `/data/projects/${projectId}/configuration`
+
   return (
     <div className="form-outer-container">
       <FormHeader
@@ -140,6 +143,15 @@ export const Configuration = ({ from }) => {
           id: 'zM4NoP',
           defaultMessage: 'Projekt-Konfiguration',
         })}
+        siblings={
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={basePath}
+            historyTable="projects_history"
+            rowIdField="project_id"
+            rowId={projectId}
+          />
+        }
       />
       <div className="form-container" role="tabpanel" aria-labelledby="form">
         <Type row={row} onChange={onChange} validations={validations} />
