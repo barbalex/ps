@@ -37,7 +37,7 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader
     }
     // we are in normal routing
     navigate({
-      to: id,
+      to: `${id}/vector-layer-display`,
       params: (prev) => ({
         ...prev,
         vectorLayerDisplayId: id,
@@ -51,7 +51,7 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader
       return
     }
     navigate({
-      to: id,
+      to: `${id}/vector-layer-display`,
       params: (prev) => ({
         ...prev,
         vectorLayerDisplayId: id,
@@ -74,7 +74,7 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader
         : navs.map(({ id, label }) => (
             <Row
               key={id}
-              to={id}
+              to={`${id}/vector-layer-display`}
               label={label ?? id}
               onClick={calledFromMapDrawer ? () => onClickRow(id) : undefined}
             />

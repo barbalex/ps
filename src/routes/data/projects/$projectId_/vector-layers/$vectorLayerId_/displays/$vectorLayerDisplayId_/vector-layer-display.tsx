@@ -1,13 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { VectorLayerDisplay } from '../../../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
+import { VectorLayerDisplay } from '../../../../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
+
 const from =
-  '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId'
+  '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_/vector-layer-display'
 
 export const Route = createFileRoute(from)({
-  component: () => (
-    <VectorLayerDisplay from="/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId" />
-  ),
+  component: () => <VectorLayerDisplay from={from} />,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')
@@ -24,7 +23,7 @@ export const Route = createFileRoute(from)({
       )
     }
     return {
-      navDataFetcher: 'useVectorLayerDisplayNavData',
+      navDataFetcher: 'useVectorLayerDisplayVectorLayerDisplayNavData',
     }
   },
 })

@@ -61,7 +61,7 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
   const onClickAddDisplay = async () => {
     const id = await createVectorLayerDisplay({ vectorLayerId })
     if (!id) return
-    navigate({ to: `${displaysUrl}/${id}/` })
+    navigate({ to: `${displaysUrl}/${id}/vector-layer-display` })
   }
 
   const displaysHeaderActions =

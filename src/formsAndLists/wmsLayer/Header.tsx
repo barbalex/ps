@@ -6,12 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createWmsLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const basePath = `/data/projects/${projectId}/wms-layers/${wmsLayerId}`
 
   const db = usePGlite()
 
@@ -25,7 +27,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
   const addRow = async () => {
     const wmsLayerId = await createWmsLayer({ projectId })
     navigate({
-      to: `../${wmsLayerId}`,
+      to: `../../${wmsLayerId}/wms-layer`,
       params: (prev) => ({ ...prev, wmsLayerId }),
     })
     autoFocusRef?.current?.focus()
@@ -48,7 +50,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: '..' })
+      navigate({ to: '../..' })
     } catch (error) {
       console.error('Error deleting wms layer:', error)
     }
@@ -65,7 +67,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
       const index = rows.findIndex((p) => p.wms_layer_id === wmsLayerIdRef.current)
       const next = rows[(index + 1) % len]
       navigate({
-        to: `../${next.wms_layer_id}`,
+        to: `../../${next.wms_layer_id}/wms-layer`,
         params: (prev) => ({ ...prev, wmsLayerId: next.wms_layer_id }),
       })
     } catch (error) {
@@ -84,7 +86,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
       const index = rows.findIndex((p) => p.wms_layer_id === wmsLayerIdRef.current)
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to: `../${previous.wms_layer_id}`,
+        to: `../../${previous.wms_layer_id}/wms-layer`,
         params: (prev) => ({ ...prev, wmsLayerId: previous.wms_layer_id }),
       })
     } catch (error) {
@@ -100,6 +102,15 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="wms layer"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={`${basePath}/wms-layer`}
+          historyTable="wms_layers_history"
+          rowIdField="wms_layer_id"
+          rowId={wmsLayerId}
+        />
+      }
     />
   )
 }

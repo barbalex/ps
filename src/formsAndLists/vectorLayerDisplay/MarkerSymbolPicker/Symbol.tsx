@@ -11,7 +11,7 @@ interface Props {
   active: boolean
 }
 
-export const Symbol = ({ Component, name, onChange, active }: Props) => {
+export const MarkerSymbol = ({ Component, name, onChange, active }: Props) => {
   if (active) {
     return <Component className={`${styles.component} ${styles.active}`} />
   }

@@ -19,8 +19,10 @@ import { WfsServiceLayersFetcher } from './WfsServiceLayersFetcher.tsx'
 import { WfsServiceLayerFetcher } from './WfsServiceLayerFetcher.tsx'
 import { WmsLayersFetcher } from './WmsLayersFetcher.tsx'
 import { WmsLayerFetcher } from './WmsLayerFetcher.tsx'
+import { WmsLayerWmsLayerFetcher } from './WmsLayerWmsLayerFetcher.tsx'
 import { VectorLayerDisplaysFetcher } from './VectorLayerDisplaysFetcher.tsx'
 import { VectorLayerDisplayFetcher } from './VectorLayerDisplayFetcher.tsx'
+import { VectorLayerDisplayVectorLayerDisplayFetcher } from './VectorLayerDisplayVectorLayerDisplayFetcher.tsx'
 import { VectorLayersFetcher } from './VectorLayersFetcher.tsx'
 import { VectorLayerFetcher } from './VectorLayerFetcher.tsx'
 import { VectorLayerVectorLayerFetcher } from './VectorLayerVectorLayerFetcher.tsx'
@@ -625,6 +627,10 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       if (!params.projectId || !params.wmsLayerId) return null
       return <WmsLayerFetcher params={params} {...other} />
     }
+    case 'useWmsLayerWmsLayerNavData': {
+      if (!params.projectId || !params.wmsLayerId) return null
+      return <WmsLayerWmsLayerFetcher params={params} {...other} />
+    }
     case 'useVectorLayersNavData': {
       if (!params.projectId) return null
       return <VectorLayersFetcher params={params} {...other} />
@@ -649,6 +655,17 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return <VectorLayerDisplayFetcher params={params} {...other} />
+    }
+    case 'useVectorLayerDisplayVectorLayerDisplayNavData': {
+      if (
+        !params.projectId ||
+        !params.vectorLayerId ||
+        !params.vectorLayerDisplayId
+      )
+        return null
+      return (
+        <VectorLayerDisplayVectorLayerDisplayFetcher params={params} {...other} />
+      )
     }
     case 'useProjectUsersNavData': {
       if (!params.projectId) return null

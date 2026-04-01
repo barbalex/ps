@@ -21,7 +21,7 @@ export const WmsLayers = () => {
     const wmsLayerId = await createWmsLayer({ projectId })
     if (!wmsLayerId) return
     await navigate({
-      to: `/data/projects/${projectId}/wms-layers/${wmsLayerId}`,
+      to: `/data/projects/${projectId}/wms-layers/${wmsLayerId}/wms-layer`,
       params: { projectId, wmsLayerId },
     })
   }
@@ -39,7 +39,7 @@ export const WmsLayers = () => {
           <Loading />
         ) : (
           navs.map(({ id, label }) => (
-            <Row key={id} to={id} label={label ?? id} />
+            <Row key={id} to={`${id}/wms-layer`} label={label ?? id} />
           ))
         )}
       </div>

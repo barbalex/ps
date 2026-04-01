@@ -3,7 +3,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
 
 import { Label } from '../../../components/shared/Label.tsx'
-import { Symbol } from './Symbol.tsx'
+import { MarkerSymbol } from './Symbol.tsx'
 import styles from './index.module.css'
 
 interface Props {
@@ -26,7 +26,7 @@ export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
           const Component = icons[key]
 
           return (
-            <Symbol
+            <MarkerSymbol
               key={key}
               Component={Component}
               name={key}

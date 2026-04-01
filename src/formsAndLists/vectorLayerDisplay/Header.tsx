@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import {
   mapDrawerVectorLayerDisplayAtom,
   addOperationAtom,
@@ -59,7 +60,7 @@ export const Header = ({
       return
     }
     navigate({
-      to: `../${id}`,
+      to: `../../${id}/vector-layer-display`,
       params: (prev) => ({
         ...prev,
         vectorLayerDisplayId: id,
@@ -90,7 +91,7 @@ export const Header = ({
         setMapLayerDrawerVectorLayerDisplayId(null)
         return
       }
-      navigate({ to: '..' })
+      navigate({ to: '../..' })
     } catch (error) {
       console.error('Error deleting vector layer display:', error)
     }
@@ -119,7 +120,7 @@ export const Header = ({
         return
       }
       navigate({
-        to: `../${next.vector_layer_display_id}`,
+        to: `../../${next.vector_layer_display_id}/vector-layer-display`,
         params: (prev) => ({
           ...prev,
           vectorLayerDisplayId: next.vector_layer_display_id,
@@ -147,7 +148,7 @@ export const Header = ({
         return
       }
       navigate({
-        to: `../${previous.vector_layer_display_id}`,
+        to: `../../${previous.vector_layer_display_id}/vector-layer-display`,
         params: (prev) => ({
           ...prev,
           vectorLayerDisplayId: previous.vector_layer_display_id,
@@ -157,6 +158,13 @@ export const Header = ({
       console.error('Error navigating to previous vector layer display:', error)
     }
   }
+
+  // basePath uses params directly (synchronous) so the history button appears immediately.
+  // vectorLayerId from the DB query is still used for addRow/toNext/toPrevious in map drawer context.
+  const basePath =
+    params.vectorLayerId && params.projectId
+      ? `/data/projects/${params.projectId}/vector-layers/${params.vectorLayerId}/displays/${vectorLayerDisplayId}`
+      : undefined
 
   return (
     <FormHeader
@@ -174,6 +182,17 @@ export const Header = ({
         id: 'fhL4R2',
         defaultMessage: 'Anzeige',
       })}
+      siblings={
+        !vectorLayerDisplayIdFromProps && basePath ? (
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/vector-layer-display`}
+            historyTable="vector_layer_displays_history"
+            rowIdField="vector_layer_display_id"
+            rowId={vectorLayerDisplayId}
+          />
+        ) : undefined
+      }
     />
   )
 }

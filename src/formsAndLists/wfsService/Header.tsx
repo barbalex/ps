@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { createWfsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -17,6 +18,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     from ===
     '/data/projects/$projectId_/wfs-services/$wfsServiceId_/wfs-service'
   const { projectId, wfsServiceId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
@@ -105,6 +107,17 @@ export const Header = ({ autoFocusRef, from }: Props) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="wfs service"
+      siblings={
+        isForm ? (
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/wfs-service`}
+            historyTable="wfs_services_history"
+            rowIdField="wfs_service_id"
+            rowId={wfsServiceId}
+          />
+        ) : undefined
+      }
     />
   )
 }

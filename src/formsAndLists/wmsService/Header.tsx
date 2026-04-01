@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createWmsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -19,6 +20,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     from ===
     '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
   const { projectId, wmsServiceId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/wms-services/${wmsServiceId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
@@ -105,6 +107,17 @@ export const Header = ({ autoFocusRef, from }: Props) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="wms service"
+      siblings={
+        isForm ? (
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/wms-service`}
+            historyTable="wms_services_history"
+            rowIdField="wms_service_id"
+            rowId={wmsServiceId}
+          />
+        ) : undefined
+      }
     />
   )
 }

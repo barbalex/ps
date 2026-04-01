@@ -56,8 +56,6 @@ export const Section = ({
     ? () => navigate({ to: parentUrl })
     : onChevronClick
 
-  console.log('Section, isStuck:', isStuck)
-
   return (
     <section>
       <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
