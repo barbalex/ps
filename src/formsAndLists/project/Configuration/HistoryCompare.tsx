@@ -40,11 +40,18 @@ export const ProjectConfigurationHistoryCompare = () => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
 
-  const rowRes = useLiveQuery(
-    `SELECT * FROM projects WHERE project_id = $1`,
+  const rowRes = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
+    projectId,
+  ])
+  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+
+  const unitsRes = useLiveQuery(
+    `SELECT unit_id, name FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const unitLabelMap = Object.fromEntries(
+    (unitsRes?.rows ?? []).map((u) => [u.unit_id, u.name ?? u.unit_id]),
+  )
 
   if (!rowRes) return <Loading />
 
@@ -57,9 +64,7 @@ export const ProjectConfigurationHistoryCompare = () => {
     )
   }
 
-  const leftContent = (
-    <Configuration from={configFrom} />
-  )
+  const leftContent = <Configuration from={configFrom} />
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -143,11 +148,26 @@ export const ProjectConfigurationHistoryCompare = () => {
     ]),
   )
 
+  const unitIdFields = new Set([
+    'checks_default_unit_id',
+    'check_taxa_default_unit_id',
+    'check_reports_default_unit_id',
+    'actions_default_unit_id',
+    'action_taxa_default_unit_id',
+    'action_reports_default_unit_id',
+  ])
+
   const formatFieldValue = (field: string, history: ProjectsHistory) => {
     if (field === 'type') {
       const value = history[field]
       if (typeof value === 'string') {
         return projectTypeLabelMap[value] ?? value
+      }
+    }
+    if (unitIdFields.has(field)) {
+      const value = history[field]
+      if (typeof value === 'string') {
+        return unitLabelMap[value] ?? value
       }
     }
     return stringifyHistoryValue(history[field])
