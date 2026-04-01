@@ -70,17 +70,9 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const isDraggable = draggableLayers.includes(layerNameForState)
 
   const onClickToggleAssign = () => {
-    let newDraggableLayers = []
-    // 1. if isDraggable, remove from draggableLayers
-    if (isDraggable) {
-      // remove from draggableLayers
-      newDraggableLayers = draggableLayers?.filter(
-        (layer) => layer !== layerNameForState,
-      )
-    } else {
-      // add to draggableLayers
-      newDraggableLayers = [...draggableLayers, layerNameForState]
-    }
+    const newDraggableLayers = isDraggable
+      ? draggableLayers?.filter((layer) => layer !== layerNameForState)
+      : [...draggableLayers, layerNameForState]
     setDraggableLayers(newDraggableLayers)
   }
 
@@ -244,26 +236,26 @@ export const Header = ({ autoFocusRef, row, from }) => {
           ) : (
             <Menu>
               <MenuTrigger disableButtonEnhancement>
-              <Button
-                size="medium"
-                icon={<TreasureMapLine />}
-                title={formatMessage({
-                  id: 'Hk1IlN',
-                  defaultMessage: 'Zuweisung starten',
-                })}
-              />
-            </MenuTrigger>
-            <MenuPopover>
-              <MenuList>
-                <MenuItem onClick={onClickAssignToPlaces1}>
-                  {places1Name}
-                </MenuItem>
-                <MenuItem onClick={onClickAssignToPlaces2}>
-                  {places2Name}
-                </MenuItem>
-              </MenuList>
-            </MenuPopover>
-          </Menu>
+                <Button
+                  size="medium"
+                  icon={<TreasureMapLine />}
+                  title={formatMessage({
+                    id: 'Hk1IlN',
+                    defaultMessage: 'Zuweisung starten',
+                  })}
+                />
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  <MenuItem onClick={onClickAssignToPlaces1}>
+                    {places1Name}
+                  </MenuItem>
+                  <MenuItem onClick={onClickAssignToPlaces2}>
+                    {places2Name}
+                  </MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
           )}
         </>
       }
