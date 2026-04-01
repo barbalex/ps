@@ -15,7 +15,7 @@ const from =
 
 // this form can be used from the router or inside the left map drawer
 // map drawer passes the vectorLayerId as a prop
-export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
+export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader = false }) => {
   const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
   const calledFromMapDrawer = vectorLayerIdIn !== undefined
   const paramsConfig = calledFromMapDrawer ? { strict: false } : { from }
@@ -65,11 +65,13 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn }) => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+        />
+      )}
       <div className="list-container">
         {loading ?
           <Loading />

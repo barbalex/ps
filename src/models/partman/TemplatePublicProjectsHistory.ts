@@ -99,6 +99,8 @@ export default interface TemplatePublicProjectsHistory {
 
   list_values_in_list: boolean | null;
 
+  vlds_in_vector_layer: boolean | null;
+
   files_active_subprojects: boolean | null;
 
   subproject_taxa_in_subproject: boolean | null;
@@ -214,6 +216,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   list_values_in_list?: boolean | null;
 
+  vlds_in_vector_layer?: boolean | null;
+
   files_active_subprojects?: boolean | null;
 
   subproject_taxa_in_subproject?: boolean | null;
@@ -328,6 +332,8 @@ export interface TemplatePublicProjectsHistoryMutator {
   fields_in_project?: boolean | null;
 
   list_values_in_list?: boolean | null;
+
+  vlds_in_vector_layer?: boolean | null;
 
   files_active_subprojects?: boolean | null;
 

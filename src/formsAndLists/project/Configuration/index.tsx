@@ -574,6 +574,24 @@ export const Configuration = ({ from }) => {
                 })
               }
             />
+            <SwitchField
+              label={formatMessage({
+                id: 'vldsInVL',
+                defaultMessage: 'Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen',
+              })}
+              name="vlds_in_vector_layer"
+              value={row.vlds_in_vector_layer ?? true}
+              onChange={onChange}
+              validationState={validations?.vlds_in_vector_layer?.state}
+              validationMessage={
+                validations?.vlds_in_vector_layer?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
           </SectionLevel2>
           <SectionLevel2 title={subprojectName}>
             <SwitchField

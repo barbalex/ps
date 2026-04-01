@@ -69,14 +69,15 @@ export const SqlInitializer = () => {
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_files_in_subproject boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS goal_reports_in_goal boolean DEFAULT true;
             ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_reports_in_subproject boolean DEFAULT true;
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS vlds_in_vector_layer boolean DEFAULT true;
           `)
         } catch (error) {
           console.error('Error running schema migration:', error)
         }
 
-          // Ensure locally synced tables include temporal range columns expected by server schema.
-          try {
-            await db.exec(`
+        // Ensure locally synced tables include temporal range columns expected by server schema.
+        try {
+          await db.exec(`
               ALTER TABLE units ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
               ALTER TABLE subproject_taxa ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
               ALTER TABLE field_types ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
@@ -84,9 +85,9 @@ export const SqlInitializer = () => {
               ALTER TABLE messages ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
               ALTER TABLE qcs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             `)
-          } catch (error) {
-            console.error('Error adding sys_period columns:', error)
-          }
+        } catch (error) {
+          console.error('Error adding sys_period columns:', error)
+        }
         return setSqlInitializing(false)
       }
 

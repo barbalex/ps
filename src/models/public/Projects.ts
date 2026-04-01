@@ -140,6 +140,9 @@ export default interface Projects {
   /** Render list values inside the list form? Preset: true */
   list_values_in_list: boolean | null;
 
+  /** Render vector layer displays inside the vector layer form? Preset: true */
+  vlds_in_vector_layer: boolean | null;
+
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects: boolean | null;
 
@@ -354,6 +357,12 @@ export interface ProjectsInitializer {
   list_values_in_list?: boolean | null;
 
   /**
+   * Render vector layer displays inside the vector layer form? Preset: true
+   * Default value: true
+   */
+  vlds_in_vector_layer?: boolean | null;
+
+  /**
    * Whether files are used in table subprojects. Preset: true
    * Default value: true
    */
@@ -523,6 +532,9 @@ export interface ProjectsMutator {
 
   /** Render list values inside the list form? Preset: true */
   list_values_in_list?: boolean | null;
+
+  /** Render vector layer displays inside the vector layer form? Preset: true */
+  vlds_in_vector_layer?: boolean | null;
 
   /** Whether files are used in table subprojects. Preset: true */
   files_active_subprojects?: boolean | null;

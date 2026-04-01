@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { VectorLayerDisplaysNode } from './VectorLayerDisplays.tsx'
@@ -12,6 +13,12 @@ export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
+
+  const projectRes = useLiveQuery(
+    `SELECT vlds_in_vector_layer FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const vldsInVectorLayer = projectRes?.rows?.[0]?.vlds_in_vector_layer !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = ['data', 'projects', projectId, 'vector-layers']
@@ -35,6 +42,24 @@ export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
     }
     // add to openNodes without navigating
     addOpenNodes({ nodes: [ownArray] })
+  }
+
+  if (vldsInVectorLayer) {
+    const vectorLayerFormArray = [...ownArray, 'vector-layer']
+    const vectorLayerFormUrl = `${ownUrl}/vector-layer`
+    return (
+      <Node
+        label={nav.label}
+        id={nav.id}
+        level={level}
+        isInActiveNodeArray={vectorLayerFormArray.every(
+          (part, i) => urlPath[i] === part,
+        )}
+        isActive={isEqual(urlPath, vectorLayerFormArray)}
+        childrenCount={0}
+        to={vectorLayerFormUrl}
+      />
+    )
   }
 
   return (

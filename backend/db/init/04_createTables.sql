@@ -173,6 +173,7 @@ CREATE TABLE IF NOT EXISTS projects(
   units_in_project boolean DEFAULT TRUE,
   fields_in_project boolean DEFAULT TRUE,
   list_values_in_list boolean DEFAULT TRUE,
+  vlds_in_vector_layer boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_taxa_in_subproject boolean DEFAULT TRUE,
   subproject_users_in_subproject boolean DEFAULT TRUE,
@@ -196,6 +197,9 @@ CREATE INDEX IF NOT EXISTS projects_place_action_reports_default_unit_id_idx ON 
 
 ALTER TABLE projects
 ADD COLUMN IF NOT EXISTS enable_histories boolean DEFAULT TRUE;
+
+ALTER TABLE projects
+ADD COLUMN IF NOT EXISTS vlds_in_vector_layer boolean DEFAULT TRUE;
 
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
@@ -230,6 +234,7 @@ COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users ins
 COMMENT ON COLUMN projects.units_in_project IS 'Render units inside the project form? Preset: true';
 COMMENT ON COLUMN projects.fields_in_project IS 'Render fields inside the project form? Preset: true';
 COMMENT ON COLUMN projects.list_values_in_list IS 'Render list values inside the list form? Preset: true';
+COMMENT ON COLUMN projects.vlds_in_vector_layer IS 'Render vector layer displays inside the vector layer form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN projects.subproject_taxa_in_subproject IS 'Render subproject taxa inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.subproject_users_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';
