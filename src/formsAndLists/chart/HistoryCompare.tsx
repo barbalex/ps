@@ -62,7 +62,7 @@ export const ChartHistoryCompare = () => {
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      chart_type: { id: 'bCPQRS', defaultMessage: 'Diagramm-Typ' },
+      chart_type: { id: 'bCHkLm', defaultMessage: 'Diagramm-Typ' },
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
       years_current: { id: 'bCJmNo', defaultMessage: 'Aktuelles Jahr' },
       years_previous: { id: 'bCLoQr', defaultMessage: 'Vorheriges Jahr' },
