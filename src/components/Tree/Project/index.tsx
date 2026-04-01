@@ -46,7 +46,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
 
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
-    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project FROM projects WHERE project_id = $1`,
+    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project, project_reports_in_project FROM projects WHERE project_id = $1`,
     [nav.id],
   )
   const project = resultProject?.rows?.[0]
@@ -59,10 +59,12 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const showProjectReports = designing || (project?.project_reports ?? true)
   const showFiles = designing || (project?.files_active_projects ?? false)
   const usersInProject = project?.project_users_in_project !== false
+  const reportsInProject = project?.project_reports_in_project !== false
   const filesInProject = project?.project_files_in_project === true
   const unitsInProject = project?.units_in_project !== false
   const fieldsInProject = project?.fields_in_project !== false
   const showUsersNav = !usersInProject
+  const showReportsNav = !reportsInProject
   const showFilesNav = showFiles && !filesInProject
   const showUnitsNav = !unitsInProject
   const showFieldsNav = !fieldsInProject
@@ -121,7 +123,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {showDesigningNodes && (
             <ProjectReportDesignsNode projectId={nav.id} level={3} />
           )}
-          {showProjectReports && <ProjectReportsNode projectId={nav.id} />}
+          {showProjectReports && showReportsNav && <ProjectReportsNode projectId={nav.id} />}
           {showWmsNodes && <WmsServicesNode projectId={nav.id} />}
           {showWmsNodes && <WmsLayersNode projectId={nav.id} />}
           {showVectorNodes && <WfsServicesNode projectId={nav.id} />}

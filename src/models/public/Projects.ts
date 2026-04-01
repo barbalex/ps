@@ -131,6 +131,9 @@ export default interface Projects {
   /** Render project users inside the project form? Preset: true */
   project_users_in_project: boolean | null;
 
+  /** Render project reports inside the project form? Preset: true */
+  project_reports_in_project: boolean | null;
+
   /** Render units inside the project form? Preset: true */
   units_in_project: boolean | null;
 
@@ -339,6 +342,12 @@ export interface ProjectsInitializer {
   project_users_in_project?: boolean | null;
 
   /**
+   * Render project reports inside the project form? Preset: true
+   * Default value: true
+   */
+  project_reports_in_project?: boolean | null;
+
+  /**
    * Render units inside the project form? Preset: true
    * Default value: true
    */
@@ -523,6 +532,9 @@ export interface ProjectsMutator {
 
   /** Render project users inside the project form? Preset: true */
   project_users_in_project?: boolean | null;
+
+  /** Render project reports inside the project form? Preset: true */
+  project_reports_in_project?: boolean | null;
 
   /** Render units inside the project form? Preset: true */
   units_in_project?: boolean | null;

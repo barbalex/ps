@@ -522,6 +522,24 @@ export const Configuration = ({ from }) => {
             />
             <SwitchField
               label={formatMessage({
+                id: 'prjRptsInPrj',
+                defaultMessage: 'Berichte im Projekt anzeigen',
+              })}
+              name="project_reports_in_project"
+              value={row.project_reports_in_project ?? true}
+              onChange={onChange}
+              validationState={validations?.project_reports_in_project?.state}
+              validationMessage={
+                validations?.project_reports_in_project?.message ??
+                formatMessage({
+                  id: 'altInOwnFormNav',
+                  defaultMessage:
+                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+                })
+              }
+            />
+            <SwitchField
+              label={formatMessage({
                 id: 'uN9UntInPrj',
                 defaultMessage: 'Einheiten im Projekt anzeigen',
               })}
@@ -577,7 +595,8 @@ export const Configuration = ({ from }) => {
             <SwitchField
               label={formatMessage({
                 id: 'vldsInVL',
-                defaultMessage: 'Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen',
+                defaultMessage:
+                  'Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen',
               })}
               name="vlds_in_vector_layer"
               value={row.vlds_in_vector_layer ?? true}

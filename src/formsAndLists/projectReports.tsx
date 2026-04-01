@@ -8,10 +8,8 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useProjectReportsNavData } from '../modules/useProjectReportsNavData.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/reports/'
-
-export const ProjectReports = () => {
-  const { projectId } = useParams({ from })
+export const ProjectReports = ({ hideHeader }: { hideHeader?: boolean }) => {
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useProjectReportsNavData({
@@ -30,12 +28,14 @@ export const ProjectReports = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          menus={<FilterButton isFiltered={isFiltered} />}
+        />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />

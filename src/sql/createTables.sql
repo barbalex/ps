@@ -170,6 +170,7 @@ CREATE TABLE IF NOT EXISTS projects(
   files_active_projects boolean DEFAULT TRUE,
   project_files_in_project boolean DEFAULT TRUE,
   project_users_in_project boolean DEFAULT TRUE,
+  project_reports_in_project boolean DEFAULT TRUE,
   units_in_project boolean DEFAULT TRUE,
   fields_in_project boolean DEFAULT TRUE,
   list_values_in_list boolean DEFAULT TRUE,
@@ -201,6 +202,9 @@ ADD COLUMN IF NOT EXISTS enable_histories boolean DEFAULT TRUE;
 ALTER TABLE projects
 ADD COLUMN IF NOT EXISTS vlds_in_vector_layer boolean DEFAULT TRUE;
 
+ALTER TABLE projects
+ADD COLUMN IF NOT EXISTS project_reports_in_project boolean DEFAULT TRUE;
+
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
 COMMENT ON COLUMN projects.subproject_name_singular IS 'Preset: "Art"';
@@ -231,6 +235,7 @@ COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the project form? Preset: true';
 COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users inside the project form? Preset: true';
+COMMENT ON COLUMN projects.project_reports_in_project IS 'Render project reports inside the project form? Preset: true';
 COMMENT ON COLUMN projects.units_in_project IS 'Render units inside the project form? Preset: true';
 COMMENT ON COLUMN projects.fields_in_project IS 'Render fields inside the project form? Preset: true';
 COMMENT ON COLUMN projects.list_values_in_list IS 'Render list values inside the list form? Preset: true';

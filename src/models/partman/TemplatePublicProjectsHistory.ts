@@ -93,6 +93,8 @@ export default interface TemplatePublicProjectsHistory {
 
   project_users_in_project: boolean | null;
 
+  project_reports_in_project: boolean | null;
+
   units_in_project: boolean | null;
 
   fields_in_project: boolean | null;
@@ -210,6 +212,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
 
   project_users_in_project?: boolean | null;
 
+  project_reports_in_project?: boolean | null;
+
   units_in_project?: boolean | null;
 
   fields_in_project?: boolean | null;
@@ -326,6 +330,8 @@ export interface TemplatePublicProjectsHistoryMutator {
   project_files_in_project?: boolean | null;
 
   project_users_in_project?: boolean | null;
+
+  project_reports_in_project?: boolean | null;
 
   units_in_project?: boolean | null;
 
