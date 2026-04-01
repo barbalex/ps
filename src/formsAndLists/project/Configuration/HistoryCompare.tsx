@@ -27,7 +27,7 @@ const from =
 const configFrom = '/data/projects/$projectId_/configuration'
 
 export const ProjectConfigurationHistoryCompare = () => {
-  const { formatMessage } = useIntl()
+  const { formatMessage, locale } = useIntl()
   const navigate = useNavigate()
   const { projectId, projectConfigurationHistoryId } = useParams({
     from,
@@ -66,7 +66,17 @@ export const ProjectConfigurationHistoryCompare = () => {
 
   const leftContent = <Configuration from={configFrom} />
 
-  const formatFieldLabel = createHistoryFieldLabelFormatter({
+  const lang = locale.split('-')[0]
+  const subprojectName =
+    (row?.[`subproject_name_plural_${lang}`] as string | undefined) ??
+    (row?.subproject_name_plural as string | undefined) ??
+    formatMessage({ id: 'subprojectPluralFallback', defaultMessage: 'Arten' })
+  const subprojectNameSingular =
+    (row?.[`subproject_name_singular_${lang}`] as string | undefined) ??
+    (row?.subproject_name_singular as string | undefined) ??
+    formatMessage({ id: 'subprojectSingularFallback', defaultMessage: 'Teilprojekt' })
+
+  const baseFormatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
       type: { id: 'xTeBn/', defaultMessage: 'Typ' },
@@ -138,8 +148,132 @@ export const ProjectConfigurationHistoryCompare = () => {
         id: 'mI7JkL',
         defaultMessage: '...mehrere Massnahmen-Mengen auf gleicher Ort-Stufe',
       },
+      enable_histories: {
+        id: 'bHistProjSetting',
+        defaultMessage: 'Geschichte vergleichen',
+      },
+      project_reports: {
+        id: 'CiJ0SG',
+        defaultMessage: 'Berichte',
+      },
+      wms_layers: {
+        id: 'tV2WxY',
+        defaultMessage: 'WMS-Dienste und WMS-Ebenen',
+      },
+      vector_layers: {
+        id: 'vX4YzA',
+        defaultMessage: 'WFS-Dienste und Vektor-Ebenen',
+      },
+      files_active_projects: {
+        id: 'aB1CdE',
+        defaultMessage: 'Dateien',
+      },
+      project_files_in_project: {
+        id: 'qP7PrjFileInPrj',
+        defaultMessage: 'Dateien im Projekt anzeigen',
+      },
+      project_users_in_project: {
+        id: 'mQ4PrjUsersInPrj',
+        defaultMessage: 'Benutzer im Projekt anzeigen',
+      },
+      project_reports_in_project: {
+        id: 'prjRptsInPrj',
+        defaultMessage: 'Berichte im Projekt anzeigen',
+      },
+      units_in_project: {
+        id: 'uN9UntInPrj',
+        defaultMessage: 'Einheiten im Projekt anzeigen',
+      },
+      fields_in_project: {
+        id: 'pR8FldInPrj',
+        defaultMessage: 'Felder im Projekt anzeigen',
+      },
+      list_values_in_list: {
+        id: 'lV6LstValsInLst',
+        defaultMessage: 'Listen-Werte in Liste anzeigen',
+      },
+      vlds_in_vector_layer: {
+        id: 'vldsInVL',
+        defaultMessage: 'Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen',
+      },
+      subproject_reports: {
+        id: 'subprojectReports',
+        defaultMessage: '{subprojectNameSingular}-Berichte',
+        values: { subprojectNameSingular },
+      },
+      subproject_reports_in_subproject: {
+        id: 'sPRinSP',
+        defaultMessage:
+          '{subprojectNameSingular}-Berichte in {subprojectNameSingular} anzeigen',
+        values: { subprojectNameSingular },
+      },
+      goals: {
+        id: '3srcwg',
+        defaultMessage: 'Ziele',
+      },
+      goal_reports_in_goal: {
+        id: 'gRinGoal',
+        defaultMessage: 'Ziel-Berichte im Ziel anzeigen',
+      },
+      occurrences: {
+        id: 'yK5Pq6',
+        defaultMessage: 'Beobachtungen (inkl. Importe)',
+      },
+      taxa: {
+        id: '7sVbg1',
+        defaultMessage: 'Taxa',
+      },
+      subproject_taxa_in_subproject: {
+        id: 'sP8TaxInSubprj',
+        defaultMessage: 'Taxa in {subprojectNameSingular} anzeigen',
+        values: { subprojectNameSingular },
+      },
+      charts: {
+        id: 'ZPEO8P',
+        defaultMessage: 'Diagramme',
+      },
+      subproject_users_in_subproject: {
+        id: 'N3qLx9',
+        defaultMessage: 'Benutzer in {subprojectNameSingular} anzeigen',
+        values: { subprojectNameSingular },
+      },
+      files_active_subprojects: {
+        id: 'aB1CdE',
+        defaultMessage: 'Dateien',
+      },
+      subproject_files_in_subproject: {
+        id: 'fH8JmQ',
+        defaultMessage: 'Dateien in {subprojectNameSingular} anzeigen',
+        values: { subprojectNameSingular },
+      },
+      subproject_order_by: {
+        id: 'cY7ZaB',
+        defaultMessage: 'Teilprojekt sortieren nach (Feldname)',
+      },
+      goal_reports_label_by: {
+        id: 'dC8DeF',
+        defaultMessage: 'Berichte beschriften nach',
+      },
+      places_label_by: {
+        id: 'eG9HiJ',
+        defaultMessage: 'Orte beschriften nach',
+      },
+      places_order_by: {
+        id: 'fK0LmN',
+        defaultMessage: 'Orte sortieren nach',
+      },
+      map_presentation_crs: {
+        id: 'gO1PqR',
+        defaultMessage: 'Karten-Präsentations-KBS',
+      },
+      files_offline: {
+        id: 'mL7MnO',
+        defaultMessage: 'Dateien lokal speichern (offline verfügbar)',
+      },
     },
   })
+
+  const formatFieldLabel = baseFormatFieldLabel
 
   const projectTypeLabelMap = Object.fromEntries(
     projectTypeOptions.map(({ value, labelId, defaultMessage }) => [
