@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { VectorLayer } from '../../../../../../formsAndLists/vectorLayer/index.tsx'
+import { VectorLayerWithDisplays } from '../../../../../../formsAndLists/vectorLayer/WithDisplays.tsx'
 const from =
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
 
 export const Route = createFileRoute(from)({
   component: () => (
-    <VectorLayer from="/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer" />
+    <VectorLayerWithDisplays from="/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer" />
   ),
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
