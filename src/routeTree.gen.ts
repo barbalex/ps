@@ -204,6 +204,7 @@ import { Route as DataProjectsProjectIdPlaceLevelsPlaceLevelIdHistoriesPlaceLeve
 import { Route as DataProjectsProjectIdListsListIdHistoriesListHistoryIdRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/histories/$listHistoryId'
 import { Route as DataProjectsProjectIdFilesFileIdHistoriesFileHistoryIdRouteImport } from './routes/data/projects/$projectId_/files/$fileId_/histories/$fileHistoryId'
 import { Route as DataProjectsProjectIdFieldsFieldIdHistoriesFieldHistoryIdRouteImport } from './routes/data/projects/$projectId_/fields/$fieldId_/histories/$fieldHistoryId'
+import { Route as DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRouteImport } from './routes/data/projects/$projectId_/designs/$projectReportDesignId_/histories/$projectReportDesignHistoryId'
 import { Route as DataProjectsProjectIdCrsProjectCrsIdHistoriesProjectCrsHistoryIdRouteImport } from './routes/data/projects/$projectId_/crs/$projectCrsId_/histories/$projectCrsHistoryId'
 import { Route as DataAccountsAccountIdProjectFieldsFieldIdHistoriesFieldHistoryIdRouteImport } from './routes/data/accounts/$accountId_/project-fields/$fieldId_/histories/$fieldHistoryId'
 import { Route as DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysVectorLayerDisplayIdRouteRouteImport } from './routes/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_/route'
@@ -1656,6 +1657,14 @@ const DataProjectsProjectIdFieldsFieldIdHistoriesFieldHistoryIdRoute =
     path: '/$fieldId/histories/$fieldHistoryId',
     getParentRoute: () => DataProjectsProjectIdFieldsRouteRoute,
   } as any)
+const DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute =
+  DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRouteImport.update(
+    {
+      id: '/$projectReportDesignId_/histories/$projectReportDesignHistoryId',
+      path: '/$projectReportDesignId/histories/$projectReportDesignHistoryId',
+      getParentRoute: () => DataProjectsProjectIdDesignsRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdCrsProjectCrsIdHistoriesProjectCrsHistoryIdRoute =
   DataProjectsProjectIdCrsProjectCrsIdHistoriesProjectCrsHistoryIdRouteImport.update(
     {
@@ -3824,6 +3833,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/vector-layers/$vectorLayerId/displays/$vectorLayerDisplayId': typeof DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysVectorLayerDisplayIdRouteRouteWithChildren
   '/data/accounts/$accountId/project-fields/$fieldId/histories/$fieldHistoryId': typeof DataAccountsAccountIdProjectFieldsFieldIdHistoriesFieldHistoryIdRoute
   '/data/projects/$projectId/crs/$projectCrsId/histories/$projectCrsHistoryId': typeof DataProjectsProjectIdCrsProjectCrsIdHistoriesProjectCrsHistoryIdRoute
+  '/data/projects/$projectId/designs/$projectReportDesignId/histories/$projectReportDesignHistoryId': typeof DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute
   '/data/projects/$projectId/fields/$fieldId/histories/$fieldHistoryId': typeof DataProjectsProjectIdFieldsFieldIdHistoriesFieldHistoryIdRoute
   '/data/projects/$projectId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/lists/$listId/histories/$listHistoryId': typeof DataProjectsProjectIdListsListIdHistoriesListHistoryIdRoute
@@ -4183,6 +4193,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/vector-layers/$vectorLayerId/displays/$vectorLayerDisplayId': typeof DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysVectorLayerDisplayIdRouteRouteWithChildren
   '/data/accounts/$accountId/project-fields/$fieldId/histories/$fieldHistoryId': typeof DataAccountsAccountIdProjectFieldsFieldIdHistoriesFieldHistoryIdRoute
   '/data/projects/$projectId/crs/$projectCrsId/histories/$projectCrsHistoryId': typeof DataProjectsProjectIdCrsProjectCrsIdHistoriesProjectCrsHistoryIdRoute
+  '/data/projects/$projectId/designs/$projectReportDesignId/histories/$projectReportDesignHistoryId': typeof DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute
   '/data/projects/$projectId/fields/$fieldId/histories/$fieldHistoryId': typeof DataProjectsProjectIdFieldsFieldIdHistoriesFieldHistoryIdRoute
   '/data/projects/$projectId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/lists/$listId/histories/$listHistoryId': typeof DataProjectsProjectIdListsListIdHistoriesListHistoryIdRoute
@@ -4553,6 +4564,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_': typeof DataProjectsProjectIdVectorLayersVectorLayerIdDisplaysVectorLayerDisplayIdRouteRouteWithChildren
   '/data/accounts/$accountId_/project-fields/$fieldId_/histories/$fieldHistoryId': typeof DataAccountsAccountIdProjectFieldsFieldIdHistoriesFieldHistoryIdRoute
   '/data/projects/$projectId_/crs/$projectCrsId_/histories/$projectCrsHistoryId': typeof DataProjectsProjectIdCrsProjectCrsIdHistoriesProjectCrsHistoryIdRoute
+  '/data/projects/$projectId_/designs/$projectReportDesignId_/histories/$projectReportDesignHistoryId': typeof DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute
   '/data/projects/$projectId_/fields/$fieldId_/histories/$fieldHistoryId': typeof DataProjectsProjectIdFieldsFieldIdHistoriesFieldHistoryIdRoute
   '/data/projects/$projectId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId_/lists/$listId_/histories/$listHistoryId': typeof DataProjectsProjectIdListsListIdHistoriesListHistoryIdRoute
@@ -4975,6 +4987,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers/$vectorLayerId/displays/$vectorLayerDisplayId'
     | '/data/accounts/$accountId/project-fields/$fieldId/histories/$fieldHistoryId'
     | '/data/projects/$projectId/crs/$projectCrsId/histories/$projectCrsHistoryId'
+    | '/data/projects/$projectId/designs/$projectReportDesignId/histories/$projectReportDesignHistoryId'
     | '/data/projects/$projectId/fields/$fieldId/histories/$fieldHistoryId'
     | '/data/projects/$projectId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/lists/$listId/histories/$listHistoryId'
@@ -5334,6 +5347,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/vector-layers/$vectorLayerId/displays/$vectorLayerDisplayId'
     | '/data/accounts/$accountId/project-fields/$fieldId/histories/$fieldHistoryId'
     | '/data/projects/$projectId/crs/$projectCrsId/histories/$projectCrsHistoryId'
+    | '/data/projects/$projectId/designs/$projectReportDesignId/histories/$projectReportDesignHistoryId'
     | '/data/projects/$projectId/fields/$fieldId/histories/$fieldHistoryId'
     | '/data/projects/$projectId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/lists/$listId/histories/$listHistoryId'
@@ -5703,6 +5717,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_'
     | '/data/accounts/$accountId_/project-fields/$fieldId_/histories/$fieldHistoryId'
     | '/data/projects/$projectId_/crs/$projectCrsId_/histories/$projectCrsHistoryId'
+    | '/data/projects/$projectId_/designs/$projectReportDesignId_/histories/$projectReportDesignHistoryId'
     | '/data/projects/$projectId_/fields/$fieldId_/histories/$fieldHistoryId'
     | '/data/projects/$projectId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/lists/$listId_/histories/$listHistoryId'
@@ -7336,6 +7351,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/fields/$fieldId/histories/$fieldHistoryId'
       preLoaderRoute: typeof DataProjectsProjectIdFieldsFieldIdHistoriesFieldHistoryIdRouteImport
       parentRoute: typeof DataProjectsProjectIdFieldsRouteRoute
+    }
+    '/data/projects/$projectId_/designs/$projectReportDesignId_/histories/$projectReportDesignHistoryId': {
+      id: '/data/projects/$projectId_/designs/$projectReportDesignId_/histories/$projectReportDesignHistoryId'
+      path: '/$projectReportDesignId/histories/$projectReportDesignHistoryId'
+      fullPath: '/data/projects/$projectId/designs/$projectReportDesignId/histories/$projectReportDesignHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdDesignsRouteRoute
     }
     '/data/projects/$projectId_/crs/$projectCrsId_/histories/$projectCrsHistoryId': {
       id: '/data/projects/$projectId_/crs/$projectCrsId_/histories/$projectCrsHistoryId'
@@ -9044,6 +9066,7 @@ const DataProjectsProjectIdCrsRouteRouteWithChildren =
 interface DataProjectsProjectIdDesignsRouteRouteChildren {
   DataProjectsProjectIdDesignsIndexRoute: typeof DataProjectsProjectIdDesignsIndexRoute
   DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute: typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
+  DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute: typeof DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute
 }
 
 const DataProjectsProjectIdDesignsRouteRouteChildren: DataProjectsProjectIdDesignsRouteRouteChildren =
@@ -9052,6 +9075,8 @@ const DataProjectsProjectIdDesignsRouteRouteChildren: DataProjectsProjectIdDesig
       DataProjectsProjectIdDesignsIndexRoute,
     DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute:
       DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute,
+    DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute:
+      DataProjectsProjectIdDesignsProjectReportDesignIdHistoriesProjectReportDesignHistoryIdRoute,
   }
 
 const DataProjectsProjectIdDesignsRouteRouteWithChildren =

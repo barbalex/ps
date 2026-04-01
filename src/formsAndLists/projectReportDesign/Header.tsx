@@ -6,11 +6,13 @@ import { useIntl } from 'react-intl'
 
 import { createProjectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, projectReportDesignId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/designs/${projectReportDesignId}`
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
@@ -116,6 +118,15 @@ export const Header = ({ autoFocusRef, from }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="project_report_designs_history"
+          rowIdField="project_report_design_id"
+          rowId={projectReportDesignId}
+        />
+      }
     />
   )
 }
