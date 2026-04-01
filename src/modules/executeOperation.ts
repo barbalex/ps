@@ -58,11 +58,11 @@ export const executeOperation = async (o) => {
     const queryFunction =
       rowIdName && rowId
         ? baseQueryFunction.eq(rowIdName, rowId).select(rowIdName).limit(1)
-        : filter.function === 'eq'
+        : filter?.function === 'eq'
           ? baseQueryFunction.eq(filter.column, filter.value)
-          : filter.function === 'neq'
+          : filter?.function === 'neq'
             ? baseQueryFunction.neq(filter.column, filter.value)
-            : filter.function === 'in'
+            : filter?.function === 'in'
               ? baseQueryFunction.in(filter.column, filter.value)
               : baseQueryFunction
     const { data, error } = await queryFunction
@@ -121,11 +121,11 @@ export const executeOperation = async (o) => {
     const queryFunction =
       rowIdName && rowId
         ? baseQueryFunction.eq(rowIdName, rowId)
-        : filter.function === 'eq'
+        : filter?.function === 'eq'
           ? baseQueryFunction.eq(filter.column, filter.value)
-          : filter.function === 'neq'
+          : filter?.function === 'neq'
             ? baseQueryFunction.neq(filter.column, filter.value)
-            : filter.function === 'in'
+            : filter?.function === 'in'
               ? baseQueryFunction.in(filter.column, filter.value)
               : baseQueryFunction
     const { error } = await queryFunction
