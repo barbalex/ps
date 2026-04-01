@@ -134,10 +134,7 @@ export const VectorLayerDisplay = ({
       )}
       {row.marker_type === 'marker' && (
         <>
-          <MarkerSymbolPicker
-            onChange={onChange}
-            value={row.marker_symbol}
-          />
+          <MarkerSymbolPicker onChange={onChange} value={row.marker_symbol} />
           <TextField
             name="marker_size"
             label={formatMessage({
@@ -249,7 +246,14 @@ export const VectorLayerDisplay = ({
   if (isEmbedded) {
     return (
       <ErrorBoundary>
-        <div style={{ position: 'sticky', top: 32, zIndex: 2 }}>
+        <div
+          style={{
+            position: 'sticky',
+            top: 29,
+            zIndex: 2,
+            borderTop: '1px solid #bbb',
+          }}
+        >
           <Header
             autoFocusRef={autoFocusRef}
             vectorLayerDisplayId={vectorLayerDisplayId}
