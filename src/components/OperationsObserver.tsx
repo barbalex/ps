@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 
 import { observeOperations } from '../modules/observeOperations.ts'
-import { store } from '../store.ts'
 
 export const OperationsObserver = () => {
   const unobserveRef = useRef({ current: null as null | (() => void) })
@@ -14,7 +13,7 @@ export const OperationsObserver = () => {
   })
 
   useEffect(() => {
-    unobserveRef.current = observeOperations(store)
+    unobserveRef.current = observeOperations()
   }, [])
 
   return null

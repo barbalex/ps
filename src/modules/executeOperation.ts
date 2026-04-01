@@ -14,10 +14,9 @@ export const executeOperation = async (o) => {
     })
     return
   }
-  let queryFunction
+  queryFunction
 
   const {
-    id,
     time,
     table,
     operation,

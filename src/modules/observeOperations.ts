@@ -14,7 +14,7 @@ import { removeOperation } from './removeOperation.ts'
 // https://jotai.org/docs/extensions/effect
 // TODO: make this dependent on store.shortTermOnline
 // TODO: ensure function is run all 30 seconds
-export const observeOperations = (store) =>
+export const observeOperations = () =>
   observe(async (get, set) => {
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
