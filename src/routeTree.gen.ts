@@ -272,6 +272,7 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActio
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessObservationIdHistoriesObservationHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/$observationId_/histories/$observationHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignObservationIdHistoriesObservationHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/$observationId_/histories/$observationHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId_/histories/$observationImportHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdHistoriesGoalHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/histories/$goalHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdHistoriesFileHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/histories/$fileHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdHistoriesChartHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/histories/$chartHistoryId'
@@ -2262,6 +2263,15 @@ const DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignObserva
         DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRouteImport.update(
+    {
+      id: '/$observationImportId_/histories/$observationImportHistoryId',
+      path: '/$observationImportId/histories/$observationImportHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdHistoriesGoalHistoryIdRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdHistoriesGoalHistoryIdRouteImport.update(
     {
@@ -3946,6 +3956,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/histories/$chartHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdHistoriesChartHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/histories/$goalHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdHistoriesGoalHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/$observationImportId/histories/$observationImportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/action-reports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsFilterRoute
@@ -4292,6 +4303,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/histories/$chartHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdHistoriesChartHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/histories/$goalHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdHistoriesGoalHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/$observationImportId/histories/$observationImportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/action-reports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsFilterRoute
@@ -4683,6 +4695,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/histories/$chartHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdChartsChartIdHistoriesChartHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/histories/$goalHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdGoalsGoalIdHistoriesGoalHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId_/histories/$observationImportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/$observationId_/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/$observationId_/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsToAssessObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsFilterRoute
@@ -5109,6 +5122,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/histories/$chartHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/histories/$goalHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/$observationImportId/histories/$observationImportHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/action-reports/filter'
@@ -5455,6 +5469,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/charts/$chartId/histories/$chartHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/goals/$goalId/histories/$goalHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/$observationImportId/histories/$observationImportHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-not-to-assign/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/observations-to-assess/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/action-reports/filter'
@@ -5845,6 +5860,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/histories/$chartHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/histories/$goalHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId_/histories/$observationImportHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/$observationId_/histories/$observationHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/$observationId_/histories/$observationHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/filter'
@@ -7874,6 +7890,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignObservationIdHistoriesObservationHistoryIdRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationsNotToAssignRouteRoute
     }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId_/histories/$observationImportHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId_/histories/$observationImportHistoryId'
+      path: '/$observationImportId/histories/$observationImportHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/observation-imports/$observationImportId/histories/$observationImportHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRoute
+    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/histories/$goalHistoryId': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/histories/$goalHistoryId'
       path: '/histories/$goalHistoryId'
@@ -9576,6 +9599,7 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRou
   DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsFilterRoute
   DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute
   DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute
 }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteChildren =
@@ -9586,6 +9610,8 @@ const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteCh
       DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsIndexRoute,
     DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdIndexRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsObservationImportIdHistoriesObservationImportHistoryIdRoute,
   }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdObservationImportsRouteRouteWithChildren =

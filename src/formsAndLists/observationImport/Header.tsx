@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl'
 
 import { createObservationImport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -24,7 +25,7 @@ export const Header = ({
   showPreview,
   setShowPreview,
 }: Props) => {
-  const { subprojectId, observationImportId } = useParams({ from })
+  const { projectId, subprojectId, observationImportId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -138,8 +139,14 @@ export const Header = ({
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="observation import"
-      siblings={
+      siblings={[
+        <HistoryToggleButton
+          key="history"
+          basePath={`/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}`}
+          historyPath={`/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}/histories`}
+        />,
         <Button
+          key="preview"
           size="medium"
           icon={
             showPreview ? (
@@ -165,7 +172,7 @@ export const Header = ({
           }
           onClick={onClickPreview}
         />
-      }
+      ]}
     />
   )
 }
