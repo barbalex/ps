@@ -3,14 +3,16 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 
 const from =
   '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers/$wfsServiceLayerId/'
 
 export const Header = () => {
-  const { wfsServiceId, wfsServiceLayerId } = useParams({ from })
+  const { projectId, wfsServiceId, wfsServiceLayerId } = useParams({ from })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
+  const basePath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}/layers/${wfsServiceLayerId}`
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM wfs_service_layers WHERE wfs_service_id = $1`,
@@ -64,6 +66,15 @@ export const Header = () => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="wfs service layer"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="wfs_service_layers_history"
+          rowIdField="wfs_service_layer_id"
+          rowId={wfsServiceLayerId}
+        />
+      }
     />
   )
 }
