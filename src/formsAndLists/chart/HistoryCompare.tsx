@@ -92,7 +92,10 @@ export const ChartHistoryCompare = () => {
   const formatFieldValue = (field: string, history: ChartsHistory) => {
     if (field === 'chart_type') {
       const value = history[field]
-      if (typeof value === 'string') return chartTypeLabelMap[value] ?? value
+      if (value !== null && value !== undefined) {
+        return chartTypeLabelMap[String(value)] ?? value
+      }
+      return value
     }
     return stringifyHistoryValue(history[field])
   }
