@@ -13,10 +13,12 @@ import { useIntl } from 'react-intl'
 
 import { createProjectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { projectId, projectReportId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/reports/${projectReportId}`
   const navigate = useNavigate()
   const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
@@ -155,14 +157,23 @@ export const Header = ({ autoFocusRef, from }) => {
       />
     </>
   ) : (
-    <Button
-      icon={<EyeRegular />}
-      onClick={onClickPdf}
-      title={formatMessage({
-        id: 'bB2DeF',
-        defaultMessage: 'Bericht-Vorschau',
-      })}
-    />
+    <>
+      <Button
+        icon={<EyeRegular />}
+        onClick={onClickPdf}
+        title={formatMessage({
+          id: 'bB2DeF',
+          defaultMessage: 'Bericht-Vorschau',
+        })}
+      />
+      <HistoryToggleButton
+        historiesPath={`${basePath}/histories`}
+        formPath={basePath}
+        historyTable="project_reports_history"
+        rowIdField="project_report_id"
+        rowId={projectReportId}
+      />
+    </>
   )
 
   return (
