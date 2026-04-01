@@ -6,12 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { createSubprojectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectReportDesignId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/subproject-designs/${subprojectReportDesignId}`
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
@@ -138,6 +140,15 @@ export const Header = ({ autoFocusRef, from }) => {
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="subproject_report_designs_history"
+          rowIdField="subproject_report_design_id"
+          rowId={subprojectReportDesignId}
+        />
+      }
     />
   )
 }
