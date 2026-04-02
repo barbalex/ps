@@ -41,7 +41,13 @@ services:
     networks:
       - network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      # Old fallback (quick revert):
+      # test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test:
+        [
+          "CMD-SHELL",
+          'psql -U postgres -d ${POSTGRES_DB} -tAc "SELECT 1 FROM projects LIMIT 1" | grep -q 1',
+        ]
       interval: 5s
       timeout: 5s
       retries: 5
