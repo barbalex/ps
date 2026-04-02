@@ -2,11 +2,13 @@ import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import { sqlInitializingAtom } from '../store.ts'
+import { sqlInitializingAtom, syncObjectAtom } from '../store.ts'
+import { startSyncing } from '../modules/startSyncing.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
   const setSqlInitializing = useSetAtom(sqlInitializingAtom)
+  const setSyncObject = useSetAtom(syncObjectAtom)
 
   useEffect(() => {
     const run = async () => {
@@ -55,40 +57,16 @@ export const SqlInitializer = () => {
 
       // this is probably not needed
       if (projectsTableExists) {
-        // Run migrations for columns added after initial schema creation
+        setSqlInitializing(false)
+        // start syncing after SQL initialization is complete
         try {
-          await db.exec(`
-            ALTER TABLE qcs ADD COLUMN IF NOT EXISTS filter_by_year boolean DEFAULT false;
-            ALTER TABLE accounts ADD COLUMN IF NOT EXISTS project_fields_in_account boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS project_users_in_project boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS project_files_in_project boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS fields_in_project boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS units_in_project boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_taxa_in_subproject boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_users_in_subproject boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_files_in_subproject boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS goal_reports_in_goal boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS subproject_reports_in_subproject boolean DEFAULT true;
-            ALTER TABLE projects ADD COLUMN IF NOT EXISTS vlds_in_vector_layer boolean DEFAULT true;
-          `)
+          const syncObj = await startSyncing()
+          setSyncObject(syncObj)
+          console.log('Sync started from SqlInitializer')
         } catch (error) {
-          console.error('Error running schema migration:', error)
+          console.error('Error starting sync from SqlInitializer:', error)
         }
-
-        // Ensure locally synced tables include temporal range columns expected by server schema.
-        try {
-          await db.exec(`
-              ALTER TABLE units ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-              ALTER TABLE subproject_taxa ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-              ALTER TABLE field_types ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-              ALTER TABLE fields ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-              ALTER TABLE messages ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-              ALTER TABLE qcs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-            `)
-        } catch (error) {
-          console.error('Error adding sys_period columns:', error)
-        }
-        return setSqlInitializing(false)
+        return
       }
 
       // need to create functions, tables and triggers
@@ -124,10 +102,18 @@ export const SqlInitializer = () => {
       }
 
       setSqlInitializing(false)
+          // start syncing after SQL initialization is complete
+          try {
+            const syncObj = await startSyncing()
+            setSyncObject(syncObj)
+            console.log('Sync started from SqlInitializer')
+          } catch (error) {
+            console.error('Error starting sync from SqlInitializer:', error)
+          }
     }
 
     run()
-  }, [db, setSqlInitializing])
+  }, [db, setSqlInitializing, setSyncObject])
 
   return null
 }

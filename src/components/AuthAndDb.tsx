@@ -7,7 +7,7 @@ import { useBeforeunload } from 'react-beforeunload'
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
 // TODO: sync with db IF user has an account
-import { Syncer } from './Syncer.tsx'
+// import { Syncer } from './Syncer.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import {Initiating} from "./Initiating.tsx";
 import { initialSyncingAtom, sqlInitializingAtom, syncObjectAtom } from '../store.ts'
@@ -38,7 +38,7 @@ export const AuthAndDb = () => {
     >
       <SqlInitializer />
       <InitialSyncManager />
-      <Syncer />
+      {/* <Syncer /> */}
       {initiating ? <Initiating /> : <LayoutProtected />}
     </CorbadoProvider>
   )
