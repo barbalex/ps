@@ -150,7 +150,7 @@ export const initialSyncingAtom = atomWithStorage('initialSyncingAtom', true)
 export const sqlInitializingAtom = atomWithStorage('sqlInitializingAtom', true)
 
 // stores the sync object returned from startSyncing() so we can unsubscribe on unload
-export const syncObjectAtom = atom<any>(null)
+export const syncObjectAtom = atom<unknown>(null)
 
 export const seenWmsServiceKeysAtom = atomWithStorage<string[]>(
   'seenWmsServiceKeysAtom',

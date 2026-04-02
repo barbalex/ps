@@ -11,6 +11,10 @@ const url = constants.getElectricUri()
 export const startSyncing = async () => {
   const db = store.get(pgliteDbAtom)
 
+  // is syncObjectAtom exists, return
+  const syncObject = store.get(syncObjectAtom)
+  if (syncObject) return
+
   // Using persistent key for live updates across page reloads
   // On reload: shapes already exist (409 warnings), Electric resumes streaming changes
   // PGlite data persists in IndexedDB, so no need to clear or re-sync everything
@@ -1022,6 +1026,12 @@ export const startSyncing = async () => {
 
         console.error('❌ Syncer error:', error)
         //  Don't set syncingAtom to false - let timeout or onInitialSync handle it
+      },
+      onMustRefetch: (tx) => {
+        console.warn(
+          'Electric: Must refetch - this can happen if the shape definition changes. Attempting to restart sync. Tx:',
+          tx,
+        )
       },
     })
 
