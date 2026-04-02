@@ -9,7 +9,8 @@ import { constants } from './constants.ts'
 const url = constants.getElectricUri()
 
 // Bypass browser HTTP cache for shape requests so stale offset=-1 snapshots
-// (which survive a site-storage clear) never cause an expired-handle replay bug.
+// (which survive a site-storage clear) never cause an expired-handle replay bug
+// https://github.com/electric-sql/pglite/issues/962
 const noCacheFetch: typeof fetch = (input, init) =>
   fetch(input, { ...init, cache: 'no-store' })
 

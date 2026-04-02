@@ -1,0 +1,18 @@
+{
+	# Prevent Caddy from trying to claim port 80 for HTTP→HTTPS redirects
+	auto_https disable_redirects
+}
+
+# Proxy to Electric on port 3000 with HTTP/2 (requires HTTPS via Caddy's local CA)
+# One-time setup: caddy start && caddy trust && caddy stop
+# Chrome on Linux: manually import ~/.local/share/caddy/pki/authorities/local/root.crt
+# via chrome://settings/certificates → Authorities → Import
+# This is only for development; in production, Caddy would handle HTTPS directly and proxy to the backend over HTTP
+localhost:3001 {
+	reverse_proxy localhost:3000 {
+		# Disable buffering so SSE events are flushed immediately
+		flush_interval -1
+	}
+
+	encode gzip
+}
