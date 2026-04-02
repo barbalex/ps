@@ -66,24 +66,20 @@ export const ObservationImportHistoryCompare = () => {
     )
   }
 
-  const geometryMethods = [
-    {
-      value: 'coordinates',
-      label: formatMessage({ id: 'lD2EfG', defaultMessage: 'Koordinaten' }),
-    },
-    {
-      value: 'XY_COORDINATES',
-      label: formatMessage({ id: 'lD2EfG', defaultMessage: 'Koordinaten' }),
-    },
-    {
-      value: 'geojson',
-      label: formatMessage({ id: 'mH3IjK', defaultMessage: 'GeoJSON' }),
-    },
-    {
-      value: 'GEOJSON_FIELD',
-      label: formatMessage({ id: 'mH3IjK', defaultMessage: 'GeoJSON' }),
-    },
-  ]
+  const coordinatesLabel = formatMessage({
+    id: 'lD2EfG',
+    defaultMessage: 'Koordinaten',
+  })
+  const geojsonLabel = formatMessage({
+    id: 'mH3IjK',
+    defaultMessage: 'GeoJSON',
+  })
+  const normalizeGeometryMethod = (value: unknown) =>
+    String(value ?? '').toLowerCase()
+  const isGeojsonGeometryMethod = (value: unknown) =>
+    normalizeGeometryMethod(value).includes('geojson')
+  const isCoordinateGeometryMethod = (value: unknown) =>
+    normalizeGeometryMethod(value).includes('coordinate')
   const visibleCurrentFields = new Set(preferredOrder)
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
@@ -93,8 +89,8 @@ export const ObservationImportHistoryCompare = () => {
       attribution: { id: 'aTr0bt', defaultMessage: 'Quellenangabe' },
       id_field: { id: 'iDFdLb', defaultMessage: 'ID-Feld' },
       geometry_method: {
-        id: 'gMtLbl',
-        defaultMessage: 'Wie sind die Geometrien in den Daten enthalten?',
+        id: 'gEo0mY',
+        defaultMessage: 'Geometrie',
       },
       geojson_geometry_field: {
         id: 'gJsFld',
@@ -109,8 +105,8 @@ export const ObservationImportHistoryCompare = () => {
         defaultMessage: 'Y-Koordinaten-Feld',
       },
       crs: {
-        id: 'cRsLbl',
-        defaultMessage: 'Im importierten Datensatz verwendetes Koordinaten-Bezugs-System',
+        id: 'OzBS9Z',
+        defaultMessage: 'KBS',
       },
       label_creation: { id: 'Fl3jPw', defaultMessage: 'Bezeichnung' },
       previous_import: {
@@ -127,10 +123,10 @@ export const ObservationImportHistoryCompare = () => {
         geometry_method: {
           format: (value) => {
             if (!value) return value
-            return (
-              geometryMethods.find((method) => method.value === value)?.label ??
-              value
-            )
+            if (isGeojsonGeometryMethod(value)) return geojsonLabel
+            if (isCoordinateGeometryMethod(value)) return coordinatesLabel
+
+            return value
           },
         },
       },
@@ -145,18 +141,8 @@ export const ObservationImportHistoryCompare = () => {
   const leftItems = displayFields
     .filter((field) => {
       if (
-        field === 'geojson_geometry_field' &&
-        !['geojson', 'GEOJSON_FIELD'].includes(
-          String(row.geometry_method ?? ''),
-        )
-      ) {
-        return false
-      }
-      if (
         (field === 'x_coordinate_field' || field === 'y_coordinate_field') &&
-        !['coordinates', 'XY_COORDINATES'].includes(
-          String(row.geometry_method ?? ''),
-        )
+        !isCoordinateGeometryMethod(row.geometry_method)
       ) {
         return false
       }
