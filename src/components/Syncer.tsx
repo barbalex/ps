@@ -3,8 +3,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { sqlInitializingAtom, syncObjectAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
-// import { startSyncingUsersOnly } from '../modules/startSyncingUsersOnly.ts'
-// import { startSyncingSingly } from '../modules/startSyncingSingly.ts'
 
 export const Syncer = () => {
   const sqlInitializing = useAtomValue(sqlInitializingAtom)

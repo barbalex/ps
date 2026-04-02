@@ -31,7 +31,6 @@ import './style.css'
 import styles from './App.module.css'
 
 import { lightTheme } from './modules/theme.ts'
-// import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store, pgliteDbAtom, languageAtom, intlAtom } from './store.ts'
 
