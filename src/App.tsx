@@ -37,6 +37,8 @@ import { store, pgliteDbAtom, languageAtom, intlAtom } from './store.ts'
 import { createPostgrestClient } from './modules/createPostgrestClient.ts'
 createPostgrestClient()
 
+import { initializeSql } from './modules/initializeSql.ts'
+
 const IntlSetter = () => {
   const intl = useIntl()
   store.set(intlAtom, intl)
@@ -67,6 +69,9 @@ const db = await PGlite.create('idb://ps', {
   // debug: true,
 })
 store.set(pgliteDbAtom, db)
+// now lets initialize the db
+// TODO: when login is implemented, this should probably be moved to after login, and run only once per user (not per tab)
+initializeSql()
 
 // Expose db and store on window for console debugging
 if (import.meta.env.DEV) {
