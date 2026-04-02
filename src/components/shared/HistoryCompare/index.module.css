@@ -127,12 +127,17 @@
 }
 
 .valueListScroller {
-  overflow: visible;
-  padding-right: 4px;
+  overflow-x: hidden;
+  overflow-y: visible;
   min-width: 0;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: #2f5f19 #dff3e2;
+}
+
+.valueListScrollerPadded {
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .valueListScroller::-webkit-scrollbar {

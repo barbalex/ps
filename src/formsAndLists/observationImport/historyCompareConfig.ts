@@ -3,7 +3,6 @@ export const excludedDisplayFields = new Set([
   'created_at',
   'created_time',
   'gbif_filters',
-  'label_creation',
   'gbif_download_key',
 ])
 
@@ -32,7 +31,6 @@ export const preferredOrder = [
   'x_coordinate_field',
   'y_coordinate_field',
   'crs',
+  'label_creation',
   'previous_import',
-  'download_from_gbif',
-  'gbif_error',
 ]

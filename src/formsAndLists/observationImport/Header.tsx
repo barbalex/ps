@@ -142,8 +142,11 @@ export const Header = ({
       siblings={[
         <HistoryToggleButton
           key="history"
-          basePath={`/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}`}
-          historyPath={`/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}/histories`}
+          historiesPath={`/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}/histories`}
+          formPath={`/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}`}
+          historyTable="observation_imports_history"
+          rowIdField="observation_import_id"
+          rowId={observationImportId}
         />,
         <Button
           key="preview"

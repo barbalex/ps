@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -6,8 +5,12 @@ import { useIntl } from 'react-intl'
 
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import {
+  HistoryValueList,
+  HistoryValueListScroller,
+} from '../../components/shared/HistoryCompare/ValueList.tsx'
+import {
   createHistoryFieldLabelFormatter,
-  stringifyHistoryValue,
+  createHistoryFieldValueFormatter,
 } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
@@ -27,18 +30,21 @@ const from =
 export const ObservationImportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, observationImportId, observationImportHistoryId } =
-    useParams({
-      from,
-      strict: false,
-    })
+  const {
+    projectId,
+    subprojectId,
+    observationImportId,
+    observationImportHistoryId,
+  } = useParams({
+    from,
+    strict: false,
+  })
 
   const formPath = `/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}`
   const historyPath = `${formPath}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const rowRes = useLiveQuery(
     `SELECT * FROM observation_imports WHERE observation_import_id = $1`,
@@ -61,20 +67,18 @@ export const ObservationImportHistoryCompare = () => {
   }
 
   const geometryMethods = [
+    { value: 'coordinates', label: 'XY-Koordinaten' },
     { value: 'XY_COORDINATES', label: 'XY-Koordinaten' },
+    { value: 'geojson', label: 'GeoJSON-Feld' },
     { value: 'GEOJSON_FIELD', label: 'GeoJSON-Feld' },
   ]
-
-  const geometryMethodLabel =
-    geometryMethods.find((m) => m.value === row.geometry_method)?.label ||
-    row.geometry_method ||
-    '–'
+  const visibleCurrentFields = new Set(preferredOrder)
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
-      attribution: { id: 'bG2PQR', defaultMessage: 'Zuschreibung' },
+      attribution: { id: 'aTr0bt', defaultMessage: 'Quellenangabe' },
       id_field: { id: 'bG3RST', defaultMessage: 'ID-Feld' },
       geometry_method: { id: 'bG4STU', defaultMessage: 'Geometrie-Methode' },
       geojson_geometry_field: {
@@ -90,78 +94,74 @@ export const ObservationImportHistoryCompare = () => {
         defaultMessage: 'Y-Koordinaten-Feld',
       },
       crs: { id: 'bG8WXY', defaultMessage: 'CRS' },
+      label_creation: { id: 'Fl3jPw', defaultMessage: 'Bezeichnung' },
       previous_import: {
         id: 'bG9XYZ',
         defaultMessage: 'Vorheriger Import',
       },
-      download_from_gbif: {
-        id: 'bGAYZa',
-        defaultMessage: 'Von GBIF herunterladen',
-      },
-      gbif_error: { id: 'bGBZab', defaultMessage: 'GBIF-Fehler' },
     },
   })
 
-  const formatFieldValue = (
-    field: string,
-    history: ObservationImportsHistory,
-  ) => {
-    if (field === 'geometry_method') {
-      const value = history[field]
-      if (value) {
-        return (
-          geometryMethods.find((m) => m.value === value)?.label ||
-          value
+  const formatFieldValue =
+    createHistoryFieldValueFormatter<ObservationImportsHistory>({
+      formatMessage,
+      fieldValueMap: {
+        geometry_method: {
+          format: (value) => {
+            if (!value) return value
+            return (
+              geometryMethods.find((method) => method.value === value)?.label ??
+              value
+            )
+          },
+        },
+      },
+    })
+
+  const displayFields = preferredOrder.filter(
+    (field) =>
+      visibleCurrentFields.has(field) && !excludedDisplayFields.has(field),
+  )
+
+  const rowLikeHistory = row as ObservationImportsHistory
+  const leftItems = displayFields
+    .filter((field) => {
+      if (
+        field === 'geojson_geometry_field' &&
+        !['geojson', 'GEOJSON_FIELD'].includes(
+          String(row.geometry_method ?? ''),
         )
+      ) {
+        return false
       }
-      return value
-    }
-    return stringifyHistoryValue(history[field])
-  }
+      if (
+        (field === 'x_coordinate_field' || field === 'y_coordinate_field') &&
+        !['coordinates', 'XY_COORDINATES'].includes(
+          String(row.geometry_method ?? ''),
+        )
+      ) {
+        return false
+      }
+
+      return true
+    })
+    .map((field) => ({
+      key: field,
+      label: formatFieldLabel(field),
+      value: formatFieldValue(field, rowLikeHistory),
+    }))
 
   const leftContent = (
-    <div className="form-container">
-      <p>
-        <strong>{formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}:</strong> {row.name}
-      </p>
-      <p>
-        <strong>{formatMessage({ id: 'bG2PQR', defaultMessage: 'Zuschreibung' })}:</strong> {row.attribution}
-      </p>
-      <p>
-        <strong>{formatMessage({ id: 'bG3RST', defaultMessage: 'ID-Feld' })}:</strong> {row.id_field}
-      </p>
-      <p>
-        <strong>{formatMessage({ id: 'bG4STU', defaultMessage: 'Geometrie-Methode' })}:</strong> {geometryMethodLabel}
-      </p>
-      {row.geometry_method === 'XY_COORDINATES' && (
-        <>
-          <p>
-            <strong>{formatMessage({ id: 'bG6UVW', defaultMessage: 'X-Koordinaten-Feld' })}:</strong> {row.x_coordinate_field}
-          </p>
-          <p>
-            <strong>{formatMessage({ id: 'bG7VWX', defaultMessage: 'Y-Koordinaten-Feld' })}:</strong> {row.y_coordinate_field}
-          </p>
-        </>
-      )}
-      {row.geometry_method === 'GEOJSON_FIELD' && (
-        <p>
-          <strong>{formatMessage({ id: 'bG5TUV', defaultMessage: 'GeoJSON-Geometrie-Feld' })}:</strong> {row.geojson_geometry_field}
-        </p>
-      )}
-      <p>
-        <strong>{formatMessage({ id: 'bG8WXY', defaultMessage: 'CRS' })}:</strong> {row.crs}
-      </p>
-      <p>
-        <strong>{formatMessage({ id: 'bGAYZa', defaultMessage: 'Von GBIF herunterladen' })}:</strong> {row.download_from_gbif ? 'Ja' : 'Nein'}
-      </p>
-    </div>
+    <HistoryValueListScroller padded>
+      <HistoryValueList items={leftItems} />
+    </HistoryValueListScroller>
   )
 
   return (
     <HistoryCompare<ObservationImportsHistory>
       onBack={() => navigate({ to: formPath })}
       leftContent={leftContent}
-      visibleCurrentFields={new Set(preferredOrder)}
+      visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}

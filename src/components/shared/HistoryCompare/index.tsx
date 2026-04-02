@@ -9,6 +9,7 @@ import { stringifyHistoryValue } from './utils.ts'
 import { createRestoreDiffValuesHandler } from './createRestoreDiffValuesHandler.ts'
 import { useHistoryRecords } from './useHistoryRecords.ts'
 import { getDiffFields, getDisplayFields } from './utils.ts'
+import { HistoryValueList, HistoryValueListScroller } from './ValueList.tsx'
 import { onlineAtom } from '../../../store.ts'
 
 import styles from './index.module.css'
@@ -240,54 +241,30 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                   {!loadingHistories &&
                     !historyError &&
                     histories.length > 0 && (
-                      <div className={styles.valueListScrollerWrap}>
-                        <div className={styles.valueListScroller}>
-                          <div
-                            className={styles.sliderTrack}
-                            style={{
-                              transform: `translateX(-${selectedHistoryIndex * 100}%)`,
-                            }}
-                          >
-                            {histories.map((history, index) => (
-                              <div
-                                key={`${String(history.updated_at ?? 'no-date')}-${index}`}
-                                className={styles.slide}
-                              >
-                                <dl className={styles.valueList}>
-                                  {displayFields.map((field, fieldIndex) => {
-                                    const value = resolveFieldValue(
-                                      field,
-                                      history,
-                                    )
-                                    const isDifferent =
-                                      differentFields.includes(field)
-                                    const isLast =
-                                      fieldIndex === displayFields.length - 1
-
-                                    return (
-                                      <div
-                                        key={field}
-                                        style={{ display: 'contents' }}
-                                      >
-                                        <dt
-                                          className={`${styles.label}${isLast ? ` ${styles.noBorder}` : ''}`}
-                                        >
-                                          {formatFieldLabel(field)}
-                                        </dt>
-                                        <dd
-                                          className={`${styles.value}${isDifferent ? ` ${styles.valueRed}` : ''}${isLast ? ` ${styles.noBorder}` : ''}`}
-                                        >
-                                          {value}
-                                        </dd>
-                                      </div>
-                                    )
-                                  })}
-                                </dl>
-                              </div>
-                            ))}
-                          </div>
+                      <HistoryValueListScroller>
+                        <div
+                          className={styles.sliderTrack}
+                          style={{
+                            transform: `translateX(-${selectedHistoryIndex * 100}%)`,
+                          }}
+                        >
+                          {histories.map((history, index) => (
+                            <div
+                              key={`${String(history.updated_at ?? 'no-date')}-${index}`}
+                              className={styles.slide}
+                            >
+                              <HistoryValueList
+                                items={displayFields.map((field) => ({
+                                  key: field,
+                                  label: formatFieldLabel(field),
+                                  value: resolveFieldValue(field, history),
+                                  isDifferent: differentFields.includes(field),
+                                }))}
+                              />
+                            </div>
+                          ))}
                         </div>
-                      </div>
+                      </HistoryValueListScroller>
                     )}
                 </div>
               </div>
