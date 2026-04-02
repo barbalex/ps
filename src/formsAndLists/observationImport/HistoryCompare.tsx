@@ -15,6 +15,7 @@ import {
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import styles from '../../components/shared/HistoryCompare/index.module.css'
 import {
   excludedDisplayFields,
   excludedRestoreFields,
@@ -129,6 +130,12 @@ export const ObservationImportHistoryCompare = () => {
             return value
           },
         },
+        deleted: {
+          booleanLabels: {
+            trueLabel: { id: 'bCommonYes', defaultMessage: 'Ja' },
+            falseLabel: { id: 'bCommonNo', defaultMessage: 'Nein' },
+          },
+        },
       },
     })
 
@@ -138,7 +145,14 @@ export const ObservationImportHistoryCompare = () => {
   )
 
   const rowLikeHistory = row as ObservationImportsHistory
-  const leftItems = displayFields
+  const leftDisplayFields = [
+    ...displayFields,
+    'updated_at',
+    'updated_by',
+    'deleted',
+  ]
+
+  const leftItems = leftDisplayFields
     .filter((field) => {
       if (
         (field === 'x_coordinate_field' || field === 'y_coordinate_field') &&
@@ -156,9 +170,12 @@ export const ObservationImportHistoryCompare = () => {
     }))
 
   const leftContent = (
-    <HistoryValueListScroller padded>
-      <HistoryValueList items={leftItems} />
-    </HistoryValueListScroller>
+    <>
+      <div className={styles.sliderHeaderSpacer} />
+      <HistoryValueListScroller padded>
+        <HistoryValueList items={leftItems} />
+      </HistoryValueListScroller>
+    </>
   )
 
   return (
