@@ -50,6 +50,9 @@ type RestoreConfig = {
 type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   onBack: () => void
   leftContent: ReactNode
+  leftHistories?: THistory[]
+  leftDisplayFields?: string[]
+  leftDifferentFields?: string[]
   loadingHistories?: boolean
   historyError?: string | null
   displayFields?: string[]
@@ -67,6 +70,9 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
 export function HistoryCompare<THistory extends Record<string, unknown>>({
   onBack,
   leftContent,
+  leftHistories,
+  leftDisplayFields,
+  leftDifferentFields,
   loadingHistories: loadingHistoriesOverride,
   historyError: historyErrorOverride,
   displayFields: displayFieldsOverride,
@@ -118,6 +124,9 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   })()
 
   const differentFields = differentFieldsOverride ?? diffFields
+  const resolvedLeftHistories = leftHistories ?? []
+  const resolvedLeftDisplayFields = leftDisplayFields ?? displayFields
+  const resolvedLeftDifferentFields = leftDifferentFields ?? []
 
   const onRestoreDiffValues = createRestoreDiffValuesHandler({
     db: restoreConfig.db,
@@ -142,6 +151,43 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
 
     return stringifyHistoryValue(history[field])
   }
+
+  const renderHistoryRows = ({
+    historiesToRender,
+    selectedIndex,
+    fields,
+    differentFieldsToRender,
+  }: {
+    historiesToRender: THistory[]
+    selectedIndex: number
+    fields: string[]
+    differentFieldsToRender: string[]
+  }) => (
+    <HistoryValueListScroller>
+      <div
+        className={styles.sliderTrack}
+        style={{
+          transform: `translateX(-${selectedIndex * 100}%)`,
+        }}
+      >
+        {historiesToRender.map((history, index) => (
+          <div
+            key={`${String(history.updated_at ?? 'no-date')}-${index}`}
+            className={styles.slide}
+          >
+            <HistoryValueList
+              items={fields.map((field) => ({
+                key: field,
+                label: formatFieldLabel(field),
+                value: resolveFieldValue(field, history),
+                isDifferent: differentFieldsToRender.includes(field),
+              }))}
+            />
+          </div>
+        ))}
+      </div>
+    </HistoryValueListScroller>
+  )
 
   return (
     <div className="form-outer-container">
@@ -179,7 +225,27 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                   defaultMessage: 'Aktuelle Version',
                 })}
               </h2>
-              <div className={styles.leftContent}>{leftContent}</div>
+              {resolvedLeftHistories.length > 0 ? (
+                <div className={styles.rightContent}>
+                  <div className={styles.sliderHeader}>
+                    <Button icon={<TbChevronLeft />} disabled />
+                    <Caption1>
+                      {`${Math.min(1, resolvedLeftHistories.length)} / ${resolvedLeftHistories.length}`}
+                    </Caption1>
+                    <Button icon={<TbChevronRight />} disabled />
+                  </div>
+                  <div className={styles.sliderShell}>
+                    {renderHistoryRows({
+                      historiesToRender: resolvedLeftHistories,
+                      selectedIndex: 0,
+                      fields: resolvedLeftDisplayFields,
+                      differentFieldsToRender: resolvedLeftDifferentFields,
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.leftContent}>{leftContent}</div>
+              )}
             </section>
 
             <section className={styles.panelRight}>
@@ -241,30 +307,12 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
                   {!loadingHistories &&
                     !historyError &&
                     histories.length > 0 && (
-                      <HistoryValueListScroller>
-                        <div
-                          className={styles.sliderTrack}
-                          style={{
-                            transform: `translateX(-${selectedHistoryIndex * 100}%)`,
-                          }}
-                        >
-                          {histories.map((history, index) => (
-                            <div
-                              key={`${String(history.updated_at ?? 'no-date')}-${index}`}
-                              className={styles.slide}
-                            >
-                              <HistoryValueList
-                                items={displayFields.map((field) => ({
-                                  key: field,
-                                  label: formatFieldLabel(field),
-                                  value: resolveFieldValue(field, history),
-                                  isDifferent: differentFields.includes(field),
-                                }))}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </HistoryValueListScroller>
+                      renderHistoryRows({
+                        historiesToRender: histories,
+                        selectedIndex: selectedHistoryIndex,
+                        fields: displayFields,
+                        differentFieldsToRender: differentFields,
+                      })
                     )}
                 </div>
               </div>

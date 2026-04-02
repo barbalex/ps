@@ -87,13 +87,6 @@
   border-bottom: 1px solid var(--colorNeutralStroke2);
 }
 
-.sliderHeaderSpacer {
-  padding: 5px 12px;
-  border-bottom: 1px solid var(--colorNeutralStroke2);
-  min-height: 32px;
-  box-sizing: border-box;
-}
-
 .sliderShell {
   overflow-x: hidden;
   overflow-y: auto;

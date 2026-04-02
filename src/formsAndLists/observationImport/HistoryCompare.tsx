@@ -5,17 +5,12 @@ import { useIntl } from 'react-intl'
 
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import {
-  HistoryValueList,
-  HistoryValueListScroller,
-} from '../../components/shared/HistoryCompare/ValueList.tsx'
-import {
   createHistoryFieldLabelFormatter,
   createHistoryFieldValueFormatter,
 } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import styles from '../../components/shared/HistoryCompare/index.module.css'
 import {
   excludedDisplayFields,
   excludedRestoreFields,
@@ -169,19 +164,12 @@ export const ObservationImportHistoryCompare = () => {
       value: formatFieldValue(field, rowLikeHistory),
     }))
 
-  const leftContent = (
-    <>
-      <div className={styles.sliderHeaderSpacer} />
-      <HistoryValueListScroller padded>
-        <HistoryValueList items={leftItems} />
-      </HistoryValueListScroller>
-    </>
-  )
-
   return (
     <HistoryCompare<ObservationImportsHistory>
       onBack={() => navigate({ to: formPath })}
-      leftContent={leftContent}
+      leftContent={null}
+      leftHistories={[rowLikeHistory]}
+      leftDisplayFields={leftItems.map((item) => item.key)}
       visibleCurrentFields={visibleCurrentFields}
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
