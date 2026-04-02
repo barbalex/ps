@@ -384,20 +384,30 @@ export const projectTypeOptions: {
 ]
 
 // TODO: most of these constants are not used yet
+const isLocalDevHost = () => {
+  const host = window?.location?.hostname
+  return (
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host === '::1' ||
+    host === '[::1]'
+  )
+}
+
 export const constants = {
   titleRowHeight: 52,
   mobileViewMaxWidth: 999,
   getPostgrestUri: () =>
-    window?.location?.hostname === 'localhost'
+    isLocalDevHost()
       ? `http://localhost:3002`
       : 'https://api.arten-fördern.app',
   // set 3001 to go via caddy, 3000 to go directly to electric backend
   getElectricUri: () =>
-    window?.location?.hostname === 'localhost'
+    isLocalDevHost()
       ? `http://localhost:3000/v1/shape`
       : 'https://electric.arten-fördern.app/v1/shape',
   getAppUri: () =>
-    window?.location?.hostname === 'localhost'
+    isLocalDevHost()
       ? `http://localhost`
       : `https://${window.location.hostname}`,
 }

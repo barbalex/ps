@@ -1013,6 +1013,7 @@ export const startSyncing = async () => {
         store.set(initialSyncingAtom, false)
       },
       onError: (error) => {
+        console.log('Electric sync error:', error)
         const errorStr = error?.toString() || ''
         const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
 
