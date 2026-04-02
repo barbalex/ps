@@ -2,13 +2,12 @@ import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import { sqlInitializingAtom, syncObjectAtom } from '../store.ts'
+import { sqlInitializingAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
   const setSqlInitializing = useSetAtom(sqlInitializingAtom)
-  const setSyncObject = useSetAtom(syncObjectAtom)
 
   useEffect(() => {
     const run = async () => {
@@ -58,10 +57,8 @@ export const SqlInitializer = () => {
       // this is probably not needed
       if (projectsTableExists) {
         setSqlInitializing(false)
-        // start syncing after SQL initialization is complete
         try {
-          const syncObj = await startSyncing()
-          setSyncObject(syncObj)
+          await startSyncing()
           console.log('Sync started from SqlInitializer')
         } catch (error) {
           console.error('Error starting sync from SqlInitializer:', error)
@@ -102,18 +99,16 @@ export const SqlInitializer = () => {
       }
 
       setSqlInitializing(false)
-          // start syncing after SQL initialization is complete
-          try {
-            const syncObj = await startSyncing()
-            setSyncObject(syncObj)
-            console.log('Sync started from SqlInitializer')
-          } catch (error) {
-            console.error('Error starting sync from SqlInitializer:', error)
-          }
+      try {
+        await startSyncing()
+        console.log('Sync started from SqlInitializer')
+      } catch (error) {
+        console.error('Error starting sync from SqlInitializer:', error)
+      }
     }
 
     run()
-  }, [db, setSqlInitializing, setSyncObject])
+  }, [db, setSqlInitializing])
 
   return null
 }

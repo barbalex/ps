@@ -1,4 +1,9 @@
-import { store, initialSyncingAtom, pgliteDbAtom } from '../store.ts'
+import {
+  store,
+  initialSyncingAtom,
+  pgliteDbAtom,
+  syncObjectAtom,
+} from '../store.ts'
 import { constants } from './constants.ts'
 
 const url = constants.getElectricUri()
@@ -1024,6 +1029,8 @@ export const startSyncing = async () => {
     if (!sync || typeof sync.unsubscribe !== 'function') {
       throw new Error('Invalid sync object returned from syncShapesToTables')
     }
+
+    store.set(syncObjectAtom, sync)
 
     return sync
   } catch (error) {
