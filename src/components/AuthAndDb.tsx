@@ -3,6 +3,7 @@ import { Outlet } from '@tanstack/react-router'
 import { CorbadoProvider } from '@corbado/react'
 import { useAtomValue } from 'jotai'
 
+import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
 // TODO: sync with db IF user has an account
 import { Syncer } from './Syncer.tsx'
@@ -26,6 +27,7 @@ export const AuthAndDb = () => {
 
   return (
     <CorbadoProvider projectId={CORBADO_PROJECT_ID} theme="corbado-theme">
+      <SqlInitializer />
       <InitialSyncManager />
       <Syncer />
       {initiating ? <Initiating /> : <LayoutProtected />}
