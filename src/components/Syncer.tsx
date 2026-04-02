@@ -1,27 +1,20 @@
-import { useEffect, useRef } from 'react'
-import { useAtomValue } from 'jotai'
-import { useBeforeunload } from 'react-beforeunload'
+import { useEffect } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
 
-import { sqlInitializingAtom } from '../store.ts'
+import { sqlInitializingAtom, syncObjectAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
 // import { startSyncingUsersOnly } from '../modules/startSyncingUsersOnly.ts'
 // import { startSyncingSingly } from '../modules/startSyncingSingly.ts'
 
 export const Syncer = () => {
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
-  const syncRef = useRef(null)
-
-  // somehow returning in useEffect didn't work
-  useBeforeunload(() => {
-    // console.log('Unsubscribing from sync')
-    syncRef.current?.unsubscribe?.()
-    syncRef.current = null
-  })
+  const syncObject = useAtomValue(syncObjectAtom)
+  const setSyncObject = useSetAtom(syncObjectAtom)
 
   // TODO: ensure syncing resumes after user has changed
   useEffect(() => {
     if (sqlInitializing) return
-    if (syncRef.current) {
+    if (syncObject) {
       console.warn('Sync already initialized, skipping')
       return
     }
@@ -29,13 +22,13 @@ export const Syncer = () => {
     startSyncing()
       .then((syncObj) => {
         console.log('Sync started')
-        syncRef.current = syncObj
+        setSyncObject(syncObj)
       })
       .catch((error) => {
         console.error('Error starting sync:', error)
         // Reset flags on error so user can retry
       })
-  }, [sqlInitializing]) // removed authUser?.email to prevent restarts. TODO: revisit when implementing auth (user switching)
+  }, [sqlInitializing, syncObject, setSyncObject]) // removed authUser?.email to prevent restarts. TODO: revisit when implementing auth (user switching)
 
   return null
 }

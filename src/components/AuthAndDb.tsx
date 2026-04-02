@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import { CorbadoProvider } from '@corbado/react'
 import { useAtomValue } from 'jotai'
+import { useBeforeunload } from 'react-beforeunload'
 
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
@@ -9,22 +10,27 @@ import { InitialSyncManager } from './InitialSyncManager.tsx'
 import { Syncer } from './Syncer.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import {Initiating} from "./Initiating.tsx";
-import { initialSyncingAtom, sqlInitializingAtom } from '../store.ts'
+import { initialSyncingAtom, sqlInitializingAtom, syncObjectAtom } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
 export const AuthAndDb = () => {
+  const initialSyncing = useAtomValue(initialSyncingAtom)
+  const sqlInitializing = useAtomValue(sqlInitializingAtom)
+  const syncObject = useAtomValue(syncObjectAtom)
+  const initiating = sqlInitializing || initialSyncing
+
+  // unsubscribe from sync when page unloads
+  useBeforeunload(() => {
+    syncObject?.unsubscribe?.()
+  })
+
   // When rendered inside the QcsResultDialog's memory router, skip the full
   // app shell (auth, layout) and just pass through to the route component.
   const isInDialog = useContext(DialogModeContext)
   if (isInDialog) return <Outlet />
 
-  const initialSyncing = useAtomValue(initialSyncingAtom)
-  const sqlInitializing = useAtomValue(sqlInitializingAtom)
-  const initiating = sqlInitializing || initialSyncing
-
-  
   return (
     <CorbadoProvider
       projectId={CORBADO_PROJECT_ID}
