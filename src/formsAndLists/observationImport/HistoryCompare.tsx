@@ -67,10 +67,22 @@ export const ObservationImportHistoryCompare = () => {
   }
 
   const geometryMethods = [
-    { value: 'coordinates', label: 'XY-Koordinaten' },
-    { value: 'XY_COORDINATES', label: 'XY-Koordinaten' },
-    { value: 'geojson', label: 'GeoJSON-Feld' },
-    { value: 'GEOJSON_FIELD', label: 'GeoJSON-Feld' },
+    {
+      value: 'coordinates',
+      label: formatMessage({ id: 'lD2EfG', defaultMessage: 'Koordinaten' }),
+    },
+    {
+      value: 'XY_COORDINATES',
+      label: formatMessage({ id: 'lD2EfG', defaultMessage: 'Koordinaten' }),
+    },
+    {
+      value: 'geojson',
+      label: formatMessage({ id: 'mH3IjK', defaultMessage: 'GeoJSON' }),
+    },
+    {
+      value: 'GEOJSON_FIELD',
+      label: formatMessage({ id: 'mH3IjK', defaultMessage: 'GeoJSON' }),
+    },
   ]
   const visibleCurrentFields = new Set(preferredOrder)
 
@@ -79,24 +91,30 @@ export const ObservationImportHistoryCompare = () => {
     fieldLabelMap: {
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
       attribution: { id: 'aTr0bt', defaultMessage: 'Quellenangabe' },
-      id_field: { id: 'bG3RST', defaultMessage: 'ID-Feld' },
-      geometry_method: { id: 'bG4STU', defaultMessage: 'Geometrie-Methode' },
+      id_field: { id: 'iDFdLb', defaultMessage: 'ID-Feld' },
+      geometry_method: {
+        id: 'gMtLbl',
+        defaultMessage: 'Wie sind die Geometrien in den Daten enthalten?',
+      },
       geojson_geometry_field: {
-        id: 'bG5TUV',
-        defaultMessage: 'GeoJSON-Geometrie-Feld',
+        id: 'gJsFld',
+        defaultMessage: 'GeoJSON-Feld',
       },
       x_coordinate_field: {
-        id: 'bG6UVW',
+        id: 'xCdFld',
         defaultMessage: 'X-Koordinaten-Feld',
       },
       y_coordinate_field: {
-        id: 'bG7VWX',
+        id: 'yCdFld',
         defaultMessage: 'Y-Koordinaten-Feld',
       },
-      crs: { id: 'bG8WXY', defaultMessage: 'CRS' },
+      crs: {
+        id: 'cRsLbl',
+        defaultMessage: 'Im importierten Datensatz verwendetes Koordinaten-Bezugs-System',
+      },
       label_creation: { id: 'Fl3jPw', defaultMessage: 'Bezeichnung' },
       previous_import: {
-        id: 'bG9XYZ',
+        id: 'pvImpLb',
         defaultMessage: 'Vorheriger Import',
       },
     },
