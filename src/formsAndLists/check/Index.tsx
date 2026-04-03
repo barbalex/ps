@@ -1,7 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-import { Check } from './index.tsx'
+import { Check } from './Check.tsx'
 import { CheckList } from './List.tsx'
 
 export const CheckIndex = ({

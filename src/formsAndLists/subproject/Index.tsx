@@ -1,7 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-import { Subproject } from './index.tsx'
+import { Subproject } from './Subproject.tsx'
 
 export const SubprojectIndex = ({ from }: { from: string }) => {
   const { projectId } = useParams({ strict: false })

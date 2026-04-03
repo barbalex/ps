@@ -1,7 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-import { Place } from './index.tsx'
+import { Place } from './Place.tsx'
 
 export const PlaceIndex = ({ from }: { from: string }) => {
   const { projectId, placeId2 } = useParams({ strict: false })

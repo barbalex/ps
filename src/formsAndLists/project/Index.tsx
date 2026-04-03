@@ -2,7 +2,7 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
-import { Project } from './index.tsx'
+import { Project } from './Project.tsx'
 import { designingAtom } from '../../store.ts'
 
 export const ProjectIndex = ({ from }: { from: string }) => {
