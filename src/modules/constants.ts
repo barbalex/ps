@@ -405,7 +405,7 @@ export const constants = {
   getElectricUri: () =>
     isLocalDevHost()
       ? `https://localhost:3001/v1/shape`
-      : 'https://electric.arten-fördern.app/v1/shape',
+      : 'https://sync.arten-fördern.app/v1/shape',
   getAppUri: () =>
     isLocalDevHost()
       ? `http://localhost`
