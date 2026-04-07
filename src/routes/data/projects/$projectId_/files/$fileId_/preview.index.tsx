@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { FilePreview } from '../../../../../../formsAndLists/filePreview/index.tsx'
+import { FilePreview } from '../../../../../../formsAndLists/filePreview'
 
 const from = '/data/projects/$projectId_/files/$fileId_/preview'
 

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { WidgetType } from '../../../formsAndLists/widgetType/index.tsx'
+import { WidgetType } from '../../../formsAndLists/widgetType'
 
 export const Route = createFileRoute('/data/widget-types/$widgetTypeId')({
   component: WidgetType,

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Field } from '../../../../../formsAndLists/field/index.tsx'
+import { Field } from '../../../../../formsAndLists/field'
 const from = '/data/projects/$projectId_/fields/$fieldId'
 
 export const Route = createFileRoute(from)({

@@ -1,10 +1,10 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import styles from './Index.module.css'
+import styles from './home.module.css'
 
 const br = <br />
 
-export const Index = () => {
+export const Home = () => {
   const intl = useIntl()
 
   return (

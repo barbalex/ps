@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Account } from '../../../../formsAndLists/account/index.tsx'
+import { Account } from '../../../../formsAndLists/account'
 
 export const Route = createFileRoute('/data/accounts/$accountId_')({
   component: Account,

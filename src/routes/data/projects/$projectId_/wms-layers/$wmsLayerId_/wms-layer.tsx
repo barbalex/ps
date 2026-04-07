@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { WmsLayer } from '../../../../../../formsAndLists/wmsLayer/index.tsx'
+import { WmsLayer } from '../../../../../../formsAndLists/wmsLayer'
 import { NotFound } from '../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute(

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { CRS } from '../../../formsAndLists/crs/index.tsx'
+import { CRS } from '../../../formsAndLists/crs'
 
 export const Route = createFileRoute('/data/crs/$crsId')({
   component: CRS,

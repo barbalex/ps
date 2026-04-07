@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Taxon } from '../../../../../../../formsAndLists/taxon/index.tsx'
+import { Taxon } from '../../../../../../../formsAndLists/taxon'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/',

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ListValue } from '../../../../../../../formsAndLists/listValue/index.tsx'
+import { ListValue } from '../../../../../../../formsAndLists/listValue'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/lists/$listId_/values/$listValueId/',

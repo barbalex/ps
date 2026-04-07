@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { WfsService } from '../../../../../../formsAndLists/wfsService/index.tsx'
+import { WfsService } from '../../../../../../formsAndLists/wfsService'
 import { NotFound } from '../../../../../../components/NotFound.tsx'
 const from =
   '/data/projects/$projectId_/wfs-services/$wfsServiceId_/wfs-service'

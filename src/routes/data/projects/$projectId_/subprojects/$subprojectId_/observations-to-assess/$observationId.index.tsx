@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Observation } from '../../../../../../../formsAndLists/observation/index.tsx'
+import { Observation } from '../../../../../../../formsAndLists/observation'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-to-assess/$observationId/'
 

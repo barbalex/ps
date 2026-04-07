@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { WmsService } from '../../../../../../formsAndLists/wmsService/index.tsx'
+import { WmsService } from '../../../../../../formsAndLists/wmsService'
 const from =
   '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
 

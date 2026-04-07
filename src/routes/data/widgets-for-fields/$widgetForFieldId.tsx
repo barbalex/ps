@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { WidgetForField } from '../../../formsAndLists/widgetForField/index.tsx'
+import { WidgetForField } from '../../../formsAndLists/widgetForField'
 
 export const Route = createFileRoute(
   '/data/widgets-for-fields/$widgetForFieldId',

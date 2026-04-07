@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { WfsServiceLayer } from '../../../../../../../formsAndLists/wfsServiceLayer/index.tsx'
+import { WfsServiceLayer } from '../../../../../../../formsAndLists/wfsServiceLayer'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers/$wfsServiceLayerId/',
