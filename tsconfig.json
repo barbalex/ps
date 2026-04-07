@@ -6,7 +6,6 @@
     "module": "esnext",
     "skipLibCheck": true,
     "strictNullChecks": true,
-    "types": ["@uploadcare/file-uploader/types/jsx"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
