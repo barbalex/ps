@@ -1,0 +1,167 @@
+# TODO: for production, enable caddy
+name: "ps"
+services:
+  db:
+    # specify container name to make it easier to run commands
+    container_name: ps_db
+    image: db
+    # ensure enough shared memory - docker only allows 64mb
+    # https://stackoverflow.com/a/56754077/712005
+    shm_size: 1g
+    build:
+      context: ./db
+    env_file:
+      - ./.env
+    ports:
+      - 54321:5432
+      # make the Postgres database accessible from outside the Docker container on port 5432
+      - 5432:5432
+    expose:
+      - 5432
+    tmpfs:
+      - /tmp
+    command:
+      - -c
+      - listen_addresses=*
+      - -c
+      - wal_level=logical
+      - -c
+      - shared_preload_libraries=pg_partman_bgw
+      - -c
+      - pg_partman_bgw.dbname=${POSTGRES_DB}
+      - -c
+      - pg_partman_bgw.role=partman_user
+      - -c
+      - pg_partman_bgw.interval=3600
+      - -c
+      - pg_partman_bgw.jobmon=off
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql
+    networks:
+      - network
+    healthcheck:
+      # Old fallback (quick revert):
+      # test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test:
+        [
+          "CMD-SHELL",
+          'psql -U postgres -d ${POSTGRES_DB} -tAc "SELECT 1 FROM projects LIMIT 1" | grep -q 1',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  electric:
+    container_name: ps_electric
+    image: electricsql/electric:latest
+    networks:
+      - network
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+  postgrest:
+    container_name: ps_postgrest
+    image: postgrest/postgrest:latest
+    ports:
+      - 3002:3000
+    # Available environment variables documented here:
+    # https://postgrest.org/en/latest/configuration.html#environment-variables
+    environment:
+      # The standard connection URI format, documented at
+      # https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING
+      # - PGRST_DB_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgrest-db:5432/${POSTGRES_DB}
+      - PGRST_DB_URI=${DATABASE_URL}
+      # The name of which database schema to expose to REST clients
+      - PGRST_DB_SCHEMA=${DB_SCHEMA}
+      # The database role to use when no client authentication is provided
+      - PGRST_DB_ANON_ROLE=${DB_ANON_ROLE}
+      - PGRST_SERVER_PORT={PGRST_SERVER_PORT}
+      # Overrides the base URL used within the OpenAPI self-documentation hosted at the API root path
+      - PGRST_OPENAPI_SERVER_PROXY_URI=http://localhost:3002
+    networks:
+      - network
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+  auth:
+    build:
+      context: ./auth
+    container_name: ps_auth
+    networks:
+      - network
+    restart: always
+    env_file:
+      - ./.env
+    expose:
+      - "3003"
+    ports:
+      - "3003:3003"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3003/health'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+  # gbif:
+  #   container_name: ps-gbif-1
+  #   build:
+  #     context: ./gbif
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - network
+  #   restart: always
+  #   env_file:
+  #     - ./.env
+  #   expose:
+  #     - '7000'
+  #   ports:
+  #     - '7000:7000'
+  #   volumes:
+  #     - gbif_data:/gbif_data
+  # WE SHOULD USE CADDY to cache requests, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
+  # caddy:
+  #   build:
+  #     context: ./caddy
+  #   container_name: ps_caddy
+  #   networks:
+  #     - network
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #       restart: true
+  #   restart: always
+  #   # original image downgrades user but that seems not to work
+  #   # see: https://caddy.community/t/basic-docker-compose-setup-failing/6892/7?u=alexander_gabriel
+  #   user: root
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+volumes:
+  # gbif_data:
+  pg_data:
+  # caddy_data:
+  # caddy_config:
+networks:
+  network:
+    driver: bridge

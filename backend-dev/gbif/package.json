@@ -1,0 +1,17 @@
+{
+  "name": "ps_gbif",
+  "version": "0.1.0",
+  "description": "downloads gbif data and inserts into postgresql",
+  "author": "alex@gabriel-software.ch",
+  "main": "server.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "how-to-install-using-sfw": "sfw npm install -f --package-lock-only"
+  },
+  "dependencies": {
+    "axios": "1.12.2",
+    "dotenv": "17.2.3",
+    "pg-listen": "1.7.0"
+  }
+}
