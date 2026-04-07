@@ -1,4 +1,3 @@
-# TODO: for production, enable caddy
 name: "ps"
 services:
   db:
@@ -116,34 +115,40 @@ services:
       db:
         condition: service_healthy
         restart: true
-  # WE SHOULD USE CADDY to cache requests, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
-  # caddy:
-  #   build:
-  #     context: ./caddy
-  #   container_name: ps_caddy
-  #   networks:
-  #     - network
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #       restart: true
-  #   restart: always
-  #   # original image downgrades user but that seems not to work
-  #   # see: https://caddy.community/t/basic-docker-compose-setup-failing/6892/7?u=alexander_gabriel
-  #   user: root
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   env_file:
-  #     - ./.env
-  #   volumes:
-  #     - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-  #     - caddy_data:/data
-  #     - caddy_config:/config
+  # use caddy to cache/proxy requests, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
+  caddy:
+    build:
+      context: ./caddy
+    container_name: ps_caddy
+    networks:
+      - network
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      electric:
+        condition: service_started
+      postgrest:
+        condition: service_started
+      auth:
+        condition: service_started
+    restart: always
+    # original image downgrades user but that seems not to work
+    # see: https://caddy.community/t/basic-docker-compose-setup-failing/6892/7?u=alexander_gabriel
+    user: root
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - ./.env
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
 volumes:
   pg_data:
-  # caddy_data:
-  # caddy_config:
+  caddy_data:
+  caddy_config:
 networks:
   network:
     driver: bridge

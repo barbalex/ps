@@ -1,5 +1,4 @@
 # see: https://caddyserver.com/docs/caddyfile/concepts
-# TODO: adjust for production
 {
   email alex.barbalex@gmail.com
   #acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
@@ -16,8 +15,12 @@ auth.arten-fördern.app {
 # https://electric-sql.com/docs/api/http#caching
 sync.arten-fördern.app {
   reverse_proxy * ps_electric:3000 {
+    # Disable buffering so SSE events are flushed immediately
+    flush_interval -1
     header_down Access-Control-Allow-Origin *
   }
+
+  encode gzip
 }
 
 api.arten-fördern.app {
