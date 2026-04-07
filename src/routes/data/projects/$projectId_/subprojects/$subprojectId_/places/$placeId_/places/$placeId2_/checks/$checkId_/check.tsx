@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { CheckIndex } from '../../../../../../../../../../../../formsAndLists/check/Index.tsx'
+import { CheckIndex } from '../../../../../../../../../../../../formsAndLists/check/index.tsx'
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
 
