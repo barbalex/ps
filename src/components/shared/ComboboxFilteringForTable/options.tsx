@@ -12,10 +12,10 @@ export const FilteringComboboxOptions = ({
   const res = useLiveQuery(
     `
       SELECT * 
-      -- SELECT ${idField ?? name}, label
       FROM ${table}
       ${filter ? `WHERE label ilike '%${filter}%'` : ''} 
-      ORDER BY label`,
+      ORDER BY label
+      LIMIT 15`,
   )
   const rows = res?.rows ?? []
   // labelFromResult allows passing in special data. Not in use yet.
