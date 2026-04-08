@@ -17,6 +17,7 @@ export const ComboboxFilteringForTable = ({
   ref,
 }) => {
   const [filter, setFilter] = useState('')
+  const [debouncedFilter, setDebouncedFilter] = useState('')
 
   const res = useLiveQuery(
     `
@@ -39,6 +40,14 @@ export const ComboboxFilteringForTable = ({
     const filter = value ? (selectedOptions[0]?.text ?? '') : ''
     setFilter(filter)
   }, [selectedOptions, value])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedFilter(filter)
+    }, 120)
+
+    return () => clearTimeout(timer)
+  }, [filter])
 
   const onInput = (event) => {
     const filter = event.target.value
@@ -81,7 +90,7 @@ export const ComboboxFilteringForTable = ({
           table={table}
           idField={idField}
           labelFromResult={labelFromResult}
-          filter={filter}
+          filter={debouncedFilter}
         />
       </Combobox>
     </Field>

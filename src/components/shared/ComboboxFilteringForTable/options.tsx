@@ -9,12 +9,16 @@ export const FilteringComboboxOptions = ({
   labelFromResult,
   filter,
 }) => {
+  const normalizedFilter = (filter ?? '').trim()
+  const limit = 100
   const res = useLiveQuery(
     `
-      SELECT * 
+      SELECT *
       FROM ${table}
-      ${filter ? `WHERE label ilike '%${filter}%'` : ''} 
-      ORDER BY label`,
+      WHERE ($1 = '' OR label ILIKE ('%' || $1 || '%'))
+      ORDER BY label
+      LIMIT $2`,
+    [normalizedFilter, limit],
   )
   const rows = res?.rows ?? []
   // labelFromResult allows passing in special data. Not in use yet.
@@ -39,15 +43,12 @@ export const FilteringComboboxOptions = ({
       <Option
         key={0}
         value={0}
-      >{`No ${table} found containing "${filter}".`}</Option>
+      >{`No ${table} found containing "${normalizedFilter}".`}</Option>
     )
   }
 
   return options.map(({ text, value }) => (
-    <Option
-      key={value}
-      value={value}
-    >
+    <Option key={value} value={value}>
       {text}
     </Option>
   ))
