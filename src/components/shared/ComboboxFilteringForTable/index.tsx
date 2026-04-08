@@ -10,7 +10,6 @@ export const ComboboxFilteringForTable = ({
   label,
   table,
   idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
-  labelFromResult, // allows passing in special data. Not in use yet.
   value,
   onChange,
   autoFocus,
@@ -89,7 +88,6 @@ export const ComboboxFilteringForTable = ({
           name={name}
           table={table}
           idField={idField}
-          labelFromResult={labelFromResult}
           filter={debouncedFilter}
         />
       </Combobox>
