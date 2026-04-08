@@ -1,7 +1,8 @@
 import * as XLSX from '@e965/xlsx'
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { addOperationAtom, store, pgliteDbAtom } from '../../store.ts'
+import { addOperationAtom, store, pgliteDbAtom, intlAtom } from '../../store.ts'
+import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 
 const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
 
@@ -28,6 +29,9 @@ export const importTaxa = async ({
   file: File
   taxonomyId: string
 }) => {
+  const intl = store.get(intlAtom)
+  const taskId = `import-taxa-${taxonomyId}-${Date.now()}`
+
   const buffer = await file.arrayBuffer()
   const workbook = parseWorkbook(file, buffer)
   const sheet = workbook.Sheets[workbook.SheetNames[0]]
@@ -75,9 +79,7 @@ export const importTaxa = async ({
         : null
 
     const url =
-      row['url'] !== null &&
-      row['url'] !== undefined &&
-      row['url'] !== ''
+      row['url'] !== null && row['url'] !== undefined && row['url'] !== ''
         ? String(row['url']).trim()
         : null
 
@@ -94,34 +96,61 @@ export const importTaxa = async ({
     drafts.push(draft)
   }
 
-  for (let i = 0; i < drafts.length; i += TAXA_IMPORT_BATCH_SIZE) {
-    const batch = drafts.slice(i, i + TAXA_IMPORT_BATCH_SIZE)
-    const placeholders = batch
-      .map(
-        (_, rowIndex) =>
-          `($${rowIndex * 6 + 1}, $${rowIndex * 6 + 2}, $${rowIndex * 6 + 3}, $${rowIndex * 6 + 4}, $${rowIndex * 6 + 5}, $${rowIndex * 6 + 6})`,
+  if (drafts.length === 0) return
+
+  backgroundTasks.add(
+    taskId,
+    intl?.formatMessage({
+      id: 'bgTkImpTaxa',
+      defaultMessage: 'Importiere Taxa',
+    }) ?? 'Importiere Taxa',
+    drafts.length,
+  )
+
+  try {
+    let processed = 0
+
+    for (let i = 0; i < drafts.length; i += TAXA_IMPORT_BATCH_SIZE) {
+      const batch = drafts.slice(i, i + TAXA_IMPORT_BATCH_SIZE)
+      const placeholders = batch
+        .map(
+          (_, rowIndex) =>
+            `($${rowIndex * 6 + 1}, $${rowIndex * 6 + 2}, $${rowIndex * 6 + 3}, $${rowIndex * 6 + 4}, $${rowIndex * 6 + 5}, $${rowIndex * 6 + 6})`,
+        )
+        .join(', ')
+      const args = batch.flatMap((draft) => [
+        draft.taxon_id,
+        draft.account_id,
+        draft.taxonomy_id,
+        draft.name,
+        draft.id_in_source ?? null,
+        draft.url ?? null,
+      ])
+
+      await db.query(
+        `INSERT INTO taxa (taxon_id, account_id, taxonomy_id, name, id_in_source, url)
+         VALUES ${placeholders}
+         ON CONFLICT (taxon_id) DO NOTHING`,
+        args,
       )
-      .join(', ')
-    const args = batch.flatMap((draft) => [
-      draft.taxon_id,
-      draft.account_id,
-      draft.taxonomy_id,
-      draft.name,
-      draft.id_in_source ?? null,
-      draft.url ?? null,
-    ])
 
-    await db.query(
-      `INSERT INTO taxa (taxon_id, account_id, taxonomy_id, name, id_in_source, url)
-       VALUES ${placeholders}
-       ON CONFLICT (taxon_id) DO NOTHING`,
-      args,
-    )
+      store.set(addOperationAtom, {
+        table: 'taxa',
+        operation: 'upsertMany',
+        draft: batch,
+      })
 
-    store.set(addOperationAtom, {
-      table: 'taxa',
-      operation: 'upsertMany',
-      draft: batch,
-    })
+      processed += batch.length
+      backgroundTasks.updateProgress(taskId, processed)
+
+      if (processed % TAXA_IMPORT_BATCH_SIZE === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+      }
+    }
+
+    backgroundTasks.complete(taskId)
+  } catch (error) {
+    backgroundTasks.error(taskId, error?.message ?? 'Import failed')
+    throw error
   }
 }
