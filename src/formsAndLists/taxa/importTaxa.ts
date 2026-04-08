@@ -91,7 +91,8 @@ export const importTaxa = async ({
 
     store.set(addOperationAtom, {
       table: 'taxa',
-      operation: 'insert',
+      // Use upsert to make sync idempotent when the same row is retried.
+      operation: 'upsert',
       draft,
     })
   }

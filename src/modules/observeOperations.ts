@@ -15,7 +15,7 @@ import { removeOperation } from './removeOperation.ts'
 // TODO: make this dependent on store.shortTermOnline
 // TODO: ensure function is run all 30 seconds
 export const observeOperations = () =>
-  observe(async (get, set) => {
+  observe(async (get) => {
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
     // console.log(`observeOperations, operations queue:`, operations)
@@ -36,6 +36,12 @@ export const observeOperations = () =>
     try {
       await executeOperation(firstOperation)
     } catch (error) {
+      if (error?.code === '23505') {
+        // duplicate key value violates unique constraint
+        // The row is already present on server, so this operation is effectively done.
+        return removeOperation(firstOperation)
+      }
+
       console.error('observeOperations, error executing operation:', error)
       // TODO: surface
       const lcMessage = error.message?.toLowerCase?.()
@@ -60,15 +66,8 @@ export const observeOperations = () =>
         })
 
         return revertOperation(firstOperation)
-      } else if (error.code === '23505') {
-        // duplicate key value violates unique constraint
-        // This means the INSERT already reached the server (e.g. network timeout on response)
-        // The data is already correct on the server — treat as idempotent success
-        console.log(
-          'observeOperations: 23505 duplicate key — operation already applied on server, removing from queue',
-        )
-        return removeOperation(firstOperation)
       }
+
       // if network error: return, setting shortTermOnline false
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
       return

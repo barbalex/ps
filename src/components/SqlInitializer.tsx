@@ -56,6 +56,41 @@ export const SqlInitializer = () => {
 
       // this is probably not needed
       if (projectsTableExists) {
+        try {
+          await db.exec(`
+            CREATE OR REPLACE FUNCTION taxa_sync_ignore_duplicate_insert_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+
+              IF is_syncing AND EXISTS (
+                SELECT 1
+                FROM taxa
+                WHERE taxon_id = NEW.taxon_id
+              ) THEN
+                RETURN NULL;
+              END IF;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS taxa_sync_ignore_duplicate_insert_trigger ON taxa;
+
+            CREATE TRIGGER taxa_sync_ignore_duplicate_insert_trigger
+            BEFORE INSERT ON taxa
+            FOR EACH ROW
+            EXECUTE PROCEDURE taxa_sync_ignore_duplicate_insert_trigger();
+          `)
+        } catch (error) {
+          console.error(
+            'Error installing taxa sync duplicate-guard trigger:',
+            error,
+          )
+        }
+
         setSqlInitializing(false)
         try {
           await startSyncing()
