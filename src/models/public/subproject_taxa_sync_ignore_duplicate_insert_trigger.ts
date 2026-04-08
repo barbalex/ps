@@ -1,0 +1,2 @@
+export interface subproject_taxa_sync_ignore_duplicate_insert_trigger_params {
+}
