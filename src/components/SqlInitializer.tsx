@@ -58,6 +58,22 @@ export const SqlInitializer = () => {
       if (projectsTableExists) {
         try {
           await db.exec(`
+            ALTER TABLE IF EXISTS auth_sessions ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS auth_accounts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS auth_verifications ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS subproject_taxa ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS units ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS messages ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS user_messages ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS field_types ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS widget_types ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS widgets_for_fields ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS fields ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS field_sorts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS vector_layer_geoms ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS crs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+
             CREATE OR REPLACE FUNCTION taxa_sync_ignore_duplicate_insert_trigger()
             RETURNS TRIGGER AS $$
             DECLARE

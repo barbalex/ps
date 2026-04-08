@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS auth_sessions(
   expires_at timestamptz DEFAULT NULL,
   ip_address text DEFAULT NULL,
   user_agent text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS auth_accounts(
   scope text DEFAULT NULL,
   id_token text DEFAULT NULL,
   password text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -114,6 +116,7 @@ CREATE TABLE IF NOT EXISTS auth_verifications(
   identifier text DEFAULT NULL,
   value text DEFAULT NULL,
   expires_at timestamptz DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -515,6 +518,7 @@ CREATE TABLE IF NOT EXISTS subproject_taxa(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -607,6 +611,7 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type unit_types_enum DEFAULT NULL, -- TODO: not in use?
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), unit_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -989,6 +994,7 @@ CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1007,6 +1013,7 @@ CREATE TABLE IF NOT EXISTS user_messages(
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   read boolean DEFAULT FALSE,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1291,6 +1298,7 @@ CREATE TABLE IF NOT EXISTS field_types(
   sort smallint DEFAULT NULL,
   comment text,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_type_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1313,6 +1321,7 @@ CREATE TABLE IF NOT EXISTS widget_types(
   sort smallint DEFAULT NULL,
   comment text,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), widget_type_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1332,6 +1341,7 @@ CREATE TABLE IF NOT EXISTS widgets_for_fields(
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1367,6 +1377,7 @@ CREATE TABLE IF NOT EXISTS fields(
       ELSE table_name || '.' || name || ' ' || level
     END
   ) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1402,6 +1413,7 @@ CREATE TABLE IF NOT EXISTS field_sorts(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   sorted_field_ids uuid[] DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
@@ -1688,6 +1700,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   bbox_sw_lat real DEFAULT NULL,
   bbox_ne_lng real DEFAULT NULL,
   bbox_ne_lat real DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1790,6 +1803,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   max_zoom integer DEFAULT 19,
   min_zoom integer DEFAULT 0,
   label text GENERATED ALWAYS AS (layer_presentation_id::text) STORED, -- TODO: not needed?
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
@@ -1924,6 +1938,7 @@ CREATE TABLE IF NOT EXISTS crs(
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(code, ''), crs_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
