@@ -77,10 +77,11 @@ BEGIN
   END IF;
 
   UPDATE projects SET label = CASE
-  WHEN NEW.projects_label_by is null THEN NEW.name
-  WHEN NEW.projects_label_by = 'name' THEN NEW.name
-  ELSE coalesce(data ->> NEW.projects_label_by, project_id::text)
-  END;
+  WHEN NEW.projects_label_by is null THEN projects.name
+  WHEN NEW.projects_label_by = 'name' THEN projects.name
+  ELSE coalesce(projects.data ->> NEW.projects_label_by, projects.project_id::text)
+  END
+  WHERE projects.account_id = NEW.account_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -311,7 +312,8 @@ BEGIN
         WHEN _taxonomy_name is null then NEW.check_taxon_id::text
         ELSE _taxonomy_name || ': ' || _taxon_name
       END
-    );
+    )
+  WHERE check_taxon_id = NEW.check_taxon_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -360,7 +362,8 @@ BEGIN
         WHEN _taxonomy_name is null then NEW.action_taxon_id::text
         ELSE _taxonomy_name || ': ' || _taxon_name
       END
-    );
+    )
+  WHERE action_taxon_id = NEW.action_taxon_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -483,11 +486,16 @@ BEGIN
   END IF;
 
   UPDATE places SET label = case
-    when NEW.places_label_by = 'id' then COALESCE(OLD.place_id::text, NEW.place_id::text)
-    when NEW.places_label_by = 'level' then level::text
-    when data -> NEW.places_label_by is null then place_id::text
-    else data ->> NEW.places_label_by
-  end;
+    when NEW.places_label_by = 'id' then places.place_id::text
+    when NEW.places_label_by = 'level' then places.level::text
+    when places.data -> NEW.places_label_by is null then places.place_id::text
+    else places.data ->> NEW.places_label_by
+  end
+  WHERE places.subproject_id IN (
+    SELECT subprojects.subproject_id
+    FROM subprojects
+    WHERE subprojects.project_id = NEW.project_id
+  );
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -524,10 +532,15 @@ BEGIN
 
   UPDATE goals 
   SET label = case
-    when NEW.goals_label_by = 'id' then COALESCE(OLD.goal_id::text, NEW.goal_id::text)
-    when data -> NEW.goals_label_by is null then  COALESCE(OLD.goal_id::text, NEW.goal_id::text)
-    else data ->> NEW.goals_label_by
-  end;
+    when NEW.goals_label_by = 'id' then goals.goal_id::text
+    when goals.data -> NEW.goals_label_by is null then goals.goal_id::text
+    else goals.data ->> NEW.goals_label_by
+  end
+  WHERE goals.subproject_id IN (
+    SELECT subprojects.subproject_id
+    FROM subprojects
+    WHERE subprojects.project_id = NEW.project_id
+  );
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

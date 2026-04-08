@@ -176,6 +176,206 @@ export const SqlInitializer = () => {
             AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
             FOR EACH ROW
             EXECUTE PROCEDURE subproject_taxon_label_trigger();
+
+            CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+              _taxon_name TEXT;
+              _taxonomy_id uuid;
+              _taxonomy_name TEXT;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              IF NEW.taxon_id IS NULL THEN
+                _taxon_name := NULL;
+              ELSE
+                SELECT taxa.name INTO _taxon_name FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+              END IF;
+
+              IF NEW.taxon_id IS NULL THEN
+                _taxonomy_id := NULL;
+              ELSE
+                SELECT taxa.taxonomy_id INTO _taxonomy_id FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+              END IF;
+
+              IF _taxonomy_id IS NULL THEN
+                _taxonomy_name := NULL;
+              ELSE
+                SELECT taxonomies.name INTO _taxonomy_name FROM taxonomies WHERE taxonomies.taxonomy_id = _taxonomy_id;
+              END IF;
+
+              UPDATE check_taxa
+                SET label = (
+                  CASE
+                    WHEN _taxon_name is null THEN NEW.check_taxon_id::text
+                    WHEN _taxonomy_name is null THEN NEW.check_taxon_id::text
+                    ELSE _taxonomy_name || ': ' || _taxon_name
+                  END
+                )
+              WHERE check_taxon_id = NEW.check_taxon_id;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS check_taxon_label_trigger ON check_taxa;
+
+            CREATE TRIGGER check_taxon_label_trigger
+            AFTER UPDATE OF taxon_id OR INSERT ON check_taxa
+            FOR EACH ROW
+            EXECUTE PROCEDURE check_taxon_label_trigger();
+
+            CREATE OR REPLACE FUNCTION action_taxon_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+              _taxon_name TEXT;
+              _taxonomy_id uuid;
+              _taxonomy_name TEXT;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              IF NEW.taxon_id IS NULL THEN
+                _taxon_name := NULL;
+              ELSE
+                SELECT taxa.name INTO _taxon_name FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+              END IF;
+
+              IF NEW.taxon_id IS NULL THEN
+                _taxonomy_id := NULL;
+              ELSE
+                SELECT taxa.taxonomy_id INTO _taxonomy_id FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+              END IF;
+
+              IF _taxonomy_id IS NULL THEN
+                _taxonomy_name := NULL;
+              ELSE
+                SELECT taxonomies.name INTO _taxonomy_name FROM taxonomies WHERE taxonomies.taxonomy_id = _taxonomy_id;
+              END IF;
+
+              UPDATE action_taxa
+                SET label = (
+                  CASE
+                    WHEN _taxon_name is null THEN NEW.action_taxon_id::text
+                    WHEN _taxonomy_name is null THEN NEW.action_taxon_id::text
+                    ELSE _taxonomy_name || ': ' || _taxon_name
+                  END
+                )
+              WHERE action_taxon_id = NEW.action_taxon_id;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS action_taxon_label_trigger ON action_taxa;
+
+            CREATE TRIGGER action_taxon_label_trigger
+            AFTER UPDATE OF taxon_id OR INSERT ON action_taxa
+            FOR EACH ROW
+            EXECUTE PROCEDURE action_taxon_label_trigger();
+
+            CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              UPDATE projects
+                SET label = CASE
+                  WHEN NEW.projects_label_by is null THEN projects.name
+                  WHEN NEW.projects_label_by = 'name' THEN projects.name
+                  ELSE coalesce(projects.data ->> NEW.projects_label_by, projects.project_id::text)
+                END
+              WHERE projects.account_id = NEW.account_id;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS accounts_projects_label_trigger ON accounts;
+
+            CREATE TRIGGER accounts_projects_label_trigger
+            AFTER UPDATE OF projects_label_by ON accounts
+            FOR EACH ROW
+            EXECUTE PROCEDURE accounts_projects_label_trigger();
+
+            CREATE OR REPLACE FUNCTION projects_places_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              UPDATE places
+                SET label = CASE
+                  WHEN NEW.places_label_by = 'id' THEN places.place_id::text
+                  WHEN NEW.places_label_by = 'level' THEN places.level::text
+                  WHEN places.data -> NEW.places_label_by is null THEN places.place_id::text
+                  ELSE places.data ->> NEW.places_label_by
+                END
+              WHERE places.subproject_id IN (
+                SELECT subprojects.subproject_id
+                FROM subprojects
+                WHERE subprojects.project_id = NEW.project_id
+              );
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS projects_places_label_trigger ON projects;
+
+            CREATE TRIGGER projects_places_label_trigger
+            AFTER UPDATE OF places_label_by ON projects
+            FOR EACH ROW
+            EXECUTE PROCEDURE projects_places_label_trigger();
+
+            CREATE OR REPLACE FUNCTION projects_goals_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              UPDATE goals
+                SET label = CASE
+                  WHEN NEW.goals_label_by = 'id' THEN goals.goal_id::text
+                  WHEN goals.data -> NEW.goals_label_by is null THEN goals.goal_id::text
+                  ELSE goals.data ->> NEW.goals_label_by
+                END
+              WHERE goals.subproject_id IN (
+                SELECT subprojects.subproject_id
+                FROM subprojects
+                WHERE subprojects.project_id = NEW.project_id
+              );
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS projects_goals_label_trigger ON projects;
+
+            CREATE TRIGGER projects_goals_label_trigger
+            AFTER UPDATE OF goals_label_by ON projects
+            FOR EACH ROW
+            EXECUTE PROCEDURE projects_goals_label_trigger();
           `)
         } catch (error) {
           console.error(
