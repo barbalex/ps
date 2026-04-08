@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -eu
+
+printf '%s\n' 'Running SQL sync check...'
+npm run sync-sql:check

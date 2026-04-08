@@ -818,58 +818,6 @@ AFTER INSERT OR UPDATE of taxonomy_id, name ON taxa
 FOR EACH ROW
 EXECUTE PROCEDURE taxa_label_trigger();
 
--- During Electric sync, incoming inserts can replay rows that already exist locally.
--- Skip duplicate PK inserts for taxa to keep sync idempotent.
-CREATE OR REPLACE FUNCTION taxa_sync_ignore_duplicate_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-
-  IF is_syncing AND EXISTS (
-    SELECT 1
-    FROM taxa
-    WHERE taxon_id = NEW.taxon_id
-  ) THEN
-    RETURN NULL;
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER taxa_sync_ignore_duplicate_insert_trigger
-BEFORE INSERT ON taxa
-FOR EACH ROW
-EXECUTE PROCEDURE taxa_sync_ignore_duplicate_insert_trigger();
-
--- During Electric sync, incoming inserts can replay rows that already exist locally.
--- Skip duplicate PK inserts for taxonomies to keep sync idempotent.
-CREATE OR REPLACE FUNCTION taxonomies_sync_ignore_duplicate_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-BEGIN
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-
-  IF is_syncing AND EXISTS (
-    SELECT 1
-    FROM taxonomies
-    WHERE taxonomy_id = NEW.taxonomy_id
-  ) THEN
-    RETURN NULL;
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER taxonomies_sync_ignore_duplicate_insert_trigger
-BEFORE INSERT ON taxonomies
-FOR EACH ROW
-EXECUTE PROCEDURE taxonomies_sync_ignore_duplicate_insert_trigger();
-
 -- if users.email is changed, update project_users.label
 CREATE OR REPLACE FUNCTION users_project_users_label_trigger()
 RETURNS TRIGGER AS $$
