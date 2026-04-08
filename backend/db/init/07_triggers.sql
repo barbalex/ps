@@ -739,7 +739,8 @@ BEGIN
         WHEN taxon_name is null THEN  NEW.subproject_taxon_id::text
         ELSE taxonomy_name || ': ' || taxon_name
       END
-    );
+    )
+  WHERE subproject_taxon_id = NEW.subproject_taxon_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

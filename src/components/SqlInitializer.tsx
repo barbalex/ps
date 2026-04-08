@@ -125,6 +125,57 @@ export const SqlInitializer = () => {
             BEFORE INSERT ON taxonomies
             FOR EACH ROW
             EXECUTE PROCEDURE taxonomies_sync_ignore_duplicate_insert_trigger();
+
+            CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+              taxon_name TEXT;
+              _taxonomy_id uuid;
+              taxonomy_name TEXT;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              IF NEW.taxon_id IS NULL THEN
+                taxon_name := NULL;
+              ELSE
+                SELECT taxa.name INTO taxon_name FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+              END IF;
+
+              IF NEW.taxon_id IS NULL THEN
+                _taxonomy_id := NULL;
+              ELSE
+                SELECT taxa.taxonomy_id INTO _taxonomy_id FROM taxa WHERE taxa.taxon_id = NEW.taxon_id;
+              END IF;
+
+              IF _taxonomy_id IS NULL THEN
+                taxonomy_name := NULL;
+              ELSE
+                SELECT taxonomies.name INTO taxonomy_name FROM taxonomies WHERE taxonomies.taxonomy_id = _taxonomy_id;
+              END IF;
+
+              UPDATE subproject_taxa
+                SET label = (
+                  CASE
+                    WHEN taxon_name is null THEN NEW.subproject_taxon_id::text
+                    ELSE taxonomy_name || ': ' || taxon_name
+                  END
+                )
+              WHERE subproject_taxon_id = NEW.subproject_taxon_id;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS subproject_taxon_label_trigger ON subproject_taxa;
+
+            CREATE TRIGGER subproject_taxon_label_trigger
+            AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
+            FOR EACH ROW
+            EXECUTE PROCEDURE subproject_taxon_label_trigger();
           `)
         } catch (error) {
           console.error(
