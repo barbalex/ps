@@ -35,6 +35,10 @@ export const SqlInitializer = () => {
       const layerPresentationsTableExists =
         resultLayerPresentationsTableExists?.rows?.[0]?.exists
 
+      const syncIgnoreDuplicateInsertTriggersSql = (
+        await import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`)
+      ).default
+
       // Always run: remove duplicate layer_presentations per vector_layer_id
       // (can be created by a previous bug; trigger prevents new ones)
       if (layerPresentationsTableExists) {
@@ -57,6 +61,15 @@ export const SqlInitializer = () => {
       // this is probably not needed
       if (projectsTableExists) {
         try {
+          await db.exec(syncIgnoreDuplicateInsertTriggersSql)
+        } catch (error) {
+          console.error(
+            'Error executing syncIgnoreDuplicateInsertTriggersSql:',
+            error,
+          )
+        }
+
+        try {
           await db.exec(`
             ALTER TABLE IF EXISTS auth_sessions ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS auth_accounts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
@@ -73,84 +86,6 @@ export const SqlInitializer = () => {
             ALTER TABLE IF EXISTS vector_layer_geoms ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS crs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
-
-            CREATE OR REPLACE FUNCTION taxa_sync_ignore_duplicate_insert_trigger()
-            RETURNS TRIGGER AS $$
-            DECLARE
-              is_syncing BOOLEAN;
-            BEGIN
-              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-
-              IF is_syncing AND EXISTS (
-                SELECT 1
-                FROM taxa
-                WHERE taxon_id = NEW.taxon_id
-              ) THEN
-                RETURN NULL;
-              END IF;
-
-              RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-
-            DROP TRIGGER IF EXISTS taxa_sync_ignore_duplicate_insert_trigger ON taxa;
-
-            CREATE TRIGGER taxa_sync_ignore_duplicate_insert_trigger
-            BEFORE INSERT ON taxa
-            FOR EACH ROW
-            EXECUTE PROCEDURE taxa_sync_ignore_duplicate_insert_trigger();
-
-            CREATE OR REPLACE FUNCTION taxonomies_sync_ignore_duplicate_insert_trigger()
-            RETURNS TRIGGER AS $$
-            DECLARE
-              is_syncing BOOLEAN;
-            BEGIN
-              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-
-              IF is_syncing AND EXISTS (
-                SELECT 1
-                FROM taxonomies
-                WHERE taxonomy_id = NEW.taxonomy_id
-              ) THEN
-                RETURN NULL;
-              END IF;
-
-              RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-
-            DROP TRIGGER IF EXISTS taxonomies_sync_ignore_duplicate_insert_trigger ON taxonomies;
-
-            CREATE TRIGGER taxonomies_sync_ignore_duplicate_insert_trigger
-            BEFORE INSERT ON taxonomies
-            FOR EACH ROW
-            EXECUTE PROCEDURE taxonomies_sync_ignore_duplicate_insert_trigger();
-
-            CREATE OR REPLACE FUNCTION subproject_taxa_sync_ignore_duplicate_insert_trigger()
-            RETURNS TRIGGER AS $$
-            DECLARE
-              is_syncing BOOLEAN;
-            BEGIN
-              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-
-              IF is_syncing AND EXISTS (
-                SELECT 1
-                FROM subproject_taxa
-                WHERE subproject_taxon_id = NEW.subproject_taxon_id
-              ) THEN
-                RETURN NULL;
-              END IF;
-
-              RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-
-            DROP TRIGGER IF EXISTS subproject_taxa_sync_ignore_duplicate_insert_trigger ON subproject_taxa;
-
-            CREATE TRIGGER subproject_taxa_sync_ignore_duplicate_insert_trigger
-            BEFORE INSERT ON subproject_taxa
-            FOR EACH ROW
-            EXECUTE PROCEDURE subproject_taxa_sync_ignore_duplicate_insert_trigger();
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
             RETURNS TRIGGER AS $$
@@ -450,6 +385,14 @@ export const SqlInitializer = () => {
         await db.exec(triggersSql)
       } catch (error) {
         console.error('Error executing triggersSql:', error)
+      }
+      try {
+        await db.exec(syncIgnoreDuplicateInsertTriggersSql)
+      } catch (error) {
+        console.error(
+          'Error executing syncIgnoreDuplicateInsertTriggersSql:',
+          error,
+        )
       }
 
       setSqlInitializing(false)
