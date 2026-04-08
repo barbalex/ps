@@ -19,6 +19,7 @@ const parseWorkbook = (file: File, buffer: ArrayBuffer): XLSX.WorkBook => {
 }
 
 type TaxonRow = Record<string, unknown>
+const TAXA_IMPORT_BATCH_SIZE = 500
 
 export const importTaxa = async ({
   file,
@@ -47,6 +48,14 @@ export const importTaxa = async ({
 
   // Deduplicate within the imported batch
   const seen = new Set<string>()
+  const drafts: {
+    taxon_id: string
+    account_id: string
+    taxonomy_id: string
+    name: string
+    id_in_source?: string
+    url?: string
+  }[] = []
 
   for (const row of rows) {
     const name =
@@ -82,18 +91,37 @@ export const importTaxa = async ({
       ...(url !== null ? { url } : {}),
     }
 
+    drafts.push(draft)
+  }
+
+  for (let i = 0; i < drafts.length; i += TAXA_IMPORT_BATCH_SIZE) {
+    const batch = drafts.slice(i, i + TAXA_IMPORT_BATCH_SIZE)
+    const placeholders = batch
+      .map(
+        (_, rowIndex) =>
+          `($${rowIndex * 6 + 1}, $${rowIndex * 6 + 2}, $${rowIndex * 6 + 3}, $${rowIndex * 6 + 4}, $${rowIndex * 6 + 5}, $${rowIndex * 6 + 6})`,
+      )
+      .join(', ')
+    const args = batch.flatMap((draft) => [
+      draft.taxon_id,
+      draft.account_id,
+      draft.taxonomy_id,
+      draft.name,
+      draft.id_in_source ?? null,
+      draft.url ?? null,
+    ])
+
     await db.query(
       `INSERT INTO taxa (taxon_id, account_id, taxonomy_id, name, id_in_source, url)
-       VALUES ($1, $2, $3, $4, $5, $6)
+       VALUES ${placeholders}
        ON CONFLICT (taxon_id) DO NOTHING`,
-      [taxon_id, account_id, taxonomyId, name, id_in_source, url],
+      args,
     )
 
     store.set(addOperationAtom, {
       table: 'taxa',
-      // Use upsert to make sync idempotent when the same row is retried.
-      operation: 'upsert',
-      draft,
+      operation: 'upsertMany',
+      draft: batch,
     })
   }
 }

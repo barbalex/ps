@@ -423,7 +423,7 @@ export const postgrestClientAtom = atom(null)
 // - table
 // - rowIdName
 // - rowId
-// - operation (update, insert, insertMany, delete, deleteAll)
+// - operation (update, upsert, upsertMany, insert, insertMany, delete, deleteAll)
 // - filter
 // - draft: object with key-value pairs for the operation
 // - prev: object with key-value pairs of previous value for reverting the operation

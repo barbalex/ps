@@ -88,6 +88,21 @@ export const executeOperation = async (o) => {
 
     if (error) throw error
   }
+  if (operation === 'upsertMany') {
+    const rows = Array.isArray(draft) ? draft : []
+    if (rows.length === 0) return
+
+    const { error } = await postgrestClient.from(table).upsert(
+      rows.map((d) => ({
+        ...d,
+        created_at: time,
+        updated_at: time,
+        ...(table !== 'users' ? { updated_by: username } : {}),
+      })),
+    )
+
+    if (error) throw error
+  }
   if (operation === 'insert') {
     // enable passing rowId as part of draft
     const { error } = await postgrestClient.from(table).insert({

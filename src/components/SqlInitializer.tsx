@@ -83,10 +83,36 @@ export const SqlInitializer = () => {
             BEFORE INSERT ON taxa
             FOR EACH ROW
             EXECUTE PROCEDURE taxa_sync_ignore_duplicate_insert_trigger();
+
+            CREATE OR REPLACE FUNCTION taxonomies_sync_ignore_duplicate_insert_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+
+              IF is_syncing AND EXISTS (
+                SELECT 1
+                FROM taxonomies
+                WHERE taxonomy_id = NEW.taxonomy_id
+              ) THEN
+                RETURN NULL;
+              END IF;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS taxonomies_sync_ignore_duplicate_insert_trigger ON taxonomies;
+
+            CREATE TRIGGER taxonomies_sync_ignore_duplicate_insert_trigger
+            BEFORE INSERT ON taxonomies
+            FOR EACH ROW
+            EXECUTE PROCEDURE taxonomies_sync_ignore_duplicate_insert_trigger();
           `)
         } catch (error) {
           console.error(
-            'Error installing taxa sync duplicate-guard trigger:',
+            'Error installing sync duplicate-guard triggers:',
             error,
           )
         }
