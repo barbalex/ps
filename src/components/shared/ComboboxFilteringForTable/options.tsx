@@ -8,9 +8,10 @@ export const FilteringComboboxOptions = ({
   idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
   filter,
 }) => {
+  const idCol = idField ?? name
   const res = useLiveQuery(
     `
-      SELECT * 
+      SELECT label, ${idCol}
       FROM ${table}
       ${filter ? `WHERE label ilike '%${filter}%'` : ''} 
       ORDER BY label
@@ -18,9 +19,8 @@ export const FilteringComboboxOptions = ({
   )
   const rows = res?.rows ?? []
   const options = rows.map((o) => ({
-    // catch cases where the label is not present
-    text: o.label ?? o[idField ?? name],
-    value: o[idField ?? name],
+    text: o.label ?? o[idCol],
+    value: o[idCol],
   }))
 
   // console.log('hello FilteringComboboxOptions', {
