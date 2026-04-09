@@ -24,6 +24,13 @@ export const PlaceLevelForm = ({
   autoFocusRef,
 }: Props) => {
   const { formatMessage, locale } = useIntl()
+  const altInOwnFormNavMessage = formatMessage({
+    id: 'altInOwnFormNav',
+    defaultMessage:
+      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+  })
+  const checksLabel = formatMessage({ id: 'sK0PjF', defaultMessage: 'Kontrollen' })
+  const actionsLabel = formatMessage({ id: 'pH7MgC', defaultMessage: 'Massnahmen' })
 
   const lang = locale.split('-')[0]
   const placeNameSingular =
@@ -166,11 +173,7 @@ export const PlaceLevelForm = ({
             validationState={validations?.place_users_in_place?.state}
             validationMessage={
               validations?.place_users_in_place?.message ??
-              formatMessage({
-                id: 'altInOwnFormNav',
-                defaultMessage:
-                  'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-              })
+              altInOwnFormNavMessage
             }
           />
           {row.place_files && (
@@ -188,20 +191,16 @@ export const PlaceLevelForm = ({
               validationState={validations?.place_files_in_place?.state}
               validationMessage={
                 validations?.place_files_in_place?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
           )}
         </SectionLevel2>
         <SectionLevel2
-          title={formatMessage({ id: 'sK0PjF', defaultMessage: 'Kontrollen' })}
+          title={checksLabel}
         >
           <SwitchField
-            label={formatMessage({ id: 'sK0PjF', defaultMessage: 'Kontrollen' })}
+            label={checksLabel}
             name="checks"
             value={row.checks ?? false}
             onChange={onChange}
@@ -227,11 +226,7 @@ export const PlaceLevelForm = ({
                   validationState={validations?.check_quantities_in_check?.state}
                   validationMessage={
                     validations?.check_quantities_in_check?.message ??
-                    formatMessage({
-                      id: 'altInOwnFormNav',
-                      defaultMessage:
-                        'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                    })
+                    altInOwnFormNavMessage
                   }
                 />
               )}
@@ -252,11 +247,7 @@ export const PlaceLevelForm = ({
                   validationState={validations?.check_taxa_in_check?.state}
                   validationMessage={
                     validations?.check_taxa_in_check?.message ??
-                    formatMessage({
-                      id: 'altInOwnFormNav',
-                      defaultMessage:
-                        'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                    })
+                    altInOwnFormNavMessage
                   }
                 />
               )}
@@ -277,11 +268,7 @@ export const PlaceLevelForm = ({
                   validationState={validations?.check_files_in_check?.state}
                   validationMessage={
                     validations?.check_files_in_check?.message ??
-                    formatMessage({
-                      id: 'altInOwnFormNav',
-                      defaultMessage:
-                        'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                    })
+                    altInOwnFormNavMessage
                   }
                 />
               )}
@@ -312,11 +299,7 @@ export const PlaceLevelForm = ({
                       validationState={validations?.check_report_quantities_in_report?.state}
                       validationMessage={
                         validations?.check_report_quantities_in_report?.message ??
-                        formatMessage({
-                          id: 'altInOwnFormNav',
-                          defaultMessage:
-                            'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                        })
+                        altInOwnFormNavMessage
                       }
                     />
                   )}
@@ -326,10 +309,10 @@ export const PlaceLevelForm = ({
           )}
         </SectionLevel2>
         <SectionLevel2
-          title={formatMessage({ id: 'pH7MgC', defaultMessage: 'Massnahmen' })}
+          title={actionsLabel}
         >
           <SwitchField
-            label={formatMessage({ id: 'pH7MgC', defaultMessage: 'Massnahmen' })}
+            label={actionsLabel}
             name="actions"
             value={row.actions ?? false}
             onChange={onChange}
@@ -355,11 +338,7 @@ export const PlaceLevelForm = ({
                   validationState={validations?.action_quantities_in_action?.state}
                   validationMessage={
                     validations?.action_quantities_in_action?.message ??
-                    formatMessage({
-                      id: 'altInOwnFormNav',
-                      defaultMessage:
-                        'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                    })
+                    altInOwnFormNavMessage
                   }
                 />
               )}
@@ -380,11 +359,7 @@ export const PlaceLevelForm = ({
                   validationState={validations?.action_taxa_in_action?.state}
                   validationMessage={
                     validations?.action_taxa_in_action?.message ??
-                    formatMessage({
-                      id: 'altInOwnFormNav',
-                      defaultMessage:
-                        'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                    })
+                    altInOwnFormNavMessage
                   }
                 />
               )}
@@ -405,11 +380,7 @@ export const PlaceLevelForm = ({
                   validationState={validations?.action_files_in_action?.state}
                   validationMessage={
                     validations?.action_files_in_action?.message ??
-                    formatMessage({
-                      id: 'altInOwnFormNav',
-                      defaultMessage:
-                        'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                    })
+                    altInOwnFormNavMessage
                   }
                 />
               )}
@@ -440,11 +411,7 @@ export const PlaceLevelForm = ({
                       validationState={validations?.action_report_quantities_in_report?.state}
                       validationMessage={
                         validations?.action_report_quantities_in_report?.message ??
-                        formatMessage({
-                          id: 'altInOwnFormNav',
-                          defaultMessage:
-                            'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                        })
+                        altInOwnFormNavMessage
                       }
                     />
                   )}

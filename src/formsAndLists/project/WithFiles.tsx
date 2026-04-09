@@ -51,6 +51,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const [fieldsFilter] = useAtom(fieldsFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
+  const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -164,7 +165,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={projectReportsIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddProjectReport}
         />
@@ -177,7 +178,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={projectUsersIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddProjectUser}
         />
@@ -190,7 +191,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddFile}
         />
@@ -203,7 +204,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={fieldsIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddField}
         />
@@ -216,7 +217,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={unitsIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddUnit}
         />
