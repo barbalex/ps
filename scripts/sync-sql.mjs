@@ -16,7 +16,7 @@ const frontendMappings = [
   ['02_uuidv7.sql', 'uuidv7.sql'],
   ['04_createTables.sql', 'createTables.sql'],
   ['07_triggers.sql', 'triggers.sql'],
-  ['10_sync_ignore_duplicate_insert_triggers.sql', 'syncIgnoreDuplicateInsertTriggers.sql'],
+  ['08_syncIgnoreDuplicateInsertTriggers.sql', 'syncIgnoreDuplicateInsertTriggers.sql'],
 ]
 
 const checkOnly = process.argv.includes('--check')
