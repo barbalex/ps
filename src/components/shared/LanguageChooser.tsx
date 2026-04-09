@@ -29,9 +29,12 @@ export const LanguageChooser = () => {
             <MenuItem
               key={lang}
               onClick={() => setLanguage(lang)}
-              style={language === lang ? { fontWeight: 'bold' } : undefined}
             >
-              {lang.toUpperCase()}
+              <span
+                className={language === lang ? styles.menuItemActive : undefined}
+              >
+                {lang.toUpperCase()}
+              </span>
             </MenuItem>
           ))}
         </MenuList>

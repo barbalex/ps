@@ -83,10 +83,7 @@ export const Section = ({
                 }
               >
                 <FaChevronDown
-                  className={styles.chevron}
-                  style={{
-                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  }}
+                  className={`${styles.chevron}${isOpen ? ` ${styles.chevronOpen}` : ''}`}
                 />
               </span>
             )}

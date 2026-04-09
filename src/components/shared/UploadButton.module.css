@@ -7,6 +7,14 @@
   padding-bottom: 10px;
 }
 
+.buttonDragging {
+  background-color: rgba(103, 216, 101, 0.2) !important;
+}
+
+.buttonSuccess {
+  color: rgba(38, 82, 37, 0.9) !important;
+}
+
 .errorMessage {
   color: rgb(196, 49, 75);
 }

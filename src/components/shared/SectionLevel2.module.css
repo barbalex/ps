@@ -47,6 +47,10 @@
   transition: transform 0.25s ease;
 }
 
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
 .childrenOpen {
   border-top: 1px solid #cccccc9d;
 }

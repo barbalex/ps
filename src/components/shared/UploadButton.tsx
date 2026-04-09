@@ -115,13 +115,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         onDragEnter={onDragEnter}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
-        style={{
-          backgroundColor: isDragging
-            ? 'rgba(103, 216, 101, 0.2)'
-            : 'transparent',
-          color: successMessage ? 'rgba(38, 82, 37, 0.9)' : undefined,
-        }}
-        className={styles.button}
+        className={`${styles.button}${isDragging ? ` ${styles.buttonDragging}` : ''}${successMessage ? ` ${styles.buttonSuccess}` : ''}`}
       >
         {successMessage ||
           formatMessage({

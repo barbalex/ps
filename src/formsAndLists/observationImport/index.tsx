@@ -155,46 +155,8 @@ export const ObservationImport = () => {
   const onTabSelect = (e, data) =>
     navigate({ search: { observationImportTab: data.value } })
 
-  const tab1Style = {
-    backgroundColor:
-      observationImport?.name && observations.length
-        ? 'var(--colorCompoundBrandStrokeHover)'
-        : tab === 1
-          ? 'black'
-          : 'grey',
-  }
-
-  const tab2Style = {
-    backgroundColor:
-      // green if all observations have geometry
-      observations.length && !observationsWithoutGeometryCount
-        ? 'var(--colorCompoundBrandStrokeHover)'
-        : // black if is current
-          tab === 2
-          ? 'black'
-          : // grey if no observations or not current
-            'grey',
-  }
-
-  const tab3Style = {
-    backgroundColor:
-      // green if label_creation exists
-      observationImport?.label_creation
-        ? 'var(--colorCompoundBrandStrokeHover)'
-        : // black if is current
-          tab === 3
-          ? 'black'
-          : // grey if no observations or not current
-            'grey',
-  }
-
-  const tab4Style = {
-    backgroundColor: observationImport?.id_field
-      ? 'var(--colorCompoundBrandStrokeHover)'
-      : tab === 4
-        ? 'black'
-        : 'grey',
-  }
+  const getTabNumberClassName = (isComplete, isCurrent) =>
+    `${styles.tabNumber}${isComplete ? ` ${styles.tabNumberComplete}` : isCurrent ? ` ${styles.tabNumberCurrent}` : ''}`
 
   // TODO:
   // show stepper-like tabs on new import:
@@ -234,7 +196,12 @@ export const ObservationImport = () => {
           id="1"
           value={1}
           icon={
-            <div className={styles.tabNumber} style={tab1Style}>
+            <div
+              className={getTabNumberClassName(
+                !!observationImport?.name && !!observations.length,
+                tab === 1,
+              )}
+            >
               1
             </div>
           }
@@ -245,7 +212,12 @@ export const ObservationImport = () => {
           id="2"
           value={2}
           icon={
-            <div className={styles.tabNumber} style={tab2Style}>
+            <div
+              className={getTabNumberClassName(
+                !!observations.length && !observationsWithoutGeometryCount,
+                tab === 2,
+              )}
+            >
               2
             </div>
           }
@@ -257,7 +229,12 @@ export const ObservationImport = () => {
           id="3"
           value={3}
           icon={
-            <div className={styles.tabNumber} style={tab3Style}>
+            <div
+              className={getTabNumberClassName(
+                !!observationImport?.label_creation,
+                tab === 3,
+              )}
+            >
               3
             </div>
           }
@@ -268,7 +245,12 @@ export const ObservationImport = () => {
           id="4"
           value={4}
           icon={
-            <div className={styles.tabNumber} style={tab4Style}>
+            <div
+              className={getTabNumberClassName(
+                !!observationImport?.id_field,
+                tab === 4,
+              )}
+            >
               4
             </div>
           }

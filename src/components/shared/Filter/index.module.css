@@ -23,3 +23,7 @@
 .removeTab:hover {
   opacity: 1;
 }
+
+.filterActive {
+  color: rgba(255, 141, 2, 1) !important;
+}

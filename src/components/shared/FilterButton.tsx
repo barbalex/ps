@@ -4,6 +4,8 @@ import { MdFilterAlt } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
+import styles from './FilterButton.module.css'
+
 export const FilterButton = ({ isFiltered = false }) => {
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
@@ -20,7 +22,7 @@ export const FilterButton = ({ isFiltered = false }) => {
         defaultMessage: 'Filter bearbeiten',
       })}
       checked={false}
-      style={isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : undefined}
+      className={isFiltered ? styles.active : undefined}
     />
   )
 }

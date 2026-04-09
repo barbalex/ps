@@ -6,6 +6,7 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import globalStyles from '../../../styles.module.css'
+import styles from './index.module.css'
 
 type Props = {
   title: string
@@ -36,7 +37,7 @@ export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
             defaultMessage: 'Filter verlassen',
           })}
           checked={true}
-          style={isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : undefined}
+          className={isFiltered ? styles.filterActive : undefined}
         />
         <Button
           size="medium"

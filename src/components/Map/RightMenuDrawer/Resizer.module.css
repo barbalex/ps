@@ -27,3 +27,7 @@
     resize: horizontal;
   }
 }
+
+.resizerActive {
+  background-color: rgba(38, 82, 37, 0.9);
+}

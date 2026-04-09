@@ -12,3 +12,7 @@
 .button:active {
   color: white !important;
 }
+
+.menuItemActive {
+  font-weight: bold;
+}

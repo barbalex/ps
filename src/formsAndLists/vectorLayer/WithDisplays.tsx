@@ -16,6 +16,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type VectorLayers from '../../models/public/VectorLayers.ts'
+import styles from './WithDisplays.module.css'
 
 import '../../form.css'
 
@@ -138,8 +139,8 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
             parentUrl={vectorLayerBaseUrl}
             listUrl={displaysUrl}
             isOpen={isDisplaysOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={displaysHeaderActions}
           >
             {isDisplaysOpen &&

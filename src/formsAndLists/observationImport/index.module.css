@@ -10,3 +10,11 @@
   text-align: center;
   line-height: 19px;
 }
+
+.tabNumberCurrent {
+  background-color: black;
+}
+
+.tabNumberComplete {
+  background-color: var(--colorCompoundBrandStrokeHover);
+}
