@@ -13,6 +13,10 @@ export const Property = ({ vectorLayer, from }) => {
   const { projectId, vectorLayerId } = useParams({ from, strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const displayByLabel = formatMessage({
+    id: 'Vy5WzB',
+    defaultMessage: 'Anzeigen nach',
+  })
 
   const table = vectorLayer?.own_table
   const level = vectorLayer?.own_table_level
@@ -71,7 +75,7 @@ export const Property = ({ vectorLayer, from }) => {
   if (!options.length) {
     return (
       <TextField
-        label={formatMessage({ id: 'Vy5WzB', defaultMessage: 'Anzeigen nach' })}
+        label={displayByLabel}
         placeholder={formatMessage({
           id: 'Xa7YbD',
           defaultMessage: 'keine Felder gefunden',
@@ -88,7 +92,7 @@ export const Property = ({ vectorLayer, from }) => {
 
   return (
     <DropdownFieldOptions
-      label={formatMessage({ id: 'Vy5WzB', defaultMessage: 'Anzeigen nach' })}
+      label={displayByLabel}
       name="display_by_property"
       value={vectorLayer.display_by_property}
       onChange={onChange}

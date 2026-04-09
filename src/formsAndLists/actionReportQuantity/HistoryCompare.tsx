@@ -33,6 +33,7 @@ export const ActionReportQuantityHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+  const unitFieldLabel = { id: 'bDkNqO', defaultMessage: 'Einheit' } as const
   const navigate = useNavigate()
   const {
     projectId,
@@ -197,7 +198,7 @@ export const ActionReportQuantityHistoryCompare = ({
     <div className="form-container">
       <>
         <RadioGroupField
-          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+          label={formatMessage(unitFieldLabel)}
           name="unit_id"
           list={unitIds}
           labelMap={unitLabelMap}
@@ -310,7 +311,7 @@ export const ActionReportQuantityHistoryCompare = ({
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      unit_id: { id: 'bDkNqO', defaultMessage: 'Einheit' },
+      unit_id: unitFieldLabel,
       quantity_integer: { id: 'gRVMng', defaultMessage: 'Menge (integer)' },
       quantity_numeric: {
         id: 'bQuantityNumeric',
