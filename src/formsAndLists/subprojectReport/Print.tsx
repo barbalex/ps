@@ -13,6 +13,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import type SubprojectReports from '../../models/public/SubprojectReports.ts'
@@ -106,7 +107,7 @@ export const SubprojectReportPrint = ({ from }) => {
         // Always read from the current report's jsonbData, not from the saved design value
         const fieldValue = jsonbData[field.name] ?? ''
         return (
-          <div style={{ marginBottom: '16px' }}>
+          <div className={styles.fieldWrapper}>
             <TextField
               label={field.field_label || field.name}
               name={field.name}
@@ -130,14 +131,8 @@ export const SubprojectReportPrint = ({ from }) => {
       render: () => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
-          <div style={{ marginBottom: '16px' }}>
-            <div
-              style={{
-                fontSize: '1.2em',
-                fontWeight: 'bold',
-                marginBottom: '8px',
-              }}
-            >
+          <div className={styles.fieldWrapper}>
+            <div className={styles.chartTitle}>
               {chart.name}
             </div>
             {chart.subjects_single === true ? (
