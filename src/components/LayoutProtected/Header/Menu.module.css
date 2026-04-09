@@ -55,3 +55,12 @@
 .mapIcon {
   color: white;
 }
+
+@media (max-width: 649px) {
+  .toggleInactive,
+  .toggleActive {
+    min-width: 0 !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+}
