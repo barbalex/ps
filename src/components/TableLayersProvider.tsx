@@ -21,6 +21,15 @@ export const TableLayersProvider = () => {
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
+  const placesLabel = formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
+  const actionsLabel = formatMessage({
+    id: 'eJfllL',
+    defaultMessage: 'Massnahmen',
+  })
+  const checksLabel = formatMessage({
+    id: 'oPMDm+',
+    defaultMessage: 'Kontrollen',
+  })
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -91,7 +100,7 @@ export const TableLayersProvider = () => {
             ownTableLevel: 1,
             label:
               pl1Plural ??
-              formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
+              placesLabel,
           })
         }
 
@@ -119,7 +128,7 @@ export const TableLayersProvider = () => {
                   { id: '1noM6i', defaultMessage: '{place}-Massnahmen' },
                   { place: pl1Singular },
                 )
-              : formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
+              : actionsLabel,
           })
         }
 
@@ -147,7 +156,7 @@ export const TableLayersProvider = () => {
                   { id: 'WJk01v', defaultMessage: '{place}-Kontrollen' },
                   { place: pl1Singular },
                 )
-              : formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
+              : checksLabel,
           })
         }
 
@@ -220,10 +229,7 @@ export const TableLayersProvider = () => {
                       defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
                     },
                     {
-                      place: formatMessage({
-                        id: 'h5g7Kk',
-                        defaultMessage: 'Orte',
-                      }),
+                      place: placesLabel,
                     },
                   ),
             })
@@ -306,7 +312,7 @@ export const TableLayersProvider = () => {
               ownTableLevel: 2,
               label:
                 pl2Plural ??
-                formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
+                placesLabel,
             })
           }
         }
@@ -336,7 +342,7 @@ export const TableLayersProvider = () => {
                     { id: '1noM6i', defaultMessage: '{place}-Massnahmen' },
                     { place: pl2Singular },
                   )
-                : formatMessage({ id: 'eJfllL', defaultMessage: 'Massnahmen' }),
+                : actionsLabel,
             })
           }
         }
@@ -366,7 +372,7 @@ export const TableLayersProvider = () => {
                     { id: 'WJk01v', defaultMessage: '{place}-Kontrollen' },
                     { place: pl2Singular },
                   )
-                : formatMessage({ id: 'oPMDm+', defaultMessage: 'Kontrollen' }),
+                : checksLabel,
             })
           }
         }
@@ -440,10 +446,7 @@ export const TableLayersProvider = () => {
                       defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
                     },
                     {
-                      place: formatMessage({
-                        id: 'h5g7Kk',
-                        defaultMessage: 'Orte',
-                      }),
+                      place: placesLabel,
                     },
                   ),
             })

@@ -12,6 +12,14 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { formatMessage } = useIntl()
+  const uploadSuccessMessage = formatMessage({
+    id: 'fIuPSu',
+    defaultMessage: 'Datei erfolgreich hochgeladen',
+  })
+  const unexpectedErrorMessage = formatMessage({
+    id: 'anUnEx',
+    defaultMessage: 'Ein Fehler ist aufgetreten',
+  })
 
   const db = usePGlite()
 
@@ -30,10 +38,10 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     try {
       const result = await processData({ file, additionalData, db })
       if (result?.success) {
-        setSuccessMessage(result.message || formatMessage({ id: 'fIuPSu', defaultMessage: 'Datei erfolgreich hochgeladen' }))
+        setSuccessMessage(result.message || uploadSuccessMessage)
       }
     } catch (error) {
-      setErrorMessage(error.message || formatMessage({ id: 'anUnEx', defaultMessage: 'Ein Fehler ist aufgetreten' }))
+      setErrorMessage(error.message || unexpectedErrorMessage)
     }
   }
 
@@ -71,10 +79,10 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     try {
       const result = await processData({ file, additionalData, db })
       if (result?.success) {
-        setSuccessMessage(result.message || formatMessage({ id: 'fIuPSu', defaultMessage: 'Datei erfolgreich hochgeladen' }))
+        setSuccessMessage(result.message || uploadSuccessMessage)
       }
     } catch (error) {
-      setErrorMessage(error.message || formatMessage({ id: 'anUnEx', defaultMessage: 'Ein Fehler ist aufgetreten' }))
+      setErrorMessage(error.message || unexpectedErrorMessage)
     }
   }
 
@@ -84,7 +92,11 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         errorMessage ? (
           <span style={{ color: 'rgb(196, 49, 75)' }}>{errorMessage}</span>
         ) : (
-          formatMessage({ id: 'cLcHDr', defaultMessage: 'Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt.' })
+          formatMessage({
+            id: 'cLcHDr',
+            defaultMessage:
+              'Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt.',
+          })
         )
       }
       validationState={errorMessage ? 'error' : 'none'}
@@ -111,7 +123,11 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
         }}
         className={styles.button}
       >
-        {successMessage || formatMessage({ id: 'uPlBTx', defaultMessage: 'Datei mit Beobachtungen hochladen' })}
+        {successMessage ||
+          formatMessage({
+            id: 'uPlBTx',
+            defaultMessage: 'Datei mit Beobachtungen hochladen',
+          })}
       </Button>
     </Field>
   )

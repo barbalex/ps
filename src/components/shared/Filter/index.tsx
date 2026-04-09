@@ -321,6 +321,7 @@ export const Filter = ({
 }) => {
   const params = useParams({ from })
   const { formatMessage } = useIntl()
+  const orLabel = formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
   const [language] = useAtom(languageAtom)
   const projectId = normalizeId(params?.projectId)
   const subprojectId = normalizeId(params?.subprojectId)
@@ -489,7 +490,7 @@ export const Filter = ({
         {filter.map((f, i) => {
           const label =
             i === filter.length - 1 && filter.length > 1
-              ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
+              ? orLabel
               : i === 0
                 ? formatMessage(
                     { id: 'fCC3dD', defaultMessage: 'Filter {number}' },
@@ -572,9 +573,7 @@ export const Filter = ({
         })}
         {canAddAnotherFilter && (
           <Tab value="add" className={styles.tab}>
-            {isActiveVirtualTab
-              ? formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
-              : '+'}
+            {isActiveVirtualTab ? orLabel : '+'}
           </Tab>
         )}
       </TabList>
