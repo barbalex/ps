@@ -22,6 +22,7 @@ export const CheckTaxon = ({ from }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
   const { formatMessage } = useIntl()
+  const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -130,7 +131,7 @@ export const CheckTaxon = ({ from }) => {
             {(selectedUnit?.type === 'integer' ||
               row.quantity_integer !== null) && (
               <TextField
-                label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                label={quantityLabel}
                 name="quantity_integer"
                 type="number"
                 value={row.quantity_integer ?? ''}
@@ -142,7 +143,7 @@ export const CheckTaxon = ({ from }) => {
             {(selectedUnit?.type === 'numeric' ||
               row.quantity_numeric !== null) && (
               <TextField
-                label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                label={quantityLabel}
                 name="quantity_numeric"
                 type="number"
                 value={row.quantity_numeric ?? ''}
@@ -153,7 +154,7 @@ export const CheckTaxon = ({ from }) => {
             )}
             {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
               <TextField
-                label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                label={quantityLabel}
                 name="quantity_text"
                 value={row.quantity_text ?? ''}
                 onChange={onChange}

@@ -22,6 +22,7 @@ export const ActionQuantity = ({ from }) => {
   const { actionQuantityId, projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -182,10 +183,7 @@ export const ActionQuantity = ({ from }) => {
             {selectedUnit?.list_id && hasListValues ? (
               listValues.length <= 5 ? (
                 <RadioGroupField
-                  label={formatMessage({
-                    id: 'gRVMng',
-                    defaultMessage: 'Menge',
-                  })}
+                  label={quantityLabel}
                   name={unitValueField}
                   list={listValueIds}
                   labelMap={listValueLabelMap}
@@ -200,10 +198,7 @@ export const ActionQuantity = ({ from }) => {
               ) : (
                 <DropdownFieldSimpleOptions
                   name={unitValueField}
-                  label={formatMessage({
-                    id: 'gRVMng',
-                    defaultMessage: 'Menge',
-                  })}
+                  label={quantityLabel}
                   options={listValueIds}
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
@@ -218,11 +213,8 @@ export const ActionQuantity = ({ from }) => {
                   <TextField
                     label={
                       selectedUnit?.type !== 'integer'
-                        ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
-                        : formatMessage({
-                            id: 'gRVMng',
-                            defaultMessage: 'Menge',
-                          })
+                        ? `${quantityLabel} (integer)`
+                        : quantityLabel
                     }
                     name="quantity_integer"
                     type="number"
@@ -237,11 +229,8 @@ export const ActionQuantity = ({ from }) => {
                   <TextField
                     label={
                       selectedUnit?.type !== 'numeric'
-                        ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
-                        : formatMessage({
-                            id: 'gRVMng',
-                            defaultMessage: 'Menge',
-                          })
+                        ? `${quantityLabel} (numeric)`
+                        : quantityLabel
                     }
                     name="quantity_numeric"
                     type="number"
@@ -255,11 +244,8 @@ export const ActionQuantity = ({ from }) => {
                   <TextField
                     label={
                       selectedUnit?.type !== 'text'
-                        ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
-                        : formatMessage({
-                            id: 'gRVMng',
-                            defaultMessage: 'Menge',
-                          })
+                        ? `${quantityLabel} (text)`
+                        : quantityLabel
                     }
                     name="quantity_text"
                     value={row.quantity_text ?? ''}
