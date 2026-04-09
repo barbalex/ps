@@ -5,6 +5,9 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100dvh;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
   --layout-header-height: 44px;
   --breadcrumbs-height: 50px;
 }
@@ -13,6 +16,9 @@ body {
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* .form-container needs to overflow inside the form-outer-container
@@ -409,20 +415,40 @@ html {
 
 .allotment-tree {
   height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .allotment-data {
   height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .allotment-map {
   height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.split-view-container,
+.split-view-view,
+.split-view-view > * {
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
 }
 
 /* puck */

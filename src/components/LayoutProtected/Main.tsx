@@ -34,10 +34,11 @@ export const Main = () => {
   // especially to hide others when only the Outlet is printed
   return (
     <div className={styles.container}>
-      <Allotment>
+      <div className={styles.allotmentWrapper}>
+        <Allotment>
         {treeVisible &&
           (treeIsFirstOfTwo ? (
-            <Allotment.Pane minSize={380} preferredSize="33%">
+            <Allotment.Pane minSize={50} preferredSize="33%">
               <div className="allotment-tree">
                 <Tree />
               </div>
@@ -58,7 +59,7 @@ export const Main = () => {
           </div>
         )}
       </Allotment>
+      </div>
     </div>
   )
 }
-Allotment

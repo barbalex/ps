@@ -4,4 +4,14 @@
   flex-grow: 1;
   overflow: hidden;
   position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.allotmentWrapper {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
