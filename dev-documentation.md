@@ -7,7 +7,7 @@ This file serves the developer(s) and AI. It's goal is to ensure
 ## Current situation
 
 Primarily css modules are used.
-Dynamic Styling is usually implemented via inline styles.
+Dynamic styling is usually implemented via inline styles.
 
 For some general styles a global .css file is used.
 
