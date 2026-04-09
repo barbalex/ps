@@ -1,0 +1,10 @@
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activeIcon {
+  color: green;
+  flex-shrink: 0;
+}

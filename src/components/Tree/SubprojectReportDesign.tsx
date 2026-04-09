@@ -3,6 +3,7 @@ import { isEqual } from 'es-toolkit'
 import { MdCheckCircle as ActiveIcon } from 'react-icons/md'
 
 import { Node } from './Node.tsx'
+import styles from './SubprojectReportDesign.module.css'
 
 export const SubprojectReportDesignNode = ({
   projectId,
@@ -16,21 +17,15 @@ export const SubprojectReportDesignNode = ({
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = [
-    'data',
-    'projects',
-    projectId,
-    'subproject-designs',
-    nav.id,
-  ]
+  const ownArray = ['data', 'projects', projectId, 'subproject-designs', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const label = nav.active ? (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-      <ActiveIcon style={{ color: 'green', flexShrink: 0 }} />
+    <span className={styles.label}>
+      <ActiveIcon className={styles.activeIcon} />
       {nav.label}
     </span>
   ) : (
