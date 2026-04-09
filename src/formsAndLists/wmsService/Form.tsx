@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { FetchWmsCapabilities } from '../wmsLayer/Form/CreateWmsService/FetchWmsCapabilities.tsx'
+import styles from './Form.module.css'
 
 import '../../form.css'
 
@@ -33,7 +34,7 @@ export const WmsServiceForm = ({
         validationState={validations?.url?.state}
         validationMessage={validations?.url?.message}
       />
-      <div style={{ marginBottom: '1rem' }}>
+      <div className={styles.fetchWrapper}>
         <FetchWmsCapabilities
           wmsLayer={wmsLayerForFetch}
           url={row.url}
