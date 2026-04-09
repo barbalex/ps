@@ -6,12 +6,12 @@
 }
 
 .dialogSurface {
-  width: 90vw;
-  max-width: 1400px;
-  height: 90vh;
+  width: 90vw !important;
+  max-width: 1400px !important;
+  height: 90vh !important;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 0 !important;
   position: relative;
 }
 
@@ -30,13 +30,13 @@
 }
 
 .dialogTitle {
-  padding: 8px 16px;
+  padding: 8px 16px !important;
   border-bottom: 1px solid var(--colorNeutralStroke2);
-  padding-right: 48px;
+  padding-right: 48px !important;
 }
 
 .dialogContent {
   flex: 1;
   overflow: auto;
-  padding: 0;
+  padding: 0 !important;
 }

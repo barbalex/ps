@@ -1,6 +1,6 @@
 # 0. Developer Documentation
 
-This file serves the developer(s) and AI. It's goals are:
+This file serves the developer(s) and coding AI. It's goals are:
 
 1. ensure consistent coding
 2. facilitate introducing new devs / AI's

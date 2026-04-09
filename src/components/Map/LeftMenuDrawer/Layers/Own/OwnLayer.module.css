@@ -1,6 +1,7 @@
 .labelButton {
   margin-left: 2px;
-  border: none;
+  border: none !important;
+  background-color: transparent !important;
 
   &:hover {
     background-color: var(--colorNeutralBackground1Hover);
@@ -8,14 +9,14 @@
 }
 
 .accordionItem {
-  border-top: calc(var(--top-border-width, 1) * 1px) solid rgba(55, 118, 28, 0.5);
-  border-bottom: calc(var(--bottom-border-width, 0) * 1px) solid rgba(55, 118, 28, 0.5);
+  border-top: calc(var(--top-border-width, 1) * 1px) solid rgba(55, 118, 28, 0.5) !important;
+  border-bottom: calc(var(--bottom-border-width, 0) * 1px) solid rgba(55, 118, 28, 0.5) !important;
 }
 
 .headerOpen {
-  background-color: rgba(103, 216, 101, 0.1);
+  background-color: rgba(103, 216, 101, 0.1) !important;
 }
 
 .toggleOpen {
-  background-color: transparent;
+  background-color: transparent !important;
 }

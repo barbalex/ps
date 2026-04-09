@@ -1,5 +1,5 @@
 .headerColor {
-  background-color: rgba(103, 216, 101, 0.1);
+  background-color: rgba(103, 216, 101, 0.1) !important;
 }
 
 .headerIcon {
@@ -8,11 +8,11 @@
 
 .headerButton {
   margin-left: 2px;
-  border: none;
-  background-color: transparent;
-  min-width: auto;
-  width: 32px;
-  padding: 0;
+  border: none !important;
+  background-color: transparent !important;
+  min-width: auto !important;
+  width: 32px !important;
+  padding: 0 !important;
   align-self: center;
 
   &:hover {
@@ -21,7 +21,7 @@
 }
 
 .headerIconWidth {
-  --fui-AccordionHeader--icon-width: 32px;
+  --fui-AccordionHeader--icon-width: 32px !important;
 }
 
 .playIcon {
@@ -29,11 +29,11 @@
 }
 
 .assigningButton {
-  color: black;
-  background-color: rgba(0, 0, 0, 0.1);
+  color: black !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 .droppableButton {
-  color: green;
-  background-color: rgba(0, 128, 0, 0.1);
+  color: green !important;
+  background-color: rgba(0, 128, 0, 0.1) !important;
 }

@@ -1,5 +1,5 @@
 .surface {
-  max-width: fit-content;
+  max-width: fit-content !important;
 }
 
 .titleRow {
