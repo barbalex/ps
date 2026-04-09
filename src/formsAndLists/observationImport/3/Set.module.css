@@ -15,3 +15,12 @@
   flex-shrink: 0;
   min-height: 32px;
 }
+
+.missingLabelCreation {
+  color: rgb(120, 120, 120);
+  padding: 8px 0;
+}
+
+.container {
+  margin-top: 16px;
+}

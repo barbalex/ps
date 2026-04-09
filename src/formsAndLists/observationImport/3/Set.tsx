@@ -47,8 +47,11 @@ export const Set = ({ observationImport }: Props) => {
 
   if (!hasLabelCreation) {
     return (
-      <div style={{ color: 'rgb(120, 120, 120)', padding: '8px 0' }}>
-        {formatMessage({ id: 'lBlCrt', defaultMessage: 'Bitte zuerst eine Beschriftungsstruktur erstellen' })}
+      <div className={styles.missingLabelCreation}>
+        {formatMessage({
+          id: 'lBlCrt',
+          defaultMessage: 'Bitte zuerst eine Beschriftungsstruktur erstellen',
+        })}
       </div>
     )
   }
@@ -57,21 +60,40 @@ export const Set = ({ observationImport }: Props) => {
     return (
       <div className={styles.allSet}>
         <MdDone className={styles.doneIcon} />
-        {formatMessage({ id: 'lBlAlS', defaultMessage: 'Alle {count} Beobachtungen haben Beschriftungen' }, { count: formatNumber(observations.length) })}
+        {formatMessage(
+          {
+            id: 'lBlAlS',
+            defaultMessage: 'Alle {count} Beobachtungen haben Beschriftungen',
+          },
+          { count: formatNumber(observations.length) },
+        )}
       </div>
     )
   }
 
   return (
-    <div style={{ marginTop: '16px' }}>
+    <div className={styles.container}>
       <Button
         onClick={onClick}
         icon={settingLabels ? <Spinner size="tiny" /> : null}
         className={styles.setButton}
       >
         {settingLabels
-          ? formatMessage({ id: 'lBlStg', defaultMessage: 'Beschriftungen von {count} Beobachtungen werden gesetzt' }, { count: formatNumber(toSetCount) })
-          : formatMessage({ id: 'lBlSet', defaultMessage: '{count} Beobachtungen beschriften' }, { count: formatNumber(toSetCount) })}
+          ? formatMessage(
+              {
+                id: 'lBlStg',
+                defaultMessage:
+                  'Beschriftungen von {count} Beobachtungen werden gesetzt',
+              },
+              { count: formatNumber(toSetCount) },
+            )
+          : formatMessage(
+              {
+                id: 'lBlSet',
+                defaultMessage: '{count} Beobachtungen beschriften',
+              },
+              { count: formatNumber(toSetCount) },
+            )}
       </Button>
     </div>
   )

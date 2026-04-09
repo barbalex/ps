@@ -12,6 +12,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { SectionDescription } from '../components/shared/SectionDescription.tsx'
 import { languageAtom } from '../store.ts'
 import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
+import styles from './subprojectTaxa.module.css'
 import '../form.css'
 
 export const SubprojectTaxa = ({ from, hideHeader = false }) => {
@@ -65,7 +66,7 @@ export const SubprojectTaxa = ({ from, hideHeader = false }) => {
         />
       )}
       {hideHeader && (
-        <div style={{ padding: '10px 10px 0 10px' }}>
+        <div className={styles.descriptionWrapper}>
           <SectionDescription>{description}</SectionDescription>
         </div>
       )}
