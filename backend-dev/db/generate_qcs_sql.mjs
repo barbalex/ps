@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerates backend/db/init/10_qcs.sql from src/other/qcs.csv.
+// Regenerates backend/db/init/10_qcs.sql from seed-data/qcs.csv.
 // Run from the project root: node backend/db/generate_qcs_sql.mjs
 
 import { readFileSync, writeFileSync } from 'fs'
@@ -9,7 +9,7 @@ import { dirname, join } from 'path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..', '..')
 
-const csvPath = join(projectRoot, 'src', 'other', 'qcs.csv')
+const csvPath = join(projectRoot, 'seed-data', 'qcs.csv')
 const sqlPath = join(projectRoot, 'backend', 'db', 'init', '10_qcs.sql')
 
 const csv = readFileSync(csvPath, 'utf-8')
@@ -118,7 +118,7 @@ const valueLines = rows
   .join(',\n')
 
 const sql = `-- qcs: quality controls for data
--- Generated from src/other/qcs.csv
+-- Generated from seed-data/qcs.csv
 -- Run \`node backend/db/generate_qcs_sql.mjs\` from project root to regenerate after editing the CSV.
 --
 -- place_level: NULL means the QC applies to all place levels (1 and 2).

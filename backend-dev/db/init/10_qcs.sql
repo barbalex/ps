@@ -1,5 +1,5 @@
 -- qcs: quality controls for data
--- Generated from src/other/qcs.csv
+-- Generated from seed-data/qcs.csv
 -- Run `node backend/db/generate_qcs_sql.mjs` from project root to regenerate after editing the CSV.
 --
 -- place_level: NULL means the QC applies to all place levels (1 and 2).
