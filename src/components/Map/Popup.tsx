@@ -22,10 +22,10 @@ export const Popup = ({
   return (
     <div
       style={{
-        maxHeight: mapSize.y - 40,
-        maxWidth: mapSize.x - 60,
-      }}
-      className={styles.container}
+        '--popup-max-height': `${Math.max((mapSize?.y ?? 0) - 40, 0)}px`,
+        '--popup-max-width': `${Math.max((mapSize?.x ?? 0) - 60, 0)}px`,
+      } as React.CSSProperties}
+      className={`${styles.container} ${styles.containerSized}`}
     >
       {layersData.map((ld, index) => (
         <div key={`${ld.label}/${index}`}>

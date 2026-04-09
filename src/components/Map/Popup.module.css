@@ -3,6 +3,11 @@
   margin-right: -5px;
 }
 
+.containerSized {
+  max-height: var(--popup-max-height);
+  max-width: var(--popup-max-width);
+}
+
 .label {
   color: rgba(0, 0, 0, 0.6);
   overflow-wrap: anywhere;

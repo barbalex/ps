@@ -18,16 +18,17 @@ export const Dropdown = ({
   if (!boundingRect) return null
 
   const rootHeight = document.getElementById('root')?.clientHeight
+  const dropdownWidth = typeof width === 'number' ? `${width}px` : (width ?? 'auto')
 
   return createPortal(
     <div
       style={{
-        maxHeight: open ? `${scales.length * 2}em` : 0,
-        bottom: rootHeight - boundingRect.y - 1,
-        left: boundingRect.x,
-        width,
-      }}
-      className={`${styles.container}${open ? ` ${styles.open}` : ''}`}
+        '--dropdown-max-height': `${scales.length * 2}em`,
+        '--dropdown-bottom': `${Number(rootHeight ?? 0) - boundingRect.y - 1}px`,
+        '--dropdown-left': `${boundingRect.x}px`,
+        '--dropdown-width': dropdownWidth,
+      } as React.CSSProperties}
+      className={`${styles.container} ${styles.containerPositioned}${open ? ` ${styles.open}` : ''}`}
     >
       {scales.map((scale) => (
         <Item

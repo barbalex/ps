@@ -46,7 +46,10 @@ export const ScaleControl = () => {
   }, [map, update])
 
   return (
-    <div className={styles.div} style={{ width }}>
+    <div
+      className={`${styles.div} ${styles.divSized}`}
+      style={{ '--scale-width': `${width}px` } as React.CSSProperties}
+    >
       {text}
     </div>
   )

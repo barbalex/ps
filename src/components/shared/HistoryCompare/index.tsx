@@ -165,10 +165,10 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
   }) => (
     <HistoryValueListScroller>
       <div
-        className={styles.sliderTrack}
+        className={`${styles.sliderTrack} ${styles.sliderTrackShifted}`}
         style={{
-          transform: `translateX(-${selectedIndex * 100}%)`,
-        }}
+          '--history-track-transform': `translateX(-${selectedIndex * 100}%)`,
+        } as React.CSSProperties}
       >
         {historiesToRender.map((history, index) => (
           <div

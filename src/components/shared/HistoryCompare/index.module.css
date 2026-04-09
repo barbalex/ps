@@ -104,6 +104,10 @@
   min-width: 0;
 }
 
+.sliderTrackShifted {
+  transform: var(--history-track-transform);
+}
+
 .slide {
   display: flex;
   flex-direction: column;

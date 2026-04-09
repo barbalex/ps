@@ -6,3 +6,7 @@
   align-items: center;
   padding: 2px 0;
 }
+
+.divSized {
+  width: var(--scale-width);
+}

@@ -77,17 +77,13 @@ export const Row = ({
     <div
       ref={rowRef}
       className={`row ${styles.rowContainer}`}
+      style={{ '--swipe-offset': `${swipeOffset}px` } as React.CSSProperties}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       {onDelete && (
-        <div
-          className={styles.deleteBackground}
-          style={{
-            width: `${swipeOffset}px`,
-          }}
-        >
+        <div className={styles.deleteBackground}>
           <div
             className={`${styles.deleteIcon} ${isOverThreshold ? styles.deleteIconRed : ''}`}
           >
@@ -110,9 +106,6 @@ export const Row = ({
       )}
       <div
         className={`${styles.rowContent}${showConfirm ? ` ${styles.rowContentNoTransition}` : ''}`}
-        style={{
-          transform: `translateX(${swipeOffset}px)`,
-        }}
       >
         {imgSrc ? (
           <img

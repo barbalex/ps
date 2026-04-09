@@ -48,8 +48,10 @@ export const BackgroundTasks = () => {
           {task.status === 'running' && (
             <div className={styles.progressBar}>
               <div
-                className={styles.progressFill}
-                style={{ width: `${(task.progress / task.total) * 100}%` }}
+                className={`${styles.progressFill} ${styles.progressFillSized}`}
+                style={{
+                  '--progress-width': `${(task.progress / task.total) * 100}%`,
+                } as React.CSSProperties}
               />
             </div>
           )}

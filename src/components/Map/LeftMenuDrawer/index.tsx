@@ -142,11 +142,9 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
         )}
         <InlineDrawer
           open={!mapHideUi}
-          className={`map-layers-drawer ${styles.drawer}`}
+          className={`map-layers-drawer ${styles.drawer}${isNarrow ? ` ${styles.drawerNarrow}` : ` ${styles.drawerWide}`}`}
           ref={sidebarRef}
-          style={{
-            ...(isNarrow ? { height: size } : { width: size }),
-          }}
+          style={{ '--left-drawer-size': `${size}px` } as React.CSSProperties}
           position={isNarrow ? 'bottom' : 'start'}
           onMouseDown={(e) => isResizing && e.preventDefault()}
         >

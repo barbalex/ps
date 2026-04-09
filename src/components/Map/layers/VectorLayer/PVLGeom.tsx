@@ -189,15 +189,16 @@ export const PVLGeom = ({ layer, display }) => {
             })
           }
           const Component = icons[display.marker_symbol] ?? icons.MdPlace
+          const markerIconStyle = {
+            '--marker-size': `${display?.marker_size ?? 16}px`,
+            ...(display?.color ? { '--marker-color': display.color } : {}),
+          } as React.CSSProperties
           return L.marker(latlng, {
             icon: new L.divIcon({
               html: ReactDOMServer.renderToString(
                 <Component
-                  className={styles.markerIcon}
-                  style={{
-                    color: display?.color,
-                    fontSize: display?.marker_size ?? 16,
-                  }}
+                  className={`${styles.markerIcon} ${styles.markerIconSized}`}
+                  style={markerIconStyle}
                 />,
               ),
             }),

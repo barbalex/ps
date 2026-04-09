@@ -43,6 +43,14 @@
   }
 }
 
+.drawerNarrow {
+  height: var(--right-drawer-size) !important;
+}
+
+.drawerWide {
+  width: var(--right-drawer-size);
+}
+
 .dragging {
   pointer-events: none;
 }

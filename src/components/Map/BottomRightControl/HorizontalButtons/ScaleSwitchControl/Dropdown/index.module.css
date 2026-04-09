@@ -2,11 +2,17 @@
   padding: 0 5px;
   border-bottom: none;
   background: white;
-  max-height: 30em;
   overflow-y: hidden;
   transition: max-height 0.2s ease-in-out;
   position: absolute;
   z-index: 1000;
+}
+
+.containerPositioned {
+  max-height: var(--dropdown-max-height);
+  bottom: var(--dropdown-bottom);
+  left: var(--dropdown-left);
+  width: var(--dropdown-width);
 }
 
 .open {

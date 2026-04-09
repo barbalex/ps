@@ -47,6 +47,14 @@
   }
 }
 
+.drawerNarrow {
+  height: var(--left-drawer-size) !important;
+}
+
+.drawerWide {
+  width: var(--left-drawer-size);
+}
+
 .toggleButton {
   position: absolute;
   z-index: 100000000;

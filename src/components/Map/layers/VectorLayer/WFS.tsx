@@ -281,16 +281,18 @@ export const WFS = ({ layer, layerPresentation }) => {
           }
 
           const IconComponent = icons[display?.marker_symbol]
+          const markerIconStyle = {
+            '--marker-color': display.color ?? '#cc756b',
+            '--marker-size': `${display.marker_size ?? 16}px`,
+          } as React.CSSProperties
 
           return IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
-                      style={{
-                        color: display.color ?? '#cc756b',
-                        fontSize: display.marker_size ?? 16,
-                      }}
+                      className={`${styles.markerIcon} ${styles.markerIconSized}`}
+                      style={markerIconStyle}
                     />,
                   ),
                 }),
