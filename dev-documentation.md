@@ -1,6 +1,9 @@
 **Developer Documentation**
 
-This file serves the developer(s) and AI. It's goal is to ensure
+This file serves the developer(s) and AI. It's goals are:
+
+1. ensure consistent coding
+2. facilitate introducing new devs / AI's
 
 # Styling
 
@@ -45,8 +48,8 @@ Edit SQL files only in:
   - `test_history_tables_smoke.sql`
   - `test_history_tables_full_coverage.sql`
 
-Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
-Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
+  Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
+  Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
 
 ## Sync Commands
 
