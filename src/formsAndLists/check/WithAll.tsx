@@ -28,6 +28,7 @@ import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Checks from '../../models/public/Checks.ts'
+import styles from './WithAll.module.css'
 
 import '../../form.css'
 
@@ -222,8 +223,8 @@ export const CheckWithAll = ({
                 parentUrl={checkUrl}
                 listUrl={quantitiesUrl}
                 isOpen={isQuantitiesOpen}
-                titleStyle={{ marginBottom: 0 }}
-                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                titleClassName={styles.sectionTitle}
+                childrenClassName={styles.sectionChildren}
                 headerActions={quantitiesHeaderActions}
               >
                 {isQuantitiesOpen && <Outlet />}
@@ -237,8 +238,8 @@ export const CheckWithAll = ({
                 parentUrl={checkUrl}
                 listUrl={taxaUrl}
                 isOpen={isTaxaOpen}
-                titleStyle={{ marginBottom: 0 }}
-                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                titleClassName={styles.sectionTitle}
+                childrenClassName={styles.sectionChildren}
                 headerActions={taxaHeaderActions}
               >
                 {isTaxaOpen && <Outlet />}
@@ -252,8 +253,8 @@ export const CheckWithAll = ({
                 parentUrl={checkUrl}
                 listUrl={filesUrl}
                 isOpen={isFilesOpen}
-                titleStyle={{ marginBottom: 0 }}
-                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                titleClassName={styles.sectionTitle}
+                childrenClassName={styles.sectionChildren}
                 headerActions={fileHeaderActions}
               >
                 {isFilesOpen && <Outlet />}

@@ -26,6 +26,7 @@ import { createField } from '../../modules/createRows.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { addOperationAtom, fieldsFilterAtom } from '../../store.ts'
 import { accountTypeOptions } from '../../modules/constants.ts'
+import styles from './index.module.css'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 
@@ -227,8 +228,8 @@ export const Account = () => {
             parentUrl={accountUrl}
             listUrl={fieldsUrl}
             isOpen={isFieldsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={fieldsHeaderActions}
           >
             {isFieldsOpen &&

@@ -39,6 +39,7 @@ import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import type Subprojects from '../../models/public/Subprojects.ts'
 import type Projects from '../../models/public/Projects.ts'
+import styles from './WithFiles.module.css'
 
 import '../../form.css'
 
@@ -271,8 +272,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             parentUrl={subprojectUrl}
             listUrl={reportsUrl}
             isOpen={isReportsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={subprojectReportHeaderActions}
           >
             {isReportsOpen &&
@@ -287,8 +288,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             parentUrl={subprojectUrl}
             listUrl={taxaUrl}
             isOpen={isTaxaOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={subprojectTaxaHeaderActions}
           >
             {isTaxaOpen &&
@@ -307,8 +308,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             parentUrl={subprojectUrl}
             listUrl={usersUrl}
             isOpen={isUsersOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={subprojectUserHeaderActions}
           >
             {isUsersOpen &&
@@ -323,8 +324,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             parentUrl={subprojectUrl}
             listUrl={filesUrl}
             isOpen={isFilesOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={fileHeaderActions}
           >
             {isFilesOpen && <Outlet />}

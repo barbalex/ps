@@ -15,6 +15,8 @@ export const Section = ({
   isOpen = undefined,
   titleStyle = undefined,
   childrenStyle = undefined,
+  titleClassName = undefined,
+  childrenClassName = undefined,
   headerActions = undefined,
   parentUrl = undefined,
   listUrl = undefined,
@@ -60,7 +62,7 @@ export const Section = ({
     <section>
       <div ref={sentinelRef} className={styles.sentinel} />
       <h2
-        className={`${styles.title}${isStuck ? ` ${styles.titleStuck}` : ''}${effectiveHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}`}
+        className={`${styles.title}${isStuck ? ` ${styles.titleStuck}` : ''}${effectiveHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}${titleClassName ? ` ${titleClassName}` : ''}`}
         onClick={onNavigate ?? effectiveHeaderClick}
         style={titleStyle}
       >
@@ -93,7 +95,7 @@ export const Section = ({
       </h2>
       {isOpen !== false && (
         <div
-          className={`${styles.children}${isOpen ? ` ${styles.childrenOpen}` : ''}`}
+          className={`${styles.children}${isOpen ? ` ${styles.childrenOpen}` : ''}${childrenClassName ? ` ${childrenClassName}` : ''}`}
           style={childrenStyle}
         >
           {children}

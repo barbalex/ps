@@ -21,6 +21,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type Goals from '../../models/public/Goals.ts'
+import styles from './WithReports.module.css'
 
 import '../../form.css'
 
@@ -135,8 +136,8 @@ export const GoalWithReports = ({ from }) => {
             parentUrl={goalUrl}
             listUrl={reportsUrl}
             isOpen={isReportsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={reportHeaderActions}
           >
             {isReportsOpen &&

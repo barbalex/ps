@@ -32,6 +32,7 @@ import {
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Places from '../../models/public/Places.ts'
+import styles from './WithFiles.module.css'
 
 import '../../form.css'
 
@@ -230,8 +231,8 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
             parentUrl={placeUrl}
             listUrl={usersUrl}
             isOpen={isUsersOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={placeUserHeaderActions}
           >
             {isUsersOpen &&
@@ -250,8 +251,8 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
             parentUrl={placeUrl}
             listUrl={filesUrl}
             isOpen={isFilesOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={fileHeaderActions}
           >
             {isFilesOpen && <Outlet />}

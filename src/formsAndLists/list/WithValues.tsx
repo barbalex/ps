@@ -20,6 +20,7 @@ import { Section } from '../../components/shared/Section.tsx'
 import { Delete } from '../../components/FormMenu/Delete.tsx'
 import { addOperationAtom, pgliteDbAtom, store } from '../../store.ts'
 import type Lists from '../../models/public/Lists.ts'
+import styles from './WithValues.module.css'
 
 import '../../form.css'
 
@@ -184,8 +185,8 @@ export const ListWithValues = ({ from }: { from: string }) => {
             parentUrl={listBaseUrl}
             listUrl={valuesUrl}
             isOpen={isListValuesOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={valuesHeaderActions}
           >
             {isListValuesOpen &&

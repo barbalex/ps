@@ -20,6 +20,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type CheckReports from '../../models/public/CheckReports.ts'
+import styles from './WithQuantities.module.css'
 
 import '../../form.css'
 
@@ -136,8 +137,8 @@ export const CheckReportWithQuantities = ({ from }) => {
                 parentUrl={checkReportBaseUrl}
                 listUrl={quantitiesUrl}
                 isOpen={isQuantitiesOpen}
-                titleStyle={{ marginBottom: 0 }}
-                childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+                titleClassName={styles.sectionTitle}
+                childrenClassName={styles.sectionChildren}
                 headerActions={quantitiesHeaderActions}
               >
                 {isQuantitiesOpen && <Outlet />}

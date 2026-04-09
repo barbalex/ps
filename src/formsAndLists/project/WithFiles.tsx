@@ -36,6 +36,7 @@ import {
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import type Projects from '../../models/public/Projects.ts'
+import styles from './WithFiles.module.css'
 
 import '../../form.css'
 
@@ -278,8 +279,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             parentUrl={projectUrl}
             listUrl={filesUrl}
             isOpen={isFilesOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={fileHeaderActions}
           >
             {isFilesOpen &&
@@ -298,8 +299,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             parentUrl={projectUrl}
             listUrl={reportsUrl}
             isOpen={isReportsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={reportHeaderActions}
           >
             {isReportsOpen &&
@@ -314,8 +315,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             parentUrl={projectUrl}
             listUrl={usersUrl}
             isOpen={isUsersOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={projectUserHeaderActions}
           >
             {isUsersOpen &&
@@ -330,8 +331,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             parentUrl={projectUrl}
             listUrl={unitsUrl}
             isOpen={isUnitsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={unitsHeaderActions}
           >
             {isUnitsOpen &&
@@ -346,8 +347,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             parentUrl={projectUrl}
             listUrl={fieldsUrl}
             isOpen={isFieldsOpen}
-            titleStyle={{ marginBottom: 0 }}
-            childrenStyle={{ marginLeft: -10, marginRight: -10 }}
+            titleClassName={styles.sectionTitle}
+            childrenClassName={styles.sectionChildren}
             headerActions={fieldsHeaderActions}
           >
             {isFieldsOpen &&
