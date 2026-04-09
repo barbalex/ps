@@ -10,17 +10,15 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
-  const {
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    checkId,
-    checkTaxonId,
-  } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2, checkId, checkTaxonId } =
+    useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const checkTaxonTitle = formatMessage({
+    id: '1kFtKf',
+    defaultMessage: 'Kontroll-Taxon',
+  })
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/taxa/${checkTaxonId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/taxa/${checkTaxonId}`
@@ -116,14 +114,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
+      title={checkTaxonTitle}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
+      tableName={checkTaxonTitle}
       siblings={
         <HistoryToggleButton
           historiesPath={`${basePath}/histories`}

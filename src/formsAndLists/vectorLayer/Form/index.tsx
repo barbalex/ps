@@ -25,6 +25,11 @@ export const VectorLayerForm = ({
   from,
 }) => {
   const { formatMessage } = useIntl()
+  const nameLabel = formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })
+  const designationLabel = formatMessage({
+    id: 'Fl3jPw',
+    defaultMessage: 'Bezeichnung',
+  })
   const vectorLayerTypeLabelMap = Object.fromEntries(
     vectorLayerTypeOptions
       .filter((o) => ['wfs', 'upload', 'own'].includes(o.value))
@@ -95,10 +100,7 @@ export const VectorLayerForm = ({
         row?.wfs_service_id &&
         row.wfs_service_layer_name && (
           <TextField
-            label={formatMessage({
-              id: 'XkV5yZ',
-              defaultMessage: 'Name',
-            })}
+            label={nameLabel}
             name="label"
             value={row.label ?? ''}
             onChange={onChange}
@@ -108,7 +110,7 @@ export const VectorLayerForm = ({
         )}
       {row?.type === 'own' && (
         <TextField
-          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
+          label={nameLabel}
           name="label"
           value={row.label ?? ''}
           onChange={onChange}
@@ -120,10 +122,7 @@ export const VectorLayerForm = ({
         <>
           {isFilter ? (
             <TextField
-              label={formatMessage({
-                id: 'Fl3jPw',
-                defaultMessage: 'Bezeichnung',
-              })}
+              label={designationLabel}
               name="label"
               value={row.label ?? ''}
               onChange={onChange}
@@ -132,10 +131,7 @@ export const VectorLayerForm = ({
             />
           ) : (
             <TextFieldInactive
-              label={formatMessage({
-                id: 'Fl3jPw',
-                defaultMessage: 'Bezeichnung',
-              })}
+              label={designationLabel}
               name="label"
               value={row.label}
             />
