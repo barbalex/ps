@@ -10,6 +10,7 @@ import { useSubprojectQcsNavData } from '../modules/useSubprojectQcsNavData.ts'
 import { CheckboxField } from '../components/shared/CheckboxField.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { addOperationAtom, languageAtom } from '../store.ts'
+import styles from './subprojectQcs.module.css'
 
 import '../form.css'
 
@@ -132,15 +133,7 @@ export const SubprojectQcs = ({ from }) => {
       <div className="list-view-header">
         <h1>{navData.label}</h1>
       </div>
-      <div
-        style={{
-          padding: '8px 10px',
-          display: 'flex',
-          gap: '8px',
-          flexWrap: 'wrap',
-          alignItems: 'flex-end',
-        }}
-      >
+      <div className={styles.filters}>
         <Field
           label={formatMessage({
             id: 'subprojectQcs.filter',
@@ -172,7 +165,7 @@ export const SubprojectQcs = ({ from }) => {
       </div>
       <div className="list-container">
         {filteredQcs.length === 0 ? (
-          <div style={{ padding: '10px' }}>
+          <div className={styles.empty}>
             {formatMessage({
               id: 'subprojectQcs.empty',
               defaultMessage: 'Keine Qualitätskontrollen vorhanden',

@@ -22,3 +22,7 @@
 .actions {
   align-self: flex-end;
 }
+
+.emptyMessage {
+  padding: 12px 0;
+}

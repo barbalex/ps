@@ -99,7 +99,7 @@ export const ObservationAssignChooser = () => {
                 ))}
               </MenuList>
             ) : (
-              <div style={{ padding: '12px 0' }}>
+              <div className={styles.emptyMessage}>
                 No places found within approximately 40 pixels of the drop
                 location. Try dropping closer to a place or zooming in.
               </div>
