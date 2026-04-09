@@ -8,3 +8,7 @@
   position: absolute;
   z-index: 1000;
 }
+
+.open {
+  border: 1px solid black;
+}

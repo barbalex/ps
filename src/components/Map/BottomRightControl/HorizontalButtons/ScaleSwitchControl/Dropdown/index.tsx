@@ -23,12 +23,11 @@ export const Dropdown = ({
     <div
       style={{
         maxHeight: open ? `${scales.length * 2}em` : 0,
-        border: open ? '1px solid black' : 'none',
         bottom: rootHeight - boundingRect.y - 1,
         left: boundingRect.x,
         width,
       }}
-      className={styles.container}
+      className={`${styles.container}${open ? ` ${styles.open}` : ''}`}
     >
       {scales.map((scale) => (
         <Item

@@ -15,6 +15,7 @@ import {
   placesToAssignObservationToAtom,
 } from '../../../../store.ts'
 import { observationMarkers } from './observationMarkers.ts'
+import styles from './TableLayer.module.css'
 
 export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdField = null }) => {
   const confirmAssigningToSingleTarget = useAtomValue(
@@ -267,10 +268,10 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
+                      className={styles.markerIcon}
                       style={{
                         color: displayToUse.color ?? '#cc756b',
                         fontSize: markerSize,
-                        filter: 'drop-shadow(0 0 2px rgb(0 0 0 / 1))',
                       }}
                     />,
                   ),

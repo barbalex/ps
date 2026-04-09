@@ -13,6 +13,7 @@ import {
   addNotificationAtom,
   removeNotificationAtom,
 } from '../../../../store.ts'
+import styles from './PVLGeom.module.css'
 
 // const bboxBuffer = 0.01
 
@@ -192,10 +193,10 @@ export const PVLGeom = ({ layer, display }) => {
             icon: new L.divIcon({
               html: ReactDOMServer.renderToString(
                 <Component
+                  className={styles.markerIcon}
                   style={{
                     color: display?.color,
                     fontSize: display?.marker_size ?? 16,
-                    filter: 'drop-shadow(0 0 2px rgb(0 0 0 / 1))',
                   }}
                 />,
               ),
