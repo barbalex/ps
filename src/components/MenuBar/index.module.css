@@ -58,6 +58,30 @@
   overflow: hidden;
   padding: 3px !important;
 }
+
+.menuContent button {
+  color: #1f1f1f !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+.menuContent button:hover {
+  background-color: #f3f3f3 !important;
+}
+
+.menuContent button:disabled {
+  color: rgba(0, 0, 0, 0.45) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.menuContent [role='menuitem'] {
+  color: #1f1f1f;
+}
+
+.menuContent [role='menuitem']:hover {
+  background-color: #f3f3f3;
+}
+
 .button {
   margin-left: 5px;
 }
