@@ -46,7 +46,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
     fc.features.forEach((f) => {
       f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created
-      for (const [key, value] of Object.entries(data)) {
+      for (const [key, value] of Object.entries(data ?? {})) {
         // ensure that properties are not overwritten
         // but also make sure if key is used for styling, it is not changed...
         if (key in properties) {
