@@ -14,6 +14,8 @@ import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import { IntlProvider, useIntl } from 'react-intl'
+import { Analytics } from '@vercel/analytics/next'
+
 import { version as appVersion } from '../package.json'
 
 import en from './i18n/en.json'
@@ -128,6 +130,7 @@ export const App = () => {
           </FluentProvider>
         </PGliteProvider>
       </IntlProvider>
+      <Analytics />
     </JotaiProvider>
   )
 }
