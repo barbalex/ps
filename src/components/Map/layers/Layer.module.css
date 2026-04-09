@@ -1,0 +1,3 @@
+.pane {
+  z-index: var(--pane-z-index);
+}

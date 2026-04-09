@@ -263,6 +263,11 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
           clickableCircle.vectorLayerLabel = layer?.label
           clickableCircle._isInternal = true
 
+          const markerIconStyle = {
+            '--marker-color': displayToUse.color ?? '#cc756b',
+            '--marker-size': `${markerSize}px`,
+          } as React.CSSProperties
+
           const marker = IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
@@ -271,10 +276,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
                   html: ReactDOMServer.renderToString(
                     <IconComponent
                       className={`${styles.markerIcon} ${styles.markerIconSized}`}
-                      style={{
-                        '--marker-color': displayToUse.color ?? '#cc756b',
-                        '--marker-size': `${markerSize}px`,
-                      } as React.CSSProperties}
+                      style={markerIconStyle}
                     />,
                   ),
                   className: isDraggable

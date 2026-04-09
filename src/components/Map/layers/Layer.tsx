@@ -10,6 +10,7 @@ import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { mapLayerSortingAtom } from '../../../store.ts'
 import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
+import styles from './Layer.module.css'
 
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
@@ -111,9 +112,8 @@ export const Layer = ({ layerPresentationId, index }) => {
 
   // // todo: add key, layerPresentationId
   if (wmsLayer) {
-    wmsLayer.opacity =
-      layerPresentation.opacity_percent ?
-        layerPresentation.opacity_percent / 100
+    wmsLayer.opacity = layerPresentation.opacity_percent
+      ? layerPresentation.opacity_percent / 100
       : 1
     const partsToRedrawOn = {
       max_zoom: layerPresentation.max_zoom,
@@ -130,7 +130,10 @@ export const Layer = ({ layerPresentationId, index }) => {
       <Pane
         key={`${layerPresentationId}/${mapLayerSorting.join()}`}
         name={wmsLayer.label}
-        style={{ zIndex: paneBaseIndex - index }}
+        className={styles.pane}
+        style={
+          { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
+        }
       >
         <WmsLayerComponent
           key={JSON.stringify(partsToRedrawOn)}
@@ -148,7 +151,10 @@ export const Layer = ({ layerPresentationId, index }) => {
       <Pane
         key={`${layerPresentationId}/${mapLayerSorting.join()}`}
         name={vectorLayer.label}
-        style={{ zIndex: paneBaseIndex - index }}
+        className={styles.pane}
+        style={
+          { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
+        }
       >
         <VectorLayerChooser
           layerPresentation={layerPresentation}
@@ -159,9 +165,8 @@ export const Layer = ({ layerPresentationId, index }) => {
   }
 
   if (isTableLayer) {
-    const componentKey =
-      vectorLayer.own_table_level ?
-        `${vectorLayer.own_table}${vectorLayer.own_table_level}`
+    const componentKey = vectorLayer.own_table_level
+      ? `${vectorLayer.own_table}${vectorLayer.own_table_level}`
       : vectorLayer.own_table
     const Component = tableLayerToComponent[componentKey]
 
@@ -183,7 +188,10 @@ export const Layer = ({ layerPresentationId, index }) => {
       <Pane
         key={`${layerPresentationId}/${mapLayerSorting.join()}`}
         name={vectorLayer.label}
-        style={{ zIndex: paneBaseIndex - index }}
+        className={styles.pane}
+        style={
+          { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
+        }
       >
         <Component
           key={layerPresentationId}
