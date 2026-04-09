@@ -14,6 +14,7 @@ import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import { IntlProvider, useIntl } from 'react-intl'
+import { version as appVersion } from '../package.json'
 
 import en from './i18n/en.json'
 import fr from './i18n/fr.json'
@@ -84,10 +85,11 @@ export const App = () => {
     const titles: Record<string, string> = {
       de: 'Arten fördern',
       en: 'Promote Species',
-      fr: 'Promouvoir les espèces',
-      it: 'Promuovere le specie',
+      fr: 'Promouvoir espèces',
+      it: 'Promuovere specie',
     }
-    document.title = titles[language] ?? 'Arten fördern'
+    const baseTitle = titles[language] ?? 'Arten fördern'
+    document.title = `${baseTitle} ${appVersion}`
   }, [language])
 
   return (
