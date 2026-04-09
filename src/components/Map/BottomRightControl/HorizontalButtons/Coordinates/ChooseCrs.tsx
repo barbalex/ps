@@ -1,12 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Button,
-  Menu,
-  MenuTrigger,
-  MenuList,
-  MenuPopover,
-  MenuItemRadio,
-} = fluentUiReactComponents
+const { Button, Menu, MenuTrigger, MenuList, MenuPopover, MenuItemRadio } =
+  fluentUiReactComponents
 import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -25,6 +19,10 @@ export const ChooseCrs = () => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const chooseCrsLabel = formatMessage({
+    id: 'Qb3CdE',
+    defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)',
+  })
 
   const resProjectCrs = useLiveQuery(
     `SELECT * FROM project_crs WHERE project_id = $1`,
@@ -69,8 +67,8 @@ export const ChooseCrs = () => {
       <MenuTrigger disableButtonEnhancement>
         <Button
           icon={<BsGlobe2 />}
-          aria-label={formatMessage({ id: 'Qb3CdE', defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)' })}
-          title={formatMessage({ id: 'Qb3CdE', defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)' })}
+          aria-label={chooseCrsLabel}
+          title={chooseCrsLabel}
           size="small"
         />
       </MenuTrigger>
