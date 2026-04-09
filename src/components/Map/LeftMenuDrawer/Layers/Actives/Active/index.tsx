@@ -145,10 +145,7 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
     )
   }, [index, instanceId, layer, layerCount, registerItem])
 
-  const accordionStyle = {
-    '--top-border-width': isOpen ? 3 : 1,
-    '--bottom-border-width': isOpen ? 3 : isLast ? 1 : 0,
-  }
+  const accordionClassName = `${styles.accordionItem}${isOpen ? ` ${styles.accordionOpen}` : isLast ? ` ${styles.accordionLast}` : ''}`
 
   // drag and drop items by dragging the drag icon
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
@@ -157,8 +154,7 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
       <AccordionItem
         value={layer.layer_presentation_id}
         ref={elementRef}
-        className={styles.accordionItem}
-        style={accordionStyle}
+        className={accordionClassName}
       >
         <Content
           layer={layer}

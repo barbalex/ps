@@ -75,11 +75,7 @@ export const OwnLayer = ({ layer, isLast, isOpen }) => {
     <ErrorBoundary>
       <AccordionItem
         value={layer.vector_layer_id}
-        className={styles.accordionItem}
-        style={{
-          '--top-border-width': isOpen ? 3 : 1,
-          '--bottom-border-width': isOpen ? 3 : isLast ? 1 : 0,
-        }}
+        className={`${styles.accordionItem}${isOpen ? ` ${styles.accordionOpen}` : isLast ? ` ${styles.accordionLast}` : ''}`}
       >
         <AccordionHeader
           expandIconPosition="end"

@@ -4,13 +4,7 @@ import { Transition } from 'react-transition-group'
 import { Label } from './Label.tsx'
 
 import './style.css'
-
-const transitionStyles = {
-  entering: { opacity: 1 },
-  entered: { opacity: 1 },
-  exiting: { opacity: 0 },
-  exited: { opacity: 0 },
-}
+import styles from './index.module.css'
 
 export const Crumb = ({ navData, in: inProp }) => {
   const outerContainerRef = useRef(null)
@@ -26,16 +20,17 @@ export const Crumb = ({ navData, in: inProp }) => {
       nodeRef={labelRef}
     >
       {(state) => (
-        <div
-          className="crumb-outer-container"
-          ref={outerContainerRef}
-        >
+        <div className="crumb-outer-container" ref={outerContainerRef}>
           <div className="crumb-container">
             <Label
               navData={navData}
               outerContainerRef={outerContainerRef}
               ref={labelRef}
-              labelStyle={transitionStyles[state]}
+              labelClassName={
+                ['entering', 'entered'].includes(state)
+                  ? styles.labelVisible
+                  : styles.labelHidden
+              }
             />
           </div>
         </div>

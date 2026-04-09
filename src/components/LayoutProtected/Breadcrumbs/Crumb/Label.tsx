@@ -2,7 +2,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 
-export const Label = ({ navData, outerContainerRef, labelStyle, ref }) => {
+export const Label = ({ navData, outerContainerRef, labelClassName, ref }) => {
   const { pathname } = useLocation()
 
   // issue: relative paths are not working!!!???
@@ -49,12 +49,12 @@ export const Label = ({ navData, outerContainerRef, labelStyle, ref }) => {
       to={navData.ownUrl}
       onClick={onClick}
       ref={ref}
-      style={labelStyle}
+      className={`crumb-label-link ${labelClassName ?? ''}`}
     >
       {navData.labelShort ?? navData.label}
     </Link>
   ) : (
-    <div className="crumb-label-text" ref={ref} style={labelStyle}>
+    <div className={`crumb-label-text ${labelClassName ?? ''}`} ref={ref}>
       {navData.labelShort ?? navData.label}
     </div>
   )

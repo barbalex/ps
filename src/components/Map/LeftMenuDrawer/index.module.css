@@ -63,3 +63,7 @@
     transform: unset;
   }
 }
+
+.dragging {
+  pointer-events: none;
+}

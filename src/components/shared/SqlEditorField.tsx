@@ -4,7 +4,7 @@ import { sql } from '@codemirror/lang-sql'
 import { EditorView } from '@codemirror/view'
 import { oneDark } from '@codemirror/theme-one-dark'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Label, Text, tokens } = fluentUiReactComponents
+const { Label, Text } = fluentUiReactComponents
 
 import styles from './SqlEditorField.module.css'
 
@@ -45,14 +45,7 @@ export const SqlEditorField = ({
         </Text>
       )}
       <div
-        className={styles.editorWrapper}
-        style={
-          validationState === 'error'
-            ? { outline: `2px solid ${tokens.colorPaletteRedBorder2}` }
-            : validationState === 'warning'
-              ? { outline: `2px solid ${tokens.colorPaletteYellowBorder2}` }
-              : {}
-        }
+        className={`${styles.editorWrapper}${validationState === 'error' ? ` ${styles.editorWrapperError}` : validationState === 'warning' ? ` ${styles.editorWrapperWarning}` : ''}`}
       >
         <CodeMirror
           value={value ?? ''}

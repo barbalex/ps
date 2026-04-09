@@ -20,3 +20,12 @@
 .toggleOpen {
   background-color: transparent !important;
 }
+
+.accordionOpen {
+  --top-border-width: 3;
+  --bottom-border-width: 3;
+}
+
+.accordionLast {
+  --bottom-border-width: 1;
+}

@@ -23,6 +23,14 @@
   min-height: 180px;
 }
 
+.editorWrapperError {
+  outline: 2px solid var(--colorPaletteRedBorder2);
+}
+
+.editorWrapperWarning {
+  outline: 2px solid var(--colorPaletteYellowBorder2);
+}
+
 .validationError {
   color: var(--colorPaletteRedForeground3);
 }

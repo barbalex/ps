@@ -121,9 +121,8 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
 
   return (
     <div
-      className={styles.container}
+      className={`${styles.container}${isResizing ? ` ${styles.dragging}` : ''}`}
       // dragging can mark text so we disable pointer events
-      style={isResizing ? { pointerEvents: 'none' } : {}}
       ref={widthRef}
     >
       <div className={styles.innerContainer} ref={scope}>
