@@ -1,11 +1,11 @@
-**Developer Documentation**
+# 0. Developer Documentation
 
 This file serves the developer(s) and AI. It's goals are:
 
 1. ensure consistent coding
 2. facilitate introducing new devs / AI's
 
-# Styling
+# 1. Styling
 
 ## Current situation
 
@@ -24,7 +24,9 @@ Use css directly, without modules, as mentioned here: https://medium.com/@rapPay
 4. use css nesting to style all the component's elements in the component's .css file
 5. add dynamic styling by dynamically changing classes (there may be cases where inline does not work?)
 
-# SQL Source Of Truth And Sync
+Is this better than using css modules? Migrating would be a chore, so let's not do it now.
+
+# 2. SQL Source Of Truth And Sync
 
 ## Why This Exists
 
