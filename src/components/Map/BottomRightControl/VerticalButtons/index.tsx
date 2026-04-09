@@ -3,13 +3,23 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Toolbar, ToolbarButton } = fluentUiReactComponents
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { useMap } from 'react-leaflet'
+import { useIntl } from 'react-intl'
 
 import { LocatingButton } from './LocatingButton.tsx'
 import { EditingGeometryButton } from './EditingGeometryButton.tsx'
 import styles from './index.module.css'
 
 export const VerticalButtons = () => {
+  const { formatMessage } = useIntl()
   const map = useMap()
+  const zoomInLabel = formatMessage({
+    id: 'mapZoomIn',
+    defaultMessage: 'Heranzoomen',
+  })
+  const zoomOutLabel = formatMessage({
+    id: 'mapZoomOut',
+    defaultMessage: 'Herauszoomen',
+  })
 
   const onClickZoomIn = () => map.zoomIn()
 
@@ -36,8 +46,8 @@ export const VerticalButtons = () => {
         <ToolbarButton
           name="zoom_in"
           onClick={onClickZoomIn}
-          aria-label="Zoom in"
-          title="Zoom in"
+          aria-label={zoomInLabel}
+          title={zoomInLabel}
           icon={<FaPlus />}
           size="large"
           className={styles.toolbarButton}
@@ -45,8 +55,8 @@ export const VerticalButtons = () => {
         <ToolbarButton
           name="zoom_out"
           onClick={onClickZoomOut}
-          aria-label="Zoom out"
-          title="Zoom out"
+          aria-label={zoomOutLabel}
+          title={zoomOutLabel}
           icon={<FaMinus />}
           size="large"
           className={styles.toolbarButton}

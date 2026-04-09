@@ -3,6 +3,7 @@ import { FaUndoAlt } from 'react-icons/fa'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { removeOperationAtom } from '../../store.ts'
 import { revertOperation } from '../../modules/revertOperation.ts'
@@ -11,6 +12,7 @@ import { idFieldFromTable } from '../../modules/idFieldFromTable.ts'
 import styles from './QueuedOperation.module.css'
 
 export const QueuedOperation = ({ qo, index }) => {
+  const { formatMessage } = useIntl()
   const removeOperation = useSetAtom(removeOperationAtom)
   const { id, time, table, rowIdName, rowId, operation, filter, draft, prev } =
     qo
@@ -45,7 +47,7 @@ export const QueuedOperation = ({ qo, index }) => {
           prev?.[rowIdName] ??
           draft?.[idFieldFromTable(table)] ??
           prev?.[idFieldFromTable(table)] ??
-          '(leer)'}
+          formatMessage({ id: 'qoEmptyValue', defaultMessage: '(leer)' })}
       </div>
       <div className={valueClass}>
         {filter ? (
@@ -53,7 +55,7 @@ export const QueuedOperation = ({ qo, index }) => {
             <code>{JSON.stringify(filter, null, 3)}</code>
           </pre>
         ) : (
-          '(kein Filter)'
+          formatMessage({ id: 'qoNoFilter', defaultMessage: '(kein Filter)' })
         )}
       </div>
       <div className={valueClass}>{operation}</div>
@@ -65,7 +67,7 @@ export const QueuedOperation = ({ qo, index }) => {
             </code>
           </pre>
         ) : (
-          '(kein Wert)'
+          formatMessage({ id: 'qoNoValue', defaultMessage: '(kein Wert)' })
         )}
       </div>
       <div className={valueClass}>
@@ -74,13 +76,13 @@ export const QueuedOperation = ({ qo, index }) => {
             <code> {JSON.stringify(draft, null, 3)}</code>
           </pre>
         ) : (
-          '(kein Wert)'
+          formatMessage({ id: 'qoNoValue', defaultMessage: '(kein Wert)' })
         )}
       </div>
       <div className={`${styles.icon} ${valueClass}`}>
         <Button
-          title="widerrufen"
-          aria-label="widerrufen"
+          title={formatMessage({ id: 'qoRevertBtn', defaultMessage: 'widerrufen' })}
+          aria-label={formatMessage({ id: 'qoRevertBtn', defaultMessage: 'widerrufen' })}
           onClick={onClickRevert}
           size="small"
           className={styles.revertButton}

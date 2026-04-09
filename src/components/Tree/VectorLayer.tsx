@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { VectorLayerDisplaysNode } from './VectorLayerDisplays.tsx'
@@ -10,6 +11,7 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -18,7 +20,8 @@ export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
     `SELECT vlds_in_vector_layer FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const vldsInVectorLayer = projectRes?.rows?.[0]?.vlds_in_vector_layer !== false
+  const vldsInVectorLayer =
+    projectRes?.rows?.[0]?.vlds_in_vector_layer !== false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = ['data', 'projects', projectId, 'vector-layers']
@@ -78,7 +81,10 @@ export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
       {isOpen && (
         <>
           <Node
-            label="Layer"
+            label={formatMessage({
+              id: 'treeLayerNodeLabel',
+              defaultMessage: 'Layer',
+            })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&

@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { TaxaNode } from './Taxa.tsx'
@@ -9,6 +10,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const TaxonomyNode = ({ projectId, nav, level = 4 }) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -53,7 +55,7 @@ export const TaxonomyNode = ({ projectId, nav, level = 4 }) => {
       {isOpen && (
         <>
           <Node
-            label="Taxonomy"
+            label={formatMessage({ id: 'treeTaxonomyNodeLabel', defaultMessage: 'Taxonomie' })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input, Field } = fluentUiReactComponents
 import { DatePicker } from '@fluentui/react-datepicker-compat'
+import { useIntl } from 'react-intl'
 
 import styles from './DateTimeField.module.css'
 
@@ -14,6 +15,27 @@ export const DateTimeField = ({
   onChange,
   button,
 }) => {
+  const { formatMessage } = useIntl()
+  const mustBeSetMessage = formatMessage({
+    id: 'dtFieldMustBeSet',
+    defaultMessage: 'muss gesetzt werden',
+  })
+  const dateLabel = formatMessage({
+    id: 'dtFieldDate',
+    defaultMessage: 'Datum',
+  })
+  const datePlaceholder = formatMessage({
+    id: 'dtFieldSelectDate',
+    defaultMessage: 'Datum auswählen oder tippen',
+  })
+  const hoursLabel = formatMessage({
+    id: 'dtFieldHours',
+    defaultMessage: 'Stunden',
+  })
+  const minutesLabel = formatMessage({
+    id: 'dtFieldMinutes',
+    defaultMessage: 'Minuten',
+  })
   const [years, setYears] = useState(value?.getFullYear?.() ?? '')
   const [months, setMonths] = useState(value?.getMonth?.() ?? '')
   const [days, setDays] = useState(value?.getDate?.() ?? '')
@@ -25,21 +47,21 @@ export const DateTimeField = ({
       ? ['none', '']
       : years !== ''
         ? ['none', '']
-        : ['warning', 'must be set']
+        : ['warning', mustBeSetMessage]
 
   const [hoursValidationState, hoursValidationMessage] =
     !value && years === '' && minutes === ''
       ? ['none', '']
       : hours !== ''
         ? ['none', '']
-        : ['warning', 'must be set']
+        : ['warning', mustBeSetMessage]
 
   const [minutesValidationState, minutesValidationMessage] =
     !value && years === '' && hours === ''
       ? ['none', '']
       : minutes !== ''
         ? ['none', '']
-        : ['warning', 'must be set']
+        : ['warning', mustBeSetMessage]
 
   const onChangeDate = (ev) => {
     const newDate = ev?.target.value
@@ -104,12 +126,12 @@ export const DateTimeField = ({
       <div className={styles.row}>
         <div className="field-group-horizontal">
           <Field
-            label="Date"
+            label={dateLabel}
             validationMessage={dateValidationMessage}
             validationState={dateValidationState}
           >
             <DatePicker
-              placeholder="Select a date or click to write"
+              placeholder={datePlaceholder}
               name={name}
               value={
                 years && months && days ? new Date(years, months, days) : null
@@ -127,7 +149,7 @@ export const DateTimeField = ({
             />
           </Field>
           <Field
-            label="Hours"
+            label={hoursLabel}
             validationMessage={hoursValidationMessage}
             validationState={hoursValidationState}
           >
@@ -141,7 +163,7 @@ export const DateTimeField = ({
             />
           </Field>
           <Field
-            label="Minutes"
+            label={minutesLabel}
             validationMessage={minutesValidationMessage}
             validationState={minutesValidationState}
           >

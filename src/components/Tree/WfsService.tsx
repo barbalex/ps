@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Node } from './Node.tsx'
 import { WfsServiceLayersNode } from './WfsServiceLayers.tsx'
@@ -9,6 +10,7 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const WfsServiceNode = ({ projectId, nav, level = 4 }) => {
+  const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -53,7 +55,10 @@ export const WfsServiceNode = ({ projectId, nav, level = 4 }) => {
       {isOpen && (
         <>
           <Node
-            label="WFS Service"
+            label={formatMessage({
+              id: 'treeWfsServiceNodeLabel',
+              defaultMessage: 'WFS-Dienst',
+            })}
             level={level + 1}
             isInActiveNodeArray={
               ownArray.every((part, i) => urlPath[i] === part) &&
@@ -62,10 +67,7 @@ export const WfsServiceNode = ({ projectId, nav, level = 4 }) => {
             isActive={isEqual(urlPath, [...ownArray, 'wfs-service'])}
             to={`${ownUrl}/wfs-service`}
           />
-          <WfsServiceLayersNode
-            projectId={projectId}
-            wfsServiceId={nav.id}
-          />
+          <WfsServiceLayersNode projectId={projectId} wfsServiceId={nav.id} />
         </>
       )}
     </>

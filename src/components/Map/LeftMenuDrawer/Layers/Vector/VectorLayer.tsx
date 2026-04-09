@@ -21,6 +21,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
@@ -45,6 +46,7 @@ import styles from './VectorLayer.module.css'
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
 export const VectorLayer = ({ layer, isLast, isOpen }) => {
+  const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
@@ -163,16 +165,16 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
                 <Button
                   size="medium"
                   icon={<MdDeleteOutline />}
-                  title={`Delete Layer '${layer.label}'`}
+                  title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label: layer.label })}
                   className={layerStyles.deleteButton}
                 />
               </MenuTrigger>
 
               <MenuPopover>
                 <MenuList>
-                  <MenuGroupHeader>{`Delete Layer '${layer.label}'?`}</MenuGroupHeader>
-                  <MenuItem onClick={onDelete}>Yes</MenuItem>
-                  <MenuItem>Noooooo!</MenuItem>
+                  <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label: layer.label })}</MenuGroupHeader>
+                  <MenuItem onClick={onDelete}>{formatMessage({ id: 'layerDeleteYes', defaultMessage: 'Ja' })}</MenuItem>
+                  <MenuItem>{formatMessage({ id: 'layerDeleteNo', defaultMessage: 'Nein' })}</MenuItem>
                 </MenuList>
               </MenuPopover>
             </Menu>

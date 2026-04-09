@@ -3,6 +3,7 @@ import { HexColorPicker } from 'react-colorful'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input, Field } = fluentUiReactComponents
 import { useDebouncedCallback } from 'use-debounce'
+import { useIntl } from 'react-intl'
 
 import styles from './ColorPicker.module.css'
 
@@ -21,6 +22,7 @@ export const ColorPicker = ({
   name,
   disabled = false,
 }: Props) => {
+  const { formatMessage } = useIntl()
   const color = colorIn ?? '#ff0000'
 
   const [val, setVal] = useState<string>(color)
@@ -55,7 +57,10 @@ export const ColorPicker = ({
     <Field label={label}>
       <HexColorPicker color={val} onChange={onChangeColorPicker} />
       <Field
-        label="Hex-Wert"
+        label={formatMessage({
+          id: 'colorPickerHexValue',
+          defaultMessage: 'Hex-Wert',
+        })}
         orientation="horizontal"
         className={styles.horizontalField}
       >

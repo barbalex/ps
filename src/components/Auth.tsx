@@ -1,10 +1,12 @@
 import { useState, FormEvent } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 
 import { signUp, signIn } from '../modules/authClient.ts'
 import styles from './Auth.module.css'
 
 export const Auth = () => {
+  const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
@@ -33,26 +35,26 @@ export const Auth = () => {
     const errors: typeof fieldErrors = {}
 
     if (!email) {
-      errors.email = 'Email is required'
+      errors.email = formatMessage({ id: 'authEmailRequired', defaultMessage: 'E-Mail ist erforderlich' })
     } else if (!validateEmail(email)) {
-      errors.email = 'Please enter a valid email'
+      errors.email = formatMessage({ id: 'authInvalidEmail', defaultMessage: 'Bitte gültige E-Mail eingeben' })
     }
 
     if (!password) {
-      errors.password = 'Password is required'
+      errors.password = formatMessage({ id: 'authPasswordRequired', defaultMessage: 'Passwort ist erforderlich' })
     } else if (password.length < 8) {
-      errors.password = 'Password must be at least 8 characters'
+      errors.password = formatMessage({ id: 'authPasswordTooShort', defaultMessage: 'Passwort muss mindestens 8 Zeichen lang sein' })
     }
 
     if (isSignUp) {
       if (!name) {
-        errors.name = 'Name is required'
+        errors.name = formatMessage({ id: 'authNameRequired', defaultMessage: 'Name ist erforderlich' })
       }
 
       if (!confirmPassword) {
-        errors.confirmPassword = 'Please confirm your password'
+        errors.confirmPassword = formatMessage({ id: 'authConfirmPasswordRequired', defaultMessage: 'Bitte Passwort bestätigen' })
       } else if (password !== confirmPassword) {
-        errors.confirmPassword = 'Passwords do not match'
+        errors.confirmPassword = formatMessage({ id: 'authPasswordMismatch', defaultMessage: 'Passwörter stimmen nicht überein' })
       }
     }
 
@@ -81,7 +83,7 @@ export const Auth = () => {
 
         if (result.error) {
           setError(
-            result.error.message || 'Failed to sign up. Please try again.',
+            result.error.message || formatMessage({ id: 'authSignUpFailed', defaultMessage: 'Registrierung fehlgeschlagen. Bitte erneut versuchen.' }),
           )
         } else {
           onLoggedIn()
@@ -94,13 +96,13 @@ export const Auth = () => {
         })
 
         if (result.error) {
-          setError(result.error.message || 'Invalid email or password.')
+          setError(result.error.message || formatMessage({ id: 'authInvalidCredentials', defaultMessage: 'Ungültige E-Mail oder Passwort.' }))
         } else {
           onLoggedIn()
         }
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.')
+      setError(formatMessage({ id: 'authUnexpectedError', defaultMessage: 'Ein unerwarteter Fehler ist aufgetreten. Bitte erneut versuchen.' }))
       console.error('Auth error:', err)
     } finally {
       setIsLoading(false)
@@ -120,10 +122,10 @@ export const Auth = () => {
       <div className={styles.authCard}>
         <div className={styles.authHeader}>
           <h1 className={styles.authTitle}>
-            {isSignUp ? 'Create Account' : 'Welcome Back'}
+            {isSignUp ? formatMessage({ id: 'authCreateAccount', defaultMessage: 'Konto erstellen' }) : formatMessage({ id: 'authWelcomeBack', defaultMessage: 'Willkommen zurück' })}
           </h1>
           <p className={styles.authSubtitle}>
-            {isSignUp ? 'Sign up to get started' : 'Sign in to continue'}
+            {isSignUp ? formatMessage({ id: 'authSignUpToStart', defaultMessage: 'Registrieren, um loszulegen' }) : formatMessage({ id: 'authSignInToContinue', defaultMessage: 'Anmelden, um fortzufahren' })}
           </p>
         </div>
 
@@ -133,7 +135,7 @@ export const Auth = () => {
           {isSignUp && (
             <div className={styles.formGroup}>
               <label htmlFor="name" className={styles.formLabel}>
-                Name
+                {formatMessage({ id: 'authNameLabel', defaultMessage: 'Name' })}
               </label>
               <input
                 id="name"
@@ -141,7 +143,7 @@ export const Auth = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className={`${styles.formInput} ${fieldErrors.name ? styles.error : ''}`}
-                placeholder="Enter your name"
+                placeholder={formatMessage({ id: 'authEnterName', defaultMessage: 'Namen eingeben' })}
                 disabled={isLoading}
               />
               {fieldErrors.name && (
@@ -152,15 +154,15 @@ export const Auth = () => {
 
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.formLabel}>
-              Email
-            </label>
+                {formatMessage({ id: 'authEmailLabel', defaultMessage: 'E-Mail' })}
+              </label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={`${styles.formInput} ${fieldErrors.email ? styles.error : ''}`}
-              placeholder="Enter your email"
+                placeholder={formatMessage({ id: 'authEnterEmail', defaultMessage: 'E-Mail eingeben' })}
               disabled={isLoading}
             />
             {fieldErrors.email && (
@@ -170,15 +172,15 @@ export const Auth = () => {
 
           <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.formLabel}>
-              Password
-            </label>
+                {formatMessage({ id: 'authPasswordLabel', defaultMessage: 'Passwort' })}
+              </label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={`${styles.formInput} ${fieldErrors.password ? styles.error : ''}`}
-              placeholder="Enter your password"
+                placeholder={formatMessage({ id: 'authEnterPassword', defaultMessage: 'Passwort eingeben' })}
               disabled={isLoading}
             />
             {fieldErrors.password && (
@@ -189,7 +191,7 @@ export const Auth = () => {
           {isSignUp && (
             <div className={styles.formGroup}>
               <label htmlFor="confirmPassword" className={styles.formLabel}>
-                Confirm Password
+                {formatMessage({ id: 'authConfirmPasswordLabel', defaultMessage: 'Passwort bestätigen' })}
               </label>
               <input
                 id="confirmPassword"
@@ -197,7 +199,7 @@ export const Auth = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`${styles.formInput} ${fieldErrors.confirmPassword ? styles.error : ''}`}
-                placeholder="Confirm your password"
+                placeholder={formatMessage({ id: 'authConfirmPasswordInput', defaultMessage: 'Passwort bestätigen' })}
                 disabled={isLoading}
               />
               {fieldErrors.confirmPassword && (
@@ -213,13 +215,13 @@ export const Auth = () => {
             className={styles.submitButton}
             disabled={isLoading}
           >
-            {isLoading ? 'Please wait...' : isSignUp ? 'Sign Up' : 'Sign In'}
+            {isLoading ? formatMessage({ id: 'authPleaseWait', defaultMessage: 'Bitte warten...' }) : isSignUp ? formatMessage({ id: 'authSignUpBtn', defaultMessage: 'Registrieren' }) : formatMessage({ id: 'authSignInBtn', defaultMessage: 'Anmelden' })}
           </button>
         </form>
 
         <div className={styles.toggleContainer}>
           <p className={styles.toggleText}>
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+            {isSignUp ? formatMessage({ id: 'authHaveAccount', defaultMessage: 'Bereits ein Konto?' }) : formatMessage({ id: 'authNoAccount', defaultMessage: 'Noch kein Konto?' })}
           </p>
           <button
             type="button"
@@ -227,7 +229,7 @@ export const Auth = () => {
             className={styles.toggleButton}
             disabled={isLoading}
           >
-            {isSignUp ? 'Sign In' : 'Sign Up'}
+            {isSignUp ? formatMessage({ id: 'authSignInBtn', defaultMessage: 'Anmelden' }) : formatMessage({ id: 'authSignUpBtn', defaultMessage: 'Registrieren' })}
           </button>
         </div>
       </div>

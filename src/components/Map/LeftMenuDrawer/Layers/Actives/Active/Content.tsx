@@ -23,6 +23,7 @@ import { FaPlay, FaStopCircle } from 'react-icons/fa'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 import axios from 'redaxios'
 import proj4 from 'proj4'
 import reproject from 'reproject'
@@ -57,6 +58,7 @@ import styles from './Content.module.css'
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
 export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
+  const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
@@ -693,16 +695,16 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
               <Button
                 size="medium"
                 icon={<MdDeleteOutline />}
-                title={`Delete Layer '${layer.label}'`}
+                title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label: layer.label })}
                 className={layerStyles.deleteButton}
               />
             </MenuTrigger>
 
             <MenuPopover>
               <MenuList>
-                <MenuGroupHeader>{`Delete Layer '${layer.label}'?`}</MenuGroupHeader>
-                <MenuItem onClick={onDelete}>Yes</MenuItem>
-                <MenuItem>Noooooo!</MenuItem>
+                <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label: layer.label })}</MenuGroupHeader>
+                <MenuItem onClick={onDelete}>{formatMessage({ id: 'layerDeleteYes', defaultMessage: 'Ja' })}</MenuItem>
+                <MenuItem>{formatMessage({ id: 'layerDeleteNo', defaultMessage: 'Nein' })}</MenuItem>
               </MenuList>
             </MenuPopover>
           </Menu>
