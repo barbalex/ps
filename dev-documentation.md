@@ -45,13 +45,14 @@ Edit SQL files only in:
 
 - `backend/db/init/`
 - `backend/db/` for these shared files:
+  - `generate_apflora_seed_sql.mjs`
   - `generate_qcs_sql.mjs`
   - `test_history_tables.sql`
   - `test_history_tables_smoke.sql`
   - `test_history_tables_full_coverage.sql`
 
-  Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
-  Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
+Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
+Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
 
 ## Sync Commands
 
@@ -65,6 +66,7 @@ This does:
 
 1. Mirrors all files from `backend/db/init/` to `backend-dev/db/init/`.
 2. Mirrors selected shared files from `backend/db/` to `backend-dev/db/`:
+   - `generate_apflora_seed_sql.mjs`
    - `generate_qcs_sql.mjs`
    - `test_history_tables.sql`
    - `test_history_tables_smoke.sql`
@@ -109,14 +111,31 @@ npm run hooks:install
 ## Typical Workflow
 
 1. Edit SQL in `backend/db/init/`.
-2. Run `npm run sync-sql`.
-3. Commit changes.
+2. If editing Apflora taxonomy CSVs in `seed-data/apflora/`, regenerate the seed file:
+
+```bash
+node backend/db/generate_apflora_seed_sql.mjs
+```
+
+This rewrites:
+
+- `backend/db/init/11_seedApfloraTaxonomies.sql`
+
+3. Run `npm run sync-sql`.
+4. Commit changes.
 
 If commit fails on SQL sync check:
 
 1. Run `npm run sync-sql`.
 2. Re-stage updated files.
 3. Commit again.
+
+## Generated Seed Files
+
+- `backend/db/init/09_seedQcs.sql`
+  Regenerate with: `node backend/db/generate_qcs_sql.mjs`
+- `backend/db/init/11_seedApfloraTaxonomies.sql`
+  Regenerate with: `node backend/db/generate_apflora_seed_sql.mjs`
 
 ## Files Involved
 

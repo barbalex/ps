@@ -22,6 +22,7 @@ const frontendMappings = [
 ]
 
 const backendDbMappings = [
+  ['generate_apflora_seed_sql.mjs', 'generate_apflora_seed_sql.mjs'],
   ['generate_qcs_sql.mjs', 'generate_qcs_sql.mjs'],
   ['test_history_tables.sql', 'test_history_tables.sql'],
   ['test_history_tables_smoke.sql', 'test_history_tables_smoke.sql'],
