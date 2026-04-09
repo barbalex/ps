@@ -266,13 +266,15 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
           const marker = IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
+                  // Keep runtime values as CSS variables while moving declarations to CSS module.
+                  // This removes static inline styling from JSX.
                   html: ReactDOMServer.renderToString(
                     <IconComponent
-                      className={styles.markerIcon}
+                      className={`${styles.markerIcon} ${styles.markerIconSized}`}
                       style={{
-                        color: displayToUse.color ?? '#cc756b',
-                        fontSize: markerSize,
-                      }}
+                        '--marker-color': displayToUse.color ?? '#cc756b',
+                        '--marker-size': `${markerSize}px`,
+                      } as React.CSSProperties}
                     />,
                   ),
                   className: isDraggable
