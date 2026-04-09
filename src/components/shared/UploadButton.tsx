@@ -90,7 +90,7 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     <Field
       validationMessage={
         errorMessage ? (
-          <span style={{ color: 'rgb(196, 49, 75)' }}>{errorMessage}</span>
+          <span className={styles.errorMessage}>{errorMessage}</span>
         ) : (
           formatMessage({
             id: 'cLcHDr',

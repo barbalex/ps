@@ -6,3 +6,7 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.errorMessage {
+  color: rgb(196, 49, 75);
+}

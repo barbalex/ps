@@ -16,3 +16,37 @@
   flex-direction: column;
   row-gap: 15px;
 }
+
+.titleClickable {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
+.toggleButton {
+  font-size: 1.3em;
+  width: 32px;
+  height: 31.2px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron {
+  transition: transform 0.25s ease;
+}
+
+.childrenOpen {
+  border-top: 1px solid #cccccc9d;
+}

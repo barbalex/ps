@@ -14,50 +14,25 @@ export const SectionLevel2 = ({
 }) => (
   <section>
     <h3
-      className={styles.title}
+      className={`${styles.title}${onHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}`}
       onClick={onNavigate ?? onHeaderClick}
-      style={
-        onHeaderClick || onNavigate
-          ? {
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              ...titleStyle,
-            }
-          : titleStyle
-      }
+      style={titleStyle}
     >
       {title}
       {(headerActions || isOpen !== undefined) && (
         <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            marginLeft: 'auto',
-            paddingLeft: 10,
-          }}
+          className={styles.headerActions}
           onClick={(e) => e.stopPropagation()}
         >
           {headerActions}
           {isOpen !== undefined && (
             <span
-              style={{
-                fontSize: '1.3em',
-                width: 32,
-                height: 31.2,
-                borderRadius: 4,
-                background: 'rgba(0,0,0,0.10)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className={styles.toggleButton}
               onClick={() => onHeaderClick?.()}
             >
               <FaChevronDown
+                className={styles.chevron}
                 style={{
-                  transition: 'transform 0.25s ease',
                   transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 }}
               />
@@ -68,12 +43,8 @@ export const SectionLevel2 = ({
     </h3>
     {isOpen !== false && (
       <div
-        className={styles.children}
-        style={
-          isOpen
-            ? { borderTop: '1px solid #cccccc9d', ...childrenStyle }
-            : childrenStyle
-        }
+        className={`${styles.children}${isOpen ? ` ${styles.childrenOpen}` : ''}`}
+        style={childrenStyle}
       >
         {children}
       </div>
