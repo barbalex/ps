@@ -1,0 +1,73 @@
+.subprojectReportsPlaceholder {
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  padding: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+.fieldWrapper {
+  margin-bottom: 16px;
+}
+
+.chartWrapper {
+  margin-bottom: 16px;
+}
+
+.chartTitle {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.chartHint {
+  color: #999;
+  font-style: italic;
+}
+
+.editorLayout {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.editorSidebar {
+  border-right: 1px solid #eee;
+  padding-right: 8px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.warning {
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 4px;
+  font-size: 0.82em;
+  color: #5d4037;
+}
+
+.editorPreview {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  flex-grow: 1;
+}
+
+.emptyPreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 1.2em;
+  pointer-events: none;
+  z-index: 1;
+}

@@ -12,6 +12,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
+import styles from './Form.module.css'
 
 import type ProjectReportDesigns from '../../models/public/ProjectReportDesigns.ts'
 
@@ -89,15 +90,7 @@ export const Form = ({ autoFocusRef, from }) => {
     fields: {},
     defaultProps: {},
     render: () => (
-      <div
-        style={{
-          border: '1px dashed #aaa',
-          borderRadius: 4,
-          padding: 12,
-          color: '#666',
-          fontStyle: 'italic',
-        }}
-      >
+      <div className={styles.subprojectReportsPlaceholder}>
         {formatMessage(
           {
             id: 'bC2uVw',
@@ -126,7 +119,7 @@ export const Form = ({ autoFocusRef, from }) => {
       },
       render: ({ value }) => {
         return (
-          <div style={{ marginBottom: 16 }}>
+          <div className={styles.fieldWrapper}>
             <TextField
               label={field.field_label || field.name}
               name={field.name}
@@ -150,17 +143,9 @@ export const Form = ({ autoFocusRef, from }) => {
       defaultProps: {},
       render: () => {
         return (
-          <div style={{ marginBottom: 16 }}>
-            <div
-              style={{
-                fontSize: '1.2em',
-                fontWeight: 'bold',
-                marginBottom: 8,
-              }}
-            >
-              {chart.label}
-            </div>
-            <div style={{ color: '#999', fontStyle: 'italic' }}>
+          <div className={styles.chartWrapper}>
+            <div className={styles.chartTitle}>{chart.label}</div>
+            <div className={styles.chartHint}>
               {formatMessage({
                 id: 'bC3vWx',
                 defaultMessage:
@@ -318,34 +303,10 @@ export const Form = ({ autoFocusRef, from }) => {
           data={row.design ?? { content: [] }}
           onChange={onPuckChange}
         >
-          <div
-            style={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'stretch',
-              gap: 16,
-            }}
-          >
-            <div
-              style={{
-                borderRight: '1px solid #eee',
-                paddingRight: 8,
-                overflow: 'auto',
-                scrollbarWidth: 'thin',
-              }}
-            >
+          <div className={styles.editorLayout}>
+            <div className={styles.editorSidebar}>
               {fields.length === 0 && (
-                <div
-                  style={{
-                    padding: '6px 8px',
-                    marginBottom: 4,
-                    background: '#fff8e1',
-                    border: '1px solid #ffe082',
-                    borderRadius: 4,
-                    fontSize: '0.82em',
-                    color: '#5d4037',
-                  }}
-                >
+                <div className={styles.warning}>
                   {formatMessage({
                     id: 'bC4wXy',
                     defaultMessage:
@@ -354,17 +315,7 @@ export const Form = ({ autoFocusRef, from }) => {
                 </div>
               )}
               {charts.length === 0 && (
-                <div
-                  style={{
-                    padding: '6px 8px',
-                    marginBottom: 4,
-                    background: '#fff8e1',
-                    border: '1px solid #ffe082',
-                    borderRadius: 4,
-                    fontSize: '0.82em',
-                    color: '#5d4037',
-                  }}
-                >
+                <div className={styles.warning}>
                   {formatMessage({
                     id: 'bC5xYz',
                     defaultMessage:
@@ -373,17 +324,7 @@ export const Form = ({ autoFocusRef, from }) => {
                 </div>
               )}
               {!hasActiveSubprojectDesign && (
-                <div
-                  style={{
-                    padding: '6px 8px',
-                    marginBottom: 4,
-                    background: '#fff8e1',
-                    border: '1px solid #ffe082',
-                    borderRadius: 4,
-                    fontSize: '0.82em',
-                    color: '#5d4037',
-                  }}
-                >
+                <div className={styles.warning}>
                   {formatMessage({
                     id: 'bC6yZa',
                     defaultMessage:
@@ -393,32 +334,9 @@ export const Form = ({ autoFocusRef, from }) => {
               )}
               <Puck.Components />
             </div>
-            <div
-              style={{
-                position: 'relative',
-                minHeight: 0,
-                overflow: 'auto',
-                scrollbarWidth: 'thin',
-                flexGrow: 1,
-              }}
-            >
+            <div className={styles.editorPreview}>
               {(!row.design?.content || row.design.content.length === 0) && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#999',
-                    fontSize: '1.2em',
-                    pointerEvents: 'none',
-                    zIndex: 1,
-                  }}
-                >
+                <div className={styles.emptyPreview}>
                   {formatMessage({
                     id: 'bC7zaB',
                     defaultMessage:

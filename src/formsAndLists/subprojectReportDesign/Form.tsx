@@ -13,6 +13,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import styles from './Form.module.css'
 
 import type SubprojectReportDesigns from '../../models/public/SubprojectReportDesigns.ts'
 
@@ -113,7 +114,7 @@ export const Form = ({ autoFocusRef, from }) => {
       },
       render: ({ value }) => {
         return (
-          <div style={{ marginBottom: 16 }}>
+          <div className={styles.fieldWrapper}>
             <TextField
               label={field.field_label || field.name}
               name={field.name}
@@ -138,14 +139,8 @@ export const Form = ({ autoFocusRef, from }) => {
       render: () => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
-          <div style={{ marginBottom: 16 }}>
-            <div
-              style={{
-                fontSize: '1.2em',
-                fontWeight: 'bold',
-                marginBottom: 8,
-              }}
-            >
+          <div className={styles.chartWrapper}>
+            <div className={styles.chartTitle}>
               {chart.label}
             </div>
             {chart.subjects_single === true ? (
@@ -318,50 +313,13 @@ export const Form = ({ autoFocusRef, from }) => {
           data={row.design ?? { content: [] }}
           onChange={onPuckChange}
         >
-          <div
-            style={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'stretch',
-              gap: 16,
-            }}
-          >
-            <div
-              style={{
-                borderRight: '1px solid #eee',
-                paddingRight: 8,
-                overflow: 'auto',
-                scrollbarWidth: 'thin',
-              }}
-            >
+          <div className={styles.editorLayout}>
+            <div className={styles.editorSidebar}>
               <Puck.Components />
             </div>
-            <div
-              style={{
-                position: 'relative',
-                minHeight: 0,
-                overflow: 'auto',
-                scrollbarWidth: 'thin',
-                flexGrow: 1,
-              }}
-            >
+            <div className={styles.editorPreview}>
               {(!row.design?.content || row.design.content.length === 0) && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#999',
-                    fontSize: '1.2em',
-                    pointerEvents: 'none',
-                    zIndex: 1,
-                  }}
-                >
+                <div className={styles.emptyPreview}>
                   {formatMessage({ id: 'bCCfGh', defaultMessage: 'Felder und Diagramme in das Design ziehen' })}
                 </div>
               )}
@@ -371,16 +329,7 @@ export const Form = ({ autoFocusRef, from }) => {
         </Puck>
       )}
       {fields.length === 0 && charts.length === 0 && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 60,
-            color: '#999',
-            fontSize: '1.2em',
-          }}
-        >
+        <div className={styles.emptyState}>
           {formatMessage({ id: 'bCDgHi', defaultMessage: 'Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzufügen.' })}
         </div>
       )}
