@@ -30,13 +30,7 @@ import {
   addNotificationAtom,
   removeNotificationAtom,
 } from '../../../../store.ts'
-
-const xmlViewerStyle = {
-  fontSize: 'small',
-}
-const dialogContentStyle = {
-  paddingTop: 0,
-}
+import styles from './WFS.module.css'
 
 const xmlTheme = {
   attributeKeyColor: '#0074D9',
@@ -308,8 +302,10 @@ export const WFS = ({ layer, layerPresentation }) => {
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
-            <DialogContent style={dialogContentStyle}>
-              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
+            <DialogContent className={styles.dialogContent}>
+              <div className={styles.xmlViewer}>
+                <XMLViewer xml={error} theme={xmlTheme} />
+              </div>
             </DialogContent>
             <DialogActions>
               <Button

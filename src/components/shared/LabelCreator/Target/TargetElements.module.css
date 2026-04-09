@@ -8,6 +8,11 @@
   padding: 8px;
   transition: background-color 0.2s ease;
   user-select: none;
+  background-color: white;
+}
+
+.targetContainerDraggingOver {
+  background-color: rgba(74, 20, 140, 0.1);
 }
 
 .fieldElement {
@@ -21,6 +26,12 @@
   line-height: 16.6px;
   user-select: none;
   position: relative;
+  color: black;
+}
+
+.fieldElementDragging {
+  background-color: rgba(38, 82, 37, 0.9);
+  color: white;
 }
 
 .fieldHandle {

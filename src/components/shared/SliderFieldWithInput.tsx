@@ -23,6 +23,16 @@ export const SliderFieldWithInput = (props: InputProps) => {
   // need to debounce changes when sliding or slider will not render correctly
   // do not use a small value or if slid slowly the user will loose the drag
   const onChangeSliderDebounced = useDebouncedCallback(onChange, 300)
+  const inputWidthClass =
+    max > 10000000
+      ? styles.inputWidth9
+      : max > 100000
+        ? styles.inputWidth8
+        : max > 10000
+          ? styles.inputWidth7
+          : max > 100
+            ? styles.inputWidth6
+            : styles.inputWidth5
 
   return (
     <Field
@@ -56,20 +66,7 @@ export const SliderFieldWithInput = (props: InputProps) => {
           appearance="outline"
           autoFocus={autoFocus}
           ref={ref}
-          style={{
-            width:
-              max > 10000000
-                ? '9em'
-                : max > 100000
-                  ? '8em'
-                  : max > 10000
-                    ? '7em'
-                    : max > 1000
-                      ? '6em'
-                      : max > 100
-                        ? '6em'
-                        : '5em',
-          }}
+          className={inputWidthClass}
         />
       </div>
     </Field>

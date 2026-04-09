@@ -132,13 +132,9 @@ export const FetchWfsCapabilities = ({
     <Button
       icon={fetching ? <Spinner size="tiny" /> : undefined}
       onClick={onFetchCapabilities}
-      className={styles.button}
+      className={`${styles.button}${!url || fetching ? ` ${styles.buttonDisabled}` : ''}`}
       aria-disabled={!url || fetching}
       tabIndex={0}
-      style={{
-        opacity: !url || fetching ? 0.5 : 1,
-        cursor: !url || fetching ? 'not-allowed' : 'pointer',
-      }}
     >
       {fetching
         ? formatMessage(

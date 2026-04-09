@@ -103,22 +103,18 @@ export const Row = ({
           >
             ✓
           </button>
-          <button
-            className={styles.cancelButton}
-            onClick={handleCancelDelete}
-          >
+          <button className={styles.cancelButton} onClick={handleCancelDelete}>
             ✕
           </button>
         </div>
       )}
       <div
-        className={styles.rowContent}
+        className={`${styles.rowContent}${showConfirm ? ` ${styles.rowContentNoTransition}` : ''}`}
         style={{
           transform: `translateX(${swipeOffset}px)`,
-          transition: showConfirm ? 'none' : 'transform 0.3s ease-out',
         }}
       >
-        {imgSrc ?
+        {imgSrc ? (
           <img
             onClick={onClickImg}
             src={imgSrc}
@@ -127,16 +123,12 @@ export const Row = ({
             width="50"
             height="50"
           />
-        : lastHasImages ?
-          <div
-            onClick={onClickImg}
-            className={styles.imgDiv}
-          />
-        : <div />}
-        <div
-          onClick={onClickLabel}
-          className={styles.label}
-        >
+        ) : lastHasImages ? (
+          <div onClick={onClickImg} className={styles.imgDiv} />
+        ) : (
+          <div />
+        )}
+        <div onClick={onClickLabel} className={styles.label}>
           {label}
         </div>
       </div>

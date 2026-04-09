@@ -3,3 +3,9 @@
   background-color: white;
   border-radius: 0.25rem;
 }
+
+.accordionItem {
+  position: relative;
+  border-top: calc(var(--top-border-width, 1) * 1px) solid rgba(55, 118, 28, 0.5) !important;
+  border-bottom: calc(var(--bottom-border-width, 0) * 1px) solid rgba(55, 118, 28, 0.5) !important;
+}

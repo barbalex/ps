@@ -10,11 +10,8 @@ export const Loading = ({
   width,
 }) => (
   <div
-    style={{
-      justifyContent: alignLeft ? 'flex-start' : 'center',
-      ...(width ? { width } : {}),
-    }}
-    className={styles.container}
+    style={width ? { width } : undefined}
+    className={`${styles.container}${alignLeft ? ` ${styles.containerAlignLeft}` : ''}`}
   >
     <Spinner labelPosition="below" label={label} size={size} />
   </div>

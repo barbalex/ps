@@ -146,15 +146,8 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
   }, [index, instanceId, layer, layerCount, registerItem])
 
   const accordionStyle = {
-    // needed for the drop indicator to appear
-    position: 'relative',
-    borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-    ...(isLast
-      ? {
-          borderBottom: `1px solid rgba(55, 118, 28, 0.5)`,
-        }
-      : {}),
-    ...(isOpen ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` } : {}),
+    '--top-border-width': isOpen ? 3 : 1,
+    '--bottom-border-width': isOpen ? 3 : isLast ? 1 : 0,
   }
 
   // drag and drop items by dragging the drag icon
@@ -164,6 +157,7 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
       <AccordionItem
         value={layer.layer_presentation_id}
         ref={elementRef}
+        className={styles.accordionItem}
         style={accordionStyle}
       >
         <Content

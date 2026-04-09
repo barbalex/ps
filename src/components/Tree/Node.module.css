@@ -11,6 +11,14 @@
   contain-intrinsic-size: auto 22px;
 }
 
+.containerActivePath {
+  font-weight: bold;
+}
+
+.containerActive {
+  color: red;
+}
+
 .spacer {
   grid-area: spacer;
 }
@@ -24,6 +32,10 @@
   display: inline;
   min-width: 22px;
   height: 22px;
+}
+
+.toggleDisabled {
+  cursor: default;
 }
 
 .content {

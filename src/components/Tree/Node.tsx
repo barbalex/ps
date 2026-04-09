@@ -39,12 +39,10 @@ export const Node = ({
 
   return (
     <div
+      className={`${styles.container}${isInActiveNodeArray ? ` ${styles.containerActivePath}` : ''}${isActive ? ` ${styles.containerActive}` : ''}`}
       style={{
-        fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
-        ...(isActive && { color: 'red' }),
         gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
       }}
-      className={styles.container}
     >
       <div className={styles.spacer} />
       <Button
@@ -62,8 +60,7 @@ export const Node = ({
         }
         onClick={onClickButton}
         disabled={!childrenCount}
-        style={!childrenCount ? { cursor: 'default' } : undefined}
-        className={styles.toggle}
+        className={`${styles.toggle}${!childrenCount ? ` ${styles.toggleDisabled}` : ''}`}
       />
       <div className={styles.content}>
         {isActive ? (

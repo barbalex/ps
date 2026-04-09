@@ -5,3 +5,7 @@
   height: 100%;
   width: 100%;
 }
+
+.containerAlignLeft {
+  justify-content: flex-start;
+}

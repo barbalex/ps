@@ -13,3 +13,23 @@
 .slider {
   flex-grow: 1;
 }
+
+.inputWidth9 {
+  width: 9em;
+}
+
+.inputWidth8 {
+  width: 8em;
+}
+
+.inputWidth7 {
+  width: 7em;
+}
+
+.inputWidth6 {
+  width: 6em;
+}
+
+.inputWidth5 {
+  width: 5em;
+}

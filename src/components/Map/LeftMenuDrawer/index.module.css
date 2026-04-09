@@ -47,6 +47,11 @@
   }
 }
 
+.toggleButton {
+  position: absolute;
+  z-index: 100000000;
+}
+
 @container map (width <= 700px) {
   .icon {
     transform: rotate(270deg);

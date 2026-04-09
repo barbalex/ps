@@ -31,10 +31,7 @@ export const TargetElements = ({
   provided,
 }) => (
   <div
-    style={{
-      backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
-    }}
-    className={styles.targetContainer}
+    className={`${styles.targetContainer}${isDraggingOver ? ` ${styles.targetContainerDraggingOver}` : ''}`}
     ref={provided.innerRef}
     {...provided.droppableProps}
   >
@@ -53,15 +50,8 @@ export const TargetElements = ({
           >
             {labelElement.type === 'field' ?
               <div
-                style={{
-                  backgroundColor:
-                    snapshot.isDragging ?
-                      'rgba(38, 82, 37, 0.9)'
-                    : 'rgba(103, 216, 101, 0.07)',
-                  color: snapshot.isDragging ? 'white' : 'black',
-                  ...provided.draggableProps.style,
-                }}
-                className={styles.fieldElement}
+                style={provided.draggableProps.style}
+                className={`${styles.fieldElement}${snapshot.isDragging ? ` ${styles.fieldElementDragging}` : ''}`}
               >
                 {labelElement.value}
                 <BsArrowsMove className={styles.fieldHandle} />
