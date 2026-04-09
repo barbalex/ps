@@ -109,6 +109,15 @@ const getTitle = ({
   subprojectNamePlural,
   formatMessage,
 }) => {
+  const subprojectSingularFallback = formatMessage({
+    id: 'gxCh0c',
+    defaultMessage: 'Teilprojekt',
+  })
+  const reportsLabel = formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })
+  const placeFallback = formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
+  const usersLabel = formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })
+  const taxaLabel = formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })
+
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
     tableName === 'subprojects'
@@ -133,9 +142,9 @@ const getTitle = ({
                       defaultMessage: 'Beobachtungen',
                     })
                   : tableName === 'subproject_reports'
-                    ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
+                      ? `${subprojectNameSingular ?? subprojectSingularFallback}-${reportsLabel}`
                     : tableName === 'check_reports'
-                      ? `${placeNameSingular ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })}`
+                        ? `${placeNameSingular ?? placeFallback}-${reportsLabel}`
                       : tableName === 'action_reports'
                         ? formatMessage({
                             id: 'mARBts',
@@ -149,11 +158,11 @@ const getTitle = ({
                                 defaultMessage: 'KBS',
                               })
                             : tableName === 'subproject_users'
-                              ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+                              ? `${subprojectNameSingular ?? subprojectSingularFallback}-${usersLabel}`
                               : tableName === 'subproject_taxa'
-                                ? `${subprojectNameSingular ?? formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })}-${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}`
+                                ? `${subprojectNameSingular ?? subprojectSingularFallback}-${taxaLabel}`
                                 : tableName === 'place_users'
-                                  ? `${placeNameSingularForUsers ?? formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })}-${formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}`
+                                  ? `${placeNameSingularForUsers ?? placeFallback}-${usersLabel}`
                                   : tableName === 'taxonomies'
                                     ? formatMessage({
                                         id: 'noT0gR',
@@ -500,6 +509,10 @@ export const Filter = ({
                     { id: 'fDD4eE', defaultMessage: 'Oder Filter {number}' },
                     { number: i + 1 },
                   )
+          const removeLabel = formatMessage(
+            { id: 'fFF6gG', defaultMessage: '{label} entfernen' },
+            { label },
+          )
           return (
             <Tab key={i} value={i + 1} className={styles.tab}>
               <span className={styles.tabContent}>
@@ -511,14 +524,8 @@ export const Filter = ({
                         className={styles.removeTab}
                         role="button"
                         tabIndex={0}
-                        aria-label={formatMessage(
-                          { id: 'fFF6gG', defaultMessage: '{label} entfernen' },
-                          { label },
-                        )}
-                        title={formatMessage(
-                          { id: 'fFF6gG', defaultMessage: '{label} entfernen' },
-                          { label },
-                        )}
+                        aria-label={removeLabel}
+                        title={removeLabel}
                         onClick={(event) => {
                           event.preventDefault()
                           event.stopPropagation()
