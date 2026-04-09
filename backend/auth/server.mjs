@@ -6,7 +6,10 @@ import { auth } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
 const port = Number(process.env.PORT ?? 3003)
-const corsOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5176')
+const corsOrigins = (
+  process.env.CORS_ORIGINS ??
+  'http://localhost:5176,https://arten-fördern.app,https://promote-species.app'
+)
   .split(',')
   .map((value) => value.trim())
   .filter(Boolean)
@@ -18,7 +21,7 @@ app.use(
       // Allow non-browser requests (no origin header), e.g. health checks.
       if (!origin) return callback(null, true)
       if (corsOrigins.includes(origin)) return callback(null, true)
-      return callback(new Error('Not allowed by CORS'))
+      return callback(null, false)
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)

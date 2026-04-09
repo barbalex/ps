@@ -81,7 +81,7 @@ services:
       - PGRST_DB_SCHEMA=${DB_SCHEMA}
       # The database role to use when no client authentication is provided
       - PGRST_DB_ANON_ROLE=${DB_ANON_ROLE}
-      - PGRST_SERVER_PORT={PGRST_SERVER_PORT}
+      - PGRST_SERVER_PORT=${PGRST_SERVER_PORT}
       # Overrides the base URL used within the OpenAPI self-documentation hosted at the API root path
       - PGRST_OPENAPI_SERVER_PROXY_URI=http://localhost:3002
     networks:
