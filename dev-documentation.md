@@ -7,6 +7,7 @@ This project uses SQL files in multiple locations:
 - `backend/db/init/`
 - `backend-dev/db/init/`
 - `src/sql/`
+- `backend/db/` and `backend-dev/db/` for shared generator/test SQL assets
 
 To avoid manual drift, `backend/db/init/` is the single source of truth.
 
@@ -15,8 +16,14 @@ To avoid manual drift, `backend/db/init/` is the single source of truth.
 Edit SQL files only in:
 
 - `backend/db/init/`
+- `backend/db/` for these shared files:
+   - `generate_qcs_sql.mjs`
+   - `test_history_tables.sql`
+   - `test_history_tables_smoke.sql`
+   - `test_history_tables_full_coverage.sql`
 
 Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
+Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
 
 ## Sync Commands
 
@@ -29,11 +36,17 @@ npm run sync-sql
 This does:
 
 1. Mirrors all files from `backend/db/init/` to `backend-dev/db/init/`.
-2. Copies selected files into `src/sql/`:
+2. Mirrors selected shared files from `backend/db/` to `backend-dev/db/`:
+   - `generate_qcs_sql.mjs`
+   - `test_history_tables.sql`
+   - `test_history_tables_smoke.sql`
+   - `test_history_tables_full_coverage.sql`
+3. Copies selected files into `src/sql/`:
    - `01_immutableDate.sql` -> `immutableDate.sql`
    - `02_uuidv7.sql` -> `uuidv7.sql`
    - `04_createTables.sql` -> `createTables.sql`
    - `07_triggers.sql` -> `triggers.sql`
+   - `08_syncIgnoreDuplicateInsertTriggers.sql` -> `syncIgnoreDuplicateInsertTriggers.sql`
 
 ### Check for drift
 

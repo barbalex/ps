@@ -9,6 +9,8 @@ const repoRoot = path.resolve(__dirname, '..')
 
 const sourceInitDir = path.join(repoRoot, 'backend', 'db', 'init')
 const backendDevInitDir = path.join(repoRoot, 'backend-dev', 'db', 'init')
+const sourceDbDir = path.join(repoRoot, 'backend', 'db')
+const backendDevDbDir = path.join(repoRoot, 'backend-dev', 'db')
 const frontendSqlDir = path.join(repoRoot, 'src', 'sql')
 
 const frontendMappings = [
@@ -17,6 +19,13 @@ const frontendMappings = [
   ['04_createTables.sql', 'createTables.sql'],
   ['07_triggers.sql', 'triggers.sql'],
   ['08_syncIgnoreDuplicateInsertTriggers.sql', 'syncIgnoreDuplicateInsertTriggers.sql'],
+]
+
+const backendDbMappings = [
+  ['generate_qcs_sql.mjs', 'generate_qcs_sql.mjs'],
+  ['test_history_tables.sql', 'test_history_tables.sql'],
+  ['test_history_tables_smoke.sql', 'test_history_tables_smoke.sql'],
+  ['test_history_tables_full_coverage.sql', 'test_history_tables_full_coverage.sql'],
 ]
 
 const checkOnly = process.argv.includes('--check')
@@ -73,9 +82,22 @@ const syncFrontendFiles = async () => {
   return results
 }
 
+const syncBackendDbFiles = async () => {
+  const results = []
+
+  for (const [sourceName, targetName] of backendDbMappings) {
+    const fromPath = path.join(sourceDbDir, sourceName)
+    const toPath = path.join(backendDevDbDir, targetName)
+    results.push(await copyFileIfNeeded(fromPath, toPath))
+  }
+
+  return results
+}
+
 const main = async () => {
   const results = [
     ...(await syncDirectory(sourceInitDir, backendDevInitDir)),
+    ...(await syncBackendDbFiles()),
     ...(await syncFrontendFiles()),
   ]
 
