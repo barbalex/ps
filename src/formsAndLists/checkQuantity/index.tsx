@@ -23,6 +23,7 @@ export const CheckQuantity = ({ from }) => {
   const { checkQuantityId, projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -38,7 +39,8 @@ export const CheckQuantity = ({ from }) => {
     `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] = unitsRes?.rows ?? []
+  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] =
+    unitsRes?.rows ?? []
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
@@ -53,19 +55,27 @@ export const CheckQuantity = ({ from }) => {
   const hasListValues = listValues.length > 0
 
   const unitValueField =
-    selectedUnit?.type === 'integer' ? 'quantity_integer'
-    : selectedUnit?.type === 'numeric' ? 'quantity_numeric'
-    : selectedUnit?.type === 'text' ? 'quantity_text'
-    : null
+    selectedUnit?.type === 'integer'
+      ? 'quantity_integer'
+      : selectedUnit?.type === 'numeric'
+        ? 'quantity_numeric'
+        : selectedUnit?.type === 'text'
+          ? 'quantity_text'
+          : null
 
-  const currentListValueStr = unitValueField ? (row?.[unitValueField]?.toString() ?? '') : ''
+  const currentListValueStr = unitValueField
+    ? (row?.[unitValueField]?.toString() ?? '')
+    : ''
 
   const listValueOptions = listValues.map((lv) => ({
-    value: (lv.value_integer ?? lv.value_numeric ?? lv.value_text)?.toString() ?? '',
+    value:
+      (lv.value_integer ?? lv.value_numeric ?? lv.value_text)?.toString() ?? '',
     label: lv.label ?? '',
   }))
   const listValueIds = listValueOptions.map((o) => o.value)
-  const listValueLabelMap = Object.fromEntries(listValueOptions.map((o) => [o.value, o.label]))
+  const listValueLabelMap = Object.fromEntries(
+    listValueOptions.map((o) => [o.value, o.label]),
+  )
 
   // console.log('CheckQuantity', { row, results })
 
@@ -104,10 +114,13 @@ export const CheckQuantity = ({ from }) => {
   const onListValueChange = async (valueStr: string | null) => {
     if (!unitValueField) return
     const typedValue =
-      valueStr === null || valueStr === '' ? null
-      : selectedUnit?.type === 'integer' ? parseInt(valueStr, 10)
-      : selectedUnit?.type === 'numeric' ? parseFloat(valueStr)
-      : valueStr
+      valueStr === null || valueStr === ''
+        ? null
+        : selectedUnit?.type === 'integer'
+          ? parseInt(valueStr, 10)
+          : selectedUnit?.type === 'numeric'
+            ? parseFloat(valueStr)
+            : valueStr
     if (row[unitValueField] === typedValue) return
     try {
       await db.query(
@@ -173,12 +186,14 @@ export const CheckQuantity = ({ from }) => {
             {selectedUnit?.list_id && hasListValues ? (
               listValues.length <= 5 ? (
                 <RadioGroupField
-                  label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                  label={quantityLabel}
                   name={unitValueField}
                   list={listValueIds}
                   labelMap={listValueLabelMap}
                   value={currentListValueStr}
-                  onChange={(_e, data) => onListValueChange(data?.value ?? null)}
+                  onChange={(_e, data) =>
+                    onListValueChange(data?.value ?? null)
+                  }
                   layout="horizontal"
                   validationState={validations?.[unitValueField]?.state}
                   validationMessage={validations?.[unitValueField]?.message}
@@ -186,7 +201,7 @@ export const CheckQuantity = ({ from }) => {
               ) : (
                 <DropdownFieldSimpleOptions
                   name={unitValueField}
-                  label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+                  label={quantityLabel}
                   options={listValueIds}
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
@@ -201,8 +216,8 @@ export const CheckQuantity = ({ from }) => {
                   <TextField
                     label={
                       selectedUnit?.type !== 'integer'
-                        ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
-                        : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                        ? `${quantityLabel} (integer)`
+                        : quantityLabel
                     }
                     name="quantity_integer"
                     type="number"
@@ -217,8 +232,8 @@ export const CheckQuantity = ({ from }) => {
                   <TextField
                     label={
                       selectedUnit?.type !== 'numeric'
-                        ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
-                        : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                        ? `${quantityLabel} (numeric)`
+                        : quantityLabel
                     }
                     name="quantity_numeric"
                     type="number"
@@ -228,12 +243,13 @@ export const CheckQuantity = ({ from }) => {
                     validationMessage={validations?.quantity_numeric?.message}
                   />
                 )}
-                {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+                {(selectedUnit?.type === 'text' ||
+                  row.quantity_text !== null) && (
                   <TextField
                     label={
                       selectedUnit?.type !== 'text'
-                        ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
-                        : formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+                        ? `${quantityLabel} (text)`
+                        : quantityLabel
                     }
                     name="quantity_text"
                     value={row.quantity_text ?? ''}

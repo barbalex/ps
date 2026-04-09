@@ -148,70 +148,58 @@ export const TableAndLevel = ({
   const singular2 =
     (level2Row?.name_singular as string | null | undefined) ??
     fallbackPlaceLevel2
+  const actionsLabel = (place: string) =>
+    formatMessage(
+      { id: 'field.actions', defaultMessage: '{place}: Massnahmen' },
+      { place },
+    )
+  const actionReportsLabel = (place: string) =>
+    formatMessage(
+      {
+        id: 'field.actionReports',
+        defaultMessage: '{place}: Massnahmen-Berichte',
+      },
+      { place },
+    )
+  const checksLabel = (place: string) =>
+    formatMessage(
+      { id: 'field.checks', defaultMessage: '{place}: Kontrollen' },
+      { place },
+    )
+  const checkReportsLabel = (place: string) =>
+    formatMessage(
+      {
+        id: 'field.checkReports',
+        defaultMessage: '{place}: Kontroll-Berichte',
+      },
+      { place },
+    )
+  const observationsLabel = (place: string) =>
+    formatMessage(
+      { id: 'field.observations', defaultMessage: '{place}: Beobachtungen' },
+      { place },
+    )
+  const filesLabel = (place: string) =>
+    formatMessage(
+      { id: 'field.files', defaultMessage: '{place}: Dateien' },
+      { place },
+    )
 
   const labelMap: Record<string, string> = {
     places_1: plural1,
     places_2: plural2,
-    actions_1: formatMessage(
-      { id: 'field.actions', defaultMessage: '{place}: Massnahmen' },
-      { place: singular1 },
-    ),
-    actions_2: formatMessage(
-      { id: 'field.actions', defaultMessage: '{place}: Massnahmen' },
-      { place: singular2 },
-    ),
-    action_reports_1: formatMessage(
-      {
-        id: 'field.actionReports',
-        defaultMessage: '{place}: Massnahmen-Berichte',
-      },
-      { place: singular1 },
-    ),
-    action_reports_2: formatMessage(
-      {
-        id: 'field.actionReports',
-        defaultMessage: '{place}: Massnahmen-Berichte',
-      },
-      { place: singular2 },
-    ),
-    checks_1: formatMessage(
-      { id: 'field.checks', defaultMessage: '{place}: Kontrollen' },
-      { place: singular1 },
-    ),
-    checks_2: formatMessage(
-      { id: 'field.checks', defaultMessage: '{place}: Kontrollen' },
-      { place: singular2 },
-    ),
-    check_reports_1: formatMessage(
-      {
-        id: 'field.checkReports',
-        defaultMessage: '{place}: Kontroll-Berichte',
-      },
-      { place: singular1 },
-    ),
-    check_reports_2: formatMessage(
-      {
-        id: 'field.checkReports',
-        defaultMessage: '{place}: Kontroll-Berichte',
-      },
-      { place: singular2 },
-    ),
-    observations_1: formatMessage(
-      { id: 'field.observations', defaultMessage: '{place}: Beobachtungen' },
-      { place: singular1 },
-    ),
-    observations_2: formatMessage(
-      { id: 'field.observations', defaultMessage: '{place}: Beobachtungen' },
-      { place: singular2 },
-    ),
-    files_1: formatMessage(
-      { id: 'field.files', defaultMessage: '{place}: Dateien' },
-      { place: singular1 },
-    ),
-    files_2: formatMessage(
-      { id: 'field.files', defaultMessage: '{place}: Dateien' },
-      { place: singular2 },
-    ),
+    actions_1: actionsLabel(singular1),
+    actions_2: actionsLabel(singular2),
+    action_reports_1: actionReportsLabel(singular1),
+    action_reports_2: actionReportsLabel(singular2),
+    checks_1: checksLabel(singular1),
+    checks_2: checksLabel(singular2),
+    check_reports_1: checkReportsLabel(singular1),
+    check_reports_2: checkReportsLabel(singular2),
+    observations_1: observationsLabel(singular1),
+    observations_2: observationsLabel(singular2),
+    files_1: filesLabel(singular1),
+    files_2: filesLabel(singular2),
     subprojects: subprojectsLabel,
     goals: formatMessage({ id: 'field.goals', defaultMessage: 'Art: Ziele' }),
     goal_reports: formatMessage({
