@@ -58,7 +58,7 @@ export const FilePreview = ({ from }) => {
 
   return (
     <div ref={previewRef} className="form-outer-container">
-      <div style={{ height: 0, overflow: 'hidden' }}>
+      <div className={styles.hiddenUploader}>
         <Uploader
           projectId={row.project_id}
           subprojectId={row.subproject_id}

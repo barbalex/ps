@@ -5,6 +5,7 @@ import { Render } from '@puckeditor/core'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import styles from './SubprojectReportsSection.module.css'
 
 import '@puckeditor/core/puck.css'
 
@@ -75,10 +76,10 @@ const SubprojectReportItem = ({
     buildAllChartData()
   }, [chartsJson, subprojectId])
 
-  if (!res) return <div style={{ color: '#999' }}>Loading...</div>
+  if (!res) return <div className={styles.loading}>Loading...</div>
   if (!report) {
     return (
-      <div style={{ color: '#999', fontStyle: 'italic' }}>
+      <div className={styles.emptyItalic}>
         No report for year {year ?? '–'}.
       </div>
     )
@@ -95,7 +96,7 @@ const SubprojectReportItem = ({
       render: () => {
         const fieldValue = (jsonbData[field.name] as string) ?? ''
         return (
-          <div style={{ marginBottom: 16 }}>
+          <div className={styles.fieldWrapper}>
             <TextField
               label={field.field_label || field.name}
               name={field.name}
@@ -120,10 +121,8 @@ const SubprojectReportItem = ({
           names: string[]
         }) ?? { data: [], names: [] }
         return (
-          <div style={{ marginBottom: 16 }}>
-            <div
-              style={{ fontSize: '1.1em', fontWeight: 'bold', marginBottom: 8 }}
-            >
+          <div className={styles.chartWrapper}>
+            <div className={styles.chartTitle}>
               {chart.name}
             </div>
             {chart.subjects_single === true ? (
@@ -205,12 +204,12 @@ export const SubprojectReportsSection = ({
   const subprojects = res?.rows ?? []
 
   if (!res) {
-    return <div style={{ color: '#999' }}>Loading subproject reports...</div>
+    return <div className={styles.loading}>Loading subproject reports...</div>
   }
 
   if (!subprojects.length) {
     return (
-      <div style={{ color: '#999', fontStyle: 'italic' }}>
+      <div className={styles.emptyItalic}>
         No subprojects found.
       </div>
     )
@@ -219,14 +218,8 @@ export const SubprojectReportsSection = ({
   return (
     <div>
       {subprojects.map((sp) => (
-        <div key={sp.subproject_id} style={{ marginBottom: 32 }}>
-          <h3
-            style={{
-              borderBottom: '1px solid #ddd',
-              paddingBottom: 4,
-              marginBottom: 12,
-            }}
-          >
+        <div key={sp.subproject_id} className={styles.subprojectSection}>
+          <h3 className={styles.subprojectHeader}>
             {sp.subproject_name}
           </h3>
           <SubprojectReportItem

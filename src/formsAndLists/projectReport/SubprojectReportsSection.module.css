@@ -1,0 +1,32 @@
+.loading {
+  color: #999;
+}
+
+.emptyItalic {
+  color: #999;
+  font-style: italic;
+}
+
+.fieldWrapper {
+  margin-bottom: 16px;
+}
+
+.chartWrapper {
+  margin-bottom: 16px;
+}
+
+.chartTitle {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.subprojectSection {
+  margin-bottom: 32px;
+}
+
+.subprojectHeader {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
