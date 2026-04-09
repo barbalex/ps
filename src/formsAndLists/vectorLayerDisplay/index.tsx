@@ -11,6 +11,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { VectorLayerDisplayForm } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import styles from './index.module.css'
 
 import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 
@@ -86,12 +87,7 @@ export const VectorLayerDisplay = ({
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Anzeige"
-        id={vectorLayerDisplayId}
-      />
-    )
+    return <NotFound table="Anzeige" id={vectorLayerDisplayId} />
   }
 
   // TODO:
@@ -106,17 +102,8 @@ export const VectorLayerDisplay = ({
   if (isEmbedded) {
     return (
       <ErrorBoundary>
-        <div
-          style={{
-            position: 'sticky',
-            top: 31,
-            zIndex: 2,
-            borderTop: '1px solid #bbb',
-          }}
-        >
-          <Header
-            autoFocusRef={autoFocusRef}
-          />
+        <div className={styles.embeddedHeader}>
+          <Header autoFocusRef={autoFocusRef} />
         </div>
         <div className="form-container">
           <VectorLayerDisplayForm
@@ -132,9 +119,7 @@ export const VectorLayerDisplay = ({
   return (
     <ErrorBoundary>
       <div className="form-outer-container">
-        <Header
-          autoFocusRef={autoFocusRef}
-        />
+        <Header autoFocusRef={autoFocusRef} />
         <div className="form-container">
           <VectorLayerDisplayForm
             row={row}

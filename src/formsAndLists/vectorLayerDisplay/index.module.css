@@ -1,0 +1,6 @@
+.embeddedHeader {
+  position: sticky;
+  top: 31px;
+  z-index: 2;
+  border-top: 1px solid #bbb;
+}
