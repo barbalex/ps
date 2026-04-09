@@ -1,0 +1,2 @@
+export interface sync_ignore_duplicate_insert_single_pk_trigger_params {
+}

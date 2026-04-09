@@ -1,2 +1,0 @@
-export interface taxonomies_sync_ignore_duplicate_insert_trigger_params {
-}

@@ -13,6 +13,8 @@ export default interface PlacesHistory {
 
   level: number | null;
 
+  name: string | null;
+
   since: number | null;
 
   until: number | null;
@@ -53,6 +55,8 @@ export interface PlacesHistoryInitializer {
 
   /** Default value: 1 */
   level?: number | null;
+
+  name?: string | null;
 
   since?: number | null;
 
@@ -96,6 +100,8 @@ export interface PlacesHistoryMutator {
   parent_id?: string | null;
 
   level?: number | null;
+
+  name?: string | null;
 
   since?: number | null;
 
