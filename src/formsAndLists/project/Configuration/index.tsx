@@ -30,6 +30,16 @@ export const Configuration = ({ from }) => {
   const { projectId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage, locale } = useIntl()
+  const filesLabel = formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })
+  const reportsLabel = formatMessage({
+    id: 'CiJ0SG',
+    defaultMessage: 'Berichte',
+  })
+  const altInOwnFormNavMessage = formatMessage({
+    id: 'altInOwnFormNav',
+    defaultMessage:
+      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
+  })
   const [validations, setValidations] = useState({})
 
   const db = usePGlite()
@@ -454,10 +464,7 @@ export const Configuration = ({ from }) => {
             title={formatMessage({ id: 'x9x+dX', defaultMessage: 'Projekte' })}
           >
             <SwitchField
-              label={formatMessage({
-                id: 'CiJ0SG',
-                defaultMessage: 'Berichte',
-              })}
+              label={reportsLabel}
               name="project_reports"
               value={row.project_reports ?? true}
               onChange={onChange}
@@ -487,7 +494,7 @@ export const Configuration = ({ from }) => {
               validationMessage={validations?.vector_layers?.message}
             />
             <SwitchField
-              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
+              label={filesLabel}
               name="files_active_projects"
               value={row.files_active_projects ?? false}
               onChange={onChange}
@@ -506,11 +513,7 @@ export const Configuration = ({ from }) => {
                 validationState={validations?.project_files_in_project?.state}
                 validationMessage={
                   validations?.project_files_in_project?.message ??
-                  formatMessage({
-                    id: 'altInOwnFormNav',
-                    defaultMessage:
-                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                  })
+                  altInOwnFormNavMessage
                 }
               />
             )}
@@ -525,11 +528,7 @@ export const Configuration = ({ from }) => {
               validationState={validations?.project_users_in_project?.state}
               validationMessage={
                 validations?.project_users_in_project?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -543,11 +542,7 @@ export const Configuration = ({ from }) => {
               validationState={validations?.project_reports_in_project?.state}
               validationMessage={
                 validations?.project_reports_in_project?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -560,12 +555,7 @@ export const Configuration = ({ from }) => {
               onChange={onChange}
               validationState={validations?.units_in_project?.state}
               validationMessage={
-                validations?.units_in_project?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                validations?.units_in_project?.message ?? altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -579,11 +569,7 @@ export const Configuration = ({ from }) => {
               validationState={validations?.fields_in_project?.state}
               validationMessage={
                 validations?.fields_in_project?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -597,11 +583,7 @@ export const Configuration = ({ from }) => {
               validationState={validations?.list_values_in_list?.state}
               validationMessage={
                 validations?.list_values_in_list?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -616,20 +598,13 @@ export const Configuration = ({ from }) => {
               validationState={validations?.vlds_in_vector_layer?.state}
               validationMessage={
                 validations?.vlds_in_vector_layer?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
           </SectionLevel2>
           <SectionLevel2 title={subprojectName}>
             <SwitchField
-              label={`${subprojectNameSingular}-${formatMessage({
-                id: 'CiJ0SG',
-                defaultMessage: 'Berichte',
-              })}`}
+              label={`${subprojectNameSingular}-${reportsLabel}`}
               name="subproject_reports"
               value={row.subproject_reports ?? true}
               onChange={onChange}
@@ -653,11 +628,7 @@ export const Configuration = ({ from }) => {
               }
               validationMessage={
                 validations?.subproject_reports_in_subproject?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -679,11 +650,7 @@ export const Configuration = ({ from }) => {
               validationState={validations?.goal_reports_in_goal?.state}
               validationMessage={
                 validations?.goal_reports_in_goal?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -721,11 +688,7 @@ export const Configuration = ({ from }) => {
               }
               validationMessage={
                 validations?.subproject_taxa_in_subproject?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
@@ -756,15 +719,11 @@ export const Configuration = ({ from }) => {
               }
               validationMessage={
                 validations?.subproject_users_in_subproject?.message ??
-                formatMessage({
-                  id: 'altInOwnFormNav',
-                  defaultMessage:
-                    'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                })
+                altInOwnFormNavMessage
               }
             />
             <SwitchField
-              label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
+              label={filesLabel}
               name="files_active_subprojects"
               value={row.files_active_subprojects ?? false}
               onChange={onChange}
@@ -789,11 +748,7 @@ export const Configuration = ({ from }) => {
                 }
                 validationMessage={
                   validations?.subproject_files_in_subproject?.message ??
-                  formatMessage({
-                    id: 'altInOwnFormNav',
-                    defaultMessage:
-                      'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
-                  })
+                  altInOwnFormNavMessage
                 }
               />
             )}

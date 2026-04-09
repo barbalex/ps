@@ -30,6 +30,14 @@ export const TableLayersProvider = () => {
     id: 'oPMDm+',
     defaultMessage: 'Kontrollen',
   })
+  const observationsAssignedLinesLabel = (place: string) =>
+    formatMessage(
+      {
+        id: '3aMKkP',
+        defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
+      },
+      { place },
+    )
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -98,9 +106,7 @@ export const TableLayersProvider = () => {
             type: 'own',
             ownTable: 'places',
             ownTableLevel: 1,
-            label:
-              pl1Plural ??
-              placesLabel,
+            label: pl1Plural ?? placesLabel,
           })
         }
 
@@ -216,22 +222,8 @@ export const TableLayersProvider = () => {
               ownTable: 'observations_assigned_lines',
               ownTableLevel: 1,
               label: pl1Singular
-                ? formatMessage(
-                    {
-                      id: '3aMKkP',
-                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
-                    },
-                    { place: pl1Singular },
-                  )
-                : formatMessage(
-                    {
-                      id: '3aMKkP',
-                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
-                    },
-                    {
-                      place: placesLabel,
-                    },
-                  ),
+                ? observationsAssignedLinesLabel(pl1Singular)
+                : observationsAssignedLinesLabel(placesLabel),
             })
           }
         }
@@ -310,9 +302,7 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'places',
               ownTableLevel: 2,
-              label:
-                pl2Plural ??
-                placesLabel,
+              label: pl2Plural ?? placesLabel,
             })
           }
         }
@@ -433,22 +423,8 @@ export const TableLayersProvider = () => {
               ownTable: 'observations_assigned_lines',
               ownTableLevel: 2,
               label: pl2Singular
-                ? formatMessage(
-                    {
-                      id: '3aMKkP',
-                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
-                    },
-                    { place: pl2Singular },
-                  )
-                : formatMessage(
-                    {
-                      id: '3aMKkP',
-                      defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
-                    },
-                    {
-                      place: placesLabel,
-                    },
-                  ),
+                ? observationsAssignedLinesLabel(pl2Singular)
+                : observationsAssignedLinesLabel(placesLabel),
             })
           }
         }
