@@ -22,7 +22,8 @@ import { Dismiss24Regular } from '@fluentui/react-icons'
 import { useIntl } from 'react-intl'
 
 import { routeTree } from '../../routeTree.gen'
-import { DialogModeContext } from './DialogModeContext'
+import { DialogModeContext } from './DialogModeContext.ts'
+import styles from './index.module.css'
 
 const {
   Dialog,
@@ -57,11 +58,12 @@ export const QcsResultDialog = ({ url, label, onClose, onNavigate }: Props) => {
     const NotFoundFallback = () => {
       const { formatMessage: fmt } = useIntl()
       return (
-        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className={styles.notFoundFallback}>
           <Text>
             {fmt({
               id: 'qcsResultDialog.notMapped',
-              defaultMessage: 'Dieses Formular kann nicht im Dialog angezeigt werden.',
+              defaultMessage:
+                'Dieses Formular kann nicht im Dialog angezeigt werden.',
             })}
           </Text>
           <Button appearance="primary" onClick={() => onNavigate(capturedUrl)}>
@@ -75,7 +77,11 @@ export const QcsResultDialog = ({ url, label, onClose, onNavigate }: Props) => {
     }
 
     const history = createMemoryHistory({ initialEntries: [url] })
-    return createRouter({ routeTree, history, defaultNotFoundComponent: NotFoundFallback })
+    return createRouter({
+      routeTree,
+      history,
+      defaultNotFoundComponent: NotFoundFallback,
+    })
   }, [url, onNavigate])
 
   return (
@@ -85,17 +91,7 @@ export const QcsResultDialog = ({ url, label, onClose, onNavigate }: Props) => {
         if (!data.open) onClose()
       }}
     >
-      <DialogSurface
-        style={{
-          width: '90vw',
-          maxWidth: 1400,
-          height: '90vh',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          position: 'relative',
-        }}
-      >
+      <DialogSurface className={styles.dialogSurface}>
         <DialogTrigger action="close" disableButtonEnhancement>
           <Button
             appearance="subtle"
@@ -104,18 +100,14 @@ export const QcsResultDialog = ({ url, label, onClose, onNavigate }: Props) => {
               defaultMessage: 'Schliessen',
             })}
             icon={<Dismiss24Regular />}
-            style={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+            className={styles.closeButton}
           />
         </DialogTrigger>
-        <DialogBody
-          style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
-        >
-          <DialogTitle
-            style={{ padding: '8px 16px', borderBottom: '1px solid var(--colorNeutralStroke2)', paddingRight: 48 }}
-          >
+        <DialogBody className={styles.dialogBody}>
+          <DialogTitle className={styles.dialogTitle}>
             {label ?? ''}
           </DialogTitle>
-          <DialogContent style={{ flex: 1, overflow: 'auto', padding: 0 }}>
+          <DialogContent className={styles.dialogContent}>
             {router && (
               <DialogModeContext.Provider value={true}>
                 <RouterProvider router={router} />
@@ -127,5 +119,3 @@ export const QcsResultDialog = ({ url, label, onClose, onNavigate }: Props) => {
     </Dialog>
   )
 }
-
-

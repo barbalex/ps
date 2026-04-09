@@ -58,48 +58,22 @@ export const Section = ({
 
   return (
     <section>
-      <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
+      <div ref={sentinelRef} className={styles.sentinel} />
       <h2
-        className={`${styles.title}${isStuck ? ` ${styles.titleStuck}` : ''}`}
+        className={`${styles.title}${isStuck ? ` ${styles.titleStuck}` : ''}${effectiveHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}`}
         onClick={onNavigate ?? effectiveHeaderClick}
-        style={
-          effectiveHeaderClick || onNavigate
-            ? {
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                ...titleStyle,
-              }
-            : titleStyle
-        }
+        style={titleStyle}
       >
-        <span style={{ minWidth: 0, flex: '1 1 auto' }}>{title}</span>
+        <span className={styles.titleText}>{title}</span>
         {(headerActions || isOpen !== undefined) && (
           <span
-            style={{
-              flex: '0 0 auto',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
-              marginLeft: 'auto',
-              paddingLeft: 10,
-            }}
+            className={styles.headerActions}
             onClick={(e) => e.stopPropagation()}
           >
             {headerActions}
             {isOpen !== undefined && (
               <span
-                style={{
-                  fontSize: '1.3em',
-                  width: 32,
-                  height: 31.2,
-                  borderRadius: 4,
-                  background: 'rgba(0,0,0,0.10)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                className={styles.toggleButton}
                 onClick={() =>
                   (isOpen
                     ? (effectiveChevronClick ?? effectiveHeaderClick)
@@ -107,8 +81,8 @@ export const Section = ({
                 }
               >
                 <FaChevronDown
+                  className={styles.chevron}
                   style={{
-                    transition: 'transform 0.25s ease',
                     transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                   }}
                 />
@@ -119,12 +93,8 @@ export const Section = ({
       </h2>
       {isOpen !== false && (
         <div
-          className={styles.children}
-          style={
-            isOpen
-              ? { borderTop: '1px solid #cccccc9d', ...childrenStyle }
-              : childrenStyle
-          }
+          className={`${styles.children}${isOpen ? ` ${styles.childrenOpen}` : ''}`}
+          style={childrenStyle}
         >
           {children}
         </div>
