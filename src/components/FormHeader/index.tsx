@@ -42,7 +42,7 @@ export const FormHeader = ({
       )}
     </div>
     {!!description && (
-      <div style={{ padding: '10px 10px 0 10px' }}>
+      <div className={styles.descriptionWrapper}>
         <SectionDescription>{description}</SectionDescription>
       </div>
     )}
