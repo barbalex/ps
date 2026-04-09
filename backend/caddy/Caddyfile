@@ -29,3 +29,27 @@ api.arten-fördern.app {
   }
 }
 
+auth.promote-species.app {
+  reverse_proxy * ps_auth:3003 {
+    header_down Access-Control-Allow-Origin *
+  }
+}
+
+# use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
+# https://electric-sql.com/docs/api/http#caching
+sync.promote-species.app {
+  reverse_proxy * ps_electric:3000 {
+    # Disable buffering so SSE events are flushed immediately
+    flush_interval -1
+    header_down Access-Control-Allow-Origin *
+  }
+
+  encode gzip
+}
+
+api.promote-species.app {
+  reverse_proxy * ps_postgrest:3002 {
+    header_down Access-Control-Allow-Origin *
+  }
+}
+

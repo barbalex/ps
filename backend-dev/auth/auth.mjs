@@ -18,7 +18,11 @@ export const auth = betterAuth({
   // joins causing error thus uncommented.
   // TODO: test later and consider re-enabling if it can be made to work
   // experimental: { joins: true },
-  trustedOrigins: ['http://localhost:5176', 'https://arten-fördern.app'],
+  trustedOrigins: [
+    'http://localhost:5176',
+    'https://arten-fördern.app',
+    'https://promote-species.app',
+  ],
   emailAndPassword: { enabled: true },
   socialProviders: {
     github: {

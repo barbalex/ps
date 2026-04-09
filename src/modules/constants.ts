@@ -394,18 +394,25 @@ const isLocalDevHost = () => {
   )
 }
 
+const isPromoteSpeciesHost = () =>
+  window?.location?.hostname?.endsWith('promote-species.app')
+
 export const constants = {
   titleRowHeight: 52,
   mobileViewMaxWidth: 999,
   getPostgrestUri: () =>
     isLocalDevHost()
       ? `http://localhost:3002`
-      : 'https://api.arten-fördern.app',
+      : isPromoteSpeciesHost()
+        ? 'https://api.promote-species.app'
+        : 'https://api.arten-fördern.app',
   // set 3001 to go via caddy, 3000 to go directly to electric backend
   getElectricUri: () =>
     isLocalDevHost()
       ? `https://localhost:3001/v1/shape`
-      : 'https://sync.arten-fördern.app/v1/shape',
+      : isPromoteSpeciesHost()
+        ? 'https://sync.promote-species.app/v1/shape'
+        : 'https://sync.arten-fördern.app/v1/shape',
   getAppUri: () =>
     isLocalDevHost()
       ? `http://localhost`

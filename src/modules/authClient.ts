@@ -14,5 +14,7 @@ export const { signIn, signUp, useSession, getSession } = createAuthClient({
   /** The base URL of the server (optional if you're using the same domain) */
   baseURL: isLocalDevHost()
     ? 'http://localhost:3003'
-    : 'https://auth.arten-fördern.app',
+    : window?.location?.hostname?.endsWith('promote-species.app')
+      ? 'https://auth.promote-species.app'
+      : 'https://auth.arten-fördern.app',
 })
