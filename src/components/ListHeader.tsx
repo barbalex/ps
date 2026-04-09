@@ -1,5 +1,6 @@
 import { FormMenu } from './FormMenu/index.tsx'
 import { SectionDescription } from './shared/SectionDescription.tsx'
+import styles from './ListHeader.module.css'
 
 interface Props {
   label: string
@@ -49,7 +50,7 @@ export const ListHeader = ({
       />
     </div>
     {description && (
-      <div style={{ padding: '10px 10px 0 10px' }}>
+      <div className={styles.descriptionWrapper}>
         <SectionDescription>{description}</SectionDescription>
       </div>
     )}
