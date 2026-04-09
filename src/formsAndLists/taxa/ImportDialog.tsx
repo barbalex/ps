@@ -97,7 +97,7 @@ export const ImportDialog = ({ open, onClose, onFileSelected }: Props) => {
               type="file"
               accept=".csv,.tsv,.xlsx,.xls,.ods"
               ref={fileInputRef}
-              style={{ display: 'none' }}
+              className={styles.hiddenInput}
               onChange={onInputChange}
             />
             <div
