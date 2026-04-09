@@ -16,6 +16,7 @@ import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import { SubprojectReportsSection } from './SubprojectReportsSection.tsx'
 import type ProjectReports from '../../models/public/ProjectReports.ts'
+import styles from './Print.module.css'
 
 import '../../form.css'
 import '@puckeditor/core/puck.css'
@@ -102,7 +103,7 @@ export const ProjectReportPrint = ({ from }) => {
         // Always read from the current report's jsonbData, not from the saved design value
         const fieldValue = jsonbData[field.name] ?? ''
         return (
-          <div style={{ marginBottom: '16px' }}>
+          <div className={styles.fieldWrapper}>
             <TextField
               label={field.field_label || field.name}
               name={field.name}
@@ -126,14 +127,8 @@ export const ProjectReportPrint = ({ from }) => {
       render: () => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
-          <div style={{ marginBottom: '16px' }}>
-            <div
-              style={{
-                fontSize: '1.2em',
-                fontWeight: 'bold',
-                marginBottom: '8px',
-              }}
-            >
+          <div className={styles.fieldWrapper}>
+            <div className={styles.chartTitle}>
               {chart.name}
             </div>
             {chart.subjects_single === true ? (
