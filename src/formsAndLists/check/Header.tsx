@@ -32,6 +32,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
   const { formatMessage } = useIntl()
+  const checkTitle = formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -220,14 +221,14 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
+      title={checkTitle}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName={formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })}
+      tableName={checkTitle}
       siblings={
         <>
           <Button
