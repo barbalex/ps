@@ -66,7 +66,7 @@ export const SqlEditorField = ({
             highlightSelectionMatches: true,
             autocompletion: true,
           }}
-          style={{ fontSize: '13px' }}
+          className={styles.codeMirror}
         />
       </div>
       {validationMessage && validationState !== 'none' && (

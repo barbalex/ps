@@ -30,3 +30,7 @@
 .validationWarning {
   color: var(--colorPaletteYellowForeground2);
 }
+
+.codeMirror {
+  font-size: 13px;
+}
