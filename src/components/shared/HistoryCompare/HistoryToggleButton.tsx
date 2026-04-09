@@ -30,6 +30,10 @@ export const HistoryToggleButton = ({
 }: HistoryToggleButtonProps) => {
   const { projectId } = useParams({ strict: false })
   const { formatMessage } = useIntl()
+  const historyLoadFailedTitle = formatMessage({
+    id: 'bPlaceHistoryLoadFailedTitle',
+    defaultMessage: 'Geschichte konnte nicht geladen werden',
+  })
   const location = useLocation()
   const navigate = useNavigate()
   const online = useAtomValue(onlineAtom)
@@ -60,10 +64,7 @@ export const HistoryToggleButton = ({
 
       if (error) {
         addNotification({
-          title: formatMessage({
-            id: 'bPlaceHistoryLoadFailedTitle',
-            defaultMessage: 'Geschichte konnte nicht geladen werden',
-          }),
+          title: historyLoadFailedTitle,
           body: error.message,
           intent: 'error',
         })
@@ -92,10 +93,7 @@ export const HistoryToggleButton = ({
       })
     } catch (error) {
       addNotification({
-        title: formatMessage({
-          id: 'bPlaceHistoryLoadFailedTitle',
-          defaultMessage: 'Geschichte konnte nicht geladen werden',
-        }),
+        title: historyLoadFailedTitle,
         body: error instanceof Error ? error.message : String(error),
         intent: 'error',
       })

@@ -38,6 +38,22 @@ export const TableLayersProvider = () => {
       },
       { place },
     )
+  const actionsByPlaceLabel = (place: string) =>
+    formatMessage({ id: '1noM6i', defaultMessage: '{place}-Massnahmen' }, { place })
+  const checksByPlaceLabel = (place: string) =>
+    formatMessage({ id: 'WJk01v', defaultMessage: '{place}-Kontrollen' }, { place })
+  const observationsAssignedByPlaceLabel = (place: string) =>
+    formatMessage(
+      {
+        id: '5xrddR',
+        defaultMessage: '{place}-Beobachtungen zugewiesen',
+      },
+      { place },
+    )
+  const observationsAssignedLabel = formatMessage({
+    id: 'OaXR/X',
+    defaultMessage: 'Beobachtungen zugewiesen',
+  })
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -130,10 +146,7 @@ export const TableLayersProvider = () => {
             ownTable: 'actions',
             ownTableLevel: 1,
             label: pl1Singular
-              ? formatMessage(
-                  { id: '1noM6i', defaultMessage: '{place}-Massnahmen' },
-                  { place: pl1Singular },
-                )
+              ? actionsByPlaceLabel(pl1Singular)
               : actionsLabel,
           })
         }
@@ -158,10 +171,7 @@ export const TableLayersProvider = () => {
             ownTable: 'checks',
             ownTableLevel: 1,
             label: pl1Singular
-              ? formatMessage(
-                  { id: 'WJk01v', defaultMessage: '{place}-Kontrollen' },
-                  { place: pl1Singular },
-                )
+              ? checksByPlaceLabel(pl1Singular)
               : checksLabel,
           })
         }
@@ -187,17 +197,8 @@ export const TableLayersProvider = () => {
               ownTable: 'observations_assigned',
               ownTableLevel: 1,
               label: pl1Singular
-                ? formatMessage(
-                    {
-                      id: '5xrddR',
-                      defaultMessage: '{place}-Beobachtungen zugewiesen',
-                    },
-                    { place: pl1Singular },
-                  )
-                : formatMessage({
-                    id: 'OaXR/X',
-                    defaultMessage: 'Beobachtungen zugewiesen',
-                  }),
+                ? observationsAssignedByPlaceLabel(pl1Singular)
+                : observationsAssignedLabel,
             })
           }
 
@@ -328,10 +329,7 @@ export const TableLayersProvider = () => {
               ownTable: 'actions',
               ownTableLevel: 2,
               label: pl2Singular
-                ? formatMessage(
-                    { id: '1noM6i', defaultMessage: '{place}-Massnahmen' },
-                    { place: pl2Singular },
-                  )
+                ? actionsByPlaceLabel(pl2Singular)
                 : actionsLabel,
             })
           }
@@ -358,10 +356,7 @@ export const TableLayersProvider = () => {
               ownTable: 'checks',
               ownTableLevel: 2,
               label: pl2Singular
-                ? formatMessage(
-                    { id: 'WJk01v', defaultMessage: '{place}-Kontrollen' },
-                    { place: pl2Singular },
-                  )
+                ? checksByPlaceLabel(pl2Singular)
                 : checksLabel,
             })
           }
@@ -388,17 +383,8 @@ export const TableLayersProvider = () => {
               ownTable: 'observations_assigned',
               ownTableLevel: 2,
               label: pl2Singular
-                ? formatMessage(
-                    {
-                      id: '5xrddR',
-                      defaultMessage: '{place}-Beobachtungen zugewiesen',
-                    },
-                    { place: pl2Singular },
-                  )
-                : formatMessage({
-                    id: 'OaXR/X',
-                    defaultMessage: 'Beobachtungen zugewiesen',
-                  }),
+                ? observationsAssignedByPlaceLabel(pl2Singular)
+                : observationsAssignedLabel,
             })
           }
 
