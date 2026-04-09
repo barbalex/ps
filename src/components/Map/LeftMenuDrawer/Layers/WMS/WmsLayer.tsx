@@ -111,35 +111,24 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
     <ErrorBoundary>
       <AccordionItem
         value={layer.wms_layer_id}
+        className={styles.accordionItem}
         style={{
-          borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
-          ...(isLast
-            ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-            : {}),
-          ...(isOpen
-            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
-            : {}),
+          '--top-border-width': isOpen ? 3 : 1,
+          '--bottom-border-width': isOpen ? 3 : isLast ? 1 : 0,
         }}
       >
         <AccordionHeader
           expandIconPosition="end"
           size="extra-large"
           expandIcon={designing ? undefined : null}
-          style={
-            isOpen
-              ? {
-                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
-                }
-              : undefined
-          }
+          className={isOpen ? styles.headerOpen : undefined}
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
               icon={<BsSquare className={layerStyles.headerToggleIcon} />}
               checked={false}
               onClick={onChange}
-              style={isOpen ? { backgroundColor: 'none' } : undefined}
-              className={styles.labelButton}
+              className={`${styles.labelButton}${isOpen ? ` ${styles.toggleOpen}` : ''}`}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed
               as="a"

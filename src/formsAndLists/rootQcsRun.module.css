@@ -1,0 +1,60 @@
+.highlight {
+  background: var(--colorBrandBackground2);
+  color: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.card {
+  max-width: 800px;
+}
+
+.cardBody {
+  padding: 0 12px 12px;
+}
+
+.emptyText {
+  color: var(--colorNeutralForeground3);
+}
+
+.resultList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resultItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resultLink {
+  color: var(--colorBrandForeground1);
+}
+
+.filters {
+  padding: 8px 10px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.yearInput {
+  width: 90px;
+}
+
+.clearFilter {
+  cursor: pointer;
+}
+
+.cards {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

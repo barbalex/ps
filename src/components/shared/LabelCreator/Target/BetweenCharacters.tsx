@@ -38,15 +38,20 @@ export const BetweenCharacters = ({
 
   return (
     <div
-      style={{
-        ...provided.draggableProps.style,
-        position: 'relative',
-      }}
-      className={snapshot.isDragging ? styles.containerDragging : styles.container}
+      style={provided.draggableProps.style}
+      className={
+        snapshot.isDragging ? styles.containerDragging : styles.container
+      }
     >
       <Input
-        label={formatMessage({ id: 'bChrSp', defaultMessage: 'Trennzeichen (beliebiger Text)' })}
-        placeholder={formatMessage({ id: 'bChrPh', defaultMessage: 'Beliebigen Text eingeben' })}
+        label={formatMessage({
+          id: 'bChrSp',
+          defaultMessage: 'Trennzeichen (beliebiger Text)',
+        })}
+        placeholder={formatMessage({
+          id: 'bChrPh',
+          defaultMessage: 'Beliebigen Text eingeben',
+        })}
         defaultValue={el.value ?? ''}
         appearance="outline"
         size="small"

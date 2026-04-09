@@ -1,4 +1,14 @@
 .button {
-  color: white;
-  min-width: 0;
+  color: white !important;
+  min-width: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.button:hover {
+  color: white !important;
+}
+
+.button:active {
+  color: white !important;
 }
