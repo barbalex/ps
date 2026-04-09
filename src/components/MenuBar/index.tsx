@@ -1,5 +1,6 @@
 import {
   useMemo,
+  useCallback,
   useRef,
   useState,
   useEffect,
@@ -18,6 +19,8 @@ import styles from './index.module.css'
 
 // TODO: check if still used
 export const buttonWidth = 32
+const buttonGap = 5
+const moreButtonReservedWidth = buttonWidth + buttonGap
 
 // possible improvement:
 // add refs in here to measure their widths
@@ -32,22 +35,25 @@ export const MenuBar = ({
   // and that needs to be compensated for
   addMargin = true,
 }) => {
+  const getChildBaseWidth = useCallback(
+    (child) =>
+      child.props.width
+        ? addMargin
+          ? child.props.width + 12
+          : child.props.width
+        : buttonWidth,
+    [addMargin],
+  )
+
   const { visibleChildren, widths } = useMemo(() => {
     const visibleChildren = []
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [index, child] of Children.toArray(children).entries()) {
       visibleChildren.push(child)
     }
-    // add 12px for margin and border width to props.width
-    const widths = visibleChildren.map((c) =>
-      c.props.width
-        ? addMargin
-          ? c.props.width + 12
-          : c.props.width
-        : buttonWidth,
-    )
+    const widths = visibleChildren.map((c) => getChildBaseWidth(c))
     return { visibleChildren, widths }
-  }, [addMargin, children])
+  }, [children, getChildBaseWidth])
 
   const outerContainerRef = useRef(null)
   const outerContainerWidth = outerContainerRef.current?.clientWidth
@@ -65,12 +71,12 @@ export const MenuBar = ({
 
     const titleWidth = titleComponentWidth ?? 0
     const spaceForButtonsAndMenus = containerWidth - titleWidth
-    const widthOfAllPassedInButtons = widths
-      ? widths.reduce((acc, w) => acc + w, 0)
-      : visibleChildren.length * buttonWidth
+    const buttonsGapWidth = Math.max(visibleChildren.length - 1, 0) * buttonGap
+    const widthOfAllPassedInButtons =
+      (widths ? widths.reduce((acc, w) => acc + w, 0) : 0) + buttonsGapWidth
     const needMenu = widthOfAllPassedInButtons > spaceForButtonsAndMenus
     const spaceForButtons = needMenu
-      ? spaceForButtonsAndMenus - buttonWidth
+      ? spaceForButtonsAndMenus - moreButtonReservedWidth
       : spaceForButtonsAndMenus
     // sum widths fitting into spaceForButtons
     const newButtons = []
@@ -78,16 +84,13 @@ export const MenuBar = ({
     let widthSum = 0
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [index, child] of Children.toArray(visibleChildren).entries()) {
-      const width = child.props.width
-        ? addMargin
-          ? child.props.width + 12
-          : child.props.width
-        : buttonWidth
-      if (widthSum + width > spaceForButtons) {
+      const width = getChildBaseWidth(child)
+      const widthWithGap = width + (newButtons.length > 0 ? buttonGap : 0)
+      if (widthSum + widthWithGap > spaceForButtons) {
         newMenus.push(cloneElement(child, { inmenu: 'true' }))
       } else {
         newButtons.push(cloneElement(child))
-        widthSum += width
+        widthSum += widthWithGap
       }
     }
     setButtons(newButtons)
