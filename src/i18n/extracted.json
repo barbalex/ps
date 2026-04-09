@@ -6,7 +6,7 @@
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
   "1noM6i": {
-    "defaultMessage": "{place}-Massnahmen"
+    "defaultMessage": "{place}: Massnahmen"
   },
   "1uPFgu": {
     "defaultMessage": "Baum"
@@ -30,10 +30,10 @@
     "defaultMessage": "Heute"
   },
   "3aMKkP": {
-    "defaultMessage": "{place}-Beobachtungs-Zuordnungslinien"
+    "defaultMessage": "{place}: Beobachtungs-Zuordnungslinien"
   },
   "3oZh5s": {
-    "defaultMessage": "Nicht zuzuweisende Beobachtungen"
+    "defaultMessage": "Beobachtungen nicht zuzuordnen"
   },
   "3srcwg": {
     "defaultMessage": "Ziele"
@@ -45,7 +45,7 @@
     "defaultMessage": "Wert-Typ"
   },
   "5xrddR": {
-    "defaultMessage": "{place}-Beobachtungen zugewiesen"
+    "defaultMessage": "{place}: Beobachtungen zugeordnet"
   },
   "61ELuB": {
     "defaultMessage": "Feld"
@@ -201,7 +201,7 @@
     "defaultMessage": "Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
   },
   "OaXR/X": {
-    "defaultMessage": "Beobachtungen zugewiesen"
+    "defaultMessage": "Beobachtungen zugeordnet"
   },
   "Ob2kQz": {
     "defaultMessage": "Obsolet"
@@ -291,7 +291,7 @@
     "defaultMessage": "...erfassen den Zustand von (Teil-)Populationen und die Wirkung von Massnahmen."
   },
   "WJk01v": {
-    "defaultMessage": "{place}-Kontrollen"
+    "defaultMessage": "{place}: Kontrollen"
   },
   "Wn2kTv": {
     "defaultMessage": "vorherig"
@@ -342,7 +342,7 @@
     "defaultMessage": "Zu bewertende Beobachtungen"
   },
   "aeUjud": {
-    "defaultMessage": "Zu beurteilende Beobachtungen"
+    "defaultMessage": "Beobachtungen zu beurteilen"
   },
   "bB1CdE": {
     "defaultMessage": "Projekt-Bericht Druckvorschau"

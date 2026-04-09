@@ -36,7 +36,13 @@ export const OwnLayers = () => {
           layer_presentations.vector_layer_id = vector_layers.vector_layer_id
           AND layer_presentations.active
       )
-    ORDER BY label
+    ORDER BY
+      CASE
+        WHEN own_table = 'observations_to_assess' THEN 0
+        WHEN own_table = 'observations_not_to_assign' THEN 1
+        ELSE 2
+      END,
+      label
   `,
     [projectId],
   )

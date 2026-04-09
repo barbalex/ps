@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { useAtomValue, useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useIntl } from 'react-intl'
 
 import { createVectorLayer } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
+import { updateTableVectorLayerLabels } from '../modules/updateTableVectorLayerLabels.ts'
+import { getOwnLayerLabels } from '../modules/ownLayerLabels.ts'
 import {
   initialSyncingAtom,
   sqlInitializingAtom,
@@ -20,40 +21,18 @@ export const TableLayersProvider = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const [language] = useAtom(languageAtom)
-  const { formatMessage } = useIntl()
-  const placesLabel = formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' })
-  const actionsLabel = formatMessage({
-    id: 'eJfllL',
-    defaultMessage: 'Massnahmen',
-  })
-  const checksLabel = formatMessage({
-    id: 'oPMDm+',
-    defaultMessage: 'Kontrollen',
-  })
-  const observationsAssignedLinesLabel = (place: string) =>
-    formatMessage(
-      {
-        id: '3aMKkP',
-        defaultMessage: '{place}-Beobachtungs-Zuordnungslinien',
-      },
-      { place },
-    )
-  const actionsByPlaceLabel = (place: string) =>
-    formatMessage({ id: '1noM6i', defaultMessage: '{place}-Massnahmen' }, { place })
-  const checksByPlaceLabel = (place: string) =>
-    formatMessage({ id: 'WJk01v', defaultMessage: '{place}-Kontrollen' }, { place })
-  const observationsAssignedByPlaceLabel = (place: string) =>
-    formatMessage(
-      {
-        id: '5xrddR',
-        defaultMessage: '{place}-Beobachtungen zugewiesen',
-      },
-      { place },
-    )
-  const observationsAssignedLabel = formatMessage({
-    id: 'OaXR/X',
-    defaultMessage: 'Beobachtungen zugewiesen',
-  })
+  const {
+    placesLabel,
+    actionsLabel,
+    checksLabel,
+    observationsAssignedLinesLabel,
+    actionsByPlaceLabel,
+    checksByPlaceLabel,
+    observationsAssignedByPlaceLabel,
+    observationsAssignedLabel,
+    observationsToAssessLabel,
+    observationsNotToAssignLabel,
+  } = getOwnLayerLabels(language)
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -247,10 +226,7 @@ export const TableLayersProvider = () => {
               projectId,
               type: 'own',
               ownTable: 'observations_to_assess',
-              label: formatMessage({
-                id: 'aeUjud',
-                defaultMessage: 'Zu beurteilende Beobachtungen',
-              }),
+              label: observationsToAssessLabel,
             })
           }
         }
@@ -275,10 +251,7 @@ export const TableLayersProvider = () => {
               projectId,
               type: 'own',
               ownTable: 'observations_not_to_assign',
-              label: formatMessage({
-                id: '3oZh5s',
-                defaultMessage: 'Nicht zuzuweisende Beobachtungen',
-              }),
+              label: observationsNotToAssignLabel,
             })
           }
         }
@@ -414,6 +387,8 @@ export const TableLayersProvider = () => {
             })
           }
         }
+
+        await updateTableVectorLayerLabels({ project_id: projectId })
       }
     }
     run()
@@ -421,6 +396,7 @@ export const TableLayersProvider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     projects.length,
+    language,
     observationCount,
     initialSyncing,
     sqlInitializing,
