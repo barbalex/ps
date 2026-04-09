@@ -6,6 +6,25 @@
 }
 
 auth.arten-fördern.app {
+  @auth_arten_preflight {
+    method OPTIONS
+    header Origin https://arten-fördern.app
+  }
+
+  handle @auth_arten_preflight {
+    header Access-Control-Allow-Origin "https://arten-fördern.app"
+    header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Credentials "true"
+    header Vary "Origin"
+    respond "" 204
+  }
+
+  @auth_arten_origin header Origin https://arten-fördern.app
+  header @auth_arten_origin Access-Control-Allow-Origin "https://arten-fördern.app"
+  header @auth_arten_origin Access-Control-Allow-Credentials "true"
+  header @auth_arten_origin Vary "Origin"
+
   reverse_proxy * ps_auth:3003
 }
 
@@ -47,6 +66,25 @@ api.arten-fördern.app {
 }
 
 auth.promote-species.app {
+  @auth_promote_preflight {
+    method OPTIONS
+    header Origin https://promote-species.app
+  }
+
+  handle @auth_promote_preflight {
+    header Access-Control-Allow-Origin "https://promote-species.app"
+    header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Credentials "true"
+    header Vary "Origin"
+    respond "" 204
+  }
+
+  @auth_promote_origin header Origin https://promote-species.app
+  header @auth_promote_origin Access-Control-Allow-Origin "https://promote-species.app"
+  header @auth_promote_origin Access-Control-Allow-Credentials "true"
+  header @auth_promote_origin Vary "Origin"
+
   reverse_proxy * ps_auth:3003
 }
 
