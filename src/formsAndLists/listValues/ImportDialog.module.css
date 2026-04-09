@@ -3,6 +3,10 @@
   font-size: 14px;
 }
 
+.hiddenInput {
+  display: none;
+}
+
 .dropZone {
   margin-top: 16px;
   border: 2px dashed #aaa;
