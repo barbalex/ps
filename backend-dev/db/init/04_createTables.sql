@@ -648,6 +648,7 @@ CREATE TABLE IF NOT EXISTS places(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
+  name text DEFAULT NULL,
   since integer DEFAULT NULL,
   until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
@@ -665,6 +666,7 @@ CREATE INDEX IF NOT EXISTS places_account_id_idx ON places USING btree(account_i
 CREATE INDEX IF NOT EXISTS places_subproject_id_idx ON places USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS places_parent_id_idx ON places USING btree(parent_id);
 CREATE INDEX IF NOT EXISTS places_level_idx ON places USING btree(level);
+CREATE INDEX IF NOT EXISTS places_name_idx ON places USING btree(name);
 CREATE INDEX IF NOT EXISTS places_label_idx ON places USING btree(label);
 CREATE INDEX IF NOT EXISTS places_data_idx ON places USING gin(data);
 CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gist(geometry);
@@ -674,6 +676,7 @@ COMMENT ON COLUMN places.account_id IS 'redundant account_id enhances data safet
 COMMENT ON COLUMN places.subproject_id IS 'always set to optimize queries';
 COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1';
 COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
+COMMENT ON COLUMN places.name IS 'Name of place';
 COMMENT ON COLUMN places.since IS 'start year of place';
 COMMENT ON COLUMN places.until IS 'end year of place';
 COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';

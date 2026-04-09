@@ -23,6 +23,9 @@ export default interface Places {
   /** level of place: 1, 2 */
   level: number | null;
 
+  /** name of place */
+  name: string | null;
+
   /** start year of place */
   since: number | null;
 
@@ -75,6 +78,9 @@ export interface PlacesInitializer {
    * Default value: 1
    */
   level?: number | null;
+
+  /** name of place */
+  name?: string | null;
 
   /** start year of place */
   since?: number | null;
@@ -132,6 +138,9 @@ export interface PlacesMutator {
 
   /** level of place: 1, 2 */
   level?: number | null;
+
+  /** name of place */
+  name?: string | null;
 
   /** start year of place */
   since?: number | null;

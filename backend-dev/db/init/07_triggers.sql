@@ -488,6 +488,7 @@ BEGIN
   UPDATE places SET label = case
     when NEW.places_label_by = 'id' then places.place_id::text
     when NEW.places_label_by = 'level' then places.level::text
+    when NEW.places_label_by = 'name' then coalesce(nullif(places.name, ''), places.place_id::text)
     when places.data -> NEW.places_label_by is null then places.place_id::text
     else places.data ->> NEW.places_label_by
   end
@@ -621,6 +622,7 @@ BEGIN
       when _project_places_label_by is null then place_id::text
       when _project_places_label_by = 'id' then place_id::text
       when _project_places_label_by = 'level' then level::text
+      when _project_places_label_by = 'name' then coalesce(nullif(name, ''), place_id::text)
       when data -> _project_places_label_by is null then place_id::text
       else data ->> _project_places_label_by
     end
@@ -630,7 +632,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER places_label_trigger
-AFTER INSERT OR UPDATE of level, data ON places
+AFTER INSERT OR UPDATE of level, name, data ON places
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_trigger();
 

@@ -10093,10 +10093,6 @@ INSERT INTO crs(crs_id, code, name, proj4) values ('019aeb6d-6cce-7000-9bd1-a732
 -- projects
 INSERT INTO projects(project_id, account_id, name, label, places_label_by, subproject_name_singular, subproject_name_plural, subproject_name_singular_en, subproject_name_plural_en, subproject_name_singular_fr, subproject_name_plural_fr, subproject_name_singular_it, subproject_name_plural_it) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'Demo Project', 'name', 'Art', 'Arten', 'Species', 'Species', 'Espèce', 'Espèces', 'Specie', 'Specie');
--- fields
-INSERT INTO fields(account_id, project_id, field_id, table_name, level, name, field_label, field_type_id, widget_type_id) values
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-46ac-7f14-80f8-57b2b361fd2c', 'places', 1, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-674e-7ebd-b6cc-e47ec256ac72', 'places', 2, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553');
 -- projectUsers
 INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
 ('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');
@@ -10114,21 +10110,21 @@ INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) v
 -- seed places twice so we don't have to set null values in parent_id
 -- reason: got unique constraint violation
 -- places 1
-INSERT INTO places(account_id, place_id, subproject_id, level, since, data, geometry) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"001 first"}', ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.578262,47.558992],[8.504105,47.515888],[8.572769,47.516816],[8.578262,47.558992]]]},{"type":"LineString","coordinates":[[8.622894,47.519134],[8.604355,47.472749]]}]}')),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"002 second"}', ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.615341,47.541394],[8.54805,47.526562],[8.54805,47.503842],[8.598862,47.519608],[8.615341,47.541394]]]}]}')),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"003 third"}', ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[8.596802,47.544638]}]}')),
-('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-74cb-793a-9eb3-0f8da9ab9c85', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"004 fourth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"005 fifth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"006 sixth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"007 seventh"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 eighth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 nineth"}', null);
+INSERT INTO places(account_id, place_id, subproject_id, level, name, since, geometry) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '001 first', 2020, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.578262,47.558992],[8.504105,47.515888],[8.572769,47.516816],[8.578262,47.558992]]]},{"type":"LineString","coordinates":[[8.622894,47.519134],[8.604355,47.472749]]}]}')),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '002 second', 2021, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.615341,47.541394],[8.54805,47.526562],[8.54805,47.503842],[8.598862,47.519608],[8.615341,47.541394]]]}]}')),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '003 third', 2022, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[8.596802,47.544638]}]}')),
+('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-74cb-793a-9eb3-0f8da9ab9c85', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '004 fourth', 2020, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '005 fifth', 2020, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '006 sixth', 2018, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '007 seventh', 2021, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '008 eighth', 2020, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '008 nineth', 2020, null);
 -- places 2
-INSERT INTO places(account_id, place_id, parent_id, subproject_id, level, since, data, geometry) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}', null);
+INSERT INTO places(account_id, place_id, parent_id, subproject_id, level, name, since, geometry) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.01 first.first', 2020, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.02 first.second', 2021, null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.03 first.third', 2021, null);
 -- checks
 INSERT INTO checks(account_id, check_id, place_id, date) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2025-03-03'),

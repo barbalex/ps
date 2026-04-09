@@ -73,6 +73,7 @@ export const SqlInitializer = () => {
             ALTER TABLE IF EXISTS vector_layer_geoms ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS crs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
             RETURNS TRIGGER AS $$
@@ -272,6 +273,7 @@ export const SqlInitializer = () => {
                 SET label = CASE
                   WHEN NEW.places_label_by = 'id' THEN places.place_id::text
                   WHEN NEW.places_label_by = 'level' THEN places.level::text
+                  WHEN NEW.places_label_by = 'name' THEN coalesce(nullif(places.name, ''), places.place_id::text)
                   WHEN places.data -> NEW.places_label_by is null THEN places.place_id::text
                   ELSE places.data ->> NEW.places_label_by
                 END
@@ -291,6 +293,52 @@ export const SqlInitializer = () => {
             AFTER UPDATE OF places_label_by ON projects
             FOR EACH ROW
             EXECUTE PROCEDURE projects_places_label_trigger();
+
+            CREATE OR REPLACE FUNCTION places_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+              _project_id uuid;
+              _project_places_label_by TEXT;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              IF NEW.subproject_id IS NULL THEN
+                _project_id := NULL;
+              ELSE
+                SELECT subprojects.project_id INTO _project_id FROM subprojects WHERE subprojects.subproject_id = NEW.subproject_id;
+              END IF;
+
+              IF _project_id IS NULL THEN
+                _project_places_label_by := NULL;
+              ELSE
+                SELECT projects.places_label_by INTO _project_places_label_by FROM projects WHERE projects.project_id = _project_id;
+              END IF;
+
+              UPDATE places
+                SET label = CASE
+                  WHEN _project_places_label_by is null THEN places.place_id::text
+                  WHEN _project_places_label_by = 'id' THEN places.place_id::text
+                  WHEN _project_places_label_by = 'level' THEN places.level::text
+                  WHEN _project_places_label_by = 'name' THEN coalesce(nullif(places.name, ''), places.place_id::text)
+                  WHEN places.data -> _project_places_label_by is null THEN places.place_id::text
+                  ELSE places.data ->> _project_places_label_by
+                END
+              WHERE places.place_id = NEW.place_id;
+
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS places_label_trigger ON places;
+
+            CREATE TRIGGER places_label_trigger
+            AFTER INSERT OR UPDATE OF level, name, data ON places
+            FOR EACH ROW
+            EXECUTE PROCEDURE places_label_trigger();
 
             CREATE OR REPLACE FUNCTION projects_goals_label_trigger()
             RETURNS TRIGGER AS $$

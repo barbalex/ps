@@ -61,6 +61,7 @@ export const PlaceHistoryCompare = ({
     `Place Level ${levelForLabel}`
 
   const visibleCurrentFields = new Set([
+    'name',
     'since',
     'until',
     'relevant_for_reports',
@@ -72,6 +73,7 @@ export const PlaceHistoryCompare = ({
     formatMessage,
     fieldLabelMap: {
       level: { id: 'bDeHkI', defaultMessage: 'Stufe' },
+      name: { id: 'bPlaceNameLabel', defaultMessage: 'Name' },
       since: {
         id: 'bEmMrR',
         defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
