@@ -120,6 +120,10 @@
   margin: 0;
 }
 
+.group {
+  display: contents;
+}
+
 .valueListScrollerWrap {
   position: relative;
   min-height: 0;

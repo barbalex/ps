@@ -35,7 +35,7 @@ export const HistoryValueList = ({
       const isLast = index === items.length - 1
 
       return (
-        <div key={item.key} style={{ display: 'contents' }}>
+        <div key={item.key} className={styles.group}>
           <dt
             className={`${styles.label}${isLast ? ` ${styles.noBorder}` : ''}`}
           >
