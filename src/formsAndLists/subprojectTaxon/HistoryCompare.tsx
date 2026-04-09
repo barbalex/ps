@@ -28,9 +28,14 @@ const from =
 
 export const SubprojectTaxonHistoryCompare = () => {
   const { formatMessage } = useIntl()
+  const taxonFieldLabel = { id: 'OSk4zO', defaultMessage: 'Taxon' } as const
   const navigate = useNavigate()
-  const { projectId, subprojectId, subprojectTaxonId, subprojectTaxonHistoryId } =
-    useParams({ from, strict: false })
+  const {
+    projectId,
+    subprojectId,
+    subprojectTaxonId,
+    subprojectTaxonHistoryId,
+  } = useParams({ from, strict: false })
   const subprojectTaxonPath = `/data/projects/${projectId}/subprojects/${subprojectId}/taxa/${subprojectTaxonId}`
   const historyPath = `${subprojectTaxonPath}/histories`
 
@@ -81,25 +86,22 @@ export const SubprojectTaxonHistoryCompare = () => {
 
   if (!row) {
     return (
-      <NotFound
-        table={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
-        id={subprojectTaxonId}
-      />
+      <NotFound table={formatMessage(taxonFieldLabel)} id={subprojectTaxonId} />
     )
   }
 
   const leftContent = (
     <div className="form-container">
       <ComboboxFilteringForTable
-      label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
-      name="taxon_id"
-      table="taxa"
-      include={taxaInclude}
-      value={row.taxon_id ?? ''}
-      onChange={onChange}
-      validationState={validations?.taxon_id?.state}
-      validationMessage={validations?.taxon_id?.message}
-    />
+        label={formatMessage(taxonFieldLabel)}
+        name="taxon_id"
+        table="taxa"
+        include={taxaInclude}
+        value={row.taxon_id ?? ''}
+        onChange={onChange}
+        validationState={validations?.taxon_id?.state}
+        validationMessage={validations?.taxon_id?.message}
+      />
     </div>
   )
 
@@ -108,7 +110,7 @@ export const SubprojectTaxonHistoryCompare = () => {
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      taxon_id: { id: 'OSk4zO', defaultMessage: 'Taxon' },
+      taxon_id: taxonFieldLabel,
     },
   })
 

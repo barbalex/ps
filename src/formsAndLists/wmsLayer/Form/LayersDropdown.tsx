@@ -26,6 +26,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const layerLabel = formatMessage({ id: 'Fe4GhI', defaultMessage: 'Ebene' })
 
   const res = useLiveQuery(
     `
@@ -141,7 +142,9 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
     }
   }
 
-  const labelWithCount = options?.length ? `${formatMessage({ id: 'Fe4GhI', defaultMessage: 'Ebene' })} (${options.length})` : formatMessage({ id: 'Fe4GhI', defaultMessage: 'Ebene' })
+  const labelWithCount = options?.length
+    ? `${layerLabel} (${options.length})`
+    : layerLabel
 
   return (
     <Field
