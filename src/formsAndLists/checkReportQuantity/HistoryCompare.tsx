@@ -32,6 +32,7 @@ export const CheckReportQuantityHistoryCompare = ({
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/quantities/$checkReportQuantityId_/histories/$checkReportQuantityHistoryId'
 }) => {
   const { formatMessage } = useIntl()
+  const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
   const navigate = useNavigate()
   const {
     projectId,
@@ -223,10 +224,7 @@ export const CheckReportQuantityHistoryCompare = ({
       {selectedUnit?.list_id && hasListValues ? (
         listValues.length <= 5 ? (
           <RadioGroupField
-            label={formatMessage({
-              id: 'gRVMng',
-              defaultMessage: 'Menge',
-            })}
+            label={quantityLabel}
             name={unitValueField}
             list={listValueIds}
             labelMap={listValueLabelMap}
@@ -239,10 +237,7 @@ export const CheckReportQuantityHistoryCompare = ({
         ) : (
           <DropdownFieldSimpleOptions
             name={unitValueField}
-            label={formatMessage({
-              id: 'gRVMng',
-              defaultMessage: 'Menge',
-            })}
+            label={quantityLabel}
             options={listValueIds}
             value={currentListValueStr}
             onChange={(e) => onListValueChange(e.target.value ?? null)}
@@ -256,11 +251,8 @@ export const CheckReportQuantityHistoryCompare = ({
             <TextField
               label={
                 selectedUnit?.type !== 'integer'
-                  ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (integer)`
-                  : formatMessage({
-                      id: 'gRVMng',
-                      defaultMessage: 'Menge',
-                    })
+                  ? `${quantityLabel} (integer)`
+                  : quantityLabel
               }
               name="quantity_integer"
               type="number"
@@ -274,11 +266,8 @@ export const CheckReportQuantityHistoryCompare = ({
             <TextField
               label={
                 selectedUnit?.type !== 'numeric'
-                  ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (numeric)`
-                  : formatMessage({
-                      id: 'gRVMng',
-                      defaultMessage: 'Menge',
-                    })
+                  ? `${quantityLabel} (numeric)`
+                  : quantityLabel
               }
               name="quantity_numeric"
               type="number"
@@ -292,11 +281,8 @@ export const CheckReportQuantityHistoryCompare = ({
             <TextField
               label={
                 selectedUnit?.type !== 'text'
-                  ? `${formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })} (text)`
-                  : formatMessage({
-                      id: 'gRVMng',
-                      defaultMessage: 'Menge',
-                    })
+                  ? `${quantityLabel} (text)`
+                  : quantityLabel
               }
               name="quantity_text"
               value={(row.quantity_text as string | null) ?? ''}
