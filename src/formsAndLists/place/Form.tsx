@@ -49,6 +49,17 @@ export const PlaceForm = ({
 
   const content = (
     <>
+      {!isFilter && designing && (
+        <RadioGroupField
+          label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
+          name="level"
+          list={[1, 2]}
+          value={row.level ?? ''}
+          onChange={onChange}
+          validationState={validations?.level?.state}
+          validationMessage={validations?.level?.message}
+        />
+      )}
       <TextField
         label={formatMessage({
           id: 'bPlaceNameLabel',
@@ -95,17 +106,6 @@ export const PlaceForm = ({
       />
       {!isFilter && (
         <>
-          {designing && (
-            <RadioGroupField
-              label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
-              name="level"
-              list={[1, 2]}
-              value={row.level ?? ''}
-              onChange={onChange}
-              validationState={validations?.level?.state}
-              validationMessage={validations?.level?.message}
-            />
-          )}
           {row.level === 2 && (
             <DropdownField
               label={formatMessage({
