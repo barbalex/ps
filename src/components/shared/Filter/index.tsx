@@ -113,7 +113,10 @@ const getTitle = ({
     id: 'gxCh0c',
     defaultMessage: 'Teilprojekt',
   })
-  const reportsLabel = formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })
+  const reportsLabel = formatMessage({
+    id: 'CiJ0SG',
+    defaultMessage: 'Berichte',
+  })
   const placeFallback = formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' })
   const usersLabel = formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })
   const taxaLabel = formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })
@@ -142,9 +145,9 @@ const getTitle = ({
                       defaultMessage: 'Beobachtungen',
                     })
                   : tableName === 'subproject_reports'
-                      ? `${subprojectNameSingular ?? subprojectSingularFallback}-${reportsLabel}`
+                    ? `${subprojectNameSingular ?? subprojectSingularFallback}-${reportsLabel}`
                     : tableName === 'check_reports'
-                        ? `${placeNameSingular ?? placeFallback}-${reportsLabel}`
+                      ? `${placeNameSingular ?? placeFallback}-${reportsLabel}`
                       : tableName === 'action_reports'
                         ? formatMessage({
                             id: 'mARBts',
@@ -264,13 +267,7 @@ const getTitle = ({
                                                                     )
                                                                   : tableName ===
                                                                       'project_reports'
-                                                                    ? formatMessage(
-                                                                        {
-                                                                          id: 'CiJ0SG',
-                                                                          defaultMessage:
-                                                                            'Berichte',
-                                                                        },
-                                                                      )
+                                                                    ? reportsLabel
                                                                     : tableName
                                                                         .split(
                                                                           '_',

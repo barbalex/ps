@@ -33,6 +33,8 @@ export const CheckTaxonHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
+  const taxonFieldLabel = { id: 'OSk4zO', defaultMessage: 'Taxon' } as const
+  const unitFieldLabel = { id: 'bDkNqO', defaultMessage: 'Einheit' } as const
   const navigate = useNavigate()
   const {
     checkTaxonId,
@@ -129,7 +131,7 @@ export const CheckTaxonHistoryCompare = ({
     <div className="form-container">
       <>
         <DropdownField
-          label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
+          label={formatMessage(taxonFieldLabel)}
           name="taxon_id"
           table="taxa"
           value={(row.taxon_id as string | null) ?? ''}
@@ -140,7 +142,7 @@ export const CheckTaxonHistoryCompare = ({
           validationMessage={validations?.taxon_id?.message}
         />
         <RadioGroupField
-          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+          label={formatMessage(unitFieldLabel)}
           name="unit_id"
           list={unitIds}
           labelMap={unitLabelMap}
@@ -204,8 +206,8 @@ export const CheckTaxonHistoryCompare = ({
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      taxon_id: { id: 'OSk4zO', defaultMessage: 'Taxon' },
-      unit_id: { id: 'bDkNqO', defaultMessage: 'Einheit' },
+      taxon_id: taxonFieldLabel,
+      unit_id: unitFieldLabel,
       quantity_integer: { id: 'gRVMng', defaultMessage: 'Menge (integer)' },
       quantity_numeric: {
         id: 'bQuantityNumeric',
