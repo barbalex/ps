@@ -1,15 +1,10 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Menu,
-  MenuTrigger,
-  MenuPopover,
-  MenuList,
-  MenuItem,
-  MenuButton,
-} = fluentUiReactComponents
+const { Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, MenuButton } =
+  fluentUiReactComponents
 import { useAtom } from 'jotai'
 
 import { languageAtom, type Language } from '../../store.ts'
+import styles from './LanguageChooser.module.css'
 
 const LANGUAGES: Language[] = ['en', 'de', 'fr', 'it']
 
@@ -22,7 +17,7 @@ export const LanguageChooser = () => {
         <MenuButton
           size="medium"
           appearance="transparent"
-          style={{ color: 'white', minWidth: 0 }}
+          className={styles.button}
           title="Choose language"
         >
           {language.toUpperCase()}
