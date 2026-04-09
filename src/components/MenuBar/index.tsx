@@ -5,6 +5,8 @@ import {
   useState,
   useEffect,
   Children,
+  Fragment,
+  isValidElement,
   cloneElement,
 } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -38,7 +40,27 @@ export const MenuBar = ({
   showBorder = true,
   // top header should not force menu bar to grow and push sibling controls away
   grow = true,
+  // begin collapsing slightly before touching neighboring title/content
+  collapseOffset = 0,
 }) => {
+  const flattenChildren = useCallback((nodes) => {
+    const flattened = []
+
+    const walk = (input) => {
+      for (const child of Children.toArray(input)) {
+        if (!child) continue
+        if (isValidElement(child) && child.type === Fragment) {
+          walk(child.props.children)
+          continue
+        }
+        flattened.push(child)
+      }
+    }
+
+    walk(nodes)
+    return flattened
+  }, [])
+
   const getChildBaseWidth = useCallback(
     (child) =>
       child.props.width
@@ -50,14 +72,10 @@ export const MenuBar = ({
   )
 
   const { visibleChildren, widths } = useMemo(() => {
-    const visibleChildren = []
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const [index, child] of Children.toArray(children).entries()) {
-      visibleChildren.push(child)
-    }
+    const visibleChildren = flattenChildren(children)
     const widths = visibleChildren.map((c) => getChildBaseWidth(c))
     return { visibleChildren, widths }
-  }, [children, getChildBaseWidth])
+  }, [children, flattenChildren, getChildBaseWidth])
 
   const requiredButtonsWidth = useMemo(() => {
     const buttonsGapWidth = Math.max(visibleChildren.length - 1, 0) * buttonGap
@@ -81,7 +99,10 @@ export const MenuBar = ({
     const containerWidth = outerContainerRef.current?.clientWidth
 
     const titleWidth = titleComponentWidth ?? 0
-    const spaceForButtonsAndMenus = containerWidth - titleWidth
+    const spaceForButtonsAndMenus = Math.max(
+      containerWidth - titleWidth - collapseOffset,
+      0,
+    )
     const buttonsGapWidth = Math.max(visibleChildren.length - 1, 0) * buttonGap
     const widthOfAllPassedInButtons =
       (widths ? widths.reduce((acc, w) => acc + w, 0) : 0) + buttonsGapWidth
@@ -93,8 +114,7 @@ export const MenuBar = ({
     const newButtons = []
     const newMenus = []
     let widthSum = 0
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const [index, child] of Children.toArray(visibleChildren).entries()) {
+    for (const child of visibleChildren) {
       const width = getChildBaseWidth(child)
       const widthWithGap = width + (newButtons.length > 0 ? buttonGap : 0)
       if (widthSum + widthWithGap > spaceForButtons) {
@@ -130,7 +150,7 @@ export const MenuBar = ({
     // Example: file preview (any action that changes the menus passed in)
     checkOverflow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rerenderer, children])
+  }, [rerenderer, visibleChildren, collapseOffset])
 
   // set up a resize observer for the container
   const observer = useMemo(

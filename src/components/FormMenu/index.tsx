@@ -24,7 +24,7 @@ export const FormMenu = ({
   const { formatMessage } = useIntl()
 
   return (
-    <MenuBar>
+    <MenuBar collapseOffset={10}>
       {!!siblings && siblings}
       {!!toPrevious && (
         <Tooltip
@@ -54,7 +54,15 @@ export const FormMenu = ({
           />
         </Tooltip>
       )}
-      {!!deleteRow && <Delete deleteRow={deleteRow} tableName={tableName} deleteLabel={deleteLabel} deleteConfirmLabel={deleteConfirmLabel} disabled={deleteRowDisabled} />}
+      {!!deleteRow && (
+        <Delete
+          deleteRow={deleteRow}
+          tableName={tableName}
+          deleteLabel={deleteLabel}
+          deleteConfirmLabel={deleteConfirmLabel}
+          disabled={deleteRowDisabled}
+        />
+      )}
       {!!toNext && (
         <Tooltip
           content={formatMessage({
