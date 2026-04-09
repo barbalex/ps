@@ -6,9 +6,7 @@
 }
 
 auth.arten-fördern.app {
-  reverse_proxy * ps_auth:3003 {
-    header_down Access-Control-Allow-Origin *
-  }
+  reverse_proxy * ps_auth:3003
 }
 
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
@@ -24,15 +22,32 @@ sync.arten-fördern.app {
 }
 
 api.arten-fördern.app {
-  reverse_proxy * ps_postgrest:3002 {
-    header_down Access-Control-Allow-Origin *
+  @arten_preflight {
+    method OPTIONS
+    header Origin https://arten-fördern.app
   }
+
+  handle @arten_preflight {
+    header Access-Control-Allow-Origin "https://arten-fördern.app"
+    header Access-Control-Allow-Methods "GET,POST,PATCH,PUT,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, Prefer, Range"
+    header Access-Control-Allow-Credentials "true"
+    header Access-Control-Expose-Headers "Content-Range, Content-Location"
+    header Vary "Origin"
+    respond "" 204
+  }
+
+  @arten_origin header Origin https://arten-fördern.app
+  header @arten_origin Access-Control-Allow-Origin "https://arten-fördern.app"
+  header @arten_origin Access-Control-Allow-Credentials "true"
+  header @arten_origin Access-Control-Expose-Headers "Content-Range, Content-Location"
+  header @arten_origin Vary "Origin"
+
+  reverse_proxy * ps_postgrest:3002
 }
 
 auth.promote-species.app {
-  reverse_proxy * ps_auth:3003 {
-    header_down Access-Control-Allow-Origin *
-  }
+  reverse_proxy * ps_auth:3003
 }
 
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
@@ -48,8 +63,27 @@ sync.promote-species.app {
 }
 
 api.promote-species.app {
-  reverse_proxy * ps_postgrest:3002 {
-    header_down Access-Control-Allow-Origin *
+  @promote_preflight {
+    method OPTIONS
+    header Origin https://promote-species.app
   }
+
+  handle @promote_preflight {
+    header Access-Control-Allow-Origin "https://promote-species.app"
+    header Access-Control-Allow-Methods "GET,POST,PATCH,PUT,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, Prefer, Range"
+    header Access-Control-Allow-Credentials "true"
+    header Access-Control-Expose-Headers "Content-Range, Content-Location"
+    header Vary "Origin"
+    respond "" 204
+  }
+
+  @promote_origin header Origin https://promote-species.app
+  header @promote_origin Access-Control-Allow-Origin "https://promote-species.app"
+  header @promote_origin Access-Control-Allow-Credentials "true"
+  header @promote_origin Access-Control-Expose-Headers "Content-Range, Content-Location"
+  header @promote_origin Vary "Origin"
+
+  reverse_proxy * ps_postgrest:3002
 }
 

@@ -17,4 +17,5 @@ export const { signIn, signUp, useSession, getSession } = createAuthClient({
     : window?.location?.hostname?.endsWith('promote-species.app')
       ? 'https://auth.promote-species.app'
       : 'https://auth.arten-fördern.app',
+  basePath: '/auth',
 })

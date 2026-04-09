@@ -6,6 +6,7 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 
 export const auth = betterAuth({
+  basePath: '/auth',
   database: new Pool({ connectionString: DATABASE_URL }),
   advanced: {
     database: {

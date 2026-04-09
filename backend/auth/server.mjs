@@ -25,7 +25,7 @@ app.use(
   }),
 )
 
-app.all('/api/auth/*splat', toNodeHandler(auth))
+app.all('/auth/*splat', toNodeHandler(auth))
 
 app.get('/health', (_req, res) => {
   res.status(200).json({ ok: true })
