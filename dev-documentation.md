@@ -1,4 +1,6 @@
-Developer Documentation
+**Developer Documentation**
+
+This file serves the developer(s) and AI. It's goal is to ensure 
 
 # Styling
 
