@@ -39,8 +39,7 @@ export const Places = ({ from }) => {
     })
 
     navigate({
-      to: placeIdNew,
-      params: (prev) => ({ ...prev, placeId: placeIdNew }),
+      to: `${placeIdNew}/place`,
     })
   }
 
