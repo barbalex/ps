@@ -142,7 +142,7 @@ export const Home = () => {
               values={{
                 link: (
                   <a
-                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.ch"
+                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.app"
                     target="_blank"
                   >
                     <FormattedMessage
@@ -286,7 +286,7 @@ export const Home = () => {
               values={{
                 link: (
                   <a
-                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.ch"
+                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.app"
                     target="_blank"
                   >
                     <FormattedMessage id="9KB+sP" defaultMessage="mitteilen" />
