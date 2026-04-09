@@ -32,6 +32,7 @@ export const ActionTaxonHistoryCompare = ({
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
 }) => {
   const { formatMessage } = useIntl()
+  const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
   const navigate = useNavigate()
   const {
     actionTaxonId,
@@ -164,7 +165,7 @@ export const ActionTaxonHistoryCompare = ({
       />
       {(selectedUnit?.type === 'integer' || row.quantity_integer !== null) && (
         <TextField
-          label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+          label={quantityLabel}
           name="quantity_integer"
           type="number"
           value={(row.quantity_integer as number | null) ?? ''}
@@ -175,7 +176,7 @@ export const ActionTaxonHistoryCompare = ({
       )}
       {(selectedUnit?.type === 'numeric' || row.quantity_numeric !== null) && (
         <TextField
-          label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+          label={quantityLabel}
           name="quantity_numeric"
           type="number"
           value={(row.quantity_numeric as number | null) ?? ''}
@@ -186,7 +187,7 @@ export const ActionTaxonHistoryCompare = ({
       )}
       {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
         <TextField
-          label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
+          label={quantityLabel}
           name="quantity_text"
           value={(row.quantity_text as string | null) ?? ''}
           onChange={onChange}

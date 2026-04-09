@@ -50,6 +50,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   )
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
+  const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
   const [validations, setValidations] = useState({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -137,7 +138,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={placeUsersIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddPlaceUser}
         />
@@ -150,7 +151,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
           size="medium"
-          title={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
+          title={newLabel}
           icon={<FaPlus />}
           onClick={onClickAddFile}
         />
@@ -174,6 +175,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [name]: _, ...rest } = prev
       return rest
     })
