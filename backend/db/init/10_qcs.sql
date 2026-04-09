@@ -334,21 +334,24 @@ JOIN subprojects sp ON sp.subproject_id = st.subproject_id
 WHERE st.subproject_id = $1
   AND st.taxon_id IS NULL
 ORDER BY st.label'),
-('goalsYearMissing', 'Ziele ohne Jahr', 'Goals without year', 'Objectifs sans année', 'Obiettivi senza anno', 'goals', NULL, false, false, true, false, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || ''/goal'' AS url
+('goalsYearMissing', 'Ziele ohne Jahr', 'Goals without year', 'Objectifs sans année', 'Obiettivi senza anno', 'goals', NULL, false, false, true, false, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND g.year IS NULL
 ORDER BY g.label'),
-('goalsNameMissing', 'Ziele ohne Namen', 'Goals without name', 'Objectifs sans nom', 'Obiettivi senza nome', 'goals', NULL, false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || ''/goal'' AS url
+('goalsNameMissing', 'Ziele ohne Namen', 'Goals without name', 'Objectifs sans nom', 'Obiettivi senza nome', 'goals', NULL, false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND nullif(g.name, '''') IS NULL
 ORDER BY g.label'),
-('goalsReportMissing', 'Ziele ohne Bericht', 'Goals without report', 'Objectifs sans rapport', 'Obiettivi senza rapporto', 'goals', NULL, false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || ''/goal'' AS url
+('goalsReportMissing', 'Ziele ohne Bericht', 'Goals without report', 'Objectifs sans rapport', 'Obiettivi senza rapporto', 'goals', NULL, false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
+JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM goal_reports gr
@@ -636,7 +639,7 @@ FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
 ORDER BY c.label'),
-('checkReportQuantitiesNoDefault', 'Ort-Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place check report quantities: default unit not used', 'Quantités de rapport de contrôle de lieu : unité par défaut non utilisée', 'Quantità di rapporto di controllo di luogo: unità predefinita non utilizzata', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+('checkReportQuantitiesNoDefault', 'Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Check report quantities: default unit not used', 'Quantités de rapport de contrôle: unité par défaut non utilisée', 'Quantità di rapporto di controllo: unità predefinita non utilizzata', 'places', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
@@ -677,7 +680,7 @@ FROM action_quantities aq
 WHERE aq.action_id = a.action_id
   AND aq.unit_id != proj.actions_default_unit_id)
 ORDER BY a.label'),
-('placeActionReportQuantitiesNoDefault', 'Ort-Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place action report quantities: default unit not used', 'Quantités de rapport d''action de lieu : unité par défaut non utilisée', 'Quantità di rapporto di azione di luogo: unità predefinita non utilizzata', 'actions', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+('actionReportQuantitiesNoDefault', 'Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place action report quantities: default unit not used', 'Quantités de rapport d''action de lieu : unité par défaut non utilisée', 'Quantità di rapporto di azione di luogo: unità predefinita non utilizzata', 'actions', NULL, false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
