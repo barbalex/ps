@@ -26,6 +26,10 @@ export const One = ({
   db,
 }) => {
   const { formatMessage } = useIntl()
+  const replaceLabel = formatMessage({
+    id: 'rP0bTn',
+    defaultMessage: 'Ersetzen',
+  })
   const [duplicateDialogData, setDuplicateDialogData] = useState<{
     duplicateCount: number
     totalCount: number
@@ -230,7 +234,7 @@ export const One = ({
                 onClick={handleReplace}
                 disabled={isProcessing}
               >
-                {formatMessage({ id: 'rP0bTn', defaultMessage: 'Ersetzen' })}
+                {replaceLabel}
               </Button>
               <Button
                 appearance="primary"
@@ -245,7 +249,7 @@ export const One = ({
             </div>
             <p className={styles.updateDescription}>
               <strong>
-                {formatMessage({ id: 'rP0bTn', defaultMessage: 'Ersetzen' })}:
+                {replaceLabel}:
               </strong>{' '}
               {formatMessage({
                 id: 'dLa0Ob',

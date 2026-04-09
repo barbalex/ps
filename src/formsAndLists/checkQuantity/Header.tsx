@@ -21,6 +21,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
+  const quantityTitle = formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/quantities/${checkQuantityId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/quantities/${checkQuantityId}`
@@ -56,9 +57,10 @@ export const Header = ({ autoFocusRef, from }) => {
         [checkQuantityId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query('DELETE FROM check_quantities WHERE check_quantity_id = $1', [
-        checkQuantityId,
-      ])
+      await db.query(
+        'DELETE FROM check_quantities WHERE check_quantity_id = $1',
+        [checkQuantityId],
+      )
       addOperation({
         table: 'check_quantities',
         rowIdName: 'check_quantity_id',
@@ -86,7 +88,10 @@ export const Header = ({ autoFocusRef, from }) => {
       const next = checkQuantities[(index + 1) % len]
       navigate({
         to: `../${next.check_quantity_id}`,
-        params: (prev) => ({ ...prev, checkQuantityId: next.check_quantity_id }),
+        params: (prev) => ({
+          ...prev,
+          checkQuantityId: next.check_quantity_id,
+        }),
       })
     } catch (error) {
       console.error('Error navigating to next check value:', error)
@@ -107,7 +112,10 @@ export const Header = ({ autoFocusRef, from }) => {
       const previous = checkQuantities[(index + len - 1) % len]
       navigate({
         to: `../${previous.check_quantity_id}`,
-        params: (prev) => ({ ...prev, checkQuantityId: previous.check_quantity_id }),
+        params: (prev) => ({
+          ...prev,
+          checkQuantityId: previous.check_quantity_id,
+        }),
       })
     } catch (error) {
       console.error('Error navigating to previous check value:', error)
@@ -116,14 +124,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })}
+      title={quantityTitle}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
-      tableName={formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })}
+      tableName={quantityTitle}
       siblings={
         <HistoryToggleButton
           historiesPath={`${basePath}/histories`}

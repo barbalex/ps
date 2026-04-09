@@ -263,19 +263,23 @@ export const Form = ({ autoFocusRef, from }: Props) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Chart"
-        id={chartId}
-      />
-    )
+    return <NotFound table="Chart" id={chartId} />
   }
 
   // console.log('hello ChartForm', { row, chart_id })
+  const dataSubjectSectionTitle = formatMessage({
+    id: 'bCGjKl',
+    defaultMessage: 'Daten / Subjekt-Darstellung',
+  })
 
   return (
     <div className="form-container">
-      <Section title={formatMessage({ id: 'bCFiJk', defaultMessage: 'Allgemeine Einstellungen' })}>
+      <Section
+        title={formatMessage({
+          id: 'bCFiJk',
+          defaultMessage: 'Allgemeine Einstellungen',
+        })}
+      >
         <ChartType
           onChange={onChange}
           row={row}
@@ -291,31 +295,46 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationMessage={validations?.name?.message}
         />
       </Section>
-      <Section title={formatMessage({ id: 'bCGjKl', defaultMessage: 'Daten / Subjekt-Darstellung' })}>
+      <Section title={dataSubjectSectionTitle}>
         <SwitchField
-          label={formatMessage({ id: 'bCJmNo', defaultMessage: 'Aktuelles Jahr' })}
+          label={formatMessage({
+            id: 'bCJmNo',
+            defaultMessage: 'Aktuelles Jahr',
+          })}
           name="years_current"
           value={row.years_current ?? false}
           onChange={onChange}
           validationState={validations?.years_current?.state}
           validationMessage={
             validations.years_current?.message ??
-            formatMessage({ id: 'bCKnOp', defaultMessage: 'Das Diagramm zeigt Daten des aktuellen Jahres' })
+            formatMessage({
+              id: 'bCKnOp',
+              defaultMessage: 'Das Diagramm zeigt Daten des aktuellen Jahres',
+            })
           }
         />
         <SwitchField
-          label={formatMessage({ id: 'bCLoQr', defaultMessage: 'Vorheriges Jahr' })}
+          label={formatMessage({
+            id: 'bCLoQr',
+            defaultMessage: 'Vorheriges Jahr',
+          })}
           name="years_previous"
           value={row.years_previous ?? false}
           onChange={onChange}
           validationState={validations?.years_previous?.state}
           validationMessage={
             validations.years_previous?.message ??
-            formatMessage({ id: 'bCMpRs', defaultMessage: 'Das Diagramm zeigt Daten des vorherigen Jahres' })
+            formatMessage({
+              id: 'bCMpRs',
+              defaultMessage: 'Das Diagramm zeigt Daten des vorherigen Jahres',
+            })
           }
         />
         <TextField
-          label={formatMessage({ id: 'bCNqSt', defaultMessage: 'Bestimmtes Jahr' })}
+          label={formatMessage({
+            id: 'bCNqSt',
+            defaultMessage: 'Bestimmtes Jahr',
+          })}
           name="years_specific"
           value={row.years_specific}
           type="number"
@@ -323,11 +342,18 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_specific?.state}
           validationMessage={
             validations.years_specific?.message ??
-            formatMessage({ id: 'bCOrTu', defaultMessage: 'Das Diagramm zeigt Daten des eingegebenen Jahres' })
+            formatMessage({
+              id: 'bCOrTu',
+              defaultMessage:
+                'Das Diagramm zeigt Daten des eingegebenen Jahres',
+            })
           }
         />
         <TextField
-          label={formatMessage({ id: 'bCPsUv', defaultMessage: 'Letzte X Jahre' })}
+          label={formatMessage({
+            id: 'bCPsUv',
+            defaultMessage: 'Letzte X Jahre',
+          })}
           name="years_last_x"
           value={row.years_last_x}
           type="number"
@@ -335,7 +361,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_last_x?.state}
           validationMessage={
             validations.years_last_x?.message ??
-            formatMessage({ id: 'bCQtVw', defaultMessage: 'Das Diagramm zeigt höchstens die letzten x Jahre (x = eingegebener Wert)' })
+            formatMessage({
+              id: 'bCQtVw',
+              defaultMessage:
+                'Das Diagramm zeigt höchstens die letzten x Jahre (x = eingegebener Wert)',
+            })
           }
         />
         <TextField
@@ -347,7 +377,11 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_since?.state}
           validationMessage={
             validations.years_since?.message ??
-            formatMessage({ id: 'bCSvXy', defaultMessage: 'Das Diagramm zeigt Daten seit dem eingegebenen Jahr' })
+            formatMessage({
+              id: 'bCSvXy',
+              defaultMessage:
+                'Das Diagramm zeigt Daten seit dem eingegebenen Jahr',
+            })
           }
         />
         <TextField
@@ -359,42 +393,68 @@ export const Form = ({ autoFocusRef, from }: Props) => {
           validationState={validations?.years_until?.state}
           validationMessage={
             validations.years_until?.message ??
-            formatMessage({ id: 'bCUxZa', defaultMessage: 'Das Diagramm zeigt Daten bis zum eingegebenen Jahr' })
+            formatMessage({
+              id: 'bCUxZa',
+              defaultMessage:
+                'Das Diagramm zeigt Daten bis zum eingegebenen Jahr',
+            })
           }
         />
       </Section>
-      <Section title={formatMessage({ id: 'bCGjKl', defaultMessage: 'Daten / Subjekt-Darstellung' })}>
+      <Section title={dataSubjectSectionTitle}>
         <SwitchField
-          label={formatMessage({ id: 'bCVyAb', defaultMessage: 'Subjekte stapeln?' })}
+          label={formatMessage({
+            id: 'bCVyAb',
+            defaultMessage: 'Subjekte stapeln?',
+          })}
           name="subjects_stacked"
           value={row.subjects_stacked}
           onChange={onChange}
           validationState={validations?.subjects_stacked?.state}
           validationMessage={
             validations.subjects_stacked?.message ??
-            formatMessage({ id: 'bCWzBc', defaultMessage: 'Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, überlagern sie sich' })
+            formatMessage({
+              id: 'bCWzBc',
+              defaultMessage:
+                'Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, überlagern sie sich',
+            })
           }
         />
         <SwitchField
-          label={formatMessage({ id: 'bCXaBd', defaultMessage: 'Subjekte in separaten Diagrammen darstellen?' })}
+          label={formatMessage({
+            id: 'bCXaBd',
+            defaultMessage: 'Subjekte in separaten Diagrammen darstellen?',
+          })}
           name="subjects_single"
           value={row.subjects_single}
           onChange={onChange}
           validationState={validations?.subjects_single?.state}
           validationMessage={
             validations.subjects_single?.message ??
-            formatMessage({ id: 'bCYbCe', defaultMessage: 'Wenn deaktiviert, werden Subjekte in einem einzigen Diagramm dargestellt' })
+            formatMessage({
+              id: 'bCYbCe',
+              defaultMessage:
+                'Wenn deaktiviert, werden Subjekte in einem einzigen Diagramm dargestellt',
+            })
           }
         />
         <SwitchField
-          label={formatMessage({ id: 'bCZcDf', defaultMessage: 'Bei mehreren Subjekten: Anteil als Prozent anzeigen?' })}
+          label={formatMessage({
+            id: 'bCZcDf',
+            defaultMessage:
+              'Bei mehreren Subjekten: Anteil als Prozent anzeigen?',
+          })}
           name="percent"
           value={row.percent}
           onChange={onChange}
           validationState={validations?.percent?.state}
           validationMessage={
             validations.percent?.message ??
-            formatMessage({ id: 'bDaDgE', defaultMessage: 'Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben' })
+            formatMessage({
+              id: 'bDaDgE',
+              defaultMessage:
+                'Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben',
+            })
           }
         />
       </Section>
