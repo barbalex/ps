@@ -40,7 +40,17 @@ export const OwnLayers = () => {
       CASE
         WHEN own_table = 'observations_to_assess' THEN 0
         WHEN own_table = 'observations_not_to_assign' THEN 1
-        ELSE 2
+        WHEN own_table = 'places' AND own_table_level = 1 THEN 2
+        WHEN own_table = 'checks' AND own_table_level = 1 THEN 3
+        WHEN own_table = 'actions' AND own_table_level = 1 THEN 4
+        WHEN own_table = 'observations_assigned' AND own_table_level = 1 THEN 5
+        WHEN own_table = 'observations_assigned_lines' AND own_table_level = 1 THEN 6
+        WHEN own_table = 'places' AND own_table_level = 2 THEN 7
+        WHEN own_table = 'checks' AND own_table_level = 2 THEN 8
+        WHEN own_table = 'actions' AND own_table_level = 2 THEN 9
+        WHEN own_table = 'observations_assigned' AND own_table_level = 2 THEN 10
+        WHEN own_table = 'observations_assigned_lines' AND own_table_level = 2 THEN 11
+        ELSE 12
       END,
       label
   `,
