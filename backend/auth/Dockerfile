@@ -1,5 +1,5 @@
 # see: https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
-FROM node:25.9.0-slim
+FROM node:lts-slim
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends dumb-init \
