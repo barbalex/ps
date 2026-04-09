@@ -1,4 +1,25 @@
-# Developer Documentation: SQL Source Of Truth And Sync
+Developer Documentation
+
+# Styling
+
+## Current situation
+
+Primarily css modules are used.
+Dynamic Styling is usually implemented via inline styles.
+
+For some general styles a global .css file is used.
+
+## Alternative
+
+Use css directly, without modules, as mentioned here: https://medium.com/@rapPayne/stop-writing-react-local-styles-use-the-component-classname-pattern-9a820c6447de
+
+1. create a .css file with the same name as the (single) component file
+2. give the base class the same name as the component
+3. give the base div of the component the base class
+4. use css nesting to style all the component's elements in the component's .css file
+5. add dynamic styling by dynamically changing classes (there may be cases where inline does not work?)
+
+# SQL Source Of Truth And Sync
 
 ## Why This Exists
 
@@ -17,10 +38,10 @@ Edit SQL files only in:
 
 - `backend/db/init/`
 - `backend/db/` for these shared files:
-   - `generate_qcs_sql.mjs`
-   - `test_history_tables.sql`
-   - `test_history_tables_smoke.sql`
-   - `test_history_tables_full_coverage.sql`
+  - `generate_qcs_sql.mjs`
+  - `test_history_tables.sql`
+  - `test_history_tables_smoke.sql`
+  - `test_history_tables_full_coverage.sql`
 
 Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
 Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.

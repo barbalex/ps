@@ -23,6 +23,10 @@ export const AddField = ({ tableName, level, from }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { formatMessage } = useIntl()
+  const addFieldLabel = formatMessage({
+    id: 'lWQzTz',
+    defaultMessage: 'Feld hinzufügen',
+  })
 
   const addRow = async () => {
     const isAccountTable = accountTables.includes(tableName)
@@ -42,10 +46,10 @@ export const AddField = ({ tableName, level, from }) => {
       size="medium"
       icon={<FaPlus />}
       onClick={addRow}
-      title={formatMessage({ id: 'lWQzTz', defaultMessage: 'Feld hinzufügen' })}
+      title={addFieldLabel}
       className={styles.button}
     >
-      {formatMessage({ id: 'lWQzTz', defaultMessage: 'Feld hinzufügen' })}
+      {addFieldLabel}
     </Button>
   )
 }
