@@ -59,15 +59,13 @@ export const Field = ({ label, value, index, moveField }) => {
       isDragging: monitor.isDragging(),
     }),
   })
-  const opacity = isDragging ? 0 : 1
   drag(drop(ref))
 
   return (
     <div
       ref={ref}
       data-handler-id={handlerId}
-      style={{ opacity }}
-      className={styles.row}
+      className={`${styles.row}${isDragging ? ` ${styles.rowDragging}` : ''}`}
     >
       <div className={styles.label}>{label}</div>
       <div className={styles.value}>

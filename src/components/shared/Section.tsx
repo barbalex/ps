@@ -13,8 +13,6 @@ export const Section = ({
   onChevronClick = undefined,
   onNavigate = undefined,
   isOpen = undefined,
-  titleStyle = undefined,
-  childrenStyle = undefined,
   titleClassName = undefined,
   childrenClassName = undefined,
   headerActions = undefined,
@@ -64,7 +62,6 @@ export const Section = ({
       <h2
         className={`${styles.title}${isStuck ? ` ${styles.titleStuck}` : ''}${effectiveHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}${titleClassName ? ` ${titleClassName}` : ''}`}
         onClick={onNavigate ?? effectiveHeaderClick}
-        style={titleStyle}
       >
         <span className={styles.titleText}>{title}</span>
         {(headerActions || isOpen !== undefined) && (
@@ -93,7 +90,6 @@ export const Section = ({
       {isOpen !== false && (
         <div
           className={`${styles.children}${isOpen ? ` ${styles.childrenOpen}` : ''}${childrenClassName ? ` ${childrenClassName}` : ''}`}
-          style={childrenStyle}
         >
           {children}
         </div>

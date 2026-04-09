@@ -50,3 +50,7 @@
   gap: 4px;
   padding: 4px 10px 6px 10px;
 }
+
+.rowEven {
+  background-color: rgba(0, 0, 0, 0.05);
+}

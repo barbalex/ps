@@ -137,35 +137,7 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
               )
             }
             title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
-            className={styles.toggleButton}
-            style={{
-              top: isNarrow ? (isOpen ? 6 : -31) : 5,
-              right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
-              left: isNarrow ? 5 : 'unset',
-              marginRight: isOpen ? 5 : 0,
-              borderTopLeftRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 4 : 0,
-              borderBottomLeftRadius: isNarrow
-                ? isOpen
-                  ? 4
-                  : 0
-                : isOpen
-                  ? 4
-                  : 0,
-              borderTopRightRadius: isNarrow
-                ? isOpen
-                  ? 0
-                  : 4
-                : isOpen
-                  ? 0
-                  : 4,
-              borderBottomRightRadius: isNarrow
-                ? isOpen
-                  ? 4
-                  : 0
-                : isOpen
-                  ? 0
-                  : 4,
-            }}
+            className={`${styles.toggleButton}${isNarrow ? (isOpen ? ` ${styles.toggleButtonNarrowOpen}` : ` ${styles.toggleButtonNarrowClosed}`) : isOpen ? ` ${styles.toggleButtonWideOpen}` : ` ${styles.toggleButtonWideClosed}`}`}
           />
         )}
         <InlineDrawer

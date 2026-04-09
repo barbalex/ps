@@ -40,9 +40,7 @@ export const Node = ({
   return (
     <div
       className={`${styles.container}${isInActiveNodeArray ? ` ${styles.containerActivePath}` : ''}${isActive ? ` ${styles.containerActive}` : ''}`}
-      style={{
-        gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
-      }}
+      style={{ '--node-indent': `${(level - 1) * 20 + 5}px` } as React.CSSProperties}
     >
       <div className={styles.spacer} />
       <Button

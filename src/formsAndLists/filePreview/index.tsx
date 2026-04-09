@@ -88,7 +88,7 @@ export const FilePreview = ({ from }) => {
           <object
             data={row.url}
             type="application/pdf"
-            style={{ width }}
+            width={width}
             className={styles.object}
           />
         )}

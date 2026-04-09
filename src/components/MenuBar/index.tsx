@@ -174,11 +174,12 @@ export const MenuBar = ({
     <div ref={outerContainerRef} className={styles.measuredOuterContainer}>
       {titleComponent}
       <div
-        style={{
-          maxWidth:
-            Math.abs(outerContainerWidth ?? 0) - (titleComponentWidth ?? 0),
-        }}
-        className={styles.stylingContainer}
+        style={
+          {
+            '--menu-max-width': `${Math.abs(outerContainerWidth ?? 0) - (titleComponentWidth ?? 0)}px`,
+          } as React.CSSProperties
+        }
+        className={`${styles.stylingContainer} ${styles.stylingContainerSized}`}
       >
         <div className={globalStyles.controls}>{buttons}</div>
         {!!menus.length && (

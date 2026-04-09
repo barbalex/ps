@@ -31,6 +31,11 @@
   max-height: 32px;
   overflow: hidden;
 }
+
+.stylingContainerSized {
+  max-width: var(--menu-max-width);
+}
+
 .menuPopover {
   min-width: unset !important;
 }

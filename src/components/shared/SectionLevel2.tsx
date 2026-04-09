@@ -8,15 +8,12 @@ export const SectionLevel2 = ({
   onHeaderClick = undefined,
   onNavigate = undefined,
   isOpen = undefined,
-  titleStyle = undefined,
-  childrenStyle = undefined,
   headerActions = undefined,
 }) => (
   <section>
     <h3
       className={`${styles.title}${onHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}`}
       onClick={onNavigate ?? onHeaderClick}
-      style={titleStyle}
     >
       {title}
       {(headerActions || isOpen !== undefined) && (
@@ -41,7 +38,6 @@ export const SectionLevel2 = ({
     {isOpen !== false && (
       <div
         className={`${styles.children}${isOpen ? ` ${styles.childrenOpen}` : ''}`}
-        style={childrenStyle}
       >
         {children}
       </div>

@@ -297,15 +297,15 @@ export const Layer = ({ layerData }) => {
         {properties.map((p, i) => {
           const key = p[0]
           const value = p[1]
-          const backgroundColor = i % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : 'unset'
+          const rowClassName = i % 2 === 0 ? styles.rowEven : undefined
 
           return (
             <Fragment key={`${i}/${key}`}>
-              <div className={styles.label} style={{ backgroundColor }}>
+              <div className={`${styles.label}${rowClassName ? ` ${rowClassName}` : ''}`}>
                 {key}
               </div>
               <Linkify options={{ target: '_blank' }}>
-                <div className={styles.text} style={{ backgroundColor }}>
+                <div className={`${styles.text}${rowClassName ? ` ${rowClassName}` : ''}`}>
                   {value}
                 </div>
               </Linkify>

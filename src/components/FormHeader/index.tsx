@@ -15,17 +15,10 @@ export const FormHeader = ({
   toPreviousDisabled,
   tableName,
   siblings,
-  // needed to leave space for the map layer drawer's close button
-  titleMarginLeft,
 }) => (
   <>
     <div className="form-header">
-      <h1
-        className={styles.title}
-        style={titleMarginLeft ? { marginLeft: titleMarginLeft } : {}}
-      >
-        {title}
-      </h1>
+      <h1 className={styles.title}>{title}</h1>
       {(addRow || deleteRow || toNext || toPrevious || siblings) && (
         <FormMenu
           addRow={addRow}

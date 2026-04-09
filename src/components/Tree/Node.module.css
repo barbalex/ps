@@ -1,5 +1,6 @@
 .container {
   display: grid;
+  grid-template-columns: var(--node-indent) 20px 1fr;
   grid-template-areas: 'spacer toggle content';
   user-select: none;
   /* do not layout offscreen content while allowing search */
