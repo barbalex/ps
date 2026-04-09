@@ -6,3 +6,16 @@
     background-color: var(--colorNeutralBackground1Hover);
   }
 }
+
+.accordionItem {
+  border-top: calc(var(--top-border-width, 1) * 1px) solid rgba(55, 118, 28, 0.5);
+  border-bottom: calc(var(--bottom-border-width, 0) * 1px) solid rgba(55, 118, 28, 0.5);
+}
+
+.headerOpen {
+  background-color: rgba(103, 216, 101, 0.1);
+}
+
+.toggleOpen {
+  background-color: transparent;
+}

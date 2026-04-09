@@ -530,8 +530,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         expandIconPosition="end"
         size="extra-large"
         expandIcon={designing ? undefined : null}
-        className={isOpen ? styles.headerColor : undefined}
-        style={{ '--fui-AccordionHeader--icon-width': '32px' }}
+        className={`${styles.headerIconWidth}${isOpen ? ` ${styles.headerColor}` : ''}`}
       >
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <div className={layerStyles.headerContainer}>
@@ -554,11 +553,11 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                 isAssigning ? (
                   <FaStopCircle />
                 ) : (
-                  <FaPlay style={{ fontSize: '0.85em' }} />
+                  <FaPlay className={styles.playIcon} />
                 )
               }
               onClick={onClickAssignButton}
-              className={styles.headerButton}
+              className={`${styles.headerButton}${isAssigning ? ` ${styles.assigningButton}` : ''}`}
               title={
                 isAssigning
                   ? 'Stop assigning observations'
@@ -567,11 +566,6 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
               appearance="subtle"
               size="small"
               as="a"
-              style={
-                isAssigning
-                  ? { color: 'black', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
-                  : undefined
-              }
             />
           ) : (
             // Multiple place layers: show menu
@@ -585,11 +579,11 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                     isAssigning ? (
                       <FaStopCircle />
                     ) : (
-                      <FaPlay style={{ fontSize: '0.85em' }} />
+                      <FaPlay className={styles.playIcon} />
                     )
                   }
                   onClick={(e) => e.stopPropagation()}
-                  className={styles.headerButton}
+                  className={`${styles.headerButton}${isAssigning ? ` ${styles.assigningButton}` : ''}`}
                   title={
                     isAssigning
                       ? 'Stop assigning observations'
@@ -598,14 +592,6 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                   appearance="subtle"
                   size="small"
                   as="a"
-                  style={
-                    isAssigning
-                      ? {
-                          color: 'black',
-                          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                        }
-                      : undefined
-                  }
                 />
               </MenuTrigger>
               <MenuPopover>
@@ -659,12 +645,11 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         {isDroppable && (
           <Button
             icon={<TbTarget />}
-            className={styles.headerButton}
+            className={`${styles.headerButton} ${styles.droppableButton}`}
             title="This layer is a drop target for observations"
             appearance="subtle"
             size="small"
             as="a"
-            style={{ color: 'green', backgroundColor: 'rgba(0, 128, 0, 0.1)' }}
           />
         )}
         <Button

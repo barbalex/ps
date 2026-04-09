@@ -19,3 +19,21 @@
     background-color: var(--colorNeutralBackground1Hover);
   }
 }
+
+.headerIconWidth {
+  --fui-AccordionHeader--icon-width: 32px;
+}
+
+.playIcon {
+  font-size: 0.85em;
+}
+
+.assigningButton {
+  color: black;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.droppableButton {
+  color: green;
+  background-color: rgba(0, 128, 0, 0.1);
+}
