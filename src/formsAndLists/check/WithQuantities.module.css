@@ -1,0 +1,12 @@
+.separator {
+  border-top: 8px solid rgb(225, 247, 224);
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.separatorWithBottom {
+  border-top: 8px solid rgb(225, 247, 224);
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: 8px;
+}

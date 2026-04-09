@@ -15,6 +15,7 @@ import {
 } from '../store.ts'
 import { Dismiss16Regular, WindowEdit16Regular } from '@fluentui/react-icons'
 import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
+import styles from './projectQcsRun.module.css'
 
 import '../form.css'
 
@@ -52,15 +53,7 @@ function HighlightedLabel({
     <span>
       {parts.map((part, i) =>
         regex.test(part) ? (
-          <mark
-            key={i}
-            style={{
-              background: 'var(--colorBrandBackground2)',
-              color: 'inherit',
-              padding: '0 1px',
-              borderRadius: 2,
-            }}
-          >
+          <mark key={i} className={styles.highlight}>
             {part}
           </mark>
         ) : (
@@ -106,7 +99,7 @@ function QcCard({
   if (onlyWithResults && rows.length === 0) return null
 
   return (
-    <Card style={{ maxWidth: 800 }}>
+    <Card className={styles.card}>
       <CardHeader
         header={
           <Text weight="semibold">
@@ -114,39 +107,24 @@ function QcCard({
           </Text>
         }
       />
-      <div style={{ padding: '0 12px 12px' }}>
+      <div className={styles.cardBody}>
         {rows.length === 0 ? (
-          <Text style={{ color: 'var(--colorNeutralForeground3)' }}>
+          <Text className={styles.emptyText}>
             {formatMessage({
               id: 'projectQcsRun.allOk',
               defaultMessage: 'Alles i.O.',
             })}
           </Text>
         ) : (
-          <ul
-            style={{
-              margin: 0,
-              padding: 0,
-              listStyle: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-            }}
-          >
+          <ul className={styles.resultList}>
             {rows.map((row, i) => {
               const label = row.label ?? String(Object.values(row)[0] ?? '')
               const url = row.url as string | undefined
               return (
-                <li
-                  key={i}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-                >
+                <li key={i} className={styles.resultItem}>
                   {url ? (
                     <>
-                      <Link
-                        to={url}
-                        style={{ color: 'var(--colorBrandForeground1)' }}
-                      >
+                      <Link to={url} className={styles.resultLink}>
                         {label}
                       </Link>
                       <Tooltip
@@ -238,15 +216,7 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
       </div>
 
       <div className="list-container">
-        <div
-          style={{
-            padding: '8px 10px',
-            display: 'flex',
-            gap: '12px',
-            flexWrap: 'wrap',
-            alignItems: 'flex-end',
-          }}
-        >
+        <div className={styles.filters}>
           <Field
             label={formatMessage({
               id: 'subprojectQcsRun.year',
@@ -256,7 +226,7 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
             <Input
               value={year}
               onChange={(_, data) => setYear(data.value)}
-              style={{ width: 90 }}
+              className={styles.yearInput}
               appearance="underline"
               type="number"
             />
@@ -278,7 +248,7 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
               contentAfter={
                 labelFilter ? (
                   <Dismiss16Regular
-                    style={{ cursor: 'pointer' }}
+                    className={styles.clearFilter}
                     onClick={() => setLabelFilter('')}
                     aria-label={formatMessage({
                       id: 'subprojectQcsRun.clearFilter',
@@ -299,14 +269,7 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
           />
         </div>
 
-        <div
-          style={{
-            padding: '8px 10px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-          }}
-        >
+        <div className={styles.cards}>
           {labelFilteredQcs.map((qc) => (
             <QcCard
               key={qc.qcs_id}

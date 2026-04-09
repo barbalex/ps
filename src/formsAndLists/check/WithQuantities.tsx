@@ -16,6 +16,7 @@ import { Section } from '../../components/shared/Section.tsx'
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
+import styles from './WithQuantities.module.css'
 
 import '../../form.css'
 
@@ -47,8 +48,7 @@ export const CheckWithQuantities = ({ from }) => {
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
-  const showQuantities =
-    isDesigning || placeLevel?.check_quantities !== false
+  const showQuantities = isDesigning || placeLevel?.check_quantities !== false
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -108,31 +108,14 @@ export const CheckWithQuantities = ({ from }) => {
               >
                 {quantities.map((q, i) => (
                   <div key={q.check_quantity_id}>
-                    {i > 0 && (
-                      <div
-                        style={{
-                          borderTop: '8px solid rgb(225, 247, 224)',
-                          marginLeft: -10,
-                          marginRight: -10,
-                          marginBottom: 8,
-                        }}
-                      />
-                    )}
+                    {i > 0 && <div className={styles.separatorWithBottom} />}
                     <CheckQuantityInline
                       checkQuantityId={q.check_quantity_id}
                       projectId={projectId}
                     />
                   </div>
                 ))}
-                {quantities.length > 0 && (
-                  <div
-                    style={{
-                      borderTop: '8px solid rgb(225, 247, 224)',
-                      marginLeft: -10,
-                      marginRight: -10,
-                    }}
-                  />
-                )}
+                {quantities.length > 0 && <div className={styles.separator} />}
                 <Tooltip
                   content={formatMessage({
                     id: 'V6iUlF',
@@ -146,10 +129,7 @@ export const CheckWithQuantities = ({ from }) => {
             )}
           </>
         ) : (
-          <NotFound
-            table="Check"
-            id={checkId}
-          />
+          <NotFound table="Check" id={checkId} />
         )}
       </div>
     </div>
