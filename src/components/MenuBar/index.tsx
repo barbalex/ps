@@ -117,7 +117,7 @@ export const MenuBar = ({
     for (const child of visibleChildren) {
       const width = getChildBaseWidth(child)
       const widthWithGap = width + (newButtons.length > 0 ? buttonGap : 0)
-      if (widthSum + widthWithGap > spaceForButtons) {
+      if (widthSum + widthWithGap >= spaceForButtons - 1) {
         newMenus.push(cloneElement(child, { inmenu: 'true' }))
       } else {
         newButtons.push(cloneElement(child))

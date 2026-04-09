@@ -24,7 +24,7 @@ export const FormMenu = ({
   const { formatMessage } = useIntl()
 
   return (
-    <MenuBar collapseOffset={10}>
+    <MenuBar collapseOffset={20}>
       {!!siblings && siblings}
       {!!toPrevious && (
         <Tooltip
