@@ -57,7 +57,9 @@ api.arten-fördern.app {
   header @arten_origin Access-Control-Expose-Headers "Content-Range, Content-Location"
   header @arten_origin Vary "Origin"
 
-  reverse_proxy * ps_postgrest:3002
+  reverse_proxy * ps_postgrest:3002 {
+    header_down -Access-Control-Allow-Origin
+  }
 }
 
 auth.promote-species.app {
@@ -112,6 +114,8 @@ api.promote-species.app {
   header @promote_origin Access-Control-Expose-Headers "Content-Range, Content-Location"
   header @promote_origin Vary "Origin"
 
-  reverse_proxy * ps_postgrest:3002
+  reverse_proxy * ps_postgrest:3002 {
+    header_down -Access-Control-Allow-Origin
+  }
 }
 
