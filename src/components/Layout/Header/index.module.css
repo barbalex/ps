@@ -4,7 +4,7 @@
   justify-content: space-between;
   background-color: rgba(38, 82, 37, 0.9);
   color: white;
-  padding: 0;
+  padding: 0 5px;
   height: var(--layout-header-height);
   @media (min-width: 600px) {
     padding: 0 20px;
@@ -19,4 +19,5 @@
 .title {
   font-size: large;
   user-select: none;
+  white-space: nowrap;
 }

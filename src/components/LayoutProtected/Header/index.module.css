@@ -1,5 +1,5 @@
 .container {
-  padding: 0;
+  padding: 0 5px;
   height: var(--layout-header-height);
   display: flex;
   flex-wrap: nowrap;
@@ -27,6 +27,7 @@
   font-size: large;
   user-select: none;
   min-height: var(--lineHeightBase300);
+  white-space: nowrap;
 }
 
 /* hide the link when it starts causing issues */
@@ -34,13 +35,14 @@
   display: none;
   color: white;
   text-decoration: none;
+  white-space: nowrap;
 
   &:hover {
     filter: brightness(85%);
     text-decoration: underline;
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: 650px) {
     display: block;
   }
 }
