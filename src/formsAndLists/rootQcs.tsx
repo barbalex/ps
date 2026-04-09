@@ -9,6 +9,7 @@ import { useRootQcsNavData } from '../modules/useRootQcsNavData.ts'
 import { CheckboxField } from '../components/shared/CheckboxField.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { addOperationAtom, languageAtom } from '../store.ts'
+import styles from './rootQcs.module.css'
 
 import '../form.css'
 
@@ -128,15 +129,7 @@ export const RootQcs = () => {
       <div className="list-view-header">
         <h1>{navData.label}</h1>
       </div>
-      <div
-        style={{
-          padding: '8px 10px',
-          display: 'flex',
-          gap: '8px',
-          flexWrap: 'wrap',
-          alignItems: 'flex-end',
-        }}
-      >
+      <div className={styles.filters}>
         <Field
           label={formatMessage({
             id: 'rootQcs.filter',
@@ -168,7 +161,7 @@ export const RootQcs = () => {
       </div>
       <div className="list-container">
         {filteredQcs.length === 0 ? (
-          <div style={{ padding: '10px' }}>
+          <div className={styles.empty}>
             {formatMessage({
               id: 'rootQcs.empty',
               defaultMessage: 'Keine Qualitätskontrollen vorhanden',
