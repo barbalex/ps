@@ -32,6 +32,7 @@ export const CheckTaxonHistoryCompare = ({
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
 }) => {
   const { formatMessage } = useIntl()
+  const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
   const navigate = useNavigate()
   const {
     checkTaxonId,
@@ -82,10 +83,10 @@ export const CheckTaxonHistoryCompare = ({
     if (!row || row[name] === value) return
 
     try {
-      await db.query(`UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`, [
-        value,
-        checkTaxonId,
-      ])
+      await db.query(
+        `UPDATE check_taxa SET ${name} = $1 WHERE check_taxon_id = $2`,
+        [value, checkTaxonId],
+      )
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
@@ -115,7 +116,10 @@ export const CheckTaxonHistoryCompare = ({
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: '1kFtKf', defaultMessage: 'Kontroll-Taxon' })}
+        table={formatMessage({
+          id: '1kFtKf',
+          defaultMessage: 'Kontroll-Taxon',
+        })}
         id={checkTaxonId}
       />
     )
@@ -124,73 +128,75 @@ export const CheckTaxonHistoryCompare = ({
   const leftContent = (
     <div className="form-container">
       <>
-      <DropdownField
-        label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
-        name="taxon_id"
-        table="taxa"
-        value={(row.taxon_id as string | null) ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-        validationState={validations?.taxon_id?.state}
-        validationMessage={validations?.taxon_id?.message}
-      />
-      <RadioGroupField
-        label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-        name="unit_id"
-        list={unitIds}
-        labelMap={unitLabelMap}
-        isLoading={rowRes === undefined}
-        value={(row.unit_id as string | null) ?? ''}
-        onChange={onChange}
-        layout="horizontal"
-        validationState={
-          selectedUnit && !selectedUnit.type
-            ? 'warning'
-            : (validations?.unit_id?.state ?? 'none')
-        }
-        validationMessage={
-          selectedUnit && !selectedUnit.type
-            ? formatMessage({
-                id: 'uN4VwX',
-                defaultMessage:
-                  'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
-              })
-            : validations?.unit_id?.message
-        }
-      />
-      {(selectedUnit?.type === 'integer' || row.quantity_integer !== null) && (
-        <TextField
-          label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-          name="quantity_integer"
-          type="number"
-          value={(row.quantity_integer as number | null) ?? ''}
+        <DropdownField
+          label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
+          name="taxon_id"
+          table="taxa"
+          value={(row.taxon_id as string | null) ?? ''}
           onChange={onChange}
-          validationState={validations?.quantity_integer?.state}
-          validationMessage={validations?.quantity_integer?.message}
+          autoFocus
+          ref={autoFocusRef}
+          validationState={validations?.taxon_id?.state}
+          validationMessage={validations?.taxon_id?.message}
         />
-      )}
-      {(selectedUnit?.type === 'numeric' || row.quantity_numeric !== null) && (
-        <TextField
-          label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-          name="quantity_numeric"
-          type="number"
-          value={(row.quantity_numeric as number | null) ?? ''}
+        <RadioGroupField
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+          name="unit_id"
+          list={unitIds}
+          labelMap={unitLabelMap}
+          isLoading={rowRes === undefined}
+          value={(row.unit_id as string | null) ?? ''}
           onChange={onChange}
-          validationState={validations?.quantity_numeric?.state}
-          validationMessage={validations?.quantity_numeric?.message}
+          layout="horizontal"
+          validationState={
+            selectedUnit && !selectedUnit.type
+              ? 'warning'
+              : (validations?.unit_id?.state ?? 'none')
+          }
+          validationMessage={
+            selectedUnit && !selectedUnit.type
+              ? formatMessage({
+                  id: 'uN4VwX',
+                  defaultMessage:
+                    'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
+                })
+              : validations?.unit_id?.message
+          }
         />
-      )}
-      {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
-        <TextField
-          label={formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })}
-          name="quantity_text"
-          value={(row.quantity_text as string | null) ?? ''}
-          onChange={onChange}
-          validationState={validations?.quantity_text?.state}
-          validationMessage={validations?.quantity_text?.message}
-        />
-      )}
+        {(selectedUnit?.type === 'integer' ||
+          row.quantity_integer !== null) && (
+          <TextField
+            label={quantityLabel}
+            name="quantity_integer"
+            type="number"
+            value={(row.quantity_integer as number | null) ?? ''}
+            onChange={onChange}
+            validationState={validations?.quantity_integer?.state}
+            validationMessage={validations?.quantity_integer?.message}
+          />
+        )}
+        {(selectedUnit?.type === 'numeric' ||
+          row.quantity_numeric !== null) && (
+          <TextField
+            label={quantityLabel}
+            name="quantity_numeric"
+            type="number"
+            value={(row.quantity_numeric as number | null) ?? ''}
+            onChange={onChange}
+            validationState={validations?.quantity_numeric?.state}
+            validationMessage={validations?.quantity_numeric?.message}
+          />
+        )}
+        {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+          <TextField
+            label={quantityLabel}
+            name="quantity_text"
+            value={(row.quantity_text as string | null) ?? ''}
+            onChange={onChange}
+            validationState={validations?.quantity_text?.state}
+            validationMessage={validations?.quantity_text?.message}
+          />
+        )}
       </>
     </div>
   )

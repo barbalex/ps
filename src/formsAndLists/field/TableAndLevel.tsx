@@ -24,34 +24,41 @@ const placeScopedTables = new Set([
 // mirroring the nav tree order
 const opts: Opt[] = [
   // ── Subproject scope (no place-level) ──────────────────────────
-  { id: 'project_reports',   table_name: 'project_reports',   level: null },
-  { id: 'lists',             table_name: 'lists',             level: null },
-  { id: 'taxonomies',        table_name: 'taxonomies',        level: null },
-  { id: 'subprojects',       table_name: 'subprojects',       level: null },
+  { id: 'project_reports', table_name: 'project_reports', level: null },
+  { id: 'lists', table_name: 'lists', level: null },
+  { id: 'taxonomies', table_name: 'taxonomies', level: null },
+  { id: 'subprojects', table_name: 'subprojects', level: null },
   { id: 'subproject_reports', table_name: 'subproject_reports', level: null },
-  { id: 'goals',             table_name: 'goals',             level: null },
-  { id: 'goal_reports',      table_name: 'goal_reports',      level: null },
-  { id: 'taxa',              table_name: 'taxa',              level: null },
+  { id: 'goals', table_name: 'goals', level: null },
+  { id: 'goal_reports', table_name: 'goal_reports', level: null },
+  { id: 'taxa', table_name: 'taxa', level: null },
   // ── Place level 1 ─────────────────────────────────────────────
-  { id: 'places_1',          table_name: 'places',            level: 1 },
-  { id: 'checks_1',          table_name: 'checks',            level: 1 },
-  { id: 'check_reports_1',   table_name: 'check_reports',     level: 1 },
-  { id: 'actions_1',         table_name: 'actions',           level: 1 },
-  { id: 'action_reports_1',  table_name: 'action_reports',    level: 1 },
-  { id: 'observations_1',    table_name: 'observations',      level: 1 },
-  { id: 'files_1',           table_name: 'files',             level: 1 },
+  { id: 'places_1', table_name: 'places', level: 1 },
+  { id: 'checks_1', table_name: 'checks', level: 1 },
+  { id: 'check_reports_1', table_name: 'check_reports', level: 1 },
+  { id: 'actions_1', table_name: 'actions', level: 1 },
+  { id: 'action_reports_1', table_name: 'action_reports', level: 1 },
+  { id: 'observations_1', table_name: 'observations', level: 1 },
+  { id: 'files_1', table_name: 'files', level: 1 },
   // ── Place level 2 ─────────────────────────────────────────────
-  { id: 'places_2',          table_name: 'places',            level: 2 },
-  { id: 'checks_2',          table_name: 'checks',            level: 2 },
-  { id: 'check_reports_2',   table_name: 'check_reports',     level: 2 },
-  { id: 'actions_2',         table_name: 'actions',           level: 2 },
-  { id: 'action_reports_2',  table_name: 'action_reports',    level: 2 },
-  { id: 'observations_2',    table_name: 'observations',      level: 2 },
-  { id: 'files_2',           table_name: 'files',             level: 2 },
+  { id: 'places_2', table_name: 'places', level: 2 },
+  { id: 'checks_2', table_name: 'checks', level: 2 },
+  { id: 'check_reports_2', table_name: 'check_reports', level: 2 },
+  { id: 'actions_2', table_name: 'actions', level: 2 },
+  { id: 'action_reports_2', table_name: 'action_reports', level: 2 },
+  { id: 'observations_2', table_name: 'observations', level: 2 },
+  { id: 'files_2', table_name: 'files', level: 2 },
 ]
 
-export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocusRef }) => {
+export const TableAndLevel = ({
+  projectId,
+  onChange,
+  row,
+  validations,
+  autoFocusRef,
+}) => {
   const { formatMessage } = useIntl()
+  const tableLabel = formatMessage({ id: 'Tb8kLm', defaultMessage: 'Tabelle' })
   const [language] = useAtom(languageAtom)
   const isFirstRender = useIsFirstRender()
 
@@ -77,17 +84,21 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
     const handleChange = (_e, data) => {
       const val = data.optionValue ?? null
       onChange(
-        { target: { name: 'table_name', type: 'radio' } } as React.ChangeEvent<HTMLInputElement>,
+        {
+          target: { name: 'table_name', type: 'radio' },
+        } as React.ChangeEvent<HTMLInputElement>,
         { value: val },
       )
       onChange(
-        { target: { name: 'level', type: 'radio' } } as React.ChangeEvent<HTMLInputElement>,
+        {
+          target: { name: 'level', type: 'radio' },
+        } as React.ChangeEvent<HTMLInputElement>,
         { value: null },
       )
     }
     return (
       <Field
-        label={formatMessage({ id: 'Tb8kLm', defaultMessage: 'Tabelle' })}
+        label={tableLabel}
         validationMessage={validations?.table_name?.message}
         validationState={validations?.table_name?.state ?? 'none'}
       >
@@ -127,10 +138,16 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
     defaultMessage: 'Ort Stufe 2',
   })
 
-  const plural1 = (level1Row?.name_plural as string | null | undefined) ?? fallbackPlaceLevel1
-  const singular1 = (level1Row?.name_singular as string | null | undefined) ?? fallbackPlaceLevel1
-  const plural2 = (level2Row?.name_plural as string | null | undefined) ?? fallbackPlaceLevel2
-  const singular2 = (level2Row?.name_singular as string | null | undefined) ?? fallbackPlaceLevel2
+  const plural1 =
+    (level1Row?.name_plural as string | null | undefined) ?? fallbackPlaceLevel1
+  const singular1 =
+    (level1Row?.name_singular as string | null | undefined) ??
+    fallbackPlaceLevel1
+  const plural2 =
+    (level2Row?.name_plural as string | null | undefined) ?? fallbackPlaceLevel2
+  const singular2 =
+    (level2Row?.name_singular as string | null | undefined) ??
+    fallbackPlaceLevel2
 
   const labelMap: Record<string, string> = {
     places_1: plural1,
@@ -144,11 +161,17 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
       { place: singular2 },
     ),
     action_reports_1: formatMessage(
-      { id: 'field.actionReports', defaultMessage: '{place}: Massnahmen-Berichte' },
+      {
+        id: 'field.actionReports',
+        defaultMessage: '{place}: Massnahmen-Berichte',
+      },
       { place: singular1 },
     ),
     action_reports_2: formatMessage(
-      { id: 'field.actionReports', defaultMessage: '{place}: Massnahmen-Berichte' },
+      {
+        id: 'field.actionReports',
+        defaultMessage: '{place}: Massnahmen-Berichte',
+      },
       { place: singular2 },
     ),
     checks_1: formatMessage(
@@ -160,11 +183,17 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
       { place: singular2 },
     ),
     check_reports_1: formatMessage(
-      { id: 'field.checkReports', defaultMessage: '{place}: Kontroll-Berichte' },
+      {
+        id: 'field.checkReports',
+        defaultMessage: '{place}: Kontroll-Berichte',
+      },
       { place: singular1 },
     ),
     check_reports_2: formatMessage(
-      { id: 'field.checkReports', defaultMessage: '{place}: Kontroll-Berichte' },
+      {
+        id: 'field.checkReports',
+        defaultMessage: '{place}: Kontroll-Berichte',
+      },
       { place: singular2 },
     ),
     observations_1: formatMessage(
@@ -185,12 +214,27 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
     ),
     subprojects: subprojectsLabel,
     goals: formatMessage({ id: 'field.goals', defaultMessage: 'Art: Ziele' }),
-    goal_reports: formatMessage({ id: 'field.goalReports', defaultMessage: 'Art: Ziel-Berichte' }),
-    project_reports: formatMessage({ id: 'field.projectReports', defaultMessage: 'Projekt: Berichte' }),
-    subproject_reports: formatMessage({ id: 'field.subprojectReports', defaultMessage: 'Art: Berichte' }),
+    goal_reports: formatMessage({
+      id: 'field.goalReports',
+      defaultMessage: 'Art: Ziel-Berichte',
+    }),
+    project_reports: formatMessage({
+      id: 'field.projectReports',
+      defaultMessage: 'Projekt: Berichte',
+    }),
+    subproject_reports: formatMessage({
+      id: 'field.subprojectReports',
+      defaultMessage: 'Art: Berichte',
+    }),
     taxa: formatMessage({ id: 'field.taxa', defaultMessage: 'Art: Taxa' }),
-    taxonomies: formatMessage({ id: 'field.taxonomies', defaultMessage: 'Projekt: Taxonomien' }),
-    lists: formatMessage({ id: 'field.lists', defaultMessage: 'Projekt: Listen' }),
+    taxonomies: formatMessage({
+      id: 'field.taxonomies',
+      defaultMessage: 'Projekt: Taxonomien',
+    }),
+    lists: formatMessage({
+      id: 'field.lists',
+      defaultMessage: 'Projekt: Listen',
+    }),
   }
 
   const combinedValue = row.table_name
@@ -200,20 +244,26 @@ export const TableAndLevel = ({ projectId, onChange, row, validations, autoFocus
     : ''
 
   const handleChange = (_e, data) => {
-    const opt = data.optionValue ? opts.find((o) => o.id === data.optionValue) ?? null : null
+    const opt = data.optionValue
+      ? (opts.find((o) => o.id === data.optionValue) ?? null)
+      : null
     onChange(
-      { target: { name: 'table_name', type: 'radio' } } as React.ChangeEvent<HTMLInputElement>,
+      {
+        target: { name: 'table_name', type: 'radio' },
+      } as React.ChangeEvent<HTMLInputElement>,
       { value: opt?.table_name ?? null },
     )
     onChange(
-      { target: { name: 'level', type: 'radio' } } as React.ChangeEvent<HTMLInputElement>,
+      {
+        target: { name: 'level', type: 'radio' },
+      } as React.ChangeEvent<HTMLInputElement>,
       { value: opt?.level != null ? String(opt.level) : null },
     )
   }
 
   return (
     <Field
-      label={formatMessage({ id: 'Tb8kLm', defaultMessage: 'Tabelle' })}
+      label={tableLabel}
       validationMessage={
         validations?.table_name?.message ??
         (!row.table_name
