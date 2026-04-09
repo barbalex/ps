@@ -794,5 +794,7 @@
   "gRinGoal": "Afficher les rapports d'objectif dans l'objectif",
   "sP8TaxInSubprj": "Afficher les taxons dans {subprojectNameSingular}",
   "N3qLx9": "Afficher les utilisateurs dans {subprojectNameSingular}",
-  "fH8JmQ": "Afficher les fichiers dans {subprojectNameSingular}"
+  "fH8JmQ": "Afficher les fichiers dans {subprojectNameSingular}",
+  "initDbMsg": "Initialisation de la base de données",
+  "syncServerMsg": "Synchronisation avec le serveur"
 }

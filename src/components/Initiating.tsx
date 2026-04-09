@@ -1,9 +1,11 @@
 import { useAtomValue } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { sqlInitializingAtom } from '../store.ts'
 
 // memoizing this component creates error
 export const Initiating = () => {
+  const { formatMessage } = useIntl()
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
 
   return (
@@ -17,7 +19,15 @@ export const Initiating = () => {
         color: '#666',
       }}
     >
-      {sqlInitializing ? 'Initializing database...' : 'Syncing with server...'}
+      {sqlInitializing
+        ? formatMessage({
+            id: 'initDbMsg',
+            defaultMessage: 'Initialisiere Datenbank',
+          })
+        : formatMessage({
+            id: 'syncServerMsg',
+            defaultMessage: 'Synchronisiere mit Server',
+          })}
     </div>
   )
 }

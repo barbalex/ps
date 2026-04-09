@@ -810,5 +810,7 @@
   "gRinGoal": "Show goal reports in goal",
   "sP8TaxInSubprj": "Show taxa in {subprojectNameSingular}",
   "N3qLx9": "Show users in {subprojectNameSingular}",
-  "fH8JmQ": "Show files in {subprojectNameSingular}"
+  "fH8JmQ": "Show files in {subprojectNameSingular}",
+  "initDbMsg": "Initializing database",
+  "syncServerMsg": "Syncing with server"
 }
