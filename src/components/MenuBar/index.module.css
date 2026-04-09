@@ -16,6 +16,18 @@
   border-bottom: 1px solid rgba(225, 247, 224, 0.15);
 }
 
+.noBorder {
+  border-top: none;
+  border-bottom: none;
+}
+
+.noGrow {
+  flex-grow: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* StylingContainer overflows parent????!!!! */
 /* Possible solution: pass in max-width */
 .stylingContainer {

@@ -14,11 +14,11 @@ import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import globalStyles from '../../../styles.module.css'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
+import { MenuBar } from '../../MenuBar/index.tsx'
 
 const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -84,8 +84,9 @@ export const Menu = () => {
   const mapIsActive = tabs.includes('map')
 
   return (
-    <div className={`${globalStyles.controls} no-print`}>
+    <div className={`${styles.container} no-print`}>
       <Toolbar
+        className={styles.toolbar}
         aria-label="active tabs"
         checkedValues={{ tabs }}
         onCheckedValueChange={onChangeTabs}
@@ -183,44 +184,46 @@ export const Menu = () => {
           </>
         )}
       </Toolbar>
-      {!isHome && (
+      <MenuBar addMargin={false} showBorder={false} grow={false}>
+        {!isHome && (
+          <Tooltip
+            content={
+              isAppStates
+                ? intl.formatMessage({ defaultMessage: 'Zurück' })
+                : intl.formatMessage({ defaultMessage: 'Optionen' })
+            }
+          >
+            <Button
+              size="medium"
+              icon={<FaCog />}
+              onClick={onClickOptions}
+              className={styles.button}
+              disabled={mapIsMaximized}
+            />
+          </Tooltip>
+        )}
+        <LanguageChooser width={44} />
+        <Online width={44} />
         <Tooltip
           content={
-            isAppStates
-              ? intl.formatMessage({ defaultMessage: 'Zurück' })
-              : intl.formatMessage({ defaultMessage: 'Optionen' })
+            !isAuthenticated
+              ? intl.formatMessage({ defaultMessage: 'Anmelden' })
+              : isHome
+                ? intl.formatMessage({ defaultMessage: 'App öffnen' })
+                : intl.formatMessage(
+                    { defaultMessage: 'Abmelden {email}' },
+                    { email: authUser?.email },
+                  )
           }
         >
           <Button
             size="medium"
-            icon={<FaCog />}
-            onClick={onClickOptions}
+            icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
+            onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
             className={styles.button}
-            disabled={mapIsMaximized}
           />
         </Tooltip>
-      )}
-      <LanguageChooser />
-      <Online />
-      <Tooltip
-        content={
-          !isAuthenticated
-            ? intl.formatMessage({ defaultMessage: 'Anmelden' })
-            : isHome
-              ? intl.formatMessage({ defaultMessage: 'App öffnen' })
-              : intl.formatMessage(
-                  { defaultMessage: 'Abmelden {email}' },
-                  { email: authUser?.email },
-                )
-        }
-      >
-        <Button
-          size="medium"
-          icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
-          onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
-          className={styles.button}
-        />
-      </Tooltip>
+      </MenuBar>
     </div>
   )
 }

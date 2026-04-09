@@ -15,7 +15,11 @@ import styles from './Online.module.css'
 
 import { onlineAtom, operationsQueueAtom } from '../../../store.ts'
 
-export const Online = () => {
+interface Props {
+  width?: number
+}
+
+export const Online = (_props: Props) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const canGoBack = useCanGoBack()

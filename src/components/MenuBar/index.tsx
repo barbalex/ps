@@ -34,6 +34,10 @@ export const MenuBar = ({
   // top menu bar has no margin between menus, others do
   // and that needs to be compensated for
   addMargin = true,
+  // top header should not draw separator borders around menu bar
+  showBorder = true,
+  // top header should not force menu bar to grow and push sibling controls away
+  grow = true,
 }) => {
   const getChildBaseWidth = useCallback(
     (child) =>
@@ -54,6 +58,13 @@ export const MenuBar = ({
     const widths = visibleChildren.map((c) => getChildBaseWidth(c))
     return { visibleChildren, widths }
   }, [children, getChildBaseWidth])
+
+  const requiredButtonsWidth = useMemo(() => {
+    const buttonsGapWidth = Math.max(visibleChildren.length - 1, 0) * buttonGap
+    return (
+      (widths ? widths.reduce((acc, w) => acc + w, 0) : 0) + buttonsGapWidth
+    )
+  }, [visibleChildren.length, widths])
 
   const outerContainerRef = useRef(null)
   const outerContainerWidth = outerContainerRef.current?.clientWidth
@@ -174,12 +185,25 @@ export const MenuBar = ({
   }, [rerenderer, observer, outerContainerRef])
 
   return (
-    <div ref={outerContainerRef} className={styles.measuredOuterContainer}>
+    <div
+      ref={outerContainerRef}
+      style={
+        !grow
+          ? ({
+              flexBasis: `${requiredButtonsWidth}px`,
+              width: `${requiredButtonsWidth}px`,
+              maxWidth: '100%',
+            } as React.CSSProperties)
+          : undefined
+      }
+      className={`${styles.measuredOuterContainer} ${!showBorder ? styles.noBorder : ''} ${!grow ? styles.noGrow : ''}`}
+    >
       {titleComponent}
       <div
         style={
           {
             '--menu-max-width': `${Math.abs(outerContainerWidth ?? 0) - (titleComponentWidth ?? 0)}px`,
+            '--menu-required-width': `${requiredButtonsWidth}px`,
           } as React.CSSProperties
         }
         className={`${styles.stylingContainer} ${styles.stylingContainerSized}`}

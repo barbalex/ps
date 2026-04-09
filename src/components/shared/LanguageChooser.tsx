@@ -8,7 +8,11 @@ import styles from './LanguageChooser.module.css'
 
 const LANGUAGES: Language[] = ['en', 'de', 'fr', 'it']
 
-export const LanguageChooser = () => {
+interface Props {
+  width?: number
+}
+
+export const LanguageChooser = (_props: Props) => {
   const [language, setLanguage] = useAtom(languageAtom)
 
   return (
