@@ -1,15 +1,18 @@
 import { useEffect } from 'react'
-import { useCorbado } from '@corbado/react'
+import { useSession } from '../modules/authClient.ts'
 
-import { subKey } from '../auth.ts'
+const subKey = 'sub'
 
 export const SessionStorageSetter = () => {
-  const { shortSession } = useCorbado()
+  const { data: session } = useSession()
+  const shortSession = session?.user?.id
 
   useEffect(() => {
-    if (!shortSession) return
+    if (!shortSession) {
+      window.sessionStorage.removeItem(subKey)
+      return
+    }
 
-    console.log('hello SessionStorageSetter, new shortSession:', shortSession)
     window.sessionStorage.setItem(subKey, shortSession)
   }, [shortSession])
 

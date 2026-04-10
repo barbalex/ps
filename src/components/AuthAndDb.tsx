@@ -1,13 +1,11 @@
 import { useContext } from 'react'
 import { Outlet } from '@tanstack/react-router'
-import { CorbadoProvider } from '@corbado/react'
 import { useAtomValue } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
 
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
-// TODO: sync with db IF user has an account
-// import { Syncer } from './Syncer.tsx'
+import { Syncer } from './Syncer.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
@@ -16,14 +14,15 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
-
-const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
+import { useSession } from '../modules/authClient.ts'
 
 export const AuthAndDb = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
-  const initiating = sqlInitializing || initialSyncing
+  const { data: session } = useSession()
+  const isAuthenticated = Boolean(session?.user)
+  const initiating = sqlInitializing || (isAuthenticated && initialSyncing)
 
   // unsubscribe from sync when page unloads
   useBeforeunload(() => {
@@ -37,11 +36,11 @@ export const AuthAndDb = () => {
   if (isInDialog) return <Outlet />
 
   return (
-    <CorbadoProvider projectId={CORBADO_PROJECT_ID} theme="corbado-theme">
+    <>
       <SqlInitializer />
       <InitialSyncManager />
-      {/* <Syncer /> */}
+      <Syncer />
       {initiating ? <Initiating /> : <LayoutProtected />}
-    </CorbadoProvider>
+    </>
   )
 }

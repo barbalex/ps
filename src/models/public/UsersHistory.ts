@@ -5,6 +5,8 @@
 export default interface UsersHistory {
   user_id: string;
 
+  id: string | null;
+
   name: string | null;
 
   email: string | null;
@@ -28,6 +30,8 @@ export default interface UsersHistory {
 export interface UsersHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   user_id?: string;
+
+  id?: string | null;
 
   name?: string | null;
 
@@ -54,6 +58,8 @@ export interface UsersHistoryInitializer {
  */
 export interface UsersHistoryMutator {
   user_id?: string;
+
+  id?: string | null;
 
   name?: string | null;
 

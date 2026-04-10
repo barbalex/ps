@@ -3,15 +3,16 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { ToggleButton, Tooltip } = fluentUiReactComponents
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useCorbado } from '@corbado/react'
 import { useParams } from '@tanstack/react-router'
 
 import { designingAtom } from '../../store.ts'
+import { useSession } from '../../modules/authClient.ts'
 
 export const DesigningButton = ({ from }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const { projectId } = useParams({ from })
-  const { user } = useCorbado()
+  const { data: session } = useSession()
+  const user = session?.user
 
   const onClickDesigning = () => setDesigning(!designing)
 

@@ -37,6 +37,7 @@ export const startSyncing = async () => {
               'name',
               'email',
               'email_verified',
+              'sys_period',
               'created_at',
               'updated_at',
             ],

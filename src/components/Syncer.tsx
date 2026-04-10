@@ -3,14 +3,19 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { sqlInitializingAtom, syncObjectAtom } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
+import { useSession } from '../modules/authClient.ts'
 
 export const Syncer = () => {
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
   const setSyncObject = useSetAtom(syncObjectAtom)
+  const { data: session, isPending } = useSession()
+  const isAuthenticated = Boolean(session?.user)
 
   // TODO: ensure syncing resumes after user has changed
   useEffect(() => {
+    if (isPending) return
+    if (!isAuthenticated) return
     if (sqlInitializing) return
     if (syncObject) {
       console.warn('Sync already initialized, skipping')
@@ -26,7 +31,7 @@ export const Syncer = () => {
         console.error('Error starting sync:', error)
         // Reset flags on error so user can retry
       })
-  }, [sqlInitializing, syncObject, setSyncObject]) // removed authUser?.email to prevent restarts. TODO: revisit when implementing auth (user switching)
+  }, [isAuthenticated, isPending, sqlInitializing, syncObject, setSyncObject])
 
   return null
 }

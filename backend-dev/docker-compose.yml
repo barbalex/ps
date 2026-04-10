@@ -69,7 +69,7 @@ services:
     container_name: ps_postgrest
     image: postgrest/postgrest:latest
     ports:
-      - 3002:3000
+      - 3002:3002
     # Available environment variables documented here:
     # https://postgrest.org/en/latest/configuration.html#environment-variables
     environment:

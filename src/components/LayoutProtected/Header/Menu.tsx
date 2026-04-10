@@ -1,6 +1,16 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Toolbar, ToolbarToggleButton, Tooltip } =
-  fluentUiReactComponents
+const {
+  Avatar,
+  Button,
+  Menu: FluentMenu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  Toolbar,
+  ToolbarToggleButton,
+  Tooltip,
+} = fluentUiReactComponents
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
@@ -10,7 +20,6 @@ import {
   useCanGoBack,
   useRouter,
 } from '@tanstack/react-router'
-import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 import { useIntl, FormattedMessage } from 'react-intl'
 
@@ -19,6 +28,7 @@ import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
+import { signOut, useSession } from '../../../modules/authClient.ts'
 
 const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -48,7 +58,9 @@ export const Menu = () => {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
-  const { isAuthenticated, logout, user: authUser } = useCorbado()
+  const { data: session } = useSession()
+  const authUser = session?.user
+  const isAuthenticated = Boolean(authUser)
 
   const isAppStates = pathname.includes('app-states')
 
@@ -63,7 +75,7 @@ export const Menu = () => {
     navigate({ to: `/data/app-states` })
   }
 
-  const onClickLogout = logout
+  const onClickLogout = () => signOut()
   const onClickEnter = () => navigate({ to: '/data/projects' })
 
   const onClickMapView = (e) => {
@@ -185,6 +197,56 @@ export const Menu = () => {
         )}
       </Toolbar>
       <MenuBar addMargin={false} showBorder={false} grow={false}>
+        <LanguageChooser width={44} />
+        {isAuthenticated ? (
+          <FluentMenu positioning="below-end">
+            <Tooltip
+              content={intl.formatMessage(
+                { defaultMessage: '{email}' },
+                { email: authUser?.email ?? '' },
+              )}
+            >
+              <MenuTrigger disableButtonEnhancement>
+                <Button
+                  size="medium"
+                  className={styles.button}
+                  aria-label={intl.formatMessage({
+                    defaultMessage: 'Benutzermenü öffnen',
+                  })}
+                  icon={
+                    <Avatar
+                      size={24}
+                      name={authUser?.fullName ?? authUser?.email ?? 'User'}
+                    />
+                  }
+                />
+              </MenuTrigger>
+            </Tooltip>
+            <MenuPopover>
+              <MenuList>
+                <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
+                  <FormattedMessage defaultMessage="Abmelden" />
+                </MenuItem>
+              </MenuList>
+            </MenuPopover>
+          </FluentMenu>
+        ) : (
+          <Tooltip
+            content={
+              isHome
+                ? intl.formatMessage({ defaultMessage: 'App öffnen' })
+                : intl.formatMessage({ defaultMessage: 'Anmelden' })
+            }
+          >
+            <Button
+              size="medium"
+              icon={<MdLogin />}
+              onClick={onClickEnter}
+              className={styles.button}
+            />
+          </Tooltip>
+        )}
+        <Online width={44} />
         {!isHome && (
           <Tooltip
             content={
@@ -202,27 +264,6 @@ export const Menu = () => {
             />
           </Tooltip>
         )}
-        <LanguageChooser width={44} />
-        <Online width={44} />
-        <Tooltip
-          content={
-            !isAuthenticated
-              ? intl.formatMessage({ defaultMessage: 'Anmelden' })
-              : isHome
-                ? intl.formatMessage({ defaultMessage: 'App öffnen' })
-                : intl.formatMessage(
-                    { defaultMessage: 'Abmelden {email}' },
-                    { email: authUser?.email },
-                  )
-          }
-        >
-          <Button
-            size="medium"
-            icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
-            onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
-            className={styles.button}
-          />
-        </Tooltip>
       </MenuBar>
     </div>
   )
