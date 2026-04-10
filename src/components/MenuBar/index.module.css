@@ -89,11 +89,11 @@
 .topHeaderHamburgerButton {
   color: #fff !important;
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  background-color: rgba(62, 121, 60, 0.88) !important;
+  background-color: transparent !important;
 }
 
 .topHeaderHamburgerButton:hover {
   color: #fff !important;
   border-color: #fff !important;
-  background-color: rgba(73, 138, 71, 0.92) !important;
+  background-color: rgba(0, 0, 0, 0.12) !important;
 }
