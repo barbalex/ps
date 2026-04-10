@@ -189,6 +189,13 @@ export const Auth = () => {
                   defaultMessage: 'Anmelden, um fortzufahren',
                 })}
           </p>
+          <p className={styles.previewHint}>
+            {formatMessage({
+              id: 'authPreviewCredentialsHint',
+              defaultMessage:
+                'Während die App gebaut wird, können Sie mit einem Test-Benutzer anmelden: E-Mail test@test.ch, Passwort test-test',
+            })}
+          </p>
         </div>
 
         {error && <div className={styles.generalError}>{error}</div>}

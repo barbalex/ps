@@ -4,7 +4,7 @@ import { Pool } from 'pg'
 const DATABASE_URL = process.env.DATABASE_URL
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
-const pool = new Pool({ connectionString: DATABASE_URL })
+export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
   basePath: '/auth',
@@ -24,7 +24,7 @@ export const auth = betterAuth({
     'https://arten-fördern.app',
     'https://promote-species.app',
   ],
-  emailAndPassword: { enabled: true },
+  emailAndPassword: { enabled: true, minPasswordLength: 8 },
   socialProviders: {
     github: {
       clientId: GITHUB_CLIENT_ID,

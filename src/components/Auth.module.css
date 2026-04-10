@@ -47,6 +47,16 @@
   margin: 0;
 }
 
+.previewHint {
+  margin: 8px 0 0 0;
+  padding: 7px 9px;
+  font-size: 12px;
+  color: #245324;
+  background-color: rgba(225, 247, 224, 0.8);
+  border: 1px solid rgba(55, 118, 28, 0.26);
+  border-radius: 6px;
+}
+
 .authForm {
   display: flex;
   flex-direction: column;
