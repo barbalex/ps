@@ -4,6 +4,23 @@ import { Pool } from 'pg'
 const DATABASE_URL = process.env.DATABASE_URL
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
+const requiredTrustedOrigins = [
+  'http://localhost:5176',
+  'https://arten-fördern.app',
+  'https://xn--arten-frdern-bjb.app',
+  'https://arten-fördern.ch',
+  'https://xn--arten-frdern-bjb.ch',
+  'https://promote-species.app',
+]
+const configuredTrustedOrigins = [
+  process.env.CLIENT_ORIGIN,
+  ...(process.env.CORS_ORIGINS ?? '').split(','),
+]
+  .map((value) => value?.trim())
+  .filter(Boolean)
+const trustedOrigins = [
+  ...new Set([...configuredTrustedOrigins, ...requiredTrustedOrigins]),
+]
 export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
@@ -19,14 +36,7 @@ export const auth = betterAuth({
   // joins causing error thus uncommented.
   // TODO: test later and consider re-enabling if it can be made to work
   // experimental: { joins: true },
-  trustedOrigins: [
-    'http://localhost:5176',
-    'https://arten-fördern.app',
-    'https://xn--arten-frdern-bjb.app',
-    'https://arten-fördern.ch',
-    'https://xn--arten-frdern-bjb.ch',
-    'https://promote-species.app',
-  ],
+  trustedOrigins,
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
   socialProviders: {
     github: {
