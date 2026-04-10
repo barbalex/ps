@@ -4,14 +4,28 @@ import { Pool } from 'pg'
 const DATABASE_URL = process.env.DATABASE_URL
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
+const pool = new Pool({ connectionString: DATABASE_URL })
+
+const getEmailFromContext = (context) => {
+  const email = context?.body?.email
+  return typeof email === 'string' ? email.trim().toLowerCase() : null
+}
+
+const findUserIdByEmail = async (email) => {
+  if (!email) return null
+  const { rows } = await pool.query(
+    'select user_id::text as user_id from users where lower(email) = $1 order by created_at desc limit 1',
+    [email],
+  )
+  return rows?.[0]?.user_id ?? null
+}
 
 export const auth = betterAuth({
   basePath: '/auth',
-  database: new Pool({ connectionString: DATABASE_URL }),
+  database: pool,
   advanced: {
     database: {
-      // https://www.better-auth.com/docs/concepts/database#id-generation
-      // allows your database to handle ID generation
+      // Keep DB-generated IDs for users (uuid_generate_v7).
       generateId: false,
       // experimental: { joins: true },
     },
@@ -25,6 +39,41 @@ export const auth = betterAuth({
     'https://promote-species.app',
   ],
   emailAndPassword: { enabled: true },
+  databaseHooks: {
+    account: {
+      create: {
+        async before(account, context) {
+          if (account?.userId && account?.accountId) return
+          const email = getEmailFromContext(context)
+          const userId = await findUserIdByEmail(email)
+          if (!userId) return
+          return {
+            data: {
+              ...account,
+              userId,
+              accountId: account?.accountId ?? userId,
+            },
+          }
+        },
+      },
+    },
+    session: {
+      create: {
+        async before(session, context) {
+          if (session?.userId) return
+          const email = getEmailFromContext(context)
+          const userId = await findUserIdByEmail(email)
+          if (!userId) return
+          return {
+            data: {
+              ...session,
+              userId,
+            },
+          }
+        },
+      },
+    },
+  },
   socialProviders: {
     github: {
       clientId: GITHUB_CLIENT_ID,

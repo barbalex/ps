@@ -8,6 +8,8 @@ export type UsersUserId = string & { __brand: 'public.users' };
 export default interface Users {
   user_id: UsersUserId;
 
+  id: string | null;
+
   /** Users chosen display name */
   name: string | null;
 
