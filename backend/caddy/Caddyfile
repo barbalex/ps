@@ -20,6 +20,11 @@ auth.xn--arten-frdern-bjb.app {
     respond "" 204
   }
 
+  @auth_arten_origin header Origin https://xn--arten-frdern-bjb.app
+  header @auth_arten_origin Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
+  header @auth_arten_origin Access-Control-Allow-Credentials "true"
+  header @auth_arten_origin Vary "Origin"
+
   reverse_proxy * ps_auth:3003
 }
 
@@ -76,6 +81,11 @@ auth.promote-species.app {
     header Vary "Origin"
     respond "" 204
   }
+
+  @auth_promote_origin header Origin https://promote-species.app
+  header @auth_promote_origin Access-Control-Allow-Origin "https://promote-species.app"
+  header @auth_promote_origin Access-Control-Allow-Credentials "true"
+  header @auth_promote_origin Vary "Origin"
 
   reverse_proxy * ps_auth:3003
 }
