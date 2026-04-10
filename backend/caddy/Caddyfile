@@ -11,11 +11,6 @@ auth.xn--arten-frdern-bjb.app {
     header Origin https://xn--arten-frdern-bjb.app
   }
 
-  @auth_arten_origin header Origin https://xn--arten-frdern-bjb.app
-  header @auth_arten_origin Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
-  header @auth_arten_origin Access-Control-Allow-Credentials "true"
-  header @auth_arten_origin Vary "Origin"
-
   handle @auth_arten_preflight {
     header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
@@ -72,11 +67,6 @@ auth.promote-species.app {
     method OPTIONS
     header Origin https://promote-species.app
   }
-
-  @auth_promote_origin header Origin https://promote-species.app
-  header @auth_promote_origin Access-Control-Allow-Origin "https://promote-species.app"
-  header @auth_promote_origin Access-Control-Allow-Credentials "true"
-  header @auth_promote_origin Vary "Origin"
 
   handle @auth_promote_preflight {
     header Access-Control-Allow-Origin "https://promote-species.app"
