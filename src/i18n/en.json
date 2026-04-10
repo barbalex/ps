@@ -840,6 +840,7 @@
   "authSignInBtn": "Sign In",
   "authHaveAccount": "Already have an account?",
   "authNoAccount": "Don't have an account?",
+  "authPreviewCredentialsHint": "While the app is being built, you can sign in with a test user: Email test@test.ch, Password test-test",
   "treeLayerNodeLabel": "Layer",
   "treeTaxonomyNodeLabel": "Taxonomy",
   "treeWfsServiceNodeLabel": "WFS Service",

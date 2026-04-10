@@ -824,6 +824,7 @@
   "authSignInBtn": "Accedi",
   "authHaveAccount": "Hai già un account?",
   "authNoAccount": "Non hai un account?",
+  "authPreviewCredentialsHint": "Mentre l'app viene sviluppata, puoi accedere con un utente di test: e-mail test@test.ch, password test-test",
   "treeLayerNodeLabel": "Layer",
   "treeTaxonomyNodeLabel": "Tassonomia",
   "treeWfsServiceNodeLabel": "Servizio WFS",
