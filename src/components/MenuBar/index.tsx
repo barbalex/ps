@@ -91,6 +91,35 @@ export const MenuBar = ({
   const [buttons, setButtons] = useState([])
   const [menus, setMenus] = useState([])
 
+  const setLayout = useCallback((nextButtons, nextMenus) => {
+    setButtons(nextButtons.map((child) => cloneElement(child)))
+    setMenus(nextMenus.map((child) => cloneElement(child, { inmenu: 'true' })))
+  }, [])
+
+  const splitChildren = useCallback(
+    (availableWidth) => {
+      const nextButtons = []
+      const nextMenus = []
+      let widthSum = 0
+
+      for (const child of visibleChildren) {
+        const width = getChildBaseWidth(child)
+        const widthWithGap = width + (nextButtons.length > 0 ? buttonGap : 0)
+
+        if (widthSum + widthWithGap > availableWidth) {
+          nextMenus.push(child)
+          continue
+        }
+
+        nextButtons.push(child)
+        widthSum += widthWithGap
+      }
+
+      return { nextButtons, nextMenus }
+    },
+    [getChildBaseWidth, visibleChildren],
+  )
+
   // this was quite some work to get right
   // overflowing should only be changed as rarely as possible to prevent unnecessary rerenders
   const checkOverflow = () => {
@@ -107,25 +136,31 @@ export const MenuBar = ({
     const widthOfAllPassedInButtons =
       (widths ? widths.reduce((acc, w) => acc + w, 0) : 0) + buttonsGapWidth
     const needMenu = widthOfAllPassedInButtons > spaceForButtonsAndMenus
-    const spaceForButtons = needMenu
-      ? spaceForButtonsAndMenus - moreButtonReservedWidth
-      : spaceForButtonsAndMenus
-    // sum widths fitting into spaceForButtons
-    const newButtons = []
-    const newMenus = []
-    let widthSum = 0
-    for (const child of visibleChildren) {
-      const width = getChildBaseWidth(child)
-      const widthWithGap = width + (newButtons.length > 0 ? buttonGap : 0)
-      if (widthSum + widthWithGap >= spaceForButtons - 1) {
-        newMenus.push(cloneElement(child, { inmenu: 'true' }))
-      } else {
-        newButtons.push(cloneElement(child))
-        widthSum += widthWithGap
-      }
+
+    if (!needMenu) {
+      setLayout(visibleChildren, [])
+      return
     }
-    setButtons(newButtons)
-    setMenus(newMenus)
+
+    const spaceForButtons = Math.max(
+      spaceForButtonsAndMenus - moreButtonReservedWidth,
+      0,
+    )
+    const { nextButtons, nextMenus } = splitChildren(spaceForButtons)
+
+    if (nextMenus.length === 1) {
+      if (nextButtons.length === 0) {
+        setLayout(nextMenus, [])
+        return
+      }
+
+      const adjustedButtons = nextButtons.slice(0, -1)
+      const adjustedMenus = [nextButtons.at(-1), ...nextMenus].filter(Boolean)
+      setLayout(adjustedButtons, adjustedMenus)
+      return
+    }
+
+    setLayout(nextButtons, nextMenus)
     // console.log('MenuBar.checkOverflow', {
     //   widths,
     //   visibleChildren,
@@ -150,7 +185,7 @@ export const MenuBar = ({
     // Example: file preview (any action that changes the menus passed in)
     checkOverflow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rerenderer, visibleChildren, collapseOffset])
+  }, [rerenderer, visibleChildren, collapseOffset, setLayout, splitChildren])
 
   // set up a resize observer for the container
   const observer = useMemo(
