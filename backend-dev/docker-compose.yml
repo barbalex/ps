@@ -46,7 +46,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'psql -U postgres -d ${POSTGRES_DB} -tAc "SELECT 1 FROM projects LIMIT 1" | grep -q 1',
+          'psql -U postgres -d ${POSTGRES_DB} -tAc "SELECT 1 FROM information_schema.tables WHERE table_schema = ''public'' AND table_name = ''projects''" | grep -q 1',
         ]
       interval: 5s
       timeout: 5s
