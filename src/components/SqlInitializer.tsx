@@ -3,7 +3,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { sqlInitializingAtom } from '../store.ts'
-import { startSyncing } from '../modules/startSyncing.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
@@ -393,12 +392,6 @@ export const SqlInitializer = () => {
         }
 
         setSqlInitializing(false)
-        try {
-          await startSyncing()
-          console.log('Sync started from SqlInitializer')
-        } catch (error) {
-          console.error('Error starting sync from SqlInitializer:', error)
-        }
         return
       }
 
@@ -443,12 +436,6 @@ export const SqlInitializer = () => {
       }
 
       setSqlInitializing(false)
-      try {
-        await startSyncing()
-        console.log('Sync started from SqlInitializer')
-      } catch (error) {
-        console.error('Error starting sync from SqlInitializer:', error)
-      }
     }
 
     run()

@@ -5,8 +5,7 @@ import { useBeforeunload } from 'react-beforeunload'
 
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
-// TODO: sync with db IF user has an account
-// import { Syncer } from './Syncer.tsx'
+import { Syncer } from './Syncer.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
@@ -15,12 +14,15 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
+import { useSession } from '../modules/authClient.ts'
 
 export const AuthAndDb = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
-  const initiating = sqlInitializing || initialSyncing
+  const { data: session } = useSession()
+  const isAuthenticated = Boolean(session?.user)
+  const initiating = sqlInitializing || (isAuthenticated && initialSyncing)
 
   // unsubscribe from sync when page unloads
   useBeforeunload(() => {
@@ -37,7 +39,7 @@ export const AuthAndDb = () => {
     <>
       <SqlInitializer />
       <InitialSyncManager />
-      {/* <Syncer /> */}
+      <Syncer />
       {initiating ? <Initiating /> : <LayoutProtected />}
     </>
   )
