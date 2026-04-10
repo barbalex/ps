@@ -175,7 +175,7 @@ export const Auth = () => {
                 })
               : formatMessage({
                   id: 'authWelcomeBack',
-                  defaultMessage: 'Willkommen zurück',
+                  defaultMessage: 'Anmeldung',
                 })}
           </h1>
           <p className={styles.authSubtitle}>
@@ -186,7 +186,7 @@ export const Auth = () => {
                 })
               : formatMessage({
                   id: 'authSignInToContinue',
-                  defaultMessage: 'Anmelden, um fortzufahren',
+                  defaultMessage: 'Benutzer haben massgeschneiderte Rechte',
                 })}
           </p>
           <p className={styles.previewHint}>
