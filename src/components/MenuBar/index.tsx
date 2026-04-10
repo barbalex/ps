@@ -43,6 +43,8 @@ export const MenuBar = ({
   // begin collapsing slightly before touching neighboring title/content
   collapseOffset = 0,
 }) => {
+  const isTopHeaderVariant = !showBorder && !grow
+
   const flattenChildren = useCallback((nodes) => {
     const flattened = []
 
@@ -288,7 +290,7 @@ export const MenuBar = ({
                 <Button
                   size="medium"
                   icon={<FaBars />}
-                  className={styles.button}
+                  className={`${styles.button} ${isTopHeaderVariant ? styles.topHeaderHamburgerButton : ''}`}
                 />
               </Tooltip>
             </MenuTrigger>
