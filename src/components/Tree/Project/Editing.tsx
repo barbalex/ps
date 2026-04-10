@@ -3,14 +3,15 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Tooltip } = fluentUiReactComponents
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useCorbado } from '@corbado/react'
 
 import { designingAtom } from '../../../store.ts'
 import styles from './Editing.module.css'
+import { useSession } from '../../../modules/authClient.ts'
 
 export const Editing = ({ projectId }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
-  const { user } = useCorbado()
+  const { data: session } = useSession()
+  const user = session?.user
 
   const onClick = (e) => {
     e.stopPropagation()

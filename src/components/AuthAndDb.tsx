@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 import { Outlet } from '@tanstack/react-router'
-import { CorbadoProvider } from '@corbado/react'
 import { useAtomValue } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
 
@@ -16,8 +15,6 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
-
-const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
 export const AuthAndDb = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
@@ -37,11 +34,11 @@ export const AuthAndDb = () => {
   if (isInDialog) return <Outlet />
 
   return (
-    <CorbadoProvider projectId={CORBADO_PROJECT_ID} theme="corbado-theme">
+    <>
       <SqlInitializer />
       <InitialSyncManager />
       {/* <Syncer /> */}
       {initiating ? <Initiating /> : <LayoutProtected />}
-    </CorbadoProvider>
+    </>
   )
 }

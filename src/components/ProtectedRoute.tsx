@@ -1,4 +1,3 @@
-// import { useCorbado } from '@corbado/react'
 import { useIntl } from 'react-intl'
 
 import { Loading } from './shared/Loading.tsx'
@@ -9,8 +8,6 @@ import { useSession } from '../modules/authClient.ts'
 // https://www.robinwieruch.de/react-router-authentication/
 export const ProtectedRoute = ({ children }) => {
   const { formatMessage } = useIntl()
-  // const { loading, isAuthenticated } = useCorbado()
-  // console.log('hello ProtectedRoute', { loading, isAuthenticated })
   const { data: session, isPending, error } = useSession()
   // console.log('ProtectedRoute, session data:', { session, isPending, error })
 
