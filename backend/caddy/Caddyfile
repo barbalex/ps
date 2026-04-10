@@ -5,14 +5,19 @@
   #debug
 }
 
-auth.arten-fördern.app {
+auth.xn--arten-frdern-bjb.app {
   @auth_arten_preflight {
     method OPTIONS
-    header Origin https://arten-fördern.app
+    header Origin https://xn--arten-frdern-bjb.app
   }
 
+  @auth_arten_origin header Origin https://xn--arten-frdern-bjb.app
+  header @auth_arten_origin Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
+  header @auth_arten_origin Access-Control-Allow-Credentials "true"
+  header @auth_arten_origin Vary "Origin"
+
   handle @auth_arten_preflight {
-    header Access-Control-Allow-Origin "https://arten-fördern.app"
+    header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
     header Access-Control-Allow-Headers "Authorization, Content-Type"
     header Access-Control-Allow-Credentials "true"
@@ -25,7 +30,7 @@ auth.arten-fördern.app {
 
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
 # https://electric-sql.com/docs/api/http#caching
-sync.arten-fördern.app {
+sync.xn--arten-frdern-bjb.app {
   reverse_proxy * ps_electric:3000 {
     # Disable buffering so SSE events are flushed immediately
     flush_interval -1
@@ -35,14 +40,14 @@ sync.arten-fördern.app {
   encode gzip
 }
 
-api.arten-fördern.app {
+api.xn--arten-frdern-bjb.app {
   @arten_preflight {
     method OPTIONS
-    header Origin https://arten-fördern.app
+    header Origin https://xn--arten-frdern-bjb.app
   }
 
   handle @arten_preflight {
-    header Access-Control-Allow-Origin "https://arten-fördern.app"
+    header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
     header Access-Control-Allow-Methods "GET,POST,PATCH,PUT,DELETE,OPTIONS"
     header Access-Control-Allow-Headers "Authorization, Content-Type, Prefer, Range"
     header Access-Control-Allow-Credentials "true"
@@ -51,8 +56,8 @@ api.arten-fördern.app {
     respond "" 204
   }
 
-  @arten_origin header Origin https://arten-fördern.app
-  header @arten_origin Access-Control-Allow-Origin "https://arten-fördern.app"
+  @arten_origin header Origin https://xn--arten-frdern-bjb.app
+  header @arten_origin Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
   header @arten_origin Access-Control-Allow-Credentials "true"
   header @arten_origin Access-Control-Expose-Headers "Content-Range, Content-Location"
   header @arten_origin Vary "Origin"
@@ -67,6 +72,11 @@ auth.promote-species.app {
     method OPTIONS
     header Origin https://promote-species.app
   }
+
+  @auth_promote_origin header Origin https://promote-species.app
+  header @auth_promote_origin Access-Control-Allow-Origin "https://promote-species.app"
+  header @auth_promote_origin Access-Control-Allow-Credentials "true"
+  header @auth_promote_origin Vary "Origin"
 
   handle @auth_promote_preflight {
     header Access-Control-Allow-Origin "https://promote-species.app"
