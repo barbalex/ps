@@ -92,8 +92,23 @@ export const MenuBar = ({
   const [menus, setMenus] = useState([])
 
   const setLayout = useCallback((nextButtons, nextMenus) => {
-    setButtons(nextButtons.map((child) => cloneElement(child)))
-    setMenus(nextMenus.map((child) => cloneElement(child, { inmenu: 'true' })))
+    // We clone children into two different render contexts (inline buttons and overflow menu).
+    // Prefixing keys keeps identities stable across moves and avoids duplicate-key warnings.
+    setButtons(
+      nextButtons.map((child, index) =>
+        cloneElement(child, {
+          key: `button-${index}-${child.key ?? 'nokey'}`,
+        }),
+      ),
+    )
+    setMenus(
+      nextMenus.map((child, index) =>
+        cloneElement(child, {
+          key: `menu-${index}-${child.key ?? 'nokey'}`,
+          inmenu: 'true',
+        }),
+      ),
+    )
   }, [])
 
   const splitChildren = useCallback(
@@ -150,10 +165,12 @@ export const MenuBar = ({
 
     if (nextMenus.length === 1) {
       if (nextButtons.length === 0) {
+        // A hamburger with one item is worse UX than showing the single action directly.
         setLayout(nextMenus, [])
         return
       }
 
+      // Keep at least two actions in the overflow menu so the hamburger is meaningful.
       const adjustedButtons = nextButtons.slice(0, -1)
       const adjustedMenus = [nextButtons.at(-1), ...nextMenus].filter(Boolean)
       setLayout(adjustedButtons, adjustedMenus)
