@@ -5,6 +5,7 @@ BEGIN;
 --
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  -- id is expected by better-auth
   id uuid GENERATED ALWAYS AS (user_id) STORED,
   name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
