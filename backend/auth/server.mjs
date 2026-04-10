@@ -100,14 +100,40 @@ const resetPreviewUser = async () => {
   await pool.query('DELETE FROM users WHERE user_id = $1', [userId])
 }
 
+const hasCredentialAccount = async () => {
+  const userResult = await pool.query(
+    'SELECT user_id FROM users WHERE email = $1 LIMIT 1',
+    [PREVIEW_TEST_EMAIL],
+  )
+  const userId = userResult.rows?.[0]?.user_id
+  if (!userId) return false
+
+  const accountResult = await pool.query(
+    `SELECT 1
+     FROM auth_accounts
+     WHERE user_id = $1
+       AND provider_id = 'credential'
+       AND password IS NOT NULL
+     LIMIT 1`,
+    [userId],
+  )
+
+  return (accountResult.rowCount ?? 0) > 0
+}
+
 const ensurePreviewUser = async () => {
-  try {
-    const maxAttempts = 5
-    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  const maxAttempts = 5
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const hasCredential = await hasCredentialAccount()
+      if (!hasCredential) {
+        await resetPreviewUser()
+      }
+
       const signInResult = await signInPreviewUser()
       if (signInResult.ok) {
         console.log('Preview test user is ready')
-        return
+        return true
       }
 
       const signUpResult = await signUpPreviewUser()
@@ -115,32 +141,45 @@ const ensurePreviewUser = async () => {
         const signInAfterCreate = await signInPreviewUser()
         if (signInAfterCreate.ok) {
           console.log('Preview test user created')
-          return
+          return true
         }
       }
 
-      if (attempt === 1) {
-        await resetPreviewUser()
-      }
-
-      if (attempt < maxAttempts) {
-        await delay(1000 * attempt)
-      }
-
       console.warn(
-        `Preview test user ensure attempt ${attempt} failed (sign-in: ${signInResult.status}, sign-up: ${signUpResult.status})`,
+        `Preview test user ensure attempt ${attempt} failed (sign-in: ${signInResult.status}, sign-up: ${signUpResult.status}, sign-in-body: ${signInResult.bodyText}, sign-up-body: ${signUpResult.bodyText})`,
       )
+    } catch (error) {
+      console.warn(`Preview test user ensure attempt ${attempt} errored:`, error)
     }
 
-    console.warn('Could not ensure preview test user after retries')
-  } catch (error) {
-    console.warn('Error ensuring preview test user:', error)
+    if (attempt < maxAttempts) {
+      await delay(1000 * attempt)
+    }
   }
+
+  console.warn('Could not ensure preview test user after retries')
+  return false
+}
+
+const startPreviewUserProvisioning = () => {
+  const retryDelayMs = 30_000
+
+  const run = async () => {
+    const ensured = await ensurePreviewUser()
+    if (!ensured) {
+      console.warn(
+        `Retrying preview test user provisioning in ${retryDelayMs / 1000}s`,
+      )
+      setTimeout(run, retryDelayMs)
+    }
+  }
+
+  run()
 }
 
 app.listen(port, () => {
   console.log(`Auth app listening on port ${port}`)
-  ensurePreviewUser()
+  startPreviewUserProvisioning()
 })
 
 app.get('/api/me', async (req, res) => {
