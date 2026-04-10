@@ -197,25 +197,7 @@ export const Menu = () => {
         )}
       </Toolbar>
       <MenuBar addMargin={false} showBorder={false} grow={false}>
-        {!isHome && (
-          <Tooltip
-            content={
-              isAppStates
-                ? intl.formatMessage({ defaultMessage: 'Zurück' })
-                : intl.formatMessage({ defaultMessage: 'Optionen' })
-            }
-          >
-            <Button
-              size="medium"
-              icon={<FaCog />}
-              onClick={onClickOptions}
-              className={styles.button}
-              disabled={mapIsMaximized}
-            />
-          </Tooltip>
-        )}
         <LanguageChooser width={44} />
-        <Online width={44} />
         {isAuthenticated ? (
           <FluentMenu positioning="below-end">
             <Tooltip
@@ -261,6 +243,24 @@ export const Menu = () => {
               icon={<MdLogin />}
               onClick={onClickEnter}
               className={styles.button}
+            />
+          </Tooltip>
+        )}
+        <Online width={44} />
+        {!isHome && (
+          <Tooltip
+            content={
+              isAppStates
+                ? intl.formatMessage({ defaultMessage: 'Zurück' })
+                : intl.formatMessage({ defaultMessage: 'Optionen' })
+            }
+          >
+            <Button
+              size="medium"
+              icon={<FaCog />}
+              onClick={onClickOptions}
+              className={styles.button}
+              disabled={mapIsMaximized}
             />
           </Tooltip>
         )}
