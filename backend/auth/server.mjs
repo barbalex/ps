@@ -6,13 +6,21 @@ import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
 const port = Number(process.env.PORT ?? 3003)
-const corsOrigins = (
-  process.env.CORS_ORIGINS ??
-  'http://localhost:5176,https://arten-fördern.app,https://promote-species.app'
-)
+const requiredCorsOrigins = [
+  'http://localhost:5176',
+  'https://arten-fördern.app',
+  'https://xn--arten-frdern-bjb.app',
+  'https://arten-fördern.ch',
+  'https://xn--arten-frdern-bjb.ch',
+  'https://promote-species.app',
+]
+const configuredCorsOrigins = (process.env.CORS_ORIGINS ?? '')
   .split(',')
   .map((value) => value.trim())
   .filter(Boolean)
+const corsOrigins = [
+  ...new Set([...configuredCorsOrigins, ...requiredCorsOrigins]),
+]
 
 // Configure CORS middleware
 app.use(
@@ -42,7 +50,9 @@ const PREVIEW_TEST_EMAIL = process.env.PREVIEW_TEST_EMAIL ?? 'test@test.ch'
 const PREVIEW_TEST_PASSWORD = process.env.PREVIEW_TEST_PASSWORD ?? 'test-test'
 const PREVIEW_TEST_NAME = process.env.PREVIEW_TEST_NAME ?? 'Preview Test User'
 const PREVIEW_TRUSTED_ORIGIN =
-  process.env.PREVIEW_TRUSTED_ORIGIN ?? corsOrigins[0] ?? 'http://localhost:5176'
+  process.env.PREVIEW_TRUSTED_ORIGIN ??
+  corsOrigins[0] ??
+  'http://localhost:5176'
 
 const postAuthJson = async (path, payload) => {
   const response = await fetch(`http://127.0.0.1:${port}${path}`, {

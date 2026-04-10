@@ -22,6 +22,9 @@ export const auth = betterAuth({
   trustedOrigins: [
     'http://localhost:5176',
     'https://arten-fördern.app',
+    'https://xn--arten-frdern-bjb.app',
+    'https://arten-fördern.ch',
+    'https://xn--arten-frdern-bjb.ch',
     'https://promote-species.app',
   ],
   emailAndPassword: { enabled: true, minPasswordLength: 8 },

@@ -6,13 +6,19 @@ import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
 const port = Number(process.env.PORT ?? 3003)
-const corsOrigins = (
-  process.env.CORS_ORIGINS ??
-  'http://localhost:5176,https://arten-fördern.app,https://promote-species.app'
-)
+const requiredCorsOrigins = [
+  'http://localhost:5176',
+  'https://arten-fördern.app',
+  'https://xn--arten-frdern-bjb.app',
+  'https://arten-fördern.ch',
+  'https://xn--arten-frdern-bjb.ch',
+  'https://promote-species.app',
+]
+const configuredCorsOrigins = (process.env.CORS_ORIGINS ?? '')
   .split(',')
   .map((value) => value.trim())
   .filter(Boolean)
+const corsOrigins = [...new Set([...configuredCorsOrigins, ...requiredCorsOrigins])]
 
 // Configure CORS middleware
 app.use(
