@@ -1,23 +1,31 @@
-import { useResizeDetector } from 'react-resize-detector'
-import { useAtom } from 'jotai'
+import { useEffect } from 'react'
+import { useSetAtom } from 'jotai'
 
 import { setDesktopViewAtom } from '../../store.ts'
-import styles from './IsDesktopViewSetter.module.css'
 
-// this sets the isDesktopViewAtom depending on the width of this component,
-// in contrast to: window.innerWidth
+// this sets the isDesktopViewAtom depending on window width
 export const IsDesktopViewSetter = () => {
-  const [, setDesktopView] = useAtom(setDesktopViewAtom)
+  const setDesktopView = useSetAtom(setDesktopViewAtom)
 
-  const onResize = ({ width }) => setDesktopView(width)
+  useEffect(() => {
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null
 
-  const { ref } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 300,
-    refreshOptions: { leading: false, trailing: true },
-    onResize,
-  })
+    const update = () => setDesktopView(window.innerWidth)
 
-  return <div className={styles.div} ref={ref} />
+    update()
+
+    const onResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(update, 200)
+    }
+
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      window.removeEventListener('resize', onResize)
+      if (resizeTimeout) clearTimeout(resizeTimeout)
+    }
+  }, [setDesktopView])
+
+  return null
 }
