@@ -56,14 +56,10 @@
 }
 
 .homeButtonMobileOnly {
-  display: none !important;
+  display: inline-flex !important;
 }
 
 @media (max-width: 649px) {
-  .homeButtonMobileOnly {
-    display: inline-flex !important;
-  }
-
   .toggleInactive,
   .toggleActive {
     min-width: 0 !important;
