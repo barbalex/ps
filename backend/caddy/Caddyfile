@@ -1,6 +1,7 @@
 # see: https://caddyserver.com/docs/caddyfile/concepts
 {
   email alex.barbalex@gmail.com
+  acme_ca https://acme.zerossl.com/v2/DV90
   #acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
   #debug
 }

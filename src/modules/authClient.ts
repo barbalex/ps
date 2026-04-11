@@ -1,6 +1,12 @@
 import { createAuthClient } from 'better-auth/react'
 
-const PRODUCTION_AUTH_BASE_URL = 'https://auth.promote-species.app'
+const getProductionAuthBaseUrl = () => {
+  const host = window?.location?.hostname?.toLowerCase() ?? ''
+  if (host.endsWith('promote-species.app')) {
+    return 'https://auth.promote-species.app'
+  }
+  return 'https://auth.xn--arten-frdern-bjb.app'
+}
 
 const isLocalDevHost = () => {
   const host = window?.location?.hostname
@@ -17,7 +23,7 @@ export const { signIn, signUp, signOut, useSession, getSession } =
     /** The base URL of the server (optional if you're using the same domain) */
     baseURL: isLocalDevHost()
       ? 'http://localhost:3003'
-      : PRODUCTION_AUTH_BASE_URL,
+      : getProductionAuthBaseUrl(),
     basePath: '/auth',
     fetchOptions: {
       credentials: 'include',

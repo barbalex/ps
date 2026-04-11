@@ -2,8 +2,7 @@ import { betterAuth } from 'better-auth'
 import { Pool } from 'pg'
 
 const DATABASE_URL = process.env.DATABASE_URL
-const AUTH_BASE_URL =
-  process.env.BETTER_AUTH_URL?.trim() || 'http://localhost:3003'
+const AUTH_BASE_URL = process.env.BETTER_AUTH_URL?.trim()
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID?.trim()
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET?.trim()
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID?.trim()
@@ -32,7 +31,6 @@ if (GITHUB_CLIENT_ID && GITHUB_CLIENT_SECRET) {
   socialProviders.github = {
     clientId: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    redirectURI: `${AUTH_BASE_URL}/auth/callback/github`,
   }
 } else {
   console.warn(
@@ -44,7 +42,6 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
   socialProviders.google = {
     clientId: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    redirectURI: `${AUTH_BASE_URL}/auth/callback/google`,
   }
 } else {
   console.warn(
@@ -55,7 +52,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
 export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
-  baseURL: AUTH_BASE_URL,
+  ...(AUTH_BASE_URL ? { baseURL: AUTH_BASE_URL } : {}),
   basePath: '/auth',
   database: pool,
   advanced: {
