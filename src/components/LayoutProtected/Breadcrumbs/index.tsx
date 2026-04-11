@@ -1,7 +1,9 @@
 import { useMatches } from '@tanstack/react-router'
 import { TransitionGroup } from 'react-transition-group'
+import { useIntl } from 'react-intl'
 
 import { FetcherRouter } from './FetcherRouter.tsx'
+import { FetcherReturner } from './FetcherReturner.tsx'
 import styles from './index.module.css'
 
 /**
@@ -25,6 +27,7 @@ const getEffectiveParams = (
 
 // this component extracts matches
 export const Breadcrumbs = () => {
+  const intl = useIntl()
   const unfilteredMatches = useMatches()
   const navDataMatches = unfilteredMatches
     .filter((match) => !!match.context?.navDataFetcher)
@@ -53,6 +56,16 @@ export const Breadcrumbs = () => {
             params={params}
           />
         ))}
+        <FetcherReturner
+          key="__home"
+          navData={{
+            label: intl.formatMessage({
+              id: 'navigationHome',
+              defaultMessage: 'Home',
+            }),
+            ownUrl: '/',
+          }}
+        />
       </TransitionGroup>
     </div>
   )

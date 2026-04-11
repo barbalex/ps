@@ -20,7 +20,7 @@ const {
 import { useEffect, useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
-import { MdLogout, MdLogin } from 'react-icons/md'
+import { MdLogout, MdLogin, MdHome } from 'react-icons/md'
 import {
   useNavigate,
   useLocation,
@@ -296,6 +296,7 @@ export const Menu = () => {
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
   const mapIsActive = tabs.includes('map')
+  const onClickHome = () => navigate({ to: '/' })
 
   return (
     <div className={`${styles.container} no-print`}>
@@ -399,6 +400,23 @@ export const Menu = () => {
         )}
       </Toolbar>
       <MenuBar addMargin={false} showBorder={false} grow={false}>
+        <Tooltip
+          content={intl.formatMessage({
+            id: 'navigationHome',
+            defaultMessage: 'Home',
+          })}
+        >
+          <Button
+            size="medium"
+            icon={<MdHome />}
+            onClick={onClickHome}
+            className={`${styles.button} ${styles.homeButtonMobileOnly}`}
+            aria-label={intl.formatMessage({
+              id: 'navigationHome',
+              defaultMessage: 'Home',
+            })}
+          />
+        </Tooltip>
         <LanguageChooser width={44} />
         {isAuthenticated ? (
           <FluentMenu positioning="below-end">
