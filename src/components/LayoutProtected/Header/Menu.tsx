@@ -17,7 +17,7 @@ const {
   ToolbarToggleButton,
   Tooltip,
 } = fluentUiReactComponents
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
@@ -32,6 +32,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   initialSyncingAtom,
+  isMobileViewAtom,
   mapMaximizedAtom,
   operationsQueueAtom,
   pgliteDbAtom,
@@ -61,6 +62,15 @@ const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   }
 
   return className
+}
+
+const MOBILE_TAB_PRIORITY = ['data', 'map', 'tree'] as const
+
+const pickMobileTab = (tabs: string[]) => {
+  for (const tab of MOBILE_TAB_PRIORITY) {
+    if (tabs.includes(tab)) return tab
+  }
+  return 'data'
 }
 
 const deleteIndexedDbDatabase = (dbName: string) =>
@@ -189,6 +199,7 @@ const clearLocalSyncedData = async () => {
 export const Menu = () => {
   const intl = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [isMobileView] = useAtom(isMobileViewAtom)
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -207,7 +218,29 @@ export const Menu = () => {
   const isAppStates = pathname.includes('app-states')
 
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
-  const onChangeTabs = (e, { checkedItems }) => setTabs(checkedItems)
+
+  useEffect(() => {
+    if (!isMobileView) return
+
+    const preferredTab = pickMobileTab(tabs)
+    if (tabs.length !== 1 || tabs[0] !== preferredTab) {
+      setTabs([preferredTab])
+    }
+  }, [isMobileView, setTabs, tabs])
+
+  const onChangeTabs = (_e, { checkedItems }) => {
+    const nextTabs = checkedItems as string[]
+    if (!isMobileView) {
+      setTabs(nextTabs)
+      return
+    }
+
+    const newlyActivatedTab = nextTabs.find((tab) => !tabs.includes(tab))
+    const nextActiveTab =
+      newlyActivatedTab ?? nextTabs[0] ?? tabs[0] ?? MOBILE_TAB_PRIORITY[0]
+
+    setTabs([nextActiveTab])
+  }
 
   const onClickOptions = () => {
     if (isAppStates) {
@@ -253,7 +286,7 @@ export const Menu = () => {
 
     // if map is not included in app_sate.tabs, add it
     if (!tabs.includes('map')) {
-      setTabs([...tabs, 'map'])
+      setTabs(isMobileView ? ['map'] : [...tabs, 'map'])
     }
 
     // toggle map maximized
