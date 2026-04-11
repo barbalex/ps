@@ -45,7 +45,7 @@ export const Auth = () => {
     try {
       const result = await signIn.social({
         provider: 'google',
-        callbackURL: '/auth/callback/google',
+        callbackURL: `${window.location.origin}/data/projects`,
       })
 
       if (result.error) {
