@@ -63,6 +63,73 @@
   gap: 14px;
 }
 
+.socialButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f1f1f;
+  background: #fff;
+  border: 1px solid rgba(31, 31, 31, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  margin-bottom: 10px;
+}
+
+.socialButton:hover:not(:disabled) {
+  background-color: #f6f6f6;
+  border-color: rgba(31, 31, 31, 0.35);
+}
+
+.socialButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.googleMark {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #1a73e8;
+  border: 1px solid rgba(26, 115, 232, 0.35);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.socialDivider {
+  position: relative;
+  text-align: center;
+  margin: 0 0 12px 0;
+}
+
+.socialDivider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(55, 118, 28, 0.18);
+}
+
+.socialDivider span {
+  position: relative;
+  display: inline-block;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #6b6b6b;
+  background: #fff;
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;

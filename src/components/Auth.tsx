@@ -15,6 +15,10 @@ export const Auth = () => {
     id: 'authSignUpBtn',
     defaultMessage: 'Registrieren',
   })
+  const googleSignInLabel = formatMessage({
+    id: 'authGoogleBtn',
+    defaultMessage: 'Mit Google fortfahren',
+  })
   const navigate = useNavigate()
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
@@ -32,6 +36,40 @@ export const Auth = () => {
 
   const onLoggedIn = () => {
     navigate('/data/projects')
+  }
+
+  const handleGoogleSignIn = async () => {
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const result = await signIn.social({
+        provider: 'google',
+        callbackURL: '/auth/callback/google',
+      })
+
+      if (result.error) {
+        setError(
+          result.error.message ||
+            formatMessage({
+              id: 'authGoogleFailed',
+              defaultMessage:
+                'Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+            }),
+        )
+      }
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authGoogleFailed',
+          defaultMessage:
+            'Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+        }),
+      )
+      console.error('Google auth error:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const validateEmail = (email: string) => {
@@ -199,6 +237,27 @@ export const Auth = () => {
         </div>
 
         {error && <div className={styles.generalError}>{error}</div>}
+
+        <button
+          type="button"
+          className={styles.socialButton}
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+        >
+          <span className={styles.googleMark} aria-hidden="true">
+            G
+          </span>
+          {googleSignInLabel}
+        </button>
+
+        <div className={styles.socialDivider}>
+          <span>
+            {formatMessage({
+              id: 'authOrDivider',
+              defaultMessage: 'oder',
+            })}
+          </span>
+        </div>
 
         <form className={styles.authForm} onSubmit={handleSubmit}>
           {isSignUp && (
