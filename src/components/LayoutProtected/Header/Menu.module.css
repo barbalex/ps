@@ -60,6 +60,14 @@
 }
 
 @media (max-width: 649px) {
+  .container {
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    margin-right: auto;
+  }
+
   .toggleInactive,
   .toggleActive {
     min-width: 0 !important;
