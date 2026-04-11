@@ -443,12 +443,14 @@ export const Menu = () => {
           <DialogBody>
             <DialogTitle>
               {intl.formatMessage({
+                id: 'logoutPendingOpsTitle',
                 defaultMessage: 'Achtung: Ausstehende Operationen',
               })}
             </DialogTitle>
             <DialogContent>
               {intl.formatMessage(
                 {
+                  id: 'logoutPendingOpsBody',
                   defaultMessage:
                     'Es sind noch {count} ausstehende lokale Operationen vorhanden. Wenn Sie sich jetzt abmelden, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden. Empfehlung: Warten Sie, bis alle Operationen mit dem Server synchronisiert wurden.',
                 },
@@ -457,13 +459,19 @@ export const Menu = () => {
             </DialogContent>
             <DialogActions>
               <Button appearance="secondary" onClick={onCancelLogout}>
-                <FormattedMessage defaultMessage="Abbrechen" />
+                <FormattedMessage
+                  id="logoutCancelBtn"
+                  defaultMessage="Abbrechen"
+                />
               </Button>
               <Button
                 appearance="primary"
                 onClick={onProceedAfterPendingWarning}
               >
-                <FormattedMessage defaultMessage="Trotzdem fortfahren" />
+                <FormattedMessage
+                  id="logoutProceedAnywayBtn"
+                  defaultMessage="Trotzdem fortfahren"
+                />
               </Button>
             </DialogActions>
           </DialogBody>
@@ -474,7 +482,10 @@ export const Menu = () => {
         <DialogSurface>
           <DialogBody>
             <DialogTitle>
-              <FormattedMessage defaultMessage="Abmeldung bestätigen" />
+              <FormattedMessage
+                id="logoutConfirmTitle"
+                defaultMessage="Abmeldung bestätigen"
+              />
             </DialogTitle>
             <DialogContent>
               {intl.formatMessage({
@@ -489,7 +500,10 @@ export const Menu = () => {
                 onClick={onCancelLogout}
                 disabled={isLoggingOut}
               >
-                <FormattedMessage defaultMessage="Abbrechen" />
+                <FormattedMessage
+                  id="logoutCancelBtn"
+                  defaultMessage="Abbrechen"
+                />
               </Button>
               <Button
                 appearance="primary"
@@ -497,9 +511,15 @@ export const Menu = () => {
                 disabled={isLoggingOut}
               >
                 {isLoggingOut ? (
-                  <FormattedMessage defaultMessage="Bitte warten..." />
+                  <FormattedMessage
+                    id="logoutPleaseWait"
+                    defaultMessage="Bitte warten..."
+                  />
                 ) : (
-                  <FormattedMessage defaultMessage="Jetzt abmelden" />
+                  <FormattedMessage
+                    id="logoutNowBtn"
+                    defaultMessage="Jetzt abmelden"
+                  />
                 )}
               </Button>
             </DialogActions>
