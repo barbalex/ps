@@ -100,6 +100,11 @@ export const auth = betterAuth({
     },
   },
   account: {
+    // The auth UI can start on arten-fördern.app while OAuth callbacks land on
+    // auth.promote-species.app. Persist state in the database and do not require
+    // the extra state cookie round-trip, which is brittle in that cross-origin flow.
+    storeStateStrategy: 'database',
+    skipStateCookieCheck: true,
     modelName: 'auth_accounts',
     fields: {
       id: 'auth_account_id',

@@ -104,6 +104,10 @@ export const auth = betterAuth({
     },
   },
   account: {
+    // The auth UI can start on one app origin while OAuth callbacks land on the
+    // auth host. Persist state in the database and skip the extra cookie check.
+    storeStateStrategy: 'database',
+    skipStateCookieCheck: true,
     modelName: 'auth_accounts',
     fields: {
       id: 'auth_account_id',
