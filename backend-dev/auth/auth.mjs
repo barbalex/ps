@@ -24,6 +24,7 @@ const trustedOrigins = [
 export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL, 
   basePath: '/auth',
   database: pool,
   advanced: {
@@ -42,6 +43,10 @@ export const auth = betterAuth({
     github: {
       clientId: GITHUB_CLIENT_ID,
       clientSecret: GITHUB_CLIENT_SECRET,
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
   },
   user: {
