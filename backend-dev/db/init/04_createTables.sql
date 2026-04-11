@@ -6,7 +6,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- id is expected by better-auth
-  id uuid GENERATED ALWAYS AS (user_id) STORED,
+  id uuid DEFAULT NULL,
   name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
   email_verified boolean DEFAULT FALSE,
@@ -2040,5 +2040,58 @@ CREATE INDEX IF NOT EXISTS qcs_assignment_qc_id_idx ON qcs_assignment USING btre
 CREATE INDEX IF NOT EXISTS qcs_assignment_label_idx ON qcs_assignment USING btree(label);
 
 COMMENT ON TABLE qcs_assignment IS 'Quality controls assigned to a project or subproject. The level(s) of applicability (root, project, subproject) are defined on the qcs table itself.';
+
+--------------------------------------------------------------
+-- Better Auth compatibility helpers
+-- Keep id fields in sync with legacy primary key columns.
+-- Better Auth writes/reads id while this schema historically used *_id.
+--
+CREATE OR REPLACE FUNCTION sync_users_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NEW.user_id IS NULL AND NEW.id IS NULL THEN
+    NEW.user_id := public.uuid_generate_v7();
+    NEW.id := NEW.user_id;
+  ELSIF NEW.user_id IS NULL THEN
+    NEW.user_id := NEW.id;
+  ELSIF NEW.id IS NULL THEN
+    NEW.id := NEW.user_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_users_id_columns_trigger ON users;
+CREATE TRIGGER sync_users_id_columns_trigger
+BEFORE INSERT OR UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION sync_users_id_columns();
+
+CREATE OR REPLACE FUNCTION sync_auth_accounts_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NEW.auth_account_id IS NULL AND NEW.id IS NULL THEN
+    NEW.auth_account_id := public.uuid_generate_v7();
+    NEW.id := NEW.auth_account_id;
+  ELSIF NEW.auth_account_id IS NULL THEN
+    NEW.auth_account_id := NEW.id;
+  ELSIF NEW.id IS NULL THEN
+    NEW.id := NEW.auth_account_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_auth_accounts_id_columns_trigger ON auth_accounts;
+CREATE TRIGGER sync_auth_accounts_id_columns_trigger
+BEFORE INSERT OR UPDATE ON auth_accounts
+FOR EACH ROW
+EXECUTE FUNCTION sync_auth_accounts_id_columns();
 
 COMMIT;

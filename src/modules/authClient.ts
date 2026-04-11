@@ -19,4 +19,7 @@ export const { signIn, signUp, signOut, useSession, getSession } =
         ? 'https://auth.promote-species.app'
         : 'https://auth.arten-fördern.app',
     basePath: '/auth',
+    fetchOptions: {
+      credentials: 'include',
+    },
   })

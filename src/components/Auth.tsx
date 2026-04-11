@@ -1,8 +1,8 @@
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useEffect, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
-import { signUp, signIn } from '../modules/authClient.ts'
+import { signUp, signIn, getSession } from '../modules/authClient.ts'
 import styles from './Auth.module.css'
 
 export const Auth = () => {
@@ -34,9 +34,36 @@ export const Auth = () => {
     name?: string
   }>({})
 
-  const onLoggedIn = () => {
+  const onLoggedIn = useCallback(() => {
     navigate('/data/projects')
-  }
+  }, [navigate])
+
+  useEffect(() => {
+    let isActive = true
+
+    const run = async () => {
+      try {
+        const result = await getSession({
+          query: { disableCookieCache: true },
+        })
+        const session =
+          result && typeof result === 'object' && 'data' in result
+            ? result.data
+            : result
+        if (isActive && session?.user) {
+          onLoggedIn()
+        }
+      } catch {
+        // stay on auth form when no valid session exists
+      }
+    }
+
+    run()
+
+    return () => {
+      isActive = false
+    }
+  }, [onLoggedIn])
 
   const handleGoogleSignIn = async () => {
     setError('')
