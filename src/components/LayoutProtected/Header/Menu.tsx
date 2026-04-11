@@ -23,7 +23,16 @@ import {
 import { useAtom } from 'jotai'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
+import {
+  initialSyncingAtom,
+  mapMaximizedAtom,
+  operationsQueueAtom,
+  pgliteDbAtom,
+  sqlInitializingAtom,
+  store,
+  syncObjectAtom,
+  tabsAtom,
+} from '../../../store.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
@@ -45,6 +54,69 @@ const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   }
 
   return className
+}
+
+const deleteIndexedDbDatabase = (dbName: string) =>
+  new Promise<void>((resolve) => {
+    if (typeof indexedDB === 'undefined') {
+      resolve()
+      return
+    }
+
+    const request = indexedDB.deleteDatabase(dbName)
+    request.onsuccess = () => resolve()
+    request.onerror = () => resolve()
+    request.onblocked = () => resolve()
+  })
+
+const clearPersistedSyncUiState = () => {
+  const localStorageKeysToClear = [
+    'tabsAtom',
+    'operationsQueueAtom',
+    'initialSyncingAtom',
+    'sqlInitializingAtom',
+    'mapMaximizedAtom',
+    'showLocalMapAtom',
+    'localMapValuesAtom',
+    'mapInfoAtom',
+    'mapLayerSortingAtom',
+    'mapDrawerVectorLayerDisplayAtom',
+    'treeOpenNodesAtom',
+    'seenWmsServiceKeysAtom',
+    'seenWfsServiceKeysAtom',
+    'qcsRunOnlyWithResults',
+    'qcsRunLabelFilter',
+    'rootQcsRunOnlyWithResults',
+    'rootQcsRunLabelFilter',
+    'projectQcsRunOnlyWithResults',
+    'projectQcsRunLabelFilter',
+  ]
+
+  for (const key of localStorageKeysToClear) {
+    window.localStorage.removeItem(key)
+  }
+
+  window.sessionStorage.removeItem('sub')
+}
+
+const clearLocalSyncedData = async () => {
+  // stop active sync stream before deleting local database
+  const syncObject = store.get(syncObjectAtom) as
+    | { unsubscribe?: () => void }
+    | null
+  syncObject?.unsubscribe?.()
+  store.set(syncObjectAtom, null)
+
+  const db = store.get(pgliteDbAtom) as { close?: () => Promise<void> | void }
+  await db?.close?.()
+
+  await deleteIndexedDbDatabase('ps')
+  clearPersistedSyncUiState()
+
+  store.set(pgliteDbAtom, null)
+  store.set(operationsQueueAtom, [])
+  store.set(initialSyncingAtom, true)
+  store.set(sqlInitializingAtom, true)
 }
 
 // TODO:
@@ -75,7 +147,11 @@ export const Menu = () => {
     navigate({ to: `/data/app-states` })
   }
 
-  const onClickLogout = () => signOut()
+  const onClickLogout = async () => {
+    await clearLocalSyncedData()
+    await signOut()
+    window.location.assign('/')
+  }
   const onClickEnter = () => navigate({ to: '/data/projects' })
 
   const onClickMapView = (e) => {
