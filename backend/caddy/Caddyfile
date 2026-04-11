@@ -77,8 +77,36 @@ auth.promote-species.app {
     header Origin https://promote-species.app
   }
 
+  @auth_arten_app_preflight {
+    method OPTIONS
+    header Origin https://xn--arten-frdern-bjb.app
+  }
+
+  @auth_arten_ch_preflight {
+    method OPTIONS
+    header Origin https://xn--arten-frdern-bjb.ch
+  }
+
   handle @auth_promote_preflight {
     header Access-Control-Allow-Origin "https://promote-species.app"
+    header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Credentials "true"
+    header Vary "Origin"
+    respond "" 204
+  }
+
+  handle @auth_arten_app_preflight {
+    header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
+    header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Credentials "true"
+    header Vary "Origin"
+    respond "" 204
+  }
+
+  handle @auth_arten_ch_preflight {
+    header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.ch"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
     header Access-Control-Allow-Headers "Authorization, Content-Type"
     header Access-Control-Allow-Credentials "true"
@@ -90,6 +118,16 @@ auth.promote-species.app {
   header @auth_promote_origin Access-Control-Allow-Origin "https://promote-species.app"
   header @auth_promote_origin Access-Control-Allow-Credentials "true"
   header @auth_promote_origin Vary "Origin"
+
+  @auth_arten_app_origin header Origin https://xn--arten-frdern-bjb.app
+  header @auth_arten_app_origin Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
+  header @auth_arten_app_origin Access-Control-Allow-Credentials "true"
+  header @auth_arten_app_origin Vary "Origin"
+
+  @auth_arten_ch_origin header Origin https://xn--arten-frdern-bjb.ch
+  header @auth_arten_ch_origin Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.ch"
+  header @auth_arten_ch_origin Access-Control-Allow-Credentials "true"
+  header @auth_arten_ch_origin Vary "Origin"
 
   reverse_proxy * ps_auth:3003 {
     header_down -Access-Control-Allow-Origin
