@@ -828,6 +828,7 @@
   "authHaveAccount": "Vous avez déjà un compte ?",
   "authNoAccount": "Vous n'avez pas de compte ?",
   "authPreviewCredentialsHint": "Pendant que l'application est en cours de développement, vous pouvez vous connecter avec un utilisateur test : E-mail test@test.ch, mot de passe test-test",
+  "logoutLocalDataWipeConfirm": "Lors de la déconnexion, les données locales de cet appareil seront supprimées afin que le prochain utilisateur ne voie pas d'anciennes (= vos) données. Vos données ont été synchronisées avec le serveur. Elles ne seront donc pas perdues et seront de nouveau disponibles lors de votre prochaine connexion.\n\nSe déconnecter maintenant ?",
   "treeLayerNodeLabel": "Couche",
   "treeTaxonomyNodeLabel": "Taxonomie",
   "treeWfsServiceNodeLabel": "Service WFS",

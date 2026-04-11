@@ -206,6 +206,33 @@ export const Menu = () => {
   }
 
   const onClickLogout = async () => {
+    const operationsQueue = store.get(operationsQueueAtom) as unknown[]
+    const pendingOperationsCount = operationsQueue?.length ?? 0
+
+    if (pendingOperationsCount > 0) {
+      const proceedWithPendingOps = window.confirm(
+        intl.formatMessage(
+          {
+            defaultMessage:
+              'ACHTUNG: Es sind noch {count} ausstehende lokale Operationen vorhanden.\n\nWenn Sie sich jetzt abmelden, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden.\n\nEmpfehlung: Warten Sie, bis alle Operationen mit dem Server synchronisiert wurden.\n\nTrotzdem abmelden?',
+          },
+          { count: pendingOperationsCount },
+        ),
+      )
+
+      if (!proceedWithPendingOps) return
+    }
+
+    const confirmLocalWipe = window.confirm(
+      intl.formatMessage({
+        id: 'logoutLocalDataWipeConfirm',
+        defaultMessage:
+          'Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= ihre) Daten sieht. Ihre Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei Ihrer nächsten Anmeldung wieder verfügbar.\n\nJetzt abmelden?',
+      }),
+    )
+
+    if (!confirmLocalWipe) return
+
     await clearLocalSyncedData()
     await signOut()
     window.location.assign('/')
