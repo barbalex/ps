@@ -2,6 +2,12 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
   Avatar,
   Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
   Menu: FluentMenu,
   MenuItem,
   MenuList,
@@ -11,6 +17,7 @@ const {
   ToolbarToggleButton,
   Tooltip,
 } = fluentUiReactComponents
+import { useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
@@ -182,6 +189,11 @@ const clearLocalSyncedData = async () => {
 export const Menu = () => {
   const intl = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [logoutDialogStep, setLogoutDialogStep] = useState<
+    'none' | 'pending' | 'wipe'
+  >('none')
+  const [pendingOperationsCount, setPendingOperationsCount] = useState(0)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const navigate = useNavigate()
   const canGoBack = useCanGoBack()
   const { history } = useRouter()
@@ -205,38 +217,34 @@ export const Menu = () => {
     navigate({ to: `/data/app-states` })
   }
 
-  const onClickLogout = async () => {
+  const onClickLogout = () => {
     const operationsQueue = store.get(operationsQueueAtom) as unknown[]
-    const pendingOperationsCount = operationsQueue?.length ?? 0
-
-    if (pendingOperationsCount > 0) {
-      const proceedWithPendingOps = window.confirm(
-        intl.formatMessage(
-          {
-            defaultMessage:
-              'ACHTUNG: Es sind noch {count} ausstehende lokale Operationen vorhanden.\n\nWenn Sie sich jetzt abmelden, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden.\n\nEmpfehlung: Warten Sie, bis alle Operationen mit dem Server synchronisiert wurden.\n\nTrotzdem abmelden?',
-          },
-          { count: pendingOperationsCount },
-        ),
-      )
-
-      if (!proceedWithPendingOps) return
-    }
-
-    const confirmLocalWipe = window.confirm(
-      intl.formatMessage({
-        id: 'logoutLocalDataWipeConfirm',
-        defaultMessage:
-          'Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= ihre) Daten sieht. Ihre Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei Ihrer nächsten Anmeldung wieder verfügbar.\n\nJetzt abmelden?',
-      }),
-    )
-
-    if (!confirmLocalWipe) return
-
-    await clearLocalSyncedData()
-    await signOut()
-    window.location.assign('/')
+    const pendingCount = operationsQueue?.length ?? 0
+    setPendingOperationsCount(pendingCount)
+    setLogoutDialogStep(pendingCount > 0 ? 'pending' : 'wipe')
   }
+
+  const onCancelLogout = () => {
+    if (isLoggingOut) return
+    setLogoutDialogStep('none')
+  }
+
+  const onProceedAfterPendingWarning = () => {
+    setLogoutDialogStep('wipe')
+  }
+
+  const onConfirmLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      await clearLocalSyncedData()
+      await signOut()
+      window.location.assign('/')
+    } finally {
+      setIsLoggingOut(false)
+      setLogoutDialogStep('none')
+    }
+  }
+
   const onClickEnter = () => navigate({ to: '/data/projects' })
 
   const onClickMapView = (e) => {
@@ -426,6 +434,78 @@ export const Menu = () => {
           </Tooltip>
         )}
       </MenuBar>
+
+      <Dialog
+        open={logoutDialogStep === 'pending'}
+        onOpenChange={onCancelLogout}
+      >
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>
+              {intl.formatMessage({
+                defaultMessage: 'Achtung: Ausstehende Operationen',
+              })}
+            </DialogTitle>
+            <DialogContent>
+              {intl.formatMessage(
+                {
+                  defaultMessage:
+                    'Es sind noch {count} ausstehende lokale Operationen vorhanden. Wenn Sie sich jetzt abmelden, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden. Empfehlung: Warten Sie, bis alle Operationen mit dem Server synchronisiert wurden.',
+                },
+                { count: pendingOperationsCount },
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button appearance="secondary" onClick={onCancelLogout}>
+                <FormattedMessage defaultMessage="Abbrechen" />
+              </Button>
+              <Button
+                appearance="primary"
+                onClick={onProceedAfterPendingWarning}
+              >
+                <FormattedMessage defaultMessage="Trotzdem fortfahren" />
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
+
+      <Dialog open={logoutDialogStep === 'wipe'} onOpenChange={onCancelLogout}>
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>
+              <FormattedMessage defaultMessage="Abmeldung bestätigen" />
+            </DialogTitle>
+            <DialogContent>
+              {intl.formatMessage({
+                id: 'logoutLocalDataWipeConfirm',
+                defaultMessage:
+                  'Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= Ihre) Daten sieht. Ihre Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei Ihrer nächsten Anmeldung wieder verfügbar.\n\nJetzt abmelden?',
+              })}
+            </DialogContent>
+            <DialogActions>
+              <Button
+                appearance="secondary"
+                onClick={onCancelLogout}
+                disabled={isLoggingOut}
+              >
+                <FormattedMessage defaultMessage="Abbrechen" />
+              </Button>
+              <Button
+                appearance="primary"
+                onClick={onConfirmLogout}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? (
+                  <FormattedMessage defaultMessage="Bitte warten..." />
+                ) : (
+                  <FormattedMessage defaultMessage="Jetzt abmelden" />
+                )}
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
     </div>
   )
 }
