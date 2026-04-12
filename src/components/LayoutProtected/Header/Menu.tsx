@@ -18,7 +18,7 @@ const {
   ToolbarToggleButton,
   Tooltip,
 } = fluentUiReactComponents
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin, MdHome, MdLock } from 'react-icons/md'
@@ -214,6 +214,12 @@ export const Menu = () => {
   const [changePasswordError, setChangePasswordError] = useState('')
   const [changePasswordMessage, setChangePasswordMessage] = useState('')
   const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const changePasswordSuccessTimeoutRef = useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined)
+  const changePasswordResetTimeoutRef = useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined)
   const [pendingOperationsCount, setPendingOperationsCount] = useState(0)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const navigate = useNavigate()
@@ -275,6 +281,14 @@ export const Menu = () => {
   }
 
   const onOpenChangePassword = () => {
+    if (changePasswordSuccessTimeoutRef.current) {
+      clearTimeout(changePasswordSuccessTimeoutRef.current)
+      changePasswordSuccessTimeoutRef.current = undefined
+    }
+    if (changePasswordResetTimeoutRef.current) {
+      clearTimeout(changePasswordResetTimeoutRef.current)
+      changePasswordResetTimeoutRef.current = undefined
+    }
     setChangePasswordError('')
     setChangePasswordMessage('')
     setCurrentPassword('')
@@ -285,9 +299,11 @@ export const Menu = () => {
 
   const onCloseChangePassword = () => {
     if (isChangingPassword) return
+    if (changePasswordSuccessTimeoutRef.current) {
+      clearTimeout(changePasswordSuccessTimeoutRef.current)
+      changePasswordSuccessTimeoutRef.current = undefined
+    }
     setChangePasswordOpen(false)
-    setChangePasswordError('')
-    setChangePasswordMessage('')
   }
 
   const onSubmitChangePassword = async () => {
@@ -341,12 +357,17 @@ export const Menu = () => {
 
       setChangePasswordMessage(
         intl.formatMessage({
-          defaultMessage: 'Passwort erfolgreich geändert.',
+          defaultMessage:
+            'Passwort erfolgreich geändert. Dieses Fenster wird geschlossen.',
         }),
       )
       setCurrentPassword('')
       setNewPassword('')
       setConfirmNewPassword('')
+      changePasswordSuccessTimeoutRef.current = setTimeout(() => {
+        setChangePasswordOpen(false)
+        changePasswordSuccessTimeoutRef.current = undefined
+      }, 2000)
     } catch (error) {
       setChangePasswordError(
         intl.formatMessage({
@@ -358,6 +379,44 @@ export const Menu = () => {
       setIsChangingPassword(false)
     }
   }
+
+  useEffect(
+    () => () => {
+      if (changePasswordSuccessTimeoutRef.current) {
+        clearTimeout(changePasswordSuccessTimeoutRef.current)
+      }
+      if (changePasswordResetTimeoutRef.current) {
+        clearTimeout(changePasswordResetTimeoutRef.current)
+      }
+    },
+    [],
+  )
+
+  useEffect(() => {
+    if (changePasswordOpen) {
+      if (changePasswordResetTimeoutRef.current) {
+        clearTimeout(changePasswordResetTimeoutRef.current)
+        changePasswordResetTimeoutRef.current = undefined
+      }
+      return
+    }
+
+    changePasswordResetTimeoutRef.current = setTimeout(() => {
+      setChangePasswordError('')
+      setChangePasswordMessage('')
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmNewPassword('')
+      changePasswordResetTimeoutRef.current = undefined
+    }, 150)
+
+    return () => {
+      if (changePasswordResetTimeoutRef.current) {
+        clearTimeout(changePasswordResetTimeoutRef.current)
+        changePasswordResetTimeoutRef.current = undefined
+      }
+    }
+  }, [changePasswordOpen])
 
   const onCancelLogout = () => {
     if (isLoggingOut) return
@@ -702,54 +761,62 @@ export const Menu = () => {
                   </div>
                 )}
 
-                <Input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(_, data) => setCurrentPassword(data.value)}
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Aktuelles Passwort',
-                  })}
-                  disabled={isChangingPassword}
-                />
-                <Input
-                  type="password"
-                  value={newPassword}
-                  onChange={(_, data) => setNewPassword(data.value)}
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Neues Passwort',
-                  })}
-                  disabled={isChangingPassword}
-                />
-                <Input
-                  type="password"
-                  value={confirmNewPassword}
-                  onChange={(_, data) => setConfirmNewPassword(data.value)}
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Neues Passwort bestätigen',
-                  })}
-                  disabled={isChangingPassword}
-                />
+                {!changePasswordMessage && (
+                  <>
+                    <Input
+                      type="password"
+                      value={currentPassword}
+                      onChange={(_, data) => setCurrentPassword(data.value)}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'Aktuelles Passwort',
+                      })}
+                      disabled={isChangingPassword}
+                    />
+                    <Input
+                      type="password"
+                      value={newPassword}
+                      onChange={(_, data) => setNewPassword(data.value)}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'Neues Passwort',
+                      })}
+                      disabled={isChangingPassword}
+                    />
+                    <Input
+                      type="password"
+                      value={confirmNewPassword}
+                      onChange={(_, data) => setConfirmNewPassword(data.value)}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'Neues Passwort bestätigen',
+                      })}
+                      disabled={isChangingPassword}
+                    />
+                  </>
+                )}
               </div>
             </DialogContent>
             <DialogActions>
-              <Button
-                appearance="secondary"
-                onClick={onCloseChangePassword}
-                disabled={isChangingPassword}
-              >
-                <FormattedMessage defaultMessage="Abbrechen" />
-              </Button>
-              <Button
-                appearance="primary"
-                onClick={onSubmitChangePassword}
-                disabled={isChangingPassword}
-              >
-                {isChangingPassword ? (
-                  <FormattedMessage defaultMessage="Bitte warten..." />
-                ) : (
-                  <FormattedMessage defaultMessage="Passwort speichern" />
-                )}
-              </Button>
+              {!changePasswordMessage && (
+                <>
+                  <Button
+                    appearance="secondary"
+                    onClick={onCloseChangePassword}
+                    disabled={isChangingPassword}
+                  >
+                    <FormattedMessage defaultMessage="Abbrechen" />
+                  </Button>
+                  <Button
+                    appearance="primary"
+                    onClick={onSubmitChangePassword}
+                    disabled={isChangingPassword}
+                  >
+                    {isChangingPassword ? (
+                      <FormattedMessage defaultMessage="Bitte warten..." />
+                    ) : (
+                      <FormattedMessage defaultMessage="Passwort speichern" />
+                    )}
+                  </Button>
+                </>
+              )}
             </DialogActions>
           </DialogBody>
         </DialogSurface>
