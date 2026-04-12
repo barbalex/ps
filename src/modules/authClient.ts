@@ -1,4 +1,5 @@
 import { createAuthClient } from 'better-auth/react'
+import { emailOTPClient } from 'better-auth/client/plugins'
 
 const getProductionAuthBaseUrl = () => {
   const host = window?.location?.hostname?.toLowerCase() ?? ''
@@ -18,14 +19,17 @@ const isLocalDevHost = () => {
   )
 }
 
-export const { signIn, signUp, signOut, useSession, getSession } =
-  createAuthClient({
-    /** The base URL of the server (optional if you're using the same domain) */
-    baseURL: isLocalDevHost()
-      ? 'http://localhost:3003'
-      : getProductionAuthBaseUrl(),
-    basePath: '/auth',
-    fetchOptions: {
-      credentials: 'include',
-    },
-  })
+export const authClient = createAuthClient({
+  /** The base URL of the server (optional if you're using the same domain) */
+  baseURL: isLocalDevHost()
+    ? 'http://localhost:3003'
+    : getProductionAuthBaseUrl(),
+  basePath: '/auth',
+  fetchOptions: {
+    credentials: 'include',
+  },
+  plugins: [emailOTPClient()],
+})
+
+export const { signIn, signUp, signOut, useSession, getSession, emailOtp } =
+  authClient

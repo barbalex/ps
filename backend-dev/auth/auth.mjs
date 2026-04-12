@@ -1,4 +1,7 @@
 import { betterAuth } from 'better-auth'
+import { emailOTP } from 'better-auth/plugins'
+import FormData from 'form-data'
+import Mailgun from 'mailgun.js'
 import { Pool } from 'pg'
 
 const DATABASE_URL = process.env.DATABASE_URL
@@ -7,6 +10,10 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID?.trim()
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET?.trim()
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID?.trim()
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET?.trim()
+const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY?.trim()
+const MAILGUN_BASE_URL = process.env.MAILGUN_BASE_URL?.trim()
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN?.trim()
+const MAILGUN_FROM = process.env.MAILGUN_FROM?.trim()
 const requiredTrustedOrigins = [
   'http://localhost:5176',
   'https://arten-fördern.app',
@@ -49,6 +56,53 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
   )
 }
 
+const buildOtpMessage = ({ otp, type }) => {
+  const actionByType = {
+    'sign-in': 'sign in',
+    'email-verification': 'verify your email',
+    'forget-password': 'reset your password',
+  }
+  const action = actionByType[type] ?? 'continue'
+
+  return {
+    subject: `Your one-time code for Promote Species (${action})`,
+    text: `Your one-time code is: ${otp}\n\nUse this code to ${action}. The code expires in a few minutes.`,
+  }
+}
+
+const mailgunClient = MAILGUN_API_KEY
+  ? new Mailgun(FormData).client({
+      username: 'api',
+      key: MAILGUN_API_KEY,
+      ...(MAILGUN_BASE_URL ? { url: MAILGUN_BASE_URL } : {}),
+    })
+  : null
+
+const sendOtpEmail = async ({ email, otp, type }) => {
+  const { subject, text } = buildOtpMessage({ otp, type })
+  const resolvedDomain = MAILGUN_DOMAIN || 'mail.promote-species.app'
+  const resolvedFrom =
+    MAILGUN_FROM || `Promote Species <postmaster@${resolvedDomain}>`
+
+  if (!mailgunClient) {
+    console.warn(
+      `[email-otp] MAILGUN_API_KEY is not configured. OTP for ${email} (${type}): ${otp}`,
+    )
+    return
+  }
+
+  try {
+    await mailgunClient.messages.create(resolvedDomain, {
+      from: resolvedFrom,
+      to: [email],
+      subject,
+      text,
+    })
+  } catch (error) {
+    throw new Error(`mailgun email otp send failed: ${String(error)}`)
+  }
+}
+
 export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
@@ -67,6 +121,14 @@ export const auth = betterAuth({
   // experimental: { joins: true },
   trustedOrigins,
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
+  plugins: [
+    emailOTP({
+      disableSignUp: true,
+      async sendVerificationOTP({ email, otp, type }) {
+        await sendOtpEmail({ email, otp, type })
+      },
+    }),
+  ],
   socialProviders,
   user: {
     modelName: 'users',

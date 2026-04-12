@@ -2,7 +2,7 @@ import { useState, FormEvent, useEffect, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
-import { signUp, signIn, getSession } from '../modules/authClient.ts'
+import { signUp, signIn, getSession, emailOtp } from '../modules/authClient.ts'
 import styles from './Auth.module.css'
 
 export const Auth = () => {
@@ -19,11 +19,23 @@ export const Auth = () => {
     id: 'authGoogleBtn',
     defaultMessage: 'Mit Google fortfahren',
   })
+  const otpSendLabel = formatMessage({
+    id: 'authOtpSendBtn',
+    defaultMessage: 'Einmalcode per E-Mail senden',
+  })
+  const otpSignInLabel = formatMessage({
+    id: 'authOtpSignInBtn',
+    defaultMessage: 'Mit Code anmelden',
+  })
   const navigate = useNavigate()
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [otp, setOtp] = useState('')
+  const [otpRequested, setOtpRequested] = useState(false)
+  const [otpMessage, setOtpMessage] = useState('')
+  const [isOtpLoading, setIsOtpLoading] = useState(false)
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -32,6 +44,7 @@ export const Auth = () => {
     password?: string
     confirmPassword?: string
     name?: string
+    otp?: string
   }>({})
 
   const onLoggedIn = useCallback(() => {
@@ -67,6 +80,7 @@ export const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     setError('')
+    setOtpMessage('')
     setIsLoading(true)
 
     try {
@@ -156,9 +170,133 @@ export const Auth = () => {
     return Object.keys(errors).length === 0
   }
 
+  const validateEmailOnly = () => {
+    const errors: typeof fieldErrors = {}
+
+    if (!email) {
+      errors.email = formatMessage({
+        id: 'authEmailRequired',
+        defaultMessage: 'E-Mail ist erforderlich',
+      })
+    } else if (!validateEmail(email)) {
+      errors.email = formatMessage({
+        id: 'authInvalidEmail',
+        defaultMessage: 'Bitte gültige E-Mail eingeben',
+      })
+    }
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleSendOtp = async () => {
+    setError('')
+    setOtpMessage('')
+
+    if (!validateEmailOnly()) {
+      return
+    }
+
+    setIsOtpLoading(true)
+
+    try {
+      const result = await emailOtp.sendVerificationOtp({
+        email,
+        type: 'sign-in',
+      })
+
+      if (result.error) {
+        setError(
+          result.error.message ||
+            formatMessage({
+              id: 'authOtpSendFailed',
+              defaultMessage:
+                'Einmalcode konnte nicht gesendet werden. Bitte erneut versuchen.',
+            }),
+        )
+        return
+      }
+
+      setOtpRequested(true)
+      setOtpMessage(
+        formatMessage({
+          id: 'authOtpSentSuccess',
+          defaultMessage: 'Einmalcode gesendet. Bitte E-Mail prüfen.',
+        }),
+      )
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authOtpSendFailed',
+          defaultMessage:
+            'Einmalcode konnte nicht gesendet werden. Bitte erneut versuchen.',
+        }),
+      )
+      console.error('OTP send error:', err)
+    } finally {
+      setIsOtpLoading(false)
+    }
+  }
+
+  const handleOtpSignIn = async () => {
+    setError('')
+    setOtpMessage('')
+
+    const errors: typeof fieldErrors = {}
+    if (!validateEmail(email)) {
+      errors.email = formatMessage({
+        id: 'authInvalidEmail',
+        defaultMessage: 'Bitte gültige E-Mail eingeben',
+      })
+    }
+    if (!otp) {
+      errors.otp = formatMessage({
+        id: 'authOtpRequired',
+        defaultMessage: 'Code ist erforderlich',
+      })
+    }
+    setFieldErrors(errors)
+    if (Object.keys(errors).length > 0) {
+      return
+    }
+
+    setIsOtpLoading(true)
+
+    try {
+      const result = await signIn.emailOtp({
+        email,
+        otp,
+        callbackURL: '/data/projects',
+      })
+
+      if (result.error) {
+        setError(
+          result.error.message ||
+            formatMessage({
+              id: 'authOtpInvalid',
+              defaultMessage: 'Ungültiger oder abgelaufener Code.',
+            }),
+        )
+      } else {
+        onLoggedIn()
+      }
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authOtpInvalid',
+          defaultMessage: 'Ungültiger oder abgelaufener Code.',
+        }),
+      )
+      console.error('OTP sign-in error:', err)
+    } finally {
+      setIsOtpLoading(false)
+    }
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
+    setOtpMessage('')
 
     if (!validateForm()) {
       return
@@ -223,9 +361,12 @@ export const Auth = () => {
   const toggleMode = () => {
     setIsSignUp(!isSignUp)
     setError('')
+    setOtpMessage('')
     setFieldErrors({})
     setPassword('')
     setConfirmPassword('')
+    setOtp('')
+    setOtpRequested(false)
   }
 
   return (
@@ -264,6 +405,7 @@ export const Auth = () => {
         </div>
 
         {error && <div className={styles.generalError}>{error}</div>}
+        {otpMessage && <div className={styles.successMessage}>{otpMessage}</div>}
 
         <button
           type="button"
@@ -285,6 +427,24 @@ export const Auth = () => {
             })}
           </span>
         </div>
+
+        {!isSignUp && (
+          <div className={styles.otpActions}>
+            <button
+              type="button"
+              className={styles.secondaryButton}
+              onClick={handleSendOtp}
+              disabled={isLoading || isOtpLoading}
+            >
+              {isOtpLoading
+                ? formatMessage({
+                    id: 'authPleaseWait',
+                    defaultMessage: 'Bitte warten...',
+                  })
+                : otpSendLabel}
+            </button>
+          </div>
+        )}
 
         <form className={styles.authForm} onSubmit={handleSubmit}>
           {isSignUp && (
@@ -333,6 +493,47 @@ export const Auth = () => {
               <p className={styles.errorMessage}>{fieldErrors.email}</p>
             )}
           </div>
+
+          {!isSignUp && otpRequested && (
+            <div className={styles.formGroup}>
+              <label htmlFor="otp" className={styles.formLabel}>
+                {formatMessage({
+                  id: 'authOtpLabel',
+                  defaultMessage: 'Einmalcode',
+                })}
+              </label>
+              <input
+                id="otp"
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.trim())}
+                className={`${styles.formInput} ${fieldErrors.otp ? styles.error : ''}`}
+                placeholder={formatMessage({
+                  id: 'authOtpPlaceholder',
+                  defaultMessage: 'Code eingeben',
+                })}
+                disabled={isLoading || isOtpLoading}
+                inputMode="numeric"
+                autoComplete="one-time-code"
+              />
+              {fieldErrors.otp && (
+                <p className={styles.errorMessage}>{fieldErrors.otp}</p>
+              )}
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleOtpSignIn}
+                disabled={isLoading || isOtpLoading}
+              >
+                {isOtpLoading
+                  ? formatMessage({
+                      id: 'authPleaseWait',
+                      defaultMessage: 'Bitte warten...',
+                    })
+                  : otpSignInLabel}
+              </button>
+            </div>
+          )}
 
           <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.formLabel}>
