@@ -14,7 +14,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
 import styles from './ChangePasswordDialog.module.css'
-import { authClient } from '../../../../modules/authClient.ts'
+import { authClient, getAuthBaseUrl } from '../../../../modules/authClient.ts'
 
 type Props = {
   open: boolean
@@ -118,11 +118,39 @@ export const ChangePasswordDialog = ({ open, onClose, hasPassword = true }: Prop
 
     setIsChangingPassword(true)
     try {
-      const result = await authClient.changePassword({
-        currentPassword: hasPassword ? currentPassword : undefined,
-        newPassword,
-        revokeOtherSessions: true,
-      })
+      let result
+      
+      if (hasPassword) {
+        // User has existing password - use changePassword
+        result = await authClient.changePassword({
+          currentPassword,
+          newPassword,
+          revokeOtherSessions: true,
+        })
+      } else {
+        // User has no password (OAuth-only) - use custom set-password endpoint
+        const response = await fetch(`${getAuthBaseUrl()}/auth/set-password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ newPassword }),
+        })
+
+        const responseText = await response.text()
+        let data: { error?: { message?: string } } = {}
+        if (responseText) {
+          try {
+            data = JSON.parse(responseText) as { error?: { message?: string } }
+          } catch {
+            data = {}
+          }
+        }
+        result = response.ok 
+          ? { ok: true }
+          : { error: data.error }
+      }
 
       if (result.error) {
         setChangePasswordError(
@@ -135,12 +163,24 @@ export const ChangePasswordDialog = ({ open, onClose, hasPassword = true }: Prop
         return
       }
 
-      setChangePasswordMessage(
-        intl.formatMessage({
-          id: 'changePasswordSuccess',
-          defaultMessage: hasPassword ? 'Passwort erfolgreich geändert.' : 'Passwort erfolgreich gesetzt.',
-        }),
-      )
+      if (!hasPassword) {
+        // OAuth-only user - password is set directly
+        setChangePasswordMessage(
+          intl.formatMessage({
+            id: 'setPasswordSuccess',
+            defaultMessage: 'Passwort erfolgreich gesetzt. Du kannst dich jetzt mit E-Mail und Passwort anmelden.',
+          }),
+        )
+      } else {
+        // Regular password change
+        setChangePasswordMessage(
+          intl.formatMessage({
+            id: 'changePasswordSuccess',
+            defaultMessage: 'Passwort erfolgreich geändert.',
+          }),
+        )
+      }
+      
       setCurrentPassword('')
       setNewPassword('')
       setConfirmNewPassword('')
@@ -249,133 +289,232 @@ export const ChangePasswordDialog = ({ open, onClose, hasPassword = true }: Prop
 
               {!changePasswordMessage && (
                 <>
-                  {hasPassword && (
-                    <div className={styles.passwordInputWrapper}>
-                      <Input
-                        type={
-                          changePasswordVisibility.currentPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        value={currentPassword}
-                        onChange={(_event, data) =>
-                          setCurrentPassword(data.value)
-                        }
-                        placeholder={intl.formatMessage({
-                          id: 'changePasswordCurrentPassword',
-                          defaultMessage: 'Aktuelles Passwort',
-                        })}
-                        disabled={isChangingPassword}
-                        className={styles.passwordInputField}
-                      />
-                      <button
-                        type="button"
-                        className={styles.passwordToggle}
-                        onClick={() =>
-                          toggleChangePasswordVisibility('currentPassword')
-                        }
-                        aria-label={
-                          changePasswordVisibility.currentPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        title={
-                          changePasswordVisibility.currentPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        disabled={isChangingPassword}
-                      >
-                        {changePasswordVisibility.currentPassword ? (
-                          <MdVisibilityOff />
-                        ) : (
-                          <MdVisibility />
-                        )}
-                      </button>
-                    </div>
+                  {hasPassword ? (
+                    // Regular password change flow
+                    <>
+                      <div className={styles.passwordInputWrapper}>
+                        <Input
+                          type={
+                            changePasswordVisibility.currentPassword
+                              ? 'text'
+                              : 'password'
+                          }
+                          value={currentPassword}
+                          onChange={(_event, data) =>
+                            setCurrentPassword(data.value)
+                          }
+                          placeholder={intl.formatMessage({
+                            id: 'changePasswordCurrentPassword',
+                            defaultMessage: 'Aktuelles Passwort',
+                          })}
+                          disabled={isChangingPassword}
+                          className={styles.passwordInputField}
+                        />
+                        <button
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() =>
+                            toggleChangePasswordVisibility('currentPassword')
+                          }
+                          aria-label={
+                            changePasswordVisibility.currentPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          title={
+                            changePasswordVisibility.currentPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          disabled={isChangingPassword}
+                        >
+                          {changePasswordVisibility.currentPassword ? (
+                            <MdVisibilityOff />
+                          ) : (
+                            <MdVisibility />
+                          )}
+                        </button>
+                      </div>
+                      <div className={styles.passwordInputWrapper}>
+                        <Input
+                          type={
+                            changePasswordVisibility.newPassword
+                              ? 'text'
+                              : 'password'
+                          }
+                          value={newPassword}
+                          onChange={(_event, data) => setNewPassword(data.value)}
+                          placeholder={intl.formatMessage({
+                            id: 'changePasswordNewPassword',
+                            defaultMessage: 'Neues Passwort',
+                          })}
+                          disabled={isChangingPassword}
+                          className={styles.passwordInputField}
+                        />
+                        <button
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() =>
+                            toggleChangePasswordVisibility('newPassword')
+                          }
+                          aria-label={
+                            changePasswordVisibility.newPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          title={
+                            changePasswordVisibility.newPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          disabled={isChangingPassword}
+                        >
+                          {changePasswordVisibility.newPassword ? (
+                            <MdVisibilityOff />
+                          ) : (
+                            <MdVisibility />
+                          )}
+                        </button>
+                      </div>
+                      <div className={styles.passwordInputWrapper}>
+                        <Input
+                          type={
+                            changePasswordVisibility.confirmNewPassword
+                              ? 'text'
+                              : 'password'
+                          }
+                          value={confirmNewPassword}
+                          onChange={(_event, data) =>
+                            setConfirmNewPassword(data.value)
+                          }
+                          placeholder={intl.formatMessage({
+                            id: 'changePasswordConfirmNewPassword',
+                            defaultMessage: 'Neues Passwort bestätigen',
+                          })}
+                          disabled={isChangingPassword}
+                          className={styles.passwordInputField}
+                        />
+                        <button
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() =>
+                            toggleChangePasswordVisibility('confirmNewPassword')
+                          }
+                          aria-label={
+                            changePasswordVisibility.confirmNewPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          title={
+                            changePasswordVisibility.confirmNewPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          disabled={isChangingPassword}
+                        >
+                          {changePasswordVisibility.confirmNewPassword ? (
+                            <MdVisibilityOff />
+                          ) : (
+                            <MdVisibility />
+                          )}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    // OAuth-only set password flow - show new password fields
+                    <>
+                      <p style={{ marginTop: 0, fontSize: '14px', color: '#666' }}>
+                        <FormattedMessage
+                          id="setPasswordFlowDescription"
+                          defaultMessage="Gib dein neues Passwort ein und wir richten es sofort für dich ein."
+                        />
+                      </p>
+                      <div className={styles.passwordInputWrapper}>
+                        <Input
+                          type={
+                            changePasswordVisibility.newPassword
+                              ? 'text'
+                              : 'password'
+                          }
+                          value={newPassword}
+                          onChange={(_event, data) => setNewPassword(data.value)}
+                          placeholder={intl.formatMessage({
+                            id: 'changePasswordNewPassword',
+                            defaultMessage: 'Neues Passwort',
+                          })}
+                          disabled={isChangingPassword}
+                          className={styles.passwordInputField}
+                        />
+                        <button
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() =>
+                            toggleChangePasswordVisibility('newPassword')
+                          }
+                          aria-label={
+                            changePasswordVisibility.newPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          title={
+                            changePasswordVisibility.newPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          disabled={isChangingPassword}
+                        >
+                          {changePasswordVisibility.newPassword ? (
+                            <MdVisibilityOff />
+                          ) : (
+                            <MdVisibility />
+                          )}
+                        </button>
+                      </div>
+                      <div className={styles.passwordInputWrapper}>
+                        <Input
+                          type={
+                            changePasswordVisibility.confirmNewPassword
+                              ? 'text'
+                              : 'password'
+                          }
+                          value={confirmNewPassword}
+                          onChange={(_event, data) =>
+                            setConfirmNewPassword(data.value)
+                          }
+                          placeholder={intl.formatMessage({
+                            id: 'changePasswordConfirmNewPassword',
+                            defaultMessage: 'Neues Passwort bestätigen',
+                          })}
+                          disabled={isChangingPassword}
+                          className={styles.passwordInputField}
+                        />
+                        <button
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() =>
+                            toggleChangePasswordVisibility('confirmNewPassword')
+                          }
+                          aria-label={
+                            changePasswordVisibility.confirmNewPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          title={
+                            changePasswordVisibility.confirmNewPassword
+                              ? hidePasswordLabel
+                              : showPasswordLabel
+                          }
+                          disabled={isChangingPassword}
+                        >
+                          {changePasswordVisibility.confirmNewPassword ? (
+                            <MdVisibilityOff />
+                          ) : (
+                            <MdVisibility />
+                          )}
+                        </button>
+                      </div>
+                    </>
                   )}
-                  <div className={styles.passwordInputWrapper}>
-                    <Input
-                      type={
-                        changePasswordVisibility.newPassword
-                          ? 'text'
-                          : 'password'
-                      }
-                      value={newPassword}
-                      onChange={(_event, data) => setNewPassword(data.value)}
-                      placeholder={intl.formatMessage({
-                        id: 'changePasswordNewPassword',
-                        defaultMessage: 'Neues Passwort',
-                      })}
-                      disabled={isChangingPassword}
-                      className={styles.passwordInputField}
-                    />
-                    <button
-                      type="button"
-                      className={styles.passwordToggle}
-                      onClick={() => toggleChangePasswordVisibility('newPassword')}
-                      aria-label={
-                        changePasswordVisibility.newPassword
-                          ? hidePasswordLabel
-                          : showPasswordLabel
-                      }
-                      title={
-                        changePasswordVisibility.newPassword
-                          ? hidePasswordLabel
-                          : showPasswordLabel
-                      }
-                      disabled={isChangingPassword}
-                    >
-                      {changePasswordVisibility.newPassword ? (
-                        <MdVisibilityOff />
-                      ) : (
-                        <MdVisibility />
-                      )}
-                    </button>
-                  </div>
-                  <div className={styles.passwordInputWrapper}>
-                    <Input
-                      type={
-                        changePasswordVisibility.confirmNewPassword
-                          ? 'text'
-                          : 'password'
-                      }
-                      value={confirmNewPassword}
-                      onChange={(_event, data) =>
-                        setConfirmNewPassword(data.value)
-                      }
-                      placeholder={intl.formatMessage({
-                        id: 'changePasswordConfirmNewPassword',
-                        defaultMessage: 'Neues Passwort bestätigen',
-                      })}
-                      disabled={isChangingPassword}
-                      className={styles.passwordInputField}
-                    />
-                    <button
-                      type="button"
-                      className={styles.passwordToggle}
-                      onClick={() =>
-                        toggleChangePasswordVisibility('confirmNewPassword')
-                      }
-                      aria-label={
-                        changePasswordVisibility.confirmNewPassword
-                          ? hidePasswordLabel
-                          : showPasswordLabel
-                      }
-                      title={
-                        changePasswordVisibility.confirmNewPassword
-                          ? hidePasswordLabel
-                          : showPasswordLabel
-                      }
-                      disabled={isChangingPassword}
-                    >
-                      {changePasswordVisibility.confirmNewPassword ? (
-                        <MdVisibilityOff />
-                      ) : (
-                        <MdVisibility />
-                      )}
-                    </button>
-                  </div>
                 </>
               )}
             </div>

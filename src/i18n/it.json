@@ -890,6 +890,8 @@
   "setPasswordDialogTitle": "Imposta password",
   "setPasswordSaveBtn": "Imposta password",
   "setPasswordDialogDescription": "Ciò consente di accedere con l'indirizzo email e la password oltre o invece di Google, rendendoti più indipendente.",
+  "setPasswordFlowDescription": "Inserisci la tua nuova password e la configureremo per te subito.",
+  "setPasswordSuccess": "Password impostata con successo. Ora puoi accedere con la tua email e password.",
   "treeLayerNodeLabel": "Layer",
   "treeTaxonomyNodeLabel": "Tassonomia",
   "treeWfsServiceNodeLabel": "Servizio WFS",

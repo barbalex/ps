@@ -73,6 +73,85 @@ app.use(
   }),
 )
 
+// Custom endpoint for OAuth-only users to set a password
+app.post('/auth/set-password', express.json(), async (req, res) => {
+  try {
+    const { newPassword } = req.body
+
+    // Get session from cookie
+    const cookies = req.headers.cookie || ''
+    const sessionMatch = cookies.match(/better-auth\.session_token=([^;]+)/)
+    const sessionToken = sessionMatch?.[1]
+
+    if (!sessionToken) {
+      return res.status(401).json({ error: { code: 'UNAUTHORIZED' } })
+    }
+
+    // Get user ID from session
+    const sessionResult = await pool.query(
+      'SELECT user_id FROM auth_sessions WHERE token = $1',
+      [sessionToken],
+    )
+
+    if (sessionResult.rows.length === 0) {
+      return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
+    }
+
+    const userId = sessionResult.rows[0].user_id
+
+    // Check if user has any credential accounts (passwords)
+    const accountsResult = await pool.query(
+      'SELECT provider FROM auth_accounts WHERE user_id = $1 AND provider = $2',
+      [userId, 'credential'],
+    )
+
+    if (accountsResult.rows.length > 0) {
+      return res.status(400).json({ 
+        error: { code: 'PASSWORD_ALREADY_EXISTS' } 
+      })
+    }
+
+    // Check password requirements
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({ 
+        error: { code: 'INVALID_PASSWORD' } 
+      })
+    }
+
+    // Hash password and create credential account
+    const crypto = await import('crypto')
+    const saltBuffer = crypto.randomBytes(16)
+    const iterations = 16000
+    const digest = 'sha256'
+    
+    const derivedKey = crypto.pbkdf2Sync(
+      newPassword,
+      saltBuffer,
+      iterations,
+      32,
+      digest,
+    )
+    
+    const hashedPassword = `$pbkdf2-sha256$${iterations}$${saltBuffer.toString('base64')}$${derivedKey.toString('base64')}`
+
+    // Create credential account for this user
+    const { v4: uuidv4 } = await import('uuid')
+    const accountId = uuidv4()
+
+    await pool.query(
+      `INSERT INTO auth_accounts 
+       (auth_account_id, user_id, provider, sso_account_id, password, created_at, updated_at) 
+       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+      [accountId, userId, 'credential', userId, hashedPassword],
+    )
+
+    res.json({ ok: true })
+  } catch (error) {
+    console.error('Set password error:', error)
+    res.status(500).json({ error: { code: 'INTERNAL_ERROR' } })
+  }
+})
+
 app.all('/auth/*splat', toNodeHandler(auth))
 
 app.get('/', (req, res, next) => {

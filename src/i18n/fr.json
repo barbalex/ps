@@ -888,6 +888,8 @@
   "setPasswordDialogTitle": "Définir le mot de passe",
   "setPasswordSaveBtn": "Définir le mot de passe",
   "setPasswordDialogDescription": "Cela vous permet de vous connecter avec votre adresse e-mail et votre mot de passe en plus ou à la place de Google, vous rendant plus indépendant.",
+  "setPasswordFlowDescription": "Entrez votre nouveau mot de passe et nous le configurerons pour vous immédiatement.",
+  "setPasswordSuccess": "Mot de passe défini avec succès. Vous pouvez maintenant vous connecter avec votre e-mail et votre mot de passe.",
   "treeLayerNodeLabel": "Couche",
   "treeTaxonomyNodeLabel": "Taxonomie",
   "treeWfsServiceNodeLabel": "Service WFS",

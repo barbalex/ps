@@ -904,6 +904,8 @@
   "setPasswordDialogTitle": "Set password",
   "setPasswordSaveBtn": "Set password",
   "setPasswordDialogDescription": "This allows you to sign in with your email and password in addition to or instead of Google, giving you more independence.",
+  "setPasswordFlowDescription": "Enter your new password and we'll set it up for you right away.",
+  "setPasswordSuccess": "Password successfully set. You can now sign in with your email and password.",
   "treeLayerNodeLabel": "Layer",
   "treeTaxonomyNodeLabel": "Taxonomy",
   "treeWfsServiceNodeLabel": "WFS Service",

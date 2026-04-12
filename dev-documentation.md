@@ -148,6 +148,14 @@ If commit fails on SQL sync check:
 
 ## Email and Password
 
-## Social sign-on (SSO)
+### Register
 
-## Add password after SSO
+### Log in
+
+### Change password
+
+### Forgot Password
+
+## OAuth, Social sign-on (SSO)
+
+## Add password after registering with OAuth
