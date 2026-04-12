@@ -14,7 +14,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
 import styles from './ChangePasswordDialog.module.css'
-import { authClient } from '../../../modules/authClient.ts'
+import { authClient } from '../../../../modules/authClient.ts'
 
 type Props = {
   open: boolean
@@ -285,9 +285,7 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
                     <button
                       type="button"
                       className={styles.passwordToggle}
-                      onClick={() =>
-                        toggleChangePasswordVisibility('newPassword')
-                      }
+                      onClick={() => toggleChangePasswordVisibility('newPassword')}
                       aria-label={
                         changePasswordVisibility.newPassword
                           ? hidePasswordLabel

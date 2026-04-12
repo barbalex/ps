@@ -1,26 +1,10 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Avatar,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogBody,
-  DialogContent,
-  DialogSurface,
-  DialogTitle,
-  Menu: FluentMenu,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
-  Toolbar,
-  ToolbarToggleButton,
-  Tooltip,
-} = fluentUiReactComponents
-import { useEffect, useState } from 'react'
+const { Button, Toolbar, ToolbarToggleButton, Tooltip } =
+  fluentUiReactComponents
+import { useEffect } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
-import { MdLogout, MdLogin, MdHome, MdLock } from 'react-icons/md'
+import { MdLogin, MdHome } from 'react-icons/md'
 import {
   useNavigate,
   useLocation,
@@ -45,7 +29,7 @@ import {
 import { constants } from '../../../modules/constants.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
-import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
+import { UserMenu } from './UserMenu/index.tsx'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
 import { signOut, useSession } from '../../../modules/authClient.ts'
@@ -204,12 +188,6 @@ export const Menu = () => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [isMobileView] = useAtom(isMobileViewAtom)
   const [enforceMobileNavigation] = useAtom(enforceMobileNavigationAtom)
-  const [logoutDialogStep, setLogoutDialogStep] = useState<
-    'none' | 'pending' | 'wipe'
-  >('none')
-  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
-  const [pendingOperationsCount, setPendingOperationsCount] = useState(0)
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const navigate = useNavigate()
   const canGoBack = useCanGoBack()
   const { history } = useRouter()
@@ -261,38 +239,10 @@ export const Menu = () => {
     navigate({ to: `/data/app-states` })
   }
 
-  const onClickLogout = () => {
-    const operationsQueue = store.get(operationsQueueAtom) as unknown[]
-    const pendingCount = operationsQueue?.length ?? 0
-    setPendingOperationsCount(pendingCount)
-    setLogoutDialogStep(pendingCount > 0 ? 'pending' : 'wipe')
-  }
-
-  const onOpenChangePassword = () => {
-    setChangePasswordOpen(true)
-  }
-
-  const onCloseChangePassword = () => setChangePasswordOpen(false)
-
-  const onCancelLogout = () => {
-    if (isLoggingOut) return
-    setLogoutDialogStep('none')
-  }
-
-  const onProceedAfterPendingWarning = () => {
-    setLogoutDialogStep('wipe')
-  }
-
   const onConfirmLogout = async () => {
-    setIsLoggingOut(true)
-    try {
-      await clearLocalSyncedData()
-      await signOut()
-      window.location.assign('/')
-    } finally {
-      setIsLoggingOut(false)
-      setLogoutDialogStep('none')
-    }
+    await clearLocalSyncedData()
+    await signOut()
+    window.location.assign('/')
   }
 
   const onClickEnter = () => navigate({ to: '/data/projects' })
@@ -436,44 +386,11 @@ export const Menu = () => {
         </Tooltip>
         <LanguageChooser width={44} />
         {isAuthenticated ? (
-          <FluentMenu positioning="below-end">
-            <Tooltip
-              content={intl.formatMessage(
-                { defaultMessage: '{email}' },
-                { email: authUser?.email ?? '' },
-              )}
-            >
-              <MenuTrigger disableButtonEnhancement>
-                <Button
-                  size="medium"
-                  className={styles.button}
-                  aria-label={intl.formatMessage({
-                    id: 'userMenuOpen',
-                    defaultMessage: 'Benutzermenü öffnen',
-                  })}
-                  icon={
-                    <Avatar
-                      size={24}
-                      name={authUser?.fullName ?? authUser?.email ?? 'User'}
-                    />
-                  }
-                />
-              </MenuTrigger>
-            </Tooltip>
-            <MenuPopover>
-              <MenuList>
-                <MenuItem icon={<MdLock />} onClick={onOpenChangePassword}>
-                  <FormattedMessage
-                    id="changePasswordMenuItem"
-                    defaultMessage="Passwort ändern"
-                  />
-                </MenuItem>
-                <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
-                  <FormattedMessage defaultMessage="Abmelden" />
-                </MenuItem>
-              </MenuList>
-            </MenuPopover>
-          </FluentMenu>
+          <UserMenu
+            authUser={authUser}
+            buttonClassName={styles.button}
+            onConfirmLogout={onConfirmLogout}
+          />
         ) : (
           <Tooltip
             content={
@@ -509,103 +426,6 @@ export const Menu = () => {
           </Tooltip>
         )}
       </MenuBar>
-
-      <Dialog
-        open={logoutDialogStep === 'pending'}
-        onOpenChange={onCancelLogout}
-      >
-        <DialogSurface>
-          <DialogBody>
-            <DialogTitle>
-              {intl.formatMessage({
-                id: 'logoutPendingOpsTitle',
-                defaultMessage: 'Achtung: Ausstehende Operationen',
-              })}
-            </DialogTitle>
-            <DialogContent>
-              {intl.formatMessage(
-                {
-                  id: 'logoutPendingOpsBody',
-                  defaultMessage:
-                    'Es sind noch {count} ausstehende lokale Operationen vorhanden. Wenn Sie sich jetzt abmelden, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden. Empfehlung: Warten Sie, bis alle Operationen mit dem Server synchronisiert wurden.',
-                },
-                { count: pendingOperationsCount },
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button appearance="secondary" onClick={onCancelLogout}>
-                <FormattedMessage
-                  id="logoutCancelBtn"
-                  defaultMessage="Abbrechen"
-                />
-              </Button>
-              <Button
-                appearance="primary"
-                onClick={onProceedAfterPendingWarning}
-              >
-                <FormattedMessage
-                  id="logoutProceedAnywayBtn"
-                  defaultMessage="Trotzdem fortfahren"
-                />
-              </Button>
-            </DialogActions>
-          </DialogBody>
-        </DialogSurface>
-      </Dialog>
-
-      <Dialog open={logoutDialogStep === 'wipe'} onOpenChange={onCancelLogout}>
-        <DialogSurface>
-          <DialogBody>
-            <DialogTitle>
-              <FormattedMessage
-                id="logoutConfirmTitle"
-                defaultMessage="Abmeldung bestätigen"
-              />
-            </DialogTitle>
-            <DialogContent>
-              {intl.formatMessage({
-                id: 'logoutLocalDataWipeConfirm',
-                defaultMessage:
-                  'Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= Ihre) Daten sieht. Ihre Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei Ihrer nächsten Anmeldung wieder verfügbar.\n\nJetzt abmelden?',
-              })}
-            </DialogContent>
-            <DialogActions>
-              <Button
-                appearance="secondary"
-                onClick={onCancelLogout}
-                disabled={isLoggingOut}
-              >
-                <FormattedMessage
-                  id="logoutCancelBtn"
-                  defaultMessage="Abbrechen"
-                />
-              </Button>
-              <Button
-                appearance="primary"
-                onClick={onConfirmLogout}
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? (
-                  <FormattedMessage
-                    id="logoutPleaseWait"
-                    defaultMessage="Bitte warten..."
-                  />
-                ) : (
-                  <FormattedMessage
-                    id="logoutNowBtn"
-                    defaultMessage="Jetzt abmelden"
-                  />
-                )}
-              </Button>
-            </DialogActions>
-          </DialogBody>
-        </DialogSurface>
-      </Dialog>
-
-      <ChangePasswordDialog
-        open={changePasswordOpen}
-        onClose={onCloseChangePassword}
-      />
     </div>
   )
 }
