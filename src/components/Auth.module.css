@@ -309,6 +309,7 @@
     background-color 0.15s ease,
     border-color 0.15s ease;
   margin-top: 4px;
+  margin-bottom: 10px;
 }
 
 .submitButton:hover:not(:disabled) {
