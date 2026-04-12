@@ -17,10 +17,10 @@ const taxonomySources = [
     taxonomyName: 'DB-TAXREF (2017)',
     csvPath: join(projectRoot, 'seed-data', 'apflora', 'dbTaxref2017.csv'),
   },
-  {
-    taxonomyName: 'SISF (2005)',
-    csvPath: join(projectRoot, 'seed-data', 'apflora', 'sisf2005.csv'),
-  },
+  // {
+  //   taxonomyName: 'SISF (2005)',
+  //   csvPath: join(projectRoot, 'seed-data', 'apflora', 'sisf2005.csv'),
+  // },
 ]
 
 const sqlPath = join(
@@ -143,10 +143,13 @@ const taxonomyNameList = taxonomySources
   .map(({ taxonomyName }) => `'${esc(taxonomyName)}'`)
   .join(', ')
 
+const sourceListComment = taxonomySources
+  .map(({ csvPath }) => `--   - ${csvPath.replace(`${projectRoot}/`, '')}`)
+  .join('\n')
+
 const sql = `-- apflora test taxonomies and taxa
 -- Generated from:
---   - seed-data/apflora/dbTaxref2017.csv
---   - seed-data/apflora/sisf2005.csv
+${sourceListComment}
 -- Run \`node backend/db/generate_apflora_seed_sql.mjs\` from project root to regenerate.
 --
 -- This seed is idempotent at execution time:
