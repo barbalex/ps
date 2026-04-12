@@ -8,6 +8,7 @@ import { type } from 'arktype'
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
+import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
 
 // TODO:
 // search params are only accessible on the route
@@ -25,6 +26,7 @@ export const Route = createFileRoute('/data')({
   middlewares: [stripSearchParams(defaultValues)],
   notFoundComponent: NotFound,
   beforeLoad: async ({ location }) => {
+    // 1. ensure user is authenticated
     const result = await getSession({ query: { disableCookieCache: true } })
     const session =
       result && typeof result === 'object' && 'data' in result
@@ -35,6 +37,10 @@ export const Route = createFileRoute('/data')({
         to: '/auth',
         search: { redirect: location.href },
       })
+
+    // Ensure a DB instance exists before protected route components mount.
+    await ensurePgliteDb()
+
     return { navDataFetcher: 'useDataBreadcrumbData' }
   },
 })

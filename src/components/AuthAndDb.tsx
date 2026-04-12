@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
+import { PGliteProvider } from '@electric-sql/pglite-react'
 
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
@@ -9,6 +10,7 @@ import { Syncer } from './Syncer.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
+  pgliteDbAtom,
   sqlInitializingAtom,
   syncObjectAtom,
   initialSyncingAtom,
@@ -16,6 +18,7 @@ import {
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
 
 export const AuthAndDb = () => {
+  const pgliteDb = useAtomValue(pgliteDbAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
@@ -29,14 +32,20 @@ export const AuthAndDb = () => {
   // In that case, we don't want to render the full app shell (auth, layout),
   // but just pass through to the route component.
   const isInDialog = useContext(DialogModeContext)
-  if (isInDialog) return <Outlet />
+  if (!pgliteDb) return <Initiating />
 
   return (
-    <>
-      <SqlInitializer />
-      <InitialSyncManager />
-      <Syncer />
-      {sqlInitializing || initialSyncing ? <Initiating /> : <LayoutProtected />}
-    </>
+    <PGliteProvider db={pgliteDb}>
+      {isInDialog ? (
+        <Outlet />
+      ) : (
+        <>
+          <SqlInitializer />
+          <InitialSyncManager />
+          <Syncer />
+          {sqlInitializing || initialSyncing ? <Initiating /> : <LayoutProtected />}
+        </>
+      )}
+    </PGliteProvider>
   )
 }
