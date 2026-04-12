@@ -232,6 +232,40 @@
   font-family: inherit;
 }
 
+.passwordFieldWrapper {
+  position: relative;
+}
+
+.passwordInput {
+  padding-right: 42px;
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4d4d4d;
+  cursor: pointer;
+}
+
+.passwordToggle:hover:not(:disabled) {
+  color: #20461f;
+}
+
+.passwordToggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .formInput:focus {
   outline: none;
   border-color: rgba(55, 118, 28, 0.85);

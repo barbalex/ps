@@ -1,6 +1,7 @@
 import { useState, FormEvent, useEffect, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
 import { signUp, signIn, getSession, emailOtp } from '../modules/authClient.ts'
 import styles from './Auth.module.css'
@@ -44,6 +45,12 @@ export const Auth = () => {
     defaultMessage: 'Verifizierung & Passwort-Reset ausblenden',
   })
   const navigate = useNavigate()
+  const showPasswordLabel = formatMessage({
+    defaultMessage: 'Passwort anzeigen',
+  })
+  const hidePasswordLabel = formatMessage({
+    defaultMessage: 'Passwort verbergen',
+  })
   const [isSignUp, setIsSignUp] = useState(false)
   const [showAccountTools, setShowAccountTools] = useState(false)
   const [email, setEmail] = useState('')
@@ -60,6 +67,11 @@ export const Auth = () => {
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    confirmPassword: false,
+    passwordResetNewPassword: false,
+  })
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
     password?: string
@@ -514,6 +526,20 @@ export const Auth = () => {
     setPasswordResetOtp('')
     setPasswordResetNewPassword('')
     setShowAccountTools(false)
+    setPasswordVisibility({
+      password: false,
+      confirmPassword: false,
+      passwordResetNewPassword: false,
+    })
+  }
+
+  const togglePasswordVisibility = (
+    field: 'password' | 'confirmPassword' | 'passwordResetNewPassword',
+  ) => {
+    setPasswordVisibility((current) => ({
+      ...current,
+      [field]: !current[field],
+    }))
   }
 
   return (
@@ -680,20 +706,50 @@ export const Auth = () => {
                         {fieldErrors.passwordResetOtp}
                       </p>
                     )}
-                    <input
-                      id="password-reset-new-password"
-                      type="password"
-                      value={passwordResetNewPassword}
-                      onChange={(e) =>
-                        setPasswordResetNewPassword(e.target.value)
-                      }
-                      className={`${styles.formInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
-                      placeholder={formatMessage({
-                        id: 'authPasswordResetNewPasswordPlaceholder',
-                        defaultMessage: 'Neues Passwort eingeben',
-                      })}
-                      disabled={isPasswordResetLoading || isLoading}
-                    />
+                    <div className={styles.passwordFieldWrapper}>
+                      <input
+                        id="password-reset-new-password"
+                        type={
+                          passwordVisibility.passwordResetNewPassword
+                            ? 'text'
+                            : 'password'
+                        }
+                        value={passwordResetNewPassword}
+                        onChange={(e) =>
+                          setPasswordResetNewPassword(e.target.value)
+                        }
+                        className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
+                        placeholder={formatMessage({
+                          id: 'authPasswordResetNewPasswordPlaceholder',
+                          defaultMessage: 'Neues Passwort eingeben',
+                        })}
+                        disabled={isPasswordResetLoading || isLoading}
+                      />
+                      <button
+                        type="button"
+                        className={styles.passwordToggle}
+                        onClick={() =>
+                          togglePasswordVisibility('passwordResetNewPassword')
+                        }
+                        aria-label={
+                          passwordVisibility.passwordResetNewPassword
+                            ? hidePasswordLabel
+                            : showPasswordLabel
+                        }
+                        title={
+                          passwordVisibility.passwordResetNewPassword
+                            ? hidePasswordLabel
+                            : showPasswordLabel
+                        }
+                        disabled={isPasswordResetLoading || isLoading}
+                      >
+                        {passwordVisibility.passwordResetNewPassword ? (
+                          <MdVisibilityOff />
+                        ) : (
+                          <MdVisibility />
+                        )}
+                      </button>
+                    </div>
                     {fieldErrors.passwordResetNewPassword && (
                       <p className={styles.errorMessage}>
                         {fieldErrors.passwordResetNewPassword}
@@ -773,18 +829,42 @@ export const Auth = () => {
                 defaultMessage: 'Passwort',
               })}
             </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`${styles.formInput} ${fieldErrors.password ? styles.error : ''}`}
-              placeholder={formatMessage({
-                id: 'authEnterPassword',
-                defaultMessage: 'Passwort eingeben',
-              })}
-              disabled={isLoading}
-            />
+            <div className={styles.passwordFieldWrapper}>
+              <input
+                id="password"
+                type={passwordVisibility.password ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.password ? styles.error : ''}`}
+                placeholder={formatMessage({
+                  id: 'authEnterPassword',
+                  defaultMessage: 'Passwort eingeben',
+                })}
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => togglePasswordVisibility('password')}
+                aria-label={
+                  passwordVisibility.password
+                    ? hidePasswordLabel
+                    : showPasswordLabel
+                }
+                title={
+                  passwordVisibility.password
+                    ? hidePasswordLabel
+                    : showPasswordLabel
+                }
+                disabled={isLoading}
+              >
+                {passwordVisibility.password ? (
+                  <MdVisibilityOff />
+                ) : (
+                  <MdVisibility />
+                )}
+              </button>
+            </div>
             {fieldErrors.password && (
               <p className={styles.errorMessage}>{fieldErrors.password}</p>
             )}
@@ -798,18 +878,42 @@ export const Auth = () => {
                   defaultMessage: 'Passwort bestätigen',
                 })}
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className={`${styles.formInput} ${fieldErrors.confirmPassword ? styles.error : ''}`}
-                placeholder={formatMessage({
-                  id: 'authConfirmPasswordInput',
-                  defaultMessage: 'Passwort bestätigen',
-                })}
-                disabled={isLoading}
-              />
+              <div className={styles.passwordFieldWrapper}>
+                <input
+                  id="confirmPassword"
+                  type={passwordVisibility.confirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.confirmPassword ? styles.error : ''}`}
+                  placeholder={formatMessage({
+                    id: 'authConfirmPasswordInput',
+                    defaultMessage: 'Passwort bestätigen',
+                  })}
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={() => togglePasswordVisibility('confirmPassword')}
+                  aria-label={
+                    passwordVisibility.confirmPassword
+                      ? hidePasswordLabel
+                      : showPasswordLabel
+                  }
+                  title={
+                    passwordVisibility.confirmPassword
+                      ? hidePasswordLabel
+                      : showPasswordLabel
+                  }
+                  disabled={isLoading}
+                >
+                  {passwordVisibility.confirmPassword ? (
+                    <MdVisibilityOff />
+                  ) : (
+                    <MdVisibility />
+                  )}
+                </button>
+              </div>
               {fieldErrors.confirmPassword && (
                 <p className={styles.errorMessage}>
                   {fieldErrors.confirmPassword}
