@@ -13,7 +13,6 @@ import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as DataRouteRouteImport } from './routes/data/route'
 import { Route as DataIndexRouteImport } from './routes/data/index'
 import { Route as LayoutIndexRouteImport } from './routes/_layout.index'
-import { Route as DataAuthRouteImport } from './routes/data/auth'
 import { Route as DataAppStatesRouteImport } from './routes/data/app-states'
 import { Route as LayoutDocsRouteImport } from './routes/_layout.docs'
 import { Route as DataWidgetsForFieldsRouteRouteImport } from './routes/data/widgets-for-fields/route'
@@ -452,11 +451,6 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutRoute,
-} as any)
-const DataAuthRoute = DataAuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => DataRouteRoute,
 } as any)
 const DataAppStatesRoute = DataAppStatesRouteImport.update({
   id: '/app-states',
@@ -3729,7 +3723,6 @@ export interface FileRoutesByFullPath {
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
   '/docs': typeof LayoutDocsRoute
   '/data/app-states': typeof DataAppStatesRoute
-  '/data/auth': typeof DataAuthRoute
   '/data/': typeof DataIndexRoute
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRouteRouteWithChildren
   '/data/projects/$projectId': typeof DataProjectsProjectIdRouteRouteWithChildren
@@ -4140,7 +4133,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/docs': typeof LayoutDocsRoute
   '/data/app-states': typeof DataAppStatesRoute
-  '/data/auth': typeof DataAuthRoute
   '/': typeof LayoutIndexRoute
   '/data': typeof DataIndexRoute
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRouteRouteWithChildren
@@ -4467,7 +4459,6 @@ export interface FileRoutesById {
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
   '/_layout/docs': typeof LayoutDocsRoute
   '/data/app-states': typeof DataAppStatesRoute
-  '/data/auth': typeof DataAuthRoute
   '/_layout/': typeof LayoutIndexRoute
   '/data/': typeof DataIndexRoute
   '/data/accounts/$accountId_': typeof DataAccountsAccountIdRouteRouteWithChildren
@@ -4895,7 +4886,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields'
     | '/docs'
     | '/data/app-states'
-    | '/data/auth'
     | '/data/'
     | '/data/accounts/$accountId'
     | '/data/projects/$projectId'
@@ -5306,7 +5296,6 @@ export interface FileRouteTypes {
   to:
     | '/docs'
     | '/data/app-states'
-    | '/data/auth'
     | '/'
     | '/data'
     | '/data/accounts/$accountId'
@@ -5632,7 +5621,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields'
     | '/_layout/docs'
     | '/data/app-states'
-    | '/data/auth'
     | '/_layout/'
     | '/data/'
     | '/data/accounts/$accountId_'
@@ -6076,13 +6064,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
-    }
-    '/data/auth': {
-      id: '/data/auth'
-      path: '/auth'
-      fullPath: '/data/auth'
-      preLoaderRoute: typeof DataAuthRouteImport
-      parentRoute: typeof DataRouteRoute
     }
     '/data/app-states': {
       id: '/data/app-states'
@@ -11568,7 +11549,6 @@ interface DataRouteRouteChildren {
   DataWidgetTypesRouteRoute: typeof DataWidgetTypesRouteRouteWithChildren
   DataWidgetsForFieldsRouteRoute: typeof DataWidgetsForFieldsRouteRouteWithChildren
   DataAppStatesRoute: typeof DataAppStatesRoute
-  DataAuthRoute: typeof DataAuthRoute
   DataIndexRoute: typeof DataIndexRoute
 }
 
@@ -11586,7 +11566,6 @@ const DataRouteRouteChildren: DataRouteRouteChildren = {
   DataWidgetTypesRouteRoute: DataWidgetTypesRouteRouteWithChildren,
   DataWidgetsForFieldsRouteRoute: DataWidgetsForFieldsRouteRouteWithChildren,
   DataAppStatesRoute: DataAppStatesRoute,
-  DataAuthRoute: DataAuthRoute,
   DataIndexRoute: DataIndexRoute,
 }
 
