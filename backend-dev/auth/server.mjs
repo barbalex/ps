@@ -76,30 +76,18 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
   try {
     const { newPassword } = req.body
 
-    // Get session from cookie
-    const cookies = req.headers.cookie || ''
-    const sessionMatch = cookies.match(/better-auth\.session_token=([^;]+)/)
-    const sessionToken = sessionMatch?.[1]
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    })
+    const userId = session?.user?.id
 
-    if (!sessionToken) {
-      return res.status(401).json({ error: { code: 'UNAUTHORIZED' } })
-    }
-
-    // Get user ID from session
-    const sessionResult = await pool.query(
-      'SELECT user_id FROM auth_sessions WHERE token = $1',
-      [sessionToken],
-    )
-
-    if (sessionResult.rows.length === 0) {
+    if (!userId) {
       return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
     }
 
-    const userId = sessionResult.rows[0].user_id
-
     // Check if user has any credential accounts (passwords)
     const accountsResult = await pool.query(
-      'SELECT provider FROM auth_accounts WHERE user_id = $1 AND provider = $2',
+      'SELECT provider_id FROM auth_accounts WHERE user_id = $1 AND provider_id = $2',
       [userId, 'credential'],
     )
 
@@ -132,15 +120,11 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
     
     const hashedPassword = `$pbkdf2-sha256$${iterations}$${saltBuffer.toString('base64')}$${derivedKey.toString('base64')}`
 
-    // Create credential account for this user
-    const { v4: uuidv4 } = await import('uuid')
-    const accountId = uuidv4()
-
     await pool.query(
       `INSERT INTO auth_accounts 
-       (auth_account_id, user_id, provider, sso_account_id, password, created_at, updated_at) 
-       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
-      [accountId, userId, 'credential', userId, hashedPassword],
+       (user_id, provider_id, sso_account_id, password, created_at, updated_at) 
+       VALUES ($1, $2, $3, $4, NOW(), NOW())`,
+      [userId, 'credential', userId, hashedPassword],
     )
 
     res.json({ ok: true })

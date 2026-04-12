@@ -20,9 +20,15 @@ type Props = {
   open: boolean
   onClose: () => void
   hasPassword?: boolean
+  onPasswordSet?: () => void
 }
 
-export const ChangePasswordDialog = ({ open, onClose, hasPassword = true }: Props) => {
+export const ChangePasswordDialog = ({
+  open,
+  onClose,
+  hasPassword = true,
+  onPasswordSet,
+}: Props) => {
   const intl = useIntl()
   const showPasswordLabel = intl.formatMessage({
     id: 'changePasswordShowPassword',
@@ -165,6 +171,7 @@ export const ChangePasswordDialog = ({ open, onClose, hasPassword = true }: Prop
 
       if (!hasPassword) {
         // OAuth-only user - password is set directly
+        onPasswordSet?.()
         setChangePasswordMessage(
           intl.formatMessage({
             id: 'setPasswordSuccess',

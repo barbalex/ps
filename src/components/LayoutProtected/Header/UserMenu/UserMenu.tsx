@@ -45,7 +45,14 @@ type Props = {
 export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }: Props) => {
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
-  const hasPassword = session?.user?.accounts?.some((account) => account.provider === 'credential') ?? false
+  const [hasPasswordOverride, setHasPasswordOverride] = useState(false)
+  const hasPasswordFromSession =
+    session?.user?.accounts?.some((account) => {
+      const provider = account.provider
+      const providerId = (account as { providerId?: string }).providerId
+      return provider === 'credential' || providerId === 'credential'
+    }) ?? false
+  const hasPassword = hasPasswordOverride || hasPasswordFromSession
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -130,6 +137,7 @@ export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }
         open={changePasswordOpen}
         onClose={() => setChangePasswordOpen(false)}
         hasPassword={hasPassword}
+        onPasswordSet={() => setHasPasswordOverride(true)}
       />
 
       <LogoutDialogs
