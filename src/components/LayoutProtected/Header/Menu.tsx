@@ -32,6 +32,7 @@ import { useAtom } from 'jotai'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
+  enforceMobileNavigationAtom,
   initialSyncingAtom,
   isMobileViewAtom,
   mapMaximizedAtom,
@@ -42,6 +43,7 @@ import {
   syncObjectAtom,
   tabsAtom,
 } from '../../../store.ts'
+import { constants } from '../../../modules/constants.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
@@ -201,6 +203,7 @@ export const Menu = () => {
   const intl = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [isMobileView] = useAtom(isMobileViewAtom)
+  const [enforceMobileNavigation] = useAtom(enforceMobileNavigationAtom)
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -230,11 +233,17 @@ export const Menu = () => {
   useEffect(() => {
     if (!isMobileView) return
 
+    const isNarrowViewport =
+      typeof window !== 'undefined' &&
+      window.innerWidth < constants.mobileViewMaxWidth
+    const shouldCompactToSingleTab = isNarrowViewport || enforceMobileNavigation
+    if (!shouldCompactToSingleTab) return
+
     const preferredTab = pickMobileTab(tabs)
     if (tabs.length !== 1 || tabs[0] !== preferredTab) {
       setTabs([preferredTab])
     }
-  }, [isMobileView, setTabs, tabs])
+  }, [enforceMobileNavigation, isMobileView, setTabs, tabs])
 
   const onChangeTabs = (_e, { checkedItems }) => {
     const nextTabs = checkedItems as string[]
