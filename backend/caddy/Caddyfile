@@ -3,7 +3,7 @@
   email alex.barbalex@gmail.com
   acme_ca https://acme.zerossl.com/v2/DV90
   #acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
-  #debug
+  debug
 }
 
 auth.xn--arten-frdern-bjb.app {
@@ -134,6 +134,12 @@ auth.promote-species.app {
     header_down -Access-Control-Allow-Origin
     header_down -Access-Control-Allow-Credentials
     header_down -Vary
+  }
+
+  tls {
+    issuer acme {
+      dir https://acme.zerossl.com/v2/DV90
+    }
   }
 }
 
