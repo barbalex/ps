@@ -105,30 +105,30 @@ export const App = () => {
         }}
       >
         <IntlSetter />
-        <PGliteProvider db={db}>
-          <FluentProvider theme={lightTheme}>
-            <uc-config
-              ctx-name="uploadcare-uploader"
-              pubkey="db67c21b6d9964e195b8"
-              maxLocalFileSizeBytes="100000000"
-              multiple="false"
-              sourceList="local, camera, dropbox, gdrive, gphotos"
-              useCloudImageEditor="true"
-            ></uc-config>
-            <uc-upload-ctx-provider
-              id="uploaderctx"
-              ctx-name="uploadcare-uploader"
-              ref={uploaderRef}
-            ></uc-upload-ctx-provider>
-            <div id="router-container" className={styles.routerContainer}>
-              <UploaderContext.Provider value={uploaderRef}>
-                <TanstackQueryClientProvider client={tanstackQueryClient}>
+        <FluentProvider theme={lightTheme}>
+          <uc-config
+            ctx-name="uploadcare-uploader"
+            pubkey="db67c21b6d9964e195b8"
+            maxLocalFileSizeBytes="100000000"
+            multiple="false"
+            sourceList="local, camera, dropbox, gdrive, gphotos"
+            useCloudImageEditor="true"
+          ></uc-config>
+          <uc-upload-ctx-provider
+            id="uploaderctx"
+            ctx-name="uploadcare-uploader"
+            ref={uploaderRef}
+          ></uc-upload-ctx-provider>
+          <div id="router-container" className={styles.routerContainer}>
+            <UploaderContext.Provider value={uploaderRef}>
+              <TanstackQueryClientProvider client={tanstackQueryClient}>
+                <PGliteProvider db={db}>
                   <RouterProvider router={router} />
-                </TanstackQueryClientProvider>
-              </UploaderContext.Provider>
-            </div>
-          </FluentProvider>
-        </PGliteProvider>
+                </PGliteProvider>
+              </TanstackQueryClientProvider>
+            </UploaderContext.Provider>
+          </div>
+        </FluentProvider>
       </IntlProvider>
       <Analytics />
     </JotaiProvider>
