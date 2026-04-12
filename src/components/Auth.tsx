@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect, useCallback } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
@@ -37,6 +37,7 @@ export const Auth = () => {
     defaultMessage: 'Formular für neues Passwort ausblenden',
   })
   const navigate = useNavigate()
+  const { redirect: redirectTo } = useSearch({ from: '/_layout/auth' })
   const showPasswordLabel = formatMessage({
     defaultMessage: 'Passwort anzeigen',
   })
@@ -70,8 +71,8 @@ export const Auth = () => {
   }>({})
 
   const onLoggedIn = useCallback(() => {
-    navigate('/data/projects')
-  }, [navigate])
+    navigate({ to: redirectTo })
+  }, [navigate, redirectTo])
 
   useEffect(() => {
     let isActive = true
@@ -118,7 +119,7 @@ export const Auth = () => {
     try {
       const result = await signIn.social({
         provider: 'google',
-        callbackURL: `${window.location.origin}/data/projects`,
+        callbackURL: `${window.location.origin}${redirectTo}`,
       })
 
       if (result.error) {
@@ -376,7 +377,7 @@ export const Auth = () => {
           email,
           password,
           name,
-          callbackURL: '/data/projects',
+          callbackURL: redirectTo,
         })
 
         if (result.error) {
@@ -395,7 +396,7 @@ export const Auth = () => {
         const result = await signIn.email({
           email,
           password,
-          callbackURL: '/data/projects',
+          callbackURL: redirectTo,
         })
 
         if (result.error) {

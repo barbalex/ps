@@ -24,13 +24,17 @@ export const Route = createFileRoute('/data')({
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
   notFoundComponent: NotFound,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const result = await getSession({ query: { disableCookieCache: true } })
     const session =
       result && typeof result === 'object' && 'data' in result
         ? (result as { data?: { user?: unknown } | null }).data
         : (result as { user?: unknown } | null)
-    if (!session?.user) throw redirect({ to: '/auth' })
+    if (!session?.user)
+      throw redirect({
+        to: '/auth',
+        search: { redirect: location.href },
+      })
     return { navDataFetcher: 'useDataBreadcrumbData' }
   },
 })
