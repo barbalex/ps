@@ -913,7 +913,6 @@
   "treeTaxonomyNodeLabel": "Taxonomy",
   "treeWfsServiceNodeLabel": "WFS Service",
   "treeWmsServiceNodeLabel": "WMS Service",
-  "protectedRouteAuthenticating": "Authenticating",
   "mapZoomIn": "Zoom in",
   "mapZoomOut": "Zoom out",
   "dtFieldDate": "Date",

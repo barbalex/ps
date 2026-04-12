@@ -4,10 +4,17 @@ import { useIntl } from 'react-intl'
 import { sqlInitializingAtom } from '../store.ts'
 import styles from './Initiating.module.css'
 
+type InitiatingProps = {
+  forceSqlInitializing?: boolean
+}
+
 // memoizing this component creates error
-export const Initiating = () => {
+export const Initiating = ({
+  forceSqlInitializing = false,
+}: InitiatingProps) => {
   const { formatMessage } = useIntl()
-  const sqlInitializing = useAtomValue(sqlInitializingAtom)
+  const sqlInitializingAtomValue = useAtomValue(sqlInitializingAtom)
+  const sqlInitializing = forceSqlInitializing || sqlInitializingAtomValue
 
   return (
     <div className={styles.container}>

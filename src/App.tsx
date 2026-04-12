@@ -7,12 +7,6 @@ import {
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
-// import { PGliteWorker } from '@electric-sql/pglite/worker'
-import { PGlite } from '@electric-sql/pglite'
-import { electricSync } from '@electric-sql/pglite-sync'
-import { postgis } from '@electric-sql/pglite-postgis'
-import { live } from '@electric-sql/pglite/live'
-import { PGliteProvider } from '@electric-sql/pglite-react'
 import { IntlProvider, useIntl } from 'react-intl'
 import { Analytics } from '@vercel/analytics/next'
 
@@ -35,7 +29,7 @@ import styles from './App.module.css'
 
 import { lightTheme } from './modules/theme.ts'
 import { UploaderContext } from './UploaderContext.ts'
-import { store, pgliteDbAtom, languageAtom, intlAtom } from './store.ts'
+import { store, languageAtom, intlAtom } from './store.ts'
 
 import { createPostgrestClient } from './modules/createPostgrestClient.ts'
 createPostgrestClient()
@@ -44,37 +38,6 @@ const IntlSetter = () => {
   const intl = useIntl()
   store.set(intlAtom, intl)
   return null
-}
-
-// hm. things slowed down hard when using this worker to enable multi-tab
-// looked like the storage doubled as well
-// const db = await PGliteWorker.create(
-//   new Worker(new URL('./pglite-worker.ts', import.meta.url), {
-//     type: 'module',
-//   }),
-//   {
-//     extensions: {
-//       electric: electricSync(),
-//       live,
-//       postgis,
-//     },
-//   },
-// )
-const db = await PGlite.create('idb://ps', {
-  extensions: {
-    live,
-    electric: electricSync(),
-    postgis,
-  },
-  relaxedDurability: true,
-  // debug: true,
-})
-store.set(pgliteDbAtom, db)
-
-// Expose db and store on window for console debugging
-if (import.meta.env.DEV) {
-  window.__pglite_db__ = db
-  window.__jotai_store__ = store
 }
 
 const tanstackQueryClient = new QueryClient()
@@ -122,9 +85,7 @@ export const App = () => {
           <div id="router-container" className={styles.routerContainer}>
             <UploaderContext.Provider value={uploaderRef}>
               <TanstackQueryClientProvider client={tanstackQueryClient}>
-                <PGliteProvider db={db}>
-                  <RouterProvider router={router} />
-                </PGliteProvider>
+                <RouterProvider router={router} />
               </TanstackQueryClientProvider>
             </UploaderContext.Provider>
           </div>
