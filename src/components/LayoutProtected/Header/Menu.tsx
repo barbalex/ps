@@ -1,9 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Toolbar, ToolbarToggleButton, Tooltip } =
-  fluentUiReactComponents
+const { Button, Tooltip } = fluentUiReactComponents
 import { useEffect } from 'react'
 import { FaCog } from 'react-icons/fa'
-import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogin, MdHome } from 'react-icons/md'
 import {
   useNavigate,
@@ -12,7 +10,7 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
   enforceMobileNavigationAtom,
@@ -30,26 +28,10 @@ import { constants } from '../../../modules/constants.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 import { UserMenu } from './UserMenu/index.tsx'
+import { Tabs } from './Tabs.tsx'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
 import { signOut, useSession } from '../../../modules/authClient.ts'
-
-const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
-  if (!selfIsActive) {
-    return styles.toggleInactive
-  }
-
-  let className = styles.toggleActive
-
-  if (prevIsActive) {
-    className += ` ${styles.togglePrevIsActive}`
-  }
-  if (nextIsActive) {
-    className += ` ${styles.toggleNextIsActive}`
-  }
-
-  return className
-}
 
 const MOBILE_TAB_PRIORITY = ['data', 'map', 'tree'] as const
 
@@ -260,112 +242,17 @@ export const Menu = () => {
     setMapIsMaximized(!mapIsMaximized)
   }
 
-  const treeIsActive = tabs.includes('tree')
-  const dataIsActive = tabs.includes('data')
-  const mapIsActive = tabs.includes('map')
   const onClickHome = () => navigate({ to: '/' })
 
   return (
     <div className={`${styles.container} no-print`}>
-      <Toolbar
-        className={styles.toolbar}
-        aria-label="active tabs"
-        checkedValues={{ tabs }}
-        onCheckedValueChange={onChangeTabs}
-      >
-        {!isHome && (
-          <>
-            <Tooltip
-              content={
-                treeIsActive
-                  ? intl.formatMessage({ defaultMessage: 'Baum ausblenden' })
-                  : intl.formatMessage({ defaultMessage: 'Baum einblenden' })
-              }
-            >
-              <ToolbarToggleButton
-                aria-label={intl.formatMessage({ defaultMessage: 'Baum' })}
-                name="tabs"
-                value="tree"
-                className={buildToggleClass({
-                  prevIsActive: false,
-                  nextIsActive: dataIsActive,
-                  selfIsActive: treeIsActive,
-                })}
-                disabled={mapIsMaximized}
-              >
-                <FormattedMessage defaultMessage="Baum" />
-              </ToolbarToggleButton>
-            </Tooltip>
-            <Tooltip
-              content={
-                dataIsActive
-                  ? intl.formatMessage({ defaultMessage: 'Daten ausblenden' })
-                  : intl.formatMessage({ defaultMessage: 'Daten einblenden' })
-              }
-            >
-              <ToolbarToggleButton
-                aria-label={intl.formatMessage({ defaultMessage: 'Daten' })}
-                name="tabs"
-                value="data"
-                className={buildToggleClass({
-                  prevIsActive: treeIsActive,
-                  nextIsActive: mapIsActive,
-                  selfIsActive: dataIsActive,
-                })}
-                disabled={mapIsMaximized}
-              >
-                <FormattedMessage defaultMessage="Daten" />
-              </ToolbarToggleButton>
-            </Tooltip>
-            <Tooltip
-              content={
-                mapIsActive
-                  ? intl.formatMessage({ defaultMessage: 'Karte ausblenden' })
-                  : intl.formatMessage({ defaultMessage: 'Karte einblenden' })
-              }
-            >
-              <ToolbarToggleButton
-                icon={
-                  !mapIsActive ? undefined : mapIsMaximized ? (
-                    <Tooltip
-                      content={intl.formatMessage({
-                        defaultMessage: 'Karte verkleinern',
-                      })}
-                    >
-                      <TbArrowsMinimize
-                        onClick={onClickMapView}
-                        className={styles.mapIcon}
-                      />
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      content={intl.formatMessage({
-                        defaultMessage: 'Karte maximieren',
-                      })}
-                    >
-                      <TbArrowsMaximize
-                        onClick={onClickMapView}
-                        className={styles.mapIcon}
-                      />
-                    </Tooltip>
-                  )
-                }
-                iconPosition="after"
-                aria-label={intl.formatMessage({ defaultMessage: 'Karte' })}
-                name="tabs"
-                value="map"
-                className={buildToggleClass({
-                  prevIsActive: dataIsActive,
-                  nextIsActive: false,
-                  selfIsActive: mapIsActive,
-                })}
-              >
-                <FormattedMessage defaultMessage="Karte" />
-              </ToolbarToggleButton>
-            </Tooltip>
-          </>
-        )}
-      </Toolbar>
+      <Tabs
+        tabs={tabs}
+        isHome={isHome}
+        mapIsMaximized={mapIsMaximized}
+        onChangeTabs={onChangeTabs}
+        onClickMapView={onClickMapView}
+      />
       <MenuBar addMargin={false} showBorder={false} grow={false}>
         <Tooltip
           content={intl.formatMessage({
