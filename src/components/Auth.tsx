@@ -27,6 +27,10 @@ export const Auth = () => {
     id: 'authGoogleBtn',
     defaultMessage: 'Mit Google anmelden',
   })
+  const microsoftSignInLabel = formatMessage({
+    id: 'authMicrosoftBtn',
+    defaultMessage: 'Mit Microsoft anmelden',
+  })
   const requestPasswordResetLabel = formatMessage({
     id: 'authRequestPasswordResetBtn',
     defaultMessage: 'Reset-Link senden',
@@ -171,6 +175,41 @@ export const Auth = () => {
         }),
       )
       console.error('Google auth error:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleMicrosoftSignIn = async () => {
+    setError('')
+    setShowRegisterSuggestion(false)
+    setIsLoading(true)
+
+    try {
+      const result = await signIn.social({
+        provider: 'microsoft',
+        callbackURL: `${window.location.origin}${redirectTo}`,
+      })
+
+      if (result.error) {
+        setError(
+          result.error.message ||
+            formatMessage({
+              id: 'authMicrosoftFailed',
+              defaultMessage:
+                'Microsoft-Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+            }),
+        )
+      }
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authMicrosoftFailed',
+          defaultMessage:
+            'Microsoft-Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+        }),
+      )
+      console.error('Microsoft auth error:', err)
     } finally {
       setIsLoading(false)
     }
@@ -891,6 +930,17 @@ export const Auth = () => {
             G
           </span>
           {googleSignInLabel}
+        </button>
+        <button
+          type="button"
+          className={styles.socialButton}
+          onClick={handleMicrosoftSignIn}
+          disabled={isLoading}
+        >
+          <span className={styles.googleMark} aria-hidden="true">
+            M
+          </span>
+          {microsoftSignInLabel}
         </button>
       </div>
     </div>

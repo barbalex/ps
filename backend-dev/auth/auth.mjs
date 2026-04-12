@@ -10,6 +10,8 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID?.trim()
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET?.trim()
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID?.trim()
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET?.trim()
+const MICROSOFT_CLIENT_ID = process.env.MICROSOFT_CLIENT_ID?.trim()
+const MICROSOFT_CLIENT_SECRET = process.env.MICROSOFT_CLIENT_SECRET?.trim()
 const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY?.trim()
 const MAILGUN_BASE_URL = process.env.MAILGUN_BASE_URL?.trim()
 const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN?.trim()
@@ -53,6 +55,17 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
 } else {
   console.warn(
     'Google auth provider is disabled because credentials are missing',
+  )
+}
+
+if (MICROSOFT_CLIENT_ID && MICROSOFT_CLIENT_SECRET) {
+  socialProviders.microsoft = {
+    clientId: MICROSOFT_CLIENT_ID,
+    clientSecret: MICROSOFT_CLIENT_SECRET,
+  }
+} else {
+  console.warn(
+    'Microsoft auth provider is disabled because credentials are missing',
   )
 }
 
