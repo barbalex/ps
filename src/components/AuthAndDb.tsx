@@ -11,11 +11,13 @@ import { Initiating } from './Initiating.tsx'
 import {
   sqlInitializingAtom,
   syncObjectAtom,
+  initialSyncingAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
 
 export const AuthAndDb = () => {
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
+  const initialSyncing = useAtomValue(initialSyncingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
 
   // unsubscribe from sync when page unloads
@@ -34,7 +36,7 @@ export const AuthAndDb = () => {
       <SqlInitializer />
       <InitialSyncManager />
       <Syncer />
-      {sqlInitializing ? <Initiating /> : <LayoutProtected />}
+      {sqlInitializing || initialSyncing ? <Initiating /> : <LayoutProtected />}
     </>
   )
 }
