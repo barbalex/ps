@@ -309,6 +309,16 @@
     background-color 0.15s ease,
     border-color 0.15s ease;
   margin-top: 4px;
+}
+
+.signUpSubmitGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.signUpSwitchLinkWrap {
+  margin-top: 0;
   margin-bottom: 10px;
 }
 

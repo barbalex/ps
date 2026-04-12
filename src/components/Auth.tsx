@@ -702,31 +702,46 @@ export const Auth = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            className={styles.submitButton}
-            disabled={isLoading || isSignInSubmitDisabled}
-          >
-            {isLoading
-              ? formatMessage({
-                  id: 'authPleaseWait',
-                  defaultMessage: 'Bitte warten...',
-                })
-              : isSignUp
-                ? signUpLabel
-                : signInLabel}
-          </button>
-          {isSignUp && (
+          {isSignUp ? (
+            <div className={styles.signUpSubmitGroup}>
+              <button
+                type="submit"
+                className={styles.submitButton}
+                disabled={isLoading || isSignInSubmitDisabled}
+              >
+                {isLoading
+                  ? formatMessage({
+                      id: 'authPleaseWait',
+                      defaultMessage: 'Bitte warten...',
+                    })
+                  : signUpLabel}
+              </button>
+              <div className={styles.signUpSwitchLinkWrap}>
+                <button
+                  type="button"
+                  className={styles.inlineTextLink}
+                  onClick={toggleMode}
+                  disabled={isLoading}
+                >
+                  {`${formatMessage({
+                    id: 'authHaveAccount',
+                    defaultMessage: 'Bereits ein Konto?',
+                  })} ${signInLabel}`}
+                </button>
+              </div>
+            </div>
+          ) : (
             <button
-              type="button"
-              className={styles.inlineTextLink}
-              onClick={toggleMode}
-              disabled={isLoading}
+              type="submit"
+              className={styles.submitButton}
+              disabled={isLoading || isSignInSubmitDisabled}
             >
-              {`${formatMessage({
-                id: 'authHaveAccount',
-                defaultMessage: 'Bereits ein Konto?',
-              })} ${signInLabel}`}
+              {isLoading
+                ? formatMessage({
+                    id: 'authPleaseWait',
+                    defaultMessage: 'Bitte warten...',
+                  })
+                : signInLabel}
             </button>
           )}
         </form>
