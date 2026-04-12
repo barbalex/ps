@@ -13,22 +13,14 @@ const {
   MenuList,
   MenuPopover,
   MenuTrigger,
-  Input,
   Toolbar,
   ToolbarToggleButton,
   Tooltip,
 } = fluentUiReactComponents
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
-import {
-  MdLogout,
-  MdLogin,
-  MdHome,
-  MdLock,
-  MdVisibility,
-  MdVisibilityOff,
-} from 'react-icons/md'
+import { MdLogout, MdLogin, MdHome, MdLock } from 'react-icons/md'
 import {
   useNavigate,
   useLocation,
@@ -53,9 +45,10 @@ import {
 import { constants } from '../../../modules/constants.ts'
 import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
+import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
-import { authClient, signOut, useSession } from '../../../modules/authClient.ts'
+import { signOut, useSession } from '../../../modules/authClient.ts'
 
 const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -215,23 +208,6 @@ export const Menu = () => {
     'none' | 'pending' | 'wipe'
   >('none')
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmNewPassword, setConfirmNewPassword] = useState('')
-  const [changePasswordError, setChangePasswordError] = useState('')
-  const [changePasswordMessage, setChangePasswordMessage] = useState('')
-  const [isChangingPassword, setIsChangingPassword] = useState(false)
-  const [changePasswordVisibility, setChangePasswordVisibility] = useState({
-    currentPassword: false,
-    newPassword: false,
-    confirmNewPassword: false,
-  })
-  const changePasswordSuccessTimeoutRef = useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined)
-  const changePasswordResetTimeoutRef = useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined)
   const [pendingOperationsCount, setPendingOperationsCount] = useState(0)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const navigate = useNavigate()
@@ -239,14 +215,6 @@ export const Menu = () => {
   const { history } = useRouter()
   const { pathname } = useLocation()
   const isHome = pathname === '/'
-  const showPasswordLabel = intl.formatMessage({
-    id: 'changePasswordShowPassword',
-    defaultMessage: 'Passwort anzeigen',
-  })
-  const hidePasswordLabel = intl.formatMessage({
-    id: 'changePasswordHidePassword',
-    defaultMessage: 'Passwort verbergen',
-  })
 
   const { data: session } = useSession()
   const authUser = session?.user
@@ -301,166 +269,10 @@ export const Menu = () => {
   }
 
   const onOpenChangePassword = () => {
-    if (changePasswordSuccessTimeoutRef.current) {
-      clearTimeout(changePasswordSuccessTimeoutRef.current)
-      changePasswordSuccessTimeoutRef.current = undefined
-    }
-    if (changePasswordResetTimeoutRef.current) {
-      clearTimeout(changePasswordResetTimeoutRef.current)
-      changePasswordResetTimeoutRef.current = undefined
-    }
-    setChangePasswordError('')
-    setChangePasswordMessage('')
-    setCurrentPassword('')
-    setNewPassword('')
-    setConfirmNewPassword('')
-    setChangePasswordVisibility({
-      currentPassword: false,
-      newPassword: false,
-      confirmNewPassword: false,
-    })
     setChangePasswordOpen(true)
   }
 
-  const onCloseChangePassword = () => {
-    if (isChangingPassword) return
-    if (changePasswordSuccessTimeoutRef.current) {
-      clearTimeout(changePasswordSuccessTimeoutRef.current)
-      changePasswordSuccessTimeoutRef.current = undefined
-    }
-    setChangePasswordOpen(false)
-  }
-
-  const onSubmitChangePassword = async () => {
-    setChangePasswordError('')
-    setChangePasswordMessage('')
-
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      setChangePasswordError(
-        intl.formatMessage({
-          id: 'changePasswordAllFieldsRequired',
-          defaultMessage: 'Bitte alle Passwortfelder ausfüllen.',
-        }),
-      )
-      return
-    }
-
-    if (newPassword.length < 8) {
-      setChangePasswordError(
-        intl.formatMessage({
-          id: 'changePasswordTooShort',
-          defaultMessage: 'Das neue Passwort muss mindestens 8 Zeichen haben.',
-        }),
-      )
-      return
-    }
-
-    if (newPassword !== confirmNewPassword) {
-      setChangePasswordError(
-        intl.formatMessage({
-          id: 'changePasswordMismatch',
-          defaultMessage: 'Die neuen Passwörter stimmen nicht überein.',
-        }),
-      )
-      return
-    }
-
-    setIsChangingPassword(true)
-    try {
-      const result = await authClient.changePassword({
-        currentPassword,
-        newPassword,
-        revokeOtherSessions: true,
-      })
-
-      if (result.error) {
-        setChangePasswordError(
-          result.error.message ||
-            intl.formatMessage({
-              id: 'changePasswordFailed',
-              defaultMessage: 'Passwort konnte nicht geändert werden.',
-            }),
-        )
-        return
-      }
-
-      setChangePasswordMessage(
-        intl.formatMessage({
-          id: 'changePasswordSuccess',
-          defaultMessage: 'Passwort erfolgreich geändert.',
-        }),
-      )
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmNewPassword('')
-      changePasswordSuccessTimeoutRef.current = setTimeout(() => {
-        setChangePasswordOpen(false)
-        changePasswordSuccessTimeoutRef.current = undefined
-      }, 2000)
-    } catch (error) {
-      setChangePasswordError(
-        intl.formatMessage({
-          id: 'changePasswordFailed',
-          defaultMessage: 'Passwort konnte nicht geändert werden.',
-        }),
-      )
-      console.error('Change password error:', error)
-    } finally {
-      setIsChangingPassword(false)
-    }
-  }
-
-  const toggleChangePasswordVisibility = (
-    field: 'currentPassword' | 'newPassword' | 'confirmNewPassword',
-  ) => {
-    setChangePasswordVisibility((current) => ({
-      ...current,
-      [field]: !current[field],
-    }))
-  }
-
-  useEffect(
-    () => () => {
-      if (changePasswordSuccessTimeoutRef.current) {
-        clearTimeout(changePasswordSuccessTimeoutRef.current)
-      }
-      if (changePasswordResetTimeoutRef.current) {
-        clearTimeout(changePasswordResetTimeoutRef.current)
-      }
-    },
-    [],
-  )
-
-  useEffect(() => {
-    if (changePasswordOpen) {
-      if (changePasswordResetTimeoutRef.current) {
-        clearTimeout(changePasswordResetTimeoutRef.current)
-        changePasswordResetTimeoutRef.current = undefined
-      }
-      return
-    }
-
-    changePasswordResetTimeoutRef.current = setTimeout(() => {
-      setChangePasswordError('')
-      setChangePasswordMessage('')
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmNewPassword('')
-      setChangePasswordVisibility({
-        currentPassword: false,
-        newPassword: false,
-        confirmNewPassword: false,
-      })
-      changePasswordResetTimeoutRef.current = undefined
-    }, 150)
-
-    return () => {
-      if (changePasswordResetTimeoutRef.current) {
-        clearTimeout(changePasswordResetTimeoutRef.current)
-        changePasswordResetTimeoutRef.current = undefined
-      }
-    }
-  }, [changePasswordOpen])
+  const onCloseChangePassword = () => setChangePasswordOpen(false)
 
   const onCancelLogout = () => {
     if (isLoggingOut) return
@@ -790,195 +602,10 @@ export const Menu = () => {
         </DialogSurface>
       </Dialog>
 
-      <Dialog open={changePasswordOpen} onOpenChange={onCloseChangePassword}>
-        <DialogSurface>
-          <DialogBody>
-            <DialogTitle>
-              <FormattedMessage
-                id="changePasswordDialogTitle"
-                defaultMessage="Passwort ändern"
-              />
-            </DialogTitle>
-            <DialogContent>
-              <div className={styles.changePasswordForm}>
-                {changePasswordError && (
-                  <div className={styles.changePasswordError}>
-                    {changePasswordError}
-                  </div>
-                )}
-                {changePasswordMessage && (
-                  <div className={styles.changePasswordSuccess}>
-                    {changePasswordMessage}
-                  </div>
-                )}
-
-                {!changePasswordMessage && (
-                  <>
-                    <div className={styles.passwordInputWrapper}>
-                      <Input
-                        type={
-                          changePasswordVisibility.currentPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        value={currentPassword}
-                        onChange={(_, data) => setCurrentPassword(data.value)}
-                        placeholder={intl.formatMessage({
-                          id: 'changePasswordCurrentPassword',
-                          defaultMessage: 'Aktuelles Passwort',
-                        })}
-                        disabled={isChangingPassword}
-                        className={styles.passwordInputField}
-                      />
-                      <button
-                        type="button"
-                        className={styles.passwordToggle}
-                        onClick={() =>
-                          toggleChangePasswordVisibility('currentPassword')
-                        }
-                        aria-label={
-                          changePasswordVisibility.currentPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        title={
-                          changePasswordVisibility.currentPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        disabled={isChangingPassword}
-                      >
-                        {changePasswordVisibility.currentPassword ? (
-                          <MdVisibilityOff />
-                        ) : (
-                          <MdVisibility />
-                        )}
-                      </button>
-                    </div>
-                    <div className={styles.passwordInputWrapper}>
-                      <Input
-                        type={
-                          changePasswordVisibility.newPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        value={newPassword}
-                        onChange={(_, data) => setNewPassword(data.value)}
-                        placeholder={intl.formatMessage({
-                          id: 'changePasswordNewPassword',
-                          defaultMessage: 'Neues Passwort',
-                        })}
-                        disabled={isChangingPassword}
-                        className={styles.passwordInputField}
-                      />
-                      <button
-                        type="button"
-                        className={styles.passwordToggle}
-                        onClick={() =>
-                          toggleChangePasswordVisibility('newPassword')
-                        }
-                        aria-label={
-                          changePasswordVisibility.newPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        title={
-                          changePasswordVisibility.newPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        disabled={isChangingPassword}
-                      >
-                        {changePasswordVisibility.newPassword ? (
-                          <MdVisibilityOff />
-                        ) : (
-                          <MdVisibility />
-                        )}
-                      </button>
-                    </div>
-                    <div className={styles.passwordInputWrapper}>
-                      <Input
-                        type={
-                          changePasswordVisibility.confirmNewPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        value={confirmNewPassword}
-                        onChange={(_, data) =>
-                          setConfirmNewPassword(data.value)
-                        }
-                        placeholder={intl.formatMessage({
-                          id: 'changePasswordConfirmNewPassword',
-                          defaultMessage: 'Neues Passwort bestätigen',
-                        })}
-                        disabled={isChangingPassword}
-                        className={styles.passwordInputField}
-                      />
-                      <button
-                        type="button"
-                        className={styles.passwordToggle}
-                        onClick={() =>
-                          toggleChangePasswordVisibility('confirmNewPassword')
-                        }
-                        aria-label={
-                          changePasswordVisibility.confirmNewPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        title={
-                          changePasswordVisibility.confirmNewPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        disabled={isChangingPassword}
-                      >
-                        {changePasswordVisibility.confirmNewPassword ? (
-                          <MdVisibilityOff />
-                        ) : (
-                          <MdVisibility />
-                        )}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </DialogContent>
-            <DialogActions>
-              {!changePasswordMessage && (
-                <>
-                  <Button
-                    appearance="secondary"
-                    onClick={onCloseChangePassword}
-                    disabled={isChangingPassword}
-                  >
-                    <FormattedMessage
-                      id="changePasswordCancelBtn"
-                      defaultMessage="Abbrechen"
-                    />
-                  </Button>
-                  <Button
-                    appearance="primary"
-                    onClick={onSubmitChangePassword}
-                    disabled={isChangingPassword}
-                  >
-                    {isChangingPassword ? (
-                      <FormattedMessage
-                        id="changePasswordPleaseWait"
-                        defaultMessage="Bitte warten..."
-                      />
-                    ) : (
-                      <FormattedMessage
-                        id="changePasswordSaveBtn"
-                        defaultMessage="Passwort speichern"
-                      />
-                    )}
-                  </Button>
-                </>
-              )}
-            </DialogActions>
-          </DialogBody>
-        </DialogSurface>
-      </Dialog>
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onClose={onCloseChangePassword}
+      />
     </div>
   )
 }
