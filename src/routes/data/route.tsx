@@ -1,8 +1,13 @@
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  redirect,
+  stripSearchParams,
+} from '@tanstack/react-router'
 import { type } from 'arktype'
 
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { getSession } from '../../modules/authClient.ts'
 
 // TODO:
 // search params are only accessible on the route
@@ -19,7 +24,13 @@ export const Route = createFileRoute('/data')({
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
   notFoundComponent: NotFound,
-  beforeLoad: () => ({
-    navDataFetcher: 'useDataBreadcrumbData',
-  }),
+  beforeLoad: async () => {
+    const result = await getSession({ query: { disableCookieCache: true } })
+    const session =
+      result && typeof result === 'object' && 'data' in result
+        ? (result as { data?: { user?: unknown } | null }).data
+        : (result as { user?: unknown } | null)
+    if (!session?.user) throw redirect({ to: '/auth' })
+    return { navDataFetcher: 'useDataBreadcrumbData' }
+  },
 })

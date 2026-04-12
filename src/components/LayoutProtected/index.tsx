@@ -5,7 +5,6 @@ import { Main } from './Main.tsx'
 import { Breadcrumbs } from './Breadcrumbs/index.tsx'
 import { Notifications } from '../Notifications/index.tsx'
 import { BackgroundTasks } from '../BackgroundTasks/index.tsx'
-import { ProtectedRoute } from '../ProtectedRoute.tsx'
 import { Header } from './Header/index.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
@@ -39,17 +38,15 @@ export const LayoutProtected = () => {
           <Notifications />
         </>
       )}
-      <ProtectedRoute>
-        <TableLayersProvider />
-        <OwnVectorLayerPropertiesProvider />
-        <ObservationAssignChooser />
-        <IsDesktopViewSetter />
-        <ApiDetector />
-        <TreeOpenNodesSetter />
-        <AutoFetchCapabilities />
-        <OperationsObserver />
-        <Main />
-      </ProtectedRoute>
+      <TableLayersProvider />
+      <OwnVectorLayerPropertiesProvider />
+      <ObservationAssignChooser />
+      <IsDesktopViewSetter />
+      <ApiDetector />
+      <TreeOpenNodesSetter />
+      <AutoFetchCapabilities />
+      <OperationsObserver />
+      <Main />
       <BackgroundTasks />
     </>
   )
