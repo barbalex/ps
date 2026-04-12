@@ -716,6 +716,19 @@ export const Auth = () => {
                 ? signUpLabel
                 : signInLabel}
           </button>
+          {isSignUp && (
+            <button
+              type="button"
+              className={styles.inlineTextLink}
+              onClick={toggleMode}
+              disabled={isLoading}
+            >
+              {`${formatMessage({
+                id: 'authHaveAccount',
+                defaultMessage: 'Bereits ein Konto?',
+              })} ${signInLabel}`}
+            </button>
+          )}
         </form>
         {!isSignUp && showForgotPassword && (
           <div className={styles.otpActions}>
@@ -857,24 +870,7 @@ export const Auth = () => {
           {googleSignInLabel}
         </button>
 
-        {isSignUp && (
-          <div className={styles.toggleContainer}>
-            <p className={styles.toggleText}>
-              {formatMessage({
-                id: 'authHaveAccount',
-                defaultMessage: 'Bereits ein Konto?',
-              })}
-            </p>
-            <button
-              type="button"
-              onClick={toggleMode}
-              className={styles.toggleButton}
-              disabled={isLoading}
-            >
-              {signInLabel}
-            </button>
-          </div>
-        )}
+        
       </div>
     </div>
   )
