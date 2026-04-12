@@ -159,6 +159,30 @@ export const ChangePasswordDialog = ({
       }
 
       if (result.error) {
+        const errorCode = (result.error as { code?: string })?.code
+
+        if (!hasPassword && errorCode === 'PASSWORD_ALREADY_EXISTS') {
+          onPasswordSet?.()
+          setChangePasswordMessage(
+            intl.formatMessage({
+              id: 'setPasswordAlreadyExists',
+              defaultMessage:
+                'Passwort ist bereits gesetzt. Du kannst es jetzt über "Passwort ändern" aktualisieren.',
+            }),
+          )
+          return
+        }
+
+        if (!hasPassword && errorCode === 'INVALID_PASSWORD') {
+          setChangePasswordError(
+            intl.formatMessage({
+              id: 'changePasswordTooShort',
+              defaultMessage: 'Das neue Passwort muss mindestens 8 Zeichen haben.',
+            }),
+          )
+          return
+        }
+
         setChangePasswordError(
           result.error.message ||
             intl.formatMessage({
