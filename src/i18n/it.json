@@ -857,6 +857,8 @@
   "authGoogleFailed": "Accesso con Google non riuscito. Riprova.",
   "authHaveAccount": "Hai già un account?",
   "authNoAccount": "Non hai un account?",
+  "authRegisterSuggestionText": "Non esiste ancora un account per questa e-mail. Vuoi registrarti?",
+  "authRegisterSuggestionBtn": "Registrati ora",
   "authPreviewCredentialsHint": "Mentre l'app viene sviluppata, puoi accedere con un utente di test: e-mail test@test.ch, password test-test",
   "logoutPendingOpsTitle": "Attenzione: operazioni in sospeso",
   "logoutPendingOpsBody": "Ci sono ancora {count} operazioni locali in sospeso. Se esci ora, questi dati locali verranno eliminati e non potranno più essere sincronizzati. Consiglio: attendi che tutte le operazioni siano state sincronizzate con il server.",

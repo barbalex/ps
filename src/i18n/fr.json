@@ -857,6 +857,8 @@
   "authGoogleFailed": "La connexion Google a échoué. Veuillez réessayer.",
   "authHaveAccount": "Vous avez déjà un compte ?",
   "authNoAccount": "Vous n'avez pas de compte ?",
+  "authRegisterSuggestionText": "Aucun compte n'existe encore pour cet e-mail. Voulez-vous vous inscrire ?",
+  "authRegisterSuggestionBtn": "S'inscrire maintenant",
   "authPreviewCredentialsHint": "Pendant que l'application est en cours de développement, vous pouvez vous connecter avec un utilisateur test : E-mail test@test.ch, mot de passe test-test",
   "logoutPendingOpsTitle": "Attention : opérations en attente",
   "logoutPendingOpsBody": "Il reste encore {count} opérations locales en attente. Si vous vous déconnectez maintenant, ces données locales seront supprimées et ne pourront plus être synchronisées. Recommandation : attendez que toutes les opérations aient été synchronisées avec le serveur.",

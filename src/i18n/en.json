@@ -873,6 +873,8 @@
   "authGoogleFailed": "Google sign-in failed. Please try again.",
   "authHaveAccount": "Already have an account?",
   "authNoAccount": "Don't have an account?",
+  "authRegisterSuggestionText": "No account exists for this email yet. Do you want to register?",
+  "authRegisterSuggestionBtn": "Register now",
   "authPreviewCredentialsHint": "While the app is being built, you can sign in with a test user: Email test@test.ch, Password test-test",
   "logoutPendingOpsTitle": "Warning: Pending operations",
   "logoutPendingOpsBody": "There are still {count} pending local operations. If you sign out now, this local data will be deleted and can no longer be synchronized. Recommendation: Wait until all operations have been synchronized with the server.",

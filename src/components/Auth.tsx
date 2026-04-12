@@ -56,6 +56,7 @@ export const Auth = () => {
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showRegisterSuggestion, setShowRegisterSuggestion] = useState(false)
   const [passwordVisibility, setPasswordVisibility] = useState({
     password: false,
     confirmPassword: false,
@@ -103,6 +104,7 @@ export const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     setError('')
+    setShowRegisterSuggestion(false)
     setIsLoading(true)
 
     try {
@@ -138,6 +140,34 @@ export const Auth = () => {
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
+  }
+
+  const isCredentialErrorMessage = (message?: string) => {
+    const normalized = (message || '').toLowerCase()
+    return (
+      normalized.includes('invalid email or password') ||
+      normalized.includes('invalid credentials') ||
+      normalized.includes('user not found')
+    )
+  }
+
+  const getLocalizedSignInError = (message?: string) => {
+    const looksLikeCredentialError = isCredentialErrorMessage(message)
+
+    if (looksLikeCredentialError) {
+      return formatMessage({
+        id: 'authInvalidCredentials',
+        defaultMessage: 'Ungültige E-Mail oder Passwort.',
+      })
+    }
+
+    return (
+      message ||
+      formatMessage({
+        id: 'authInvalidCredentials',
+        defaultMessage: 'Ungültige E-Mail oder Passwort.',
+      })
+    )
   }
 
   const validateForm = () => {
@@ -213,6 +243,7 @@ export const Auth = () => {
 
   const handleRequestPasswordReset = async () => {
     setError('')
+    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     if (!validateEmailOnly()) {
@@ -256,6 +287,7 @@ export const Auth = () => {
 
   const handleResetPasswordWithOtp = async () => {
     setError('')
+    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     const errors: typeof fieldErrors = {}
@@ -330,6 +362,7 @@ export const Auth = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
+    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     if (!validateForm()) {
@@ -367,13 +400,8 @@ export const Auth = () => {
         })
 
         if (result.error) {
-          setError(
-            result.error.message ||
-              formatMessage({
-                id: 'authInvalidCredentials',
-                defaultMessage: 'Ungültige E-Mail oder Passwort.',
-              }),
-          )
+          setShowRegisterSuggestion(isCredentialErrorMessage(result.error.message))
+          setError(getLocalizedSignInError(result.error.message))
         } else {
           onLoggedIn()
         }
@@ -395,6 +423,7 @@ export const Auth = () => {
   const toggleMode = () => {
     setIsSignUp(!isSignUp)
     setError('')
+    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
     setFieldErrors({})
     setPassword('')
@@ -417,6 +446,20 @@ export const Auth = () => {
       ...current,
       [field]: !current[field],
     }))
+  }
+
+  const switchToSignUpFromError = () => {
+    setIsSignUp(true)
+    setShowRegisterSuggestion(false)
+    setError('')
+    setPassword('')
+    setConfirmPassword('')
+    setFieldErrors({})
+    setShowForgotPassword(false)
+    setPasswordResetRequested(false)
+    setPasswordResetOtp('')
+    setPasswordResetNewPassword('')
+    setPasswordResetMessage('')
   }
 
   return (
@@ -455,6 +498,28 @@ export const Auth = () => {
         </div>
 
         {error && <div className={styles.generalError}>{error}</div>}
+        {showRegisterSuggestion && !isSignUp && (
+          <div className={styles.otpActions}>
+            <p className={styles.toggleText}>
+              {formatMessage({
+                id: 'authRegisterSuggestionText',
+                defaultMessage:
+                  'Für diese E-Mail gibt es noch kein Konto. Möchten Sie sich registrieren?',
+              })}
+            </p>
+            <button
+              type="button"
+              className={styles.toggleButton}
+              onClick={switchToSignUpFromError}
+              disabled={isLoading}
+            >
+              {formatMessage({
+                id: 'authRegisterSuggestionBtn',
+                defaultMessage: 'Jetzt registrieren',
+              })}
+            </button>
+          </div>
+        )}
         {passwordResetMessage && (
           <div className={styles.successMessage}>{passwordResetMessage}</div>
         )}
@@ -493,7 +558,10 @@ export const Auth = () => {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                setShowRegisterSuggestion(false)
+              }}
               className={`${styles.formInput} ${fieldErrors.email ? styles.error : ''}`}
               placeholder={formatMessage({
                 id: 'authEnterEmail',
@@ -518,7 +586,10 @@ export const Auth = () => {
                 id="password"
                 type={passwordVisibility.password ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setShowRegisterSuggestion(false)
+                }}
                 className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.password ? styles.error : ''}`}
                 placeholder={formatMessage({
                   id: 'authEnterPassword',
