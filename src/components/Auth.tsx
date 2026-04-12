@@ -440,12 +440,15 @@ export const Auth = () => {
   }
 
   const toggleMode = () => {
-    setIsSignUp(!isSignUp)
+    const nextIsSignUp = !isSignUp
+    setIsSignUp(nextIsSignUp)
     setError('')
     setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
     setFieldErrors({})
-    setPassword('')
+    if (!nextIsSignUp) {
+      setPassword('')
+    }
     setConfirmPassword('')
     setPasswordResetNewPassword('')
     setShowForgotPassword(false)
@@ -469,7 +472,6 @@ export const Auth = () => {
     setIsSignUp(true)
     setShowRegisterSuggestion(false)
     setError('')
-    setPassword('')
     setConfirmPassword('')
     setFieldErrors({})
     setShowForgotPassword(false)
