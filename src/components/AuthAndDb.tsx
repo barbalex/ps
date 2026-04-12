@@ -13,11 +13,14 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
+import { useSession } from '../modules/authClient.ts'
 
 export const AuthAndDb = () => {
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
-  const initiating = sqlInitializing
+  const { data: session } = useSession()
+  const isAuthenticated = Boolean(session?.user)
+  const initiating = isAuthenticated && sqlInitializing
 
   // unsubscribe from sync when page unloads
   useBeforeunload(() => {
@@ -32,7 +35,7 @@ export const AuthAndDb = () => {
 
   return (
     <>
-      <SqlInitializer />
+      {isAuthenticated ? <SqlInitializer /> : null}
       <InitialSyncManager />
       <Syncer />
       {initiating ? <Initiating /> : <LayoutProtected />}

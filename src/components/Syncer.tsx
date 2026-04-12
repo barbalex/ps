@@ -35,7 +35,7 @@ export const Syncer = () => {
       }),
       body: formatMessage({
         id: 'syncServerTaskBody',
-        defaultMessage: 'Initiale Synchronisation wird ausgefuehrt...',
+        defaultMessage: 'Initiale Synchronisation wird ausgeführt...',
       }),
       intent: 'info',
       paused: true,
