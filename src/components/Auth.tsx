@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
-import { signUp, signIn, getSession, emailOtp } from '../modules/authClient.ts'
+import { authClient, signUp, signIn, getSession } from '../modules/authClient.ts'
 import styles from './Auth.module.css'
 
 export const Auth = () => {
@@ -22,11 +22,11 @@ export const Auth = () => {
   })
   const requestPasswordResetLabel = formatMessage({
     id: 'authRequestPasswordResetBtn',
-    defaultMessage: 'Reset-Code senden',
+    defaultMessage: 'Reset-Link senden',
   })
   const confirmPasswordResetLabel = formatMessage({
     id: 'authConfirmPasswordResetBtn',
-    defaultMessage: 'Passwort mit Code zurücksetzen',
+    defaultMessage: 'Passwort ändern',
   })
   const forgotPasswordShowLabel = formatMessage({
     id: 'authForgotPasswordShow',
@@ -48,8 +48,7 @@ export const Auth = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [passwordResetRequested, setPasswordResetRequested] = useState(false)
-  const [passwordResetOtp, setPasswordResetOtp] = useState('')
+  const [passwordResetToken, setPasswordResetToken] = useState('')
   const [passwordResetNewPassword, setPasswordResetNewPassword] = useState('')
   const [passwordResetMessage, setPasswordResetMessage] = useState('')
   const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false)
@@ -67,7 +66,6 @@ export const Auth = () => {
     password?: string
     confirmPassword?: string
     name?: string
-    passwordResetOtp?: string
     passwordResetNewPassword?: string
   }>({})
 
@@ -101,6 +99,16 @@ export const Auth = () => {
       isActive = false
     }
   }, [onLoggedIn])
+
+  useEffect(() => {
+    // Check for reset token in URL query params
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
+    if (token) {
+      setPasswordResetToken(token)
+      setShowForgotPassword(true)
+    }
+  }, [])
 
   const handleGoogleSignIn = async () => {
     setError('')
@@ -252,57 +260,47 @@ export const Auth = () => {
 
     setIsPasswordResetLoading(true)
     try {
-      const result = await emailOtp.requestPasswordReset({ email })
+      const result = await authClient.requestPasswordReset({
+        email,
+        redirectTo: `${window.location.origin}${window.location.pathname}`,
+      })
 
       if (result.error) {
         setError(
           result.error.message ||
             formatMessage({
-              id: 'authPasswordResetCodeSendFailed',
-              defaultMessage: 'Reset-Code konnte nicht gesendet werden.',
+              id: 'authPasswordResetLinkSendFailed',
+              defaultMessage: 'Reset-Link konnte nicht gesendet werden.',
             }),
         )
         return
       }
 
-      setPasswordResetRequested(true)
       setPasswordResetMessage(
         formatMessage({
-          id: 'authPasswordResetCodeSent',
-          defaultMessage: 'Reset-Code gesendet. Bitte E-Mail prüfen.',
+          id: 'authPasswordResetLinkSent',
+          defaultMessage: 'Reset-Link wurde gesendet. Bitte E-Mail prüfen.',
         }),
       )
     } catch (err) {
       setError(
         formatMessage({
-          id: 'authPasswordResetCodeSendFailed',
-          defaultMessage: 'Reset-Code konnte nicht gesendet werden.',
+          id: 'authPasswordResetLinkSendFailed',
+          defaultMessage: 'Reset-Link konnte nicht gesendet werden.',
         }),
       )
-      console.error('Password reset OTP request error:', err)
+      console.error('Password reset link request error:', err)
     } finally {
       setIsPasswordResetLoading(false)
     }
   }
 
-  const handleResetPasswordWithOtp = async () => {
+  const handleResetPasswordWithToken = async () => {
     setError('')
     setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     const errors: typeof fieldErrors = {}
-    if (!validateEmail(email)) {
-      errors.email = formatMessage({
-        id: 'authInvalidEmail',
-        defaultMessage: 'Bitte gültige E-Mail eingeben',
-      })
-    }
-    if (!passwordResetOtp) {
-      errors.passwordResetOtp = formatMessage({
-        id: 'authOtpRequired',
-        defaultMessage: 'Code ist erforderlich',
-      })
-    }
     if (!passwordResetNewPassword) {
       errors.passwordResetNewPassword = formatMessage({
         id: 'authPasswordRequired',
@@ -319,10 +317,9 @@ export const Auth = () => {
 
     setIsPasswordResetLoading(true)
     try {
-      const result = await emailOtp.resetPassword({
-        email,
-        otp: passwordResetOtp,
-        password: passwordResetNewPassword,
+      const result = await authClient.resetPassword({
+        newPassword: passwordResetNewPassword,
+        token: passwordResetToken,
       })
 
       if (result.error) {
@@ -339,13 +336,15 @@ export const Auth = () => {
       setPasswordResetMessage(
         formatMessage({
           id: 'authPasswordResetSuccess',
-          defaultMessage:
-            'Passwort erfolgreich zurückgesetzt. Jetzt mit neuem Passwort anmelden.',
+          defaultMessage: 'Passwort erfolgreich zurückgesetzt. Sie werden in Kürze angemeldet.',
         }),
       )
-      setPasswordResetOtp('')
       setPasswordResetNewPassword('')
-      setPasswordResetRequested(false)
+      
+      // Clear token and redirect after success
+      setTimeout(() => {
+        onLoggedIn()
+      }, 1500)
     } catch (err) {
       setError(
         formatMessage({
@@ -428,8 +427,6 @@ export const Auth = () => {
     setFieldErrors({})
     setPassword('')
     setConfirmPassword('')
-    setPasswordResetRequested(false)
-    setPasswordResetOtp('')
     setPasswordResetNewPassword('')
     setShowForgotPassword(false)
     setPasswordVisibility({
@@ -456,8 +453,6 @@ export const Auth = () => {
     setConfirmPassword('')
     setFieldErrors({})
     setShowForgotPassword(false)
-    setPasswordResetRequested(false)
-    setPasswordResetOtp('')
     setPasswordResetNewPassword('')
     setPasswordResetMessage('')
   }
@@ -707,44 +702,17 @@ export const Auth = () => {
         {!isSignUp && showForgotPassword && (
           <div className={styles.otpActions}>
             <div className={styles.accountToolsPanel}>
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                onClick={handleRequestPasswordReset}
-                disabled={isPasswordResetLoading || isLoading}
-              >
-                {isPasswordResetLoading
-                  ? formatMessage({
-                      id: 'authPleaseWait',
-                      defaultMessage: 'Bitte warten...',
-                    })
-                  : requestPasswordResetLabel}
-              </button>
-
-              {passwordResetRequested && (
-                <div className={styles.formGroup}>
-                  <input
-                    id="password-reset-otp"
-                    type="text"
-                    value={passwordResetOtp}
-                    onChange={(e) => setPasswordResetOtp(e.target.value.trim())}
-                    className={`${styles.formInput} ${fieldErrors.passwordResetOtp ? styles.error : ''}`}
-                    placeholder={formatMessage({
-                      id: 'authPasswordResetOtpPlaceholder',
-                      defaultMessage: 'Reset-Code eingeben',
+              {passwordResetToken ? (
+                <>
+                  <p className={styles.toggleText}>
+                    {formatMessage({
+                      id: 'authResetPasswordWithToken',
+                      defaultMessage: 'Neues Passwort eingeben:',
                     })}
-                    disabled={isPasswordResetLoading || isLoading}
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                  />
-                  {fieldErrors.passwordResetOtp && (
-                    <p className={styles.errorMessage}>
-                      {fieldErrors.passwordResetOtp}
-                    </p>
-                  )}
+                  </p>
                   <div className={styles.passwordFieldWrapper}>
                     <input
-                      id="password-reset-new-password"
+                      id="password-reset-new-password-token"
                       type={
                         passwordVisibility.passwordResetNewPassword
                           ? 'text'
@@ -794,7 +762,7 @@ export const Auth = () => {
                   <button
                     type="button"
                     className={styles.secondaryButton}
-                    onClick={handleResetPasswordWithOtp}
+                    onClick={handleResetPasswordWithToken}
                     disabled={isPasswordResetLoading || isLoading}
                   >
                     {isPasswordResetLoading
@@ -804,7 +772,48 @@ export const Auth = () => {
                         })
                       : confirmPasswordResetLabel}
                   </button>
-                </div>
+                </>
+              ) : (
+                <>
+                  <p className={styles.toggleText}>
+                    {formatMessage({
+                      id: 'authSendResetLink',
+                      defaultMessage: 'E-Mail eingeben, um Reset-Link zu erhalten:',
+                    })}
+                  </p>
+                  <div className={styles.formGroup}>
+                    <input
+                      id="password-reset-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`${styles.formInput} ${fieldErrors.email ? styles.error : ''}`}
+                      placeholder={formatMessage({
+                        id: 'authEnterEmail',
+                        defaultMessage: 'E-Mail eingeben',
+                      })}
+                      disabled={isPasswordResetLoading || isLoading}
+                    />
+                    {fieldErrors.email && (
+                      <p className={styles.errorMessage}>
+                        {fieldErrors.email}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleRequestPasswordReset}
+                    disabled={isPasswordResetLoading || isLoading}
+                  >
+                    {isPasswordResetLoading
+                      ? formatMessage({
+                          id: 'authPleaseWait',
+                          defaultMessage: 'Bitte warten...',
+                        })
+                      : requestPasswordResetLabel}
+                  </button>
+                </>
               )}
             </div>
           </div>

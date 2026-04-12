@@ -120,6 +120,29 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
     requireEmailVerification: true,
+    async sendResetPassword({ user, url, token }, request) {
+      const resolvedDomain = MAILGUN_DOMAIN || 'mail.promote-species.app'
+      const resolvedFrom =
+        MAILGUN_FROM || `Promote Species <postmaster@${resolvedDomain}>`
+
+      if (!mailgunClient) {
+        console.warn(
+          `[password-reset] MAILGUN_API_KEY is not configured. Reset link for ${user.email}: ${url}`,
+        )
+        return
+      }
+
+      try {
+        await mailgunClient.messages.create(resolvedDomain, {
+          from: resolvedFrom,
+          to: [user.email],
+          subject: 'Reset your password for Promote Species',
+          text: `Click the link below to reset your password:\n\n${url}\n\nThis link expires in 1 hour.\n\nIf you did not request this, you can safely ignore this email.`,
+        })
+      } catch (error) {
+        throw new Error(`mailgun password reset email send failed: ${String(error)}`)
+      }
+    },
   },
   plugins: [
     emailOTP({
