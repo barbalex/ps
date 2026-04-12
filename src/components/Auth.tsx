@@ -77,6 +77,8 @@ export const Auth = () => {
     name?: string
     passwordResetNewPassword?: string
   }>({})
+  const isSignInSubmitDisabled =
+    !isSignUp && (!email.trim() || !password.trim())
 
   const onLoggedIn = useCallback(async () => {
     setIsDbInitializing(true)
@@ -651,16 +653,29 @@ export const Auth = () => {
               <p className={styles.errorMessage}>{fieldErrors.password}</p>
             )}
             {!isSignUp && (
-              <button
-                type="button"
-                className={styles.inlineTextLink}
-                onClick={() => setShowForgotPassword((value) => !value)}
-                disabled={isLoading || isPasswordResetLoading}
-              >
-                {showForgotPassword
-                  ? forgotPasswordHideLabel
-                  : forgotPasswordShowLabel}
-              </button>
+              <>
+                <button
+                  type="button"
+                  className={styles.inlineTextLink}
+                  onClick={() => setShowForgotPassword((value) => !value)}
+                  disabled={isLoading || isPasswordResetLoading}
+                >
+                  {showForgotPassword
+                    ? forgotPasswordHideLabel
+                    : forgotPasswordShowLabel}
+                </button>
+                <button
+                  type="button"
+                  className={styles.inlineTextLink}
+                  onClick={toggleMode}
+                  disabled={isLoading || isPasswordResetLoading}
+                >
+                  {`${formatMessage({
+                    id: 'authNoAccount',
+                    defaultMessage: 'Noch kein Konto?',
+                  })} ${signUpLabel}`}
+                </button>
+              </>
             )}
           </div>
 
@@ -721,7 +736,7 @@ export const Auth = () => {
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={isLoading}
+            disabled={isLoading || isSignInSubmitDisabled}
           >
             {isLoading
               ? formatMessage({
@@ -873,27 +888,24 @@ export const Auth = () => {
           {googleSignInLabel}
         </button>
 
-        <div className={styles.toggleContainer}>
-          <p className={styles.toggleText}>
-            {isSignUp
-              ? formatMessage({
-                  id: 'authHaveAccount',
-                  defaultMessage: 'Bereits ein Konto?',
-                })
-              : formatMessage({
-                  id: 'authNoAccount',
-                  defaultMessage: 'Noch kein Konto?',
-                })}
-          </p>
-          <button
-            type="button"
-            onClick={toggleMode}
-            className={styles.toggleButton}
-            disabled={isLoading}
-          >
-            {isSignUp ? signInLabel : signUpLabel}
-          </button>
-        </div>
+        {isSignUp && (
+          <div className={styles.toggleContainer}>
+            <p className={styles.toggleText}>
+              {formatMessage({
+                id: 'authHaveAccount',
+                defaultMessage: 'Bereits ein Konto?',
+              })}
+            </p>
+            <button
+              type="button"
+              onClick={toggleMode}
+              className={styles.toggleButton}
+              disabled={isLoading}
+            >
+              {signInLabel}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
