@@ -19,9 +19,10 @@ import { authClient } from '../../../../modules/authClient.ts'
 type Props = {
   open: boolean
   onClose: () => void
+  hasPassword?: boolean
 }
 
-export const ChangePasswordDialog = ({ open, onClose }: Props) => {
+export const ChangePasswordDialog = ({ open, onClose, hasPassword = true }: Props) => {
   const intl = useIntl()
   const showPasswordLabel = intl.formatMessage({
     id: 'changePasswordShowPassword',
@@ -75,7 +76,17 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
     setChangePasswordError('')
     setChangePasswordMessage('')
 
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
+    if (hasPassword && !currentPassword) {
+      setChangePasswordError(
+        intl.formatMessage({
+          id: 'changePasswordAllFieldsRequired',
+          defaultMessage: 'Bitte alle Passwortfelder ausfüllen.',
+        }),
+      )
+      return
+    }
+
+    if (!newPassword || !confirmNewPassword) {
       setChangePasswordError(
         intl.formatMessage({
           id: 'changePasswordAllFieldsRequired',
@@ -108,7 +119,7 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
     setIsChangingPassword(true)
     try {
       const result = await authClient.changePassword({
-        currentPassword,
+        currentPassword: hasPassword ? currentPassword : undefined,
         newPassword,
         revokeOtherSessions: true,
       })
@@ -118,7 +129,7 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
           result.error.message ||
             intl.formatMessage({
               id: 'changePasswordFailed',
-              defaultMessage: 'Passwort konnte nicht geändert werden.',
+              defaultMessage: hasPassword ? 'Passwort konnte nicht geändert werden.' : 'Passwort konnte nicht gesetzt werden.',
             }),
         )
         return
@@ -127,7 +138,7 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
       setChangePasswordMessage(
         intl.formatMessage({
           id: 'changePasswordSuccess',
-          defaultMessage: 'Passwort erfolgreich geändert.',
+          defaultMessage: hasPassword ? 'Passwort erfolgreich geändert.' : 'Passwort erfolgreich gesetzt.',
         }),
       )
       setCurrentPassword('')
@@ -141,7 +152,7 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
       setChangePasswordError(
         intl.formatMessage({
           id: 'changePasswordFailed',
-          defaultMessage: 'Passwort konnte nicht geändert werden.',
+          defaultMessage: hasPassword ? 'Passwort konnte nicht geändert werden.' : 'Passwort konnte nicht gesetzt werden.',
         }),
       )
       console.error('Change password error:', error)
@@ -203,13 +214,28 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
       <DialogSurface>
         <DialogBody>
           <DialogTitle>
-            <FormattedMessage
-              id="changePasswordDialogTitle"
-              defaultMessage="Passwort ändern"
-            />
+            {hasPassword ? (
+              <FormattedMessage
+                id="changePasswordDialogTitle"
+                defaultMessage="Passwort ändern"
+              />
+            ) : (
+              <FormattedMessage
+                id="setPasswordDialogTitle"
+                defaultMessage="Passwort setzen"
+              />
+            )}
           </DialogTitle>
           <DialogContent>
             <div className={styles.changePasswordForm}>
+              {!hasPassword && (
+                <div style={{ marginBottom: '16px', fontSize: '14px', color: '#666' }}>
+                  <FormattedMessage
+                    id="setPasswordDialogDescription"
+                    defaultMessage="Diese Funktion ermöglicht es dir, dich zusätzlich mit deiner E-Mail-Adresse und einem Passwort anzumelden, ohne dich auf Google verlassen zu müssen."
+                  />
+                </div>
+              )}
               {changePasswordError && (
                 <div className={styles.changePasswordError}>
                   {changePasswordError}
@@ -223,49 +249,51 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
 
               {!changePasswordMessage && (
                 <>
-                  <div className={styles.passwordInputWrapper}>
-                    <Input
-                      type={
-                        changePasswordVisibility.currentPassword
-                          ? 'text'
-                          : 'password'
-                      }
-                      value={currentPassword}
-                      onChange={(_event, data) =>
-                        setCurrentPassword(data.value)
-                      }
-                      placeholder={intl.formatMessage({
-                        id: 'changePasswordCurrentPassword',
-                        defaultMessage: 'Aktuelles Passwort',
-                      })}
-                      disabled={isChangingPassword}
-                      className={styles.passwordInputField}
-                    />
-                    <button
-                      type="button"
-                      className={styles.passwordToggle}
-                      onClick={() =>
-                        toggleChangePasswordVisibility('currentPassword')
-                      }
-                      aria-label={
-                        changePasswordVisibility.currentPassword
-                          ? hidePasswordLabel
-                          : showPasswordLabel
-                      }
-                      title={
-                        changePasswordVisibility.currentPassword
-                          ? hidePasswordLabel
-                          : showPasswordLabel
-                      }
-                      disabled={isChangingPassword}
-                    >
-                      {changePasswordVisibility.currentPassword ? (
-                        <MdVisibilityOff />
-                      ) : (
-                        <MdVisibility />
-                      )}
-                    </button>
-                  </div>
+                  {hasPassword && (
+                    <div className={styles.passwordInputWrapper}>
+                      <Input
+                        type={
+                          changePasswordVisibility.currentPassword
+                            ? 'text'
+                            : 'password'
+                        }
+                        value={currentPassword}
+                        onChange={(_event, data) =>
+                          setCurrentPassword(data.value)
+                        }
+                        placeholder={intl.formatMessage({
+                          id: 'changePasswordCurrentPassword',
+                          defaultMessage: 'Aktuelles Passwort',
+                        })}
+                        disabled={isChangingPassword}
+                        className={styles.passwordInputField}
+                      />
+                      <button
+                        type="button"
+                        className={styles.passwordToggle}
+                        onClick={() =>
+                          toggleChangePasswordVisibility('currentPassword')
+                        }
+                        aria-label={
+                          changePasswordVisibility.currentPassword
+                            ? hidePasswordLabel
+                            : showPasswordLabel
+                        }
+                        title={
+                          changePasswordVisibility.currentPassword
+                            ? hidePasswordLabel
+                            : showPasswordLabel
+                        }
+                        disabled={isChangingPassword}
+                      >
+                        {changePasswordVisibility.currentPassword ? (
+                          <MdVisibilityOff />
+                        ) : (
+                          <MdVisibility />
+                        )}
+                      </button>
+                    </div>
+                  )}
                   <div className={styles.passwordInputWrapper}>
                     <Input
                       type={
@@ -375,10 +403,15 @@ export const ChangePasswordDialog = ({ open, onClose }: Props) => {
                       id="changePasswordPleaseWait"
                       defaultMessage="Bitte warten..."
                     />
-                  ) : (
+                  ) : hasPassword ? (
                     <FormattedMessage
                       id="changePasswordSaveBtn"
                       defaultMessage="Passwort speichern"
+                    />
+                  ) : (
+                    <FormattedMessage
+                      id="setPasswordSaveBtn"
+                      defaultMessage="Passwort setzen"
                     />
                   )}
                 </Button>

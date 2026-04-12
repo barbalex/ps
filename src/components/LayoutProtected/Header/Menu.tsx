@@ -273,6 +273,7 @@ export const Menu = () => {
         {isAuthenticated ? (
           <UserMenu
             authUser={authUser}
+            session={session}
             buttonClassName={styles.button}
             onConfirmLogout={onConfirmLogout}
           />

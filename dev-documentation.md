@@ -143,3 +143,11 @@ If commit fails on SQL sync check:
 - Hook installer: `scripts/install-git-hooks.mjs`
 - Hook file: `.githooks/pre-commit`
 - NPM scripts: `package.json`
+
+# 3. Login
+
+## Email and Password
+
+## Social sign-on (SSO)
+
+## Add password after SSO

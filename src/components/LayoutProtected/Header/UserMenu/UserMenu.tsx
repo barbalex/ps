@@ -22,15 +22,30 @@ type AuthUser = {
   fullName?: string
 }
 
+type Session = {
+  user?: {
+    id?: string
+    email?: string
+    fullName?: string
+    accounts?: Array<{
+      provider: string
+      [key: string]: unknown
+    }>
+  }
+  [key: string]: unknown
+}
+
 type Props = {
   authUser: AuthUser | null | undefined
+  session?: Session | null
   buttonClassName: string
   onConfirmLogout: () => Promise<void>
 }
 
-export const UserMenu = ({ authUser, buttonClassName, onConfirmLogout }: Props) => {
+export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }: Props) => {
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
+  const hasPassword = session?.user?.accounts?.some((account) => account.provider === 'credential') ?? false
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -92,10 +107,17 @@ export const UserMenu = ({ authUser, buttonClassName, onConfirmLogout }: Props) 
         <MenuPopover>
           <MenuList>
             <MenuItem icon={<MdLock />} onClick={() => setChangePasswordOpen(true)}>
-              <FormattedMessage
-                id="changePasswordMenuItem"
-                defaultMessage="Passwort ändern"
-              />
+              {hasPassword ? (
+                <FormattedMessage
+                  id="changePasswordMenuItem"
+                  defaultMessage="Passwort ändern"
+                />
+              ) : (
+                <FormattedMessage
+                  id="setPasswordMenuItem"
+                  defaultMessage="Passwort setzen"
+                />
+              )}
             </MenuItem>
             <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
               <FormattedMessage defaultMessage="Abmelden" />
@@ -107,6 +129,7 @@ export const UserMenu = ({ authUser, buttonClassName, onConfirmLogout }: Props) 
       <ChangePasswordDialog
         open={changePasswordOpen}
         onClose={() => setChangePasswordOpen(false)}
+        hasPassword={hasPassword}
       />
 
       <LogoutDialogs
