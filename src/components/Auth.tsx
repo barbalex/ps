@@ -18,7 +18,7 @@ export const Auth = () => {
   })
   const googleSignInLabel = formatMessage({
     id: 'authGoogleBtn',
-    defaultMessage: 'Mit Google fortfahren',
+    defaultMessage: 'Mit Google anmelden',
   })
   const requestPasswordResetLabel = formatMessage({
     id: 'authRequestPasswordResetBtn',

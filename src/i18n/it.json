@@ -823,7 +823,7 @@
   "authPleaseWait": "Attendere...",
   "authSignUpBtn": "Registrati",
   "authSignInBtn": "Accedi",
-  "authGoogleBtn": "Continua con Google",
+  "authGoogleBtn": "Accedi con Google",
   "authOtpSendBtn": "Invia codice monouso via e-mail",
   "authOtpSignInBtn": "Accedi con codice",
   "authOtpLabel": "Codice monouso",

@@ -839,7 +839,7 @@
   "authPleaseWait": "Please wait...",
   "authSignUpBtn": "Sign Up",
   "authSignInBtn": "Sign In",
-  "authGoogleBtn": "Continue with Google",
+  "authGoogleBtn": "Log in with Google",
   "authOtpSendBtn": "Send one-time code by email",
   "authOtpSignInBtn": "Sign in with code",
   "authOtpLabel": "One-time code",
