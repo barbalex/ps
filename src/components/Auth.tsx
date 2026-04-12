@@ -3,7 +3,14 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
-import { authClient, signUp, signIn, getSession } from '../modules/authClient.ts'
+import {
+  authClient,
+  signUp,
+  signIn,
+  getSession,
+} from '../modules/authClient.ts'
+import { ensurePgliteDb } from '../modules/ensurePgliteDb.ts'
+import { Initiating } from './Initiating.tsx'
 import styles from './Auth.module.css'
 
 export const Auth = () => {
@@ -55,6 +62,7 @@ export const Auth = () => {
   const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false)
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isDbInitializing, setIsDbInitializing] = useState(false)
   const [error, setError] = useState('')
   const [showRegisterSuggestion, setShowRegisterSuggestion] = useState(false)
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -70,9 +78,25 @@ export const Auth = () => {
     passwordResetNewPassword?: string
   }>({})
 
-  const onLoggedIn = useCallback(() => {
+  const onLoggedIn = useCallback(async () => {
+    setIsDbInitializing(true)
+    try {
+      await ensurePgliteDb()
+    } catch (err) {
+      console.error('PGlite initialization failed:', err)
+      setError(
+        formatMessage({
+          id: 'authUnexpectedError',
+          defaultMessage:
+            'Ein unerwarteter Fehler ist aufgetreten. Bitte erneut versuchen.',
+        }),
+      )
+      return
+    } finally {
+      setIsDbInitializing(false)
+    }
     navigate({ to: redirectTo })
-  }, [navigate, redirectTo])
+  }, [formatMessage, navigate, redirectTo])
 
   useEffect(() => {
     let isActive = true
@@ -337,11 +361,12 @@ export const Auth = () => {
       setPasswordResetMessage(
         formatMessage({
           id: 'authPasswordResetSuccess',
-          defaultMessage: 'Passwort erfolgreich zurückgesetzt. Sie werden in Kürze angemeldet.',
+          defaultMessage:
+            'Passwort erfolgreich zurückgesetzt. Sie werden in Kürze angemeldet.',
         }),
       )
       setPasswordResetNewPassword('')
-      
+
       // Clear token and redirect after success
       setTimeout(() => {
         onLoggedIn()
@@ -400,7 +425,9 @@ export const Auth = () => {
         })
 
         if (result.error) {
-          setShowRegisterSuggestion(isCredentialErrorMessage(result.error.message))
+          setShowRegisterSuggestion(
+            isCredentialErrorMessage(result.error.message),
+          )
           setError(getLocalizedSignInError(result.error.message))
         } else {
           onLoggedIn()
@@ -456,6 +483,10 @@ export const Auth = () => {
     setShowForgotPassword(false)
     setPasswordResetNewPassword('')
     setPasswordResetMessage('')
+  }
+
+  if (isDbInitializing) {
+    return <Initiating forceSqlInitializing />
   }
 
   return (
@@ -644,7 +675,9 @@ export const Auth = () => {
               <div className={styles.passwordFieldWrapper}>
                 <input
                   id="confirmPassword"
-                  type={passwordVisibility.confirmPassword ? 'text' : 'password'}
+                  type={
+                    passwordVisibility.confirmPassword ? 'text' : 'password'
+                  }
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.confirmPassword ? styles.error : ''}`}
@@ -779,7 +812,8 @@ export const Auth = () => {
                   <p className={styles.toggleText}>
                     {formatMessage({
                       id: 'authSendResetLink',
-                      defaultMessage: 'E-Mail eingeben, um Reset-Link zu erhalten:',
+                      defaultMessage:
+                        'E-Mail eingeben, um Reset-Link zu erhalten:',
                     })}
                   </p>
                   <div className={styles.formGroup}>
@@ -796,9 +830,7 @@ export const Auth = () => {
                       disabled={isPasswordResetLoading || isLoading}
                     />
                     {fieldErrors.email && (
-                      <p className={styles.errorMessage}>
-                        {fieldErrors.email}
-                      </p>
+                      <p className={styles.errorMessage}>{fieldErrors.email}</p>
                     )}
                   </div>
                   <button

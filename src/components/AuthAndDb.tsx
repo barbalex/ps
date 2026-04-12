@@ -32,7 +32,7 @@ export const AuthAndDb = () => {
   // In that case, we don't want to render the full app shell (auth, layout),
   // but just pass through to the route component.
   const isInDialog = useContext(DialogModeContext)
-  if (!pgliteDb) return <Initiating />
+  if (!pgliteDb) return <Initiating forceSqlInitializing />
 
   return (
     <PGliteProvider db={pgliteDb}>
