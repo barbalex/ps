@@ -116,10 +116,16 @@ export const auth = betterAuth({
   // TODO: test later and consider re-enabling if it can be made to work
   // experimental: { joins: true },
   trustedOrigins,
-  emailAndPassword: { enabled: true, minPasswordLength: 8 },
+  emailAndPassword: {
+    enabled: true,
+    minPasswordLength: 8,
+    requireEmailVerification: true,
+  },
   plugins: [
     emailOTP({
       disableSignUp: true,
+      overrideDefaultEmailVerification: true,
+      sendVerificationOnSignUp: true,
       async sendVerificationOTP({ email, otp, type }) {
         await sendOtpEmail({ email, otp, type })
       },

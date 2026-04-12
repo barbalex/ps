@@ -19,23 +19,44 @@ export const Auth = () => {
     id: 'authGoogleBtn',
     defaultMessage: 'Mit Google fortfahren',
   })
-  const otpSendLabel = formatMessage({
-    id: 'authOtpSendBtn',
-    defaultMessage: 'Einmalcode per E-Mail senden',
+  const verifyEmailLabel = formatMessage({
+    id: 'authVerifyEmailBtn',
+    defaultMessage: 'E-Mail verifizieren',
   })
-  const otpSignInLabel = formatMessage({
-    id: 'authOtpSignInBtn',
-    defaultMessage: 'Mit Code anmelden',
+  const sendVerificationCodeLabel = formatMessage({
+    id: 'authSendVerificationCodeBtn',
+    defaultMessage: 'Verifizierungscode senden',
+  })
+  const requestPasswordResetLabel = formatMessage({
+    id: 'authRequestPasswordResetBtn',
+    defaultMessage: 'Reset-Code senden',
+  })
+  const confirmPasswordResetLabel = formatMessage({
+    id: 'authConfirmPasswordResetBtn',
+    defaultMessage: 'Passwort mit Code zurücksetzen',
+  })
+  const accountToolsShowLabel = formatMessage({
+    id: 'authAccountToolsShow',
+    defaultMessage: 'Verifizierung & Passwort-Reset',
+  })
+  const accountToolsHideLabel = formatMessage({
+    id: 'authAccountToolsHide',
+    defaultMessage: 'Verifizierung & Passwort-Reset ausblenden',
   })
   const navigate = useNavigate()
   const [isSignUp, setIsSignUp] = useState(false)
+  const [showAccountTools, setShowAccountTools] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [otp, setOtp] = useState('')
-  const [otpRequested, setOtpRequested] = useState(false)
-  const [otpMessage, setOtpMessage] = useState('')
-  const [isOtpLoading, setIsOtpLoading] = useState(false)
+  const [verificationOtp, setVerificationOtp] = useState('')
+  const [isVerificationLoading, setIsVerificationLoading] = useState(false)
+  const [verificationMessage, setVerificationMessage] = useState('')
+  const [passwordResetRequested, setPasswordResetRequested] = useState(false)
+  const [passwordResetOtp, setPasswordResetOtp] = useState('')
+  const [passwordResetNewPassword, setPasswordResetNewPassword] = useState('')
+  const [passwordResetMessage, setPasswordResetMessage] = useState('')
+  const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false)
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -44,7 +65,9 @@ export const Auth = () => {
     password?: string
     confirmPassword?: string
     name?: string
-    otp?: string
+    verificationOtp?: string
+    passwordResetOtp?: string
+    passwordResetNewPassword?: string
   }>({})
 
   const onLoggedIn = useCallback(() => {
@@ -80,7 +103,6 @@ export const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     setError('')
-    setOtpMessage('')
     setIsLoading(true)
 
     try {
@@ -189,58 +211,57 @@ export const Auth = () => {
     return Object.keys(errors).length === 0
   }
 
-  const handleSendOtp = async () => {
+  const handleSendEmailVerificationOtp = async () => {
     setError('')
-    setOtpMessage('')
+    setPasswordResetMessage('')
+    setVerificationMessage('')
 
     if (!validateEmailOnly()) {
       return
     }
 
-    setIsOtpLoading(true)
-
+    setIsVerificationLoading(true)
     try {
       const result = await emailOtp.sendVerificationOtp({
         email,
-        type: 'sign-in',
+        type: 'email-verification',
       })
 
       if (result.error) {
         setError(
           result.error.message ||
             formatMessage({
-              id: 'authOtpSendFailed',
+              id: 'authVerificationCodeSendFailed',
               defaultMessage:
-                'Einmalcode konnte nicht gesendet werden. Bitte erneut versuchen.',
+                'Verifizierungscode konnte nicht gesendet werden.',
             }),
         )
         return
       }
 
-      setOtpRequested(true)
-      setOtpMessage(
+      setVerificationMessage(
         formatMessage({
-          id: 'authOtpSentSuccess',
-          defaultMessage: 'Einmalcode gesendet. Bitte E-Mail prüfen.',
+          id: 'authVerificationCodeSent',
+          defaultMessage: 'Verifizierungscode gesendet. Bitte E-Mail prüfen.',
         }),
       )
     } catch (err) {
       setError(
         formatMessage({
-          id: 'authOtpSendFailed',
-          defaultMessage:
-            'Einmalcode konnte nicht gesendet werden. Bitte erneut versuchen.',
+          id: 'authVerificationCodeSendFailed',
+          defaultMessage: 'Verifizierungscode konnte nicht gesendet werden.',
         }),
       )
-      console.error('OTP send error:', err)
+      console.error('Verification OTP send error:', err)
     } finally {
-      setIsOtpLoading(false)
+      setIsVerificationLoading(false)
     }
   }
 
-  const handleOtpSignIn = async () => {
+  const handleVerifyEmail = async () => {
     setError('')
-    setOtpMessage('')
+    setPasswordResetMessage('')
+    setVerificationMessage('')
 
     const errors: typeof fieldErrors = {}
     if (!validateEmail(email)) {
@@ -249,54 +270,176 @@ export const Auth = () => {
         defaultMessage: 'Bitte gültige E-Mail eingeben',
       })
     }
-    if (!otp) {
-      errors.otp = formatMessage({
+    if (!verificationOtp) {
+      errors.verificationOtp = formatMessage({
         id: 'authOtpRequired',
         defaultMessage: 'Code ist erforderlich',
       })
     }
     setFieldErrors(errors)
-    if (Object.keys(errors).length > 0) {
-      return
-    }
+    if (Object.keys(errors).length > 0) return
 
-    setIsOtpLoading(true)
-
+    setIsVerificationLoading(true)
     try {
-      const result = await signIn.emailOtp({
+      const result = await emailOtp.verifyEmail({
         email,
-        otp,
-        callbackURL: '/data/projects',
+        otp: verificationOtp,
       })
 
       if (result.error) {
         setError(
           result.error.message ||
             formatMessage({
-              id: 'authOtpInvalid',
-              defaultMessage: 'Ungültiger oder abgelaufener Code.',
+              id: 'authEmailVerifyFailed',
+              defaultMessage: 'E-Mail-Verifizierung fehlgeschlagen.',
             }),
         )
-      } else {
-        onLoggedIn()
+        return
       }
+
+      setVerificationMessage(
+        formatMessage({
+          id: 'authEmailVerifiedSuccess',
+          defaultMessage: 'E-Mail wurde erfolgreich verifiziert.',
+        }),
+      )
+      setVerificationOtp('')
     } catch (err) {
       setError(
         formatMessage({
-          id: 'authOtpInvalid',
-          defaultMessage: 'Ungültiger oder abgelaufener Code.',
+          id: 'authEmailVerifyFailed',
+          defaultMessage: 'E-Mail-Verifizierung fehlgeschlagen.',
         }),
       )
-      console.error('OTP sign-in error:', err)
+      console.error('Email verify error:', err)
     } finally {
-      setIsOtpLoading(false)
+      setIsVerificationLoading(false)
+    }
+  }
+
+  const handleRequestPasswordReset = async () => {
+    setError('')
+    setVerificationMessage('')
+    setPasswordResetMessage('')
+
+    if (!validateEmailOnly()) {
+      return
+    }
+
+    setIsPasswordResetLoading(true)
+    try {
+      const result = await emailOtp.requestPasswordReset({ email })
+
+      if (result.error) {
+        setError(
+          result.error.message ||
+            formatMessage({
+              id: 'authPasswordResetCodeSendFailed',
+              defaultMessage: 'Reset-Code konnte nicht gesendet werden.',
+            }),
+        )
+        return
+      }
+
+      setPasswordResetRequested(true)
+      setPasswordResetMessage(
+        formatMessage({
+          id: 'authPasswordResetCodeSent',
+          defaultMessage: 'Reset-Code gesendet. Bitte E-Mail prüfen.',
+        }),
+      )
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authPasswordResetCodeSendFailed',
+          defaultMessage: 'Reset-Code konnte nicht gesendet werden.',
+        }),
+      )
+      console.error('Password reset OTP request error:', err)
+    } finally {
+      setIsPasswordResetLoading(false)
+    }
+  }
+
+  const handleResetPasswordWithOtp = async () => {
+    setError('')
+    setVerificationMessage('')
+    setPasswordResetMessage('')
+
+    const errors: typeof fieldErrors = {}
+    if (!validateEmail(email)) {
+      errors.email = formatMessage({
+        id: 'authInvalidEmail',
+        defaultMessage: 'Bitte gültige E-Mail eingeben',
+      })
+    }
+    if (!passwordResetOtp) {
+      errors.passwordResetOtp = formatMessage({
+        id: 'authOtpRequired',
+        defaultMessage: 'Code ist erforderlich',
+      })
+    }
+    if (!passwordResetNewPassword) {
+      errors.passwordResetNewPassword = formatMessage({
+        id: 'authPasswordRequired',
+        defaultMessage: 'Passwort ist erforderlich',
+      })
+    } else if (passwordResetNewPassword.length < 8) {
+      errors.passwordResetNewPassword = formatMessage({
+        id: 'authPasswordTooShort',
+        defaultMessage: 'Passwort muss mindestens 8 Zeichen lang sein',
+      })
+    }
+    setFieldErrors(errors)
+    if (Object.keys(errors).length > 0) return
+
+    setIsPasswordResetLoading(true)
+    try {
+      const result = await emailOtp.resetPassword({
+        email,
+        otp: passwordResetOtp,
+        password: passwordResetNewPassword,
+      })
+
+      if (result.error) {
+        setError(
+          result.error.message ||
+            formatMessage({
+              id: 'authPasswordResetFailed',
+              defaultMessage: 'Passwort-Reset fehlgeschlagen.',
+            }),
+        )
+        return
+      }
+
+      setPasswordResetMessage(
+        formatMessage({
+          id: 'authPasswordResetSuccess',
+          defaultMessage:
+            'Passwort erfolgreich zurückgesetzt. Jetzt mit neuem Passwort anmelden.',
+        }),
+      )
+      setPasswordResetOtp('')
+      setPasswordResetNewPassword('')
+      setPasswordResetRequested(false)
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authPasswordResetFailed',
+          defaultMessage: 'Passwort-Reset fehlgeschlagen.',
+        }),
+      )
+      console.error('Password reset error:', err)
+    } finally {
+      setIsPasswordResetLoading(false)
     }
   }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setOtpMessage('')
+    setVerificationMessage('')
+    setPasswordResetMessage('')
 
     if (!validateForm()) {
       return
@@ -361,12 +504,16 @@ export const Auth = () => {
   const toggleMode = () => {
     setIsSignUp(!isSignUp)
     setError('')
-    setOtpMessage('')
+    setVerificationMessage('')
+    setPasswordResetMessage('')
     setFieldErrors({})
     setPassword('')
     setConfirmPassword('')
-    setOtp('')
-    setOtpRequested(false)
+    setVerificationOtp('')
+    setPasswordResetRequested(false)
+    setPasswordResetOtp('')
+    setPasswordResetNewPassword('')
+    setShowAccountTools(false)
   }
 
   return (
@@ -405,7 +552,12 @@ export const Auth = () => {
         </div>
 
         {error && <div className={styles.generalError}>{error}</div>}
-        {otpMessage && <div className={styles.successMessage}>{otpMessage}</div>}
+        {verificationMessage && (
+          <div className={styles.successMessage}>{verificationMessage}</div>
+        )}
+        {passwordResetMessage && (
+          <div className={styles.successMessage}>{passwordResetMessage}</div>
+        )}
 
         <button
           type="button"
@@ -432,20 +584,140 @@ export const Auth = () => {
           <div className={styles.otpActions}>
             <button
               type="button"
-              className={styles.secondaryButton}
-              onClick={handleSendOtp}
-              disabled={isLoading || isOtpLoading}
+              className={styles.accountToolsToggle}
+              onClick={() => setShowAccountTools((value) => !value)}
+              disabled={
+                isLoading || isVerificationLoading || isPasswordResetLoading
+              }
             >
-              {isOtpLoading
-                ? formatMessage({
-                    id: 'authPleaseWait',
-                    defaultMessage: 'Bitte warten...',
-                  })
-                : otpSendLabel}
+              {showAccountTools ? accountToolsHideLabel : accountToolsShowLabel}
             </button>
+
+            {showAccountTools && (
+              <div className={styles.accountToolsPanel}>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={handleSendEmailVerificationOtp}
+                  disabled={isVerificationLoading || isLoading}
+                >
+                  {isVerificationLoading
+                    ? formatMessage({
+                        id: 'authPleaseWait',
+                        defaultMessage: 'Bitte warten...',
+                      })
+                    : sendVerificationCodeLabel}
+                </button>
+                <div className={styles.formGroup}>
+                  <input
+                    id="verification-otp"
+                    type="text"
+                    value={verificationOtp}
+                    onChange={(e) => setVerificationOtp(e.target.value.trim())}
+                    className={`${styles.formInput} ${fieldErrors.verificationOtp ? styles.error : ''}`}
+                    placeholder={formatMessage({
+                      id: 'authVerificationOtpPlaceholder',
+                      defaultMessage: 'Verifizierungscode eingeben',
+                    })}
+                    disabled={isVerificationLoading || isLoading}
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                  />
+                  {fieldErrors.verificationOtp && (
+                    <p className={styles.errorMessage}>
+                      {fieldErrors.verificationOtp}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleVerifyEmail}
+                    disabled={isVerificationLoading || isLoading}
+                  >
+                    {isVerificationLoading
+                      ? formatMessage({
+                          id: 'authPleaseWait',
+                          defaultMessage: 'Bitte warten...',
+                        })
+                      : verifyEmailLabel}
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={handleRequestPasswordReset}
+                  disabled={isPasswordResetLoading || isLoading}
+                >
+                  {isPasswordResetLoading
+                    ? formatMessage({
+                        id: 'authPleaseWait',
+                        defaultMessage: 'Bitte warten...',
+                      })
+                    : requestPasswordResetLabel}
+                </button>
+
+                {passwordResetRequested && (
+                  <div className={styles.formGroup}>
+                    <input
+                      id="password-reset-otp"
+                      type="text"
+                      value={passwordResetOtp}
+                      onChange={(e) =>
+                        setPasswordResetOtp(e.target.value.trim())
+                      }
+                      className={`${styles.formInput} ${fieldErrors.passwordResetOtp ? styles.error : ''}`}
+                      placeholder={formatMessage({
+                        id: 'authPasswordResetOtpPlaceholder',
+                        defaultMessage: 'Reset-Code eingeben',
+                      })}
+                      disabled={isPasswordResetLoading || isLoading}
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                    />
+                    {fieldErrors.passwordResetOtp && (
+                      <p className={styles.errorMessage}>
+                        {fieldErrors.passwordResetOtp}
+                      </p>
+                    )}
+                    <input
+                      id="password-reset-new-password"
+                      type="password"
+                      value={passwordResetNewPassword}
+                      onChange={(e) =>
+                        setPasswordResetNewPassword(e.target.value)
+                      }
+                      className={`${styles.formInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
+                      placeholder={formatMessage({
+                        id: 'authPasswordResetNewPasswordPlaceholder',
+                        defaultMessage: 'Neues Passwort eingeben',
+                      })}
+                      disabled={isPasswordResetLoading || isLoading}
+                    />
+                    {fieldErrors.passwordResetNewPassword && (
+                      <p className={styles.errorMessage}>
+                        {fieldErrors.passwordResetNewPassword}
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={handleResetPasswordWithOtp}
+                      disabled={isPasswordResetLoading || isLoading}
+                    >
+                      {isPasswordResetLoading
+                        ? formatMessage({
+                            id: 'authPleaseWait',
+                            defaultMessage: 'Bitte warten...',
+                          })
+                        : confirmPasswordResetLabel}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
-
         <form className={styles.authForm} onSubmit={handleSubmit}>
           {isSignUp && (
             <div className={styles.formGroup}>
@@ -493,47 +765,6 @@ export const Auth = () => {
               <p className={styles.errorMessage}>{fieldErrors.email}</p>
             )}
           </div>
-
-          {!isSignUp && otpRequested && (
-            <div className={styles.formGroup}>
-              <label htmlFor="otp" className={styles.formLabel}>
-                {formatMessage({
-                  id: 'authOtpLabel',
-                  defaultMessage: 'Einmalcode',
-                })}
-              </label>
-              <input
-                id="otp"
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.trim())}
-                className={`${styles.formInput} ${fieldErrors.otp ? styles.error : ''}`}
-                placeholder={formatMessage({
-                  id: 'authOtpPlaceholder',
-                  defaultMessage: 'Code eingeben',
-                })}
-                disabled={isLoading || isOtpLoading}
-                inputMode="numeric"
-                autoComplete="one-time-code"
-              />
-              {fieldErrors.otp && (
-                <p className={styles.errorMessage}>{fieldErrors.otp}</p>
-              )}
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                onClick={handleOtpSignIn}
-                disabled={isLoading || isOtpLoading}
-              >
-                {isOtpLoading
-                  ? formatMessage({
-                      id: 'authPleaseWait',
-                      defaultMessage: 'Bitte warten...',
-                    })
-                  : otpSignInLabel}
-              </button>
-            </div>
-          )}
 
           <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.formLabel}>

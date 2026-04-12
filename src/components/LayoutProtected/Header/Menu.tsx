@@ -13,6 +13,7 @@ const {
   MenuList,
   MenuPopover,
   MenuTrigger,
+  Input,
   Toolbar,
   ToolbarToggleButton,
   Tooltip,
@@ -20,7 +21,7 @@ const {
 import { useEffect, useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
-import { MdLogout, MdLogin, MdHome } from 'react-icons/md'
+import { MdLogout, MdLogin, MdHome, MdLock } from 'react-icons/md'
 import {
   useNavigate,
   useLocation,
@@ -45,7 +46,7 @@ import { Online } from './Online.tsx'
 import styles from './Menu.module.css'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
-import { signOut, useSession } from '../../../modules/authClient.ts'
+import { authClient, signOut, useSession } from '../../../modules/authClient.ts'
 
 const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -203,6 +204,13 @@ export const Menu = () => {
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [changePasswordError, setChangePasswordError] = useState('')
+  const [changePasswordMessage, setChangePasswordMessage] = useState('')
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [pendingOperationsCount, setPendingOperationsCount] = useState(0)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const navigate = useNavigate()
@@ -255,6 +263,91 @@ export const Menu = () => {
     const pendingCount = operationsQueue?.length ?? 0
     setPendingOperationsCount(pendingCount)
     setLogoutDialogStep(pendingCount > 0 ? 'pending' : 'wipe')
+  }
+
+  const onOpenChangePassword = () => {
+    setChangePasswordError('')
+    setChangePasswordMessage('')
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmNewPassword('')
+    setChangePasswordOpen(true)
+  }
+
+  const onCloseChangePassword = () => {
+    if (isChangingPassword) return
+    setChangePasswordOpen(false)
+    setChangePasswordError('')
+    setChangePasswordMessage('')
+  }
+
+  const onSubmitChangePassword = async () => {
+    setChangePasswordError('')
+    setChangePasswordMessage('')
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      setChangePasswordError(
+        intl.formatMessage({
+          defaultMessage: 'Bitte alle Passwortfelder ausfüllen.',
+        }),
+      )
+      return
+    }
+
+    if (newPassword.length < 8) {
+      setChangePasswordError(
+        intl.formatMessage({
+          defaultMessage: 'Das neue Passwort muss mindestens 8 Zeichen haben.',
+        }),
+      )
+      return
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setChangePasswordError(
+        intl.formatMessage({
+          defaultMessage: 'Die neuen Passwörter stimmen nicht überein.',
+        }),
+      )
+      return
+    }
+
+    setIsChangingPassword(true)
+    try {
+      const result = await authClient.changePassword({
+        currentPassword,
+        newPassword,
+        revokeOtherSessions: true,
+      })
+
+      if (result.error) {
+        setChangePasswordError(
+          result.error.message ||
+            intl.formatMessage({
+              defaultMessage: 'Passwort konnte nicht geändert werden.',
+            }),
+        )
+        return
+      }
+
+      setChangePasswordMessage(
+        intl.formatMessage({
+          defaultMessage: 'Passwort erfolgreich geändert.',
+        }),
+      )
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmNewPassword('')
+    } catch (error) {
+      setChangePasswordError(
+        intl.formatMessage({
+          defaultMessage: 'Passwort konnte nicht geändert werden.',
+        }),
+      )
+      console.error('Change password error:', error)
+    } finally {
+      setIsChangingPassword(false)
+    }
   }
 
   const onCancelLogout = () => {
@@ -444,6 +537,9 @@ export const Menu = () => {
             </Tooltip>
             <MenuPopover>
               <MenuList>
+                <MenuItem icon={<MdLock />} onClick={onOpenChangePassword}>
+                  <FormattedMessage defaultMessage="Passwort ändern" />
+                </MenuItem>
                 <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
                   <FormattedMessage defaultMessage="Abmelden" />
                 </MenuItem>
@@ -571,6 +667,78 @@ export const Menu = () => {
                     id="logoutNowBtn"
                     defaultMessage="Jetzt abmelden"
                   />
+                )}
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
+
+      <Dialog open={changePasswordOpen} onOpenChange={onCloseChangePassword}>
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>
+              <FormattedMessage defaultMessage="Passwort ändern" />
+            </DialogTitle>
+            <DialogContent>
+              <div className={styles.changePasswordForm}>
+                {changePasswordError && (
+                  <div className={styles.changePasswordError}>
+                    {changePasswordError}
+                  </div>
+                )}
+                {changePasswordMessage && (
+                  <div className={styles.changePasswordSuccess}>
+                    {changePasswordMessage}
+                  </div>
+                )}
+
+                <Input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(_, data) => setCurrentPassword(data.value)}
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Aktuelles Passwort',
+                  })}
+                  disabled={isChangingPassword}
+                />
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(_, data) => setNewPassword(data.value)}
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Neues Passwort',
+                  })}
+                  disabled={isChangingPassword}
+                />
+                <Input
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(_, data) => setConfirmNewPassword(data.value)}
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Neues Passwort bestätigen',
+                  })}
+                  disabled={isChangingPassword}
+                />
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                appearance="secondary"
+                onClick={onCloseChangePassword}
+                disabled={isChangingPassword}
+              >
+                <FormattedMessage defaultMessage="Abbrechen" />
+              </Button>
+              <Button
+                appearance="primary"
+                onClick={onSubmitChangePassword}
+                disabled={isChangingPassword}
+              >
+                {isChangingPassword ? (
+                  <FormattedMessage defaultMessage="Bitte warten..." />
+                ) : (
+                  <FormattedMessage defaultMessage="Passwort speichern" />
                 )}
               </Button>
             </DialogActions>
