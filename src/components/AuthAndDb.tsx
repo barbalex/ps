@@ -9,20 +9,15 @@ import { Syncer } from './Syncer.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
-  initialSyncingAtom,
   sqlInitializingAtom,
   syncObjectAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
-import { useSession } from '../modules/authClient.ts'
 
 export const AuthAndDb = () => {
-  const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
-  const { data: session } = useSession()
-  const isAuthenticated = Boolean(session?.user)
-  const initiating = sqlInitializing || (isAuthenticated && initialSyncing)
+  const initiating = sqlInitializing
 
   // unsubscribe from sync when page unloads
   useBeforeunload(() => {
