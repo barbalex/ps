@@ -623,6 +623,18 @@ export const Auth = () => {
             {fieldErrors.password && (
               <p className={styles.errorMessage}>{fieldErrors.password}</p>
             )}
+            {!isSignUp && (
+              <button
+                type="button"
+                className={styles.inlineTextLink}
+                onClick={() => setShowForgotPassword((value) => !value)}
+                disabled={isLoading || isPasswordResetLoading}
+              >
+                {showForgotPassword
+                  ? forgotPasswordHideLabel
+                  : forgotPasswordShowLabel}
+              </button>
+            )}
           </div>
 
           {isSignUp && (
@@ -692,125 +704,109 @@ export const Auth = () => {
                 : signInLabel}
           </button>
         </form>
-
-        {!isSignUp && (
+        {!isSignUp && showForgotPassword && (
           <div className={styles.otpActions}>
-            <button
-              type="button"
-              className={styles.accountToolsToggle}
-              onClick={() => setShowForgotPassword((value) => !value)}
-              disabled={isLoading || isPasswordResetLoading}
-            >
-              {showForgotPassword
-                ? forgotPasswordHideLabel
-                : forgotPasswordShowLabel}
-            </button>
+            <div className={styles.accountToolsPanel}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleRequestPasswordReset}
+                disabled={isPasswordResetLoading || isLoading}
+              >
+                {isPasswordResetLoading
+                  ? formatMessage({
+                      id: 'authPleaseWait',
+                      defaultMessage: 'Bitte warten...',
+                    })
+                  : requestPasswordResetLabel}
+              </button>
 
-            {showForgotPassword && (
-              <div className={styles.accountToolsPanel}>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={handleRequestPasswordReset}
-                  disabled={isPasswordResetLoading || isLoading}
-                >
-                  {isPasswordResetLoading
-                    ? formatMessage({
-                        id: 'authPleaseWait',
-                        defaultMessage: 'Bitte warten...',
-                      })
-                    : requestPasswordResetLabel}
-                </button>
-
-                {passwordResetRequested && (
-                  <div className={styles.formGroup}>
+              {passwordResetRequested && (
+                <div className={styles.formGroup}>
+                  <input
+                    id="password-reset-otp"
+                    type="text"
+                    value={passwordResetOtp}
+                    onChange={(e) => setPasswordResetOtp(e.target.value.trim())}
+                    className={`${styles.formInput} ${fieldErrors.passwordResetOtp ? styles.error : ''}`}
+                    placeholder={formatMessage({
+                      id: 'authPasswordResetOtpPlaceholder',
+                      defaultMessage: 'Reset-Code eingeben',
+                    })}
+                    disabled={isPasswordResetLoading || isLoading}
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                  />
+                  {fieldErrors.passwordResetOtp && (
+                    <p className={styles.errorMessage}>
+                      {fieldErrors.passwordResetOtp}
+                    </p>
+                  )}
+                  <div className={styles.passwordFieldWrapper}>
                     <input
-                      id="password-reset-otp"
-                      type="text"
-                      value={passwordResetOtp}
-                      onChange={(e) =>
-                        setPasswordResetOtp(e.target.value.trim())
+                      id="password-reset-new-password"
+                      type={
+                        passwordVisibility.passwordResetNewPassword
+                          ? 'text'
+                          : 'password'
                       }
-                      className={`${styles.formInput} ${fieldErrors.passwordResetOtp ? styles.error : ''}`}
+                      value={passwordResetNewPassword}
+                      onChange={(e) =>
+                        setPasswordResetNewPassword(e.target.value)
+                      }
+                      className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
                       placeholder={formatMessage({
-                        id: 'authPasswordResetOtpPlaceholder',
-                        defaultMessage: 'Reset-Code eingeben',
+                        id: 'authPasswordResetNewPasswordPlaceholder',
+                        defaultMessage: 'Neues Passwort eingeben',
                       })}
                       disabled={isPasswordResetLoading || isLoading}
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
                     />
-                    {fieldErrors.passwordResetOtp && (
-                      <p className={styles.errorMessage}>
-                        {fieldErrors.passwordResetOtp}
-                      </p>
-                    )}
-                    <div className={styles.passwordFieldWrapper}>
-                      <input
-                        id="password-reset-new-password"
-                        type={
-                          passwordVisibility.passwordResetNewPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        value={passwordResetNewPassword}
-                        onChange={(e) =>
-                          setPasswordResetNewPassword(e.target.value)
-                        }
-                        className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
-                        placeholder={formatMessage({
-                          id: 'authPasswordResetNewPasswordPlaceholder',
-                          defaultMessage: 'Neues Passwort eingeben',
-                        })}
-                        disabled={isPasswordResetLoading || isLoading}
-                      />
-                      <button
-                        type="button"
-                        className={styles.passwordToggle}
-                        onClick={() =>
-                          togglePasswordVisibility('passwordResetNewPassword')
-                        }
-                        aria-label={
-                          passwordVisibility.passwordResetNewPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        title={
-                          passwordVisibility.passwordResetNewPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        disabled={isPasswordResetLoading || isLoading}
-                      >
-                        {passwordVisibility.passwordResetNewPassword ? (
-                          <MdVisibilityOff />
-                        ) : (
-                          <MdVisibility />
-                        )}
-                      </button>
-                    </div>
-                    {fieldErrors.passwordResetNewPassword && (
-                      <p className={styles.errorMessage}>
-                        {fieldErrors.passwordResetNewPassword}
-                      </p>
-                    )}
                     <button
                       type="button"
-                      className={styles.secondaryButton}
-                      onClick={handleResetPasswordWithOtp}
+                      className={styles.passwordToggle}
+                      onClick={() =>
+                        togglePasswordVisibility('passwordResetNewPassword')
+                      }
+                      aria-label={
+                        passwordVisibility.passwordResetNewPassword
+                          ? hidePasswordLabel
+                          : showPasswordLabel
+                      }
+                      title={
+                        passwordVisibility.passwordResetNewPassword
+                          ? hidePasswordLabel
+                          : showPasswordLabel
+                      }
                       disabled={isPasswordResetLoading || isLoading}
                     >
-                      {isPasswordResetLoading
-                        ? formatMessage({
-                            id: 'authPleaseWait',
-                            defaultMessage: 'Bitte warten...',
-                          })
-                        : confirmPasswordResetLabel}
+                      {passwordVisibility.passwordResetNewPassword ? (
+                        <MdVisibilityOff />
+                      ) : (
+                        <MdVisibility />
+                      )}
                     </button>
                   </div>
-                )}
-              </div>
-            )}
+                  {fieldErrors.passwordResetNewPassword && (
+                    <p className={styles.errorMessage}>
+                      {fieldErrors.passwordResetNewPassword}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleResetPasswordWithOtp}
+                    disabled={isPasswordResetLoading || isLoading}
+                  >
+                    {isPasswordResetLoading
+                      ? formatMessage({
+                          id: 'authPleaseWait',
+                          defaultMessage: 'Bitte warten...',
+                        })
+                      : confirmPasswordResetLabel}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
 

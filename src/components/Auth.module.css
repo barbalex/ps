@@ -184,20 +184,31 @@
   cursor: not-allowed;
 }
 
-.accountToolsToggle {
-  width: 100%;
-  padding: 8px 10px;
+.inlineTextLink {
+  align-self: flex-start;
+  margin: 2px 0 0 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #35612b;
   font-size: 12px;
-  font-weight: 600;
-  color: #355f2b;
-  background: rgba(225, 247, 224, 0.45);
-  border: 1px dashed rgba(55, 118, 28, 0.45);
-  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   cursor: pointer;
 }
 
+.inlineTextLink:hover:not(:disabled) {
+  color: #20461f;
+}
+
+.inlineTextLink:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .accountToolsPanel {
-  margin-top: 8px;
+  margin-top: 2px;
   padding: 10px;
   border: 1px solid rgba(55, 118, 28, 0.2);
   border-radius: 6px;
