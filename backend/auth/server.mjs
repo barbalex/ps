@@ -2,6 +2,7 @@
 import express from 'express'
 import cors from 'cors'
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
+import { hashPassword } from '@better-auth/utils/password'
 import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
@@ -87,17 +88,11 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
       return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
     }
 
-    // Check if user has any credential accounts (passwords)
+    // Check if user has credential account already.
     const accountsResult = await pool.query(
-      'SELECT provider_id FROM auth_accounts WHERE user_id = $1 AND provider_id = $2',
+      'SELECT auth_account_id, password FROM auth_accounts WHERE user_id = $1 AND provider_id = $2 ORDER BY created_at DESC LIMIT 1',
       [userId, 'credential'],
     )
-
-    if (accountsResult.rows.length > 0) {
-      return res.status(400).json({ 
-        error: { code: 'PASSWORD_ALREADY_EXISTS' } 
-      })
-    }
 
     // Check password requirements
     if (!newPassword || newPassword.length < 8) {
@@ -106,25 +101,34 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
       })
     }
 
-    // Hash password and create credential account
-    const crypto = await import('crypto')
-    const saltBuffer = crypto.randomBytes(16)
-    const iterations = 16000
-    const digest = 'sha256'
-    
-    const derivedKey = crypto.pbkdf2Sync(
-      newPassword,
-      saltBuffer,
-      iterations,
-      32,
-      digest,
-    )
-    
-    const hashedPassword = `$pbkdf2-sha256$${iterations}$${saltBuffer.toString('base64')}$${derivedKey.toString('base64')}`
+    const hashedPassword = await hashPassword(newPassword)
+
+    if (accountsResult.rows.length > 0) {
+      const existing = accountsResult.rows[0]
+      const existingHash = String(existing.password ?? '')
+      const looksLikeBetterAuthHash =
+        /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(existingHash)
+
+      if (looksLikeBetterAuthHash) {
+        return res.status(400).json({
+          error: { code: 'PASSWORD_ALREADY_EXISTS' },
+        })
+      }
+
+      // Repair malformed legacy hash created by older custom endpoint implementation.
+      await pool.query(
+        `UPDATE auth_accounts
+         SET password = $2, updated_at = NOW()
+         WHERE auth_account_id = $1`,
+        [existing.auth_account_id, hashedPassword],
+      )
+
+      return res.json({ ok: true, repaired: true })
+    }
 
     await pool.query(
-      `INSERT INTO auth_accounts 
-       (user_id, provider_id, sso_account_id, password, created_at, updated_at) 
+      `INSERT INTO auth_accounts
+       (user_id, provider_id, sso_account_id, password, created_at, updated_at)
        VALUES ($1, $2, $3, $4, NOW(), NOW())`,
       [userId, 'credential', userId, hashedPassword],
     )

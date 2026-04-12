@@ -170,6 +170,13 @@ export const ChangePasswordDialog = ({
                 'Passwort ist bereits gesetzt. Du kannst es jetzt über "Passwort ändern" aktualisieren.',
             }),
           )
+          setCurrentPassword('')
+          setNewPassword('')
+          setConfirmNewPassword('')
+          changePasswordSuccessTimeoutRef.current = setTimeout(() => {
+            onClose()
+            changePasswordSuccessTimeoutRef.current = undefined
+          }, 1200)
           return
         }
 
