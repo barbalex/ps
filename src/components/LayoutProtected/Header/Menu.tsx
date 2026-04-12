@@ -163,8 +163,6 @@ const clearLocalSyncedData = async () => {
   }
 }
 
-// TODO:
-// use overflow menu for tabs and app-states
 export const Menu = () => {
   const intl = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)

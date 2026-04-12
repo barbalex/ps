@@ -234,9 +234,12 @@
 
 .passwordFieldWrapper {
   position: relative;
+  width: 100%;
 }
 
 .passwordInput {
+  width: 100%;
+  box-sizing: border-box;
   padding-right: 42px;
 }
 
