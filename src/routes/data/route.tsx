@@ -38,7 +38,7 @@ export const Route = createFileRoute('/data')({
         search: { redirect: location.href },
       })
 
-    // Ensure a DB instance exists before protected route components mount.
+    // 2. Ensure a DB instance exists before protected route components mount
     await ensurePgliteDb()
 
     return { navDataFetcher: 'useDataBreadcrumbData' }
