@@ -30,11 +30,11 @@ export const Auth = () => {
   })
   const forgotPasswordShowLabel = formatMessage({
     id: 'authForgotPasswordShow',
-    defaultMessage: 'Passwort vergessen?',
+    defaultMessage: 'Neues Passwort setzen',
   })
   const forgotPasswordHideLabel = formatMessage({
     id: 'authForgotPasswordHide',
-    defaultMessage: 'Passwort-Reset ausblenden',
+    defaultMessage: 'Formular für neues Passwort ausblenden',
   })
   const navigate = useNavigate()
   const showPasswordLabel = formatMessage({
