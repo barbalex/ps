@@ -834,6 +834,8 @@
   "authOtpInvalid": "Code invalide ou expiré.",
   "authMethodPassword": "Mot de passe",
   "authMethodOtp": "Code unique",
+  "authForgotPasswordShow": "Mot de passe oublié ?",
+  "authForgotPasswordHide": "Masquer la réinitialisation du mot de passe",
   "authAccountToolsShow": "Vérification et réinitialisation du mot de passe",
   "authAccountToolsHide": "Masquer vérification et réinitialisation du mot de passe",
   "authSendVerificationCodeBtn": "Envoyer le code de vérification",

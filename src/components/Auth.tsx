@@ -20,14 +20,6 @@ export const Auth = () => {
     id: 'authGoogleBtn',
     defaultMessage: 'Mit Google fortfahren',
   })
-  const verifyEmailLabel = formatMessage({
-    id: 'authVerifyEmailBtn',
-    defaultMessage: 'E-Mail verifizieren',
-  })
-  const sendVerificationCodeLabel = formatMessage({
-    id: 'authSendVerificationCodeBtn',
-    defaultMessage: 'Verifizierungscode senden',
-  })
   const requestPasswordResetLabel = formatMessage({
     id: 'authRequestPasswordResetBtn',
     defaultMessage: 'Reset-Code senden',
@@ -36,13 +28,13 @@ export const Auth = () => {
     id: 'authConfirmPasswordResetBtn',
     defaultMessage: 'Passwort mit Code zurücksetzen',
   })
-  const accountToolsShowLabel = formatMessage({
-    id: 'authAccountToolsShow',
-    defaultMessage: 'Verifizierung & Passwort-Reset',
+  const forgotPasswordShowLabel = formatMessage({
+    id: 'authForgotPasswordShow',
+    defaultMessage: 'Passwort vergessen?',
   })
-  const accountToolsHideLabel = formatMessage({
-    id: 'authAccountToolsHide',
-    defaultMessage: 'Verifizierung & Passwort-Reset ausblenden',
+  const forgotPasswordHideLabel = formatMessage({
+    id: 'authForgotPasswordHide',
+    defaultMessage: 'Passwort-Reset ausblenden',
   })
   const navigate = useNavigate()
   const showPasswordLabel = formatMessage({
@@ -52,13 +44,10 @@ export const Auth = () => {
     defaultMessage: 'Passwort verbergen',
   })
   const [isSignUp, setIsSignUp] = useState(false)
-  const [showAccountTools, setShowAccountTools] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [verificationOtp, setVerificationOtp] = useState('')
-  const [isVerificationLoading, setIsVerificationLoading] = useState(false)
-  const [verificationMessage, setVerificationMessage] = useState('')
   const [passwordResetRequested, setPasswordResetRequested] = useState(false)
   const [passwordResetOtp, setPasswordResetOtp] = useState('')
   const [passwordResetNewPassword, setPasswordResetNewPassword] = useState('')
@@ -77,7 +66,6 @@ export const Auth = () => {
     password?: string
     confirmPassword?: string
     name?: string
-    verificationOtp?: string
     passwordResetOtp?: string
     passwordResetNewPassword?: string
   }>({})
@@ -223,115 +211,8 @@ export const Auth = () => {
     return Object.keys(errors).length === 0
   }
 
-  const handleSendEmailVerificationOtp = async () => {
-    setError('')
-    setPasswordResetMessage('')
-    setVerificationMessage('')
-
-    if (!validateEmailOnly()) {
-      return
-    }
-
-    setIsVerificationLoading(true)
-    try {
-      const result = await emailOtp.sendVerificationOtp({
-        email,
-        type: 'email-verification',
-      })
-
-      if (result.error) {
-        setError(
-          result.error.message ||
-            formatMessage({
-              id: 'authVerificationCodeSendFailed',
-              defaultMessage:
-                'Verifizierungscode konnte nicht gesendet werden.',
-            }),
-        )
-        return
-      }
-
-      setVerificationMessage(
-        formatMessage({
-          id: 'authVerificationCodeSent',
-          defaultMessage: 'Verifizierungscode gesendet. Bitte E-Mail prüfen.',
-        }),
-      )
-    } catch (err) {
-      setError(
-        formatMessage({
-          id: 'authVerificationCodeSendFailed',
-          defaultMessage: 'Verifizierungscode konnte nicht gesendet werden.',
-        }),
-      )
-      console.error('Verification OTP send error:', err)
-    } finally {
-      setIsVerificationLoading(false)
-    }
-  }
-
-  const handleVerifyEmail = async () => {
-    setError('')
-    setPasswordResetMessage('')
-    setVerificationMessage('')
-
-    const errors: typeof fieldErrors = {}
-    if (!validateEmail(email)) {
-      errors.email = formatMessage({
-        id: 'authInvalidEmail',
-        defaultMessage: 'Bitte gültige E-Mail eingeben',
-      })
-    }
-    if (!verificationOtp) {
-      errors.verificationOtp = formatMessage({
-        id: 'authOtpRequired',
-        defaultMessage: 'Code ist erforderlich',
-      })
-    }
-    setFieldErrors(errors)
-    if (Object.keys(errors).length > 0) return
-
-    setIsVerificationLoading(true)
-    try {
-      const result = await emailOtp.verifyEmail({
-        email,
-        otp: verificationOtp,
-      })
-
-      if (result.error) {
-        setError(
-          result.error.message ||
-            formatMessage({
-              id: 'authEmailVerifyFailed',
-              defaultMessage: 'E-Mail-Verifizierung fehlgeschlagen.',
-            }),
-        )
-        return
-      }
-
-      setVerificationMessage(
-        formatMessage({
-          id: 'authEmailVerifiedSuccess',
-          defaultMessage: 'E-Mail wurde erfolgreich verifiziert.',
-        }),
-      )
-      setVerificationOtp('')
-    } catch (err) {
-      setError(
-        formatMessage({
-          id: 'authEmailVerifyFailed',
-          defaultMessage: 'E-Mail-Verifizierung fehlgeschlagen.',
-        }),
-      )
-      console.error('Email verify error:', err)
-    } finally {
-      setIsVerificationLoading(false)
-    }
-  }
-
   const handleRequestPasswordReset = async () => {
     setError('')
-    setVerificationMessage('')
     setPasswordResetMessage('')
 
     if (!validateEmailOnly()) {
@@ -375,7 +256,6 @@ export const Auth = () => {
 
   const handleResetPasswordWithOtp = async () => {
     setError('')
-    setVerificationMessage('')
     setPasswordResetMessage('')
 
     const errors: typeof fieldErrors = {}
@@ -450,7 +330,6 @@ export const Auth = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setVerificationMessage('')
     setPasswordResetMessage('')
 
     if (!validateForm()) {
@@ -516,16 +395,14 @@ export const Auth = () => {
   const toggleMode = () => {
     setIsSignUp(!isSignUp)
     setError('')
-    setVerificationMessage('')
     setPasswordResetMessage('')
     setFieldErrors({})
     setPassword('')
     setConfirmPassword('')
-    setVerificationOtp('')
     setPasswordResetRequested(false)
     setPasswordResetOtp('')
     setPasswordResetNewPassword('')
-    setShowAccountTools(false)
+    setShowForgotPassword(false)
     setPasswordVisibility({
       password: false,
       confirmPassword: false,
@@ -578,201 +455,8 @@ export const Auth = () => {
         </div>
 
         {error && <div className={styles.generalError}>{error}</div>}
-        {verificationMessage && (
-          <div className={styles.successMessage}>{verificationMessage}</div>
-        )}
         {passwordResetMessage && (
           <div className={styles.successMessage}>{passwordResetMessage}</div>
-        )}
-
-        <button
-          type="button"
-          className={styles.socialButton}
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-        >
-          <span className={styles.googleMark} aria-hidden="true">
-            G
-          </span>
-          {googleSignInLabel}
-        </button>
-
-        <div className={styles.socialDivider}>
-          <span>
-            {formatMessage({
-              id: 'authOrDivider',
-              defaultMessage: 'oder',
-            })}
-          </span>
-        </div>
-
-        {!isSignUp && (
-          <div className={styles.otpActions}>
-            <button
-              type="button"
-              className={styles.accountToolsToggle}
-              onClick={() => setShowAccountTools((value) => !value)}
-              disabled={
-                isLoading || isVerificationLoading || isPasswordResetLoading
-              }
-            >
-              {showAccountTools ? accountToolsHideLabel : accountToolsShowLabel}
-            </button>
-
-            {showAccountTools && (
-              <div className={styles.accountToolsPanel}>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={handleSendEmailVerificationOtp}
-                  disabled={isVerificationLoading || isLoading}
-                >
-                  {isVerificationLoading
-                    ? formatMessage({
-                        id: 'authPleaseWait',
-                        defaultMessage: 'Bitte warten...',
-                      })
-                    : sendVerificationCodeLabel}
-                </button>
-                <div className={styles.formGroup}>
-                  <input
-                    id="verification-otp"
-                    type="text"
-                    value={verificationOtp}
-                    onChange={(e) => setVerificationOtp(e.target.value.trim())}
-                    className={`${styles.formInput} ${fieldErrors.verificationOtp ? styles.error : ''}`}
-                    placeholder={formatMessage({
-                      id: 'authVerificationOtpPlaceholder',
-                      defaultMessage: 'Verifizierungscode eingeben',
-                    })}
-                    disabled={isVerificationLoading || isLoading}
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                  />
-                  {fieldErrors.verificationOtp && (
-                    <p className={styles.errorMessage}>
-                      {fieldErrors.verificationOtp}
-                    </p>
-                  )}
-                  <button
-                    type="button"
-                    className={styles.secondaryButton}
-                    onClick={handleVerifyEmail}
-                    disabled={isVerificationLoading || isLoading}
-                  >
-                    {isVerificationLoading
-                      ? formatMessage({
-                          id: 'authPleaseWait',
-                          defaultMessage: 'Bitte warten...',
-                        })
-                      : verifyEmailLabel}
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={handleRequestPasswordReset}
-                  disabled={isPasswordResetLoading || isLoading}
-                >
-                  {isPasswordResetLoading
-                    ? formatMessage({
-                        id: 'authPleaseWait',
-                        defaultMessage: 'Bitte warten...',
-                      })
-                    : requestPasswordResetLabel}
-                </button>
-
-                {passwordResetRequested && (
-                  <div className={styles.formGroup}>
-                    <input
-                      id="password-reset-otp"
-                      type="text"
-                      value={passwordResetOtp}
-                      onChange={(e) =>
-                        setPasswordResetOtp(e.target.value.trim())
-                      }
-                      className={`${styles.formInput} ${fieldErrors.passwordResetOtp ? styles.error : ''}`}
-                      placeholder={formatMessage({
-                        id: 'authPasswordResetOtpPlaceholder',
-                        defaultMessage: 'Reset-Code eingeben',
-                      })}
-                      disabled={isPasswordResetLoading || isLoading}
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
-                    />
-                    {fieldErrors.passwordResetOtp && (
-                      <p className={styles.errorMessage}>
-                        {fieldErrors.passwordResetOtp}
-                      </p>
-                    )}
-                    <div className={styles.passwordFieldWrapper}>
-                      <input
-                        id="password-reset-new-password"
-                        type={
-                          passwordVisibility.passwordResetNewPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        value={passwordResetNewPassword}
-                        onChange={(e) =>
-                          setPasswordResetNewPassword(e.target.value)
-                        }
-                        className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
-                        placeholder={formatMessage({
-                          id: 'authPasswordResetNewPasswordPlaceholder',
-                          defaultMessage: 'Neues Passwort eingeben',
-                        })}
-                        disabled={isPasswordResetLoading || isLoading}
-                      />
-                      <button
-                        type="button"
-                        className={styles.passwordToggle}
-                        onClick={() =>
-                          togglePasswordVisibility('passwordResetNewPassword')
-                        }
-                        aria-label={
-                          passwordVisibility.passwordResetNewPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        title={
-                          passwordVisibility.passwordResetNewPassword
-                            ? hidePasswordLabel
-                            : showPasswordLabel
-                        }
-                        disabled={isPasswordResetLoading || isLoading}
-                      >
-                        {passwordVisibility.passwordResetNewPassword ? (
-                          <MdVisibilityOff />
-                        ) : (
-                          <MdVisibility />
-                        )}
-                      </button>
-                    </div>
-                    {fieldErrors.passwordResetNewPassword && (
-                      <p className={styles.errorMessage}>
-                        {fieldErrors.passwordResetNewPassword}
-                      </p>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.secondaryButton}
-                      onClick={handleResetPasswordWithOtp}
-                      disabled={isPasswordResetLoading || isLoading}
-                    >
-                      {isPasswordResetLoading
-                        ? formatMessage({
-                            id: 'authPleaseWait',
-                            defaultMessage: 'Bitte warten...',
-                          })
-                        : confirmPasswordResetLabel}
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         )}
         <form className={styles.authForm} onSubmit={handleSubmit}>
           {isSignUp && (
@@ -937,6 +621,148 @@ export const Auth = () => {
                 : signInLabel}
           </button>
         </form>
+
+        {!isSignUp && (
+          <div className={styles.otpActions}>
+            <button
+              type="button"
+              className={styles.accountToolsToggle}
+              onClick={() => setShowForgotPassword((value) => !value)}
+              disabled={isLoading || isPasswordResetLoading}
+            >
+              {showForgotPassword
+                ? forgotPasswordHideLabel
+                : forgotPasswordShowLabel}
+            </button>
+
+            {showForgotPassword && (
+              <div className={styles.accountToolsPanel}>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={handleRequestPasswordReset}
+                  disabled={isPasswordResetLoading || isLoading}
+                >
+                  {isPasswordResetLoading
+                    ? formatMessage({
+                        id: 'authPleaseWait',
+                        defaultMessage: 'Bitte warten...',
+                      })
+                    : requestPasswordResetLabel}
+                </button>
+
+                {passwordResetRequested && (
+                  <div className={styles.formGroup}>
+                    <input
+                      id="password-reset-otp"
+                      type="text"
+                      value={passwordResetOtp}
+                      onChange={(e) =>
+                        setPasswordResetOtp(e.target.value.trim())
+                      }
+                      className={`${styles.formInput} ${fieldErrors.passwordResetOtp ? styles.error : ''}`}
+                      placeholder={formatMessage({
+                        id: 'authPasswordResetOtpPlaceholder',
+                        defaultMessage: 'Reset-Code eingeben',
+                      })}
+                      disabled={isPasswordResetLoading || isLoading}
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                    />
+                    {fieldErrors.passwordResetOtp && (
+                      <p className={styles.errorMessage}>
+                        {fieldErrors.passwordResetOtp}
+                      </p>
+                    )}
+                    <div className={styles.passwordFieldWrapper}>
+                      <input
+                        id="password-reset-new-password"
+                        type={
+                          passwordVisibility.passwordResetNewPassword
+                            ? 'text'
+                            : 'password'
+                        }
+                        value={passwordResetNewPassword}
+                        onChange={(e) =>
+                          setPasswordResetNewPassword(e.target.value)
+                        }
+                        className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.passwordResetNewPassword ? styles.error : ''}`}
+                        placeholder={formatMessage({
+                          id: 'authPasswordResetNewPasswordPlaceholder',
+                          defaultMessage: 'Neues Passwort eingeben',
+                        })}
+                        disabled={isPasswordResetLoading || isLoading}
+                      />
+                      <button
+                        type="button"
+                        className={styles.passwordToggle}
+                        onClick={() =>
+                          togglePasswordVisibility('passwordResetNewPassword')
+                        }
+                        aria-label={
+                          passwordVisibility.passwordResetNewPassword
+                            ? hidePasswordLabel
+                            : showPasswordLabel
+                        }
+                        title={
+                          passwordVisibility.passwordResetNewPassword
+                            ? hidePasswordLabel
+                            : showPasswordLabel
+                        }
+                        disabled={isPasswordResetLoading || isLoading}
+                      >
+                        {passwordVisibility.passwordResetNewPassword ? (
+                          <MdVisibilityOff />
+                        ) : (
+                          <MdVisibility />
+                        )}
+                      </button>
+                    </div>
+                    {fieldErrors.passwordResetNewPassword && (
+                      <p className={styles.errorMessage}>
+                        {fieldErrors.passwordResetNewPassword}
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={handleResetPasswordWithOtp}
+                      disabled={isPasswordResetLoading || isLoading}
+                    >
+                      {isPasswordResetLoading
+                        ? formatMessage({
+                            id: 'authPleaseWait',
+                            defaultMessage: 'Bitte warten...',
+                          })
+                        : confirmPasswordResetLabel}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className={styles.socialDivider}>
+          <span>
+            {formatMessage({
+              id: 'authOrDivider',
+              defaultMessage: 'oder',
+            })}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          className={styles.socialButton}
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+        >
+          <span className={styles.googleMark} aria-hidden="true">
+            G
+          </span>
+          {googleSignInLabel}
+        </button>
 
         <div className={styles.toggleContainer}>
           <p className={styles.toggleText}>

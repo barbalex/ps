@@ -834,6 +834,8 @@
   "authOtpInvalid": "Codice non valido o scaduto.",
   "authMethodPassword": "Password",
   "authMethodOtp": "Codice monouso",
+  "authForgotPasswordShow": "Password dimenticata?",
+  "authForgotPasswordHide": "Nascondi reimpostazione password",
   "authAccountToolsShow": "Verifica e reimpostazione password",
   "authAccountToolsHide": "Nascondi verifica e reimpostazione password",
   "authSendVerificationCodeBtn": "Invia codice di verifica",
