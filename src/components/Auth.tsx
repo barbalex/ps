@@ -60,7 +60,6 @@ export const Auth = () => {
   const [passwordResetNewPassword, setPasswordResetNewPassword] = useState('')
   const [passwordResetMessage, setPasswordResetMessage] = useState('')
   const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false)
-  const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isDbInitializing, setIsDbInitializing] = useState(false)
   const [error, setError] = useState('')
@@ -74,7 +73,6 @@ export const Auth = () => {
     email?: string
     password?: string
     confirmPassword?: string
-    name?: string
     passwordResetNewPassword?: string
   }>({})
   const isSignInSubmitDisabled =
@@ -233,13 +231,6 @@ export const Auth = () => {
     }
 
     if (isSignUp) {
-      if (!name) {
-        errors.name = formatMessage({
-          id: 'authNameRequired',
-          defaultMessage: 'Name ist erforderlich',
-        })
-      }
-
       if (!confirmPassword) {
         errors.confirmPassword = formatMessage({
           id: 'authConfirmPasswordRequired',
@@ -403,7 +394,6 @@ export const Auth = () => {
         const result = await signUp.email({
           email,
           password,
-          name,
           callbackURL: redirectTo,
         })
 
@@ -553,29 +543,6 @@ export const Auth = () => {
           <div className={styles.successMessage}>{passwordResetMessage}</div>
         )}
         <form className={styles.authForm} onSubmit={handleSubmit}>
-          {isSignUp && (
-            <div className={styles.formGroup}>
-              <label htmlFor="name" className={styles.formLabel}>
-                {formatMessage({ id: 'authNameLabel', defaultMessage: 'Name' })}
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={`${styles.formInput} ${fieldErrors.name ? styles.error : ''}`}
-                placeholder={formatMessage({
-                  id: 'authEnterName',
-                  defaultMessage: 'Namen eingeben',
-                })}
-                disabled={isLoading}
-              />
-              {fieldErrors.name && (
-                <p className={styles.errorMessage}>{fieldErrors.name}</p>
-              )}
-            </div>
-          )}
-
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.formLabel}>
               {formatMessage({
