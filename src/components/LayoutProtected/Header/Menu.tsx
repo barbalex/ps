@@ -112,7 +112,6 @@ const clearPersistedSyncUiState = () => {
     'tabsAtom',
     'operationsQueueAtom',
     'initialSyncingAtom',
-    'sqlInitializingAtom',
     'mapMaximizedAtom',
     'showLocalMapAtom',
     'localMapValuesAtom',
@@ -153,7 +152,6 @@ const clearLocalSyncedData = async () => {
   store.set(pgliteDbAtom, null)
   store.set(operationsQueueAtom, [])
   store.set(initialSyncingAtom, true)
-  store.set(sqlInitializingAtom, true)
 
   // If IndexedDB deletion was blocked (another tab/process), force restart path anyway.
   if (!dbDeletionSucceeded) {
