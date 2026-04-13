@@ -9,6 +9,7 @@ import {
   widgetsForFieldsFilterAtom,
   treeOpenNodesAtom,
   designingAtom,
+  isAppAmin,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
@@ -42,6 +43,7 @@ export const useDataNavData = () => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
+  const [isAppAdmin] = useAtom(isAppAmin)
 
   const [projectsFilter] = useAtom(projectsFilterAtom)
   const projectsFilterString = filterStringFromFilter(projectsFilter)
@@ -185,45 +187,51 @@ export const useDataNavData = () => {
       },
       ...(designing
         ? [
-            {
-              id: 'field-types',
-              label: buildNavLabel({
-                loading,
-                isFiltered: fieldTypesIsFiltered,
-                countFiltered: row?.field_types_count_filtered ?? 0,
-                countUnfiltered: row?.field_types_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'Yx8gIR',
-                  defaultMessage: 'Feld-Typen',
-                }),
-              }),
-            },
-            {
-              id: 'widget-types',
-              label: buildNavLabel({
-                loading,
-                isFiltered: widgetTypesIsFiltered,
-                countFiltered: row?.widget_types_count_filtered ?? 0,
-                countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'U55pI0',
-                  defaultMessage: 'Widget-Typen',
-                }),
-              }),
-            },
-            {
-              id: 'widgets-for-fields',
-              label: buildNavLabel({
-                loading,
-                isFiltered: widgetsForFieldsIsFiltered,
-                countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
-                countUnfiltered: row?.widgets_for_fields_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'bDoJBk',
-                  defaultMessage: 'Widgets für Felder',
-                }),
-              }),
-            },
+            ...(isAppAdmin
+              ? [
+                  {
+                    id: 'field-types',
+                    label: buildNavLabel({
+                      loading,
+                      isFiltered: fieldTypesIsFiltered,
+                      countFiltered: row?.field_types_count_filtered ?? 0,
+                      countUnfiltered: row?.field_types_count_unfiltered ?? 0,
+                      namePlural: formatMessage({
+                        id: 'Yx8gIR',
+                        defaultMessage: 'Feld-Typen',
+                      }),
+                    }),
+                  },
+                  {
+                    id: 'widget-types',
+                    label: buildNavLabel({
+                      loading,
+                      isFiltered: widgetTypesIsFiltered,
+                      countFiltered: row?.widget_types_count_filtered ?? 0,
+                      countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
+                      namePlural: formatMessage({
+                        id: 'U55pI0',
+                        defaultMessage: 'Widget-Typen',
+                      }),
+                    }),
+                  },
+                  {
+                    id: 'widgets-for-fields',
+                    label: buildNavLabel({
+                      loading,
+                      isFiltered: widgetsForFieldsIsFiltered,
+                      countFiltered:
+                        row?.widgets_for_fields_count_filtered ?? 0,
+                      countUnfiltered:
+                        row?.widgets_for_fields_count_unfiltered ?? 0,
+                      namePlural: formatMessage({
+                        id: 'bDoJBk',
+                        defaultMessage: 'Widgets für Felder',
+                      }),
+                    }),
+                  },
+                ]
+              : []),
             {
               id: 'qcs',
               label: buildNavLabel({

@@ -9,7 +9,7 @@ import {
   useCanGoBack,
   useRouter,
 } from '@tanstack/react-router'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import {
@@ -19,7 +19,6 @@ import {
   mapMaximizedAtom,
   operationsQueueAtom,
   pgliteDbAtom,
-  isAppAmin,
   store,
   syncObjectAtom,
   tabsAtom,
@@ -32,7 +31,6 @@ import { Tabs } from './Tabs.tsx'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
 import { MenuBar } from '../../MenuBar/index.tsx'
 import { signOut, useSession } from '../../../modules/authClient.ts'
-import { isAppAdminEmail } from '../../../modules/appAdmins.ts'
 
 const MOBILE_TAB_PRIORITY = ['data', 'map', 'tree'] as const
 
@@ -180,11 +178,6 @@ export const Menu = () => {
   const isAppStates = pathname.includes('app-states')
 
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
-  const setIsAppAmin = useSetAtom(isAppAmin)
-
-  useEffect(() => {
-    setIsAppAmin(isAppAdminEmail(authUser?.email))
-  }, [authUser?.email, setIsAppAmin])
 
   useEffect(() => {
     if (!isMobileView) return
@@ -225,7 +218,6 @@ export const Menu = () => {
 
   const onConfirmLogout = async () => {
     await clearLocalSyncedData()
-    setIsAppAmin(false)
     await signOut()
     window.location.assign('/')
   }
