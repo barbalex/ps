@@ -14,6 +14,8 @@ const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY?.trim()
 const MAILGUN_BASE_URL = process.env.MAILGUN_BASE_URL?.trim()
 const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN?.trim()
 const MAILGUN_FROM = process.env.MAILGUN_FROM?.trim()
+const REQUIRE_EMAIL_VERIFICATION =
+  process.env.REQUIRE_EMAIL_VERIFICATION?.trim().toLowerCase() === 'true'
 const requiredTrustedOrigins = [
   'http://localhost:5176',
   'https://arten-fördern.app',
@@ -123,7 +125,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
-    requireEmailVerification: true,
+    requireEmailVerification: REQUIRE_EMAIL_VERIFICATION,
     async sendResetPassword({ user, url, token }, request) {
       const resolvedDomain = MAILGUN_DOMAIN || 'mail.promote-species.app'
       const resolvedFrom =

@@ -417,7 +417,30 @@ export const Auth = () => {
               }),
           )
         } else {
-          onLoggedIn()
+          const sessionResult = await getSession({
+            query: { disableCookieCache: true },
+          })
+          const freshSession =
+            sessionResult &&
+            typeof sessionResult === 'object' &&
+            'data' in sessionResult
+              ? sessionResult.data
+              : sessionResult
+
+          if (freshSession?.user) {
+            onLoggedIn()
+          } else {
+            setIsSignUp(false)
+            setPassword('')
+            setConfirmPassword('')
+            setPasswordResetMessage(
+              formatMessage({
+                id: 'authSignUpSucceededCheckEmail',
+                defaultMessage:
+                  'Registrierung erfolgreich. Bitte E-Mail-Bestätigung abschliessen und danach anmelden.',
+              }),
+            )
+          }
         }
       } else {
         const result = await signIn.email({
