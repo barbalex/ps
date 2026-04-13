@@ -167,7 +167,7 @@ export const ChangePasswordDialog = ({
             intl.formatMessage({
               id: 'setPasswordAlreadyExists',
               defaultMessage:
-                'Passwort ist bereits gesetzt. Du kannst es jetzt über "Passwort ändern" aktualisieren.',
+                'Passwort ist gesetzt. Du kannst es jetzt über "Passwort ändern" aktualisieren.',
             }),
           )
           setCurrentPassword('')
