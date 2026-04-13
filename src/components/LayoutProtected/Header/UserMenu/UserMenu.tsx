@@ -28,10 +28,10 @@ type Session = {
     id?: string
     email?: string
     fullName?: string
-    accounts?: Array<{
+    accounts?: {
       provider: string
       [key: string]: unknown
-    }>
+    }[]
   }
   [key: string]: unknown
 }
@@ -43,7 +43,12 @@ type Props = {
   onConfirmLogout: () => Promise<void>
 }
 
-export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }: Props) => {
+export const UserMenu = ({
+  authUser,
+  session,
+  buttonClassName,
+  onConfirmLogout,
+}: Props) => {
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
   const [twoFactorOpen, setTwoFactorOpen] = useState(false)
@@ -124,7 +129,10 @@ export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }
         </Tooltip>
         <MenuPopover>
           <MenuList>
-            <MenuItem icon={<MdLock />} onClick={() => setChangePasswordOpen(true)}>
+            <MenuItem
+              icon={<MdLock />}
+              onClick={() => setChangePasswordOpen(true)}
+            >
               {hasPassword ? (
                 <FormattedMessage
                   id="changePasswordMenuItem"
@@ -137,19 +145,24 @@ export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }
                 />
               )}
             </MenuItem>
-            <MenuItem icon={<MdVerifiedUser />} onClick={() => setTwoFactorOpen(true)}>
-              {twoFactorEnabled ? (
-                <FormattedMessage
-                  id="twoFactorDisableMenuItem"
-                  defaultMessage="2FA deaktivieren"
-                />
-              ) : (
-                <FormattedMessage
-                  id="twoFactorEnableMenuItem"
-                  defaultMessage="2FA aktivieren"
-                />
-              )}
-            </MenuItem>
+            {(hasPassword || twoFactorEnabled) && (
+              <MenuItem
+                icon={<MdVerifiedUser />}
+                onClick={() => setTwoFactorOpen(true)}
+              >
+                {twoFactorEnabled ? (
+                  <FormattedMessage
+                    id="twoFactorDisableMenuItem"
+                    defaultMessage="2FA deaktivieren"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="twoFactorEnableMenuItem"
+                    defaultMessage="2FA aktivieren"
+                  />
+                )}
+              </MenuItem>
+            )}
             <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
               <FormattedMessage defaultMessage="Abmelden" />
             </MenuItem>
