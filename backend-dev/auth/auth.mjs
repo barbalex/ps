@@ -59,6 +59,11 @@ const getHeader = (source, name) => {
 }
 
 const getEmailLanguage = (source) => {
+  const explicitLanguage = getHeader(source, 'x-app-language')?.toLowerCase()
+  if (SUPPORTED_EMAIL_LANGUAGES.includes(explicitLanguage)) {
+    return explicitLanguage
+  }
+
   const acceptLanguage = getHeader(source, 'accept-language')
   if (!acceptLanguage) return 'de'
 
@@ -70,6 +75,18 @@ const getEmailLanguage = (source) => {
   }
 
   return 'de'
+}
+
+const logEmailLanguageDecision = ({ source, resolvedLanguage, kind, type }) => {
+  console.info('[auth-email-language]', {
+    kind,
+    type,
+    resolvedLanguage,
+    explicitLanguage: getHeader(source, 'x-app-language') ?? null,
+    acceptLanguage: getHeader(source, 'accept-language') ?? null,
+    origin: getHeader(source, 'origin') ?? null,
+    referer: getHeader(source, 'referer') ?? null,
+  })
 }
 
 const otpEmailMessages = {
@@ -87,15 +104,15 @@ const otpEmailMessages = {
   },
   en: {
     actions: {
-      'sign-in': 'sign in',
-      'email-verification': 'verify your email',
-      'forget-password': 'reset your password',
-      'two-factor': 'complete two-factor authentication',
-      default: 'continue',
+      'sign-in': 'to sign in',
+      'email-verification': 'to verify your email',
+      'forget-password': 'to reset your password',
+      'two-factor': 'for two-factor authentication',
+      default: 'to continue',
     },
     subject: (action) => `Your one-time code for Promote Species (${action})`,
     text: (otp, action) =>
-      `Your one-time code is: ${otp}\n\nUse this code to ${action}. The code expires in a few minutes.`,
+      `Your one-time code is: ${otp}\n\nUse this code ${action}. The code expires in a few minutes.`,
   },
   fr: {
     actions: {
@@ -172,6 +189,12 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
 
 const buildOtpMessage = ({ otp, type, source }) => {
   const language = getEmailLanguage(source)
+  logEmailLanguageDecision({
+    source,
+    resolvedLanguage: language,
+    kind: 'otp',
+    type,
+  })
   const dictionary = otpEmailMessages[language] ?? otpEmailMessages.de
   const action = dictionary.actions[type] ?? dictionary.actions.default
 
@@ -183,6 +206,11 @@ const buildOtpMessage = ({ otp, type, source }) => {
 
 const buildResetPasswordMessage = ({ url, source }) => {
   const language = getEmailLanguage(source)
+  logEmailLanguageDecision({
+    source,
+    resolvedLanguage: language,
+    kind: 'reset-password',
+  })
   const dictionary =
     resetPasswordEmailMessages[language] ?? resetPasswordEmailMessages.de
 

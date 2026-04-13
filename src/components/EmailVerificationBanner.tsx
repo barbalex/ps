@@ -2,7 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
-import { getAuthBaseUrl, signOut, useSession } from '../modules/authClient.ts'
+import {
+  getAuthBaseUrl,
+  getAuthRequestHeaders,
+  signOut,
+  useSession,
+} from '../modules/authClient.ts'
 import { getVerificationDeadlineMs } from '../modules/emailVerificationGrace.ts'
 import styles from './EmailVerificationBanner.module.css'
 
@@ -86,9 +91,9 @@ export const EmailVerificationBanner = () => {
         `${getAuthBaseUrl()}/auth/email-otp/send-verification-otp`,
         {
           method: 'POST',
-          headers: {
+          headers: getAuthRequestHeaders({
             'Content-Type': 'application/json',
-          },
+          }),
           credentials: 'include',
           body: JSON.stringify({
             email,
@@ -134,9 +139,9 @@ export const EmailVerificationBanner = () => {
         `${getAuthBaseUrl()}/auth/email-otp/verify-email`,
         {
           method: 'POST',
-          headers: {
+          headers: getAuthRequestHeaders({
             'Content-Type': 'application/json',
-          },
+          }),
           credentials: 'include',
           body: JSON.stringify({ email, otp }),
         },

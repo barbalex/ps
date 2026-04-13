@@ -9,6 +9,7 @@ import {
   signIn,
   getSession,
   getAuthBaseUrl,
+  getAuthRequestHeaders,
 } from '../modules/authClient.ts'
 import { ensurePgliteDb } from '../modules/ensurePgliteDb.ts'
 import { Initiating } from './Initiating.tsx'
@@ -635,7 +636,9 @@ export const Auth = () => {
         `${getAuthBaseUrl()}/auth/email-otp/send-verification-otp`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthRequestHeaders({
+            'Content-Type': 'application/json',
+          }),
           credentials: 'include',
           body: JSON.stringify({ email: emailTrimmed, type: 'email-verification' }),
         },
@@ -676,7 +679,9 @@ export const Auth = () => {
         `${getAuthBaseUrl()}/auth/email-otp/verify-email`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthRequestHeaders({
+            'Content-Type': 'application/json',
+          }),
           credentials: 'include',
           body: JSON.stringify({ email: emailTrimmed, otp }),
         },

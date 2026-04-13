@@ -14,7 +14,11 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
 import styles from './ChangePasswordDialog.module.css'
-import { authClient, getAuthBaseUrl } from '../../../../modules/authClient.ts'
+import {
+  authClient,
+  getAuthBaseUrl,
+  getAuthRequestHeaders,
+} from '../../../../modules/authClient.ts'
 
 type Props = {
   open: boolean
@@ -137,9 +141,9 @@ export const ChangePasswordDialog = ({
         // User has no password (OAuth-only) - use custom set-password endpoint
         const response = await fetch(`${getAuthBaseUrl()}/auth/set-password`, {
           method: 'POST',
-          headers: {
+          headers: getAuthRequestHeaders({
             'Content-Type': 'application/json',
-          },
+          }),
           credentials: 'include',
           body: JSON.stringify({ newPassword }),
         })
