@@ -1,5 +1,6 @@
 import { createAuthClient } from 'better-auth/react'
 import { emailOTPClient, twoFactorClient } from 'better-auth/client/plugins'
+import { passkeyClient } from '@better-auth/passkey/client'
 import { languageAtom, store, type Language } from '../store.ts'
 
 const DEFAULT_LANGUAGE: Language = 'de'
@@ -50,7 +51,7 @@ export const authClient = createAuthClient({
         headers: getAuthRequestHeaders(init?.headers),
       }),
   },
-  plugins: [emailOTPClient(), twoFactorClient()],
+  plugins: [emailOTPClient(), twoFactorClient(), passkeyClient()],
 })
 
 export const { signIn, signUp, signOut, useSession, getSession, emailOtp } =

@@ -1,11 +1,27 @@
 import { betterAuth } from 'better-auth'
 import { emailOTP, twoFactor } from 'better-auth/plugins'
+import { passkey } from '@better-auth/passkey'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Pool } from 'pg'
 
 const DATABASE_URL = process.env.DATABASE_URL
 const AUTH_BASE_URL = process.env.BETTER_AUTH_URL?.trim()
+const DEFAULT_AUTH_ORIGIN = 'http://localhost:3003'
+const PASSKEY_ORIGIN = (AUTH_BASE_URL || DEFAULT_AUTH_ORIGIN).replace(/\/$/, '')
+const PASSKEY_RP_ID =
+  process.env.PASSKEY_RP_ID?.trim() ||
+  (() => {
+    try {
+      const host = new URL(PASSKEY_ORIGIN).hostname
+      if (host === 'localhost') return 'localhost'
+      if (host.startsWith('auth.')) return host.slice(5)
+      return host
+    } catch {
+      return 'localhost'
+    }
+  })()
+const PASSKEY_RP_NAME = process.env.PASSKEY_RP_NAME?.trim() || 'Promote Species'
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID?.trim()
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET?.trim()
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID?.trim()
@@ -339,6 +355,29 @@ export const auth = betterAuth({
       sendVerificationOnSignUp: true,
       async sendVerificationOTP({ email, otp, type }, ctx) {
         await sendOtpEmail({ email, otp, type, source: ctx })
+      },
+    }),
+    passkey({
+      rpID: PASSKEY_RP_ID,
+      rpName: PASSKEY_RP_NAME,
+      origin: PASSKEY_ORIGIN,
+      schema: {
+        passkey: {
+          modelName: 'auth_passkeys',
+          fields: {
+            id: 'auth_passkey_id',
+            name: 'name',
+            publicKey: 'public_key',
+            userId: 'user_id',
+            credentialID: 'credential_id',
+            counter: 'counter',
+            deviceType: 'device_type',
+            backedUp: 'backed_up',
+            transports: 'transports',
+            createdAt: 'created_at',
+            aaguid: 'aaguid',
+          },
+        },
       },
     }),
   ],

@@ -72,6 +72,24 @@ export const SqlInitializer = () => {
               ON DELETE CASCADE ON UPDATE NO ACTION
               DEFERRABLE INITIALLY DEFERRED;
             ALTER TABLE IF EXISTS auth_verifications ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            CREATE TABLE IF NOT EXISTS auth_passkeys(
+              auth_passkey_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+              name text DEFAULT NULL,
+              public_key text NOT NULL,
+              user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+              credential_id text NOT NULL,
+              counter integer NOT NULL DEFAULT 0,
+              device_type text NOT NULL,
+              backed_up boolean NOT NULL DEFAULT FALSE,
+              transports text DEFAULT NULL,
+              aaguid text DEFAULT NULL,
+              sys_period tstzrange DEFAULT NULL,
+              created_at timestamptz NOT NULL DEFAULT now(),
+              updated_at timestamptz NOT NULL DEFAULT now()
+            );
+            ALTER TABLE IF EXISTS auth_passkeys ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            CREATE INDEX IF NOT EXISTS auth_passkeys_user_id_idx ON auth_passkeys USING btree(user_id);
+            CREATE UNIQUE INDEX IF NOT EXISTS auth_passkeys_credential_id_idx ON auth_passkeys USING btree(credential_id);
             ALTER TABLE IF EXISTS subproject_taxa ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS units ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS messages ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
