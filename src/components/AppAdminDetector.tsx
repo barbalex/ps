@@ -11,8 +11,6 @@ export const AppAdminDetector = () => {
   const { pathname } = useLocation()
   const setIsAppAmin = useSetAtom(isAppAmin)
 
-  console.log('AppAdminDetector session email:', session?.user?.email)
-
   useEffect(() => {
     setIsAppAmin(isAppAdminEmail(session?.user?.email))
   }, [pathname, session?.user?.email, setIsAppAmin])
