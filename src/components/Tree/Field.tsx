@@ -3,7 +3,7 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const FieldNode = ({ projectId, accountId, nav }) => {
+export const FieldNode = ({ projectId, accountId, userId, nav }) => {
   const level: number = projectId || accountId ? 4 : 2
   const location = useLocation()
 
@@ -11,7 +11,13 @@ export const FieldNode = ({ projectId, accountId, nav }) => {
   const fieldsSegment = projectId ? 'fields' : accountId ? 'project-fields' : 'fields'
   const ownArray = [
     'data',
-    ...(projectId ? ['projects', projectId] : accountId ? ['accounts', accountId] : []),
+    ...(projectId
+      ? ['projects', projectId]
+      : accountId
+        ? userId
+          ? ['users', userId, 'accounts', accountId]
+          : ['accounts', accountId]
+        : []),
     fieldsSegment,
     nav.id,
   ]

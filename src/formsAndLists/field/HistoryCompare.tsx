@@ -28,17 +28,17 @@ export const FieldHistoryCompare = ({
 }: {
   from:
     | '/data/projects/$projectId_/fields/$fieldId_/histories/$fieldHistoryId'
-    | '/data/accounts/$accountId_/project-fields/$fieldId_/histories/$fieldHistoryId'
+    | '/data/users/$userId_/accounts/$accountId_/project-fields/$fieldId_/histories/$fieldHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, accountId, fieldId, fieldHistoryId } = useParams({
+  const { projectId, userId, accountId, fieldId, fieldHistoryId } = useParams({
     from,
     strict: false,
   })
   const fieldPath = projectId
     ? `/data/projects/${projectId}/fields/${fieldId}`
-    : `/data/accounts/${accountId}/project-fields/${fieldId}`
+    : `/data/users/${userId}/accounts/${accountId}/project-fields/${fieldId}`
   const historyPath = `${fieldPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)

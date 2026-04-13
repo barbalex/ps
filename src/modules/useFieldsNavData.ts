@@ -17,6 +17,7 @@ import { fieldsFilterAtom, languageAtom, treeOpenNodesAtom } from '../store.ts'
 type Props = {
   projectId?: string
   accountId?: string
+  userId?: string
 }
 
 type NavDataOpen = {
@@ -34,7 +35,7 @@ type NavDataClosed = {
   count_filtered: number
 }[]
 
-export const useFieldsNavData = ({ projectId, accountId }: Props) => {
+export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [language] = useAtom(languageAtom)
@@ -49,7 +50,13 @@ export const useFieldsNavData = ({ projectId, accountId }: Props) => {
 
   const parentArray = [
     'data',
-    ...(projectId ? ['projects', projectId] : accountId ? ['accounts', accountId] : []),
+    ...(projectId
+      ? ['projects', projectId]
+      : accountId
+        ? userId
+          ? ['users', userId, 'accounts', accountId]
+          : ['accounts', accountId]
+        : []),
   ]
 
   const ownArray = [...parentArray, fieldsSegment]
@@ -180,9 +187,19 @@ export const useFieldsNavData = ({ projectId, accountId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' }),
+      namePlural: accountId
+        ? formatMessage({
+            id: 'field.projectFieldsPlural',
+            defaultMessage: 'Project Fields',
+          })
+        : formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' }),
     }),
-    nameSingular: formatMessage({ id: '61ELuB', defaultMessage: 'Feld' }),
+    nameSingular: accountId
+      ? formatMessage({
+          id: 'field.projectFieldSingular',
+          defaultMessage: 'Project Field',
+        })
+      : formatMessage({ id: '61ELuB', defaultMessage: 'Feld' }),
     navs,
   }
 

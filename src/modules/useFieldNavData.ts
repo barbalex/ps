@@ -16,6 +16,7 @@ import { languageAtom } from '../store.ts'
 type Props = {
   projectId?: string
   accountId?: string
+  userId?: string
   fieldId: string
 }
 
@@ -27,7 +28,7 @@ type NavData = {
   name?: string | null
 }
 
-export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
+export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [language] = useAtom(languageAtom)
@@ -120,7 +121,9 @@ export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
     ...(projectId
       ? ['projects', projectId]
       : accountId
-        ? ['accounts', accountId]
+        ? userId
+          ? ['users', userId, 'accounts', accountId]
+          : ['accounts', accountId]
         : []),
     fieldsSegment,
   ]
@@ -158,7 +161,12 @@ export const useFieldNavData = ({ projectId, accountId, fieldId }: Props) => {
     urlPath,
     label,
     notFound,
-    nameSingular: formatMessage({ id: '61ELuB', defaultMessage: 'Feld' }),
+    nameSingular: accountId
+      ? formatMessage({
+          id: 'field.projectFieldSingular',
+          defaultMessage: 'Project Field',
+        })
+      : formatMessage({ id: '61ELuB', defaultMessage: 'Feld' }),
   }
 
   return { loading, navData }

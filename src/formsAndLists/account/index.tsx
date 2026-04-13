@@ -11,7 +11,6 @@ import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -30,11 +29,11 @@ import styles from './index.module.css'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 
-const from = '/data/accounts/$accountId_'
+const from = '/data/users/$userId_/accounts/$accountId_'
 const { Button } = fluentUiReactComponents
 
 export const Account = () => {
-  const { accountId } = useParams({ from })
+  const { userId, accountId } = useParams({ from })
   const location = useLocation()
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -45,9 +44,10 @@ export const Account = () => {
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
-  const res = useLiveQuery(`SELECT * FROM accounts WHERE account_id = $1`, [
-    accountId,
-  ])
+  const res = useLiveQuery(
+    `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
+    [accountId, userId],
+  )
   const row: Accounts | undefined = res?.rows?.[0]
 
   const fieldsCountRes = useLiveQuery(
@@ -56,7 +56,7 @@ export const Account = () => {
   )
   const fieldsCount = fieldsCountRes?.rows?.[0]?.count ?? 0
 
-  const accountUrl = `/data/accounts/${accountId}`
+  const accountUrl = `/data/users/${userId}/accounts/${accountId}`
   const fieldsUrl = `${accountUrl}/project-fields`
   const projectFieldsInAccount = row?.project_fields_in_account !== false
   const isFieldsOpen =
@@ -66,7 +66,7 @@ export const Account = () => {
   const fieldsIsFiltered = !!filterStringFromFilter(fieldsFilter)
 
   const onClickAddField = async () => {
-    const id = await createField({ accountId })
+    const id = await createField({ accountId, table_name: 'projects' })
     if (!id) return
     navigate({ to: `${fieldsUrl}/${id}` })
   }
@@ -159,17 +159,6 @@ export const Account = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <DropdownField
-          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-          name="user_id"
-          table="users"
-          value={row.user_id ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.user_id?.state}
-          validationMessage={validations?.user_id?.message}
-        />
         <RadioGroupField
           label={formatMessage({ id: 'xTeBn/', defaultMessage: 'Typ' })}
           name="type"
@@ -185,6 +174,8 @@ export const Account = () => {
           )}
           value={row.type ?? ''}
           onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
           validationState={validations?.type?.state}
           validationMessage={validations?.type?.message}
         />
@@ -224,7 +215,7 @@ export const Account = () => {
         />
         {projectFieldsInAccount ? (
           <Section
-            title={`${formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })} (${fieldsCount})`}
+            title={`${formatMessage({ id: 'field.projectFieldsPlural', defaultMessage: 'Project Fields' })} (${fieldsCount})`}
             parentUrl={accountUrl}
             listUrl={fieldsUrl}
             isOpen={isFieldsOpen}

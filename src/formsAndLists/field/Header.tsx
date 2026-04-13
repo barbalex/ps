@@ -11,12 +11,12 @@ import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({ autoFocusRef, from }) => {
   const { formatMessage } = useIntl()
-  const { projectId, accountId, fieldId } = useParams({ from })
+  const { projectId, userId, accountId, fieldId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const basePath = projectId
     ? `/data/projects/${projectId}/fields/${fieldId}`
-    : `/data/accounts/${accountId}/project-fields/${fieldId}`
+    : `/data/users/${userId}/accounts/${accountId}/project-fields/${fieldId}`
 
   const db = usePGlite()
 
@@ -110,7 +110,14 @@ export const Header = ({ autoFocusRef, from }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: '61ELuB', defaultMessage: 'Feld' })}
+      title={
+        accountId
+          ? formatMessage({
+              id: 'field.projectFieldSingular',
+              defaultMessage: 'Project Field',
+            })
+          : formatMessage({ id: '61ELuB', defaultMessage: 'Feld' })
+      }
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

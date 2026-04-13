@@ -256,18 +256,26 @@ export const createFieldType = async () => {
   return field_type_id
 }
 
-export const createAccount = async () => {
+export const createAccount = async ({ userId }: { userId: string }) => {
+  if (!userId) {
+    throw new Error('Cannot create account without userId')
+  }
   const account_id = uuidv7()
   const db = store.get(pgliteDbAtom)
   await db.query(
-    `insert into accounts (account_id, type, project_fields_in_account) values ($1, $2, $3)`,
-    [account_id, 'free', true],
+    `insert into accounts (account_id, user_id, type, project_fields_in_account) values ($1, $2, $3, $4)`,
+    [account_id, userId, 'free', true],
   )
 
   store.set(addOperationAtom, {
     table: 'accounts',
     operation: 'insert',
-    draft: { account_id, type: 'free', project_fields_in_account: true },
+    draft: {
+      account_id,
+      user_id: userId,
+      type: 'free',
+      project_fields_in_account: true,
+    },
   })
 
   return account_id
@@ -330,13 +338,14 @@ export const createField = async ({
 }) => {
   const db = store.get(pgliteDbAtom)
   const field_id = uuidv7()
+  const resolvedTableName = accountId && !table_name ? 'projects' : table_name
   await db.query(
     `insert into fields (field_id, project_id, account_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6, $7)`,
     [
       field_id,
       projectId,
       accountId,
-      table_name,
+      resolvedTableName,
       level,
       '018ca19e-7a23-7bf4-8523-ff41e3b60807',
       '018ca1a0-f187-7fdf-955b-4eaadaa92553',
@@ -350,7 +359,7 @@ export const createField = async ({
       field_id,
       project_id: projectId,
       account_id: accountId,
-      table_name,
+      table_name: resolvedTableName,
       level,
       field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',
       widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',

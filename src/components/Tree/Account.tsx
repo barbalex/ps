@@ -9,15 +9,23 @@ import { useAtom } from 'jotai'
 import { treeOpenNodesAtom } from '../../store.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
-export const AccountNode = ({ nav, level = 2 }) => {
+type Props = {
+  nav: { id: string; label: string }
+  level?: number
+  userId?: string
+}
+
+export const AccountNode = ({ nav, level = 2, userId }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = ['data', 'accounts', nav.id]
+  const ownArray = userId
+    ? ['data', 'users', userId, 'accounts', nav.id]
+    : ['data', 'accounts', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const parentUrl = '/data/accounts'
+  const parentUrl = userId ? `/data/users/${userId}/accounts` : '/data/users'
 
   const res = useLiveQuery(
     `SELECT project_fields_in_account FROM accounts WHERE account_id = $1`,
@@ -54,7 +62,7 @@ export const AccountNode = ({ nav, level = 2 }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && showFieldsNav && <FieldsNode accountId={nav.id} />}
+      {isOpen && showFieldsNav && <FieldsNode accountId={nav.id} userId={userId} />}
     </>
   )
 }

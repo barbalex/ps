@@ -13,10 +13,12 @@ type AccountNavData = {
   label: Accounts['label']
 }
 
-const parentArray = ['data', 'accounts']
-const parentUrl = `/${parentArray.join('/')}`
+type Props = {
+  accountId: string
+  userId?: string
+}
 
-export const useAccountNavData = ({ accountId }) => {
+export const useAccountNavData = ({ accountId, userId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -33,6 +35,11 @@ export const useAccountNavData = ({ accountId }) => {
     [accountId],
   )
   const loading = res === undefined
+
+  const parentArray = userId
+    ? ['data', 'users', userId, 'accounts']
+    : ['data', 'accounts']
+  const parentUrl = `/${parentArray.join('/')}`
 
   const nav: AccountNavData | undefined = res?.rows?.[0]
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

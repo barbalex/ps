@@ -9,12 +9,13 @@ import { useFieldsNavData } from '../../modules/useFieldsNavData.ts'
 interface Props {
   projectId?: string
   accountId?: string
+  userId?: string
 }
 
-export const FieldsNode = ({ projectId, accountId }: Props) => {
+export const FieldsNode = ({ projectId, accountId, userId }: Props) => {
   const navigate = useNavigate()
 
-  const { navData } = useFieldsNavData({ projectId, accountId })
+  const { navData } = useFieldsNavData({ projectId, accountId, userId })
   const {
     label,
     parentUrl,
@@ -65,6 +66,7 @@ export const FieldsNode = ({ projectId, accountId }: Props) => {
             nav={nav}
             projectId={projectId}
             accountId={accountId}
+            userId={userId}
           />
         ))}
     </>

@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
 import { Filter } from '../../components/shared/Filter/index.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { accountTypeOptions } from '../../modules/constants.ts'
@@ -15,13 +14,6 @@ export const AccountFilter = ({ from }: Props) => {
     <Filter from={from}>
       {({ row, onChange }) => (
         <>
-          <DropdownField
-            label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-            name="user_id"
-            table="users"
-            value={row.user_id ?? ''}
-            onChange={onChange}
-          />
           <RadioGroupField
             label={formatMessage({ id: 'wA1BcD', defaultMessage: 'Typ' })}
             name="type"

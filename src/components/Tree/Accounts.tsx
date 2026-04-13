@@ -6,17 +6,21 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useAccountsNavData } from '../../modules/useAccountsNavData.ts'
 
-export const AccountsNode = () => {
+type Props = {
+  userId?: string
+  level?: number
+}
+
+export const AccountsNode = ({ userId, level: levelProp }: Props = {}) => {
   const navigate = useNavigate()
 
-  const { navData } = useAccountsNavData()
+  const { navData } = useAccountsNavData({ userId })
   const {
     label,
     parentUrl,
     ownArray,
     ownUrl,
     urlPath,
-    level,
     isOpen,
     isInActiveNodeArray,
     isActive,
@@ -43,7 +47,7 @@ export const AccountsNode = () => {
     <>
       <Node
         label={label}
-        level={level}
+        level={levelProp ?? navData.level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
@@ -56,6 +60,8 @@ export const AccountsNode = () => {
           <AccountNode
             key={`${nav.id}-${i}`}
             nav={nav}
+            userId={userId}
+            level={(levelProp ?? navData.level) + 1}
           />
         ))}
     </>

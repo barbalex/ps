@@ -11,18 +11,27 @@ import '../form.css'
 export const Fields = ({ from, hideHeader = false, projectId: projectIdProp }) => {
   const params = useParams({ strict: false, from }) as Record<string, string | undefined>
   const projectId = projectIdProp ?? params.projectId ?? params.projectId_
+  const userId = params.userId ?? params.userId_
   const accountId = params.accountId ?? params.accountId_
   const navigate = useNavigate()
   const fieldsBaseUrl = projectId
     ? `/data/projects/${projectId}/fields`
-    : `/data/accounts/${accountId}/project-fields`
+    : `/data/users/${userId}/accounts/${accountId}/project-fields`
 
-  const { loading, navData, isFiltered } = useFieldsNavData({ projectId, accountId })
+  const { loading, navData, isFiltered } = useFieldsNavData({
+    projectId,
+    accountId,
+    userId,
+  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     if (!projectId && !accountId) return
-    const id = await createField({ projectId, accountId })
+    const id = await createField({
+      projectId,
+      accountId,
+      table_name: accountId ? 'projects' : null,
+    })
     if (!id) return
     navigate({ to: `${fieldsBaseUrl}/${id}` })
   }

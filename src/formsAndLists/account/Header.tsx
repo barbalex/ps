@@ -9,11 +9,11 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type Accounts from '../../models/public/Accounts.ts'
 
-const from = '/data/accounts/$accountId_'
+const from = '/data/users/$userId_/accounts/$accountId_'
 
 export const Header = ({ autoFocusRef }) => {
   const { formatMessage } = useIntl()
-  const { accountId } = useParams({ from })
+  const { userId, accountId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -26,11 +26,14 @@ export const Header = ({ autoFocusRef }) => {
     accountIdRef.current = accountId
   }, [accountId])
 
-  const countRes = useLiveQuery('SELECT COUNT(*) as count FROM accounts')
+  const countRes = useLiveQuery(
+    'SELECT COUNT(*) as count FROM accounts WHERE user_id = $1',
+    [userId],
+  )
   const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const addRow = async () => {
-    const res = await createAccount()
+    const res = await createAccount({ userId })
     const accountId: Accounts['account_id'] | undefined = res?.rows?.[0]
     if (!accountId) return
     navigate({ to: `../${accountId}` })
@@ -40,11 +43,14 @@ export const Header = ({ autoFocusRef }) => {
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(
-        `SELECT * FROM accounts WHERE account_id = $1`,
-        [accountId],
+        `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
+        [accountId, userId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM accounts WHERE account_id = $1`, [accountId])
+      await db.query(`DELETE FROM accounts WHERE account_id = $1 AND user_id = $2`, [
+        accountId,
+        userId,
+      ])
       addOperation({
         table: 'accounts',
         rowIdName: 'account_id',
@@ -61,7 +67,8 @@ export const Header = ({ autoFocusRef }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT account_id FROM accounts order by label`,
+        `SELECT account_id FROM accounts WHERE user_id = $1 order by label`,
+        [userId],
       )
       const rows = res?.rows
       const len = rows.length
@@ -76,7 +83,8 @@ export const Header = ({ autoFocusRef }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT account_id FROM accounts order by label`,
+        `SELECT account_id FROM accounts WHERE user_id = $1 order by label`,
+        [userId],
       )
       const rows = res?.rows
       const len = rows.length
