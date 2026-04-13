@@ -396,9 +396,13 @@ export const Auth = () => {
     setIsLoading(true)
 
     try {
+      const normalizedEmail = email.trim()
+      const fallbackName = normalizedEmail.split('@')[0] || normalizedEmail
+
       if (isSignUp) {
         const result = await signUp.email({
-          email,
+          email: normalizedEmail,
+          name: fallbackName,
           password,
           callbackURL: redirectTo,
         })
@@ -417,7 +421,7 @@ export const Auth = () => {
         }
       } else {
         const result = await signIn.email({
-          email,
+          email: normalizedEmail,
           password,
           callbackURL: redirectTo,
         })
