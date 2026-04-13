@@ -44,7 +44,9 @@ export const Auth = () => {
     defaultMessage: 'Formular für neues Passwort ausblenden',
   })
   const navigate = useNavigate()
-  const { redirect: redirectTo } = useSearch({ from: '/_layout/auth' })
+  const { redirect: redirectTo, verificationExpired } = useSearch({
+    from: '/_layout/auth',
+  })
   const showPasswordLabel = formatMessage({
     defaultMessage: 'Passwort anzeigen',
   })
@@ -103,6 +105,18 @@ export const Auth = () => {
     }
     navigate({ to: redirectTo })
   }, [formatMessage, navigate, redirectTo])
+
+  useEffect(() => {
+    if (!verificationExpired) return
+
+    setError(
+      formatMessage({
+        id: 'authVerificationGraceExpired',
+        defaultMessage:
+          'Bitte E-Mail bestätigen. Die 1-stündige Anmeldezeit ohne Bestätigung ist abgelaufen.',
+      }),
+    )
+  }, [formatMessage, verificationExpired])
 
   useEffect(() => {
     let isActive = true

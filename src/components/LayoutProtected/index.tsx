@@ -6,6 +6,7 @@ import { Breadcrumbs } from './Breadcrumbs/index.tsx'
 import { Notifications } from '../Notifications/index.tsx'
 import { BackgroundTasks } from '../BackgroundTasks/index.tsx'
 import { Header } from './Header/index.tsx'
+import { EmailVerificationBanner } from '../EmailVerificationBanner.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { ObservationAssignChooser } from '../ObservationAssignChooser/index.tsx'
@@ -35,6 +36,7 @@ export const LayoutProtected = () => {
       {onlyForm !== true && (
         <>
           <Header />
+          <EmailVerificationBanner />
           {!mapIsMaximized && <Breadcrumbs />}
           <Notifications />
         </>

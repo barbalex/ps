@@ -176,3 +176,55 @@ Behavior:
 - Emails are trimmed and compared case-insensitively.
 - If the variable is empty or missing, nobody is treated as app admin.
 - Do not hardcode admin emails in routes/components. Use `src/modules/appAdmins.ts`.
+
+# 5. Authentication Flow
+
+## Registration
+
+Users register with email, password, and an auto-derived display name (the local part of the email address). The `name` field is required by the backend and is set automatically — the frontend derives it from the email before calling `signUp.email()`.
+
+After successful registration the user is taken to the sign-in form and shown a success message advising them to check their email.
+
+## Email Verification Grace Period
+
+New users can log in immediately after registration without verifying their email. They have **1 hour** from account creation to complete verification before they are automatically signed out.
+
+### How it works
+
+1. **Grace window** — defined in `src/modules/emailVerificationGrace.ts`:
+   - `EMAIL_VERIFICATION_GRACE_MS = 60 * 60 * 1000` (1 hour)
+   - `getVerificationDeadlineMs(user)` — returns `user.createdAt + 1 hr` or `null` if already verified or missing
+   - `isVerificationGraceExpired(user, nowMs?)` — returns `true` when deadline has passed
+
+2. **Route guard** — `src/routes/data/route.tsx` `beforeLoad` checks `isVerificationGraceExpired`. If expired, it redirects to `/auth?verificationExpired=true`, which shows an error message on the auth page.
+
+3. **In-app banner** — `src/components/EmailVerificationBanner.tsx`, mounted in `src/components/LayoutProtected/index.tsx`:
+   - Visible whenever the session user has `emailVerified: false` and is still within the grace window.
+   - Shows a live countdown (`HH:MM:SS`) to forced logout.
+   - **Resend** button — POSTs `{email, type: 'email-verification'}` to `/auth/email-otp/send-verification-otp`.
+   - **OTP input + Verify** button — POSTs `{email, otp}` to `/auth/email-otp/verify-email`; reloads the page on success.
+   - When the countdown reaches zero, `signOut()` is called automatically and the user is redirected to `/auth?verificationExpired=true`.
+
+### Relevant files
+
+| File                                                | Purpose                                                                       |
+| --------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `src/modules/emailVerificationGrace.ts`             | Grace window helpers & expiry check                                           |
+| `src/components/EmailVerificationBanner.tsx`        | Countdown banner with resend + OTP verify                                     |
+| `src/components/EmailVerificationBanner.module.css` | Banner styles                                                                 |
+| `src/routes/data/route.tsx`                         | Route guard that enforces expiry                                              |
+| `src/routes/_layout.auth.tsx`                       | Adds `verificationExpired` search param to auth route                         |
+| `src/components/Auth.tsx`                           | Shows grace-expired error and post-signup success message                     |
+| `backend-dev/auth/auth.mjs`                         | `requireEmailVerification` controlled by `REQUIRE_EMAIL_VERIFICATION` env var |
+
+### Dev environment note
+
+In `backend-dev`, email verification is **disabled by default** (`REQUIRE_EMAIL_VERIFICATION` env var defaults to `false`). This means new users can log in without any OTP step.
+
+To test the full OTP flow locally when Mailgun is not configured, check the auth container logs — the OTP is printed there:
+
+```bash
+docker compose logs auth --tail 50
+```
+
+To enable verification in dev, set `REQUIRE_EMAIL_VERIFICATION=true` in the dev environment and restart the auth container.

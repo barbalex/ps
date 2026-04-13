@@ -8,6 +8,7 @@ import { type } from 'arktype'
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
+import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
 import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
 
 // TODO:
@@ -37,6 +38,21 @@ export const Route = createFileRoute('/data')({
         to: '/auth',
         search: { redirect: location.href },
       })
+
+    // 1b. allow unverified users only during grace window
+    const sessionUser = session.user as {
+      emailVerified?: boolean | null
+      createdAt?: string | null
+    }
+    if (isVerificationGraceExpired(sessionUser)) {
+      throw redirect({
+        to: '/auth',
+        search: {
+          redirect: location.href,
+          verificationExpired: true,
+        },
+      })
+    }
 
     // 2. Ensure a DB instance exists before protected route components mount
     await ensurePgliteDb()
