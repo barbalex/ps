@@ -34,7 +34,7 @@ export default defineConfig({
     }),
     svgr(),
   ],
-  envPrefix: 'ELECTRIC_',
+  envPrefix: ['VITE_', 'ELECTRIC_'],
   optimizeDeps: {
     exclude: ['@electric-sql/pglite', '@electric-sql/pglite-tools'],
   },

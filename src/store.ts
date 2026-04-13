@@ -100,6 +100,7 @@ export const showTreeMenusAtom = atom((get) => {
 // TODO: check what this is good / used for. Seems no use now
 export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
+export const isAppAmin = atom(false)
 export const designingAtom = atomWithStorage('designingAtom', false)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
 export const qcsRunOnlyWithResultsAtom = atomWithStorage(

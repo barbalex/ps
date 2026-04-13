@@ -19,7 +19,6 @@ import {
   mapMaximizedAtom,
   operationsQueueAtom,
   pgliteDbAtom,
-  sqlInitializingAtom,
   store,
   syncObjectAtom,
   tabsAtom,

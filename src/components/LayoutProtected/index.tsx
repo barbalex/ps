@@ -11,6 +11,7 @@ import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertie
 import { ObservationAssignChooser } from '../ObservationAssignChooser/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
 import { ApiDetector } from '../ApiDetector.tsx'
+import { AppAdminDetector } from '../AppAdminDetector.tsx'
 import { TreeOpenNodesSetter } from '../TreeOpenNodesSetter.tsx'
 import { OperationsObserver } from '../OperationsObserver.tsx'
 import { AutoFetchCapabilities } from '../AutoFetchCapabilities.tsx'
@@ -43,6 +44,7 @@ export const LayoutProtected = () => {
       <ObservationAssignChooser />
       <IsDesktopViewSetter />
       <ApiDetector />
+      <AppAdminDetector />
       <TreeOpenNodesSetter />
       <AutoFetchCapabilities />
       <OperationsObserver />

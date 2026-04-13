@@ -159,3 +159,20 @@ If commit fails on SQL sync check:
 ## OAuth, Social sign-on (SSO)
 
 ## Add password after registering with OAuth
+
+# 4. App Admin Access
+
+App-admin access is configured via frontend env variable:
+
+- `VITE_APP_ADMIN_EMAILS`
+
+Format:
+
+- Comma-separated email list
+- Example: `VITE_APP_ADMIN_EMAILS=alex@gabriel-software.ch,alex.barbalex@gmail.com`
+
+Behavior:
+
+- Emails are trimmed and compared case-insensitively.
+- If the variable is empty or missing, nobody is treated as app admin.
+- Do not hardcode admin emails in routes/components. Use `src/modules/appAdmins.ts`.

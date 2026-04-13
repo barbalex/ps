@@ -11,12 +11,15 @@ import { RootQcsNode } from './RootQcs.tsx'
 import { RootQcsRunNode } from './RootQcsRun.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
-import { designingAtom } from '../../store.ts'
+import { designingAtom, isAppAmin } from '../../store.ts'
 import styles from './index.module.css'
 
 // so query it here once and pass it down
 export const Tree = () => {
   const [designing] = useAtom(designingAtom)
+  const [isAppAdmin] = useAtom(isAppAmin)
+
+  console.log('Tree render, isAppAdmin:', isAppAdmin)
 
   return (
     <div className={`${styles.container} no-print`}>
@@ -25,9 +28,13 @@ export const Tree = () => {
       {designing && (
         <>
           <UsersNode />
-          <FieldTypesNode />
-          <WidgetTypesNode />
-          <WidgetsForFieldsNode />
+          {isAppAdmin && (
+            <>
+              <FieldTypesNode />
+              <WidgetTypesNode />
+              <WidgetsForFieldsNode />
+            </>
+          )}
           {/* TODO: restrict editing to app administrator once auth supports it */}
           <QcsNode />
           <RootQcsNode />
