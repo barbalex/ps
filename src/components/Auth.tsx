@@ -126,7 +126,7 @@ export const Auth = () => {
       formatMessage({
         id: 'authVerificationGraceExpired',
         defaultMessage:
-          'Bitte E-Mail bestätigen. Die 1-stündige Anmeldezeit ohne Bestätigung ist abgelaufen.',
+          'Bitte E-Mail bestätigen. Die 1-stündige Frist ist abgelaufen.',
       }),
     )
   }, [formatMessage, verificationExpired])
