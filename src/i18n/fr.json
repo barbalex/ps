@@ -927,6 +927,7 @@
   "changePasswordPleaseWait": "Veuillez patienter...",
   "changePasswordSaveBtn": "Enregistrer le mot de passe",
   "setPasswordMenuItem": "Définir le mot de passe",
+  "logoutMenuItem": "Se déconnecter",
   "setPasswordDialogTitle": "Définir le mot de passe",
   "setPasswordSaveBtn": "Définir le mot de passe",
   "setPasswordDialogDescription": "Cela vous permet de vous connecter avec votre adresse e-mail et votre mot de passe en plus ou à la place de Google, vous rendant plus indépendant.",

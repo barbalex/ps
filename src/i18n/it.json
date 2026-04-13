@@ -929,6 +929,7 @@
   "changePasswordPleaseWait": "Attendere...",
   "changePasswordSaveBtn": "Salva password",
   "setPasswordMenuItem": "Imposta password",
+  "logoutMenuItem": "Disconnetti",
   "setPasswordDialogTitle": "Imposta password",
   "setPasswordSaveBtn": "Imposta password",
   "setPasswordDialogDescription": "Ciò consente di accedere con l'indirizzo email e la password oltre o invece di Google, rendendoti più indipendente.",

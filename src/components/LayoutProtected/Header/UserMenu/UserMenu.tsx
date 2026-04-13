@@ -56,9 +56,9 @@ export const UserMenu = ({
   const [twoFactorEnabledServer, setTwoFactorEnabledServer] = useState<
     boolean | undefined
   >(undefined)
-  const [hasPasswordServer, setHasPasswordServer] = useState<boolean | undefined>(
-    undefined,
-  )
+  const [hasPasswordServer, setHasPasswordServer] = useState<
+    boolean | undefined
+  >(undefined)
   const hasPasswordFromSession =
     session?.user?.accounts?.some((account) => {
       const provider = account.provider
@@ -81,10 +81,13 @@ export const UserMenu = ({
       }
 
       try {
-        const response = await fetch(`${getAuthBaseUrl()}/auth/two-factor/status`, {
-          method: 'GET',
-          credentials: 'include',
-        })
+        const response = await fetch(
+          `${getAuthBaseUrl()}/auth/two-factor/status`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          },
+        )
         if (!response.ok) return
 
         const data = (await response.json()) as {
@@ -204,7 +207,7 @@ export const UserMenu = ({
               </MenuItem>
             )}
             <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
-              <FormattedMessage defaultMessage="Abmelden" />
+              <FormattedMessage id="logoutMenuItem" defaultMessage="Abmelden" />
             </MenuItem>
           </MenuList>
         </MenuPopover>

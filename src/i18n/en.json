@@ -943,6 +943,7 @@
   "changePasswordPleaseWait": "Please wait...",
   "changePasswordSaveBtn": "Save password",
   "setPasswordMenuItem": "Set password",
+  "logoutMenuItem": "Log out",
   "setPasswordDialogTitle": "Set password",
   "setPasswordSaveBtn": "Set password",
   "setPasswordDialogDescription": "This allows you to sign in with your email and password in addition to or instead of Google, giving you more independence.",
