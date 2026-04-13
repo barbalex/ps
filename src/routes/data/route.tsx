@@ -25,7 +25,8 @@ const schema = type({
 export const Route = createFileRoute('/data')({
   component: AuthAndDb,
   pendingComponent: () => <Initiating forceSqlInitializing />,
-  pendingMs: 0,
+  // needed so Initiating does not flash on every route under /data when the auth/db state is being revalidated
+  pendingMs: 250,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
   notFoundComponent: NotFound,
