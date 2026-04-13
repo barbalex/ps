@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from '@tanstack/react-router'
+import { getRouteApi, useNavigate } from '@tanstack/react-router'
 
 import { createAccount } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -8,11 +8,11 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useAccountsNavData } from '../modules/useAccountsNavData.ts'
 import '../form.css'
 
-const from = '/data/users/$userId_/accounts'
+const routeApi = getRouteApi('/data/users/$userId_/accounts/')
 
 export const Accounts = () => {
-  const { userId } = useParams({ from })
-  const navigate = useNavigate({ from })
+  const { userId } = routeApi.useParams()
+  const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useAccountsNavData({ userId })
   const { navs, label, nameSingular } = navData
@@ -20,7 +20,7 @@ export const Accounts = () => {
   const add = async () => {
     const id = await createAccount({ userId })
     if (!id) return
-    navigate({ to: id })
+    navigate({ to: `/data/users/${userId}/accounts/${id}` })
   }
 
   return (
@@ -35,7 +35,13 @@ export const Accounts = () => {
         {loading ? (
           <Loading />
         ) : (
-          navs.map(({ id, label }) => <Row key={id} label={label ?? id} to={id} />)
+          navs.map(({ id, label }) => (
+            <Row
+              key={id}
+              label={label ?? id}
+              to={`/data/users/${userId}/accounts/${id}`}
+            />
+          ))
         )}
       </div>
     </div>

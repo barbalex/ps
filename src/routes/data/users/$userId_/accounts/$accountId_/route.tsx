@@ -1,14 +1,21 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Account } from '../../../../../../formsAndLists/account'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { Account } from '../../../../../../formsAndLists/account/index.tsx'
 
-export const Route = createFileRoute('/data/users/$userId_/accounts/$accountId_')({
+export const Route = createFileRoute(
+  '/data/users/$userId_/accounts/$accountId_',
+)({
   component: Account,
   beforeLoad: ({ params }) => {
-    if (!params.userId || params.userId === 'undefined') {
-      throw new Error('Invalid or missing userId in route parameters')
+    const userId = params.userId ?? params.userId_
+    const accountId = params.accountId ?? params.accountId_
+    if (!userId || userId === 'undefined') {
+      throw redirect({ to: '/data/users' })
     }
-    if (!params.accountId || params.accountId === 'undefined') {
-      throw new Error('Invalid or missing accountId in route parameters')
+    if (!accountId || accountId === 'undefined') {
+      throw redirect({
+        to: '/data/users/$userId_/accounts/',
+        params: { userId },
+      })
     }
     return {
       navDataFetcher: 'useAccountNavData',

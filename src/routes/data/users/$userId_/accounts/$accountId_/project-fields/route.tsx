@@ -1,13 +1,18 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/data/users/$userId_/accounts/$accountId_/project-fields')({
   component: Outlet,
   beforeLoad: ({ params }) => {
-    if (!params.userId || params.userId === 'undefined') {
-      throw new Error('Invalid or missing userId in route parameters')
+    const userId = params.userId ?? params.userId_
+    const accountId = params.accountId ?? params.accountId_
+    if (!userId || userId === 'undefined') {
+      throw redirect({ to: '/data/users' })
     }
-    if (!params.accountId || params.accountId === 'undefined') {
-      throw new Error('Invalid or missing accountId in route parameters')
+    if (!accountId || accountId === 'undefined') {
+      throw redirect({
+        to: '/data/users/$userId_/accounts/',
+        params: { userId },
+      })
     }
     return {
       navDataFetcher: 'useFieldsNavData',

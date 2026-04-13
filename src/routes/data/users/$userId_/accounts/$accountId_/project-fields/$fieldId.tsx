@@ -1,20 +1,29 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { Field } from '../../../../../../../formsAndLists/field'
+import { Field } from '../../../../../../../formsAndLists/field/index.tsx'
 
 const from = '/data/users/$userId_/accounts/$accountId_/project-fields/$fieldId'
 
 export const Route = createFileRoute(from)({
   component: () => <Field from={from} />,
   beforeLoad: ({ params }) => {
-    if (!params.userId || params.userId === 'undefined') {
-      throw new Error('Invalid or missing userId in route parameters')
+    const userId = params.userId ?? params.userId_
+    const accountId = params.accountId ?? params.accountId_
+    const fieldId = params.fieldId ?? params.fieldId_
+    if (!userId || userId === 'undefined') {
+      throw redirect({ to: '/data/users' })
     }
-    if (!params.accountId || params.accountId === 'undefined') {
-      throw new Error('Invalid or missing accountId in route parameters')
+    if (!accountId || accountId === 'undefined') {
+      throw redirect({
+        to: '/data/users/$userId_/accounts/',
+        params: { userId },
+      })
     }
-    if (!params.fieldId || params.fieldId === 'undefined') {
-      throw new Error('Invalid or missing fieldId in route parameters')
+    if (!fieldId || fieldId === 'undefined') {
+      throw redirect({
+        to: '/data/users/$userId_/accounts/$accountId_/project-fields/',
+        params: { userId, accountId },
+      })
     }
     return {
       navDataFetcher: 'useFieldNavData',
