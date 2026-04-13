@@ -11,12 +11,13 @@ const {
 } = fluentUiReactComponents
 import { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
+import { MdFingerprint, MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
 import { getAuthBaseUrl } from '../../../../modules/authClient.ts'
 import { operationsQueueAtom, store } from '../../../../store.ts'
 import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LogoutDialogs } from './LogoutDialogs.tsx'
+import { PasskeyDialog } from './PasskeyDialog.tsx'
 import { TwoFactorDialog } from './TwoFactorDialog.tsx'
 
 type AuthUser = {
@@ -52,6 +53,7 @@ export const UserMenu = ({
 }: Props) => {
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
+  const [passkeyOpen, setPasskeyOpen] = useState(false)
   const [twoFactorOpen, setTwoFactorOpen] = useState(false)
   const [twoFactorEnabledServer, setTwoFactorEnabledServer] = useState<
     boolean | undefined
@@ -217,6 +219,15 @@ export const UserMenu = ({
                 )}
               </MenuItem>
             )}
+            <MenuItem
+              icon={<MdFingerprint />}
+              onClick={() => setPasskeyOpen(true)}
+            >
+              <FormattedMessage
+                id="passkeyAddMenuItem"
+                defaultMessage="Passkey hinzufügen"
+              />
+            </MenuItem>
             <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
               <FormattedMessage id="logoutMenuItem" defaultMessage="Abmelden" />
             </MenuItem>
@@ -233,6 +244,8 @@ export const UserMenu = ({
           setTwoFactorEnabledServer(false)
         }}
       />
+
+      <PasskeyDialog open={passkeyOpen} onClose={() => setPasskeyOpen(false)} />
 
       <TwoFactorDialog
         open={twoFactorOpen}

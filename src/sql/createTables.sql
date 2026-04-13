@@ -143,6 +143,28 @@ CREATE TABLE IF NOT EXISTS auth_two_factors(
 CREATE UNIQUE INDEX IF NOT EXISTS auth_two_factors_user_id_idx ON auth_two_factors USING btree(user_id);
 
 --------------------------------------------------------------
+-- auth_passkeys
+--
+CREATE TABLE IF NOT EXISTS auth_passkeys(
+  auth_passkey_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
+  public_key text NOT NULL,
+  user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  credential_id text NOT NULL,
+  counter integer NOT NULL DEFAULT 0,
+  device_type text NOT NULL,
+  backed_up boolean NOT NULL DEFAULT FALSE,
+  transports text DEFAULT NULL,
+  aaguid text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS auth_passkeys_user_id_idx ON auth_passkeys USING btree(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS auth_passkeys_credential_id_idx ON auth_passkeys USING btree(credential_id);
+
+--------------------------------------------------------------
 -- projects
 --
 CREATE TYPE project_types_enum AS ENUM ('species', 'biotope');

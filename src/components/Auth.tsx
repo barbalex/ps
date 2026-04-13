@@ -33,6 +33,10 @@ export const Auth = () => {
     id: 'authGoogleBtn',
     defaultMessage: 'Mit Google anmelden',
   })
+  const passkeySignInLabel = formatMessage({
+    id: 'authPasskeyBtn',
+    defaultMessage: 'Mit Passkey anmelden',
+  })
   const requestPasswordResetLabel = formatMessage({
     id: 'authRequestPasswordResetBtn',
     defaultMessage: 'Reset-Link senden',
@@ -58,6 +62,18 @@ export const Auth = () => {
   })
   const hidePasswordLabel = formatMessage({
     defaultMessage: 'Passwort verbergen',
+  })
+  const emailPasswordSectionLabel = formatMessage({
+    id: 'authSectionEmailPassword',
+    defaultMessage: '1. Email & Password',
+  })
+  const ssoSectionLabel = formatMessage({
+    id: 'authSectionSso',
+    defaultMessage: '2. Social Sign-On (SSO)',
+  })
+  const passkeySectionLabel = formatMessage({
+    id: 'authSectionPasskeys',
+    defaultMessage: '3. Passkeys',
   })
   const [isSignUp, setIsSignUp] = useState(false)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
@@ -213,6 +229,63 @@ export const Auth = () => {
         }),
       )
       console.error('Google auth error:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handlePasskeySignIn = async () => {
+    setError('')
+    setShowRegisterSuggestion(false)
+    setIsLoading(true)
+
+    try {
+      const result = await authClient.signIn.passkey({
+        autoFill: true,
+      })
+
+      const hasError =
+        !!result?.error ||
+        !!(
+          result &&
+          typeof result === 'object' &&
+          'data' in result &&
+          result.data &&
+          typeof result.data === 'object' &&
+          'error' in result.data &&
+          result.data.error
+        )
+
+      if (hasError) {
+        const message =
+          result?.error?.message ||
+          (result &&
+          typeof result === 'object' &&
+          'data' in result &&
+          result.data &&
+          typeof result.data === 'object' &&
+          'error' in result.data &&
+          result.data.error?.message) ||
+          formatMessage({
+            id: 'authPasskeyFailed',
+            defaultMessage:
+              'Passkey-Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+          })
+
+        setError(message)
+        return
+      }
+
+      onLoggedIn()
+    } catch (err) {
+      setError(
+        formatMessage({
+          id: 'authPasskeyFailed',
+          defaultMessage:
+            'Passkey-Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+        }),
+      )
+      console.error('Passkey auth error:', err)
     } finally {
       setIsLoading(false)
     }
@@ -885,6 +958,9 @@ export const Auth = () => {
           <div className={styles.successMessage}>{passwordResetMessage}</div>
         )}
         <form className={styles.authForm} onSubmit={handleSubmit}>
+          {!isSignUp && (
+            <h2 className={styles.sectionTitle}>{emailPasswordSectionLabel}</h2>
+          )}
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.formLabel}>
               {formatMessage({
@@ -909,6 +985,7 @@ export const Auth = () => {
                 id: 'authEnterEmail',
                 defaultMessage: 'E-Mail eingeben',
               })}
+              autoComplete="username webauthn"
               disabled={isLoading}
             />
             {fieldErrors.email && (
@@ -1007,6 +1084,7 @@ export const Auth = () => {
                   id: 'authEnterPassword',
                   defaultMessage: 'Passwort eingeben',
                 })}
+                autoComplete={isSignUp ? 'new-password' : 'current-password webauthn'}
                 disabled={isLoading}
               />
               <button
@@ -1343,26 +1421,36 @@ export const Auth = () => {
           </div>
         )}
 
-        <div className={styles.socialDivider}>
-          <span>
-            {formatMessage({
-              id: 'authOrDivider',
-              defaultMessage: 'oder',
-            })}
-          </span>
-        </div>
+        {!isSignUp && (
+          <>
+            <div className={styles.authSection}>
+              <h2 className={styles.sectionTitle}>{ssoSectionLabel}</h2>
+              <button
+                type="button"
+                className={styles.socialButton}
+                onClick={handleGoogleSignIn}
+                disabled={isLoading}
+              >
+                <span className={styles.googleMark} aria-hidden="true">
+                  G
+                </span>
+                {googleSignInLabel}
+              </button>
+            </div>
 
-        <button
-          type="button"
-          className={styles.socialButton}
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-        >
-          <span className={styles.googleMark} aria-hidden="true">
-            G
-          </span>
-          {googleSignInLabel}
-        </button>
+            <div className={styles.authSection}>
+              <h2 className={styles.sectionTitle}>{passkeySectionLabel}</h2>
+              <button
+                type="button"
+                className={styles.socialButton}
+                onClick={handlePasskeySignIn}
+                disabled={isLoading}
+              >
+                {passkeySignInLabel}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
