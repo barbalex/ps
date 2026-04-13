@@ -9,8 +9,7 @@ const {
   MenuTrigger,
   Tooltip,
 } = fluentUiReactComponents
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
@@ -54,24 +53,19 @@ export const UserMenu = ({
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
   const [twoFactorOpen, setTwoFactorOpen] = useState(false)
-  const [twoFactorEnabledOverride, setTwoFactorEnabledOverride] = useState<
-    boolean | undefined
-  >(undefined)
   const [twoFactorEnabledServer, setTwoFactorEnabledServer] = useState<
     boolean | undefined
   >(undefined)
   const [hasPasswordServer, setHasPasswordServer] = useState<boolean | undefined>(
     undefined,
   )
-  const [hasPasswordOverride, setHasPasswordOverride] = useState(false)
   const hasPasswordFromSession =
     session?.user?.accounts?.some((account) => {
       const provider = account.provider
       const providerId = (account as { providerId?: string }).providerId
       return provider === 'credential' || providerId === 'credential'
     }) ?? false
-  const hasPassword =
-    hasPasswordOverride || hasPasswordServer || hasPasswordFromSession
+  const hasPassword = hasPasswordServer ?? hasPasswordFromSession
   const sessionUserKey = session?.user?.id ?? session?.user?.email ?? ''
 
   useEffect(() => {
@@ -114,8 +108,7 @@ export const UserMenu = ({
     }
   }, [sessionUserKey, session?.user])
 
-  const twoFactorEnabled =
-    twoFactorEnabledOverride ?? twoFactorEnabledServer ?? false
+  const twoFactorEnabled = twoFactorEnabledServer ?? false
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -222,9 +215,7 @@ export const UserMenu = ({
         onClose={() => setChangePasswordOpen(false)}
         hasPassword={hasPassword}
         onPasswordSet={() => {
-          setHasPasswordOverride(true)
           setHasPasswordServer(true)
-          setTwoFactorEnabledOverride(false)
           setTwoFactorEnabledServer(false)
         }}
       />
@@ -235,7 +226,6 @@ export const UserMenu = ({
         hasPassword={hasPassword}
         twoFactorEnabled={twoFactorEnabled}
         onChanged={(enabled) => {
-          setTwoFactorEnabledOverride(enabled)
           setTwoFactorEnabledServer(enabled)
         }}
       />

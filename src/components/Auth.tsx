@@ -231,6 +231,7 @@ export const Auth = () => {
     if (saved === 'otp' || saved === 'totp') {
       if (methods.includes(saved)) return saved
     }
+    if (methods.includes('otp')) return 'otp'
     if (methods.includes('totp')) return 'totp'
     return methods[0]
   }
