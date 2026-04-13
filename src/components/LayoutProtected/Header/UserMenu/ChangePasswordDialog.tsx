@@ -27,6 +27,8 @@ type Props = {
   onPasswordSet?: () => void
 }
 
+const SUCCESS_CLOSE_DELAY_MS = 3500
+
 export const ChangePasswordDialog = ({
   open,
   onClose,
@@ -59,6 +61,7 @@ export const ChangePasswordDialog = ({
   const changePasswordResetTimeoutRef = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined)
+  const notifyPasswordSetAfterCloseRef = useRef(false)
 
   const resetDialogState = () => {
     setChangePasswordError('')
@@ -80,6 +83,10 @@ export const ChangePasswordDialog = ({
       changePasswordSuccessTimeoutRef.current = undefined
     }
     onClose()
+    if (notifyPasswordSetAfterCloseRef.current) {
+      onPasswordSet?.()
+      notifyPasswordSetAfterCloseRef.current = false
+    }
   }
 
   const onSubmitChangePassword = async () => {
@@ -166,7 +173,7 @@ export const ChangePasswordDialog = ({
         const errorCode = (result.error as { code?: string })?.code
 
         if (!hasPassword && errorCode === 'PASSWORD_ALREADY_EXISTS') {
-          onPasswordSet?.()
+          notifyPasswordSetAfterCloseRef.current = true
           setChangePasswordMessage(
             intl.formatMessage({
               id: 'setPasswordAlreadyExists',
@@ -178,9 +185,9 @@ export const ChangePasswordDialog = ({
           setNewPassword('')
           setConfirmNewPassword('')
           changePasswordSuccessTimeoutRef.current = setTimeout(() => {
-            onClose()
+            handleClose()
             changePasswordSuccessTimeoutRef.current = undefined
-          }, 1200)
+          }, SUCCESS_CLOSE_DELAY_MS)
           return
         }
 
@@ -206,7 +213,7 @@ export const ChangePasswordDialog = ({
 
       if (!hasPassword) {
         // OAuth-only user - password is set directly
-        onPasswordSet?.()
+        notifyPasswordSetAfterCloseRef.current = true
         setChangePasswordMessage(
           intl.formatMessage({
             id: 'setPasswordSuccess',
@@ -227,9 +234,9 @@ export const ChangePasswordDialog = ({
       setNewPassword('')
       setConfirmNewPassword('')
       changePasswordSuccessTimeoutRef.current = setTimeout(() => {
-        onClose()
+        handleClose()
         changePasswordSuccessTimeoutRef.current = undefined
-      }, 2000)
+      }, SUCCESS_CLOSE_DELAY_MS)
     } catch (error) {
       setChangePasswordError(
         intl.formatMessage({
@@ -260,6 +267,7 @@ export const ChangePasswordDialog = ({
       if (changePasswordResetTimeoutRef.current) {
         clearTimeout(changePasswordResetTimeoutRef.current)
       }
+      notifyPasswordSetAfterCloseRef.current = false
     },
     [],
   )

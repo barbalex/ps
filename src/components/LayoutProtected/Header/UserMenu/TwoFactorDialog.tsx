@@ -57,12 +57,27 @@ export const TwoFactorDialog = ({
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   )
+  const pendingChangedEnabledRef = useRef<boolean | null>(null)
+
+  const handleClose = () => {
+    if (isSubmitting) return
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = undefined
+    }
+    onClose()
+    if (pendingChangedEnabledRef.current !== null) {
+      onChanged(pendingChangedEnabledRef.current)
+      pendingChangedEnabledRef.current = null
+    }
+  }
 
   useEffect(
     () => () => {
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current)
       }
+      pendingChangedEnabledRef.current = null
     },
     [],
   )
@@ -117,7 +132,7 @@ export const TwoFactorDialog = ({
         if (result.error) {
           throw new Error(result.error.message || 'disable two-factor failed')
         }
-        onChanged(false)
+        pendingChangedEnabledRef.current = false
         window.localStorage.removeItem(TWO_FACTOR_PREFERRED_METHOD_KEY)
         setTotpUri('')
         setBackupCodes([])
@@ -142,7 +157,7 @@ export const TwoFactorDialog = ({
         setBackupCodes(resultData?.backupCodes ?? [])
         setBackupCodesCopied(false)
 
-        onChanged(true)
+        pendingChangedEnabledRef.current = true
 
         if (enableMethod === 'totp') {
           const uri = resultData?.totpURI || ''
@@ -172,7 +187,7 @@ export const TwoFactorDialog = ({
       const shouldAutoClose = twoFactorEnabled
       if (shouldAutoClose) {
         closeTimeoutRef.current = setTimeout(() => {
-          onClose()
+          handleClose()
           closeTimeoutRef.current = undefined
         }, 1400)
       }
@@ -199,7 +214,7 @@ export const TwoFactorDialog = ({
     <Dialog
       open={open}
       onOpenChange={(_event, data) => {
-        if (!data.open && !isSubmitting) onClose()
+        if (!data.open) handleClose()
       }}
     >
       <DialogSurface>
@@ -331,7 +346,7 @@ export const TwoFactorDialog = ({
           <DialogActions>
             <Button
               appearance="secondary"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={isSubmitting}
             >
               <FormattedMessage id="logoutCancelBtn" defaultMessage="Abbrechen" />

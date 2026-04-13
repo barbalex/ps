@@ -1077,19 +1077,6 @@ export const Auth = () => {
                   </button>
                 </div>
               )}
-              <p className={styles.toggleText}>
-                {twoFactorMethod === 'totp'
-                  ? formatMessage({
-                      id: 'authTwoFactorAppPrompt',
-                      defaultMessage:
-                        'Bitte den Code aus Ihrer Authenticator-App eingeben.',
-                    })
-                  : formatMessage({
-                      id: 'authTwoFactorPrompt',
-                      defaultMessage:
-                        '2FA ist aktiviert. Bitte den Code aus Ihrer E-Mail eingeben.',
-                    })}
-              </p>
               <input
                 type="text"
                 className={styles.formInput}
