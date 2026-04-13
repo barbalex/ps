@@ -159,6 +159,10 @@
   margin: 0 0 12px 0;
 }
 
+.emailVerificationInline {
+  margin: 0;
+}
+
 .secondaryButton {
   width: 100%;
   padding: 9px 12px;
@@ -192,6 +196,7 @@
   background: transparent;
   color: #35612b;
   font-size: 12px;
+  line-height: 1.2;
   font-weight: 500;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -351,8 +356,9 @@
 
 .inlinePromptText {
   font-size: 12px;
+  line-height: 1.2;
   color: #555;
-  margin: 0 0 6px 0;
+  margin: 0 0 0 0;
 }
 
 .toggleButton {

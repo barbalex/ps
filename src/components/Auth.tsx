@@ -724,7 +724,7 @@ export const Auth = () => {
               <p className={styles.errorMessage}>{fieldErrors.email}</p>
             )}
             {verificationExpired && !isSignUp && !emailVerifiedInForm && (
-              <div className={styles.otpActions}>
+              <div className={`${styles.otpActions} ${styles.emailVerificationInline}`}>
                 <p className={styles.inlinePromptText}>
                   {formatMessage({
                     id: 'authResendVerificationPromptPrefix',
