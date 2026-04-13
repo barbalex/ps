@@ -1051,7 +1051,7 @@ export const Auth = () => {
 
           {!isSignUp && twoFactorRequired && (
             <div className={styles.otpActions}>
-              {twoFactorMethods.length > 1 && (
+              {twoFactorMethods.length > 1 && twoFactorMethod === 'totp' && (
                 <div className={styles.toggleRow}>
                   <button
                     type="button"
@@ -1062,17 +1062,6 @@ export const Auth = () => {
                     {formatMessage({
                       id: 'authTwoFactorMethodEmail',
                       defaultMessage: 'E-Mail-Code',
-                    })}
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.inlineTextLink}
-                    onClick={() => onSwitchTwoFactorMethod('totp')}
-                    disabled={isTwoFactorLoading || isLoading || twoFactorMethod === 'totp'}
-                  >
-                    {formatMessage({
-                      id: 'authTwoFactorMethodApp',
-                      defaultMessage: 'Authenticator-App',
                     })}
                   </button>
                 </div>
