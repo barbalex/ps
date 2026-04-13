@@ -2,9 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: calc(100dvh - var(--layout-header-height));
+  height: 100%;
+  min-height: 0;
   background-color: rgba(225, 247, 224, 0.45);
-  padding: 26px 20px;
+  padding: 16px 20px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .authCard {
@@ -15,7 +18,37 @@
   padding: 22px;
   width: 100%;
   max-width: 460px;
+  max-height: calc(
+    100% - 32px
+  ); /* 16px top + 16px bottom padding of container */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
   animation: slideIn 0.3s ease-out;
+}
+
+@media (max-height: 760px) {
+  .authContainer {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .authCard {
+    padding: 16px;
+  }
+
+  .authHeader {
+    margin-bottom: 12px;
+  }
+
+  .authForm {
+    gap: 10px;
+  }
+
+  .authSection {
+    margin-top: 10px;
+    padding-top: 8px;
+  }
 }
 
 @keyframes slideIn {
