@@ -14,6 +14,10 @@ import { ensurePgliteDb } from '../modules/ensurePgliteDb.ts'
 import { Initiating } from './Initiating.tsx'
 import styles from './Auth.module.css'
 
+type TwoFactorMethod = 'otp' | 'totp'
+
+const TWO_FACTOR_PREFERRED_METHOD_KEY = 'twoFactorPreferredMethod'
+
 export const Auth = () => {
   const { formatMessage } = useIntl()
   const signInLabel = formatMessage({
@@ -88,6 +92,8 @@ export const Auth = () => {
   const [emailVerifiedInForm, setEmailVerifiedInForm] = useState(false)
   const [twoFactorRequired, setTwoFactorRequired] = useState(false)
   const [twoFactorCode, setTwoFactorCode] = useState('')
+  const [twoFactorMethods, setTwoFactorMethods] = useState<TwoFactorMethod[]>([])
+  const [twoFactorMethod, setTwoFactorMethod] = useState<TwoFactorMethod>('otp')
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false)
   const [twoFactorMessage, setTwoFactorMessage] = useState('')
   const [twoFactorMessageIsError, setTwoFactorMessageIsError] = useState(false)
@@ -214,6 +220,19 @@ export const Auth = () => {
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
+  }
+
+  const pickTwoFactorMethod = (methods: TwoFactorMethod[]) => {
+    if (!methods.length) return 'otp' as TwoFactorMethod
+    const saved =
+      typeof window !== 'undefined'
+        ? window.localStorage.getItem(TWO_FACTOR_PREFERRED_METHOD_KEY)
+        : null
+    if (saved === 'otp' || saved === 'totp') {
+      if (methods.includes(saved)) return saved
+    }
+    if (methods.includes('totp')) return 'totp'
+    return methods[0]
   }
 
   const isCredentialErrorMessage = (message?: string) => {
@@ -500,9 +519,30 @@ export const Auth = () => {
           'twoFactorRedirect' in resultData &&
           (resultData as { twoFactorRedirect?: boolean }).twoFactorRedirect
         ) {
+          const methods = (
+            ((resultData as { twoFactorMethods?: string[] }).twoFactorMethods ?? [])
+              .filter((method): method is TwoFactorMethod =>
+                method === 'otp' || method === 'totp',
+              )
+          )
+          const selectedMethod = pickTwoFactorMethod(methods)
+
           setTwoFactorRequired(true)
+          setTwoFactorMethods(methods)
+          setTwoFactorMethod(selectedMethod)
           setTwoFactorCode('')
-          await sendTwoFactorOtp()
+          if (selectedMethod === 'otp' && methods.includes('otp')) {
+            await sendTwoFactorOtp()
+          } else {
+            setTwoFactorMessage(
+              formatMessage({
+                id: 'authTwoFactorAppPrompt',
+                defaultMessage:
+                  'Bitte den Code aus Ihrer Authenticator-App eingeben.',
+              }),
+            )
+            setTwoFactorMessageIsError(false)
+          }
           return
         }
 
@@ -537,6 +577,8 @@ export const Auth = () => {
     setPasswordResetMessage('')
     setFieldErrors({})
     setTwoFactorRequired(false)
+    setTwoFactorMethods([])
+    setTwoFactorMethod('otp')
     setTwoFactorCode('')
     setTwoFactorMessage('')
     setTwoFactorMessageIsError(false)
@@ -572,6 +614,8 @@ export const Auth = () => {
     setPasswordResetNewPassword('')
     setPasswordResetMessage('')
     setTwoFactorRequired(false)
+    setTwoFactorMethods([])
+    setTwoFactorMethod('otp')
     setTwoFactorCode('')
     setTwoFactorMessage('')
     setTwoFactorMessageIsError(false)
@@ -700,29 +744,62 @@ export const Auth = () => {
     setTwoFactorMessageIsError(false)
 
     try {
-      const result = await authClient.twoFactor.verifyOtp({
-        code,
-        trustDevice: true,
-      })
+      const result =
+        twoFactorMethod === 'totp'
+          ? await authClient.twoFactor.verifyTotp({
+              code,
+              trustDevice: true,
+            })
+          : await authClient.twoFactor.verifyOtp({
+              code,
+              trustDevice: true,
+            })
 
       if (result.error) {
         throw new Error(result.error.message || 'two-factor verify failed')
       }
 
       setTwoFactorRequired(false)
+      setTwoFactorMethods([])
       setTwoFactorCode('')
       onLoggedIn()
     } catch {
       setTwoFactorMessageIsError(true)
       setTwoFactorMessage(
         formatMessage({
-          id: 'authTwoFactorVerifyFailed',
-          defaultMessage: '2FA-Code ungültig oder abgelaufen.',
+          id:
+            twoFactorMethod === 'totp'
+              ? 'authTwoFactorAppVerifyFailed'
+              : 'authTwoFactorVerifyFailed',
+          defaultMessage:
+            twoFactorMethod === 'totp'
+              ? 'Authenticator-Code ungültig oder abgelaufen.'
+              : '2FA-Code ungültig oder abgelaufen.',
         }),
       )
     } finally {
       setIsTwoFactorLoading(false)
     }
+  }
+
+  const onSwitchTwoFactorMethod = async (method: TwoFactorMethod) => {
+    if (method === twoFactorMethod) return
+    setTwoFactorMethod(method)
+    setTwoFactorCode('')
+    setTwoFactorMessage('')
+    setTwoFactorMessageIsError(false)
+
+    if (method === 'otp') {
+      await sendTwoFactorOtp()
+      return
+    }
+
+    setTwoFactorMessage(
+      formatMessage({
+        id: 'authTwoFactorAppPrompt',
+        defaultMessage: 'Bitte den Code aus Ihrer Authenticator-App eingeben.',
+      }),
+    )
   }
 
   if (isDbInitializing) {
@@ -968,12 +1045,44 @@ export const Auth = () => {
 
           {!isSignUp && twoFactorRequired && (
             <div className={styles.otpActions}>
+              {twoFactorMethods.length > 1 && (
+                <div className={styles.toggleRow}>
+                  <button
+                    type="button"
+                    className={styles.inlineTextLink}
+                    onClick={() => onSwitchTwoFactorMethod('otp')}
+                    disabled={isTwoFactorLoading || isLoading || twoFactorMethod === 'otp'}
+                  >
+                    {formatMessage({
+                      id: 'authTwoFactorMethodEmail',
+                      defaultMessage: 'E-Mail-Code',
+                    })}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.inlineTextLink}
+                    onClick={() => onSwitchTwoFactorMethod('totp')}
+                    disabled={isTwoFactorLoading || isLoading || twoFactorMethod === 'totp'}
+                  >
+                    {formatMessage({
+                      id: 'authTwoFactorMethodApp',
+                      defaultMessage: 'Authenticator-App',
+                    })}
+                  </button>
+                </div>
+              )}
               <p className={styles.toggleText}>
-                {formatMessage({
-                  id: 'authTwoFactorPrompt',
-                  defaultMessage:
-                    '2FA ist aktiviert. Bitte den Code aus Ihrer E-Mail eingeben.',
-                })}
+                {twoFactorMethod === 'totp'
+                  ? formatMessage({
+                      id: 'authTwoFactorAppPrompt',
+                      defaultMessage:
+                        'Bitte den Code aus Ihrer Authenticator-App eingeben.',
+                    })
+                  : formatMessage({
+                      id: 'authTwoFactorPrompt',
+                      defaultMessage:
+                        '2FA ist aktiviert. Bitte den Code aus Ihrer E-Mail eingeben.',
+                    })}
               </p>
               <input
                 type="text"
@@ -981,22 +1090,30 @@ export const Auth = () => {
                 value={twoFactorCode}
                 onChange={(event) => setTwoFactorCode(event.target.value)}
                 placeholder={formatMessage({
-                  id: 'authTwoFactorCodePlaceholder',
-                  defaultMessage: '2FA-Code eingeben',
+                  id:
+                    twoFactorMethod === 'totp'
+                      ? 'authTwoFactorAppCodePlaceholder'
+                      : 'authTwoFactorCodePlaceholder',
+                  defaultMessage:
+                    twoFactorMethod === 'totp'
+                      ? 'Code aus Authenticator-App eingeben'
+                      : '2FA-Code eingeben',
                 })}
                 disabled={isTwoFactorLoading || isLoading}
               />
-              <button
-                type="button"
-                className={styles.inlineTextLink}
-                onClick={sendTwoFactorOtp}
-                disabled={isTwoFactorLoading || isLoading}
-              >
-                {formatMessage({
-                  id: 'authTwoFactorResendCode',
-                  defaultMessage: 'Code erneut senden',
-                })}
-              </button>
+              {twoFactorMethod === 'otp' && (
+                <button
+                  type="button"
+                  className={styles.inlineTextLink}
+                  onClick={sendTwoFactorOtp}
+                  disabled={isTwoFactorLoading || isLoading}
+                >
+                  {formatMessage({
+                    id: 'authTwoFactorResendCode',
+                    defaultMessage: 'Code erneut senden',
+                  })}
+                </button>
+              )}
               {twoFactorMessage && (
                 <p
                   className={styles.toggleText}

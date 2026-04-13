@@ -28,3 +28,45 @@
   font-size: 13px;
   color: #4d4d4d;
 }
+
+.totpSetup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 6px;
+}
+
+.qrCode {
+  width: 180px;
+  height: 180px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.backupCodesBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+}
+
+.backupCodesList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.backupCode {
+  display: inline-block;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #d3d3d3;
+  background: #fff;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}

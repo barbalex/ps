@@ -5,6 +5,8 @@ const {
   DialogActions,
   DialogBody,
   DialogContent,
+  Radio,
+  RadioGroup,
   DialogSurface,
   DialogTitle,
   Input,
@@ -23,6 +25,19 @@ type Props = {
   onChanged: (enabled: boolean) => void
 }
 
+type TwoFactorMethod = 'otp' | 'totp'
+
+const TWO_FACTOR_PREFERRED_METHOD_KEY = 'twoFactorPreferredMethod'
+
+const getManualCodeFromTotpUri = (totpUri: string) => {
+  try {
+    const parsed = new URL(totpUri)
+    return parsed.searchParams.get('secret') || ''
+  } catch {
+    return ''
+  }
+}
+
 export const TwoFactorDialog = ({
   open,
   onClose,
@@ -32,6 +47,10 @@ export const TwoFactorDialog = ({
 }: Props) => {
   const intl = useIntl()
   const [password, setPassword] = useState('')
+  const [enableMethod, setEnableMethod] = useState<TwoFactorMethod>('otp')
+  const [totpUri, setTotpUri] = useState('')
+  const [backupCodes, setBackupCodes] = useState<string[]>([])
+  const [backupCodesCopied, setBackupCodesCopied] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
@@ -51,9 +70,29 @@ export const TwoFactorDialog = ({
   useEffect(() => {
     if (open) return
     setPassword('')
+    setEnableMethod('otp')
+    setTotpUri('')
+    setBackupCodes([])
+    setBackupCodesCopied(false)
     setError('')
     setMessage('')
   }, [open])
+
+  const copyBackupCodes = async () => {
+    if (!backupCodes.length) return
+
+    try {
+      await navigator.clipboard.writeText(backupCodes.join('\n'))
+      setBackupCodesCopied(true)
+    } catch {
+      setError(
+        intl.formatMessage({
+          id: 'twoFactorBackupCodesCopyFailed',
+          defaultMessage: 'Backup-Codes konnten nicht kopiert werden.',
+        }),
+      )
+    }
+  }
 
   const onSubmit = async () => {
     setError('')
@@ -79,6 +118,10 @@ export const TwoFactorDialog = ({
           throw new Error(result.error.message || 'disable two-factor failed')
         }
         onChanged(false)
+        window.localStorage.removeItem(TWO_FACTOR_PREFERRED_METHOD_KEY)
+        setTotpUri('')
+        setBackupCodes([])
+        setBackupCodesCopied(false)
         setMessage(
           intl.formatMessage({
             id: 'twoFactorDisabledSuccess',
@@ -90,7 +133,33 @@ export const TwoFactorDialog = ({
         if (result.error) {
           throw new Error(result.error.message || 'enable two-factor failed')
         }
+
+        const resultData =
+          result && typeof result === 'object' && 'data' in result
+            ? (result.data as { totpURI?: string; backupCodes?: string[] })
+            : undefined
+
+        setBackupCodes(resultData?.backupCodes ?? [])
+        setBackupCodesCopied(false)
+
         onChanged(true)
+
+        if (enableMethod === 'totp') {
+          const uri = resultData?.totpURI || ''
+          setTotpUri(uri)
+          window.localStorage.setItem(TWO_FACTOR_PREFERRED_METHOD_KEY, 'totp')
+          setMessage(
+            intl.formatMessage({
+              id: 'twoFactorEnabledTotpSuccess',
+              defaultMessage:
+                '2FA mit Authenticator-App ist aktiviert. Scannen Sie den QR-Code und verwenden Sie danach App-Codes beim Login.',
+            }),
+          )
+          return
+        }
+
+        window.localStorage.setItem(TWO_FACTOR_PREFERRED_METHOD_KEY, 'otp')
+        setTotpUri('')
         setMessage(
           intl.formatMessage({
             id: 'twoFactorEnabledSuccess',
@@ -100,10 +169,13 @@ export const TwoFactorDialog = ({
         )
       }
 
-      closeTimeoutRef.current = setTimeout(() => {
-        onClose()
-        closeTimeoutRef.current = undefined
-      }, 1400)
+      const shouldAutoClose = twoFactorEnabled
+      if (shouldAutoClose) {
+        closeTimeoutRef.current = setTimeout(() => {
+          onClose()
+          closeTimeoutRef.current = undefined
+        }, 1400)
+      }
     } catch (err) {
       const fallback = twoFactorEnabled
         ? intl.formatMessage({
@@ -168,6 +240,91 @@ export const TwoFactorDialog = ({
                   })}
                   disabled={isSubmitting}
                 />
+              )}
+
+              {!twoFactorEnabled && !message && (
+                <RadioGroup
+                  value={enableMethod}
+                  onChange={(_event, data) =>
+                    setEnableMethod(data.value as TwoFactorMethod)
+                  }
+                >
+                  <Radio
+                    value="otp"
+                    label={intl.formatMessage({
+                      id: 'twoFactorMethodEmailLabel',
+                      defaultMessage: 'E-Mail-Code verwenden',
+                    })}
+                  />
+                  <Radio
+                    value="totp"
+                    label={intl.formatMessage({
+                      id: 'twoFactorMethodAppLabel',
+                      defaultMessage: 'Authenticator-App verwenden',
+                    })}
+                  />
+                </RadioGroup>
+              )}
+
+              {totpUri && (
+                <div className={styles.totpSetup}>
+                  <p className={styles.help}>
+                    {intl.formatMessage({
+                      id: 'twoFactorTotpSetupHelp',
+                      defaultMessage:
+                        'Scannen Sie den QR-Code mit Ihrer Authenticator-App (z. B. Aegis, Google Authenticator, 1Password).',
+                    })}
+                  </p>
+                  <img
+                    className={styles.qrCode}
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(totpUri)}`}
+                    alt={intl.formatMessage({
+                      id: 'twoFactorTotpQrAlt',
+                      defaultMessage: 'QR-Code für Authenticator-App',
+                    })}
+                  />
+                  <p className={styles.help}>
+                    {intl.formatMessage({
+                      id: 'twoFactorTotpManualCodeLabel',
+                      defaultMessage: 'Manueller Code',
+                    })}
+                    :
+                  </p>
+                  <Input value={getManualCodeFromTotpUri(totpUri)} readOnly />
+                </div>
+              )}
+
+              {!twoFactorEnabled && backupCodes.length > 0 && (
+                <div className={styles.backupCodesBox}>
+                  <p className={styles.help}>
+                    {intl.formatMessage({
+                      id: 'twoFactorBackupCodesHelp',
+                      defaultMessage:
+                        'Speichern Sie diese Backup-Codes sicher. Jeder Code kann nur einmal verwendet werden.',
+                    })}
+                  </p>
+                  <div className={styles.backupCodesList}>
+                    {backupCodes.map((code) => (
+                      <code key={code} className={styles.backupCode}>
+                        {code}
+                      </code>
+                    ))}
+                  </div>
+                  <Button appearance="secondary" onClick={copyBackupCodes}>
+                    <FormattedMessage
+                      id="twoFactorBackupCodesCopyBtn"
+                      defaultMessage="Backup-Codes kopieren"
+                    />
+                  </Button>
+                  {backupCodesCopied && (
+                    <p className={styles.help}>
+                      {intl.formatMessage({
+                        id: 'twoFactorBackupCodesCopied',
+                        defaultMessage: 'Backup-Codes wurden in die Zwischenablage kopiert.',
+                      })}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
           </DialogContent>
