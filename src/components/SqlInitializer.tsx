@@ -59,6 +59,18 @@ export const SqlInitializer = () => {
           await db.exec(`
             ALTER TABLE IF EXISTS auth_sessions ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS auth_accounts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS auth_accounts DROP CONSTRAINT IF EXISTS auth_accounts_user_id_fkey;
+            ALTER TABLE IF EXISTS auth_accounts
+              ADD CONSTRAINT auth_accounts_user_id_fkey
+              FOREIGN KEY (user_id) REFERENCES users(user_id)
+              ON DELETE CASCADE ON UPDATE NO ACTION
+              DEFERRABLE INITIALLY DEFERRED;
+            ALTER TABLE IF EXISTS accounts DROP CONSTRAINT IF EXISTS accounts_user_id_fkey;
+            ALTER TABLE IF EXISTS accounts
+              ADD CONSTRAINT accounts_user_id_fkey
+              FOREIGN KEY (user_id) REFERENCES users(user_id)
+              ON DELETE CASCADE ON UPDATE NO ACTION
+              DEFERRABLE INITIALLY DEFERRED;
             ALTER TABLE IF EXISTS auth_verifications ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS subproject_taxa ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS units ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;

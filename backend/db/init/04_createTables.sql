@@ -53,7 +53,7 @@ CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON auth_sessions USING btree(use
 CREATE TABLE IF NOT EXISTS auth_accounts(
   auth_account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   id uuid DEFAULT NULL,
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
   sso_account_id text DEFAULT NULL,
   provider_id text DEFAULT NULL,
   access_token text DEFAULT NULL,
@@ -87,7 +87,7 @@ COMMENT ON COLUMN auth_accounts.password IS 'The password of the account. Mainly
 --
 CREATE TABLE IF NOT EXISTS accounts(
   account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
