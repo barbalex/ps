@@ -195,7 +195,7 @@
   border: none;
   background: transparent;
   color: #35612b;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.2;
   font-weight: 500;
   text-decoration: underline;
@@ -355,7 +355,7 @@
 }
 
 .inlinePromptText {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.2;
   color: #555;
   margin: 0 0 0 0;
