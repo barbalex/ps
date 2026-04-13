@@ -3,3 +3,6 @@ set -eu
 
 printf '%s\n' 'Running SQL sync check...'
 npm run sync-sql:check
+
+printf '%s\n' 'Running i18n punctuation check...'
+npm run i18n:punctuation:check
