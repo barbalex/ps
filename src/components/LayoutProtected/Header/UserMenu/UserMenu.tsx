@@ -172,6 +172,17 @@ export const UserMenu = ({
         </Tooltip>
         <MenuPopover>
           <MenuList>
+            <div
+              style={{
+                padding: '8px 8px',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#424242',
+                borderBottom: '1px solid #e0e0e0',
+              }}
+            >
+              {authUser?.email}
+            </div>
             <MenuItem
               icon={<MdLock />}
               onClick={() => setChangePasswordOpen(true)}
