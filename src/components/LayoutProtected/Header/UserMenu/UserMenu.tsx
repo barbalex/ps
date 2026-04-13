@@ -10,9 +10,11 @@ const {
   Tooltip,
 } = fluentUiReactComponents
 import { useState } from 'react'
+import { useEffect } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
+import { getAuthBaseUrl } from '../../../../modules/authClient.ts'
 import { operationsQueueAtom, store } from '../../../../store.ts'
 import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LogoutDialogs } from './LogoutDialogs.tsx'
@@ -55,6 +57,12 @@ export const UserMenu = ({
   const [twoFactorEnabledOverride, setTwoFactorEnabledOverride] = useState<
     boolean | undefined
   >(undefined)
+  const [twoFactorEnabledServer, setTwoFactorEnabledServer] = useState<
+    boolean | undefined
+  >(undefined)
+  const [hasPasswordServer, setHasPasswordServer] = useState<boolean | undefined>(
+    undefined,
+  )
   const [hasPasswordOverride, setHasPasswordOverride] = useState(false)
   const hasPasswordFromSession =
     session?.user?.accounts?.some((account) => {
@@ -62,14 +70,56 @@ export const UserMenu = ({
       const providerId = (account as { providerId?: string }).providerId
       return provider === 'credential' || providerId === 'credential'
     }) ?? false
-  const hasPassword = hasPasswordOverride || hasPasswordFromSession
+  const hasPassword =
+    hasPasswordOverride || hasPasswordServer || hasPasswordFromSession
+  const sessionUserKey = session?.user?.id ?? session?.user?.email ?? ''
+
+  useEffect(() => {
+    let isActive = true
+
+    const loadAuthStatus = async () => {
+      if (!session?.user) {
+        if (isActive) {
+          setHasPasswordServer(undefined)
+          setTwoFactorEnabledServer(undefined)
+        }
+        return
+      }
+
+      try {
+        const response = await fetch(`${getAuthBaseUrl()}/auth/two-factor/status`, {
+          method: 'GET',
+          credentials: 'include',
+        })
+        if (!response.ok) return
+
+        const data = (await response.json()) as {
+          enabled?: boolean
+          hasPassword?: boolean
+        }
+
+        if (isActive) {
+          setTwoFactorEnabledServer(Boolean(data.enabled))
+          setHasPasswordServer(Boolean(data.hasPassword))
+        }
+      } catch {
+        // Ignore endpoint errors and keep session fallback.
+      }
+    }
+
+    loadAuthStatus()
+
+    return () => {
+      isActive = false
+    }
+  }, [sessionUserKey, session?.user])
 
   const twoFactorEnabledFromSession = Boolean(
     (session?.user as { twoFactorEnabled?: boolean } | undefined)
       ?.twoFactorEnabled,
   )
   const twoFactorEnabled =
-    twoFactorEnabledOverride ?? twoFactorEnabledFromSession
+    twoFactorEnabledOverride ?? twoFactorEnabledServer ?? twoFactorEnabledFromSession
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -177,7 +227,9 @@ export const UserMenu = ({
         hasPassword={hasPassword}
         onPasswordSet={() => {
           setHasPasswordOverride(true)
+          setHasPasswordServer(true)
           setTwoFactorEnabledOverride(false)
+          setTwoFactorEnabledServer(false)
         }}
       />
 
@@ -188,6 +240,7 @@ export const UserMenu = ({
         twoFactorEnabled={twoFactorEnabled}
         onChanged={(enabled) => {
           setTwoFactorEnabledOverride(enabled)
+          setTwoFactorEnabledServer(enabled)
         }}
       />
 

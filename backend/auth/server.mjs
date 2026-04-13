@@ -175,6 +175,14 @@ app.get('/auth/two-factor/status', async (req, res) => {
          COALESCE(u.two_factor_enabled, FALSE) AS enabled,
          EXISTS(
            SELECT 1
+           FROM auth_accounts a
+           WHERE a.user_id = u.user_id
+             AND a.provider_id = 'credential'
+             AND a.password IS NOT NULL
+             AND a.password <> ''
+         ) AS has_password,
+         EXISTS(
+           SELECT 1
            FROM auth_two_factors t
            WHERE t.user_id = u.user_id
              AND COALESCE(t.verified, TRUE) = TRUE
@@ -191,6 +199,7 @@ app.get('/auth/two-factor/status', async (req, res) => {
     }
 
     const enabled = status.enabled === true
+    const hasPassword = status.has_password === true
     const hasConfigured = status.has_configured === true
     const effectiveEnabled = enabled && hasConfigured
 
@@ -201,7 +210,7 @@ app.get('/auth/two-factor/status', async (req, res) => {
       )
     }
 
-    return res.json({ enabled: effectiveEnabled, hasConfigured })
+    return res.json({ enabled: effectiveEnabled, hasConfigured, hasPassword })
   } catch (error) {
     console.error('Two-factor status error:', error)
     return res.status(500).json({ error: { code: 'INTERNAL_ERROR' } })
