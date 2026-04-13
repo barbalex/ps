@@ -68,6 +68,7 @@ app.use(
       return callback(null, false)
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-app-language'],
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   }),
 )
