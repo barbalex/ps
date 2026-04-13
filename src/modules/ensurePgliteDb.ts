@@ -19,6 +19,7 @@ const createDb = () =>
 
 export const ensurePgliteDb = async () => {
   const existingDb = store.get(pgliteDbAtom) as PGlite | null
+
   if (existingDb) return existingDb
 
   if (!creatingDbPromise) {
