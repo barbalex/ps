@@ -145,7 +145,7 @@ export const UserMenu = ({
                 />
               )}
             </MenuItem>
-            {(hasPassword || twoFactorEnabled) && (
+            {hasPassword && (
               <MenuItem
                 icon={<MdVerifiedUser />}
                 onClick={() => setTwoFactorOpen(true)}
