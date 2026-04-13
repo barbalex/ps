@@ -114,12 +114,8 @@ export const UserMenu = ({
     }
   }, [sessionUserKey, session?.user])
 
-  const twoFactorEnabledFromSession = Boolean(
-    (session?.user as { twoFactorEnabled?: boolean } | undefined)
-      ?.twoFactorEnabled,
-  )
   const twoFactorEnabled =
-    twoFactorEnabledOverride ?? twoFactorEnabledServer ?? twoFactorEnabledFromSession
+    twoFactorEnabledOverride ?? twoFactorEnabledServer ?? false
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
