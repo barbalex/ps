@@ -23,9 +23,9 @@ export const Tree = () => {
     <div className={`${styles.container} no-print`}>
       <ProjectsNode />
       <AccountsNode />
+      <UsersNode />
       {designing && (
         <>
-          <UsersNode />
           {isAppAdmin && (
             <>
               <FieldTypesNode />

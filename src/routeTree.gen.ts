@@ -13,7 +13,6 @@ import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as DataRouteRouteImport } from './routes/data/route'
 import { Route as DataIndexRouteImport } from './routes/data/index'
 import { Route as LayoutIndexRouteImport } from './routes/_layout.index'
-import { Route as DataAppStatesRouteImport } from './routes/data/app-states'
 import { Route as LayoutDocsRouteImport } from './routes/_layout.docs'
 import { Route as LayoutAuthRouteImport } from './routes/_layout.auth'
 import { Route as DataWidgetsForFieldsRouteRouteImport } from './routes/data/widgets-for-fields/route'
@@ -452,11 +451,6 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutRoute,
-} as any)
-const DataAppStatesRoute = DataAppStatesRouteImport.update({
-  id: '/app-states',
-  path: '/app-states',
-  getParentRoute: () => DataRouteRoute,
 } as any)
 const LayoutDocsRoute = LayoutDocsRouteImport.update({
   id: '/docs',
@@ -3729,7 +3723,6 @@ export interface FileRoutesByFullPath {
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
   '/auth': typeof LayoutAuthRoute
   '/docs': typeof LayoutDocsRoute
-  '/data/app-states': typeof DataAppStatesRoute
   '/data/': typeof DataIndexRoute
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRouteRouteWithChildren
   '/data/projects/$projectId': typeof DataProjectsProjectIdRouteRouteWithChildren
@@ -4140,7 +4133,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/auth': typeof LayoutAuthRoute
   '/docs': typeof LayoutDocsRoute
-  '/data/app-states': typeof DataAppStatesRoute
   '/': typeof LayoutIndexRoute
   '/data': typeof DataIndexRoute
   '/data/accounts/$accountId': typeof DataAccountsAccountIdRouteRouteWithChildren
@@ -4467,7 +4459,6 @@ export interface FileRoutesById {
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
   '/_layout/auth': typeof LayoutAuthRoute
   '/_layout/docs': typeof LayoutDocsRoute
-  '/data/app-states': typeof DataAppStatesRoute
   '/_layout/': typeof LayoutIndexRoute
   '/data/': typeof DataIndexRoute
   '/data/accounts/$accountId_': typeof DataAccountsAccountIdRouteRouteWithChildren
@@ -4895,7 +4886,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields'
     | '/auth'
     | '/docs'
-    | '/data/app-states'
     | '/data/'
     | '/data/accounts/$accountId'
     | '/data/projects/$projectId'
@@ -5306,7 +5296,6 @@ export interface FileRouteTypes {
   to:
     | '/auth'
     | '/docs'
-    | '/data/app-states'
     | '/'
     | '/data'
     | '/data/accounts/$accountId'
@@ -5632,7 +5621,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields'
     | '/_layout/auth'
     | '/_layout/docs'
-    | '/data/app-states'
     | '/_layout/'
     | '/data/'
     | '/data/accounts/$accountId_'
@@ -6076,13 +6064,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
-    }
-    '/data/app-states': {
-      id: '/data/app-states'
-      path: '/app-states'
-      fullPath: '/data/app-states'
-      preLoaderRoute: typeof DataAppStatesRouteImport
-      parentRoute: typeof DataRouteRoute
     }
     '/_layout/docs': {
       id: '/_layout/docs'
@@ -11567,7 +11548,6 @@ interface DataRouteRouteChildren {
   DataUsersRouteRoute: typeof DataUsersRouteRouteWithChildren
   DataWidgetTypesRouteRoute: typeof DataWidgetTypesRouteRouteWithChildren
   DataWidgetsForFieldsRouteRoute: typeof DataWidgetsForFieldsRouteRouteWithChildren
-  DataAppStatesRoute: typeof DataAppStatesRoute
   DataIndexRoute: typeof DataIndexRoute
 }
 
@@ -11584,7 +11564,6 @@ const DataRouteRouteChildren: DataRouteRouteChildren = {
   DataUsersRouteRoute: DataUsersRouteRouteWithChildren,
   DataWidgetTypesRouteRoute: DataWidgetTypesRouteRouteWithChildren,
   DataWidgetsForFieldsRouteRoute: DataWidgetsForFieldsRouteRouteWithChildren,
-  DataAppStatesRoute: DataAppStatesRoute,
   DataIndexRoute: DataIndexRoute,
 }
 

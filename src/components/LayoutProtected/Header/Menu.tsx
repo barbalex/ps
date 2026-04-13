@@ -1,13 +1,10 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Tooltip } = fluentUiReactComponents
 import { useEffect } from 'react'
-import { FaCog } from 'react-icons/fa'
 import { MdLogin, MdHome } from 'react-icons/md'
 import {
   useNavigate,
   useLocation,
-  useCanGoBack,
-  useRouter,
 } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -166,16 +163,12 @@ export const Menu = () => {
   const [isMobileView] = useAtom(isMobileViewAtom)
   const [enforceMobileNavigation] = useAtom(enforceMobileNavigationAtom)
   const navigate = useNavigate()
-  const canGoBack = useCanGoBack()
-  const { history } = useRouter()
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
   const { data: session } = useSession()
   const authUser = session?.user
   const isAuthenticated = Boolean(authUser)
-
-  const isAppStates = pathname.includes('app-states')
 
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
 
@@ -206,14 +199,6 @@ export const Menu = () => {
       newlyActivatedTab ?? nextTabs[0] ?? tabs[0] ?? MOBILE_TAB_PRIORITY[0]
 
     setTabs([nextActiveTab])
-  }
-
-  const onClickOptions = () => {
-    if (isAppStates) {
-      return canGoBack ? history.go(-1) : navigate({ to: '/data' })
-    }
-
-    navigate({ to: `/data/app-states` })
   }
 
   const onConfirmLogout = async () => {
@@ -291,23 +276,6 @@ export const Menu = () => {
           </Tooltip>
         )}
         <Online width={44} />
-        {!isHome && (
-          <Tooltip
-            content={
-              isAppStates
-                ? intl.formatMessage({ defaultMessage: 'Zurück' })
-                : intl.formatMessage({ defaultMessage: 'Optionen' })
-            }
-          >
-            <Button
-              size="medium"
-              icon={<FaCog />}
-              onClick={onClickOptions}
-              className={styles.button}
-              disabled={mapIsMaximized}
-            />
-          </Tooltip>
-        )}
       </MenuBar>
     </div>
   )
