@@ -19,8 +19,6 @@ export const Tree = () => {
   const [designing] = useAtom(designingAtom)
   const [isAppAdmin] = useAtom(isAppAmin)
 
-  console.log('Tree render, isAppAdmin:', isAppAdmin)
-
   return (
     <div className={`${styles.container} no-print`}>
       <ProjectsNode />
