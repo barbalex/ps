@@ -7,16 +7,15 @@ import { Pool } from 'pg'
 
 const DATABASE_URL = process.env.DATABASE_URL
 const AUTH_BASE_URL = process.env.BETTER_AUTH_URL?.trim()
-const DEFAULT_AUTH_ORIGIN = 'http://localhost:3003'
-const PASSKEY_ORIGIN = (AUTH_BASE_URL || DEFAULT_AUTH_ORIGIN).replace(/\/$/, '')
+const DEFAULT_CLIENT_ORIGIN = 'http://localhost:5176'
+const PASSKEY_ORIGIN =
+  (process.env.CLIENT_ORIGIN?.trim() || DEFAULT_CLIENT_ORIGIN).replace(/\/$/, '')
 const PASSKEY_RP_ID =
   process.env.PASSKEY_RP_ID?.trim() ||
   (() => {
     try {
       const host = new URL(PASSKEY_ORIGIN).hostname
-      if (host === 'localhost') return 'localhost'
-      if (host.startsWith('auth.')) return host.slice(5)
-      return host
+      return host === 'localhost' ? 'localhost' : host
     } catch {
       return 'localhost'
     }
