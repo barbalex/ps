@@ -11,11 +11,12 @@ const {
 } = fluentUiReactComponents
 import { useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { MdLock, MdLogout } from 'react-icons/md'
+import { MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
 import { operationsQueueAtom, store } from '../../../../store.ts'
 import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LogoutDialogs } from './LogoutDialogs.tsx'
+import { TwoFactorDialog } from './TwoFactorDialog.tsx'
 
 type AuthUser = {
   email?: string
@@ -45,6 +46,10 @@ type Props = {
 export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }: Props) => {
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
+  const [twoFactorOpen, setTwoFactorOpen] = useState(false)
+  const [twoFactorEnabledOverride, setTwoFactorEnabledOverride] = useState<
+    boolean | undefined
+  >(undefined)
   const [hasPasswordOverride, setHasPasswordOverride] = useState(false)
   const hasPasswordFromSession =
     session?.user?.accounts?.some((account) => {
@@ -53,6 +58,12 @@ export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }
       return provider === 'credential' || providerId === 'credential'
     }) ?? false
   const hasPassword = hasPasswordOverride || hasPasswordFromSession
+  const twoFactorEnabledFromSession = Boolean(
+    (session?.user as { twoFactorEnabled?: boolean } | undefined)
+      ?.twoFactorEnabled,
+  )
+  const twoFactorEnabled =
+    twoFactorEnabledOverride ?? twoFactorEnabledFromSession
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -126,6 +137,19 @@ export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }
                 />
               )}
             </MenuItem>
+            <MenuItem icon={<MdVerifiedUser />} onClick={() => setTwoFactorOpen(true)}>
+              {twoFactorEnabled ? (
+                <FormattedMessage
+                  id="twoFactorDisableMenuItem"
+                  defaultMessage="2FA deaktivieren"
+                />
+              ) : (
+                <FormattedMessage
+                  id="twoFactorEnableMenuItem"
+                  defaultMessage="2FA aktivieren"
+                />
+              )}
+            </MenuItem>
             <MenuItem icon={<MdLogout />} onClick={onClickLogout}>
               <FormattedMessage defaultMessage="Abmelden" />
             </MenuItem>
@@ -138,6 +162,14 @@ export const UserMenu = ({ authUser, session, buttonClassName, onConfirmLogout }
         onClose={() => setChangePasswordOpen(false)}
         hasPassword={hasPassword}
         onPasswordSet={() => setHasPasswordOverride(true)}
+      />
+
+      <TwoFactorDialog
+        open={twoFactorOpen}
+        onClose={() => setTwoFactorOpen(false)}
+        hasPassword={hasPassword}
+        twoFactorEnabled={twoFactorEnabled}
+        onChanged={setTwoFactorEnabledOverride}
       />
 
       <LogoutDialogs
