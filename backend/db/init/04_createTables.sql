@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users(
   name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
   email_verified boolean DEFAULT FALSE,
+  two_factor_enabled boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,
   -- we need language in db to enable triggers updating labels in the right language
   -- example: subproject_names in projects table
@@ -25,6 +26,7 @@ CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
 
 COMMENT ON COLUMN users.name IS 'Users chosen display name';
 COMMENT ON COLUMN users.email_verified IS 'Whether the users email is verified';
+COMMENT ON COLUMN users.two_factor_enabled IS 'Whether two-factor authentication is enabled for the user';
 COMMENT ON COLUMN users.email IS 'Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
@@ -123,6 +125,22 @@ CREATE TABLE IF NOT EXISTS auth_verifications(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+--------------------------------------------------------------
+-- auth_two_factors
+--
+CREATE TABLE IF NOT EXISTS auth_two_factors(
+  id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  secret text NOT NULL,
+  backup_codes text NOT NULL,
+  verified boolean DEFAULT TRUE,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS auth_two_factors_user_id_idx ON auth_two_factors USING btree(user_id);
 
 --------------------------------------------------------------
 -- projects

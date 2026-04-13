@@ -86,8 +86,16 @@ export const Auth = () => {
   const [verificationMessageIsError, setVerificationMessageIsError] =
     useState(false)
   const [emailVerifiedInForm, setEmailVerifiedInForm] = useState(false)
+  const [twoFactorRequired, setTwoFactorRequired] = useState(false)
+  const [twoFactorCode, setTwoFactorCode] = useState('')
+  const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false)
+  const [twoFactorMessage, setTwoFactorMessage] = useState('')
+  const [twoFactorMessageIsError, setTwoFactorMessageIsError] = useState(false)
   const isSignInSubmitDisabled =
-    !isSignUp && (!email.trim() || !password.trim())
+    !isSignUp &&
+    (twoFactorRequired
+      ? !twoFactorCode.trim()
+      : !email.trim() || !password.trim())
   const isSignUpSubmitDisabled =
     isSignUp &&
     (!email.trim() ||
@@ -416,6 +424,11 @@ export const Auth = () => {
     setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
+    if (!isSignUp && twoFactorRequired) {
+      await verifyTwoFactorAndLogin()
+      return
+    }
+
     if (!validateForm()) {
       return
     }
@@ -476,6 +489,23 @@ export const Auth = () => {
           callbackURL: redirectTo,
         })
 
+        const resultData =
+          result && typeof result === 'object' && 'data' in result
+            ? result.data
+            : result
+
+        if (
+          resultData &&
+          typeof resultData === 'object' &&
+          'twoFactorRedirect' in resultData &&
+          (resultData as { twoFactorRedirect?: boolean }).twoFactorRedirect
+        ) {
+          setTwoFactorRequired(true)
+          setTwoFactorCode('')
+          await sendTwoFactorOtp()
+          return
+        }
+
         if (result.error) {
           setShowRegisterSuggestion(
             isCredentialErrorMessage(result.error.message),
@@ -506,6 +536,10 @@ export const Auth = () => {
     setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
     setFieldErrors({})
+    setTwoFactorRequired(false)
+    setTwoFactorCode('')
+    setTwoFactorMessage('')
+    setTwoFactorMessageIsError(false)
     if (!nextIsSignUp) {
       setPassword('')
     }
@@ -537,6 +571,10 @@ export const Auth = () => {
     setShowForgotPassword(false)
     setPasswordResetNewPassword('')
     setPasswordResetMessage('')
+    setTwoFactorRequired(false)
+    setTwoFactorCode('')
+    setTwoFactorMessage('')
+    setTwoFactorMessageIsError(false)
   }
 
   const handleResendVerification = async () => {
@@ -618,6 +656,72 @@ export const Auth = () => {
       )
     } finally {
       setIsVerifyingOtp(false)
+    }
+  }
+
+  const sendTwoFactorOtp = async () => {
+    setIsTwoFactorLoading(true)
+    setTwoFactorMessage('')
+    setTwoFactorMessageIsError(false)
+
+    try {
+      const result = await authClient.twoFactor.sendOtp({ trustDevice: true })
+      if (result.error) {
+        throw new Error(result.error.message || 'two-factor otp send failed')
+      }
+
+      setTwoFactorMessage(
+        formatMessage({
+          id: 'authTwoFactorCodeSent',
+          defaultMessage:
+            '2FA-Code gesendet. Bitte E-Mail prüfen und Code eingeben.',
+        }),
+      )
+    } catch {
+      setTwoFactorMessageIsError(true)
+      setTwoFactorMessage(
+        formatMessage({
+          id: 'authTwoFactorSendFailed',
+          defaultMessage:
+            '2FA-Code konnte nicht gesendet werden. Bitte erneut versuchen.',
+        }),
+      )
+    } finally {
+      setIsTwoFactorLoading(false)
+    }
+  }
+
+  const verifyTwoFactorAndLogin = async () => {
+    const code = twoFactorCode.trim()
+    if (!code) return
+
+    setIsTwoFactorLoading(true)
+    setTwoFactorMessage('')
+    setTwoFactorMessageIsError(false)
+
+    try {
+      const result = await authClient.twoFactor.verifyOtp({
+        code,
+        trustDevice: true,
+      })
+
+      if (result.error) {
+        throw new Error(result.error.message || 'two-factor verify failed')
+      }
+
+      setTwoFactorRequired(false)
+      setTwoFactorCode('')
+      onLoggedIn()
+    } catch {
+      setTwoFactorMessageIsError(true)
+      setTwoFactorMessage(
+        formatMessage({
+          id: 'authTwoFactorVerifyFailed',
+          defaultMessage: '2FA-Code ungültig oder abgelaufen.',
+        }),
+      )
+    } finally {
+      setIsTwoFactorLoading(false)
     }
   }
 
@@ -712,6 +816,10 @@ export const Auth = () => {
               onChange={(e) => {
                 setEmail(e.target.value)
                 setShowRegisterSuggestion(false)
+                setTwoFactorRequired(false)
+                setTwoFactorCode('')
+                setTwoFactorMessage('')
+                setTwoFactorMessageIsError(false)
               }}
               className={`${styles.formInput} ${fieldErrors.email ? styles.error : ''}`}
               placeholder={formatMessage({
@@ -806,6 +914,10 @@ export const Auth = () => {
                 onChange={(e) => {
                   setPassword(e.target.value)
                   setShowRegisterSuggestion(false)
+                  setTwoFactorRequired(false)
+                  setTwoFactorCode('')
+                  setTwoFactorMessage('')
+                  setTwoFactorMessageIsError(false)
                 }}
                 className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.password ? styles.error : ''}`}
                 placeholder={formatMessage({
@@ -853,6 +965,48 @@ export const Auth = () => {
               </button>
             )}
           </div>
+
+          {!isSignUp && twoFactorRequired && (
+            <div className={styles.otpActions}>
+              <p className={styles.toggleText}>
+                {formatMessage({
+                  id: 'authTwoFactorPrompt',
+                  defaultMessage:
+                    '2FA ist aktiviert. Bitte den Code aus Ihrer E-Mail eingeben.',
+                })}
+              </p>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={twoFactorCode}
+                onChange={(event) => setTwoFactorCode(event.target.value)}
+                placeholder={formatMessage({
+                  id: 'authTwoFactorCodePlaceholder',
+                  defaultMessage: '2FA-Code eingeben',
+                })}
+                disabled={isTwoFactorLoading || isLoading}
+              />
+              <button
+                type="button"
+                className={styles.inlineTextLink}
+                onClick={sendTwoFactorOtp}
+                disabled={isTwoFactorLoading || isLoading}
+              >
+                {formatMessage({
+                  id: 'authTwoFactorResendCode',
+                  defaultMessage: 'Code erneut senden',
+                })}
+              </button>
+              {twoFactorMessage && (
+                <p
+                  className={styles.toggleText}
+                  style={twoFactorMessageIsError ? { color: '#9f2f00' } : undefined}
+                >
+                  {twoFactorMessage}
+                </p>
+              )}
+            </div>
+          )}
 
           {isSignUp && (
             <div className={styles.formGroup}>
@@ -941,14 +1095,19 @@ export const Auth = () => {
               <button
                 type="submit"
                 className={styles.submitButton}
-                disabled={isLoading || isSignInSubmitDisabled}
+                disabled={isLoading || isTwoFactorLoading || isSignInSubmitDisabled}
               >
-                {isLoading
+                {isLoading || isTwoFactorLoading
                   ? formatMessage({
                       id: 'authPleaseWait',
                       defaultMessage: 'Bitte warten...',
                     })
-                  : signInLabel}
+                  : twoFactorRequired
+                    ? formatMessage({
+                        id: 'authTwoFactorVerifyBtn',
+                        defaultMessage: '2FA-Code prüfen',
+                      })
+                    : signInLabel}
               </button>
               <div className={styles.signUpSwitchLinkWrap}>
                 <button

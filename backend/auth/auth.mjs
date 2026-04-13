@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth'
-import { emailOTP } from 'better-auth/plugins'
+import { emailOTP, twoFactor } from 'better-auth/plugins'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Pool } from 'pg'
@@ -57,6 +57,7 @@ const buildOtpMessage = ({ otp, type }) => {
     'sign-in': 'sign in',
     'email-verification': 'verify your email',
     'forget-password': 'reset your password',
+    'two-factor': 'complete two-factor authentication',
   }
   const action = actionByType[type] ?? 'continue'
 
@@ -103,6 +104,7 @@ export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
   ...(AUTH_BASE_URL ? { baseURL: AUTH_BASE_URL } : {}),
+  appName: 'Promote Species',
   basePath: '/auth',
   database: pool,
   advanced: {
@@ -145,6 +147,42 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    twoFactor({
+      issuer: 'Promote Species',
+      allowPasswordless: true,
+      skipVerificationOnEnable: true,
+      twoFactorTable: 'auth_two_factors',
+      otpOptions: {
+        async sendOTP({ user, otp }) {
+          if (!user?.email) {
+            throw new Error('two-factor otp send failed: missing user email')
+          }
+          await sendOtpEmail({
+            email: user.email,
+            otp,
+            type: 'two-factor',
+          })
+        },
+      },
+      schema: {
+        user: {
+          fields: {
+            twoFactorEnabled: 'two_factor_enabled',
+          },
+        },
+        twoFactor: {
+          fields: {
+            id: 'id',
+            userId: 'user_id',
+            secret: 'secret',
+            backupCodes: 'backup_codes',
+            verified: 'verified',
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
+          },
+        },
+      },
+    }),
     emailOTP({
       disableSignUp: true,
       overrideDefaultEmailVerification: true,

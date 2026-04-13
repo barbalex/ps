@@ -1,0 +1,30 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 280px;
+}
+
+.error {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e5aaa6;
+  background-color: #fff2f1;
+  color: #a3352d;
+  font-size: 13px;
+}
+
+.success {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(55, 118, 28, 0.35);
+  background-color: rgba(225, 247, 224, 0.75);
+  color: #245324;
+  font-size: 13px;
+}
+
+.help {
+  margin: 0;
+  font-size: 13px;
+  color: #4d4d4d;
+}

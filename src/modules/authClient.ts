@@ -1,5 +1,5 @@
 import { createAuthClient } from 'better-auth/react'
-import { emailOTPClient } from 'better-auth/client/plugins'
+import { emailOTPClient, twoFactorClient } from 'better-auth/client/plugins'
 
 const getProductionAuthBaseUrl = () => {
   const host = window?.location?.hostname?.toLowerCase() ?? ''
@@ -29,7 +29,7 @@ export const authClient = createAuthClient({
   fetchOptions: {
     credentials: 'include',
   },
-  plugins: [emailOTPClient()],
+  plugins: [emailOTPClient(), twoFactorClient()],
 })
 
 export const { signIn, signUp, signOut, useSession, getSession, emailOtp } =
