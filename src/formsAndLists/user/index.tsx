@@ -5,6 +5,7 @@ import { useAtom, useSetAtom } from 'jotai'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { Section } from '../../components/shared/Section.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -90,30 +91,31 @@ export const User = () => {
               validationMessage={validations?.email?.message}
             />
 
-            <h3 style={{ marginTop: 20, marginBottom: 8 }}>App Settings</h3>
-            <SwitchField
-              label="Enforce mobile navigation"
-              value={enforceMobileNavigation}
-              onChange={() =>
-                setEnforceMobileNavigation(!enforceMobileNavigation)
-              }
-              validationMessage="If true, mobile navigation will be enforced"
-            />
-            <SwitchField
-              label="Enforce desktop navigation"
-              value={enforceDesktopNavigation}
-              onChange={() =>
-                setEnforceDesktopNavigation(!enforceDesktopNavigation)
-              }
-              validationMessage="If true, desktop navigation will be enforced"
-            />
-            <SwitchField
-              label="Always show navigation tree"
-              value={alwaysShowTree}
-              onChange={() => setAlwaysShowTree(!alwaysShowTree)}
-              validationMessage="If true, the navigation tree will always be shown (on mobile it is not very practical)"
-            />
-            <DbDump />
+            <Section title="App Settings">
+              <SwitchField
+                label="Enforce mobile navigation"
+                value={enforceMobileNavigation}
+                onChange={() =>
+                  setEnforceMobileNavigation(!enforceMobileNavigation)
+                }
+                validationMessage="If true, mobile navigation will be enforced"
+              />
+              <SwitchField
+                label="Enforce desktop navigation"
+                value={enforceDesktopNavigation}
+                onChange={() =>
+                  setEnforceDesktopNavigation(!enforceDesktopNavigation)
+                }
+                validationMessage="If true, desktop navigation will be enforced"
+              />
+              <SwitchField
+                label="Always show navigation tree"
+                value={alwaysShowTree}
+                onChange={() => setAlwaysShowTree(!alwaysShowTree)}
+                validationMessage="If true, the navigation tree will always be shown (on mobile it is not very practical)"
+              />
+              <DbDump />
+            </Section>
           </>
         ) : (
           <NotFound table="User" id={userId} />
