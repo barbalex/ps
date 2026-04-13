@@ -131,6 +131,21 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
       [userId, 'credential', userId, hashedPassword],
     )
 
+    // Keep 2FA state consistent for users who have never completed 2FA setup.
+    await pool.query(
+      `UPDATE users u
+       SET two_factor_enabled = FALSE,
+           updated_at = NOW()
+       WHERE u.user_id = $1
+         AND NOT EXISTS (
+           SELECT 1
+           FROM auth_two_factors t
+           WHERE t.user_id = u.user_id
+             AND COALESCE(t.verified, TRUE) = TRUE
+         )`,
+      [userId],
+    )
+
     res.json({ ok: true })
   } catch (error) {
     console.error('Set password error:', error)
