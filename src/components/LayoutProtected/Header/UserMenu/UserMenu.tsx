@@ -10,9 +10,11 @@ const {
   Tooltip,
 } = fluentUiReactComponents
 import { useState } from 'react'
+import { useEffect } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
+import { getAuthBaseUrl } from '../../../../modules/authClient.ts'
 import { operationsQueueAtom, store } from '../../../../store.ts'
 import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LogoutDialogs } from './LogoutDialogs.tsx'
@@ -55,6 +57,10 @@ export const UserMenu = ({
   const [twoFactorEnabledOverride, setTwoFactorEnabledOverride] = useState<
     boolean | undefined
   >(undefined)
+  const [twoFactorEnabledServer, setTwoFactorEnabledServer] = useState<
+    boolean | undefined
+  >(undefined)
+  const [twoFactorStatusRefreshKey, setTwoFactorStatusRefreshKey] = useState(0)
   const [hasPasswordOverride, setHasPasswordOverride] = useState(false)
   const hasPasswordFromSession =
     session?.user?.accounts?.some((account) => {
@@ -63,12 +69,48 @@ export const UserMenu = ({
       return provider === 'credential' || providerId === 'credential'
     }) ?? false
   const hasPassword = hasPasswordOverride || hasPasswordFromSession
+  const sessionUserId = session?.user?.id
+
+  useEffect(() => {
+    let isActive = true
+
+    const loadTwoFactorStatus = async () => {
+      if (!sessionUserId) {
+        if (isActive) setTwoFactorEnabledServer(undefined)
+        return
+      }
+
+      try {
+        const response = await fetch(`${getAuthBaseUrl()}/auth/two-factor/status`, {
+          method: 'GET',
+          credentials: 'include',
+        })
+        if (!response.ok) return
+
+        const data = (await response.json()) as { enabled?: boolean }
+        if (isActive) {
+          setTwoFactorEnabledServer(Boolean(data.enabled))
+        }
+      } catch {
+        // keep existing state if status check fails
+      }
+    }
+
+    loadTwoFactorStatus()
+
+    return () => {
+      isActive = false
+    }
+  }, [sessionUserId, twoFactorStatusRefreshKey])
+
   const twoFactorEnabledFromSession = Boolean(
     (session?.user as { twoFactorEnabled?: boolean } | undefined)
       ?.twoFactorEnabled,
   )
+  const twoFactorEnabledResolved =
+    twoFactorEnabledServer ?? twoFactorEnabledFromSession
   const twoFactorEnabled =
-    twoFactorEnabledOverride ?? twoFactorEnabledFromSession
+    twoFactorEnabledOverride ?? twoFactorEnabledResolved
   const [logoutDialogStep, setLogoutDialogStep] = useState<
     'none' | 'pending' | 'wipe'
   >('none')
@@ -174,7 +216,10 @@ export const UserMenu = ({
         open={changePasswordOpen}
         onClose={() => setChangePasswordOpen(false)}
         hasPassword={hasPassword}
-        onPasswordSet={() => setHasPasswordOverride(true)}
+        onPasswordSet={() => {
+          setHasPasswordOverride(true)
+          setTwoFactorStatusRefreshKey((current) => current + 1)
+        }}
       />
 
       <TwoFactorDialog
@@ -182,7 +227,11 @@ export const UserMenu = ({
         onClose={() => setTwoFactorOpen(false)}
         hasPassword={hasPassword}
         twoFactorEnabled={twoFactorEnabled}
-        onChanged={setTwoFactorEnabledOverride}
+        onChanged={(enabled) => {
+          setTwoFactorEnabledOverride(enabled)
+          setTwoFactorEnabledServer(enabled)
+          setTwoFactorStatusRefreshKey((current) => current + 1)
+        }}
       />
 
       <LogoutDialogs

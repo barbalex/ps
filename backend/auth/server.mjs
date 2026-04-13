@@ -7,7 +7,10 @@ import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
 const port = Number(process.env.PORT ?? 3003)
-const appUrls = ['https://promote-species.app', 'https://xn--arten-frdern-bjb.app']
+const appUrls = [
+  'https://promote-species.app',
+  'https://xn--arten-frdern-bjb.app',
+]
 const requiredCorsOrigins = [
   'http://localhost:5176',
   'https://arten-fördern.app',
@@ -96,8 +99,8 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
 
     // Check password requirements
     if (!newPassword || newPassword.length < 8) {
-      return res.status(400).json({ 
-        error: { code: 'INVALID_PASSWORD' } 
+      return res.status(400).json({
+        error: { code: 'INVALID_PASSWORD' },
       })
     }
 
@@ -106,8 +109,9 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
     if (accountsResult.rows.length > 0) {
       const existing = accountsResult.rows[0]
       const existingHash = String(existing.password ?? '')
-      const looksLikeBetterAuthHash =
-        /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(existingHash)
+      const looksLikeBetterAuthHash = /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(
+        existingHash,
+      )
 
       if (looksLikeBetterAuthHash) {
         return res.status(400).json({
@@ -140,15 +144,61 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
   }
 })
 
+app.get('/auth/two-factor/status', async (req, res) => {
+  try {
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    })
+    const userId = session?.user?.id
+
+    if (!userId) {
+      return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
+    }
+
+    const statusResult = await pool.query(
+      `SELECT
+         COALESCE(u.two_factor_enabled, FALSE) AS enabled,
+         EXISTS(
+           SELECT 1
+           FROM auth_two_factors t
+           WHERE t.user_id = u.user_id
+             AND COALESCE(t.verified, TRUE) = TRUE
+         ) AS has_configured
+       FROM users u
+       WHERE u.user_id = $1
+       LIMIT 1`,
+      [userId],
+    )
+
+    const status = statusResult.rows[0]
+    if (!status) {
+      return res.status(404).json({ error: { code: 'USER_NOT_FOUND' } })
+    }
+
+    const enabled = status.enabled === true
+    const hasConfigured = status.has_configured === true
+    const effectiveEnabled = enabled && hasConfigured
+
+    if (enabled && !hasConfigured) {
+      await pool.query(
+        'UPDATE users SET two_factor_enabled = FALSE, updated_at = NOW() WHERE user_id = $1',
+        [userId],
+      )
+    }
+
+    return res.json({ enabled: effectiveEnabled, hasConfigured })
+  } catch (error) {
+    console.error('Two-factor status error:', error)
+    return res.status(500).json({ error: { code: 'INTERNAL_ERROR' } })
+  }
+})
+
 app.all('/auth/*splat', toNodeHandler(auth))
 
 app.get('/', (req, res, next) => {
   const error = req.query?.error
   if (!error) return next()
-  res
-    .status(400)
-    .type('html')
-    .send(renderAuthErrorPage({ error }))
+  res.status(400).type('html').send(renderAuthErrorPage({ error }))
 })
 
 app.get('/auth/error', (req, res) => {
@@ -269,7 +319,10 @@ const ensurePreviewUser = async () => {
         `Preview test user ensure attempt ${attempt} failed (sign-in: ${signInResult.status}, sign-up: ${signUpResult.status}, sign-in-body: ${signInResult.bodyText}, sign-up-body: ${signUpResult.bodyText})`,
       )
     } catch (error) {
-      console.warn(`Preview test user ensure attempt ${attempt} errored:`, error)
+      console.warn(
+        `Preview test user ensure attempt ${attempt} errored:`,
+        error,
+      )
     }
 
     if (attempt < maxAttempts) {

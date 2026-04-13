@@ -138,6 +138,55 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
   }
 })
 
+app.get('/auth/two-factor/status', async (req, res) => {
+  try {
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    })
+    const userId = session?.user?.id
+
+    if (!userId) {
+      return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
+    }
+
+    const statusResult = await pool.query(
+      `SELECT
+         COALESCE(u.two_factor_enabled, FALSE) AS enabled,
+         EXISTS(
+           SELECT 1
+           FROM auth_two_factors t
+           WHERE t.user_id = u.user_id
+             AND COALESCE(t.verified, TRUE) = TRUE
+         ) AS has_configured
+       FROM users u
+       WHERE u.user_id = $1
+       LIMIT 1`,
+      [userId],
+    )
+
+    const status = statusResult.rows[0]
+    if (!status) {
+      return res.status(404).json({ error: { code: 'USER_NOT_FOUND' } })
+    }
+
+    const enabled = status.enabled === true
+    const hasConfigured = status.has_configured === true
+    const effectiveEnabled = enabled && hasConfigured
+
+    if (enabled && !hasConfigured) {
+      await pool.query(
+        'UPDATE users SET two_factor_enabled = FALSE, updated_at = NOW() WHERE user_id = $1',
+        [userId],
+      )
+    }
+
+    return res.json({ enabled: effectiveEnabled, hasConfigured })
+  } catch (error) {
+    console.error('Two-factor status error:', error)
+    return res.status(500).json({ error: { code: 'INTERNAL_ERROR' } })
+  }
+})
+
 app.all('/auth/*splat', toNodeHandler(auth))
 
 app.get('/', (req, res, next) => {
