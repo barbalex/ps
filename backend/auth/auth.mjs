@@ -34,6 +34,116 @@ const trustedOrigins = [
 
 const socialProviders = {}
 
+const SUPPORTED_EMAIL_LANGUAGES = ['de', 'en', 'fr', 'it']
+
+const getHeader = (source, name) => {
+  if (!source) return undefined
+
+  if (typeof source.headers?.get === 'function') {
+    return source.headers.get(name) ?? undefined
+  }
+
+  if (typeof source.request?.headers?.get === 'function') {
+    return source.request.headers.get(name) ?? undefined
+  }
+
+  const headers = source.headers ?? source.request?.headers
+  if (!headers || typeof headers !== 'object') return undefined
+
+  const direct = headers[name] ?? headers[name.toLowerCase()]
+  if (typeof direct === 'string') return direct
+  if (Array.isArray(direct)) return direct[0]
+  return undefined
+}
+
+const getEmailLanguage = (source) => {
+  const acceptLanguage = getHeader(source, 'accept-language')
+  if (!acceptLanguage) return 'de'
+
+  for (const part of acceptLanguage.split(',')) {
+    const baseLanguage = part.trim().split(';')[0]?.split('-')[0]?.toLowerCase()
+    if (SUPPORTED_EMAIL_LANGUAGES.includes(baseLanguage)) {
+      return baseLanguage
+    }
+  }
+
+  return 'de'
+}
+
+const otpEmailMessages = {
+  de: {
+    actions: {
+      'sign-in': 'um dich anzumelden',
+      'email-verification': 'um deine E-Mail-Adresse zu bestätigen',
+      'forget-password': 'um dein Passwort zurückzusetzen',
+      'two-factor': 'um die Zwei-Faktor-Authentifizierung abzuschliessen',
+      default: 'um fortzufahren',
+    },
+    subject: (action) => `Dein Einmal-Code für Promote Species (${action})`,
+    text: (otp, action) =>
+      `Dein Einmal-Code lautet: ${otp}\n\nVerwende diesen Code, ${action}. Der Code läuft in wenigen Minuten ab.`,
+  },
+  en: {
+    actions: {
+      'sign-in': 'sign in',
+      'email-verification': 'verify your email',
+      'forget-password': 'reset your password',
+      'two-factor': 'complete two-factor authentication',
+      default: 'continue',
+    },
+    subject: (action) => `Your one-time code for Promote Species (${action})`,
+    text: (otp, action) =>
+      `Your one-time code is: ${otp}\n\nUse this code to ${action}. The code expires in a few minutes.`,
+  },
+  fr: {
+    actions: {
+      'sign-in': 'vous connecter',
+      'email-verification': 'vérifier votre adresse e-mail',
+      'forget-password': 'réinitialiser votre mot de passe',
+      'two-factor': "terminer l'authentification à deux facteurs",
+      default: 'continuer',
+    },
+    subject: (action) => `Votre code à usage unique pour Promote Species (${action})`,
+    text: (otp, action) =>
+      `Votre code à usage unique est: ${otp}\n\nUtilisez ce code pour ${action}. Le code expire dans quelques minutes.`,
+  },
+  it: {
+    actions: {
+      'sign-in': 'accedere',
+      'email-verification': 'verificare la tua e-mail',
+      'forget-password': 'reimpostare la tua password',
+      'two-factor': "completare l'autenticazione a due fattori",
+      default: 'continuare',
+    },
+    subject: (action) => `Il tuo codice monouso per Promote Species (${action})`,
+    text: (otp, action) =>
+      `Il tuo codice monouso è: ${otp}\n\nUsa questo codice per ${action}. Il codice scade tra pochi minuti.`,
+  },
+}
+
+const resetPasswordEmailMessages = {
+  de: {
+    subject: 'Setze dein Passwort für Promote Species zurück',
+    text: (url) =>
+      `Klicke auf den folgenden Link, um dein Passwort zurückzusetzen:\n\n${url}\n\nDieser Link läuft in 1 Stunde ab.\n\nFalls du dies nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
+  },
+  en: {
+    subject: 'Reset your password for Promote Species',
+    text: (url) =>
+      `Click the link below to reset your password:\n\n${url}\n\nThis link expires in 1 hour.\n\nIf you did not request this, you can safely ignore this email.`,
+  },
+  fr: {
+    subject: 'Réinitialisez votre mot de passe pour Promote Species',
+    text: (url) =>
+      `Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe:\n\n${url}\n\nCe lien expire dans 1 heure.\n\nSi vous n'avez pas demandé cela, vous pouvez ignorer cet e-mail.`,
+  },
+  it: {
+    subject: 'Reimposta la tua password per Promote Species',
+    text: (url) =>
+      `Fai clic sul link qui sotto per reimpostare la tua password:\n\n${url}\n\nQuesto link scade tra 1 ora.\n\nSe non hai richiesto questa operazione, puoi ignorare questa e-mail.`,
+  },
+}
+
 if (GITHUB_CLIENT_ID && GITHUB_CLIENT_SECRET) {
   socialProviders.github = {
     clientId: GITHUB_CLIENT_ID,
@@ -52,18 +162,25 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
   console.warn('Google auth provider is disabled because credentials are missing')
 }
 
-const buildOtpMessage = ({ otp, type }) => {
-  const actionByType = {
-    'sign-in': 'sign in',
-    'email-verification': 'verify your email',
-    'forget-password': 'reset your password',
-    'two-factor': 'complete two-factor authentication',
-  }
-  const action = actionByType[type] ?? 'continue'
+const buildOtpMessage = ({ otp, type, source }) => {
+  const language = getEmailLanguage(source)
+  const dictionary = otpEmailMessages[language] ?? otpEmailMessages.de
+  const action = dictionary.actions[type] ?? dictionary.actions.default
 
   return {
-    subject: `Your one-time code for Promote Species (${action})`,
-    text: `Your one-time code is: ${otp}\n\nUse this code to ${action}. The code expires in a few minutes.`,
+    subject: dictionary.subject(action),
+    text: dictionary.text(otp, action),
+  }
+}
+
+const buildResetPasswordMessage = ({ url, source }) => {
+  const language = getEmailLanguage(source)
+  const dictionary =
+    resetPasswordEmailMessages[language] ?? resetPasswordEmailMessages.de
+
+  return {
+    subject: dictionary.subject,
+    text: dictionary.text(url),
   }
 }
 
@@ -75,8 +192,8 @@ const mailgunClient = MAILGUN_API_KEY
     })
   : null
 
-const sendOtpEmail = async ({ email, otp, type }) => {
-  const { subject, text } = buildOtpMessage({ otp, type })
+const sendOtpEmail = async ({ email, otp, type, source }) => {
+  const { subject, text } = buildOtpMessage({ otp, type, source })
   const resolvedDomain = MAILGUN_DOMAIN || 'mail.promote-species.app'
   const resolvedFrom =
     MAILGUN_FROM || `Promote Species <postmaster@${resolvedDomain}>`
@@ -123,6 +240,10 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     requireEmailVerification: true,
     async sendResetPassword({ user, url, token }, request) {
+      const { subject, text } = buildResetPasswordMessage({
+        url,
+        source: request,
+      })
       const resolvedDomain = MAILGUN_DOMAIN || 'mail.promote-species.app'
       const resolvedFrom =
         MAILGUN_FROM || `Promote Species <postmaster@${resolvedDomain}>`
@@ -138,8 +259,8 @@ export const auth = betterAuth({
         await mailgunClient.messages.create(resolvedDomain, {
           from: resolvedFrom,
           to: [user.email],
-          subject: 'Reset your password for Promote Species',
-          text: `Click the link below to reset your password:\n\n${url}\n\nThis link expires in 1 hour.\n\nIf you did not request this, you can safely ignore this email.`,
+          subject,
+          text,
         })
       } catch (error) {
         throw new Error(`mailgun password reset email send failed: ${String(error)}`)
@@ -153,7 +274,7 @@ export const auth = betterAuth({
       skipVerificationOnEnable: true,
       twoFactorTable: 'auth_two_factors',
       otpOptions: {
-        async sendOTP({ user, otp }) {
+        async sendOTP({ user, otp }, ctx) {
           if (!user?.email) {
             throw new Error('two-factor otp send failed: missing user email')
           }
@@ -161,6 +282,7 @@ export const auth = betterAuth({
             email: user.email,
             otp,
             type: 'two-factor',
+            source: ctx,
           })
         },
       },
@@ -187,8 +309,8 @@ export const auth = betterAuth({
       disableSignUp: true,
       overrideDefaultEmailVerification: true,
       sendVerificationOnSignUp: true,
-      async sendVerificationOTP({ email, otp, type }) {
-        await sendOtpEmail({ email, otp, type })
+      async sendVerificationOTP({ email, otp, type }, ctx) {
+        await sendOtpEmail({ email, otp, type, source: ctx })
       },
     }),
   ],
