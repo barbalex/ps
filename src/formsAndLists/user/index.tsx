@@ -114,6 +114,9 @@ export const User = () => {
                 onChange={() => setAlwaysShowTree(!alwaysShowTree)}
                 validationMessage="If true, the navigation tree will always be shown (on mobile it is not very practical)"
               />
+            </Section>
+
+            <Section title="Data">
               <DbDump />
             </Section>
           </>
