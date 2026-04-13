@@ -349,6 +349,12 @@
   margin: 0 0 6px 0;
 }
 
+.inlinePromptText {
+  font-size: 12px;
+  color: #555;
+  margin: 0 0 6px 0;
+}
+
 .toggleButton {
   background: transparent;
   border: 1px solid rgba(38, 82, 37, 0.65);

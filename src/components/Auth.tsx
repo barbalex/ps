@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect, useCallback } from 'react'
-import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useSearch, useRouter } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
@@ -8,6 +8,7 @@ import {
   signUp,
   signIn,
   getSession,
+  getAuthBaseUrl,
 } from '../modules/authClient.ts'
 import { ensurePgliteDb } from '../modules/ensurePgliteDb.ts'
 import { Initiating } from './Initiating.tsx'
@@ -43,7 +44,7 @@ export const Auth = () => {
     id: 'authForgotPasswordHide',
     defaultMessage: 'Formular für neues Passwort ausblenden',
   })
-  const navigate = useNavigate()
+  const router = useRouter()
   const { redirect: redirectTo, verificationExpired } = useSearch({
     from: '/_layout/auth',
   })
@@ -77,6 +78,14 @@ export const Auth = () => {
     confirmPassword?: string
     passwordResetNewPassword?: string
   }>({})
+  const [isSendingVerification, setIsSendingVerification] = useState(false)
+  const [verificationOtp, setVerificationOtp] = useState('')
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false)
+  const [verificationResendSent, setVerificationResendSent] = useState(false)
+  const [verificationMessage, setVerificationMessage] = useState('')
+  const [verificationMessageIsError, setVerificationMessageIsError] =
+    useState(false)
+  const [emailVerifiedInForm, setEmailVerifiedInForm] = useState(false)
   const isSignInSubmitDisabled =
     !isSignUp && (!email.trim() || !password.trim())
   const isSignUpSubmitDisabled =
@@ -103,8 +112,12 @@ export const Auth = () => {
     } finally {
       setIsDbInitializing(false)
     }
-    navigate({ to: redirectTo })
-  }, [formatMessage, navigate, redirectTo])
+    // Use router.history.push instead of navigate() to avoid TanStack Router
+    // re-applying route search params on top of any search already in redirectTo
+    // (navigate({ to }) embeds the path into nextPathname AND appends nextSearch,
+    // producing double search params like ?onlyForm=false?onlyForm=false).
+    router.history.push(redirectTo)
+  }, [formatMessage, redirectTo, router])
 
   useEffect(() => {
     if (!verificationExpired) return
@@ -526,6 +539,88 @@ export const Auth = () => {
     setPasswordResetMessage('')
   }
 
+  const handleResendVerification = async () => {
+    const emailTrimmed = email.trim()
+    if (!emailTrimmed) return
+
+    setIsSendingVerification(true)
+    setVerificationMessage('')
+    setVerificationMessageIsError(false)
+
+    try {
+      const response = await fetch(
+        `${getAuthBaseUrl()}/auth/email-otp/send-verification-otp`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: emailTrimmed, type: 'email-verification' }),
+        },
+      )
+      if (!response.ok) throw new Error(`${response.status}`)
+
+      setVerificationResendSent(true)
+      setVerificationMessage(
+        formatMessage({
+          id: 'authVerificationCodeSent',
+          defaultMessage: 'Verification code sent. Please check your email.',
+        }),
+      )
+    } catch {
+      setVerificationMessageIsError(true)
+      setVerificationMessage(
+        formatMessage({
+          id: 'authVerificationCodeSendFailed',
+          defaultMessage: 'Failed to send verification code.',
+        }),
+      )
+    } finally {
+      setIsSendingVerification(false)
+    }
+  }
+
+  const handleVerifyOtp = async () => {
+    const emailTrimmed = email.trim()
+    const otp = verificationOtp.trim()
+    if (!emailTrimmed || !otp) return
+
+    setIsVerifyingOtp(true)
+    setVerificationMessage('')
+    setVerificationMessageIsError(false)
+
+    try {
+      const response = await fetch(
+        `${getAuthBaseUrl()}/auth/email-otp/verify-email`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: emailTrimmed, otp }),
+        },
+      )
+      if (!response.ok) throw new Error(`${response.status}`)
+
+      setEmailVerifiedInForm(true)
+      setVerificationOtp('')
+      setVerificationMessage(
+        formatMessage({
+          id: 'authEmailVerifiedSuccess',
+          defaultMessage: 'Email verified successfully.',
+        }),
+      )
+    } catch {
+      setVerificationMessageIsError(true)
+      setVerificationMessage(
+        formatMessage({
+          id: 'authEmailVerifyFailed',
+          defaultMessage: 'Email verification failed.',
+        }),
+      )
+    } finally {
+      setIsVerifyingOtp(false)
+    }
+  }
+
   if (isDbInitializing) {
     return <Initiating forceSqlInitializing />
   }
@@ -565,7 +660,18 @@ export const Auth = () => {
           </p>
         </div>
 
-        {error && <div className={styles.generalError}>{error}</div>}
+        {error && !emailVerifiedInForm && (
+          <div className={styles.generalError}>{error}</div>
+        )}
+        {emailVerifiedInForm && (
+          <div className={styles.successMessage}>
+            {formatMessage({
+              id: 'authEmailVerifiedNowSignIn',
+              defaultMessage:
+                'E-Mail erfolgreich bestätigt. Bitte jetzt anmelden.',
+            })}
+          </div>
+        )}
         {showRegisterSuggestion && !isSignUp && (
           <div className={styles.otpActions}>
             <p className={styles.toggleText}>
@@ -616,6 +722,72 @@ export const Auth = () => {
             />
             {fieldErrors.email && (
               <p className={styles.errorMessage}>{fieldErrors.email}</p>
+            )}
+            {verificationExpired && !isSignUp && !emailVerifiedInForm && (
+              <div className={styles.otpActions}>
+                <p className={styles.inlinePromptText}>
+                  {formatMessage({
+                    id: 'authResendVerificationPromptPrefix',
+                    defaultMessage: 'E-Mail-Adresse oben eingeben und',
+                  })}{' '}
+                  <button
+                    type="button"
+                    className={styles.inlineTextLink}
+                    onClick={handleResendVerification}
+                    disabled={isSendingVerification || isLoading || !email.trim()}
+                  >
+                    {isSendingVerification
+                      ? formatMessage({
+                          id: 'authPleaseWait',
+                          defaultMessage: 'Bitte warten...',
+                        })
+                      : formatMessage({
+                          id: 'authRequestVerificationCodeLink',
+                          defaultMessage: 'neuen Bestätigungscode anfordern',
+                        })}
+                  </button>
+                  .
+                </p>
+                {verificationResendSent && (
+                  <>
+                    <input
+                      type="text"
+                      className={styles.formInput}
+                      value={verificationOtp}
+                      onChange={(e) => setVerificationOtp(e.target.value)}
+                      placeholder={formatMessage({
+                        id: 'authVerificationOtpPlaceholder',
+                        defaultMessage: 'Enter verification code',
+                      })}
+                      disabled={isVerifyingOtp}
+                    />
+                    <button
+                      type="button"
+                      className={styles.toggleButton}
+                      onClick={handleVerifyOtp}
+                      disabled={isVerifyingOtp || !verificationOtp.trim()}
+                    >
+                      {isVerifyingOtp
+                        ? formatMessage({
+                            id: 'authPleaseWait',
+                            defaultMessage: 'Bitte warten...',
+                          })
+                        : formatMessage({
+                            id: 'authVerifyEmailBtn',
+                            defaultMessage: 'Verify email',
+                          })}
+                    </button>
+                  </>
+                )}
+                {verificationMessage && (
+                  <p
+                    className={styles.toggleText}
+                    style={verificationMessageIsError ? { color: '#9f2f00' } : undefined}
+                  >
+                    {verificationMessage}
+                  </p>
+                )}
+              </div>
             )}
           </div>
 
