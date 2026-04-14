@@ -43,7 +43,11 @@ export const AuthAndDb = () => {
           <SqlInitializer />
           <InitialSyncManager />
           <Syncer />
-          {sqlInitializing || initialSyncing ? <Initiating /> : <LayoutProtected />}
+          {sqlInitializing || initialSyncing ? (
+            <Initiating />
+          ) : (
+            <LayoutProtected />
+          )}
         </>
       )}
     </PGliteProvider>

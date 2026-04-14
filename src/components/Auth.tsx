@@ -109,7 +109,9 @@ export const Auth = () => {
   const [emailVerifiedInForm, setEmailVerifiedInForm] = useState(false)
   const [twoFactorRequired, setTwoFactorRequired] = useState(false)
   const [twoFactorCode, setTwoFactorCode] = useState('')
-  const [twoFactorMethods, setTwoFactorMethods] = useState<TwoFactorMethod[]>([])
+  const [twoFactorMethods, setTwoFactorMethods] = useState<TwoFactorMethod[]>(
+    [],
+  )
   const [twoFactorMethod, setTwoFactorMethod] = useState<TwoFactorMethod>('otp')
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false)
   const [twoFactorMessage, setTwoFactorMessage] = useState('')
@@ -260,12 +262,12 @@ export const Auth = () => {
         const message =
           result?.error?.message ||
           (result &&
-          typeof result === 'object' &&
-          'data' in result &&
-          result.data &&
-          typeof result.data === 'object' &&
-          'error' in result.data &&
-          result.data.error?.message) ||
+            typeof result === 'object' &&
+            'data' in result &&
+            result.data &&
+            typeof result.data === 'object' &&
+            'error' in result.data &&
+            result.data.error?.message) ||
           formatMessage({
             id: 'authPasskeyFailed',
             defaultMessage:
@@ -595,10 +597,11 @@ export const Auth = () => {
           (resultData as { twoFactorRedirect?: boolean }).twoFactorRedirect
         ) {
           const methods = (
-            ((resultData as { twoFactorMethods?: string[] }).twoFactorMethods ?? [])
-              .filter((method): method is TwoFactorMethod =>
-                method === 'otp' || method === 'totp',
-              )
+            (resultData as { twoFactorMethods?: string[] }).twoFactorMethods ??
+            []
+          ).filter(
+            (method): method is TwoFactorMethod =>
+              method === 'otp' || method === 'totp',
           )
           const selectedMethod = pickTwoFactorMethod(methods)
 
@@ -713,7 +716,10 @@ export const Auth = () => {
             'Content-Type': 'application/json',
           }),
           credentials: 'include',
-          body: JSON.stringify({ email: emailTrimmed, type: 'email-verification' }),
+          body: JSON.stringify({
+            email: emailTrimmed,
+            type: 'email-verification',
+          }),
         },
       )
       if (!response.ok) throw new Error(`${response.status}`)
@@ -881,9 +887,9 @@ export const Auth = () => {
     )
   }
 
-  if (isDbInitializing) {
-    return <Initiating forceSqlInitializing />
-  }
+  // if (isDbInitializing) {
+  //   return <Initiating forceSqlInitializing />
+  // }
 
   return (
     <div className={styles.authContainer}>
@@ -992,7 +998,9 @@ export const Auth = () => {
               <p className={styles.errorMessage}>{fieldErrors.email}</p>
             )}
             {verificationExpired && !isSignUp && !emailVerifiedInForm && (
-              <div className={`${styles.otpActions} ${styles.emailVerificationInline}`}>
+              <div
+                className={`${styles.otpActions} ${styles.emailVerificationInline}`}
+              >
                 <p className={styles.inlinePromptText}>
                   {formatMessage({
                     id: 'authResendVerificationPromptPrefix',
@@ -1002,7 +1010,9 @@ export const Auth = () => {
                     type="button"
                     className={styles.inlineTextLink}
                     onClick={handleResendVerification}
-                    disabled={isSendingVerification || isLoading || !email.trim()}
+                    disabled={
+                      isSendingVerification || isLoading || !email.trim()
+                    }
                   >
                     {isSendingVerification
                       ? formatMessage({
@@ -1050,7 +1060,11 @@ export const Auth = () => {
                 {verificationMessage && (
                   <p
                     className={styles.toggleText}
-                    style={verificationMessageIsError ? { color: '#9f2f00' } : undefined}
+                    style={
+                      verificationMessageIsError
+                        ? { color: '#9f2f00' }
+                        : undefined
+                    }
                   >
                     {verificationMessage}
                   </p>
@@ -1084,7 +1098,9 @@ export const Auth = () => {
                   id: 'authEnterPassword',
                   defaultMessage: 'Passwort eingeben',
                 })}
-                autoComplete={isSignUp ? 'new-password' : 'current-password webauthn'}
+                autoComplete={
+                  isSignUp ? 'new-password' : 'current-password webauthn'
+                }
                 disabled={isLoading}
               />
               <button
@@ -1135,7 +1151,11 @@ export const Auth = () => {
                     type="button"
                     className={styles.inlineTextLink}
                     onClick={() => onSwitchTwoFactorMethod('otp')}
-                    disabled={isTwoFactorLoading || isLoading || twoFactorMethod === 'otp'}
+                    disabled={
+                      isTwoFactorLoading ||
+                      isLoading ||
+                      twoFactorMethod === 'otp'
+                    }
                   >
                     {formatMessage({
                       id: 'authTwoFactorMethodEmail',
@@ -1177,7 +1197,9 @@ export const Auth = () => {
               {twoFactorMessage && (
                 <p
                   className={styles.toggleText}
-                  style={twoFactorMessageIsError ? { color: '#9f2f00' } : undefined}
+                  style={
+                    twoFactorMessageIsError ? { color: '#9f2f00' } : undefined
+                  }
                 >
                   {twoFactorMessage}
                 </p>
@@ -1272,7 +1294,9 @@ export const Auth = () => {
               <button
                 type="submit"
                 className={styles.submitButton}
-                disabled={isLoading || isTwoFactorLoading || isSignInSubmitDisabled}
+                disabled={
+                  isLoading || isTwoFactorLoading || isSignInSubmitDisabled
+                }
               >
                 {isLoading || isTwoFactorLoading
                   ? formatMessage({
