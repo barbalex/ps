@@ -66,6 +66,34 @@ export const Initiating = ({
                 defaultMessage: 'Mit Server synchronisieren',
               })}
             </span>
+            {syncActive && (
+              <svg
+                className={styles.spinner}
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  opacity="0.2"
+                />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeDasharray="10.2 20.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
           </div>
         </div>
       </div>

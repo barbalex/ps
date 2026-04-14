@@ -459,6 +459,7 @@ export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
 
 export const pgliteDbAtom = atom(null)
+export const isLoggingOutAtom = atom(false)
 
 // an array of objects with keys:
 // - id

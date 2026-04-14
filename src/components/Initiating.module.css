@@ -100,6 +100,24 @@
   }
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  color: #3f8a30;
+  animation: spin 1s linear infinite;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .container {
     padding: 14px;

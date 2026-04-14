@@ -1,6 +1,7 @@
 import {
   store,
   initialSyncingAtom,
+  isLoggingOutAtom,
   pgliteDbAtom,
   syncObjectAtom,
 } from '../store.ts'
@@ -14,8 +15,26 @@ const url = constants.getElectricUri()
 const noCacheFetch: typeof fetch = (input, init) =>
   fetch(input, { ...init, cache: 'no-store' })
 
+const isExpectedPgliteShutdownError = (error: unknown) => {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === 'string'
+        ? error
+        : String(error)
+
+  return (
+    message.includes('PGlite is closing') ||
+    message.includes('PGlite is closed') ||
+    message.includes('database is closed')
+  )
+}
+
 export const startSyncing = async () => {
+  if (store.get(isLoggingOutAtom)) return
+
   const db = store.get(pgliteDbAtom)
+  if (!db) return
 
   // is syncObjectAtom exists, return
   const syncObject = store.get(syncObjectAtom)
@@ -1061,7 +1080,9 @@ export const startSyncing = async () => {
 
     return sync
   } catch (error) {
-    console.error('Error starting sync:', error)
+    if (!isExpectedPgliteShutdownError(error)) {
+      console.error('Error starting sync:', error)
+    }
     throw error
   }
 }

@@ -5,12 +5,28 @@ import { useIntl } from 'react-intl'
 import {
   addNotificationAtom,
   initialSyncingAtom,
+  isLoggingOutAtom,
   sqlInitializingAtom,
   syncObjectAtom,
   updateNotificationAtom,
 } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
 import { useSession } from '../modules/authClient.ts'
+
+const isExpectedPgliteShutdownError = (error: unknown) => {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === 'string'
+        ? error
+        : String(error)
+
+  return (
+    message.includes('PGlite is closing') ||
+    message.includes('PGlite is closed') ||
+    message.includes('database is closed')
+  )
+}
 
 export const Syncer = () => {
   const { formatMessage } = useIntl()
@@ -23,6 +39,7 @@ export const Syncer = () => {
   const syncNotificationIdRef = useRef<string | null>(null)
   const { data: session, isPending } = useSession()
   const isAuthenticated = Boolean(session?.user)
+  const isLoggingOut = useAtomValue(isLoggingOutAtom)
 
   useEffect(() => {
     if (!isAuthenticated || sqlInitializing || !initialSyncing) return
@@ -73,6 +90,7 @@ export const Syncer = () => {
   // TODO: ensure syncing resumes after user has changed
   useEffect(() => {
     if (isPending) return
+    if (isLoggingOut) return
     if (!isAuthenticated) return
     if (sqlInitializing) return
     if (syncObject) {
@@ -80,12 +98,16 @@ export const Syncer = () => {
       return
     }
 
+    let cancelled = false
+
     startSyncing()
       .then((syncObj) => {
+        if (cancelled || !syncObj) return
         console.log('Sync started')
         setSyncObject(syncObj)
       })
       .catch((error) => {
+        if (cancelled || isExpectedPgliteShutdownError(error)) return
         console.error('Error starting sync:', error)
         const id = syncNotificationIdRef.current
         if (id) {
@@ -104,9 +126,14 @@ export const Syncer = () => {
           syncNotificationIdRef.current = null
         }
       })
+
+    return () => {
+      cancelled = true
+    }
   }, [
     formatMessage,
     isAuthenticated,
+    isLoggingOut,
     isPending,
     setSyncObject,
     sqlInitializing,

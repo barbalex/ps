@@ -13,8 +13,15 @@ import { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { MdFingerprint, MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
-import { getAuthBaseUrl } from '../../../../modules/authClient.ts'
-import { operationsQueueAtom, store } from '../../../../store.ts'
+import { getAuthBaseUrl, signOut } from '../../../../modules/authClient.ts'
+import {
+  initialSyncingAtom,
+  isLoggingOutAtom,
+  operationsQueueAtom,
+  pgliteDbAtom,
+  store,
+  syncObjectAtom,
+} from '../../../../store.ts'
 import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LogoutDialogs } from './LogoutDialogs.tsx'
 import { PasskeyDialog } from './PasskeyDialog.tsx'
@@ -42,15 +49,92 @@ type Props = {
   authUser: AuthUser | null | undefined
   session?: Session | null
   buttonClassName: string
-  onConfirmLogout: () => Promise<void>
 }
 
-export const UserMenu = ({
-  authUser,
-  session,
-  buttonClassName,
-  onConfirmLogout,
-}: Props) => {
+const deleteIndexedDbDatabase = (dbName: string) =>
+  new Promise<boolean>((resolve) => {
+    if (typeof indexedDB === 'undefined') {
+      resolve(true)
+      return
+    }
+
+    const request = indexedDB.deleteDatabase(dbName)
+    request.onsuccess = () => resolve(true)
+    request.onerror = () => resolve(false)
+    request.onblocked = () => resolve(false)
+  })
+
+const deleteAppIndexedDbDatabases = async (extraNames: string[] = []) => {
+  const fallbackDbNames = [...new Set(['ps', 'idb://ps', ...extraNames])]
+  const discoveredDbNames =
+    typeof indexedDB !== 'undefined' && 'databases' in indexedDB
+      ? await indexedDB
+          .databases()
+          .then((dbs) => dbs.map((db) => db.name).filter(Boolean) as string[])
+          .catch(() => [])
+      : []
+
+  const dbNamesToDelete = [...new Set([...fallbackDbNames, ...discoveredDbNames])]
+
+  const deleteResults = await Promise.all(
+    dbNamesToDelete.map((name) => deleteIndexedDbDatabase(name)),
+  )
+
+  return deleteResults.every(Boolean)
+}
+
+const clearBrowserCaches = async () => {
+  if (typeof caches === 'undefined') return
+  try {
+    const cacheKeys = await caches.keys()
+    await Promise.all(cacheKeys.map((key) => caches.delete(key)))
+  } catch {
+    // ignore cache cleanup failures
+  }
+}
+
+const clearPersistedSyncUiState = () => {
+  window.localStorage.clear()
+  window.sessionStorage.clear()
+}
+
+const waitForPgliteConsumersToUnmount = async () => {
+  await Promise.resolve()
+
+  if (typeof window === 'undefined') return
+  await new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => resolve())
+  })
+}
+
+const clearLocalSyncedData = async () => {
+  const syncObject = store.get(syncObjectAtom) as {
+    unsubscribe?: () => void
+  } | null
+  syncObject?.unsubscribe?.()
+  store.set(syncObjectAtom, null)
+
+  const db = store.get(pgliteDbAtom) as { close?: () => Promise<void> | void; dataDir?: string } | null
+  const dataDirNames = db?.dataDir ? [db.dataDir] : []
+  store.set(pgliteDbAtom, null)
+  await waitForPgliteConsumersToUnmount()
+  await db?.close?.()
+
+  const dbDeletionSucceeded = await deleteAppIndexedDbDatabases(dataDirNames)
+  await clearBrowserCaches()
+  clearPersistedSyncUiState()
+
+  store.set(operationsQueueAtom, [])
+  store.set(initialSyncingAtom, true)
+
+  if (!dbDeletionSucceeded) {
+    console.warn(
+      'Some local IndexedDB databases could not be deleted completely.',
+    )
+  }
+}
+
+export const UserMenu = ({ authUser, session, buttonClassName }: Props) => {
   const intl = useIntl()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
   const [passkeyOpen, setPasskeyOpen] = useState(false)
@@ -138,12 +222,10 @@ export const UserMenu = ({
 
   const onConfirmLogoutWithLoading = async () => {
     setIsLoggingOut(true)
-    try {
-      await onConfirmLogout()
-    } finally {
-      setIsLoggingOut(false)
-      setLogoutDialogStep('none')
-    }
+    store.set(isLoggingOutAtom, true)
+    await clearLocalSyncedData()
+    await signOut()
+    window.location.assign('/')
   }
 
   return (
