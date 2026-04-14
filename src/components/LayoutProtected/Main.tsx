@@ -29,36 +29,35 @@ export const Main = () => {
     Boolean,
   ).length
   const treeIsFirstOfTwo = treeVisible && visibleCount === 2
+  const allotmentKey = `${treeVisible ? 't' : ''}${dataVisible ? 'd' : ''}${mapVisible ? 'm' : ''}`
 
   // the classNames are used to style the allotment panes
   // especially to hide others when only the Outlet is printed
   return (
     <div className={styles.container}>
       <div className={styles.allotmentWrapper}>
-        <Allotment>
-        {treeVisible &&
-          (treeIsFirstOfTwo ? (
-            <Allotment.Pane minSize={50} preferredSize="33%">
+        <Allotment key={allotmentKey}>
+          {treeVisible && (
+            <Allotment.Pane
+              minSize={50}
+              preferredSize={treeIsFirstOfTwo ? '33%' : undefined}
+            >
               <div className="allotment-tree">
                 <Tree />
               </div>
             </Allotment.Pane>
-          ) : (
-            <div className="allotment-tree">
-              <Tree />
+          )}
+          {dataVisible && (
+            <div className="allotment-data">
+              <Outlet />
             </div>
-          ))}
-        {dataVisible && (
-          <div className="allotment-data">
-            <Outlet />
-          </div>
-        )}
-        {mapVisible && (
-          <div className="allotment-map">
-            <MapContainer />
-          </div>
-        )}
-      </Allotment>
+          )}
+          {mapVisible && (
+            <div className="allotment-map">
+              <MapContainer />
+            </div>
+          )}
+        </Allotment>
       </div>
     </div>
   )
