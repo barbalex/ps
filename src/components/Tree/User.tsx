@@ -48,7 +48,7 @@ export const UserNode = ({ nav, level = 2 }) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={1}
+        childrenCount={accountsInUser ? 0 : 1}
         to={ownUrl}
         onClickButton={onClickButton}
       />
