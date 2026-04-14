@@ -13,9 +13,7 @@ type Props = {
 }
 
 const parentArray = ['data']
-const parentUrl = `/${parentArray.join('/')}`
 const ownArray = [...parentArray, 'accounts']
-const ownUrl = `/${ownArray.join('/')}`
 
 type NavData = {
   id: string
