@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { type } from 'arktype'
 
-import { Auth } from '../components/Auth.tsx'
+import { Auth } from '../components/Auth/index.tsx'
 
 const schema = type({
   redirect: 'string = "/data/projects"',
