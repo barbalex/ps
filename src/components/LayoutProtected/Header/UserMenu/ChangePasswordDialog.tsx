@@ -58,9 +58,6 @@ export const ChangePasswordDialog = ({
   const changePasswordSuccessTimeoutRef = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined)
-  const changePasswordResetTimeoutRef = useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined)
   const notifyPasswordSetAfterCloseRef = useRef(false)
 
   const resetDialogState = () => {
@@ -136,7 +133,7 @@ export const ChangePasswordDialog = ({
     setIsChangingPassword(true)
     try {
       let result
-      
+
       if (hasPassword) {
         // User has existing password - use changePassword
         result = await authClient.changePassword({
@@ -164,9 +161,7 @@ export const ChangePasswordDialog = ({
             data = {}
           }
         }
-        result = response.ok 
-          ? { ok: true }
-          : { error: data.error }
+        result = response.ok ? { ok: true } : { error: data.error }
       }
 
       if (result.error) {
@@ -195,7 +190,8 @@ export const ChangePasswordDialog = ({
           setChangePasswordError(
             intl.formatMessage({
               id: 'changePasswordTooShort',
-              defaultMessage: 'Das neue Passwort muss mindestens 8 Zeichen haben.',
+              defaultMessage:
+                'Das neue Passwort muss mindestens 8 Zeichen haben.',
             }),
           )
           return
@@ -205,7 +201,9 @@ export const ChangePasswordDialog = ({
           result.error.message ||
             intl.formatMessage({
               id: 'changePasswordFailed',
-              defaultMessage: hasPassword ? 'Passwort konnte nicht geändert werden.' : 'Passwort konnte nicht gesetzt werden.',
+              defaultMessage: hasPassword
+                ? 'Passwort konnte nicht geändert werden.'
+                : 'Passwort konnte nicht gesetzt werden.',
             }),
         )
         return
@@ -217,7 +215,8 @@ export const ChangePasswordDialog = ({
         setChangePasswordMessage(
           intl.formatMessage({
             id: 'setPasswordSuccess',
-            defaultMessage: 'Passwort erfolgreich gesetzt. Du kannst dich jetzt mit E-Mail und Passwort anmelden.',
+            defaultMessage:
+              'Passwort erfolgreich gesetzt. Du kannst dich jetzt mit E-Mail und Passwort anmelden.',
           }),
         )
       } else {
@@ -229,7 +228,7 @@ export const ChangePasswordDialog = ({
           }),
         )
       }
-      
+
       setCurrentPassword('')
       setNewPassword('')
       setConfirmNewPassword('')
@@ -241,7 +240,9 @@ export const ChangePasswordDialog = ({
       setChangePasswordError(
         intl.formatMessage({
           id: 'changePasswordFailed',
-          defaultMessage: hasPassword ? 'Passwort konnte nicht geändert werden.' : 'Passwort konnte nicht gesetzt werden.',
+          defaultMessage: hasPassword
+            ? 'Passwort konnte nicht geändert werden.'
+            : 'Passwort konnte nicht gesetzt werden.',
         }),
       )
       console.error('Change password error:', error)
@@ -264,34 +265,14 @@ export const ChangePasswordDialog = ({
       if (changePasswordSuccessTimeoutRef.current) {
         clearTimeout(changePasswordSuccessTimeoutRef.current)
       }
-      if (changePasswordResetTimeoutRef.current) {
-        clearTimeout(changePasswordResetTimeoutRef.current)
-      }
       notifyPasswordSetAfterCloseRef.current = false
     },
     [],
   )
 
   useEffect(() => {
-    if (open) {
-      if (changePasswordResetTimeoutRef.current) {
-        clearTimeout(changePasswordResetTimeoutRef.current)
-        changePasswordResetTimeoutRef.current = undefined
-      }
-      return
-    }
-
-    changePasswordResetTimeoutRef.current = setTimeout(() => {
-      resetDialogState()
-      changePasswordResetTimeoutRef.current = undefined
-    }, 150)
-
-    return () => {
-      if (changePasswordResetTimeoutRef.current) {
-        clearTimeout(changePasswordResetTimeoutRef.current)
-        changePasswordResetTimeoutRef.current = undefined
-      }
-    }
+    if (!open) return
+    resetDialogState()
   }, [open])
 
   return (
@@ -319,7 +300,13 @@ export const ChangePasswordDialog = ({
           <DialogContent>
             <div className={styles.changePasswordForm}>
               {!hasPassword && (
-                <div style={{ marginBottom: '16px', fontSize: '14px', color: '#666' }}>
+                <div
+                  style={{
+                    marginBottom: '16px',
+                    fontSize: '14px',
+                    color: '#666',
+                  }}
+                >
                   <FormattedMessage
                     id="setPasswordDialogDescription"
                     defaultMessage="Diese Funktion ermöglicht es dir, dich zusätzlich mit deiner E-Mail-Adresse und einem Passwort anzumelden, ohne dich auf Google verlassen zu müssen."
@@ -393,7 +380,9 @@ export const ChangePasswordDialog = ({
                               : 'password'
                           }
                           value={newPassword}
-                          onChange={(_event, data) => setNewPassword(data.value)}
+                          onChange={(_event, data) =>
+                            setNewPassword(data.value)
+                          }
                           placeholder={intl.formatMessage({
                             id: 'changePasswordNewPassword',
                             defaultMessage: 'Neues Passwort',
@@ -473,7 +462,13 @@ export const ChangePasswordDialog = ({
                   ) : (
                     // OAuth-only set password flow - show new password fields
                     <>
-                      <p style={{ marginTop: 0, fontSize: '14px', color: '#666' }}>
+                      <p
+                        style={{
+                          marginTop: 0,
+                          fontSize: '14px',
+                          color: '#666',
+                        }}
+                      >
                         <FormattedMessage
                           id="setPasswordFlowDescription"
                           defaultMessage="Gib dein neues Passwort ein und wir richten es sofort für dich ein."
@@ -487,7 +482,9 @@ export const ChangePasswordDialog = ({
                               : 'password'
                           }
                           value={newPassword}
-                          onChange={(_event, data) => setNewPassword(data.value)}
+                          onChange={(_event, data) =>
+                            setNewPassword(data.value)
+                          }
                           placeholder={intl.formatMessage({
                             id: 'changePasswordNewPassword',
                             defaultMessage: 'Neues Passwort',
