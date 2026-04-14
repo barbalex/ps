@@ -10,9 +10,10 @@ interface Props {
   projectId?: string
   accountId?: string
   userId?: string
+  level?: number
 }
 
-export const FieldsNode = ({ projectId, accountId, userId }: Props) => {
+export const FieldsNode = ({ projectId, accountId, userId, level }: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useFieldsNavData({ projectId, accountId, userId })
@@ -51,7 +52,7 @@ export const FieldsNode = ({ projectId, accountId, userId }: Props) => {
     <>
       <Node
         label={label}
-        level={projectId || accountId ? 3 : 1}
+        level={level ?? (projectId || accountId ? 3 : 1)}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
@@ -67,6 +68,7 @@ export const FieldsNode = ({ projectId, accountId, userId }: Props) => {
             projectId={projectId}
             accountId={accountId}
             userId={userId}
+            level={level !== undefined ? level + 1 : undefined}
           />
         ))}
     </>

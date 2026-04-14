@@ -65,7 +65,7 @@ export const AccountNode = ({ nav, level = 2, userId }: Props) => {
         onClickButton={onClickButton}
       />
       {isOpen && showFieldsNav && (
-        <FieldsNode accountId={nav.id} userId={userId} />
+        <FieldsNode accountId={nav.id} userId={userId} level={level + 1} />
       )}
     </>
   )
