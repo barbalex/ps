@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 
 import {
   initialSyncingAtom,
-  isLoggingOutAtom,
   pgliteDbAtom,
   sqlInitializingAtom,
 } from '../store.ts'
@@ -21,12 +20,10 @@ export const Initiating = ({
   const pgliteDb = useAtomValue(pgliteDbAtom)
   const sqlInitializingAtomValue = useAtomValue(sqlInitializingAtom)
   const initialSyncing = useAtomValue(initialSyncingAtom)
-  const isLoggingOut = useAtomValue(isLoggingOutAtom)
   const sqlInitializing = forceSqlInitializing || sqlInitializingAtomValue
 
   // Keep the loading UI visible until both local DB initialization and
   // initial server sync are complete.
-  if (isLoggingOut) return null
   if (pgliteDb && !sqlInitializing && !initialSyncing) return null
 
   const dbDone = pgliteDb && !sqlInitializing
@@ -53,30 +50,7 @@ export const Initiating = ({
               dbDone ? styles.stepDone : styles.stepActive
             }`}
           >
-            {dbDone ? (
-              <svg
-                className={styles.stepNumber}
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="12"
-                  fill="#287e4a"
-                />
-                <path
-                  d="M7 12.5l3.5 3.5 6-7"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            ) : (
-              <span className={styles.stepNumber}>1</span>
-            )}
+            <span className={styles.stepNumber}>1</span>
             <span className={styles.stepLabel}>
               {formatMessage({
                 id: 'initDbStepLabel',

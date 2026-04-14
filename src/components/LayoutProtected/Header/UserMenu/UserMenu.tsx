@@ -10,7 +10,6 @@ const {
   Tooltip,
 } = fluentUiReactComponents
 import { useEffect, useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { MdFingerprint, MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
 
@@ -109,7 +108,6 @@ const waitForPgliteConsumersToUnmount = async () => {
 }
 
 const clearLocalSyncedData = async () => {
-  // Stop active sync stream first
   const syncObject = store.get(syncObjectAtom) as {
     unsubscribe?: () => void
   } | null
@@ -119,9 +117,6 @@ const clearLocalSyncedData = async () => {
   const db = store.get(pgliteDbAtom) as { close?: () => Promise<void> | void; dataDir?: string } | null
   const dataDirNames = db?.dataDir ? [db.dataDir] : []
   store.set(pgliteDbAtom, null)
-
-  // Wait for consumers to unmount (navigate away has already happened,
-  // but give React one more rAF to settle before closing)
   await waitForPgliteConsumersToUnmount()
   await db?.close?.()
 
@@ -141,7 +136,6 @@ const clearLocalSyncedData = async () => {
 
 export const UserMenu = ({ authUser, session, buttonClassName }: Props) => {
   const intl = useIntl()
-  const navigate = useNavigate()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
   const [passkeyOpen, setPasskeyOpen] = useState(false)
   const [twoFactorOpen, setTwoFactorOpen] = useState(false)
@@ -229,13 +223,9 @@ export const UserMenu = ({ authUser, session, buttonClassName }: Props) => {
   const onConfirmLogoutWithLoading = async () => {
     setIsLoggingOut(true)
     store.set(isLoggingOutAtom, true)
-    // Navigate to home first — this unmounts the entire /data subtree
-    // (including all PGlite consumers), releasing open IDB connections
-    // so deleteDatabase can succeed without a hard reload
-    navigate({ to: '/' })
     await clearLocalSyncedData()
     await signOut()
-    store.set(isLoggingOutAtom, false)
+    window.location.assign('/')
   }
 
   return (
