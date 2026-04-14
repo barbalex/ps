@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import {
   getAuthBaseUrl,
   getAuthRequestHeaders,
+  signOut,
   useSession,
 } from '../modules/authClient.ts'
 import { getVerificationDeadlineMs } from '../modules/emailVerificationGrace.ts'
@@ -22,13 +24,15 @@ const formatRemaining = (remainingMs: number) => {
 
 export const EmailVerificationBanner = () => {
   const { formatMessage } = useIntl()
-  const { data: session, refetch: refetchSession } = useSession()
+  const navigate = useNavigate()
+  const { data: session } = useSession()
   const [now, setNow] = useState(Date.now())
   const [isSending, setIsSending] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationOtp, setVerificationOtp] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
   const [statusIsError, setStatusIsError] = useState(false)
+  const logoutTriggeredRef = useRef(false)
 
   const user = session?.user as
     | {
@@ -44,6 +48,7 @@ export const EmailVerificationBanner = () => {
 
   useEffect(() => {
     if (!isUnverified) {
+      logoutTriggeredRef.current = false
       return
     }
 
@@ -55,6 +60,23 @@ export const EmailVerificationBanner = () => {
       window.clearInterval(id)
     }
   }, [isUnverified])
+
+  useEffect(() => {
+    if (!isUnverified || remainingMs > 0 || logoutTriggeredRef.current) return
+
+    logoutTriggeredRef.current = true
+    signOut()
+      .catch(() => undefined)
+      .finally(() => {
+        navigate({
+          to: '/auth',
+          search: {
+            redirect: '/data/projects',
+            verificationExpired: true,
+          },
+        })
+      })
+  }, [isUnverified, navigate, remainingMs])
 
   const resendVerification = async () => {
     const email = user?.email?.trim()
@@ -137,7 +159,8 @@ export const EmailVerificationBanner = () => {
         }),
       )
 
-      await refetchSession()
+      // Trigger session refresh for components relying on useSession.
+      window.location.reload()
     } catch {
       setStatusIsError(true)
       setStatusMessage(
