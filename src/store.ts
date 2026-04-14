@@ -469,12 +469,6 @@ export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
 
 export const pgliteDbAtom = atom(null)
-export const pgliteIsInitializedAtom = atomWithStorage(
-  'pgliteIsInitialized',
-  false,
-  undefined,
-  { getOnInit: true },
-)
 
 // an array of objects with keys:
 // - id
