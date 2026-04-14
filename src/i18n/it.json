@@ -860,6 +860,8 @@
   "authTwoFactorVerifyFailed": "Codice 2FA non valido o scaduto.",
   "authSendVerificationCodeBtn": "Invia codice di verifica",
   "authVerifyEmailBtn": "Verifica e-mail",
+  "authVerifyEmailBanner": "Conferma il tuo indirizzo e-mail. Senza conferma verrai disconnesso tra {timeRemaining}.",
+  "authResendVerificationEmailBtn": "Invia nuovamente l'e-mail di verifica",
   "authVerificationOtpPlaceholder": "Inserisci codice di verifica",
   "authVerificationCodeSent": "Codice di verifica inviato. Controlla la tua e-mail.",
   "authVerificationCodeSendFailed": "Invio del codice di verifica non riuscito.",

@@ -109,7 +109,7 @@ export const EmailVerificationBanner = () => {
       setStatusMessage(
         formatMessage({
           id: 'authVerificationCodeSent',
-          defaultMessage: 'Verification code sent. Please check your email.',
+          defaultMessage: 'Bestätigungscode gesendet. Bitte E-Mail prüfen.',
         }),
       )
     } catch {
@@ -117,7 +117,7 @@ export const EmailVerificationBanner = () => {
       setStatusMessage(
         formatMessage({
           id: 'authVerificationCodeSendFailed',
-          defaultMessage: 'Failed to send verification code.',
+          defaultMessage: 'Bestätigungscode konnte nicht gesendet werden.',
         }),
       )
     } finally {
@@ -155,7 +155,7 @@ export const EmailVerificationBanner = () => {
       setStatusMessage(
         formatMessage({
           id: 'authEmailVerifiedSuccess',
-          defaultMessage: 'Email verified successfully.',
+          defaultMessage: 'E-Mail erfolgreich bestätigt.',
         }),
       )
 
@@ -166,7 +166,7 @@ export const EmailVerificationBanner = () => {
       setStatusMessage(
         formatMessage({
           id: 'authEmailVerifyFailed',
-          defaultMessage: 'Email verification failed.',
+          defaultMessage: 'E-Mail-Bestätigung fehlgeschlagen.',
         }),
       )
     } finally {
@@ -183,7 +183,7 @@ export const EmailVerificationBanner = () => {
           {
             id: 'authVerifyEmailBanner',
             defaultMessage:
-              'Please confirm your email address. Without confirmation you will be logged out in {timeRemaining}.',
+              'Bitte E-Mail-Adresse bestätigen. Ohne Bestätigung werden Sie in {timeRemaining} abgemeldet.',
           },
           { timeRemaining: formatRemaining(remainingMs) },
         )}
@@ -202,7 +202,7 @@ export const EmailVerificationBanner = () => {
               })
             : formatMessage({
                 id: 'authResendVerificationEmailBtn',
-                defaultMessage: 'Resend verification email',
+                defaultMessage: 'Bestätigungs-E-Mail erneut senden',
               })}
         </button>
         <input
@@ -212,7 +212,7 @@ export const EmailVerificationBanner = () => {
           onChange={(event) => setVerificationOtp(event.target.value)}
           placeholder={formatMessage({
             id: 'authVerificationOtpPlaceholder',
-            defaultMessage: 'Enter verification code',
+            defaultMessage: 'Bestätigungscode eingeben',
           })}
           disabled={isVerifying}
         />
@@ -229,7 +229,7 @@ export const EmailVerificationBanner = () => {
               })
             : formatMessage({
                 id: 'authVerifyEmailBtn',
-                defaultMessage: 'Verify email',
+                defaultMessage: 'E-Mail bestätigen',
               })}
         </button>
         {statusMessage && (

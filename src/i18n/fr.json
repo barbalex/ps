@@ -858,6 +858,8 @@
   "authTwoFactorVerifyFailed": "Le code 2FA est invalide ou expiré.",
   "authSendVerificationCodeBtn": "Envoyer le code de vérification",
   "authVerifyEmailBtn": "Vérifier l'e-mail",
+  "authVerifyEmailBanner": "Veuillez confirmer votre adresse e-mail. Sans confirmation, vous serez déconnecté dans {timeRemaining}.",
+  "authResendVerificationEmailBtn": "Renvoyer l'e-mail de vérification",
   "authVerificationOtpPlaceholder": "Saisir le code de vérification",
   "authVerificationCodeSent": "Code de vérification envoyé. Veuillez vérifier votre e-mail.",
   "authVerificationCodeSendFailed": "Impossible d'envoyer le code de vérification.",
