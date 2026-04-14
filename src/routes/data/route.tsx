@@ -6,7 +6,6 @@ import {
 import { type } from 'arktype'
 
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
-import { Initiating } from '../../components/Initiating.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
@@ -24,9 +23,6 @@ const schema = type({
 
 export const Route = createFileRoute('/data')({
   component: AuthAndDb,
-  pendingComponent: () => <Initiating forceSqlInitializing />,
-  // needed so Initiating does not flash on every route under /data when the auth/db state is being revalidated
-  pendingMs: 250,
   validateSearch: schema,
   middlewares: [stripSearchParams(defaultValues)],
   notFoundComponent: NotFound,
