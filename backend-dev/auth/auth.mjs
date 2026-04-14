@@ -392,6 +392,7 @@ export const auth = betterAuth({
   ],
   socialProviders,
   user: {
+    deleteUser: { enabled: true },
     modelName: 'users',
     fields: {
       // do I need to set how the id is generated?
