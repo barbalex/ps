@@ -1002,5 +1002,7 @@
   "user.enforceDesktopNavigation.help": "If true, desktop navigation will be enforced",
   "user.alwaysShowTree.label": "Always show navigation tree",
   "user.alwaysShowTree.help": "If true, the navigation tree will always be shown (on mobile it is not very practical)",
-  "user.data": "Data"
+  "user.data": "Data",
+  "dbDump.download": "Download Database Dump",
+  "dbDump.downloading": "Downloading Database Dump"
 }

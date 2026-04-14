@@ -2,12 +2,14 @@ import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
 import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
+import { useIntl } from 'react-intl'
 
 import { usePGlite } from '@electric-sql/pglite-react'
 import fileDownload from 'js-file-download'
 
 export const DbDump = () => {
   const db = usePGlite()
+  const { formatMessage } = useIntl()
 
   const [dumping, setDumping] = useState(false)
   const downloadDump = async () => {
@@ -23,7 +25,17 @@ export const DbDump = () => {
       icon={dumping ? <Spinner size="tiny" /> : null}
       onClick={downloadDump}
     >
-      <div>{`${dumping ? 'Downloading' : 'Download'} Database Dump`}</div>
+      <div>
+        {dumping
+          ? formatMessage({
+              id: 'dbDump.downloading',
+              defaultMessage: 'Datenbank-Dump wird heruntergeladen',
+            })
+          : formatMessage({
+              id: 'dbDump.download',
+              defaultMessage: 'Datenbank-Dump herunterladen',
+            })}
+      </div>
     </Button>
   )
 }
