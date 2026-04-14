@@ -985,5 +985,6 @@
   "user.enforceDesktopNavigation.label": "Forcer la navigation bureau",
   "user.enforceDesktopNavigation.help": "Si activé, la navigation bureau sera forcée",
   "user.alwaysShowTree.label": "Toujours afficher l'arborescence de navigation",
-  "user.alwaysShowTree.help": "Si activé, l'arborescence de navigation sera toujours affichée (peu pratique sur mobile)"
+  "user.alwaysShowTree.help": "Si activé, l'arborescence de navigation sera toujours affichée (peu pratique sur mobile)",
+  "user.data": "Données"
 }

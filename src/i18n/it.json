@@ -987,5 +987,6 @@
   "user.enforceDesktopNavigation.label": "Forza navigazione desktop",
   "user.enforceDesktopNavigation.help": "Se attivo, la navigazione desktop verrà forzata",
   "user.alwaysShowTree.label": "Mostra sempre l'albero di navigazione",
-  "user.alwaysShowTree.help": "Se attivo, l'albero di navigazione verrà sempre mostrato (poco pratico su mobile)"
+  "user.alwaysShowTree.help": "Se attivo, l'albero di navigazione verrà sempre mostrato (poco pratico su mobile)",
+  "user.data": "Dati"
 }

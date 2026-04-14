@@ -162,7 +162,12 @@ export const User = () => {
               />
             </Section>
 
-            <Section title="Data">
+            <Section
+              title={intl.formatMessage({
+                id: 'user.data',
+                defaultMessage: 'Daten',
+              })}
+            >
               <DbDump />
               <Button
                 appearance="outline"
