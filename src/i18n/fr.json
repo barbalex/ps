@@ -797,7 +797,7 @@
   "sP8TaxInSubprj": "Afficher les taxons dans {subprojectNameSingular}",
   "N3qLx9": "Afficher les utilisateurs dans {subprojectNameSingular}",
   "fH8JmQ": "Afficher les fichiers dans {subprojectNameSingular}",
-  "initDbMsg": "Initialisation de la base de données",
+  "initDbMsg": "Création de la base de données locale",
   "syncServerMsg": "Synchronisation avec le serveur",
   "syncServerTaskBody": "La synchronisation initiale est en cours...",
   "syncServerTaskDone": "Synchronisation terminée.",

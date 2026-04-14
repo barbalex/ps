@@ -27,23 +27,20 @@ export const Initiating = ({
   if (pgliteDb && !sqlInitializing && !initialSyncing) return null
 
   const dbDone = pgliteDb && !sqlInitializing
+  const dbActive = !dbDone
   const syncActive = dbDone && initialSyncing
+  const syncDone = dbDone && !initialSyncing
   const syncStepClass = syncActive ? styles.stepActive : styles.stepPending
-
-  const title = sqlInitializing
-    ? formatMessage({
-        id: 'initDbMsg',
-        defaultMessage: 'Initialisiere Datenbank',
-      })
-    : formatMessage({
-        id: 'syncServerMsg',
-        defaultMessage: 'Synchronisiere mit Server',
-      })
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <p className={styles.title}>{title}</p>
+        <p className={styles.title}>
+          {formatMessage({
+            id: 'initDbMsg',
+            defaultMessage: 'Baue lokale Datenbank',
+          })}
+        </p>
         <div className={styles.steps}>
           <div
             className={`${styles.step} ${
@@ -57,6 +54,52 @@ export const Initiating = ({
                 defaultMessage: 'Datenbank initialisieren',
               })}
             </span>
+            {dbActive && (
+              <svg
+                className={styles.spinner}
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  opacity="0.2"
+                />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeDasharray="10.2 20.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
+            {dbDone && (
+              <svg
+                className={styles.stepIcon}
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle cx="8" cy="8" r="7" fill="#287e4a" />
+                <path
+                  d="M4.5 8.25l2.5 2.5 4-5"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
           </div>
           <div className={`${styles.step} ${syncStepClass}`}>
             <span className={styles.stepNumber}>2</span>
@@ -66,6 +109,52 @@ export const Initiating = ({
                 defaultMessage: 'Mit Server synchronisieren',
               })}
             </span>
+            {syncActive && (
+              <svg
+                className={styles.spinner}
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  opacity="0.2"
+                />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeDasharray="10.2 20.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
+            {syncDone && (
+              <svg
+                className={styles.stepIcon}
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle cx="8" cy="8" r="7" fill="#287e4a" />
+                <path
+                  d="M4.5 8.25l2.5 2.5 4-5"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
           </div>
         </div>
       </div>

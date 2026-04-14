@@ -53,6 +53,14 @@
 .stepLabel {
   font-size: 0.95rem;
   line-height: 1.25rem;
+  flex: 1;
+}
+
+.stepIcon {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .stepActive {
@@ -84,6 +92,24 @@
 .stepPending .stepNumber {
   background: #d7e0d3;
   color: #496143;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  color: #3f8a30;
+  animation: spin 1s linear infinite;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 @keyframes pulse {
