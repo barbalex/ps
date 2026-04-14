@@ -228,3 +228,22 @@ docker compose logs auth --tail 50
 ```
 
 To enable verification in dev, set `REQUIRE_EMAIL_VERIFICATION=true` in the dev environment and restart the auth container.
+
+## Removing a User
+
+A user can delete their own account from the user form (`src/formsAndLists/user/index.tsx`) in the **Data** section.
+
+### What happens
+
+1. A confirmation dialog (`src/formsAndLists/user/DeleteAccountDialog.tsx`) warns the user that deletion is **permanent and irreversible**, and hints that they can export their data first.
+2. On confirmation, a `DELETE FROM users WHERE user_id = $1` is sent directly to the PostgREST API (`constants.getPostgrestUri()`). Referential integrity (cascade deletes) removes all related data server-side.
+3. After a successful delete, `clearLocalSyncedData()` is called to wipe local PGlite state, IndexedDB databases, browser caches and persisted localStorage.
+4. The browser is redirected to `/`.
+
+### Relevant files
+
+| File                                             | Purpose                                         |
+| ------------------------------------------------ | ----------------------------------------------- |
+| `src/formsAndLists/user/index.tsx`               | "Delete account" button in the Data section     |
+| `src/formsAndLists/user/DeleteAccountDialog.tsx` | Confirmation dialog; executes the delete + wipe |
+| `src/modules/clearLocalSyncedData.ts`            | Clears all local sync state and caches          |
