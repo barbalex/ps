@@ -15,7 +15,7 @@ auth.xn--arten-frdern-bjb.app {
   handle @auth_arten_preflight {
     header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
-    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, x-app-language"
     header Access-Control-Allow-Credentials "true"
     header Vary "Origin"
     respond "" 204
@@ -91,7 +91,7 @@ auth.promote-species.app {
   handle @auth_promote_preflight {
     header Access-Control-Allow-Origin "https://promote-species.app"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
-    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, x-app-language"
     header Access-Control-Allow-Credentials "true"
     header Vary "Origin"
     respond "" 204
@@ -100,7 +100,7 @@ auth.promote-species.app {
   handle @auth_arten_app_preflight {
     header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.app"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
-    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, x-app-language"
     header Access-Control-Allow-Credentials "true"
     header Vary "Origin"
     respond "" 204
@@ -109,7 +109,7 @@ auth.promote-species.app {
   handle @auth_arten_ch_preflight {
     header Access-Control-Allow-Origin "https://xn--arten-frdern-bjb.ch"
     header Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS"
-    header Access-Control-Allow-Headers "Authorization, Content-Type"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, x-app-language"
     header Access-Control-Allow-Credentials "true"
     header Vary "Origin"
     respond "" 204
