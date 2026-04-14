@@ -29,11 +29,11 @@ export const DbDump = () => {
         {dumping
           ? formatMessage({
               id: 'dbDump.downloading',
-              defaultMessage: 'Datenbank-Dump wird heruntergeladen',
+              defaultMessage: 'Alle Daten werden heruntergeladen...',
             })
           : formatMessage({
               id: 'dbDump.download',
-              defaultMessage: 'Datenbank-Dump herunterladen',
+              defaultMessage: 'Alle Daten herunterladen (als sql Datei)',
             })}
       </div>
     </Button>

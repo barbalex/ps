@@ -989,6 +989,6 @@
   "user.alwaysShowTree.label": "Mostra sempre l'albero di navigazione",
   "user.alwaysShowTree.help": "Se attivo, l'albero di navigazione verrà sempre mostrato (poco pratico su mobile)",
   "user.data": "Dati",
-  "dbDump.download": "Scarica il backup del database",
-  "dbDump.downloading": "Download in corso"
+  "dbDump.download": "Scarica tutti i dati (file sql)",
+  "dbDump.downloading": "Download in corso..."
 }

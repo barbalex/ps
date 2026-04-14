@@ -987,6 +987,6 @@
   "user.alwaysShowTree.label": "Toujours afficher l'arborescence de navigation",
   "user.alwaysShowTree.help": "Si activé, l'arborescence de navigation sera toujours affichée (peu pratique sur mobile)",
   "user.data": "Données",
-  "dbDump.download": "Télécharger la sauvegarde de la base de données",
-  "dbDump.downloading": "Téléchargement en cours"
+  "dbDump.download": "Télécharger toutes les données (fichier sql)",
+  "dbDump.downloading": "Téléchargement en cours..."
 }

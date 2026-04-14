@@ -1003,6 +1003,6 @@
   "user.alwaysShowTree.label": "Always show navigation tree",
   "user.alwaysShowTree.help": "If true, the navigation tree will always be shown (on mobile it is not very practical)",
   "user.data": "Data",
-  "dbDump.download": "Download Database Dump",
-  "dbDump.downloading": "Downloading Database Dump"
+  "dbDump.download": "Download all data (as sql file)",
+  "dbDump.downloading": "Downloading all data..."
 }
