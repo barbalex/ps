@@ -202,36 +202,38 @@ export const EmailVerificationBanner = () => {
               })
             : formatMessage({
                 id: 'authResendVerificationEmailBtn',
-                defaultMessage: 'Bestätigungs-E-Mail erneut senden',
+                defaultMessage: 'Code erneut senden',
               })}
         </button>
-        <input
-          type="text"
-          className={styles.otpInput}
-          value={verificationOtp}
-          onChange={(event) => setVerificationOtp(event.target.value)}
-          placeholder={formatMessage({
-            id: 'authVerificationOtpPlaceholder',
-            defaultMessage: 'Bestätigungscode eingeben',
-          })}
-          disabled={isVerifying}
-        />
-        <button
-          type="button"
-          className={styles.button}
-          onClick={verifyEmail}
-          disabled={isVerifying || !verificationOtp.trim()}
-        >
-          {isVerifying
-            ? formatMessage({
-                id: 'authPleaseWait',
-                defaultMessage: 'Bitte warten...',
-              })
-            : formatMessage({
-                id: 'authVerifyEmailBtn',
-                defaultMessage: 'E-Mail bestätigen',
-              })}
-        </button>
+        <div className={styles.otpGroup}>
+          <input
+            type="text"
+            className={styles.otpInput}
+            value={verificationOtp}
+            onChange={(event) => setVerificationOtp(event.target.value)}
+            placeholder={formatMessage({
+              id: 'authVerificationOtpPlaceholder',
+              defaultMessage: 'Bestätigungscode eingeben',
+            })}
+            disabled={isVerifying}
+          />
+          <button
+            type="button"
+            className={styles.otpVerifyBtn}
+            onClick={verifyEmail}
+            disabled={isVerifying || !verificationOtp.trim()}
+          >
+            {isVerifying
+              ? formatMessage({
+                  id: 'authPleaseWait',
+                  defaultMessage: 'Bitte warten...',
+                })
+              : formatMessage({
+                  id: 'authVerifyEmailBtn',
+                  defaultMessage: 'Bestätigen',
+                })}
+          </button>
+        </div>
         {statusMessage && (
           <p
             className={styles.info}

@@ -22,13 +22,43 @@
   gap: 8px;
 }
 
+.otpGroup {
+  display: flex;
+  align-items: stretch;
+}
+
 .otpInput {
   border: 1px solid #b08a00;
-  border-radius: 6px;
+  border-radius: 6px 0 0 6px;
   background: #fff;
   color: #5c4700;
   padding: 6px 8px;
   width: 150px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.otpVerifyBtn {
+  border: 1px solid #b08a00;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  background: #fff8d6;
+  color: #5c4700;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.otpVerifyBtn:hover:not(:disabled) {
+  background: #fef0a0;
+}
+
+.otpVerifyBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .button {
