@@ -814,6 +814,8 @@
   "N3qLx9": "Show users in {subprojectNameSingular}",
   "fH8JmQ": "Show files in {subprojectNameSingular}",
   "initDbMsg": "Building local database",
+  "initDbStepLabel": "Initialize local database",
+  "syncServerStepLabel": "Sync with server",
   "syncServerMsg": "Syncing with server",
   "syncServerTaskBody": "Initial synchronization is running...",
   "syncServerTaskDone": "Synchronization complete.",

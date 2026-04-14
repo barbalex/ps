@@ -798,6 +798,8 @@
   "N3qLx9": "Mostrare gli utenti in {subprojectNameSingular}",
   "fH8JmQ": "Mostrare i file in {subprojectNameSingular}",
   "initDbMsg": "Creazione del database locale",
+  "initDbStepLabel": "Inizializzare il database locale",
+  "syncServerStepLabel": "Sincronizzare con il server",
   "syncServerMsg": "Sincronizzazione con il server",
   "syncServerTaskBody": "Sincronizzazione iniziale in corso...",
   "syncServerTaskDone": "Sincronizzazione completata.",
