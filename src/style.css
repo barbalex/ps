@@ -250,26 +250,6 @@ button {
   margin: 0;
 }
 
-/* allotment */
-:root {
-  --focus-border: rgba(55, 118, 28, 0.3);
-  --separator-border: rgba(55, 118, 28, 0.1);
-  --sash-hover-size: 8px;
-  /* pragmatic drag and drop */
-  --ds-border-selected: rgba(38, 82, 37, 0.9);
-}
-
-.sash {
-  /* prevent focus on divider */
-  user-select: none;
-  background-color: rgba(55, 118, 28, 0.5) !important;
-  width: 1px !important;
-}
-
-.sash:hover {
-  background-color: rgba(55, 118, 28, 0.7) !important;
-}
-
 /* scrollbars */
 
 .simplebar-scrollbar:before {

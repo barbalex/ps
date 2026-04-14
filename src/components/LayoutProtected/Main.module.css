@@ -15,14 +15,15 @@
   min-height: 0;
   overflow: hidden;
   --focus-border: rgba(38, 82, 37, 0.9);
+  --separator-border: transparent;
 }
 
 .allotmentWrapper :global(.sash-vertical) {
-  width: 5px !important;
+  width: 6px !important;
 }
 
 .allotmentWrapper :global(.sash::before) {
-  background: transparent !important;
+  background: rgba(103, 216, 101, 0.2) !important;
 }
 
 .allotmentWrapper :global(.sash-hover::before),
