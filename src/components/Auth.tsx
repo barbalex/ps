@@ -12,7 +12,6 @@ import {
   getAuthRequestHeaders,
 } from '../modules/authClient.ts'
 import { ensurePgliteDb } from '../modules/ensurePgliteDb.ts'
-import { Initiating } from './Initiating.tsx'
 import styles from './Auth.module.css'
 
 type TwoFactorMethod = 'otp' | 'totp'
@@ -85,7 +84,6 @@ export const Auth = () => {
   const [passwordResetMessage, setPasswordResetMessage] = useState('')
   const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [isDbInitializing, setIsDbInitializing] = useState(false)
   const [error, setError] = useState('')
   const [showRegisterSuggestion, setShowRegisterSuggestion] = useState(false)
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -129,7 +127,6 @@ export const Auth = () => {
       password !== confirmPassword)
 
   const onLoggedIn = useCallback(async () => {
-    setIsDbInitializing(true)
     try {
       await ensurePgliteDb()
     } catch (err) {
@@ -142,8 +139,6 @@ export const Auth = () => {
         }),
       )
       return
-    } finally {
-      setIsDbInitializing(false)
     }
     // Use router.history.push instead of navigate() to avoid TanStack Router
     // re-applying route search params on top of any search already in redirectTo
@@ -886,10 +881,6 @@ export const Auth = () => {
       }),
     )
   }
-
-  // if (isDbInitializing) {
-  //   return <Initiating forceSqlInitializing />
-  // }
 
   return (
     <div className={styles.authContainer}>
