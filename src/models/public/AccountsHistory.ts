@@ -15,8 +15,6 @@ export default interface AccountsHistory {
 
   projects_label_by: string | null;
 
-  project_fields_in_account: boolean | null;
-
   label: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
@@ -48,9 +46,6 @@ export interface AccountsHistoryInitializer {
 
   projects_label_by?: string | null;
 
-  /** Default value: true */
-  project_fields_in_account?: boolean | null;
-
   label?: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
@@ -81,8 +76,6 @@ export interface AccountsHistoryMutator {
   period_end?: Date | null;
 
   projects_label_by?: string | null;
-
-  project_fields_in_account?: boolean | null;
 
   label?: string | null;
 

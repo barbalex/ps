@@ -17,6 +17,10 @@ export default interface UsersHistory {
 
   label: string | null;
 
+  project_fields_in_account: boolean | null;
+
+  accounts_in_user: boolean | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
@@ -47,6 +51,12 @@ export interface UsersHistoryInitializer {
 
   label?: string | null;
 
+  /** Default value: true */
+  project_fields_in_account?: boolean | null;
+
+  /** Default value: false */
+  accounts_in_user?: boolean | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
@@ -75,6 +85,10 @@ export interface UsersHistoryMutator {
   two_factor_enabled?: boolean | null;
 
   label?: string | null;
+
+  project_fields_in_account?: boolean | null;
+
+  accounts_in_user?: boolean | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period?: string;

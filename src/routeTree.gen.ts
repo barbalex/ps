@@ -42,7 +42,6 @@ import { Route as DataWidgetsForFieldsWidgetForFieldIdRouteImport } from './rout
 import { Route as DataWidgetTypesFilterRouteImport } from './routes/data/widget-types/filter'
 import { Route as DataWidgetTypesWidgetTypeIdRouteImport } from './routes/data/widget-types/$widgetTypeId'
 import { Route as DataUsersFilterRouteImport } from './routes/data/users/filter'
-import { Route as DataUsersUserIdRouteImport } from './routes/data/users/$userId'
 import { Route as DataQcsFilterRouteImport } from './routes/data/qcs/filter'
 import { Route as DataQcsQcsIdRouteImport } from './routes/data/qcs/$qcsId'
 import { Route as DataProjectsFilterRouteImport } from './routes/data/projects/filter'
@@ -51,6 +50,7 @@ import { Route as DataFieldTypesFilterRouteImport } from './routes/data/field-ty
 import { Route as DataFieldTypesFieldTypeIdRouteImport } from './routes/data/field-types/$fieldTypeId'
 import { Route as DataCrsFilterRouteImport } from './routes/data/crs/filter'
 import { Route as DataCrsCrsIdRouteImport } from './routes/data/crs/$crsId'
+import { Route as DataUsersUserIdRouteRouteImport } from './routes/data/users/$userId_/route'
 import { Route as DataProjectsProjectIdRouteRouteImport } from './routes/data/projects/$projectId_/route'
 import { Route as DataProjectsProjectIdIndexRouteImport } from './routes/data/projects/$projectId_/index'
 import { Route as DataProjectsProjectIdProjectRouteImport } from './routes/data/projects/$projectId_/project'
@@ -604,11 +604,6 @@ const DataUsersFilterRoute = DataUsersFilterRouteImport.update({
   path: '/filter',
   getParentRoute: () => DataUsersRouteRoute,
 } as any)
-const DataUsersUserIdRoute = DataUsersUserIdRouteImport.update({
-  id: '/$userId',
-  path: '/$userId',
-  getParentRoute: () => DataUsersRouteRoute,
-} as any)
 const DataQcsFilterRoute = DataQcsFilterRouteImport.update({
   id: '/filter',
   path: '/filter',
@@ -650,6 +645,11 @@ const DataCrsCrsIdRoute = DataCrsCrsIdRouteImport.update({
   path: '/$crsId',
   getParentRoute: () => DataCrsRouteRoute,
 } as any)
+const DataUsersUserIdRouteRoute = DataUsersUserIdRouteRouteImport.update({
+  id: '/$userId_',
+  path: '/$userId',
+  getParentRoute: () => DataUsersRouteRoute,
+} as any)
 const DataProjectsProjectIdRouteRoute =
   DataProjectsProjectIdRouteRouteImport.update({
     id: '/$projectId_',
@@ -670,9 +670,9 @@ const DataProjectsProjectIdProjectRoute =
   } as any)
 const DataUsersUserIdAccountsRouteRoute =
   DataUsersUserIdAccountsRouteRouteImport.update({
-    id: '/$userId_/accounts',
-    path: '/$userId/accounts',
-    getParentRoute: () => DataUsersRouteRoute,
+    id: '/accounts',
+    path: '/accounts',
+    getParentRoute: () => DataUsersUserIdRouteRoute,
   } as any)
 const DataProjectsProjectIdWmsServicesRouteRoute =
   DataProjectsProjectIdWmsServicesRouteRouteImport.update({
@@ -3731,6 +3731,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof LayoutDocsRoute
   '/data/': typeof DataIndexRoute
   '/data/projects/$projectId': typeof DataProjectsProjectIdRouteRouteWithChildren
+  '/data/users/$userId': typeof DataUsersUserIdRouteRouteWithChildren
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -3739,7 +3740,6 @@ export interface FileRoutesByFullPath {
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/qcs/$qcsId': typeof DataQcsQcsIdRoute
   '/data/qcs/filter': typeof DataQcsFilterRoute
-  '/data/users/$userId': typeof DataUsersUserIdRoute
   '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
@@ -4142,6 +4142,7 @@ export interface FileRoutesByTo {
   '/docs': typeof LayoutDocsRoute
   '/': typeof LayoutIndexRoute
   '/data': typeof DataIndexRoute
+  '/data/users/$userId': typeof DataUsersUserIdRouteRouteWithChildren
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -4150,7 +4151,6 @@ export interface FileRoutesByTo {
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/qcs/$qcsId': typeof DataQcsQcsIdRoute
   '/data/qcs/filter': typeof DataQcsFilterRoute
-  '/data/users/$userId': typeof DataUsersUserIdRoute
   '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
@@ -4468,6 +4468,7 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/data/': typeof DataIndexRoute
   '/data/projects/$projectId_': typeof DataProjectsProjectIdRouteRouteWithChildren
+  '/data/users/$userId_': typeof DataUsersUserIdRouteRouteWithChildren
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -4476,7 +4477,6 @@ export interface FileRoutesById {
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/qcs/$qcsId': typeof DataQcsQcsIdRoute
   '/data/qcs/filter': typeof DataQcsFilterRoute
-  '/data/users/$userId': typeof DataUsersUserIdRoute
   '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
@@ -4894,6 +4894,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/data/'
     | '/data/projects/$projectId'
+    | '/data/users/$userId'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
@@ -4902,7 +4903,6 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/qcs/$qcsId'
     | '/data/qcs/filter'
-    | '/data/users/$userId'
     | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
@@ -5305,6 +5305,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/'
     | '/data'
+    | '/data/users/$userId'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
@@ -5313,7 +5314,6 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/qcs/$qcsId'
     | '/data/qcs/filter'
-    | '/data/users/$userId'
     | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
@@ -5630,6 +5630,7 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/data/'
     | '/data/projects/$projectId_'
+    | '/data/users/$userId_'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
@@ -5638,7 +5639,6 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/qcs/$qcsId'
     | '/data/qcs/filter'
-    | '/data/users/$userId'
     | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
@@ -6275,13 +6275,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataUsersFilterRouteImport
       parentRoute: typeof DataUsersRouteRoute
     }
-    '/data/users/$userId': {
-      id: '/data/users/$userId'
-      path: '/$userId'
-      fullPath: '/data/users/$userId'
-      preLoaderRoute: typeof DataUsersUserIdRouteImport
-      parentRoute: typeof DataUsersRouteRoute
-    }
     '/data/qcs/filter': {
       id: '/data/qcs/filter'
       path: '/filter'
@@ -6338,6 +6331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataCrsCrsIdRouteImport
       parentRoute: typeof DataCrsRouteRoute
     }
+    '/data/users/$userId_': {
+      id: '/data/users/$userId_'
+      path: '/$userId'
+      fullPath: '/data/users/$userId'
+      preLoaderRoute: typeof DataUsersUserIdRouteRouteImport
+      parentRoute: typeof DataUsersRouteRoute
+    }
     '/data/projects/$projectId_': {
       id: '/data/projects/$projectId_'
       path: '/$projectId'
@@ -6361,10 +6361,10 @@ declare module '@tanstack/react-router' {
     }
     '/data/users/$userId_/accounts': {
       id: '/data/users/$userId_/accounts'
-      path: '/$userId/accounts'
+      path: '/accounts'
       fullPath: '/data/users/$userId/accounts'
       preLoaderRoute: typeof DataUsersUserIdAccountsRouteRouteImport
-      parentRoute: typeof DataUsersRouteRoute
+      parentRoute: typeof DataUsersUserIdRouteRoute
     }
     '/data/projects/$projectId_/wms-services': {
       id: '/data/projects/$projectId_/wms-services'
@@ -11496,19 +11496,28 @@ const DataUsersUserIdAccountsRouteRouteWithChildren =
     DataUsersUserIdAccountsRouteRouteChildren,
   )
 
-interface DataUsersRouteRouteChildren {
-  DataUsersUserIdRoute: typeof DataUsersUserIdRoute
-  DataUsersFilterRoute: typeof DataUsersFilterRoute
-  DataUsersIndexRoute: typeof DataUsersIndexRoute
+interface DataUsersUserIdRouteRouteChildren {
   DataUsersUserIdAccountsRouteRoute: typeof DataUsersUserIdAccountsRouteRouteWithChildren
 }
 
-const DataUsersRouteRouteChildren: DataUsersRouteRouteChildren = {
-  DataUsersUserIdRoute: DataUsersUserIdRoute,
-  DataUsersFilterRoute: DataUsersFilterRoute,
-  DataUsersIndexRoute: DataUsersIndexRoute,
+const DataUsersUserIdRouteRouteChildren: DataUsersUserIdRouteRouteChildren = {
   DataUsersUserIdAccountsRouteRoute:
     DataUsersUserIdAccountsRouteRouteWithChildren,
+}
+
+const DataUsersUserIdRouteRouteWithChildren =
+  DataUsersUserIdRouteRoute._addFileChildren(DataUsersUserIdRouteRouteChildren)
+
+interface DataUsersRouteRouteChildren {
+  DataUsersUserIdRouteRoute: typeof DataUsersUserIdRouteRouteWithChildren
+  DataUsersFilterRoute: typeof DataUsersFilterRoute
+  DataUsersIndexRoute: typeof DataUsersIndexRoute
+}
+
+const DataUsersRouteRouteChildren: DataUsersRouteRouteChildren = {
+  DataUsersUserIdRouteRoute: DataUsersUserIdRouteRouteWithChildren,
+  DataUsersFilterRoute: DataUsersFilterRoute,
+  DataUsersIndexRoute: DataUsersIndexRoute,
 }
 
 const DataUsersRouteRouteWithChildren = DataUsersRouteRoute._addFileChildren(

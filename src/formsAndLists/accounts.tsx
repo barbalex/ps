@@ -1,4 +1,4 @@
-import { getRouteApi, useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 import { createAccount } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -8,10 +8,8 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useAccountsNavData } from '../modules/useAccountsNavData.ts'
 import '../form.css'
 
-const routeApi = getRouteApi('/data/users/$userId_/accounts/')
-
-export const Accounts = () => {
-  const { userId } = routeApi.useParams()
+export const Accounts = ({ hideHeader = false }: { hideHeader?: boolean } = {}) => {
+  const { userId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useAccountsNavData({ userId })
@@ -25,12 +23,14 @@ export const Accounts = () => {
 
   return (
     <div className="list-view">
-      <ListHeader
-        label={label}
-        nameSingular={nameSingular}
-        addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
-      />
+      {!hideHeader && (
+        <ListHeader
+          label={label}
+          nameSingular={nameSingular}
+          addRow={add}
+          menus={<FilterButton isFiltered={isFiltered} />}
+        />
+      )}
       <div className="list-container">
         {loading ? (
           <Loading />

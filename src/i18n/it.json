@@ -61,6 +61,8 @@
   "9oKaIi": "Account",
   "account.projectFieldsInAccount.label": "Campi del progetto nel modulo account",
   "account.projectFieldsInAccount.help": "Mostra i campi del progetto nel modulo account invece che in una navigazione separata.",
+  "user.accountsInUser.label": "Account nel modulo utente",
+  "user.accountsInUser.help": "Mostra gli account direttamente nel modulo utente invece che in una navigazione separata.",
   "9oUdHT": "Tipo di widget",
   "9rPzs2": "Opzioni",
   "Ab1CdE": "CRS predefinito",

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users(
   -- problem: to know user, login is needed - but not yet implemented
   -- language text DEFAULT 'en',
   project_fields_in_account boolean DEFAULT TRUE,
+  accounts_in_user boolean DEFAULT FALSE, -- TODO: set true
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
@@ -29,6 +30,7 @@ COMMENT ON COLUMN users.name IS 'Users chosen display name';
 COMMENT ON COLUMN users.email_verified IS 'Whether the users email is verified';
 COMMENT ON COLUMN users.two_factor_enabled IS 'Whether two-factor authentication is enabled for the user';
 COMMENT ON COLUMN users.project_fields_in_account IS 'Render project fields inside the account form? Preset: true';
+COMMENT ON COLUMN users.accounts_in_user IS 'Render accounts inside the user form? Preset: false';
 COMMENT ON COLUMN users.email IS 'Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 

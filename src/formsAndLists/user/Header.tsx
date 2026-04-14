@@ -8,12 +8,10 @@ import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { userIdAtom, addOperationAtom } from '../../store.ts'
 
-const from = '/data/users/$userId'
-
 export const Header = ({ autoFocusRef }) => {
   const { formatMessage } = useIntl()
   const setUserId = useSetAtom(userIdAtom)
-  const { userId } = useParams({ from })
+  const { userId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
