@@ -19,6 +19,9 @@ export default interface Users {
   /** Whether the users email is verified */
   email_verified: boolean | null;
 
+  /** Whether two-factor authentication is enabled for the user */
+  two_factor_enabled: boolean | null;
+
   label: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -37,6 +40,8 @@ export interface UsersInitializer {
   /** Default value: uuid_generate_v7() */
   user_id?: UsersUserId;
 
+  id?: string | null;
+
   /** Users chosen display name */
   name?: string | null;
 
@@ -48,6 +53,12 @@ export interface UsersInitializer {
    * Default value: false
    */
   email_verified?: boolean | null;
+
+  /**
+   * Whether two-factor authentication is enabled for the user
+   * Default value: false
+   */
+  two_factor_enabled?: boolean | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
@@ -66,6 +77,8 @@ export interface UsersInitializer {
 export interface UsersMutator {
   user_id?: UsersUserId;
 
+  id?: string | null;
+
   /** Users chosen display name */
   name?: string | null;
 
@@ -74,6 +87,9 @@ export interface UsersMutator {
 
   /** Whether the users email is verified */
   email_verified?: boolean | null;
+
+  /** Whether two-factor authentication is enabled for the user */
+  two_factor_enabled?: boolean | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;

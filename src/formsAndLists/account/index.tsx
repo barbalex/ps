@@ -13,7 +13,6 @@ import { FaPlus } from 'react-icons/fa'
 
 import { DateField } from '../../components/shared/DateField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -28,6 +27,7 @@ import { accountTypeOptions } from '../../modules/constants.ts'
 import styles from './index.module.css'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
+import type Users from '../../models/public/Users.ts'
 
 const from = '/data/users/$userId_/accounts/$accountId_'
 const { Button } = fluentUiReactComponents
@@ -50,6 +50,13 @@ export const Account = () => {
   )
   const row: Accounts | undefined = res?.rows?.[0]
 
+  const userRes = useLiveQuery(
+    `SELECT project_fields_in_account FROM users WHERE user_id = $1`,
+    [userId],
+  )
+  const userRow: Pick<Users, 'project_fields_in_account'> | undefined =
+    userRes?.rows?.[0]
+
   const fieldsCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM fields WHERE account_id = $1 AND project_id IS NULL`,
     [accountId],
@@ -58,7 +65,7 @@ export const Account = () => {
 
   const accountUrl = `/data/users/${userId}/accounts/${accountId}`
   const fieldsUrl = `${accountUrl}/project-fields`
-  const projectFieldsInAccount = row?.project_fields_in_account !== false
+  const projectFieldsInAccount = userRow?.project_fields_in_account !== false
   const isFieldsOpen =
     location.pathname.endsWith('/project-fields') ||
     location.pathname.includes('/project-fields/')
@@ -194,24 +201,6 @@ export const Account = () => {
           onChange={onChange}
           validationState={validations?.period_end?.state}
           validationMessage={validations?.period_end?.message}
-        />
-        <SwitchField
-          label={formatMessage({
-            id: 'account.projectFieldsInAccount.label',
-            defaultMessage: 'Projekt-Felder im Kontoformular',
-          })}
-          name="project_fields_in_account"
-          value={row.project_fields_in_account ?? true}
-          onChange={onChange}
-          validationState={validations?.project_fields_in_account?.state}
-          validationMessage={
-            validations?.project_fields_in_account?.message ??
-            formatMessage({
-              id: 'account.projectFieldsInAccount.help',
-              defaultMessage:
-                'Projekt-Felder im Kontoformular anzeigen statt in einer separaten Navigation.',
-            })
-          }
         />
         {projectFieldsInAccount ? (
           <Section

@@ -120,6 +120,20 @@ export const User = () => {
                 onChange={() => setAlwaysShowTree(!alwaysShowTree)}
                 validationMessage="If true, the navigation tree will always be shown (on mobile it is not very practical)"
               />
+              <SwitchField
+                label={intl.formatMessage({
+                  id: 'account.projectFieldsInAccount.label',
+                  defaultMessage: 'Projekt-Felder im Kontoformular',
+                })}
+                name="project_fields_in_account"
+                value={row?.project_fields_in_account ?? true}
+                onChange={onChange}
+                validationMessage={intl.formatMessage({
+                  id: 'account.projectFieldsInAccount.help',
+                  defaultMessage:
+                    'Projekt-Felder im Kontoformular anzeigen statt in einer separaten Navigation.',
+                })}
+              />
             </Section>
 
             <Section title="Data">

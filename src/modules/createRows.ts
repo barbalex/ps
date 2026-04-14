@@ -263,8 +263,8 @@ export const createAccount = async ({ userId }: { userId: string }) => {
   const account_id = uuidv7()
   const db = store.get(pgliteDbAtom)
   await db.query(
-    `insert into accounts (account_id, user_id, type, project_fields_in_account) values ($1, $2, $3, $4)`,
-    [account_id, userId, 'free', true],
+    `insert into accounts (account_id, user_id, type) values ($1, $2, $3)`,
+    [account_id, userId, 'free'],
   )
 
   store.set(addOperationAtom, {
@@ -274,7 +274,6 @@ export const createAccount = async ({ userId }: { userId: string }) => {
       account_id,
       user_id: userId,
       type: 'free',
-      project_fields_in_account: true,
     },
   })
 

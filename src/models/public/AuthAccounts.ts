@@ -10,6 +10,8 @@ export type AuthAccountsAuthAccountId = string & { __brand: 'public.auth_account
 export default interface AuthAccounts {
   auth_account_id: AuthAccountsAuthAccountId;
 
+  id: string | null;
+
   /** user that owns the account. null for auth_accounts that are not owned by a user */
   user_id: UsersUserId | null;
 
@@ -54,6 +56,8 @@ export default interface AuthAccounts {
 export interface AuthAccountsInitializer {
   /** Default value: uuid_generate_v7() */
   auth_account_id?: AuthAccountsAuthAccountId;
+
+  id?: string | null;
 
   /** user that owns the account. null for auth_accounts that are not owned by a user */
   user_id?: UsersUserId | null;
@@ -100,6 +104,8 @@ export interface AuthAccountsInitializer {
  */
 export interface AuthAccountsMutator {
   auth_account_id?: AuthAccountsAuthAccountId;
+
+  id?: string | null;
 
   /** user that owns the account. null for auth_accounts that are not owned by a user */
   user_id?: UsersUserId | null;

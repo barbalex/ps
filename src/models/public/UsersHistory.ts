@@ -13,6 +13,8 @@ export default interface UsersHistory {
 
   email_verified: boolean | null;
 
+  two_factor_enabled: boolean | null;
+
   label: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
@@ -40,6 +42,9 @@ export interface UsersHistoryInitializer {
   /** Default value: false */
   email_verified?: boolean | null;
 
+  /** Default value: false */
+  two_factor_enabled?: boolean | null;
+
   label?: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
@@ -66,6 +71,8 @@ export interface UsersHistoryMutator {
   email?: string | null;
 
   email_verified?: boolean | null;
+
+  two_factor_enabled?: boolean | null;
 
   label?: string | null;
 

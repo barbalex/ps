@@ -28,8 +28,10 @@ export const AccountNode = ({ nav, level = 2, userId }: Props) => {
   const parentUrl = userId ? `/data/users/${userId}/accounts` : '/data/users'
 
   const res = useLiveQuery(
-    `SELECT project_fields_in_account FROM accounts WHERE account_id = $1`,
-    [nav.id],
+    userId
+      ? `SELECT project_fields_in_account FROM users WHERE user_id = $1`
+      : null,
+    userId ? [userId] : [],
   )
   const showFieldsNav = res?.rows?.[0]?.project_fields_in_account === false
 
@@ -62,7 +64,9 @@ export const AccountNode = ({ nav, level = 2, userId }: Props) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && showFieldsNav && <FieldsNode accountId={nav.id} userId={userId} />}
+      {isOpen && showFieldsNav && (
+        <FieldsNode accountId={nav.id} userId={userId} />
+      )}
     </>
   )
 }
