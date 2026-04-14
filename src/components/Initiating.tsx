@@ -41,6 +41,12 @@ export const Initiating = ({
             defaultMessage: 'Baue lokale Datenbank',
           })}
         </p>
+        <p className={styles.subtitle}>
+          {formatMessage({
+            id: 'initDbHintMsg',
+            defaultMessage: 'Nur beim ersten Start nötig',
+          })}
+        </p>
         <div className={styles.steps}>
           <div
             className={`${styles.step} ${

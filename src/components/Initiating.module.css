@@ -24,6 +24,12 @@
   color: #2e4a2b;
 }
 
+.subtitle {
+  margin: -8px 0 14px 0;
+  font-size: 0.9rem;
+  color: #4f634b;
+}
+
 .steps {
   display: flex;
   flex-direction: column;
@@ -57,8 +63,8 @@
 }
 
 .stepIcon {
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
   margin-left: auto;
   flex-shrink: 0;
 }
