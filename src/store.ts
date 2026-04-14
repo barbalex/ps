@@ -146,9 +146,19 @@ export const intlAtom = atom<IntlShape | null>(null)
 // on first app load liveQueries should not run yet, before initial sync is done
 // on later app loads, data exists locally, so liveQueries can run immediately
 // thus use an atom with storage
-export const initialSyncingAtom = atomWithStorage('initialSyncingAtom', true)
+export const initialSyncingAtom = atomWithStorage(
+  'initialSyncingAtom',
+  true,
+  undefined,
+  { getOnInit: true },
+)
 // begins true, is set to false after initialization (or it's not needed)
-export const sqlInitializingAtom = atomWithStorage('sqlInitializingAtom', true)
+export const sqlInitializingAtom = atomWithStorage(
+  'sqlInitializingAtom',
+  true,
+  undefined,
+  { getOnInit: true },
+)
 
 // stores the sync object returned from startSyncing() so we can unsubscribe on unload
 export const syncObjectAtom = atom<unknown>(null)
@@ -459,6 +469,12 @@ export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
 
 export const pgliteDbAtom = atom(null)
+export const pgliteIsInitializedAtom = atomWithStorage(
+  'pgliteIsInitialized',
+  false,
+  undefined,
+  { getOnInit: true },
+)
 
 // an array of objects with keys:
 // - id
