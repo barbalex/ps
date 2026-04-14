@@ -53,36 +53,57 @@ export const Initiating = ({
               dbDone ? styles.stepDone : styles.stepActive
             }`}
           >
-            {dbDone ? (
-              <svg
-                className={styles.stepNumber}
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="12"
-                  fill="#287e4a"
-                />
-                <path
-                  d="M7 12.5l3.5 3.5 6-7"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            ) : (
-              <span className={styles.stepNumber}>1</span>
-            )}
+            <span className={styles.stepNumber}>1</span>
             <span className={styles.stepLabel}>
               {formatMessage({
                 id: 'initDbStepLabel',
                 defaultMessage: 'Datenbank initialisieren',
               })}
             </span>
+            {dbDone ? (
+              <svg
+                className={styles.stepIcon}
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle cx="8" cy="8" r="7" fill="#287e4a" />
+                <path
+                  d="M4.5 8.25l2.5 2.5 4-5"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            ) : (
+              <svg
+                className={styles.spinner}
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  opacity="0.2"
+                />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeDasharray="10.2 20.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
           </div>
           <div className={`${styles.step} ${syncStepClass}`}>
             <span className={styles.stepNumber}>2</span>
