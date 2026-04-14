@@ -972,5 +972,13 @@
   "layerDeleteBtnTitle": "Elimina layer {label}",
   "layerDeleteConfirmHeader": "Eliminare il layer {label}?",
   "layerDeleteYes": "Sì",
-  "layerDeleteNo": "No"
+  "layerDeleteNo": "No",
+  "deleteAccountBtn": "Elimina account",
+  "deleteAccountTitle": "Elimina account",
+  "deleteAccountWarning": "L'eliminazione del tuo account rimuove definitivamente tutti i tuoi dati e non può essere annullata.",
+  "deleteAccountExportHint": "Se vuoi conservare i tuoi dati, esportali prima.",
+  "deleteAccountFailed": "Impossibile eliminare l'account.",
+  "deleteAccountCancelBtn": "Annulla",
+  "deleteAccountPleaseWait": "Attendere...",
+  "deleteAccountConfirmBtn": "Elimina definitivamente l'account"
 }

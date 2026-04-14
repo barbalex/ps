@@ -986,5 +986,13 @@
   "layerDeleteBtnTitle": "Delete Layer {label}",
   "layerDeleteConfirmHeader": "Delete Layer {label}?",
   "layerDeleteYes": "Yes",
-  "layerDeleteNo": "No"
+  "layerDeleteNo": "No",
+  "deleteAccountBtn": "Delete account",
+  "deleteAccountTitle": "Delete account",
+  "deleteAccountWarning": "Deleting your account permanently removes all your data and cannot be undone.",
+  "deleteAccountExportHint": "If you want to keep your data, please export it first.",
+  "deleteAccountFailed": "Could not delete account.",
+  "deleteAccountCancelBtn": "Cancel",
+  "deleteAccountPleaseWait": "Please wait...",
+  "deleteAccountConfirmBtn": "Permanently delete account"
 }

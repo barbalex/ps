@@ -970,5 +970,13 @@
   "layerDeleteBtnTitle": "Supprimer la couche {label}",
   "layerDeleteConfirmHeader": "Supprimer la couche {label}?",
   "layerDeleteYes": "Oui",
-  "layerDeleteNo": "Non"
+  "layerDeleteNo": "Non",
+  "deleteAccountBtn": "Supprimer le compte",
+  "deleteAccountTitle": "Supprimer le compte",
+  "deleteAccountWarning": "La suppression de votre compte supprime définitivement toutes vos données et ne peut pas être annulée.",
+  "deleteAccountExportHint": "Si vous souhaitez conserver vos données, veuillez d'abord les exporter.",
+  "deleteAccountFailed": "Impossible de supprimer le compte.",
+  "deleteAccountCancelBtn": "Annuler",
+  "deleteAccountPleaseWait": "Veuillez patienter...",
+  "deleteAccountConfirmBtn": "Supprimer définitivement le compte"
 }

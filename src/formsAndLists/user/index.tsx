@@ -2,6 +2,9 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
+import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -11,6 +14,7 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { DbDump } from '../appStates/DbDump.tsx'
+import { DeleteAccountDialog } from './DeleteAccountDialog.tsx'
 import {
   addOperationAtom,
   enforceDesktopNavigationAtom,
@@ -24,9 +28,11 @@ import '../../form.css'
 const from = '/data/users/$userId'
 
 export const User = () => {
+  const intl = useIntl()
   const { userId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
 
   const [enforceMobileNavigation, setEnforceMobileNavigation] = useAtom(
     enforceMobileNavigationAtom,
@@ -118,6 +124,20 @@ export const User = () => {
 
             <Section title="Data">
               <DbDump />
+              <Button
+                appearance="outline"
+                onClick={() => setDeleteAccountOpen(true)}
+              >
+                {intl.formatMessage({
+                  id: 'deleteAccountBtn',
+                  defaultMessage: 'Konto löschen',
+                })}
+              </Button>
+              <DeleteAccountDialog
+                open={deleteAccountOpen}
+                onClose={() => setDeleteAccountOpen(false)}
+                userId={userId}
+              />
             </Section>
           </>
         ) : (
