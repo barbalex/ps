@@ -63,7 +63,7 @@ export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props
 
   const projectRes = useLiveQuery(
     `SELECT ${language === 'de' ? "NULLIF(subproject_name_plural, '')" : `NULLIF(subproject_name_plural_${language}, '')`} AS name_plural, type FROM projects WHERE $1::boolean AND project_id = $2`,
-    [!!projectId, projectId ?? ''],
+    [!!projectId, projectId ?? null],
   )
 
   const placeLevelsRes = useLiveQuery(
@@ -74,7 +74,7 @@ export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props
     FROM place_levels
     WHERE $1::boolean AND project_id = $2
     ORDER BY level`,
-    [!!projectId, projectId ?? ''],
+    [!!projectId, projectId ?? null],
   )
 
   const loading = res === undefined
