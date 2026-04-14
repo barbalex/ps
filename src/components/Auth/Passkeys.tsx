@@ -26,9 +26,7 @@ export const Passkeys = ({ onLoggedIn }: PasskeysProps) => {
     setIsLoading(true)
 
     try {
-      const result = await authClient.signIn.passkey({
-        autoFill: true,
-      })
+      const result = await authClient.signIn.passkey()
 
       const hasError =
         !!result?.error ||
