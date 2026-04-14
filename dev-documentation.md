@@ -247,3 +247,33 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 | `src/formsAndLists/user/index.tsx`               | "Delete account" button in the Data section     |
 | `src/formsAndLists/user/DeleteAccountDialog.tsx` | Confirmation dialog; executes the delete + wipe |
 | `src/modules/clearLocalSyncedData.ts`            | Clears all local sync state and caches          |
+
+# 6 User Roles
+
+## Rules
+
+1. User owns own user row, related accounts, projects and other data
+2. Right levels (from high to low): design (only at project level), write, read
+3. (Only) Owners can set design rights
+4. (Only) Owners and designers can set writer and reader rights
+5. When a right is set, it extends down (to the n-sides) of all relations
+6. Higher rights can be given at lower levels, again extending down
+7. Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
+8. Projects, subprojects and places get right columns: readers, writers, designers (only on projects)
+9. Hopefully this is enough for efficient sync subqueries. If not, we will later need to spread roles to more tables
+10. Owners get all rights
+11. Designer roles are solely reserved for projects. Designers also get writer and reader roles
+12. Writers also get reader roles
+13. On update triggers add lower roles and spread roles down. Ensure previous roles are completely replaced! Ensure trigger-caused updates dont trigger cascading trigger orgies. TODO: how? (only) app sets levels, triggers only spread levels down the hierarchy?
+14. On insert triggers fetch and set this users roles from parent row
+15. Subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) ensure a user syncs only allowed data (only query reader role). Query speed is essential thus array columns for readers and writers
+16. write operations ensure writer roles. Only client side? optimally: client AND express/postgrest api side. But speed? See: https://electric-sql.com/docs/guides/auth
+17. critical for speed: updates on role changes high up in the hierarchy: should happen batched?
+18. critical for speed: sync rules
+19. critical for speed: write checks, especially when data is imported. Batch operations for write on imports!
+
+## Implementation
+
+1. Remove existing xxx_users tables (project_users, subproject_users, place_users), related code, routes, tree navs, breadcrumbs, list views, forms and subforms
+2. Add new rights columns. tables: projects, subprojects, places. columns: designers (only projects), writers, readers
+3. TODO:
