@@ -251,18 +251,20 @@ export const User = () => {
               />
             </Section>
 
-            <Section
-              title={`${intl.formatMessage({ id: '/40i9A', defaultMessage: 'Konten' })} (${accountsCount})`}
-              parentUrl={`/data/users/${userId}`}
-              listUrl={accountsUrl}
-              isOpen={isAccountsOpen}
-              titleClassName={styles.sectionTitle}
-              childrenClassName={styles.sectionChildren}
-              headerActions={accountsHeaderActions}
-            >
-              {isAccountsOpen &&
-                (isAccountsList ? <Accounts hideHeader /> : <Outlet />)}
-            </Section>
+            {row.accounts_in_user && (
+              <Section
+                title={`${intl.formatMessage({ id: '/40i9A', defaultMessage: 'Konten' })} (${accountsCount})`}
+                parentUrl={`/data/users/${userId}`}
+                listUrl={accountsUrl}
+                isOpen={isAccountsOpen}
+                titleClassName={styles.sectionTitle}
+                childrenClassName={styles.sectionChildren}
+                headerActions={accountsHeaderActions}
+              >
+                {isAccountsOpen &&
+                  (isAccountsList ? <Accounts hideHeader /> : <Outlet />)}
+              </Section>
+            )}
           </>
       </div>
     </div>

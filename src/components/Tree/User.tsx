@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { AccountsNode } from './Accounts.tsx'
@@ -12,6 +13,12 @@ export const UserNode = ({ nav, level = 2 }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [openNodes] = useAtom(treeOpenNodesAtom)
+
+  const res = useLiveQuery(
+    `SELECT accounts_in_user FROM users WHERE user_id = $1`,
+    [nav.id],
+  )
+  const accountsInUser = res?.rows?.[0]?.accounts_in_user === true
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = ['data', 'users', nav.id]
@@ -45,7 +52,7 @@ export const UserNode = ({ nav, level = 2 }) => {
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && <AccountsNode userId={nav.id} level={3} />}
+      {isOpen && !accountsInUser && <AccountsNode userId={nav.id} level={3} />}
     </>
   )
 }
