@@ -57,7 +57,7 @@ export const Initiating = ({
             <span className={styles.stepLabel}>
               {formatMessage({
                 id: 'initDbStepLabel',
-                defaultMessage: 'Datenbank initialisieren',
+                defaultMessage: 'Initialisiere Datenbank',
               })}
             </span>
             {dbActive && (
@@ -112,7 +112,7 @@ export const Initiating = ({
             <span className={styles.stepLabel}>
               {formatMessage({
                 id: 'syncServerStepLabel',
-                defaultMessage: 'Mit Server synchronisieren',
+                defaultMessage: 'Synchronisiere mit dem Server',
               })}
             </span>
             {syncActive && (
