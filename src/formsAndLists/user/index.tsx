@@ -97,28 +97,54 @@ export const User = () => {
               validationMessage={validations?.email?.message}
             />
 
-            <Section title="App Settings">
+            <Section
+              title={intl.formatMessage({
+                id: 'user.appSettings',
+                defaultMessage: 'App-Einstellungen',
+              })}
+            >
               <SwitchField
-                label="Enforce mobile navigation"
+                label={intl.formatMessage({
+                  id: 'user.enforceMobileNavigation.label',
+                  defaultMessage: 'Mobile Navigation erzwingen',
+                })}
                 value={enforceMobileNavigation}
                 onChange={() =>
                   setEnforceMobileNavigation(!enforceMobileNavigation)
                 }
-                validationMessage="If true, mobile navigation will be enforced"
+                validationMessage={intl.formatMessage({
+                  id: 'user.enforceMobileNavigation.help',
+                  defaultMessage:
+                    'Wenn aktiviert, wird die mobile Navigation erzwungen.',
+                })}
               />
               <SwitchField
-                label="Enforce desktop navigation"
+                label={intl.formatMessage({
+                  id: 'user.enforceDesktopNavigation.label',
+                  defaultMessage: 'Desktop-Navigation erzwingen',
+                })}
                 value={enforceDesktopNavigation}
                 onChange={() =>
                   setEnforceDesktopNavigation(!enforceDesktopNavigation)
                 }
-                validationMessage="If true, desktop navigation will be enforced"
+                validationMessage={intl.formatMessage({
+                  id: 'user.enforceDesktopNavigation.help',
+                  defaultMessage:
+                    'Wenn aktiviert, wird die Desktop-Navigation erzwungen.',
+                })}
               />
               <SwitchField
-                label="Always show navigation tree"
+                label={intl.formatMessage({
+                  id: 'user.alwaysShowTree.label',
+                  defaultMessage: 'Navigationsbaum immer anzeigen',
+                })}
                 value={alwaysShowTree}
                 onChange={() => setAlwaysShowTree(!alwaysShowTree)}
-                validationMessage="If true, the navigation tree will always be shown (on mobile it is not very practical)"
+                validationMessage={intl.formatMessage({
+                  id: 'user.alwaysShowTree.help',
+                  defaultMessage:
+                    'Wenn aktiviert, wird der Navigationsbaum immer angezeigt (auf dem Handy wenig praktisch).',
+                })}
               />
               <SwitchField
                 label={intl.formatMessage({

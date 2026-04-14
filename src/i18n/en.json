@@ -994,5 +994,12 @@
   "deleteAccountFailed": "Could not delete account.",
   "deleteAccountCancelBtn": "Cancel",
   "deleteAccountPleaseWait": "Please wait...",
-  "deleteAccountConfirmBtn": "Permanently delete account"
+  "deleteAccountConfirmBtn": "Permanently delete account",
+  "user.appSettings": "App Settings",
+  "user.enforceMobileNavigation.label": "Enforce mobile navigation",
+  "user.enforceMobileNavigation.help": "If true, mobile navigation will be enforced",
+  "user.enforceDesktopNavigation.label": "Enforce desktop navigation",
+  "user.enforceDesktopNavigation.help": "If true, desktop navigation will be enforced",
+  "user.alwaysShowTree.label": "Always show navigation tree",
+  "user.alwaysShowTree.help": "If true, the navigation tree will always be shown (on mobile it is not very practical)"
 }

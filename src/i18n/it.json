@@ -980,5 +980,12 @@
   "deleteAccountFailed": "Impossibile eliminare l'account.",
   "deleteAccountCancelBtn": "Annulla",
   "deleteAccountPleaseWait": "Attendere...",
-  "deleteAccountConfirmBtn": "Elimina definitivamente l'account"
+  "deleteAccountConfirmBtn": "Elimina definitivamente l'account",
+  "user.appSettings": "Impostazioni dell'applicazione",
+  "user.enforceMobileNavigation.label": "Forza navigazione mobile",
+  "user.enforceMobileNavigation.help": "Se attivo, la navigazione mobile verrà forzata",
+  "user.enforceDesktopNavigation.label": "Forza navigazione desktop",
+  "user.enforceDesktopNavigation.help": "Se attivo, la navigazione desktop verrà forzata",
+  "user.alwaysShowTree.label": "Mostra sempre l'albero di navigazione",
+  "user.alwaysShowTree.help": "Se attivo, l'albero di navigazione verrà sempre mostrato (poco pratico su mobile)"
 }
