@@ -280,13 +280,15 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 11. Ensure these triggers do not run on sync (using `current_setting('electric.syncing', true)` as for instance in observation_imports_label_creation_trigger)
 12. Add subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) to shape params in /home/alex/Documents/GitHub/ps/src/modules/startSyncing.ts to ensure only allowed rows are synced in (user has reader or higher role in the relevant parent table which is projects, subprojects or places set in the respective xxx_users table). Keep an eye on whether these subqueries are reasonable or if we need to create user-hidden xxx_users tables fed by triggers
 13. Alter app side write operations to respect roles and surface when writer or higher role is missing
+14. Alter postgrest API requests to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. Done: JWT Bearer token sent on all PostgREST writes; JWT errors invalidate the token cache and notify the user; permission-denied (42501) errors revert the optimistic change in PGlite, remove the queued operation, and show a notification. See `src/modules/fetchPostgrestToken.ts`, `executeOperation.ts`, `observeOperations.ts`.
 
-14. TODO: Alter postgrest API requests to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. See: https://electric-sql.com/docs/guides/auth. Do we need jwt for this? https://better-auth.com/docs/plugins/jwt
+15. Alter postgrest API to ensure user may run this write operation according to the rules above. If not return a meaningful message which is surfaced in the ui and rolls back the operation that caused it
 
-15. Alter postgrest API to ensure user may run this write operation. If not return a meaningful message which is surfaced in the ui and rolls back the operation that caused it
 16. Alter the postgrest API to run the operation only after these two checks have passed
 17. Alter electric-sql endpoint to accept only authorized requests: https://electric-sql.com/docs/guides/auth#proxy-auth
 18. Critical for speed: Updates on role changes high up in the hierarchy: should happen batched
 19. Critical for speed: Sync subqueries
 20. Critical for speed: Write checks, especially when data is imported. Batch imports!
 21. Most critical for speed: Ensure that changing a role does not lead to re-syncing already synced rows other than `..._users` or for users not involved. This rules out the array-column per role approach!
+
+You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 and see all the seeded data

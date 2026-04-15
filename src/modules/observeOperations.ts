@@ -57,6 +57,19 @@ export const observeOperations = () =>
           title: 'Authentication error',
           body: 'Please log out and log back in to continue syncing your changes.',
         })
+      } else if (
+        error?.code === '42501' ||
+        lcMessage.includes('permission denied') ||
+        lcMessage.includes('insufficient privilege')
+      ) {
+        // Server rejected the write due to insufficient role — revert optimistic change
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          title: 'Not authorized',
+          body: `You do not have permission to ${firstOperation.operation} in "${firstOperation.table}". The change has been reverted.`,
+        })
+        await revertOperation(firstOperation)
+        return removeOperation(firstOperation)
       } else if (lcMessage.includes('uniqueness violation')) {
         console.log(
           'There is a conflict with exact same changes - ingoring the error thrown',
