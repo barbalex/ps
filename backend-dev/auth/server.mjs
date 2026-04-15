@@ -204,25 +204,6 @@ app.get('/auth/two-factor/status', async (req, res) => {
   }
 })
 
-app.all('/auth/*splat', toNodeHandler(auth))
-
-app.get('/', (req, res, next) => {
-  const error = req.query?.error
-  if (!error) return next()
-  res.status(400).type('html').send(renderAuthErrorPage({ error }))
-})
-
-app.get('/auth/error', (req, res) => {
-  res
-    .status(400)
-    .type('html')
-    .send(renderAuthErrorPage({ error: req.query?.error }))
-})
-
-app.get('/health', (_req, res) => {
-  res.status(200).json({ ok: true })
-})
-
 const base64url = (str) => Buffer.from(str).toString('base64url')
 
 const signPostgrestJwt = (userId, secret) => {
@@ -250,6 +231,25 @@ app.get('/auth/postgrest-token', async (req, res) => {
   const token = signPostgrestJwt(session.user.id, jwtSecret)
   res.setHeader('Cache-Control', 'private, max-age=3300')
   return res.json({ token })
+})
+
+app.all('/auth/*splat', toNodeHandler(auth))
+
+app.get('/', (req, res, next) => {
+  const error = req.query?.error
+  if (!error) return next()
+  res.status(400).type('html').send(renderAuthErrorPage({ error }))
+})
+
+app.get('/auth/error', (req, res) => {
+  res
+    .status(400)
+    .type('html')
+    .send(renderAuthErrorPage({ error: req.query?.error }))
+})
+
+app.get('/health', (_req, res) => {
+  res.status(200).json({ ok: true })
 })
 
 // Mount express json middleware after Better Auth handler

@@ -204,6 +204,35 @@ app.get('/auth/two-factor/status', async (req, res) => {
   }
 })
 
+const base64url = (str) => Buffer.from(str).toString('base64url')
+
+const signPostgrestJwt = (userId, secret) => {
+  const exp = Math.floor(Date.now() / 1000) + 3600 // 1 hour
+  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+  const payload = base64url(
+    JSON.stringify({ role: 'app_user', user_id: userId, exp }),
+  )
+  const sig = createHmac('sha256', secret)
+    .update(`${header}.${payload}`)
+    .digest('base64url')
+  return `${header}.${payload}.${sig}`
+}
+
+app.get('/auth/postgrest-token', async (req, res) => {
+  const jwtSecret = process.env.PGRST_JWT_SECRET
+  if (!jwtSecret) {
+    console.error('/auth/postgrest-token: PGRST_JWT_SECRET not configured')
+    return res.status(500).json({ error: 'JWT secret not configured' })
+  }
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(req.headers),
+  })
+  if (!session?.user?.id) return res.status(401).json({ error: 'UNAUTHORIZED' })
+  const token = signPostgrestJwt(session.user.id, jwtSecret)
+  res.setHeader('Cache-Control', 'private, max-age=3300')
+  return res.json({ token })
+})
+
 app.all('/auth/*splat', toNodeHandler(auth))
 
 app.get('/', (req, res, next) => {
@@ -221,29 +250,6 @@ app.get('/auth/error', (req, res) => {
 
 app.get('/health', (_req, res) => {
   res.status(200).json({ ok: true })
-})
-
-const base64url = (str) => Buffer.from(str).toString('base64url')
-
-const signPostgrestJwt = (userId, secret) => {
-  const exp = Math.floor(Date.now() / 1000) + 3600 // 1 hour
-  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-  const payload = base64url(JSON.stringify({ role: 'app_user', user_id: userId, exp }))
-  const sig = createHmac('sha256', secret).update(`${header}.${payload}`).digest('base64url')
-  return `${header}.${payload}.${sig}`
-}
-
-app.get('/auth/postgrest-token', async (req, res) => {
-  const jwtSecret = process.env.PGRST_JWT_SECRET
-  if (!jwtSecret) {
-    console.error('/auth/postgrest-token: PGRST_JWT_SECRET not configured')
-    return res.status(500).json({ error: 'JWT secret not configured' })
-  }
-  const session = await auth.api.getSession({ headers: fromNodeHeaders(req.headers) })
-  if (!session?.user?.id) return res.status(401).json({ error: 'UNAUTHORIZED' })
-  const token = signPostgrestJwt(session.user.id, jwtSecret)
-  res.setHeader('Cache-Control', 'private, max-age=3300')
-  return res.json({ token })
 })
 
 // Mount express json middleware after Better Auth handler
