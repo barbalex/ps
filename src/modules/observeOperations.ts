@@ -9,6 +9,7 @@ import {
 import { executeOperation } from './executeOperation.ts'
 import { revertOperation } from './revertOperation.ts'
 import { removeOperation } from './removeOperation.ts'
+import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
@@ -48,8 +49,9 @@ export const observeOperations = () =>
       // if auth error: get new auth token
       // TODO: ensure if clause is correct
       if (lcMessage.includes('jwt')) {
-        // TODO: get new auth token
-        console.log('observeOperations, need to get new auth token')
+        // Token is invalid or expired — clear the cache so the next retry fetches a fresh one
+        invalidatePostgrestToken()
+        console.log('observeOperations, JWT error: invalidating token cache for retry')
         return store.set(addNotificationAtom, {
           intent: 'error',
           title: 'Authentication error',

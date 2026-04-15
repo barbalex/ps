@@ -5,6 +5,7 @@ import {
   store,
   syncObjectAtom,
 } from '../store.ts'
+import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
 
 const deleteIndexedDbDatabase = (dbName: string) =>
   new Promise<boolean>((resolve) => {
@@ -101,6 +102,8 @@ const clearPersistedSyncUiState = () => {
 }
 
 export const clearLocalSyncedData = async () => {
+  invalidatePostgrestToken()
+
   // stop active sync stream before deleting local database
   const syncObject = store.get(syncObjectAtom) as {
     unsubscribe?: () => void
