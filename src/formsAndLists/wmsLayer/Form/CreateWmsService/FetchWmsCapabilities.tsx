@@ -3,7 +3,6 @@ const { Button, Spinner } = fluentUiReactComponents
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
 
-
 import { useIntl } from 'react-intl'
 
 import { createWmsService } from '../../../../modules/createRows.ts'
@@ -15,6 +14,7 @@ import {
   operationsQueueAtom,
   store,
 } from '../../../../store.ts'
+import { fetchPostgrestToken } from '../../../../modules/fetchPostgrestToken.ts'
 import { getWmsCapabilitiesData } from './getWmsCapabilitiesData.ts'
 import styles from './FetchWmsCapabilities.module.css'
 
@@ -108,10 +108,15 @@ export const FetchWmsCapabilities = ({
         store.set(operationsQueueAtom, filteredOperations)
 
         if (postgrestClient) {
-          const { error: serverDeleteError } = await postgrestClient
+          const token = await fetchPostgrestToken()
+          const deleteQuery = postgrestClient
             .from('wms_service_layers')
             .delete()
-            .eq('wms_service_id', service.wms_service_id)
+          if (token) deleteQuery.setHeader('Authorization', `Bearer ${token}`)
+          const { error: serverDeleteError } = await deleteQuery.eq(
+            'wms_service_id',
+            service.wms_service_id,
+          )
 
           if (serverDeleteError) {
             console.error(
@@ -169,10 +174,15 @@ export const FetchWmsCapabilities = ({
         store.set(operationsQueueAtom, filteredOperations)
 
         if (postgrestClient) {
-          const { error: serverDeleteError } = await postgrestClient
+          const token = await fetchPostgrestToken()
+          const deleteQuery = postgrestClient
             .from('wms_service_layers')
             .delete()
-            .eq('wms_service_id', service.wms_service_id)
+          if (token) deleteQuery.setHeader('Authorization', `Bearer ${token}`)
+          const { error: serverDeleteError } = await deleteQuery.eq(
+            'wms_service_id',
+            service.wms_service_id,
+          )
 
           if (serverDeleteError) {
             console.error(
@@ -280,9 +290,15 @@ export const FetchWmsCapabilities = ({
       className={styles.button}
       disabled={!url}
     >
-      {fetching ?
-        formatMessage({ id: 'Eh4FiK', defaultMessage: 'Fähigkeiten werden geladen ({count})' }, { count: wmsServiceLayersCount })
-      : formatMessage({ id: 'Dg3EhJ', defaultMessage: 'Fähigkeiten laden' })}
+      {fetching
+        ? formatMessage(
+            {
+              id: 'Eh4FiK',
+              defaultMessage: 'Fähigkeiten werden geladen ({count})',
+            },
+            { count: wmsServiceLayersCount },
+          )
+        : formatMessage({ id: 'Dg3EhJ', defaultMessage: 'Fähigkeiten laden' })}
     </Button>
   )
 }
