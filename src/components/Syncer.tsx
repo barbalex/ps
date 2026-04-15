@@ -75,12 +75,13 @@ export const Syncer = () => {
     if (isPending) return
     if (!isAuthenticated) return
     if (sqlInitializing) return
+    if (!session?.user?.id) return
     if (syncObject) {
       console.warn('Sync already initialized, skipping')
       return
     }
 
-    startSyncing()
+    startSyncing(session.user.id)
       .then((syncObj) => {
         console.log('Sync started')
         setSyncObject(syncObj)
@@ -108,6 +109,7 @@ export const Syncer = () => {
     formatMessage,
     isAuthenticated,
     isPending,
+    session?.user?.id,
     setSyncObject,
     sqlInitializing,
     syncObject,
