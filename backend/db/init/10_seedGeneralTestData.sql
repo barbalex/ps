@@ -1,9 +1,5 @@
 -- users
 INSERT INTO users(user_id, email, email_verified) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', TRUE);
--- seed a credential auth_account so alex can log in with email+password (password: test-test1)
--- Better Auth will also link Google/GitHub OAuth for this email automatically
-INSERT INTO auth_accounts(auth_account_id, user_id, sso_account_id, provider_id, password)
-  VALUES ('018cf95a-d817-7000-aaaa-000000000001', '018cf95a-d817-7000-92fa-bb3b2ad59dda', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'credential', 'bdb43c44c3c41e7c0b48a35582871fc2:ce4a98e44aa19a48b931a94a8c44a7edaf0f4d8d01e34d534fb4be903d1dc7c084cf643c51ff7d72dea21f145f4346691d8c52e7cba264a5df2829f52f27a9ce');
 -- accounts
 INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');
 -- fieldTypes
@@ -10097,9 +10093,6 @@ INSERT INTO crs(crs_id, code, name, proj4) values ('019aeb6d-6cce-7000-9bd1-a732
 -- projects
 INSERT INTO projects(project_id, account_id, name, label, places_label_by, subproject_name_singular, subproject_name_plural, subproject_name_singular_en, subproject_name_plural_en, subproject_name_singular_fr, subproject_name_plural_fr, subproject_name_singular_it, subproject_name_plural_it) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'Demo Project', 'name', 'Art', 'Arten', 'Species', 'Species', 'Espèce', 'Espèces', 'Specie', 'Specie');
--- projectUsers
-INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
-('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'owner');
 -- subprojects
 INSERT INTO subprojects(subproject_id, project_id, name) values 
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');
@@ -10108,9 +10101,6 @@ INSERT INTO fields(account_id, project_id, field_id, table_name, name, field_lab
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000001', 'subproject_reports', 'overview', 'Overview', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000002', 'subproject_reports', 'development', 'Development', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000003', 'subproject_reports', 'outlook', 'Outlook', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538');
--- subprojctUsers
-INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
-('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'owner');
 -- seed places twice so we don't have to set null values in parent_id
 -- reason: got unique constraint violation
 -- places 1
