@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { default as ListValueTypesEnum } from './ListValueTypesEnum.js';
 
@@ -11,9 +10,6 @@ export type ListsListId = string & { __brand: 'public.lists' };
  */
 export default interface Lists {
   list_id: ListsListId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -46,9 +42,6 @@ export default interface Lists {
 export interface ListsInitializer {
   /** Default value: uuid_generate_v7() */
   list_id?: ListsListId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 
@@ -83,9 +76,6 @@ export interface ListsInitializer {
  */
 export interface ListsMutator {
   list_id?: ListsListId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

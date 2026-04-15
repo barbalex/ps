@@ -5,8 +5,6 @@
 export default interface PlaceLevelsHistory {
   place_level_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   level: number | null;
@@ -94,8 +92,6 @@ export default interface PlaceLevelsHistory {
 export interface PlaceLevelsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_level_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -210,8 +206,6 @@ export interface PlaceLevelsHistoryInitializer {
  */
 export interface PlaceLevelsHistoryMutator {
   place_level_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

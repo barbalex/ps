@@ -5,8 +5,6 @@
 export default interface ActionTaxaHistory {
   action_taxon_id: string;
 
-  account_id: string | null;
-
   action_id: string | null;
 
   taxon_id: string | null;
@@ -38,8 +36,6 @@ export default interface ActionTaxaHistory {
 export interface ActionTaxaHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   action_taxon_id?: string;
-
-  account_id?: string | null;
 
   action_id?: string | null;
 
@@ -73,8 +69,6 @@ export interface ActionTaxaHistoryInitializer {
  */
 export interface ActionTaxaHistoryMutator {
   action_taxon_id?: string;
-
-  account_id?: string | null;
 
   action_id?: string | null;
 

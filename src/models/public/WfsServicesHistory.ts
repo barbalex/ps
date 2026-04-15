@@ -5,8 +5,6 @@
 export default interface WfsServicesHistory {
   wfs_service_id: string;
 
-  account_id: string | null;
-
   project_id: string;
 
   url: string | null;
@@ -38,8 +36,6 @@ export default interface WfsServicesHistory {
 export interface WfsServicesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   wfs_service_id?: string;
-
-  account_id?: string | null;
 
   project_id: string;
 
@@ -73,8 +69,6 @@ export interface WfsServicesHistoryInitializer {
  */
 export interface WfsServicesHistoryMutator {
   wfs_service_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string;
 

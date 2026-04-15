@@ -1,13 +1,17 @@
 // https://www.better-auth.com/docs/integrations/fastify
 import express from 'express'
 import cors from 'cors'
+import { createHmac } from 'crypto'
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { hashPassword } from '@better-auth/utils/password'
 import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 
 const app = express()
 const port = Number(process.env.PORT ?? 3003)
-const appUrls = ['https://promote-species.app', 'https://xn--arten-frdern-bjb.app']
+const appUrls = [
+  'https://promote-species.app',
+  'https://xn--arten-frdern-bjb.app',
+]
 const requiredCorsOrigins = [
   'http://localhost:5176',
   'https://arten-fördern.app',
@@ -20,7 +24,9 @@ const configuredCorsOrigins = (process.env.CORS_ORIGINS ?? '')
   .split(',')
   .map((value) => value.trim())
   .filter(Boolean)
-const corsOrigins = [...new Set([...configuredCorsOrigins, ...requiredCorsOrigins])]
+const corsOrigins = [
+  ...new Set([...configuredCorsOrigins, ...requiredCorsOrigins]),
+]
 
 const escapeHtml = (value = '') =>
   String(value)
@@ -95,8 +101,8 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
 
     // Check password requirements
     if (!newPassword || newPassword.length < 8) {
-      return res.status(400).json({ 
-        error: { code: 'INVALID_PASSWORD' } 
+      return res.status(400).json({
+        error: { code: 'INVALID_PASSWORD' },
       })
     }
 
@@ -105,8 +111,9 @@ app.post('/auth/set-password', express.json(), async (req, res) => {
     if (accountsResult.rows.length > 0) {
       const existing = accountsResult.rows[0]
       const existingHash = String(existing.password ?? '')
-      const looksLikeBetterAuthHash =
-        /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(existingHash)
+      const looksLikeBetterAuthHash = /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(
+        existingHash,
+      )
 
       if (looksLikeBetterAuthHash) {
         return res.status(400).json({
@@ -197,15 +204,41 @@ app.get('/auth/two-factor/status', async (req, res) => {
   }
 })
 
+const base64url = (str) => Buffer.from(str).toString('base64url')
+
+const signPostgrestJwt = (userId, secret) => {
+  const exp = Math.floor(Date.now() / 1000) + 3600 // 1 hour
+  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+  const payload = base64url(
+    JSON.stringify({ role: 'app_user', user_id: userId, exp }),
+  )
+  const sig = createHmac('sha256', secret)
+    .update(`${header}.${payload}`)
+    .digest('base64url')
+  return `${header}.${payload}.${sig}`
+}
+
+app.get('/auth/postgrest-token', async (req, res) => {
+  const jwtSecret = process.env.PGRST_JWT_SECRET
+  if (!jwtSecret) {
+    console.error('/auth/postgrest-token: PGRST_JWT_SECRET not configured')
+    return res.status(500).json({ error: 'JWT secret not configured' })
+  }
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(req.headers),
+  })
+  if (!session?.user?.id) return res.status(401).json({ error: 'UNAUTHORIZED' })
+  const token = signPostgrestJwt(session.user.id, jwtSecret)
+  res.setHeader('Cache-Control', 'private, max-age=3300')
+  return res.json({ token })
+})
+
 app.all('/auth/*splat', toNodeHandler(auth))
 
 app.get('/', (req, res, next) => {
   const error = req.query?.error
   if (!error) return next()
-  res
-    .status(400)
-    .type('html')
-    .send(renderAuthErrorPage({ error }))
+  res.status(400).type('html').send(renderAuthErrorPage({ error }))
 })
 
 app.get('/auth/error', (req, res) => {
@@ -227,7 +260,9 @@ const PREVIEW_TEST_EMAIL = process.env.PREVIEW_TEST_EMAIL ?? 'test@test.ch'
 const PREVIEW_TEST_PASSWORD = process.env.PREVIEW_TEST_PASSWORD ?? 'test-test'
 const PREVIEW_TEST_NAME = process.env.PREVIEW_TEST_NAME ?? 'Preview Test User'
 const PREVIEW_TRUSTED_ORIGIN =
-  process.env.PREVIEW_TRUSTED_ORIGIN ?? corsOrigins[0] ?? 'http://localhost:5176'
+  process.env.PREVIEW_TRUSTED_ORIGIN ??
+  corsOrigins[0] ??
+  'http://localhost:5176'
 
 const postAuthJson = async (path, payload) => {
   const response = await fetch(`http://127.0.0.1:${port}${path}`, {
@@ -324,7 +359,10 @@ const ensurePreviewUser = async () => {
         `Preview test user ensure attempt ${attempt} failed (sign-in: ${signInResult.status}, sign-up: ${signUpResult.status}, sign-in-body: ${signInResult.bodyText}, sign-up-body: ${signUpResult.bodyText})`,
       )
     } catch (error) {
-      console.warn(`Preview test user ensure attempt ${attempt} errored:`, error)
+      console.warn(
+        `Preview test user ensure attempt ${attempt} errored:`,
+        error,
+      )
     }
 
     if (attempt < maxAttempts) {

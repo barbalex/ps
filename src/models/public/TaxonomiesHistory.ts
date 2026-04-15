@@ -7,8 +7,6 @@ import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum.js';
 export default interface TaxonomiesHistory {
   taxonomy_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   type: TaxonomyTypesEnum | null;
@@ -42,8 +40,6 @@ export default interface TaxonomiesHistory {
 export interface TaxonomiesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   taxonomy_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -80,8 +76,6 @@ export interface TaxonomiesHistoryInitializer {
  */
 export interface TaxonomiesHistoryMutator {
   taxonomy_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

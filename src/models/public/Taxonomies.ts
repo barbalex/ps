@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum.js';
 import type { UnitsUnitId } from './Units.js';
@@ -12,9 +11,6 @@ export type TaxonomiesTaxonomyId = string & { __brand: 'public.taxonomies' };
  */
 export default interface Taxonomies {
   taxonomy_id: TaxonomiesTaxonomyId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -55,9 +51,6 @@ export default interface Taxonomies {
 export interface TaxonomiesInitializer {
   /** Default value: uuid_generate_v7() */
   taxonomy_id?: TaxonomiesTaxonomyId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 
@@ -100,9 +93,6 @@ export interface TaxonomiesInitializer {
  */
 export interface TaxonomiesMutator {
   taxonomy_id?: TaxonomiesTaxonomyId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

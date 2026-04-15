@@ -5,8 +5,6 @@
 export default interface TaxaHistory {
   taxon_id: string;
 
-  account_id: string | null;
-
   taxonomy_id: string | null;
 
   name: string | null;
@@ -36,8 +34,6 @@ export default interface TaxaHistory {
 export interface TaxaHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   taxon_id?: string;
-
-  account_id?: string | null;
 
   taxonomy_id?: string | null;
 
@@ -69,8 +65,6 @@ export interface TaxaHistoryInitializer {
  */
 export interface TaxaHistoryMutator {
   taxon_id?: string;
-
-  account_id?: string | null;
 
   taxonomy_id?: string | null;
 

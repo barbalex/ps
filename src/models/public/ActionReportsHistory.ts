@@ -5,8 +5,6 @@
 export default interface ActionReportsHistory {
   place_action_report_id: string;
 
-  account_id: string | null;
-
   place_id: string | null;
 
   year: number | null;
@@ -32,8 +30,6 @@ export default interface ActionReportsHistory {
 export interface ActionReportsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_action_report_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 
@@ -62,8 +58,6 @@ export interface ActionReportsHistoryInitializer {
  */
 export interface ActionReportsHistoryMutator {
   place_action_report_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 

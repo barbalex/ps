@@ -7,8 +7,6 @@ import type { default as ListValueTypesEnum } from './ListValueTypesEnum.js';
 export default interface ListsHistory {
   list_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   name: string | null;
@@ -38,8 +36,6 @@ export default interface ListsHistory {
 export interface ListsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   list_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -72,8 +68,6 @@ export interface ListsHistoryInitializer {
  */
 export interface ListsHistoryMutator {
   list_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

@@ -5,8 +5,6 @@
 export default interface PlacesHistory {
   place_id: string;
 
-  account_id: string | null;
-
   subproject_id: string | null;
 
   parent_id: string | null;
@@ -46,8 +44,6 @@ export default interface PlacesHistory {
 export interface PlacesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 
@@ -92,8 +88,6 @@ export interface PlacesHistoryInitializer {
  */
 export interface PlacesHistoryMutator {
   place_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 

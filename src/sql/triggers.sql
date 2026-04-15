@@ -1115,3 +1115,240 @@ CREATE OR REPLACE TRIGGER qcs_name_update_qcs_assignment_label_trigger
 AFTER UPDATE OF name ON qcs
 FOR EACH ROW
 EXECUTE PROCEDURE qcs_name_update_qcs_assignment_label_trigger();
+
+--------------------------------------------------------------
+-- User roles: cascade and inheritance triggers
+-- item 7: on insert/update/delete of _users tables, cascade roles to lower _users tables
+-- item 8: on insert into projects, set account owner's role to 'owner' in project_users
+-- item 9: on insert into subprojects/places, inherit role from parent _users table
+-- items 10+11: guard with WHEN (pg_trigger_depth() < 1) and electric.syncing check
+
+-- item 8: on insert into projects, insert 'owner' row into project_users for the account's user
+CREATE OR REPLACE FUNCTION projects_insert_owner_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  _user_id uuid;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT user_id INTO _user_id FROM accounts WHERE account_id = NEW.account_id;
+
+  IF _user_id IS NOT NULL THEN
+    INSERT INTO project_users(project_id, user_id, role)
+    VALUES (NEW.project_id, _user_id, 'owner')
+    ON CONFLICT (project_id, user_id) DO UPDATE SET role = 'owner';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER projects_insert_owner_trigger
+AFTER INSERT ON projects
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE PROCEDURE projects_insert_owner_trigger();
+
+-- item 7: on insert/update/delete of project_users, cascade to subproject_users AND place_users
+CREATE OR REPLACE FUNCTION project_users_cascade_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NULL;
+  END IF;
+
+  IF TG_OP = 'DELETE' THEN
+    DELETE FROM subproject_users
+    WHERE user_id = OLD.user_id
+      AND subproject_id IN (
+        SELECT subproject_id FROM subprojects WHERE project_id = OLD.project_id
+      );
+    DELETE FROM place_users
+    WHERE user_id = OLD.user_id
+      AND place_id IN (
+        SELECT p.place_id FROM places p
+        INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
+        WHERE s.project_id = OLD.project_id
+      );
+    RETURN OLD;
+  ELSE
+    -- upsert into subproject_users for all subprojects of the project
+    INSERT INTO subproject_users(subproject_id, user_id, role)
+    SELECT subproject_id, NEW.user_id, NEW.role
+    FROM subprojects
+    WHERE project_id = NEW.project_id
+    ON CONFLICT (subproject_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    -- upsert into place_users for all places of those subprojects
+    INSERT INTO place_users(place_id, user_id, role)
+    SELECT p.place_id, NEW.user_id, NEW.role
+    FROM places p
+    INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
+    WHERE s.project_id = NEW.project_id
+    ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    RETURN NEW;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER project_users_cascade_trigger
+AFTER INSERT OR UPDATE OR DELETE ON project_users
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE PROCEDURE project_users_cascade_trigger();
+
+-- item 7: on insert/update/delete of subproject_users, cascade to place_users
+CREATE OR REPLACE FUNCTION subproject_users_cascade_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NULL;
+  END IF;
+
+  IF TG_OP = 'DELETE' THEN
+    DELETE FROM place_users
+    WHERE user_id = OLD.user_id
+      AND place_id IN (
+        SELECT place_id FROM places WHERE subproject_id = OLD.subproject_id
+      );
+    RETURN OLD;
+  ELSE
+    INSERT INTO place_users(place_id, user_id, role)
+    SELECT place_id, NEW.user_id, NEW.role
+    FROM places
+    WHERE subproject_id = NEW.subproject_id
+    ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    RETURN NEW;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER subproject_users_cascade_trigger
+AFTER INSERT OR UPDATE OR DELETE ON subproject_users
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE PROCEDURE subproject_users_cascade_trigger();
+
+-- item 9: on insert into subprojects, copy roles from project_users into subproject_users
+CREATE OR REPLACE FUNCTION subprojects_insert_inherit_role_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NEW;
+  END IF;
+
+  INSERT INTO subproject_users(subproject_id, user_id, role)
+  SELECT NEW.subproject_id, pu.user_id, pu.role
+  FROM project_users pu
+  WHERE pu.project_id = NEW.project_id
+  ON CONFLICT (subproject_id, user_id) DO NOTHING;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER subprojects_insert_inherit_role_trigger
+AFTER INSERT ON subprojects
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE PROCEDURE subprojects_insert_inherit_role_trigger();
+
+-- item 9: on insert into places, copy roles from subproject_users into place_users
+CREATE OR REPLACE FUNCTION places_insert_inherit_role_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NEW;
+  END IF;
+
+  INSERT INTO place_users(place_id, user_id, role)
+  SELECT NEW.place_id, su.user_id, su.role
+  FROM subproject_users su
+  WHERE su.subproject_id = NEW.subproject_id
+  ON CONFLICT (place_id, user_id) DO NOTHING;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER places_insert_inherit_role_trigger
+AFTER INSERT ON places
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE PROCEDURE places_insert_inherit_role_trigger();
+
+--------------------------------------------------------------
+-- Better Auth compatibility helpers
+-- Keep id fields in sync with legacy primary key columns.
+-- Better Auth writes/reads id while this schema historically used *_id.
+--
+CREATE OR REPLACE FUNCTION sync_users_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.user_id IS NULL AND NEW.id IS NULL THEN
+    NEW.user_id := public.uuid_generate_v7();
+    NEW.id := NEW.user_id;
+  ELSIF NEW.user_id IS NULL THEN
+    NEW.user_id := NEW.id;
+  ELSIF NEW.id IS NULL THEN
+    NEW.id := NEW.user_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_users_id_columns_trigger ON users;
+CREATE TRIGGER sync_users_id_columns_trigger
+BEFORE INSERT OR UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION sync_users_id_columns();
+
+CREATE OR REPLACE FUNCTION sync_auth_accounts_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.auth_account_id IS NULL AND NEW.id IS NULL THEN
+    NEW.auth_account_id := public.uuid_generate_v7();
+    NEW.id := NEW.auth_account_id;
+  ELSIF NEW.auth_account_id IS NULL THEN
+    NEW.auth_account_id := NEW.id;
+  ELSIF NEW.id IS NULL THEN
+    NEW.id := NEW.auth_account_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_auth_accounts_id_columns_trigger ON auth_accounts;
+CREATE TRIGGER sync_auth_accounts_id_columns_trigger
+BEFORE INSERT OR UPDATE ON auth_accounts
+FOR EACH ROW
+EXECUTE FUNCTION sync_auth_accounts_id_columns();

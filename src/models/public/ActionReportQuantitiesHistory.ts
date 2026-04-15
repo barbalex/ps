@@ -5,8 +5,6 @@
 export default interface ActionReportQuantitiesHistory {
   place_action_report_quantity_id: string;
 
-  account_id: string | null;
-
   place_action_report_id: string | null;
 
   unit_id: string | null;
@@ -36,8 +34,6 @@ export default interface ActionReportQuantitiesHistory {
 export interface ActionReportQuantitiesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_action_report_quantity_id?: string;
-
-  account_id?: string | null;
 
   place_action_report_id?: string | null;
 
@@ -69,8 +65,6 @@ export interface ActionReportQuantitiesHistoryInitializer {
  */
 export interface ActionReportQuantitiesHistoryMutator {
   place_action_report_quantity_id?: string;
-
-  account_id?: string | null;
 
   place_action_report_id?: string | null;
 

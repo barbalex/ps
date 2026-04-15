@@ -281,12 +281,9 @@ export const createAccount = async ({ userId }: { userId: string }) => {
 }
 
 // users creates the db row to ensure creating the app_state too
-export const createUser = async ({ setUserId }) => {
+export const createUser = async () => {
   const user_id = uuidv7()
   const db = store.get(pgliteDbAtom)
-
-  // TODO: why setUserId?
-  setUserId(user_id)
 
   await db.query(`INSERT INTO users (user_id) VALUES ($1)`, [user_id])
 

@@ -21,14 +21,13 @@ DELETE FROM taxonomies
 WHERE name IN ('DB-TAXREF (2017)');
 
 WITH inserted_taxonomies AS (
-  INSERT INTO taxonomies(account_id, project_id, name, type)
+  INSERT INTO taxonomies(project_id, name, type)
   VALUES
-  ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', 'DB-TAXREF (2017)', 'species')
+  ('018cfcf7-6424-7000-a100-851c5cc2c878', 'DB-TAXREF (2017)', 'species')
   RETURNING taxonomy_id, name
 )
-INSERT INTO taxa(account_id, taxonomy_id, name, id_in_source)
+INSERT INTO taxa(taxonomy_id, name, id_in_source)
 SELECT
-  '018cf958-27e2-7000-90d3-59f024d467be',
   inserted_taxonomies.taxonomy_id,
   seed.name,
   seed.id_in_source

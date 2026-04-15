@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import {
   addNotificationAtom,
   initialSyncingAtom,
+  onlineAtom,
   sqlInitializingAtom,
   syncObjectAtom,
   updateNotificationAtom,
@@ -18,6 +19,7 @@ export const Syncer = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const syncObject = useAtomValue(syncObjectAtom)
   const setSyncObject = useSetAtom(syncObjectAtom)
+  const online = useAtomValue(onlineAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const updateNotification = useSetAtom(updateNotificationAtom)
   const syncNotificationIdRef = useRef<string | null>(null)
@@ -70,17 +72,27 @@ export const Syncer = () => {
     syncNotificationIdRef.current = null
   }, [formatMessage, initialSyncing, isAuthenticated, updateNotification])
 
+  // Stop syncing when offline; the start-sync effect below will restart it when online again
+  useEffect(() => {
+    if (online || !syncObject) return
+    const s = syncObject as { unsubscribe?: () => void }
+    s.unsubscribe?.()
+    setSyncObject(null)
+  }, [online, setSyncObject, syncObject])
+
   // TODO: ensure syncing resumes after user has changed
   useEffect(() => {
     if (isPending) return
     if (!isAuthenticated) return
+    if (!online) return
     if (sqlInitializing) return
+    if (!session?.user?.id) return
     if (syncObject) {
       console.warn('Sync already initialized, skipping')
       return
     }
 
-    startSyncing()
+    startSyncing(session.user.id)
       .then((syncObj) => {
         console.log('Sync started')
         setSyncObject(syncObj)
@@ -108,6 +120,8 @@ export const Syncer = () => {
     formatMessage,
     isAuthenticated,
     isPending,
+    online,
+    session?.user?.id,
     setSyncObject,
     sqlInitializing,
     syncObject,

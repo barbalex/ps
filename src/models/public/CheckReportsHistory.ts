@@ -5,8 +5,6 @@
 export default interface CheckReportsHistory {
   place_check_report_id: string;
 
-  account_id: string | null;
-
   place_id: string | null;
 
   year: number | null;
@@ -32,8 +30,6 @@ export default interface CheckReportsHistory {
 export interface CheckReportsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_check_report_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 
@@ -62,8 +58,6 @@ export interface CheckReportsHistoryInitializer {
  */
 export interface CheckReportsHistoryMutator {
   place_check_report_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 

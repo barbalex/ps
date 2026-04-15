@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 import type { PlacesPlaceId } from './Places.js';
@@ -14,9 +13,6 @@ export type FilesFileId = string & { __brand: 'public.files' };
  */
 export default interface Files {
   file_id: FilesFileId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -74,9 +70,6 @@ export interface FilesInitializer {
   /** Default value: uuid_generate_v7() */
   file_id?: FilesFileId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   project_id?: ProjectsProjectId | null;
 
   subproject_id?: SubprojectsSubprojectId | null;
@@ -131,9 +124,6 @@ export interface FilesInitializer {
  */
 export interface FilesMutator {
   file_id?: FilesFileId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

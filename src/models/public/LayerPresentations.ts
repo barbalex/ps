@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { WmsLayersWmsLayerId } from './WmsLayers.js';
 import type { VectorLayersVectorLayerId } from './VectorLayers.js';
 
@@ -11,8 +10,6 @@ export type LayerPresentationsLayerPresentationId = string & { __brand: 'public.
  */
 export default interface LayerPresentations {
   layer_presentation_id: LayerPresentationsLayerPresentationId;
-
-  account_id: AccountsAccountId | null;
 
   wms_layer_id: WmsLayersWmsLayerId | null;
 
@@ -49,8 +46,6 @@ export default interface LayerPresentations {
 export interface LayerPresentationsInitializer {
   /** Default value: uuid_generate_v7() */
   layer_presentation_id?: LayerPresentationsLayerPresentationId;
-
-  account_id?: AccountsAccountId | null;
 
   wms_layer_id?: WmsLayersWmsLayerId | null;
 
@@ -94,8 +89,6 @@ export interface LayerPresentationsInitializer {
  */
 export interface LayerPresentationsMutator {
   layer_presentation_id?: LayerPresentationsLayerPresentationId;
-
-  account_id?: AccountsAccountId | null;
 
   wms_layer_id?: WmsLayersWmsLayerId | null;
 

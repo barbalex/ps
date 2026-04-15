@@ -7,8 +7,6 @@ import type { default as UnitTypesEnum } from './UnitTypesEnum.js';
 export default interface UnitsHistory {
   unit_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   list_id: string | null;
@@ -40,8 +38,6 @@ export default interface UnitsHistory {
 export interface UnitsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   unit_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -76,8 +72,6 @@ export interface UnitsHistoryInitializer {
  */
 export interface UnitsHistoryMutator {
   unit_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

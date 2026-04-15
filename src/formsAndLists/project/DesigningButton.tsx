@@ -37,7 +37,8 @@ export const DesigningButton = ({ from }) => {
   const userRole = project?.project_user_role
   // console.log('hello project DesignButton', { projectUser, userRole })
 
-  const userMayDesign = userIsOwner || userRole === 'manager'
+  const userMayDesign =
+    userIsOwner || userRole === 'designer' || userRole === 'owner'
 
   if (!userMayDesign) return null
 

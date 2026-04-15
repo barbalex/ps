@@ -7,8 +7,6 @@ import type { default as ObservationImportsGeometryMethodsEnum } from './Observa
 export default interface ObservationImportsHistory {
   observation_import_id: string;
 
-  account_id: string | null;
-
   subproject_id: string | null;
 
   created_time: Date | null;
@@ -62,8 +60,6 @@ export default interface ObservationImportsHistory {
 export interface ObservationImportsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   observation_import_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 
@@ -121,8 +117,6 @@ export interface ObservationImportsHistoryInitializer {
  */
 export interface ObservationImportsHistoryMutator {
   observation_import_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 

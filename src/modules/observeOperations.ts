@@ -9,6 +9,7 @@ import {
 import { executeOperation } from './executeOperation.ts'
 import { revertOperation } from './revertOperation.ts'
 import { removeOperation } from './removeOperation.ts'
+import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
@@ -48,13 +49,27 @@ export const observeOperations = () =>
       // if auth error: get new auth token
       // TODO: ensure if clause is correct
       if (lcMessage.includes('jwt')) {
-        // TODO: get new auth token
-        console.log('observeOperations, need to get new auth token')
+        // Token is invalid or expired — clear the cache so the next retry fetches a fresh one
+        invalidatePostgrestToken()
+        console.log('observeOperations, JWT error: invalidating token cache for retry')
         return store.set(addNotificationAtom, {
           intent: 'error',
           title: 'Authentication error',
           body: 'Please log out and log back in to continue syncing your changes.',
         })
+      } else if (
+        error?.code === '42501' ||
+        lcMessage.includes('permission denied') ||
+        lcMessage.includes('insufficient privilege')
+      ) {
+        // Server rejected the write due to insufficient role — revert optimistic change
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          title: 'Not authorized',
+          body: `You do not have permission to ${firstOperation.operation} in "${firstOperation.table}". The change has been reverted.`,
+        })
+        await revertOperation(firstOperation)
+        return removeOperation(firstOperation)
       } else if (lcMessage.includes('uniqueness violation')) {
         console.log(
           'There is a conflict with exact same changes - ingoring the error thrown',

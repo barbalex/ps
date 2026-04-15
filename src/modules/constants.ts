@@ -368,9 +368,10 @@ export const userRoleOptions: {
   defaultMessage: string
   sort: number
 }[] = [
-  { value: 'manager', labelId: 'aM1NpQ', defaultMessage: 'Manager', sort: 1 },
-  { value: 'editor', labelId: 'bR2StU', defaultMessage: 'Editor', sort: 2 },
-  { value: 'reader', labelId: 'cV3WxY', defaultMessage: 'Leser', sort: 3 },
+  { value: 'reader', labelId: 'cV3WxY', defaultMessage: 'Leser', sort: 1 },
+  { value: 'writer', labelId: 'bR2StU', defaultMessage: 'Schreiber', sort: 2 },
+  { value: 'designer', labelId: 'aM1NpQ', defaultMessage: 'Designer', sort: 3 },
+  { value: 'owner', labelId: 'dZ4AbC', defaultMessage: 'Eigentümer', sort: 4 },
 ]
 
 export const projectTypeOptions: {

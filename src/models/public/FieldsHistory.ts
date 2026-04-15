@@ -7,8 +7,6 @@ export default interface FieldsHistory {
 
   project_id: string | null;
 
-  account_id: string | null;
-
   table_name: string | null;
 
   level: number | null;
@@ -48,8 +46,6 @@ export interface FieldsHistoryInitializer {
   field_id?: string;
 
   project_id?: string | null;
-
-  account_id?: string | null;
 
   table_name?: string | null;
 
@@ -93,8 +89,6 @@ export interface FieldsHistoryMutator {
   field_id?: string;
 
   project_id?: string | null;
-
-  account_id?: string | null;
 
   table_name?: string | null;
 

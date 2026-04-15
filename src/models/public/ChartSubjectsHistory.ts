@@ -10,8 +10,6 @@ import type { default as ChartSubjectTypesEnum } from './ChartSubjectTypesEnum.j
 export default interface ChartSubjectsHistory {
   chart_subject_id: string;
 
-  account_id: string | null;
-
   chart_id: string | null;
 
   table_name: ChartSubjectTableNamesEnum | null;
@@ -59,8 +57,6 @@ export default interface ChartSubjectsHistory {
 export interface ChartSubjectsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   chart_subject_id?: string;
-
-  account_id?: string | null;
 
   chart_id?: string | null;
 
@@ -114,8 +110,6 @@ export interface ChartSubjectsHistoryInitializer {
  */
 export interface ChartSubjectsHistoryMutator {
   chart_subject_id?: string;
-
-  account_id?: string | null;
 
   chart_id?: string | null;
 

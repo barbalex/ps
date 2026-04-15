@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { CheckReportsPlaceCheckReportId } from './CheckReports.js';
 import type { UnitsUnitId } from './Units.js';
 
@@ -11,9 +10,6 @@ export type CheckReportQuantitiesPlaceCheckReportQuantityId = string & { __brand
  */
 export default interface CheckReportQuantities {
   place_check_report_quantity_id: CheckReportQuantitiesPlaceCheckReportQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   place_check_report_id: CheckReportsPlaceCheckReportId | null;
 
@@ -48,9 +44,6 @@ export interface CheckReportQuantitiesInitializer {
   /** Default value: uuid_generate_v7() */
   place_check_report_quantity_id?: CheckReportQuantitiesPlaceCheckReportQuantityId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   place_check_report_id?: CheckReportsPlaceCheckReportId | null;
 
   unit_id?: UnitsUnitId | null;
@@ -84,9 +77,6 @@ export interface CheckReportQuantitiesInitializer {
  */
 export interface CheckReportQuantitiesMutator {
   place_check_report_quantity_id?: CheckReportQuantitiesPlaceCheckReportQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   place_check_report_id?: CheckReportsPlaceCheckReportId | null;
 

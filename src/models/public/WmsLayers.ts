@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { WmsServicesWmsServiceId } from './WmsServices.js';
 
@@ -11,8 +10,6 @@ export type WmsLayersWmsLayerId = string & { __brand: 'public.wms_layers' };
  */
 export default interface WmsLayers {
   wms_layer_id: WmsLayersWmsLayerId;
-
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId;
 
@@ -46,8 +43,6 @@ export interface WmsLayersInitializer {
   /** Default value: uuid_generate_v7() */
   wms_layer_id?: WmsLayersWmsLayerId;
 
-  account_id?: AccountsAccountId | null;
-
   project_id: ProjectsProjectId;
 
   wms_service_id?: WmsServicesWmsServiceId | null;
@@ -80,8 +75,6 @@ export interface WmsLayersInitializer {
  */
 export interface WmsLayersMutator {
   wms_layer_id?: WmsLayersWmsLayerId;
-
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId;
 

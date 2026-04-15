@@ -10,8 +10,6 @@ import type { default as VectorLayerFillRulesEnum } from './VectorLayerFillRules
 export default interface VectorLayerDisplaysHistory {
   vector_layer_display_id: string;
 
-  account_id: string | null;
-
   vector_layer_id: string | null;
 
   display_property_value: string | null;
@@ -65,8 +63,6 @@ export default interface VectorLayerDisplaysHistory {
 export interface VectorLayerDisplaysHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   vector_layer_display_id?: string;
-
-  account_id?: string | null;
 
   vector_layer_id?: string | null;
 
@@ -133,8 +129,6 @@ export interface VectorLayerDisplaysHistoryInitializer {
  */
 export interface VectorLayerDisplaysHistoryMutator {
   vector_layer_display_id?: string;
-
-  account_id?: string | null;
 
   vector_layer_id?: string | null;
 

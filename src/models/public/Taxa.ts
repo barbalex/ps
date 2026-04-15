@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { TaxonomiesTaxonomyId } from './Taxonomies.js';
 
 /** Identifier type for public.taxa */
@@ -7,9 +6,6 @@ export type TaxaTaxonId = string & { __brand: 'public.taxa' };
 /** Represents the table public.taxa */
 export default interface Taxa {
   taxon_id: TaxaTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   taxonomy_id: TaxonomiesTaxonomyId | null;
 
@@ -42,9 +38,6 @@ export interface TaxaInitializer {
   /** Default value: uuid_generate_v7() */
   taxon_id?: TaxaTaxonId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   taxonomy_id?: TaxonomiesTaxonomyId | null;
 
   /** Name of taxon, like "Pulsatilla vulgaris" */
@@ -76,9 +69,6 @@ export interface TaxaInitializer {
 /** Represents the mutator for the table public.taxa */
 export interface TaxaMutator {
   taxon_id?: TaxaTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   taxonomy_id?: TaxonomiesTaxonomyId | null;
 

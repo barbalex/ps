@@ -5,8 +5,6 @@
 export default interface ActionsHistory {
   action_id: string;
 
-  account_id: string | null;
-
   place_id: string | null;
 
   date: Date | null;
@@ -38,8 +36,6 @@ export default interface ActionsHistory {
 export interface ActionsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   action_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 
@@ -76,8 +72,6 @@ export interface ActionsHistoryInitializer {
  */
 export interface ActionsHistoryMutator {
   action_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 

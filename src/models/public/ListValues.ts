@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ListsListId } from './Lists.js';
 
 /** Identifier type for public.list_values */
@@ -7,9 +6,6 @@ export type ListValuesListValueId = string & { __brand: 'public.list_values' };
 /** Represents the table public.list_values */
 export default interface ListValues {
   list_value_id: ListValuesListValueId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   list_id: ListsListId | null;
 
@@ -42,9 +38,6 @@ export interface ListValuesInitializer {
   /** Default value: uuid_generate_v7() */
   list_value_id?: ListValuesListValueId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   list_id?: ListsListId | null;
 
   value_integer?: number | null;
@@ -75,9 +68,6 @@ export interface ListValuesInitializer {
 /** Represents the mutator for the table public.list_values */
 export interface ListValuesMutator {
   list_value_id?: ListValuesListValueId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   list_id?: ListsListId | null;
 

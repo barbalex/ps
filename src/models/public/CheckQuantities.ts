@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ChecksCheckId } from './Checks.js';
 import type { UnitsUnitId } from './Units.js';
 
@@ -11,9 +10,6 @@ export type CheckQuantitiesCheckQuantityId = string & { __brand: 'public.check_q
  */
 export default interface CheckQuantities {
   check_quantity_id: CheckQuantitiesCheckQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   check_id: ChecksCheckId | null;
 
@@ -48,9 +44,6 @@ export interface CheckQuantitiesInitializer {
   /** Default value: uuid_generate_v7() */
   check_quantity_id?: CheckQuantitiesCheckQuantityId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   check_id?: ChecksCheckId | null;
 
   unit_id?: UnitsUnitId | null;
@@ -84,9 +77,6 @@ export interface CheckQuantitiesInitializer {
  */
 export interface CheckQuantitiesMutator {
   check_quantity_id?: CheckQuantitiesCheckQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   check_id?: ChecksCheckId | null;
 

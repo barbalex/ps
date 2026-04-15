@@ -5,8 +5,6 @@
 export default interface CheckTaxaHistory {
   check_taxon_id: string;
 
-  account_id: string | null;
-
   check_id: string | null;
 
   taxon_id: string | null;
@@ -38,8 +36,6 @@ export default interface CheckTaxaHistory {
 export interface CheckTaxaHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   check_taxon_id?: string;
-
-  account_id?: string | null;
 
   check_id?: string | null;
 
@@ -73,8 +69,6 @@ export interface CheckTaxaHistoryInitializer {
  */
 export interface CheckTaxaHistoryMutator {
   check_taxon_id?: string;
-
-  account_id?: string | null;
 
   check_id?: string | null;
 

@@ -1,5 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
-
 /** Identifier type for public.crs */
 export type CrsCrsId = string & { __brand: 'public.crs' };
 
@@ -9,8 +7,6 @@ export type CrsCrsId = string & { __brand: 'public.crs' };
  */
 export default interface Crs {
   crs_id: CrsCrsId;
-
-  account_id: AccountsAccountId | null;
 
   code: string | null;
 
@@ -38,8 +34,6 @@ export interface CrsInitializer {
   /** Default value: uuid_generate_v7() */
   crs_id?: CrsCrsId;
 
-  account_id?: AccountsAccountId | null;
-
   code?: string | null;
 
   name?: string | null;
@@ -64,8 +58,6 @@ export interface CrsInitializer {
  */
 export interface CrsMutator {
   crs_id?: CrsCrsId;
-
-  account_id?: AccountsAccountId | null;
 
   code?: string | null;
 

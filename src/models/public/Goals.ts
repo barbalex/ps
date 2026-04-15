@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 
 /** Identifier type for public.goals */
@@ -10,9 +9,6 @@ export type GoalsGoalId = string & { __brand: 'public.goals' };
  */
 export default interface Goals {
   goal_id: GoalsGoalId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   subproject_id: SubprojectsSubprojectId | null;
 
@@ -42,9 +38,6 @@ export interface GoalsInitializer {
   /** Default value: uuid_generate_v7() */
   goal_id?: GoalsGoalId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   subproject_id?: SubprojectsSubprojectId | null;
 
   /** Default value: date_part('year'::text, (now())::date) */
@@ -72,9 +65,6 @@ export interface GoalsInitializer {
  */
 export interface GoalsMutator {
   goal_id?: GoalsGoalId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   subproject_id?: SubprojectsSubprojectId | null;
 

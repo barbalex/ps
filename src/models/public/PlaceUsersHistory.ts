@@ -7,8 +7,6 @@ import type { default as UserRolesEnum } from './UserRolesEnum.js';
 export default interface PlaceUsersHistory {
   place_user_id: string;
 
-  account_id: string | null;
-
   place_id: string | null;
 
   user_id: string | null;
@@ -34,8 +32,6 @@ export default interface PlaceUsersHistory {
 export interface PlaceUsersHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_user_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 
@@ -64,8 +60,6 @@ export interface PlaceUsersHistoryInitializer {
  */
 export interface PlaceUsersHistoryMutator {
   place_user_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 

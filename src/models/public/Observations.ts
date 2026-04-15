@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ObservationImportsObservationImportId } from './ObservationImports.js';
 import type { PlacesPlaceId } from './Places.js';
 
@@ -11,8 +10,6 @@ export type ObservationsObservationId = string & { __brand: 'public.observations
  */
 export default interface Observations {
   observation_id: ObservationsObservationId;
-
-  account_id: AccountsAccountId | null;
 
   observation_import_id: ObservationImportsObservationImportId | null;
 
@@ -52,8 +49,6 @@ export default interface Observations {
 export interface ObservationsInitializer {
   /** Default value: uuid_generate_v7() */
   observation_id?: ObservationsObservationId;
-
-  account_id?: AccountsAccountId | null;
 
   observation_import_id?: ObservationImportsObservationImportId | null;
 
@@ -98,8 +93,6 @@ export interface ObservationsInitializer {
  */
 export interface ObservationsMutator {
   observation_id?: ObservationsObservationId;
-
-  account_id?: AccountsAccountId | null;
 
   observation_import_id?: ObservationImportsObservationImportId | null;
 

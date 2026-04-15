@@ -1,6 +1,7 @@
 import {
   store,
   initialSyncingAtom,
+  onlineAtom,
   pgliteDbAtom,
   syncObjectAtom,
 } from '../store.ts'
@@ -14,7 +15,7 @@ const url = constants.getElectricUri()
 const noCacheFetch: typeof fetch = (input, init) =>
   fetch(input, { ...init, cache: 'no-store' })
 
-export const startSyncing = async () => {
+export const startSyncing = async (userId: string) => {
   const db = store.get(pgliteDbAtom)
 
   // is syncObjectAtom exists, return
@@ -41,6 +42,8 @@ export const startSyncing = async () => {
               'created_at',
               'updated_at',
             ],
+            where: `user_id = $1`,
+            params: { '1': userId },
           },
         },
         table: 'users',
@@ -49,7 +52,11 @@ export const startSyncing = async () => {
       auth_sessions: {
         shape: {
           url,
-          params: { table: 'auth_sessions' },
+          params: {
+            table: 'auth_sessions',
+            where: `user_id = $1`,
+            params: { '1': userId },
+          },
         },
         table: 'auth_sessions',
         primaryKey: ['auth_session_id'],
@@ -57,7 +64,11 @@ export const startSyncing = async () => {
       auth_accounts: {
         shape: {
           url,
-          params: { table: 'auth_accounts' },
+          params: {
+            table: 'auth_accounts',
+            where: `user_id = $1`,
+            params: { '1': userId },
+          },
         },
         table: 'auth_accounts',
         primaryKey: ['auth_account_id'],
@@ -65,7 +76,11 @@ export const startSyncing = async () => {
       accounts: {
         shape: {
           url,
-          params: { table: 'accounts' },
+          params: {
+            table: 'accounts',
+            where: `user_id = $1`,
+            params: { '1': userId },
+          },
         },
         table: 'accounts',
         primaryKey: ['account_id'],
@@ -83,6 +98,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'projects',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'projects',
@@ -95,7 +112,6 @@ export const startSyncing = async () => {
             table: 'place_levels',
             columns: [
               'place_level_id',
-              'account_id',
               'project_id',
               'level',
               'name_singular_de',
@@ -131,6 +147,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'place_levels',
@@ -143,7 +161,6 @@ export const startSyncing = async () => {
             table: 'subprojects',
             columns: [
               'subproject_id',
-              'account_id',
               'project_id',
               'name',
               'start_year',
@@ -153,6 +170,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'subprojects',
@@ -161,7 +180,11 @@ export const startSyncing = async () => {
       project_users: {
         shape: {
           url,
-          params: { table: 'project_users' },
+          params: {
+            table: 'project_users',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
+          },
         },
         table: 'project_users',
         primaryKey: ['project_user_id'],
@@ -169,7 +192,11 @@ export const startSyncing = async () => {
       subproject_users: {
         shape: {
           url,
-          params: { table: 'subproject_users' },
+          params: {
+            table: 'subproject_users',
+            where: `subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1)`,
+            params: { '1': userId },
+          },
         },
         table: 'subproject_users',
         primaryKey: ['subproject_user_id'],
@@ -181,7 +208,6 @@ export const startSyncing = async () => {
             table: 'taxonomies',
             columns: [
               'taxonomy_id',
-              'account_id',
               'project_id',
               'type',
               'unit_id',
@@ -193,6 +219,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'taxonomies',
@@ -201,7 +229,11 @@ export const startSyncing = async () => {
       taxa: {
         shape: {
           url,
-          params: { table: 'taxa' },
+          params: {
+            table: 'taxa',
+            where: `taxonomy_id IN (SELECT taxonomy_id FROM taxonomies WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
+          },
         },
         table: 'taxa',
         primaryKey: ['taxon_id'],
@@ -209,7 +241,11 @@ export const startSyncing = async () => {
       subproject_taxa: {
         shape: {
           url,
-          params: { table: 'subproject_taxa' },
+          params: {
+            table: 'subproject_taxa',
+            where: `subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1)`,
+            params: { '1': userId },
+          },
         },
         table: 'subproject_taxa',
         primaryKey: ['subproject_taxon_id'],
@@ -221,7 +257,6 @@ export const startSyncing = async () => {
             table: 'lists',
             columns: [
               'list_id',
-              'account_id',
               'project_id',
               'name',
               'value_type',
@@ -231,6 +266,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'lists',
@@ -243,7 +280,6 @@ export const startSyncing = async () => {
             table: 'list_values',
             columns: [
               'list_value_id',
-              'account_id',
               'list_id',
               'value_integer',
               'value_numeric',
@@ -255,6 +291,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `list_id IN (SELECT list_id FROM lists WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'list_values',
@@ -267,7 +305,6 @@ export const startSyncing = async () => {
             table: 'units',
             columns: [
               'unit_id',
-              'account_id',
               'project_id',
               'name',
               'summable',
@@ -277,6 +314,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'units',
@@ -287,6 +326,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'places',
+            where: `place_id IN (SELECT place_id FROM place_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'places',
@@ -299,7 +340,6 @@ export const startSyncing = async () => {
             table: 'actions',
             columns: [
               'action_id',
-              'account_id',
               'place_id',
               'date',
               'data',
@@ -310,6 +350,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `place_id IN (SELECT place_id FROM place_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'actions',
@@ -320,6 +362,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'action_quantities',
+            where: `action_id IN (SELECT action_id FROM actions WHERE place_id IN (SELECT place_id FROM place_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'action_quantities',
@@ -332,7 +376,6 @@ export const startSyncing = async () => {
             table: 'checks',
             columns: [
               'check_id',
-              'account_id',
               'place_id',
               'date',
               'data',
@@ -343,6 +386,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `place_id IN (SELECT place_id FROM place_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'checks',
@@ -353,6 +398,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'check_quantities',
+            where: `check_id IN (SELECT check_id FROM checks WHERE place_id IN (SELECT place_id FROM place_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'check_quantities',
@@ -363,6 +410,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'check_taxa',
+            where: `check_id IN (SELECT check_id FROM checks WHERE place_id IN (SELECT place_id FROM place_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'check_taxa',
@@ -373,6 +422,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'action_taxa',
+            where: `action_id IN (SELECT action_id FROM actions WHERE place_id IN (SELECT place_id FROM place_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'action_taxa',
@@ -385,7 +436,6 @@ export const startSyncing = async () => {
             table: 'check_reports',
             columns: [
               'place_check_report_id',
-              'account_id',
               'place_id',
               'year',
               'data',
@@ -393,6 +443,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `place_id IN (SELECT place_id FROM place_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'check_reports',
@@ -403,6 +455,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'check_report_quantities',
+            where: `place_check_report_id IN (SELECT place_check_report_id FROM check_reports WHERE place_id IN (SELECT place_id FROM place_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'check_report_quantities',
@@ -423,6 +477,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'user_messages',
+            where: `user_id = $1`,
+            params: { '1': userId },
           },
         },
         table: 'user_messages',
@@ -433,6 +489,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'place_users',
+            where: `place_id IN (SELECT place_id FROM place_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'place_users',
@@ -445,7 +503,6 @@ export const startSyncing = async () => {
             table: 'goals',
             columns: [
               'goal_id',
-              'account_id',
               'subproject_id',
               'year',
               'name',
@@ -454,6 +511,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'goals',
@@ -464,12 +523,13 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'goal_reports',
+            where: `goal_id IN (SELECT goal_id FROM goals WHERE subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         mapColumns: (change: unknown) => {
           return {
             goal_report_id: change.value.goal_report_id,
-            account_id: change.value.account_id,
             goal_id: change.value.goal_id,
             label: change.value.label,
             created_at: change.value.created_at,
@@ -493,7 +553,6 @@ export const startSyncing = async () => {
             table: 'subproject_reports',
             columns: [
               'subproject_report_id',
-              'account_id',
               'subproject_id',
               'year',
               'data',
@@ -501,6 +560,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'subproject_reports',
@@ -514,7 +575,6 @@ export const startSyncing = async () => {
             table: 'subproject_report_designs',
             columns: [
               'subproject_report_design_id',
-              'account_id',
               'project_id',
               'name',
               'active',
@@ -523,6 +583,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'subproject_report_designs',
@@ -535,7 +597,6 @@ export const startSyncing = async () => {
             table: 'project_reports',
             columns: [
               'project_report_id',
-              'account_id',
               'project_id',
               'year',
               'data',
@@ -543,6 +604,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'project_reports',
@@ -556,7 +619,6 @@ export const startSyncing = async () => {
             table: 'project_report_designs',
             columns: [
               'project_report_design_id',
-              'account_id',
               'project_id',
               'name',
               'active',
@@ -565,6 +627,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'project_report_designs',
@@ -577,7 +641,6 @@ export const startSyncing = async () => {
             table: 'project_report_subdesigns',
             columns: [
               'project_report_subdesign_id',
-              'account_id',
               'project_id',
               'name',
               'design',
@@ -585,6 +648,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'project_report_subdesigns',
@@ -597,7 +662,6 @@ export const startSyncing = async () => {
             table: 'files',
             columns: [
               'file_id',
-              'account_id',
               'project_id',
               'subproject_id',
               'place_id',
@@ -618,6 +682,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'files',
@@ -680,7 +746,6 @@ export const startSyncing = async () => {
             columns: [
               'field_id',
               'project_id',
-              'account_id',
               'table_name',
               'level',
               'field_type_id',
@@ -694,6 +759,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'fields',
@@ -704,6 +771,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'field_sorts',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'field_sorts',
@@ -716,7 +785,6 @@ export const startSyncing = async () => {
             table: 'observation_imports',
             columns: [
               'observation_import_id',
-              'account_id',
               'subproject_id',
               'created_time',
               'inserted_count',
@@ -738,6 +806,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'observation_imports',
@@ -748,6 +818,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'observations',
+            where: `observation_import_id IN (SELECT observation_import_id FROM observation_imports WHERE subproject_id IN (SELECT subproject_id FROM subproject_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'observations',
@@ -760,7 +832,6 @@ export const startSyncing = async () => {
             table: 'wms_services',
             columns: [
               'wms_service_id',
-              'account_id',
               'project_id',
               'url',
               'image_formats',
@@ -773,6 +844,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'wms_services',
@@ -783,6 +856,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'wms_service_layers',
+            where: `wms_service_id IN (SELECT wms_service_id FROM wms_services WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'wms_service_layers',
@@ -793,6 +868,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'wms_layers',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'wms_layers',
@@ -805,7 +882,6 @@ export const startSyncing = async () => {
             table: 'wfs_services',
             columns: [
               'wfs_service_id',
-              'account_id',
               'project_id',
               'url',
               'version',
@@ -816,6 +892,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'wfs_services',
@@ -826,6 +904,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'wfs_service_layers',
+            where: `wfs_service_id IN (SELECT wfs_service_id FROM wfs_services WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'wfs_service_layers',
@@ -836,6 +916,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'vector_layers',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'vector_layers',
@@ -846,6 +928,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'vector_layer_geoms',
+            where: `vector_layer_id IN (SELECT vector_layer_id FROM vector_layers WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'vector_layer_geoms',
@@ -858,7 +942,6 @@ export const startSyncing = async () => {
             table: 'vector_layer_displays',
             columns: [
               'vector_layer_display_id',
-              'account_id',
               'vector_layer_id',
               'display_property_value',
               'marker_type',
@@ -880,6 +963,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `vector_layer_id IN (SELECT vector_layer_id FROM vector_layers WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'vector_layer_displays',
@@ -892,7 +977,6 @@ export const startSyncing = async () => {
             table: 'layer_presentations',
             columns: [
               'layer_presentation_id',
-              'account_id',
               'wms_layer_id',
               'vector_layer_id',
               'active',
@@ -905,6 +989,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `(wms_layer_id IN (SELECT wms_layer_id FROM wms_layers WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)) OR vector_layer_id IN (SELECT vector_layer_id FROM vector_layers WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)))`,
+            params: { '1': userId },
           },
         },
         table: 'layer_presentations',
@@ -917,7 +1003,6 @@ export const startSyncing = async () => {
             table: 'charts',
             columns: [
               'chart_id',
-              'account_id',
               'project_id',
               'subproject_id',
               'place_id',
@@ -936,6 +1021,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'charts',
@@ -946,6 +1033,8 @@ export const startSyncing = async () => {
           url,
           params: {
             table: 'chart_subjects',
+            where: `chart_id IN (SELECT chart_id FROM charts WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'chart_subjects',
@@ -958,7 +1047,6 @@ export const startSyncing = async () => {
             table: 'crs',
             columns: [
               'crs_id',
-              'account_id',
               'code',
               'name',
               'proj4',
@@ -980,7 +1068,6 @@ export const startSyncing = async () => {
               'project_crs_id',
               'crs_id',
               'project_id',
-              'account_id',
               'code',
               'name',
               'proj4',
@@ -988,6 +1075,8 @@ export const startSyncing = async () => {
               'updated_at',
               'updated_by',
             ],
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'project_crs',
@@ -1006,7 +1095,11 @@ export const startSyncing = async () => {
       qcs_assignment: {
         shape: {
           url,
-          params: { table: 'qcs_assignment' },
+          params: {
+            table: 'qcs_assignment',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
+          },
         },
         table: 'qcs_assignment',
         primaryKey: ['qcs_assignment_id'],
@@ -1038,6 +1131,19 @@ export const startSyncing = async () => {
           console.log(
             'Electric: Shape already exists (409) - continuing with existing shape',
           )
+          return
+        }
+
+        // Network disconnect — mark offline so Syncer stops sync immediately
+        const isNetworkError =
+          errorStr.includes('ERR_INTERNET_DISCONNECTED') ||
+          errorStr.includes('Failed to fetch') ||
+          errorStr.includes('NetworkError') ||
+          errorStr.includes('network') ||
+          error instanceof TypeError
+        if (isNetworkError) {
+          console.warn('Electric: network error detected, marking offline')
+          store.set(onlineAtom, false)
           return
         }
 

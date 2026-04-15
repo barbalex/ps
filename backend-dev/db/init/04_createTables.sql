@@ -300,7 +300,6 @@ COMMENT ON TABLE projects IS 'Goal: manage projects';
 --
 CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
   name_singular_de text DEFAULT NULL,
@@ -349,14 +348,12 @@ CREATE TABLE IF NOT EXISTS place_levels(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
 CREATE INDEX IF NOT EXISTS place_levels_project_id_idx ON place_levels USING btree(project_id);
 CREATE INDEX IF NOT EXISTS place_levels_level_idx ON place_levels USING btree(level);
 -- TODO: needed?
 CREATE INDEX IF NOT EXISTS place_levels_name_singular_de_idx ON place_levels USING btree(name_singular_de);
 CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(label);
 
-COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN place_levels.name_singular_de IS 'German singular name. Preset: "Population"';
 COMMENT ON COLUMN place_levels.name_plural_de IS 'German plural name. Preset: "Populationen"';
@@ -393,7 +390,6 @@ COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with
 --
 CREATE TABLE IF NOT EXISTS subprojects(
   subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   start_year integer DEFAULT NULL,
@@ -406,14 +402,12 @@ CREATE TABLE IF NOT EXISTS subprojects(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS subprojects_account_id_idx ON subprojects USING btree(account_id);
 CREATE INDEX IF NOT EXISTS subprojects_project_id_idx ON subprojects USING btree(project_id);
 -- TODO: needed?
 CREATE INDEX IF NOT EXISTS subprojects_name_idx ON subprojects USING btree(name);
 CREATE INDEX IF NOT EXISTS subprojects_start_year_idx ON subprojects USING btree(start_year);
 CREATE INDEX IF NOT EXISTS subprojects_label_idx ON subprojects USING btree(label);
 
-COMMENT ON COLUMN subprojects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla vulgaris"';
 COMMENT ON COLUMN subprojects.start_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 COMMENT ON COLUMN subprojects.end_year IS 'End of this subproject. If not set, the subproject is ongoing';
@@ -423,11 +417,10 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 --------------------------------------------------------------
 -- project_users
 --
-CREATE TYPE user_roles_enum AS ENUM ('manager', 'editor', 'reader');
+CREATE TYPE user_roles_enum AS ENUM ('reader', 'writer', 'designer', 'owner');
 
 CREATE TABLE IF NOT EXISTS project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT NULL,
@@ -438,13 +431,14 @@ CREATE TABLE IF NOT EXISTS project_users(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS project_users_account_id_idx ON project_users USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_users_project_id_idx ON project_users USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_users_user_id_idx ON project_users USING btree(user_id);
 CREATE INDEX IF NOT EXISTS project_users_label_idx ON project_users USING btree(label);
+ALTER TABLE project_users
+ADD CONSTRAINT project_users_project_id_user_id_unique UNIQUE (project_id, user_id);
 
-COMMENT ON COLUMN project_users.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN project_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
+
+COMMENT ON COLUMN project_users.role IS 'One of: "reader", "writer", "designer", "owner". Preset: "reader"';
 COMMENT ON TABLE project_users IS 'A way to give users access to projects (without giving them access to the whole account).';
 
 --------------------------------------------------------------
@@ -452,7 +446,6 @@ COMMENT ON TABLE project_users IS 'A way to give users access to projects (witho
 --
 CREATE TABLE IF NOT EXISTS subproject_users(
   subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT NULL,
@@ -463,13 +456,14 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS subproject_users_account_id_idx ON subproject_users USING btree(account_id);
 CREATE INDEX IF NOT EXISTS subproject_users_subproject_id_idx ON subproject_users USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS subproject_users_user_id_idx ON subproject_users USING btree(user_id);
 CREATE INDEX IF NOT EXISTS subproject_users_label_idx ON subproject_users USING btree(label);
+ALTER TABLE subproject_users
+ADD CONSTRAINT subproject_users_subproject_id_user_id_unique UNIQUE (subproject_id, user_id);
 
-COMMENT ON COLUMN subproject_users.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN subproject_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
+
+COMMENT ON COLUMN subproject_users.role IS 'One of: "reader", "writer", "designer", "owner". Preset: "reader"';
 COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects (without giving them access to the whole project). TODO: define what data from the project the user can see.';
 
 --------------------------------------------------------------
@@ -484,7 +478,6 @@ language plpgsql;
 
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type taxonomy_types_enum DEFAULT NULL,
   unit_id uuid DEFAULT NULL, -- FK to units added below after units table
@@ -506,7 +499,6 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
 CREATE INDEX IF NOT EXISTS taxonomies_project_id_idx ON taxonomies USING btree(project_id);
 CREATE INDEX IF NOT EXISTS taxonomies_type_idx ON taxonomies USING btree(type);
 CREATE INDEX IF NOT EXISTS taxonomies_unit_id_idx ON taxonomies USING btree(unit_id);
@@ -517,7 +509,6 @@ WHERE
   obsolete;
 
 COMMENT ON TABLE taxonomies IS 'A taxonomy is a list of taxa (species or biotopes).';
-COMMENT ON COLUMN taxonomies.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN taxonomies.type IS 'One of: "species", "biotope". Preset: "species"';
 COMMENT ON COLUMN taxonomies.unit_id IS 'Unit of taxonomy. Helps analysing data for reporting. Examples: "abundance class", "percent cover". If no unit is set, the taxonomy is assumed to describe presence only.';
 COMMENT ON COLUMN taxonomies.name IS 'Shortish name of taxonomy, like "Flora der Schweiz, 1995"';
@@ -530,7 +521,6 @@ COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined i
 --
 CREATE TABLE IF NOT EXISTS taxa(
   taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
@@ -543,13 +533,11 @@ CREATE TABLE IF NOT EXISTS taxa(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS taxa_account_id_idx ON taxa USING btree(account_id);
 CREATE INDEX IF NOT EXISTS taxa_taxonomy_id_idx ON taxa USING btree(taxonomy_id);
 CREATE INDEX IF NOT EXISTS taxa_name_idx ON taxa USING btree(name);
 CREATE INDEX IF NOT EXISTS taxa_label_idx ON taxa USING btree(label);
 
 COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
-COMMENT ON COLUMN taxa.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN taxa.id_in_source IS 'ID of taxon as used in the source taxonomy';
 COMMENT ON COLUMN taxa.data IS 'Data as received from source';
 COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
@@ -559,7 +547,6 @@ COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/f
 --
 CREATE TABLE IF NOT EXISTS subproject_taxa(
   subproject_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
@@ -569,13 +556,11 @@ CREATE TABLE IF NOT EXISTS subproject_taxa(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS subproject_taxa_account_id_idx ON subproject_taxa USING btree(account_id);
 CREATE INDEX IF NOT EXISTS subproject_taxa_subproject_id_idx ON subproject_taxa USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS subproject_taxa_taxon_id_idx ON subproject_taxa USING btree(taxon_id);
 CREATE INDEX IF NOT EXISTS subproject_taxa_label_idx ON subproject_taxa USING btree(label);
 
 COMMENT ON TABLE subproject_taxa IS 'list wor what taxa data is managed in the subproject.';
-COMMENT ON COLUMN subproject_taxa.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN subproject_taxa.taxon_id IS 'List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject.';
 
 --------------------------------------------------------------
@@ -586,7 +571,6 @@ CREATE TYPE list_value_types_enum AS ENUM ('integer', 'numeric', 'text', 'date',
 
 CREATE TABLE IF NOT EXISTS lists(
   list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   value_type list_value_types_enum DEFAULT NULL,
@@ -599,7 +583,6 @@ CREATE TABLE IF NOT EXISTS lists(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS lists_account_id_idx ON lists USING btree(account_id);
 CREATE INDEX IF NOT EXISTS lists_project_id_idx ON lists USING btree(project_id);
 CREATE INDEX IF NOT EXISTS lists_name_idx ON lists USING btree(name);
 CREATE INDEX IF NOT EXISTS lists_label_idx ON lists USING btree(label);
@@ -608,7 +591,6 @@ WHERE
   obsolete;
 
 COMMENT ON TABLE lists IS 'Manage lists of values. These lists can then be used on option-lists or dropdown-lists';
-COMMENT ON COLUMN lists.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
 COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values but dont let user pick one. Preset: false';
 
@@ -617,7 +599,6 @@ COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values bu
 --
 CREATE TABLE IF NOT EXISTS list_values(
   list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   value_integer integer DEFAULT NULL,
   value_numeric numeric DEFAULT NULL,
@@ -632,14 +613,12 @@ CREATE TABLE IF NOT EXISTS list_values(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS list_values_account_id_idx ON list_values USING btree(account_id);
 CREATE INDEX IF NOT EXISTS list_values_list_id_idx ON list_values USING btree(list_id);
 CREATE INDEX IF NOT EXISTS list_values_label_idx ON list_values USING btree(label);
 CREATE INDEX IF NOT EXISTS list_values_obsolete_idx ON list_values((1))
 WHERE
   obsolete;
 
-COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data safety';
 
 --------------------------------------------------------------
 -- units
@@ -648,7 +627,6 @@ CREATE TYPE unit_types_enum AS ENUM ('integer', 'numeric', 'text');
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
@@ -662,7 +640,6 @@ CREATE TABLE IF NOT EXISTS units(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS units_account_id_idx ON units USING btree(account_id);
 CREATE INDEX IF NOT EXISTS units_project_id_idx ON units USING btree(project_id);
 CREATE INDEX IF NOT EXISTS units_name_idx ON units USING btree(name);
 CREATE INDEX IF NOT EXISTS units_sort_idx ON units USING btree(sort);
@@ -670,7 +647,6 @@ CREATE INDEX IF NOT EXISTS units_label_idx ON units USING btree(label);
 CREATE INDEX IF NOT EXISTS units_list_id_idx ON units USING btree(list_id);
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
-COMMENT ON COLUMN units.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN units.name IS 'Name of unit, like "Anzahl"';
 COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed (also: averaged). Else: distribution of count per value. Preset: false';
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
@@ -689,7 +665,6 @@ ALTER TABLE projects ADD CONSTRAINT projects_place_action_reports_default_unit_i
 --
 CREATE TABLE IF NOT EXISTS places(
   place_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
@@ -707,7 +682,6 @@ CREATE TABLE IF NOT EXISTS places(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS places_account_id_idx ON places USING btree(account_id);
 CREATE INDEX IF NOT EXISTS places_subproject_id_idx ON places USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS places_parent_id_idx ON places USING btree(parent_id);
 CREATE INDEX IF NOT EXISTS places_level_idx ON places USING btree(level);
@@ -717,7 +691,6 @@ CREATE INDEX IF NOT EXISTS places_data_idx ON places USING gin(data);
 CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gist(geometry);
 
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
-COMMENT ON COLUMN places.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN places.subproject_id IS 'always set to optimize queries';
 COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1';
 COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
@@ -735,7 +708,6 @@ COMMENT ON COLUMN places.relevant_for_reports IS 'Whether place is relevant for 
 --
 CREATE TABLE IF NOT EXISTS actions(
   action_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
@@ -749,7 +721,6 @@ CREATE TABLE IF NOT EXISTS actions(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS actions_account_id_idx ON actions USING btree(account_id);
 CREATE INDEX IF NOT EXISTS actions_place_id_idx ON actions USING btree(place_id);
 CREATE INDEX IF NOT EXISTS actions_date_idx ON actions USING btree(date);
 CREATE INDEX IF NOT EXISTS actions_label_idx ON actions USING btree(label);
@@ -757,7 +728,6 @@ CREATE INDEX IF NOT EXISTS actions_data_idx ON actions USING gin(data);
 CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gist(geometry);
 
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
-COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
 COMMENT ON COLUMN actions.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
@@ -768,7 +738,6 @@ COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant fo
 --
 CREATE TABLE IF NOT EXISTS action_quantities(
   action_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   quantity_integer integer DEFAULT NULL,
@@ -781,7 +750,6 @@ CREATE TABLE IF NOT EXISTS action_quantities(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS action_quantities_account_id_idx ON action_quantities USING btree(account_id);
 CREATE INDEX IF NOT EXISTS action_quantities_action_id_idx ON action_quantities USING btree(action_id);
 CREATE INDEX IF NOT EXISTS action_quantities_unit_id_idx ON action_quantities USING btree(unit_id);
 CREATE INDEX IF NOT EXISTS action_quantities_quantity_integer_idx ON action_quantities USING btree(quantity_integer);
@@ -790,7 +758,6 @@ CREATE INDEX IF NOT EXISTS action_quantities_quantity_text_idx ON action_quantit
 CREATE INDEX IF NOT EXISTS action_quantities_label_idx ON action_quantities USING btree(label);
 
 COMMENT ON TABLE action_quantities IS 'Quantities of actions. Measuring or assessing';
-COMMENT ON COLUMN action_quantities.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN action_quantities.quantity_integer IS 'Used for integer quantities';
 COMMENT ON COLUMN action_quantities.quantity_numeric IS 'Used for numeric quantities';
 COMMENT ON COLUMN action_quantities.quantity_text IS 'Used for text quantities';
@@ -800,7 +767,6 @@ COMMENT ON COLUMN action_quantities.quantity_text IS 'Used for text quantities';
 --
 CREATE TABLE IF NOT EXISTS action_taxa(
   action_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -814,7 +780,6 @@ CREATE TABLE IF NOT EXISTS action_taxa(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS action_taxa_account_id_idx ON action_taxa USING btree(account_id);
 CREATE INDEX IF NOT EXISTS action_taxa_action_id_idx ON action_taxa USING btree(action_id);
 CREATE INDEX IF NOT EXISTS action_taxa_taxon_id_idx ON action_taxa USING btree(taxon_id);
 CREATE INDEX IF NOT EXISTS action_taxa_unit_id_idx ON action_taxa USING btree(unit_id);
@@ -823,14 +788,12 @@ CREATE INDEX IF NOT EXISTS action_taxa_quantity_numeric_idx ON action_taxa USING
 CREATE INDEX IF NOT EXISTS action_taxa_quantity_text_idx ON action_taxa USING btree(quantity_text);
 CREATE INDEX IF NOT EXISTS action_taxa_label_idx ON action_taxa USING btree(label);
 
-COMMENT ON COLUMN action_taxa.account_id IS 'redundant account_id enhances data safety';
 
 --------------------------------------------------------------
 -- checks
 --
 CREATE TABLE IF NOT EXISTS checks(
   check_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
@@ -844,7 +807,6 @@ CREATE TABLE IF NOT EXISTS checks(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS checks_account_id_idx ON checks USING btree(account_id);
 CREATE INDEX IF NOT EXISTS checks_place_id_idx ON checks USING btree(place_id);
 CREATE INDEX IF NOT EXISTS checks_date_idx ON checks USING btree(date);
 CREATE INDEX IF NOT EXISTS checks_label_idx ON checks USING btree(label);
@@ -852,7 +814,6 @@ CREATE INDEX IF NOT EXISTS checks_data_idx ON checks USING gin(data);
 CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gist(geometry);
 
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
-COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
 COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
@@ -861,7 +822,6 @@ COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every
 --
 CREATE TABLE IF NOT EXISTS check_quantities(
   check_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   -- with this reference to "on update cascade", when setting unit_id, live_query re-execution fails with memory error
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
@@ -875,7 +835,6 @@ CREATE TABLE IF NOT EXISTS check_quantities(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS check_quantities_account_id_idx ON check_quantities USING btree(account_id);
 CREATE INDEX IF NOT EXISTS check_quantities_check_id_idx ON check_quantities USING btree(check_id);
 CREATE INDEX IF NOT EXISTS check_quantities_unit_id_idx ON check_quantities USING btree(unit_id);
 CREATE INDEX IF NOT EXISTS check_quantities_quantity_integer_idx ON check_quantities USING btree(quantity_integer);
@@ -884,7 +843,6 @@ CREATE INDEX IF NOT EXISTS check_quantities_quantity_text_idx ON check_quantitie
 CREATE INDEX IF NOT EXISTS check_quantities_label_idx ON check_quantities USING btree(label);
 
 COMMENT ON TABLE check_quantities IS 'Quantities of checks i.e. the situation of the subproject in this place';
-COMMENT ON COLUMN check_quantities.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN check_quantities.quantity_integer IS 'Used for integer quantities';
 COMMENT ON COLUMN check_quantities.quantity_numeric IS 'Used for numeric quantities';
 COMMENT ON COLUMN check_quantities.quantity_text IS 'Used for text quantities';
@@ -894,7 +852,6 @@ COMMENT ON COLUMN check_quantities.quantity_text IS 'Used for text quantities';
 --
 CREATE TABLE IF NOT EXISTS check_taxa(
   check_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -908,7 +865,6 @@ CREATE TABLE IF NOT EXISTS check_taxa(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS check_taxa_account_id_idx ON check_taxa USING btree(account_id);
 CREATE INDEX IF NOT EXISTS check_taxa_check_id_idx ON check_taxa USING btree(check_id);
 CREATE INDEX IF NOT EXISTS check_taxa_taxon_id_idx ON check_taxa USING btree(taxon_id);
 CREATE INDEX IF NOT EXISTS check_taxa_unit_id_idx ON check_taxa USING btree(unit_id);
@@ -917,14 +873,12 @@ CREATE INDEX IF NOT EXISTS check_taxa_quantity_numeric_idx ON check_taxa USING b
 CREATE INDEX IF NOT EXISTS check_taxa_quantity_text_idx ON check_taxa USING btree(quantity_text);
 CREATE INDEX IF NOT EXISTS check_taxa_label_idx ON check_taxa USING btree(label);
 
-COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
 
 --------------------------------------------------------------
 -- check_reports
 --
 CREATE TABLE IF NOT EXISTS check_reports(
   place_check_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -935,13 +889,11 @@ CREATE TABLE IF NOT EXISTS check_reports(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS check_reports_account_id_idx ON check_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS check_reports_place_id_idx ON check_reports USING btree(place_id);
 CREATE INDEX IF NOT EXISTS check_reports_year_idx ON check_reports USING btree(year);
 CREATE INDEX IF NOT EXISTS check_reports_label_idx ON check_reports USING btree(label);
 
 COMMENT ON TABLE check_reports IS 'Reporting on the situation of the subproject in this place during checks.';
-COMMENT ON COLUMN check_reports.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN check_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN check_reports.data IS 'Room for place check report specific data, defined in "fields" table';
 
@@ -950,7 +902,6 @@ COMMENT ON COLUMN check_reports.data IS 'Room for place check report specific da
 --
 CREATE TABLE IF NOT EXISTS check_report_quantities(
   place_check_report_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_check_report_id uuid DEFAULT NULL REFERENCES check_reports(place_check_report_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
   quantity_integer integer DEFAULT NULL,
@@ -963,7 +914,6 @@ CREATE TABLE IF NOT EXISTS check_report_quantities(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS check_report_quantities_account_id_idx ON check_report_quantities USING btree(account_id);
 CREATE INDEX IF NOT EXISTS check_report_quantities_place_check_report_id_idx ON check_report_quantities USING btree(place_check_report_id);
 CREATE INDEX IF NOT EXISTS check_report_quantities_unit_id_idx ON check_report_quantities USING btree(unit_id);
 CREATE INDEX IF NOT EXISTS check_report_quantities_quantity_integer_idx ON check_report_quantities USING btree(quantity_integer);
@@ -972,7 +922,6 @@ CREATE INDEX IF NOT EXISTS check_report_quantities_quantity_text_idx ON check_re
 CREATE INDEX IF NOT EXISTS check_report_quantities_label_idx ON check_report_quantities USING btree(label);
 
 COMMENT ON TABLE check_report_quantities IS 'Quantities of place check reports';
-COMMENT ON COLUMN check_report_quantities.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN check_report_quantities.quantity_integer IS 'Used for integer quantities';
 COMMENT ON COLUMN check_report_quantities.quantity_numeric IS 'Used for numeric quantities';
 COMMENT ON COLUMN check_report_quantities.quantity_text IS 'Used for text quantities';
@@ -982,7 +931,6 @@ COMMENT ON COLUMN check_report_quantities.quantity_text IS 'Used for text quanti
 --
 CREATE TABLE IF NOT EXISTS action_reports(
   place_action_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -993,13 +941,11 @@ CREATE TABLE IF NOT EXISTS action_reports(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS place_action_reports_account_id_idx ON action_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS place_action_reports_place_id_idx ON action_reports USING btree(place_id);
 CREATE INDEX IF NOT EXISTS place_action_reports_year_idx ON action_reports USING btree(year);
 CREATE INDEX IF NOT EXISTS place_action_reports_label_idx ON action_reports USING btree(label);
 
 COMMENT ON TABLE action_reports IS 'Reporting on actions taken in this place.';
-COMMENT ON COLUMN action_reports.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN action_reports.data IS 'Room for place action report specific data, defined in "fields" table';
 
@@ -1008,7 +954,6 @@ COMMENT ON COLUMN action_reports.data IS 'Room for place action report specific 
 --
 CREATE TABLE IF NOT EXISTS action_report_quantities(
   place_action_report_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_action_report_id uuid DEFAULT NULL REFERENCES action_reports(place_action_report_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
   quantity_integer integer DEFAULT NULL,
@@ -1021,7 +966,6 @@ CREATE TABLE IF NOT EXISTS action_report_quantities(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS place_action_report_quantities_account_id_idx ON action_report_quantities USING btree(account_id);
 CREATE INDEX IF NOT EXISTS place_action_report_quantities_place_action_report_id_idx ON action_report_quantities USING btree(place_action_report_id);
 CREATE INDEX IF NOT EXISTS place_action_report_quantities_unit_id_idx ON action_report_quantities USING btree(unit_id);
 CREATE INDEX IF NOT EXISTS place_action_report_quantities_quantity_integer_idx ON action_report_quantities USING btree(quantity_integer);
@@ -1030,7 +974,6 @@ CREATE INDEX IF NOT EXISTS place_action_report_quantities_quantity_text_idx ON a
 CREATE INDEX IF NOT EXISTS place_action_report_quantities_label_idx ON action_report_quantities USING btree(label);
 
 COMMENT ON TABLE action_report_quantities IS 'Quantities of place action reports';
-COMMENT ON COLUMN action_report_quantities.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN action_report_quantities.quantity_integer IS 'Used for integer quantities';
 COMMENT ON COLUMN action_report_quantities.quantity_numeric IS 'Used for numeric quantities';
 COMMENT ON COLUMN action_report_quantities.quantity_text IS 'Used for text quantities';
@@ -1057,7 +1000,6 @@ COMMENT ON TABLE messages IS 'System messages for users. No history tracking nee
 --
 CREATE TABLE IF NOT EXISTS user_messages(
   user_message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   read boolean DEFAULT FALSE,
@@ -1075,7 +1017,6 @@ CREATE INDEX IF NOT EXISTS user_messages_message_id_idx ON user_messages USING b
 --
 CREATE TABLE IF NOT EXISTS place_users(
   place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT 'reader',
@@ -1086,21 +1027,21 @@ CREATE TABLE IF NOT EXISTS place_users(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS place_users_account_id_idx ON place_users USING btree(account_id);
 CREATE INDEX IF NOT EXISTS place_users_place_id_idx ON place_users USING btree(place_id);
 CREATE INDEX IF NOT EXISTS place_users_user_id_idx ON place_users USING btree(user_id);
 CREATE INDEX IF NOT EXISTS place_users_label_idx ON place_users USING btree(label);
+ALTER TABLE place_users
+ADD CONSTRAINT place_users_place_id_user_id_unique UNIQUE (place_id, user_id);
+
 
 COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
-COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data safety';
-COMMENT ON COLUMN place_users.role IS 'One of: "manager", "editor", "reader". Preset: "reader"';
+COMMENT ON COLUMN place_users.role IS 'One of: "reader", "writer", "designer", "owner". Preset: "reader"';
 
 --------------------------------------------------------------
 -- goals
 --
 CREATE TABLE IF NOT EXISTS goals(
   goal_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
@@ -1118,20 +1059,17 @@ CREATE TABLE IF NOT EXISTS goals(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS goals_account_id_idx ON goals USING btree(account_id);
 CREATE INDEX IF NOT EXISTS goals_subproject_id_idx ON goals USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS goals_year_idx ON goals USING btree(year);
 CREATE INDEX IF NOT EXISTS goals_label_idx ON goals USING btree(label);
 
 COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
-COMMENT ON COLUMN goals.account_id IS 'redundant account_id enhances data safety';
 
 --------------------------------------------------------------
 -- goal_reports
 --
 CREATE TABLE IF NOT EXISTS goal_reports(
   goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   data jsonb DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1141,12 +1079,10 @@ CREATE TABLE IF NOT EXISTS goal_reports(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS goal_reports_account_id_idx ON goal_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS goal_reports_goal_id_idx ON goal_reports USING btree(goal_id);
 CREATE INDEX IF NOT EXISTS goal_reports_label_idx ON goal_reports USING btree(label);
 
 COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
-COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
 
 --------------------------------------------------------------
@@ -1154,7 +1090,6 @@ COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defi
 --
 CREATE TABLE IF NOT EXISTS subproject_reports(
   subproject_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -1165,13 +1100,11 @@ CREATE TABLE IF NOT EXISTS subproject_reports(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS subproject_reports_account_id_idx ON subproject_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS subproject_reports_subproject_id_idx ON subproject_reports USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS subproject_reports_year_idx ON subproject_reports USING btree(year);
 CREATE INDEX IF NOT EXISTS subproject_reports_label_idx ON subproject_reports USING btree(label);
 
 COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
-COMMENT ON COLUMN subproject_reports.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
 
@@ -1180,7 +1113,6 @@ COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specifi
 --
 CREATE TABLE IF NOT EXISTS subproject_report_designs(
   subproject_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_report_design_id::text)) STORED,
@@ -1193,13 +1125,11 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   CONSTRAINT unique_subproject_report_design_name UNIQUE NULLS NOT DISTINCT(project_id, name)
 );
 
-CREATE INDEX IF NOT EXISTS subproject_report_designs_account_id_idx ON subproject_report_designs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS subproject_report_designs_project_id_idx ON subproject_report_designs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS subproject_report_designs_label_idx ON subproject_report_designs USING btree(label);
 CREATE UNIQUE INDEX IF NOT EXISTS subproject_report_designs_one_active_idx ON subproject_report_designs (project_id) WHERE active = TRUE;
 
 COMMENT ON TABLE subproject_report_designs IS 'Design of subproject reports, stored as JSON.';
-COMMENT ON COLUMN subproject_report_designs.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN subproject_report_designs.active IS 'Whether this design is the active one in use. Only one design per project may be active. Preset: false.';
 COMMENT ON COLUMN subproject_report_designs.design IS 'JSON design of the subproject report.';
 
@@ -1209,7 +1139,6 @@ COMMENT ON COLUMN subproject_report_designs.design IS 'JSON design of the subpro
 --
 CREATE TABLE IF NOT EXISTS project_reports(
   project_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -1220,13 +1149,11 @@ CREATE TABLE IF NOT EXISTS project_reports(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS project_reports_account_id_idx ON project_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_reports_project_id_idx ON project_reports USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_reports_year_idx ON project_reports USING btree(year);
 CREATE INDEX IF NOT EXISTS project_reports_label_idx ON project_reports USING btree(label);
 
 COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
-COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
 
@@ -1241,7 +1168,6 @@ COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data
 --
 CREATE TABLE IF NOT EXISTS project_report_subdesigns(
   project_report_subdesign_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   design jsonb DEFAULT NULL,
@@ -1252,12 +1178,10 @@ CREATE TABLE IF NOT EXISTS project_report_subdesigns(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS project_report_subdesigns_account_id_idx ON project_report_subdesigns USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_report_subdesigns_project_id_idx ON project_report_subdesigns USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_report_subdesigns_label_idx ON project_report_subdesigns USING btree(label);
 
 COMMENT ON TABLE project_report_subdesigns IS 'Customizable subdesigns for project reports, stored as JSON.';
-COMMENT ON COLUMN project_report_subdesigns.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN project_report_subdesigns.design IS 'JSON design of the project report subdesign.';
 
 
@@ -1266,7 +1190,6 @@ COMMENT ON COLUMN project_report_subdesigns.design IS 'JSON design of the projec
 --
 CREATE TABLE IF NOT EXISTS project_report_designs(
   project_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_design_id::text)) STORED,
@@ -1279,13 +1202,11 @@ CREATE TABLE IF NOT EXISTS project_report_designs(
   CONSTRAINT unique_project_report_design_name UNIQUE NULLS NOT DISTINCT(project_id, name)
 );
 
-CREATE INDEX IF NOT EXISTS project_report_designs_account_id_idx ON project_report_designs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_report_designs_project_id_idx ON project_report_designs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_report_designs_label_idx ON project_report_designs USING btree(label);
 CREATE UNIQUE INDEX IF NOT EXISTS project_report_designs_one_active_idx ON project_report_designs (project_id) WHERE active = TRUE;
 
 COMMENT ON TABLE project_report_designs IS 'Customizable designs for project reports, stored as JSON.';
-COMMENT ON COLUMN project_report_designs.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN project_report_designs.active IS 'Whether this design is the active one in use. Only one design per project may be active. Preset: false.';
 COMMENT ON COLUMN project_report_designs.design IS 'JSON design of the project report design.';
 
@@ -1295,7 +1216,6 @@ COMMENT ON COLUMN project_report_designs.design IS 'JSON design of the project r
 --
 CREATE TABLE IF NOT EXISTS files(
   file_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1320,7 +1240,6 @@ CREATE TABLE IF NOT EXISTS files(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS files_account_id_idx ON files USING btree(account_id);
 CREATE INDEX IF NOT EXISTS files_project_id_idx ON files USING btree(project_id);
 CREATE INDEX IF NOT EXISTS files_subproject_id_idx ON files USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS files_place_id_idx ON files USING btree(place_id);
@@ -1330,7 +1249,6 @@ CREATE INDEX IF NOT EXISTS files_label_idx ON files USING btree(label);
 CREATE INDEX IF NOT EXISTS files_name_idx ON files USING btree(name);
 
 COMMENT ON TABLE files IS 'used to store files.';
-COMMENT ON COLUMN files.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields" table';
 COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
 COMMENT ON COLUMN files.file IS 'file content';
@@ -1407,7 +1325,6 @@ COMMENT ON TABLE widgets_for_fields IS 'Mapping of field types to widget types. 
 CREATE TABLE IF NOT EXISTS fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   level integer DEFAULT 1,
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1432,7 +1349,6 @@ CREATE TABLE IF NOT EXISTS fields(
 );
 
 CREATE INDEX IF NOT EXISTS fields_project_id_idx ON fields USING btree(project_id);
-CREATE INDEX IF NOT EXISTS fields_account_id_idx ON fields USING btree(account_id);
 CREATE INDEX IF NOT EXISTS fields_table_name_idx ON fields USING btree(table_name);
 CREATE INDEX IF NOT EXISTS fields_level_idx ON fields USING btree(level);
 CREATE INDEX IF NOT EXISTS fields_field_type_id_idx ON fields USING btree(field_type_id);
@@ -1445,7 +1361,6 @@ WHERE
   obsolete;
 
 COMMENT ON TABLE fields IS 'Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.';
-COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used inside the jsob field "data"';
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
@@ -1458,7 +1373,6 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE IF NOT EXISTS field_sorts(
   field_sort_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   sorted_field_ids uuid[] DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
@@ -1469,7 +1383,6 @@ CREATE TABLE IF NOT EXISTS field_sorts(
 );
 
 CREATE INDEX IF NOT EXISTS field_sorts_project_id_idx ON field_sorts USING btree(project_id);
-CREATE INDEX IF NOT EXISTS field_sorts_account_id_idx ON field_sorts USING btree(account_id);
 CREATE INDEX IF NOT EXISTS field_sorts_table_name_idx ON field_sorts USING btree(table_name);
 CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING gin(sorted_field_ids);
 
@@ -1482,7 +1395,6 @@ CREATE TYPE observation_imports_geometry_methods_enum AS ENUM ('coordinates', 'g
 
 CREATE TABLE IF NOT EXISTS observation_imports(
   observation_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   created_time timestamptz DEFAULT now(),
   inserted_count integer DEFAULT NULL,
@@ -1507,7 +1419,6 @@ CREATE TABLE IF NOT EXISTS observation_imports(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS observation_imports_account_id_idx ON observation_imports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS observation_imports_subproject_id_idx ON observation_imports USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS observation_imports_created_time_idx ON observation_imports USING btree(created_time);
 CREATE INDEX IF NOT EXISTS observation_imports_previous_import_idx ON observation_imports USING btree(previous_import);
@@ -1524,7 +1435,6 @@ COMMENT ON COLUMN observation_imports.gbif_filters IS 'area, groups, speciesKeys
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 CREATE TABLE IF NOT EXISTS observations(
   observation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   observation_import_id uuid DEFAULT NULL REFERENCES observation_imports(observation_import_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   not_to_assign boolean DEFAULT FALSE, -- TODO: index?,
@@ -1539,7 +1449,6 @@ CREATE TABLE IF NOT EXISTS observations(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS observations_account_id_idx ON observations USING btree(account_id);
 CREATE INDEX IF NOT EXISTS observations_observation_import_id_idx ON observations USING btree(observation_import_id);
 CREATE INDEX IF NOT EXISTS observations_place_id_idx ON observations USING btree(place_id);
 CREATE INDEX IF NOT EXISTS observations_label_idx ON observations USING btree(label);
@@ -1558,7 +1467,6 @@ COMMENT ON COLUMN observations.label IS 'label of observation, used to show it i
 --
 CREATE TABLE IF NOT EXISTS wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   url text DEFAULT NULL,
   image_formats jsonb DEFAULT NULL, -- available image formats. text array
@@ -1574,7 +1482,6 @@ CREATE TABLE IF NOT EXISTS wms_services(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS wms_services_account_id_idx ON wms_services USING btree(account_id);
 CREATE INDEX IF NOT EXISTS wms_services_project_id_idx ON wms_services USING btree(project_id);
 CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url);
 CREATE INDEX IF NOT EXISTS wms_services_label_idx ON wms_services USING btree(label);
@@ -1584,7 +1491,6 @@ CREATE INDEX IF NOT EXISTS wms_services_label_idx ON wms_services USING btree(la
 --
 CREATE TABLE IF NOT EXISTS wms_service_layers(
   wms_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1607,7 +1513,6 @@ CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_
 -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
 CREATE TABLE IF NOT EXISTS wms_layers(
   wms_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
@@ -1620,7 +1525,6 @@ CREATE TABLE IF NOT EXISTS wms_layers(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS wms_layers_account_id_idx ON wms_layers USING btree(account_id);
 CREATE INDEX IF NOT EXISTS wms_layers_project_id_idx ON wms_layers USING btree(project_id);
 CREATE INDEX IF NOT EXISTS wms_layers_wms_service_id_idx ON wms_layers USING btree(wms_service_id);
 CREATE INDEX IF NOT EXISTS wms_layers_wms_service_layer_name_idx ON wms_layers USING btree(wms_service_layer_name);
@@ -1634,7 +1538,6 @@ COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their siz
 --
 CREATE TABLE IF NOT EXISTS wfs_services(
   wfs_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   url text DEFAULT NULL,
   version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
@@ -1648,7 +1551,6 @@ CREATE TABLE IF NOT EXISTS wfs_services(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS wfs_services_account_id_idx ON wfs_services USING btree(account_id);
 CREATE INDEX IF NOT EXISTS wfs_services_project_id_idx ON wfs_services USING btree(project_id);
 CREATE INDEX IF NOT EXISTS wfs_services_url_idx ON wfs_services USING btree(url);
 CREATE INDEX IF NOT EXISTS wfs_services_label_idx ON wfs_services USING btree(label);
@@ -1661,7 +1563,6 @@ COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbo
 --
 CREATE TABLE IF NOT EXISTS wfs_service_layers(
   wfs_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1695,7 +1596,6 @@ CREATE TYPE vector_layer_own_tables_enum AS ENUM (
 
 CREATE TABLE IF NOT EXISTS vector_layers(
   vector_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type vector_layer_types_enum DEFAULT NULL,
@@ -1718,7 +1618,6 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   CONSTRAINT vector_layer_labels_should_be_unique_in_project UNIQUE(project_id, label)
 );
 
-CREATE INDEX IF NOT EXISTS vector_layers_account_id_idx ON vector_layers USING btree(account_id);
 CREATE INDEX IF NOT EXISTS vector_layers_label_idx ON vector_layers USING btree(label);
 CREATE INDEX IF NOT EXISTS vector_layers_project_id_idx ON vector_layers USING btree(project_id);
 CREATE INDEX IF NOT EXISTS vector_layers_type_idx ON vector_layers USING btree(type);
@@ -1739,7 +1638,6 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 -- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
 CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   properties jsonb DEFAULT NULL,
@@ -1754,7 +1652,6 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS vector_layer_geoms_account_id_idx ON vector_layer_geoms USING btree(account_id);
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_vector_layer_id_idx ON vector_layer_geoms USING btree(vector_layer_id);
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gist(geometry);
 
@@ -1788,7 +1685,6 @@ CREATE TYPE vector_layer_fill_rules_enum AS ENUM (
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   display_property_value text DEFAULT NULL,
   marker_type vector_layer_marker_types_enum DEFAULT 'circle',
@@ -1814,7 +1710,6 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS vector_layer_displays_account_id_idx ON vector_layer_displays USING btree(account_id);
 CREATE INDEX IF NOT EXISTS vector_layer_displays_vector_layer_id_idx ON vector_layer_displays USING btree(vector_layer_id);
 CREATE INDEX IF NOT EXISTS vector_layer_displays_display_property_value_idx ON vector_layer_displays USING btree(display_property_value);
 CREATE INDEX IF NOT EXISTS vector_layer_displays_label_idx ON vector_layer_displays USING btree(label);
@@ -1841,7 +1736,6 @@ COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how 
 -- need a table to manage layer presentation for all layers (wms and vector)
 CREATE TABLE IF NOT EXISTS layer_presentations(
   layer_presentation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   active boolean DEFAULT FALSE,
@@ -1857,7 +1751,6 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS layer_presentations_account_id_idx ON layer_presentations USING btree(account_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_wms_layer_id_idx ON layer_presentations USING btree(wms_layer_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_vector_layer_id_idx ON layer_presentations USING btree(vector_layer_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations USING btree(active);
@@ -1878,7 +1771,6 @@ CREATE TYPE chart_types_enum AS ENUM (
 
 CREATE TABLE IF NOT EXISTS charts(
   chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1901,14 +1793,12 @@ CREATE TABLE IF NOT EXISTS charts(
 );
 
 CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
-CREATE INDEX IF NOT EXISTS charts_account_id_idx ON charts USING btree(account_id);
 CREATE INDEX IF NOT EXISTS charts_project_id_idx ON charts USING btree(project_id);
 CREATE INDEX IF NOT EXISTS charts_subproject_id_idx ON charts USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS charts_place_id_idx ON charts USING btree(place_id);
 CREATE INDEX IF NOT EXISTS charts_label_idx ON charts USING btree(label);
 
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
-COMMENT ON COLUMN charts.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN charts.years_current IS 'If has value: the chart shows only data of the current year';
 COMMENT ON COLUMN charts.years_previous IS 'If has value: the chart shows data of the previous year';
 COMMENT ON COLUMN charts.years_specific IS 'If has value: the chart shows data of the specific year';
@@ -1933,7 +1823,6 @@ CREATE TYPE chart_subject_types_enum AS ENUM ('linear', 'monotone');
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name chart_subject_table_names_enum DEFAULT NULL,
   table_level chart_subject_table_levels_enum DEFAULT '1', -- not relevant for subprojects 
@@ -1956,7 +1845,6 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
 );
 
 CREATE INDEX IF NOT EXISTS chart_subjects_chart_subject_id_idx ON chart_subjects USING btree(chart_subject_id);
-CREATE INDEX IF NOT EXISTS chart_subjects_account_id_idx ON chart_subjects USING btree(account_id);
 CREATE INDEX IF NOT EXISTS chart_subjects_chart_id_idx ON chart_subjects USING btree(chart_id);
 CREATE INDEX IF NOT EXISTS chart_subjects_table_name_idx ON chart_subjects USING btree(table_name);
 CREATE INDEX IF NOT EXISTS chart_subjects_table_level_idx ON chart_subjects USING btree(table_level);
@@ -1965,7 +1853,6 @@ CREATE INDEX IF NOT EXISTS chart_subjects_value_unit_idx ON chart_subjects USING
 CREATE INDEX IF NOT EXISTS chart_subjects_label_idx ON chart_subjects USING btree(label);
 
 COMMENT ON TABLE chart_subjects IS 'Subjects for charts. Or: what is shown in the chart';
-COMMENT ON COLUMN chart_subjects.account_id IS 'redundant account_id enhances data safety';
 COMMENT ON COLUMN chart_subjects.table_name IS 'The table to be used as data source';
 COMMENT ON COLUMN chart_subjects.table_level IS 'The level of the table to be used as data source. 1 or 2 (not relevant for subprojects)';
 COMMENT ON COLUMN chart_subjects.table_filter IS 'A filter that is applied to the table';
@@ -1980,7 +1867,6 @@ COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 --
 CREATE TABLE IF NOT EXISTS crs(
   crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
@@ -1991,7 +1877,6 @@ CREATE TABLE IF NOT EXISTS crs(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS crs_account_id_idx ON crs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS crs_code_idx ON crs USING btree(code);
 CREATE INDEX IF NOT EXISTS crs_label_idx ON crs USING btree(label);
 
@@ -2007,7 +1892,6 @@ CREATE TABLE IF NOT EXISTS project_crs(
   project_crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   crs_id uuid REFERENCES crs(crs_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
@@ -2018,7 +1902,6 @@ CREATE TABLE IF NOT EXISTS project_crs(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS project_crs_account_id_idx ON project_crs USING btree(account_id);
 CREATE INDEX IF NOT EXISTS project_crs_project_id_idx ON project_crs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_crs_code_idx ON project_crs USING btree(code);
 CREATE INDEX IF NOT EXISTS project_crs_label_idx ON project_crs USING btree(label);
@@ -2081,58 +1964,5 @@ CREATE INDEX IF NOT EXISTS qcs_assignment_qc_id_idx ON qcs_assignment USING btre
 CREATE INDEX IF NOT EXISTS qcs_assignment_label_idx ON qcs_assignment USING btree(label);
 
 COMMENT ON TABLE qcs_assignment IS 'Quality controls assigned to a project or subproject. The level(s) of applicability (root, project, subproject) are defined on the qcs table itself.';
-
---------------------------------------------------------------
--- Better Auth compatibility helpers
--- Keep id fields in sync with legacy primary key columns.
--- Better Auth writes/reads id while this schema historically used *_id.
---
-CREATE OR REPLACE FUNCTION sync_users_id_columns()
-RETURNS trigger
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  IF NEW.user_id IS NULL AND NEW.id IS NULL THEN
-    NEW.user_id := public.uuid_generate_v7();
-    NEW.id := NEW.user_id;
-  ELSIF NEW.user_id IS NULL THEN
-    NEW.user_id := NEW.id;
-  ELSIF NEW.id IS NULL THEN
-    NEW.id := NEW.user_id;
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
-DROP TRIGGER IF EXISTS sync_users_id_columns_trigger ON users;
-CREATE TRIGGER sync_users_id_columns_trigger
-BEFORE INSERT OR UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION sync_users_id_columns();
-
-CREATE OR REPLACE FUNCTION sync_auth_accounts_id_columns()
-RETURNS trigger
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  IF NEW.auth_account_id IS NULL AND NEW.id IS NULL THEN
-    NEW.auth_account_id := public.uuid_generate_v7();
-    NEW.id := NEW.auth_account_id;
-  ELSIF NEW.auth_account_id IS NULL THEN
-    NEW.auth_account_id := NEW.id;
-  ELSIF NEW.id IS NULL THEN
-    NEW.id := NEW.auth_account_id;
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
-DROP TRIGGER IF EXISTS sync_auth_accounts_id_columns_trigger ON auth_accounts;
-CREATE TRIGGER sync_auth_accounts_id_columns_trigger
-BEFORE INSERT OR UPDATE ON auth_accounts
-FOR EACH ROW
-EXECUTE FUNCTION sync_auth_accounts_id_columns();
 
 COMMIT;

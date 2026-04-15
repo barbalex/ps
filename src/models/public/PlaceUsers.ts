@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { PlacesPlaceId } from './Places.js';
 import type { UsersUserId } from './Users.js';
 import type { default as UserRolesEnum } from './UserRolesEnum.js';
@@ -13,14 +12,11 @@ export type PlaceUsersPlaceUserId = string & { __brand: 'public.place_users' };
 export default interface PlaceUsers {
   place_user_id: PlaceUsersPlaceUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
-
   place_id: PlacesPlaceId | null;
 
   user_id: UsersUserId | null;
 
-  /** One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role: UserRolesEnum | null;
 
   label: string | null;
@@ -43,15 +39,12 @@ export interface PlaceUsersInitializer {
   /** Default value: uuid_generate_v7() */
   place_user_id?: PlaceUsersPlaceUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   place_id?: PlacesPlaceId | null;
 
   user_id?: UsersUserId | null;
 
   /**
-   * One of: "manager", "editor", "reader". Preset: "reader"
+   * One of: "reader", "writer", "designer", "owner". Preset: "reader"
    * Default value: 'reader'::user_roles_enum
    */
   role?: UserRolesEnum | null;
@@ -77,14 +70,11 @@ export interface PlaceUsersInitializer {
 export interface PlaceUsersMutator {
   place_user_id?: PlaceUsersPlaceUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   place_id?: PlacesPlaceId | null;
 
   user_id?: UsersUserId | null;
 
-  /** One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role?: UserRolesEnum | null;
 
   label?: string | null;

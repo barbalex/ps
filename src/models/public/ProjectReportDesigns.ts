@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 
 /** Identifier type for public.project_report_designs */
@@ -10,9 +9,6 @@ export type ProjectReportDesignsProjectReportDesignId = string & { __brand: 'pub
  */
 export default interface ProjectReportDesigns {
   project_report_design_id: ProjectReportDesignsProjectReportDesignId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -43,9 +39,6 @@ export default interface ProjectReportDesigns {
 export interface ProjectReportDesignsInitializer {
   /** Default value: uuid_generate_v7() */
   project_report_design_id?: ProjectReportDesignsProjectReportDesignId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 
@@ -78,9 +71,6 @@ export interface ProjectReportDesignsInitializer {
  */
 export interface ProjectReportDesignsMutator {
   project_report_design_id?: ProjectReportDesignsProjectReportDesignId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

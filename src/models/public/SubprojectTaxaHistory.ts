@@ -5,8 +5,6 @@
 export default interface SubprojectTaxaHistory {
   subproject_taxon_id: string;
 
-  account_id: string | null;
-
   subproject_id: string | null;
 
   taxon_id: string | null;
@@ -30,8 +28,6 @@ export default interface SubprojectTaxaHistory {
 export interface SubprojectTaxaHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   subproject_taxon_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 
@@ -57,8 +53,6 @@ export interface SubprojectTaxaHistoryInitializer {
  */
 export interface SubprojectTaxaHistoryMutator {
   subproject_taxon_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 

@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ChartsChartId } from './Charts.js';
 import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum.js';
 import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum.js';
@@ -15,9 +14,6 @@ export type ChartSubjectsChartSubjectId = string & { __brand: 'public.chart_subj
  */
 export default interface ChartSubjects {
   chart_subject_id: ChartSubjectsChartSubjectId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   chart_id: ChartsChartId | null;
 
@@ -74,9 +70,6 @@ export default interface ChartSubjects {
 export interface ChartSubjectsInitializer {
   /** Default value: uuid_generate_v7() */
   chart_subject_id?: ChartSubjectsChartSubjectId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   chart_id?: ChartsChartId | null;
 
@@ -140,9 +133,6 @@ export interface ChartSubjectsInitializer {
  */
 export interface ChartSubjectsMutator {
   chart_subject_id?: ChartSubjectsChartSubjectId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   chart_id?: ChartsChartId | null;
 

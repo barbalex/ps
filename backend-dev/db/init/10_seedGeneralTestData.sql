@@ -1,5 +1,5 @@
 -- users
-INSERT INTO users(user_id, email) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com');
+INSERT INTO users(user_id, email, email_verified) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', TRUE);
 -- accounts
 INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');
 -- fieldTypes
@@ -10093,89 +10093,83 @@ INSERT INTO crs(crs_id, code, name, proj4) values ('019aeb6d-6cce-7000-9bd1-a732
 -- projects
 INSERT INTO projects(project_id, account_id, name, label, places_label_by, subproject_name_singular, subproject_name_plural, subproject_name_singular_en, subproject_name_plural_en, subproject_name_singular_fr, subproject_name_plural_fr, subproject_name_singular_it, subproject_name_plural_it) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'Demo Project', 'name', 'Art', 'Arten', 'Species', 'Species', 'Espèce', 'Espèces', 'Specie', 'Specie');
--- projectUsers
-INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
-('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');
 -- subprojects
 INSERT INTO subprojects(subproject_id, project_id, name) values 
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');
 -- seed three fields for subproject_reports: overview, development, outlook. For subproject '018cfd27-ee92-7000-b678-e75497d6c60e'
-INSERT INTO fields(account_id, project_id, field_id, table_name, name, field_label, field_type_id, widget_type_id) values
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000001', 'subproject_reports', 'overview', 'Overview', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000002', 'subproject_reports', 'development', 'Development', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000003', 'subproject_reports', 'outlook', 'Outlook', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538');
--- subprojctUsers
-INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
-('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');
+INSERT INTO fields(project_id, field_id, table_name, name, field_label, field_type_id, widget_type_id) values
+('018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000001', 'subproject_reports', 'overview', 'Overview', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
+('018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000002', 'subproject_reports', 'development', 'Development', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538'),
+('018cfcf7-6424-7000-a100-851c5cc2c878', '019429a0-0001-7000-8000-000000000003', 'subproject_reports', 'outlook', 'Outlook', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538');
 -- seed places twice so we don't have to set null values in parent_id
 -- reason: got unique constraint violation
 -- places 1
-INSERT INTO places(account_id, place_id, subproject_id, level, name, since, geometry) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '001 first', 2020, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.578262,47.558992],[8.504105,47.515888],[8.572769,47.516816],[8.578262,47.558992]]]},{"type":"LineString","coordinates":[[8.622894,47.519134],[8.604355,47.472749]]}]}')),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '002 second', 2021, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.615341,47.541394],[8.54805,47.526562],[8.54805,47.503842],[8.598862,47.519608],[8.615341,47.541394]]]}]}')),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '003 third', 2022, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[8.596802,47.544638]}]}')),
-('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-74cb-793a-9eb3-0f8da9ab9c85', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '004 fourth', 2020, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '005 fifth', 2020, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '006 sixth', 2018, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '007 seventh', 2021, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '008 eighth', 2020, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '008 nineth', 2020, null);
+INSERT INTO places(place_id, subproject_id, level, name, since, geometry) values 
+('018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '001 first', 2020, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.578262,47.558992],[8.504105,47.515888],[8.572769,47.516816],[8.578262,47.558992]]]},{"type":"LineString","coordinates":[[8.622894,47.519134],[8.604355,47.472749]]}]}')),
+('018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '002 second', 2021, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.615341,47.541394],[8.54805,47.526562],[8.54805,47.503842],[8.598862,47.519608],[8.615341,47.541394]]]}]}')),
+('018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '003 third', 2022, ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[8.596802,47.544638]}]}')),
+('01920a75-74cb-793a-9eb3-0f8da9ab9c85', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '004 fourth', 2020, null),
+('018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '005 fifth', 2020, null),
+('018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '006 sixth', 2018, null),
+('018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '007 seventh', 2021, null),
+('018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '008 eighth', 2020, null),
+('01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, '008 nineth', 2020, null);
 -- places 2
-INSERT INTO places(account_id, place_id, parent_id, subproject_id, level, name, since, geometry) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.01 first.first', 2020, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.02 first.second', 2021, null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.03 first.third', 2021, null);
+INSERT INTO places(place_id, parent_id, subproject_id, level, name, since, geometry) values 
+('018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.01 first.first', 2020, null),
+('018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.02 first.second', 2021, null),
+('018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, '01.03 first.third', 2021, null);
 -- checks
-INSERT INTO checks(account_id, check_id, place_id, date) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2025-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995b4', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-90f5-7ac4-aec1-e57d28076290', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-af3e-7e1c-b70f-ec40a32ae7d1', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-af3e-7e1c-b70f-ec40a32ae7d2', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2021-03-03');
+INSERT INTO checks(check_id, place_id, date) values 
+('018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2025-03-03'),
+('018df4ff-9124-73f4-95c1-497387b995b4', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
+('018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03'),
+('018df5da-90f5-7ac4-aec1-e57d28076290', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-03-03'),
+('018df5da-af3e-7e1c-b70f-ec40a32ae7d1', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03'),
+('018df5da-af3e-7e1c-b70f-ec40a32ae7d2', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2021-03-03');
 -- actions
-INSERT INTO actions(account_id, action_id, place_id, date) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-2799-7f91-824b-2470af893649', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2025-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-2799-7f91-824b-2470af893648', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-5495-7646-839c-2f037e50a72e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-04-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-7ba7-7977-8577-09c65aca4e70', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-a04e-719c-ae67-c4307e01d107', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2021-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-a04e-719c-ae67-c4307e01d106', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2020-03-03'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df982-a04e-719c-ae67-c4307e01d105', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2019-03-03');
+INSERT INTO actions(action_id, place_id, date) values 
+('018df982-2799-7f91-824b-2470af893649', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2025-03-03'),
+('018df982-2799-7f91-824b-2470af893648', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
+('018df982-5495-7646-839c-2f037e50a72e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-04-03'),
+('018df982-7ba7-7977-8577-09c65aca4e70', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03'),
+('018df982-a04e-719c-ae67-c4307e01d107', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2021-03-03'),
+('018df982-a04e-719c-ae67-c4307e01d106', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2020-03-03'),
+('018df982-a04e-719c-ae67-c4307e01d105', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2019-03-03');
 -- charts
-INSERT INTO charts(account_id, subproject_id, chart_id, chart_type, name, years_last_x) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'Area', 'Actions and Checks', 5),
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018e0434-030d-7451-a1fe-b9bb917a8c4c', 'Area', 'Populations', 5),
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', 'Area', 'Subpopulations', 5);
+INSERT INTO charts(subproject_id, chart_id, chart_type, name, years_last_x) values 
+('018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'Area', 'Actions and Checks', 5),
+('018cfd27-ee92-7000-b678-e75497d6c60e', '018e0434-030d-7451-a1fe-b9bb917a8c4c', 'Area', 'Populations', 5),
+('018cfd27-ee92-7000-b678-e75497d6c60e', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', 'Area', 'Subpopulations', 5);
 -- chartSubjects
-INSERT INTO chart_subjects(account_id, chart_id, chart_subject_id, table_name, table_level, name, calc_method, type, stroke, fill, connect_nulls) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', '1', 'Number of Checks', 'count_rows', 'monotone', '#FF0000', '#ffffff', true),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', '1', 'Number of Actions', 'count_rows', 'monotone', '#008000', '#ffffff', true),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0434-030d-7451-a1fe-b9bb917a8c4c', '018e0434-f652-7905-9872-345f9d53d164', 'places', '1', 'Number of Populations', 'count_rows', 'monotone', '#008000', '#008000', true),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', '018e0a31-c01d-7fe9-bd23-cd9085e60010', 'places', '2', 'Number of Subpopulations', 'count_rows', 'monotone', '#FF0000', '#FF0000', true);
+INSERT INTO chart_subjects(chart_id, chart_subject_id, table_name, table_level, name, calc_method, type, stroke, fill, connect_nulls) values 
+('018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', '1', 'Number of Checks', 'count_rows', 'monotone', '#FF0000', '#ffffff', true),
+('018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', '1', 'Number of Actions', 'count_rows', 'monotone', '#008000', '#ffffff', true),
+('018e0434-030d-7451-a1fe-b9bb917a8c4c', '018e0434-f652-7905-9872-345f9d53d164', 'places', '1', 'Number of Populations', 'count_rows', 'monotone', '#008000', '#008000', true),
+('018e0a30-ce91-7899-8daf-4c3a4b4ff414', '018e0a31-c01d-7fe9-bd23-cd9085e60010', 'places', '2', 'Number of Subpopulations', 'count_rows', 'monotone', '#FF0000', '#FF0000', true);
 -- taxonomies
-INSERT INTO taxonomies(account_id, project_id, name, taxonomy_id, type) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Taxonomy 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', 'species');
+INSERT INTO taxonomies(project_id, name, taxonomy_id, type) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Taxonomy 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', 'species');
 -- taxons
-INSERT INTO taxa(account_id, name, taxonomy_id, taxon_id) values 
-('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e'), 
-('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 2', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cff12-54b6-7c49-9553-b84f0624f7ba');
+INSERT INTO taxa(name, taxonomy_id, taxon_id) values 
+('Demo Taxon 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e'), 
+('Demo Taxon 2', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cff12-54b6-7c49-9553-b84f0624f7ba');
 -- units
-INSERT INTO units(project_id, account_id, name, unit_id, summable, type) values 
-('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Deckung in %', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, 'integer'), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Abundanzklasse', '018cff39-fcdd-7046-aa4f-49532086eb69', true, 'integer');
+INSERT INTO units(project_id, name, unit_id, summable, type) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', 'Deckung in %', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, 'integer'), ('018cfcf7-6424-7000-a100-851c5cc2c878', 'Abundanzklasse', '018cff39-fcdd-7046-aa4f-49532086eb69', true, 'integer');
 UPDATE projects SET check_taxa_default_unit_id = '018cff37-ece7-77b8-abe5-7cbe86b5dc88' WHERE project_id = '018cfcf7-6424-7000-a100-851c5cc2c878';
 -- placeLevels
-INSERT INTO place_levels(account_id, level, name_plural_en, name_singular_en, name_plural_de, name_singular_de, name_plural_fr, name_singular_fr, name_plural_it, name_singular_it, place_level_id, project_id, check_reports, check_report_quantities, actions, action_quantities, checks, check_quantities, check_taxa, observations) values 
-('018cf958-27e2-7000-90d3-59f024d467be', 1, 'Populations', 'Population', 'Populationen', 'Population', 'Populations', 'Population', 'Popolazioni', 'Popolazione', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', true, true, true, true, true, true, true, true),
-('018cf958-27e2-7000-90d3-59f024d467be', 2, 'Subpopulations', 'Subpopulation', 'Teil-Populationen', 'Teil-Population', 'Subpopulations', 'Subpopulation', 'Sottopopolazioni', 'Sottopopolazione', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', true, true, true, true, true, true, true, true);
+INSERT INTO place_levels(level, name_plural_en, name_singular_en, name_plural_de, name_singular_de, name_plural_fr, name_singular_fr, name_plural_it, name_singular_it, place_level_id, project_id, check_reports, check_report_quantities, actions, action_quantities, checks, check_quantities, check_taxa, observations) values 
+(1, 'Populations', 'Population', 'Populationen', 'Population', 'Populations', 'Population', 'Popolazioni', 'Popolazione', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', true, true, true, true, true, true, true, true),
+(2, 'Subpopulations', 'Subpopulation', 'Teil-Populationen', 'Teil-Population', 'Subpopulations', 'Subpopulation', 'Sottopopolazioni', 'Sottopopolazione', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', true, true, true, true, true, true, true, true);
 -- lists
 -- seed a list for Abundanzklasse units
-INSERT INTO lists(list_id, account_id, project_id, name, value_type) values
-('018cff3b-a100-7000-b000-000000000001', '018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Abundanzklasse', 'integer');
-INSERT INTO list_values(list_value_id, account_id, list_id, value_integer) values
-('018cff3b-a200-7000-b000-000000000001', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 1),
-('018cff3b-a200-7000-b000-000000000002', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 2),
-('018cff3b-a200-7000-b000-000000000003', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 3),
-('018cff3b-a200-7000-b000-000000000004', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 4),
-('018cff3b-a200-7000-b000-000000000005', '018cf958-27e2-7000-90d3-59f024d467be', '018cff3b-a100-7000-b000-000000000001', 5);
+INSERT INTO lists(list_id, project_id, name, value_type) values
+('018cff3b-a100-7000-b000-000000000001', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Abundanzklasse', 'integer');
+INSERT INTO list_values(list_value_id, list_id, value_integer) values
+('018cff3b-a200-7000-b000-000000000001', '018cff3b-a100-7000-b000-000000000001', 1),
+('018cff3b-a200-7000-b000-000000000002', '018cff3b-a100-7000-b000-000000000001', 2),
+('018cff3b-a200-7000-b000-000000000003', '018cff3b-a100-7000-b000-000000000001', 3),
+('018cff3b-a200-7000-b000-000000000004', '018cff3b-a100-7000-b000-000000000001', 4),
+('018cff3b-a200-7000-b000-000000000005', '018cff3b-a100-7000-b000-000000000001', 5);
 UPDATE units SET list_id = '018cff3b-a100-7000-b000-000000000001' WHERE unit_id = '018cff39-fcdd-7046-aa4f-49532086eb69';

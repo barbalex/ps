@@ -3,6 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 import type { IntlShape } from 'react-intl'
 import { constants } from './modules/constants.ts'
 import { uuidv7 } from '@kripod/uuidv7'
+import { checkWritePermission } from './modules/checkWritePermission.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()
@@ -97,9 +98,15 @@ export const showTreeMenusAtom = atom((get) => {
   return showTreeMenus
 })
 
-// TODO: check what this is good / used for. Seems no use now
-export const userIdAtom = atomWithStorage('userIdAtom', null)
-export const userEmailAtom = atomWithStorage('userEmailAtom', null)
+export const userIdAtom = atomWithStorage<string | null>('userIdAtom', null)
+export const userEmailAtom = atomWithStorage<string | null>(
+  'userEmailAtom',
+  null,
+)
+// Non-persisted flag: reset to false on every page load. Set to true once
+// getSession has been verified successfully so subsequent navigations skip
+// the network round-trip.
+export const sessionVerifiedAtom = atom(false)
 export const isAppAmin = atom(false)
 export const designingAtom = atomWithStorage('designingAtom', false)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
@@ -439,17 +446,84 @@ export const postgrestClientAtom = atom(null)
 // - draft: object with key-value pairs for the operation
 // - prev: object with key-value pairs of previous value for reverting the operation
 export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
+
+// Inline revert so store.ts doesn't need to import revertOperation.ts (which imports store.ts — circular)
+async function revertOperationInPlace(db, operation) {
+  const { table, rowIdName, rowId, operation: op, draft, prev } = operation
+  if (op === 'delete') return
+  if (op === 'insert') {
+    try {
+      await db.query(`DELETE FROM ${table} WHERE ${rowIdName} = $1`, [rowId])
+    } catch (e) {
+      console.error(
+        `revertOperationInPlace: error deleting row ${rowId} from ${table}:`,
+        e,
+      )
+    }
+    return
+  }
+  try {
+    let valuesSql = ''
+    Object.keys(draft).forEach((key, index) => {
+      valuesSql += `${key} = $${index + 1},`
+    })
+    const draftKeysLength = Object.keys(draft).length
+    const isUsersTable = table === 'users'
+    const args = [
+      ...Object.keys(draft).map((key) => prev[key]),
+      prev.updated_at,
+      ...(isUsersTable ? [] : [prev.updated_by]),
+      rowId,
+    ]
+    await db.query(
+      `UPDATE ${table} SET ${valuesSql} updated_at = $${draftKeysLength + 1}${isUsersTable ? '' : `, updated_by = $${draftKeysLength + 2}`} WHERE ${rowIdName} = $${isUsersTable ? draftKeysLength + 2 : draftKeysLength + 3}`,
+      args,
+    )
+  } catch (e) {
+    console.error(
+      `revertOperationInPlace: error reverting row ${rowId} in ${table}:`,
+      e,
+    )
+  }
+}
 export const addOperationAtom = atom(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
-  (get, set, opDraft) => {
-    const opQueue = get(operationsQueueAtom)
+  async (get, set, opDraft) => {
+    const db = get(pgliteDbAtom)
+    const userId = get(userIdAtom)
+
     const operation = {
       id: uuidv7(),
       time: new Date().toISOString(),
       ...opDraft,
     }
+
+    if (db && userId) {
+      const row = { ...opDraft.prev, ...opDraft.draft }
+      const { allowed, userRole } = await checkWritePermission(
+        db,
+        userId,
+        opDraft.table,
+        row,
+      )
+      if (!allowed) {
+        await revertOperationInPlace(db, operation)
+        const body = userRole
+          ? `Your role '${userRole}' does not allow write operations. Writer or higher is required.`
+          : 'You do not have write access to this data.'
+        set(addNotificationAtom, {
+          title: 'Insufficient permissions',
+          body,
+          intent: 'error',
+          duration: 10000,
+        })
+        return
+      }
+    }
+
     // console.log('store.addOperationAtom, operation:', operation)
+    const opQueue = get(operationsQueueAtom)
     set(operationsQueueAtom, [operation, ...opQueue])
   },
 )

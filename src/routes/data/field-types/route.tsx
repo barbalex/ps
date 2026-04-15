@@ -1,18 +1,14 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-import { getSession } from '../../../modules/authClient.ts'
 import { isAppAdminEmail } from '../../../modules/appAdmins.ts'
+import { store, userEmailAtom } from '../../../store.ts'
 
 export const Route = createFileRoute('/data/field-types')({
   component: Outlet,
-  beforeLoad: async () => {
-    const result = await getSession({ query: { disableCookieCache: true } })
-    const session =
-      result && typeof result === 'object' && 'data' in result
-        ? (result as { data?: { user?: { email?: string } } | null }).data
-        : (result as { user?: { email?: string } } | null)
+  beforeLoad: () => {
+    const email = store.get(userEmailAtom)
 
-    if (!isAppAdminEmail(session?.user?.email)) {
+    if (!isAppAdminEmail(email ?? undefined)) {
       throw redirect({ to: '/data' })
     }
 

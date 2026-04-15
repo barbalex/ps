@@ -13,6 +13,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { store, postgrestClientAtom } from '../../store.ts'
 import { clearLocalSyncedData } from '../../modules/clearLocalSyncedData.ts'
+import { fetchPostgrestToken } from '../../modules/fetchPostgrestToken.ts'
 
 type Props = {
   open: boolean
@@ -34,9 +35,19 @@ export const DeleteAccountDialog = ({ open, onClose, userId }: Props) => {
   const onConfirm = async () => {
     setError('')
     setIsDeleting(true)
+    const token = await fetchPostgrestToken()
     const postgrestClient = store.get(postgrestClientAtom) as {
       from: (table: string) => {
         delete: () => {
+          setHeader: (
+            key: string,
+            value: string,
+          ) => {
+            eq: (
+              col: string,
+              val: string,
+            ) => Promise<{ error: { message: string } | null }>
+          }
           eq: (
             col: string,
             val: string,
@@ -55,10 +66,9 @@ export const DeleteAccountDialog = ({ open, onClose, userId }: Props) => {
       return
     }
     try {
-      const { error: deleteError } = await postgrestClient
-        .from('users')
-        .delete()
-        .eq('user_id', userId)
+      const deleteQuery = postgrestClient.from('users').delete()
+      if (token) deleteQuery.setHeader('Authorization', `Bearer ${token}`)
+      const { error: deleteError } = await deleteQuery.eq('user_id', userId)
       if (deleteError) throw new Error(deleteError.message)
     } catch (e) {
       setError(

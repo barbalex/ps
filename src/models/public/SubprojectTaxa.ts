@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 import type { TaxaTaxonId } from './Taxa.js';
 
@@ -11,9 +10,6 @@ export type SubprojectTaxaSubprojectTaxonId = string & { __brand: 'public.subpro
  */
 export default interface SubprojectTaxa {
   subproject_taxon_id: SubprojectTaxaSubprojectTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   subproject_id: SubprojectsSubprojectId | null;
 
@@ -40,9 +36,6 @@ export interface SubprojectTaxaInitializer {
   /** Default value: uuid_generate_v7() */
   subproject_taxon_id?: SubprojectTaxaSubprojectTaxonId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   subproject_id?: SubprojectsSubprojectId | null;
 
   /** List of taxa that represent / are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or from different taxonomies. A taxon should be used in no more than one subproject. */
@@ -68,9 +61,6 @@ export interface SubprojectTaxaInitializer {
  */
 export interface SubprojectTaxaMutator {
   subproject_taxon_id?: SubprojectTaxaSubprojectTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   subproject_id?: SubprojectsSubprojectId | null;
 

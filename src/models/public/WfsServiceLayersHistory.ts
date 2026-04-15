@@ -5,8 +5,6 @@
 export default interface WfsServiceLayersHistory {
   wfs_service_layer_id: string;
 
-  account_id: string | null;
-
   wfs_service_id: string | null;
 
   name: string | null;
@@ -30,8 +28,6 @@ export default interface WfsServiceLayersHistory {
 export interface WfsServiceLayersHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   wfs_service_layer_id?: string;
-
-  account_id?: string | null;
 
   wfs_service_id?: string | null;
 
@@ -57,8 +53,6 @@ export interface WfsServiceLayersHistoryInitializer {
  */
 export interface WfsServiceLayersHistoryMutator {
   wfs_service_layer_id?: string;
-
-  account_id?: string | null;
 
   wfs_service_id?: string | null;
 

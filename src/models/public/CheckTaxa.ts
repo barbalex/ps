@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ChecksCheckId } from './Checks.js';
 import type { TaxaTaxonId } from './Taxa.js';
 import type { UnitsUnitId } from './Units.js';
@@ -9,9 +8,6 @@ export type CheckTaxaCheckTaxonId = string & { __brand: 'public.check_taxa' };
 /** Represents the table public.check_taxa */
 export default interface CheckTaxa {
   check_taxon_id: CheckTaxaCheckTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   check_id: ChecksCheckId | null;
 
@@ -42,9 +38,6 @@ export interface CheckTaxaInitializer {
   /** Default value: uuid_generate_v7() */
   check_taxon_id?: CheckTaxaCheckTaxonId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   check_id?: ChecksCheckId | null;
 
   taxon_id?: TaxaTaxonId | null;
@@ -74,9 +67,6 @@ export interface CheckTaxaInitializer {
 /** Represents the mutator for the table public.check_taxa */
 export interface CheckTaxaMutator {
   check_taxon_id?: CheckTaxaCheckTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   check_id?: ChecksCheckId | null;
 

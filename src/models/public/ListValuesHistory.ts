@@ -5,8 +5,6 @@
 export default interface ListValuesHistory {
   list_value_id: string;
 
-  account_id: string | null;
-
   list_id: string | null;
 
   value_integer: number | null;
@@ -40,8 +38,6 @@ export default interface ListValuesHistory {
 export interface ListValuesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   list_value_id?: string;
-
-  account_id?: string | null;
 
   list_id?: string | null;
 
@@ -78,8 +74,6 @@ export interface ListValuesHistoryInitializer {
  */
 export interface ListValuesHistoryMutator {
   list_value_id?: string;
-
-  account_id?: string | null;
 
   list_id?: string | null;
 

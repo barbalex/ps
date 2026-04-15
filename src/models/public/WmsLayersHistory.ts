@@ -5,8 +5,6 @@
 export default interface WmsLayersHistory {
   wms_layer_id: string;
 
-  account_id: string | null;
-
   project_id: string;
 
   wms_service_id: string | null;
@@ -36,8 +34,6 @@ export default interface WmsLayersHistory {
 export interface WmsLayersHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   wms_layer_id?: string;
-
-  account_id?: string | null;
 
   project_id: string;
 
@@ -69,8 +65,6 @@ export interface WmsLayersHistoryInitializer {
  */
 export interface WmsLayersHistoryMutator {
   wms_layer_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string;
 
