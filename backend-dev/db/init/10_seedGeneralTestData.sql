@@ -1,10 +1,5 @@
 -- users
 INSERT INTO users(user_id, email, email_verified) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', TRUE);
--- Dev-only: seed a credential auth_account for local login.
--- Password is intentionally public dev data: test-test1
--- The hash below is not a secret — it is the Better Auth hash of the known dev password above.
-INSERT INTO auth_accounts(auth_account_id, user_id, sso_account_id, provider_id, password)
-  VALUES ('018cf95a-d817-7000-aaaa-000000000001', '018cf95a-d817-7000-92fa-bb3b2ad59dda', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'credential', 'bdb43c44c3c41e7c0b48a35582871fc2:ce4a98e44aa19a48b931a94a8c44a7edaf0f4d8d01e34d534fb4be903d1dc7c084cf643c51ff7d72dea21f145f4346691d8c52e7cba264a5df2829f52f27a9ce');
 -- accounts
 INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');
 -- fieldTypes
