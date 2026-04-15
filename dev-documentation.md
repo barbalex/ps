@@ -272,7 +272,6 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 4.  Roles: Change `user_roles_enum` to be `('reader', 'writer', 'designer', 'owner')`. Add them in this order to make this the official, sortable and comparable order (https://www.postgresql.org/docs/current/datatype-enum.html#DATATYPE-ENUM-ORDERING)
 5.  Ensure code using user_roles_enum is updated, i.e. /home/alex/Documents/GitHub/ps/src/modules/constants.ts.userRoleOptions, /home/alex/Documents/GitHub/ps/backend/db/init/10_seedGeneralTestData.sql (manager role no more needed as trigger will set owner), comments in createTables sql files, /home/alex/Documents/GitHub/ps/src/components/Tree/Project/Editing.tsx.userMayDesign, /home/alex/Documents/GitHub/ps/src/formsAndLists/project/DesigningButton.tsx.userMayDesign. Ensure the previous roles are no more used anywhere and replaced in a meaningful way
 6.  Ensure a user can have only a single role in a `..._users` table (combination of parent table id and user_id must be unique)
-
 7.  Build on update, on insert and on delete of `..._users` tables triggers to upsert or remove roles in lower (n-side) `..._users` tables
 8.  On insert triggers in projects set this users role to 'owner'
 9.  On insert triggers in subprojects and places tables fetch and set this users roles from the parent (next up in the hierarchy) `..._users` table
@@ -281,6 +280,7 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 
 12. Add subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) to shape params in /home/alex/Documents/GitHub/ps/src/modules/startSyncing.ts to ensure only allowed rows are synced in (user has reader or higher role in the relevant parent table which is projects, subprojects or places set in the respective xxx_users table). Keep an eye on whether these subqueries are reasonable or if we need to create user-hidden xxx_users tables fed by triggers
 13. Hopefully this is enough for efficient sync subqueries. If not, we will later need to spread roles to more tables (invisible to users)
+
 14. Alter app side write operations to respect roles and surface when writer or higher role is missing
 15. Alter API calls to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. See: https://electric-sql.com/docs/guides/auth
 16. Alter API to ensure user may run this write operation. If not return a meaningful message which is surfaced in the ui and rolls back the operation that caused it
