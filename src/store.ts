@@ -3,6 +3,8 @@ import { atomWithStorage } from 'jotai/utils'
 import type { IntlShape } from 'react-intl'
 import { constants } from './modules/constants.ts'
 import { uuidv7 } from '@kripod/uuidv7'
+import { checkWritePermission } from './modules/checkWritePermission.ts'
+import { revertOperation } from './modules/revertOperation.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()
@@ -442,14 +444,41 @@ export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
 export const addOperationAtom = atom(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (get) => null,
-  (get, set, opDraft) => {
-    const opQueue = get(operationsQueueAtom)
+  async (get, set, opDraft) => {
+    const db = get(pgliteDbAtom)
+    const userId = get(userIdAtom)
+
     const operation = {
       id: uuidv7(),
       time: new Date().toISOString(),
       ...opDraft,
     }
+
+    if (db && userId) {
+      const row = { ...opDraft.prev, ...opDraft.draft }
+      const { allowed, userRole } = await checkWritePermission(
+        db,
+        userId,
+        opDraft.table,
+        row,
+      )
+      if (!allowed) {
+        await revertOperation(operation)
+        const body = userRole
+          ? `Your role '${userRole}' does not allow write operations. Writer or higher is required.`
+          : 'You do not have write access to this data.'
+        set(addNotificationAtom, {
+          title: 'Insufficient permissions',
+          body,
+          intent: 'error',
+          duration: 10000,
+        })
+        return
+      }
+    }
+
     // console.log('store.addOperationAtom, operation:', operation)
+    const opQueue = get(operationsQueueAtom)
     set(operationsQueueAtom, [operation, ...opQueue])
   },
 )

@@ -262,7 +262,8 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 8.  When a role is set, it's effect extends down all relations (n-sides) - even if (which should not happen) it has not been set in a `..._users` table in between.
 9.  Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
 10. Higher rights can be given at lower levels, their effect extending down as well. Example: A reader who shall be writer on a subproject needs the reader role on its project to sync in parent data
-11. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
+11. Setting lower roles at higher levels after having set higher ones lower down will nuke higher roles at lower levels. That's a problem we will have to live with? Will have to inform users if this happens in projects/subprojects
+12. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
 
 ## Implementation
 
@@ -278,11 +279,10 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 10. Ensure triggers dont cascade recursively: use `pg_trigger_depth()` (https://www.postgresql.org/docs/9.2/functions-info.html) to only run on `WHEN (pg_trigger_depth() < 1)`. See: https://stackoverflow.com/a/14262289/712005 and https://dba.stackexchange.com/a/163152/51861. Beware: this will not work in casee where the spreading trigger _should_ react to a different trigger. Which _is_ what we want: only run when a user (with the needed rights) changes rights. The trigger thus has to update ALL lower level `..._users` tables
 11. Ensure these triggers do not run on sync (using `current_setting('electric.syncing', true)` as for instance in observation_imports_label_creation_trigger)
 12. Add subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) to shape params in /home/alex/Documents/GitHub/ps/src/modules/startSyncing.ts to ensure only allowed rows are synced in (user has reader or higher role in the relevant parent table which is projects, subprojects or places set in the respective xxx_users table). Keep an eye on whether these subqueries are reasonable or if we need to create user-hidden xxx_users tables fed by triggers
-13. Hopefully this is enough for efficient sync subqueries. If not, we will later need to spread roles to more tables (invisible to users)
-    TODO:
+13. TODO:
 14. Alter app side write operations to respect roles and surface when writer or higher role is missing
 
-15. Alter API calls to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. See: https://electric-sql.com/docs/guides/auth
+15. Alter API requests to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. See: https://electric-sql.com/docs/guides/auth. Do we need jwt for this? https://better-auth.com/docs/plugins/jwt
 16. Alter API to ensure user may run this write operation. If not return a meaningful message which is surfaced in the ui and rolls back the operation that caused it
 17. Alter the API to run the operation only after these two checks have passed
 18. Critical for speed: Updates on role changes high up in the hierarchy: should happen batched
