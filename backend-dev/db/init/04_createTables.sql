@@ -1980,7 +1980,6 @@ COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 --
 CREATE TABLE IF NOT EXISTS crs(
   crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  -- project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   code text DEFAULT NULL,
   name text DEFAULT NULL,
