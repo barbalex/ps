@@ -9,9 +9,18 @@
 # via chrome://settings/certificates → Authorities → Import
 # This is only for development; in production, Caddy would handle HTTPS directly and proxy to the backend over HTTP
 localhost:3001 {
+	header Access-Control-Allow-Origin *
+	header Access-Control-Allow-Methods "GET, OPTIONS"
+	header Access-Control-Allow-Headers *
+
+	@options method OPTIONS
+	respond @options 204
+
 	reverse_proxy localhost:3000 {
 		# Disable buffering so SSE events are flushed immediately
 		flush_interval -1
+		# Strip upstream CORS header before we set our own *
+		header_down -Access-Control-Allow-Origin
 	}
 
 	encode gzip
