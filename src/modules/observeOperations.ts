@@ -63,10 +63,12 @@ export const observeOperations = () =>
         lcMessage.includes('insufficient privilege')
       ) {
         // Server rejected the write due to insufficient role — revert optimistic change
+        const hint = error?.hint ?? error?.details ?? ''
+        const hintText = hint ? ` ${hint}` : ''
         store.set(addNotificationAtom, {
           intent: 'error',
           title: 'Not authorized',
-          body: `You do not have permission to ${firstOperation.operation} in "${firstOperation.table}". The change has been reverted.`,
+          body: `You do not have permission to ${firstOperation.operation} in "${firstOperation.table}". The change has been reverted.${hintText}`,
         })
         await revertOperation(firstOperation)
         return removeOperation(firstOperation)
