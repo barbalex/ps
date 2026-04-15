@@ -10,7 +10,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
 import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
-import { sessionVerifiedAtom, store, userIdAtom } from '../../store.ts'
+import { sessionVerifiedAtom, store, userEmailAtom, userIdAtom } from '../../store.ts'
 
 // TODO:
 // search params are only accessible on the route
@@ -52,6 +52,7 @@ export const Route = createFileRoute('/data')({
       // 1b. allow unverified users only during grace window
       const sessionUser = session.user as {
         id?: string
+        email?: string
         emailVerified?: boolean | null
         createdAt?: string | null
       }
@@ -66,6 +67,7 @@ export const Route = createFileRoute('/data')({
       }
 
       store.set(userIdAtom, sessionUser.id ?? null)
+      store.set(userEmailAtom, sessionUser.email ?? null)
       store.set(sessionVerifiedAtom, true)
     }
 
