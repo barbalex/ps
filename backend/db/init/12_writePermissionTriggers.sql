@@ -18,10 +18,21 @@
 -- ─────────────────────────────────────────────────────────────────────────────
 
 -- ─── Helper: extract user_id from PostgREST JWT ──────────────────────────────
+-- PostgREST v9+ sets request.jwt.claims as the full JSON payload.
+-- Individual claim GUCs (request.jwt.claim.<name>) are not guaranteed for
+-- custom claim names, so we parse the JSON blob directly.
 
 CREATE OR REPLACE FUNCTION get_jwt_user_id()
-RETURNS uuid LANGUAGE sql STABLE AS $$
-  SELECT NULLIF(current_setting('request.jwt.claim.user_id', true), '')::uuid
+RETURNS uuid LANGUAGE plpgsql STABLE SECURITY DEFINER AS $$
+DECLARE
+  v_claims text;
+BEGIN
+  v_claims := current_setting('request.jwt.claims', true);
+  IF v_claims IS NULL OR v_claims = '' THEN
+    RETURN NULL;
+  END IF;
+  RETURN NULLIF(v_claims::jsonb->>'user_id', '')::uuid;
+END;
 $$;
 
 -- ─── Write-access helpers ─────────────────────────────────────────────────────
