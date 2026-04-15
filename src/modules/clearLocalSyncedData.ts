@@ -73,6 +73,8 @@ const clearPersistedSyncUiState = () => {
 
   // Keep explicit list for readability and future discoverability
   const localStorageKeysToClear = [
+    'userIdAtom',
+    'userEmailAtom',
     'tabsAtom',
     'operationsQueueAtom',
     'initialSyncingAtom',
