@@ -6,6 +6,7 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { constants } from './constants.ts'
+import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
 
 const url = constants.getElectricUri()
 
@@ -25,6 +26,13 @@ export const startSyncing = async (userId: string) => {
   // Using persistent key for live updates across page reloads
   // On reload: shapes already exist (409 warnings), Electric resumes streaming changes
   // PGlite data persists in IndexedDB, so no need to clear or re-sync everything
+
+  // Fetch the PostgREST JWT so Caddy's forward_auth gate on the Electric
+  // endpoint accepts the shape requests.
+  const electricToken = await fetchPostgrestToken()
+  const authHeaders = electricToken
+    ? { Authorization: `Bearer ${electricToken}` }
+    : {}
 
   try {
     const rawShapes = {
@@ -1109,7 +1117,14 @@ export const startSyncing = async (userId: string) => {
     const shapes = Object.fromEntries(
       Object.entries(rawShapes).map(([k, v]) => [
         k,
-        { ...v, shape: { ...v.shape, fetchClient: noCacheFetch } },
+        {
+          ...v,
+          shape: {
+            ...v.shape,
+            fetchClient: noCacheFetch,
+            headers: authHeaders,
+          },
+        },
       ]),
     )
 

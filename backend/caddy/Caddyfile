@@ -36,6 +36,11 @@ auth.xn--arten-frdern-bjb.app {
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
 # https://electric-sql.com/docs/api/http#caching
 sync.xn--arten-frdern-bjb.app {
+  @notOptions not method OPTIONS
+  forward_auth @notOptions ps_auth:3003 {
+    uri /auth/electric/check
+  }
+
   reverse_proxy * ps_electric:3000 {
     # Disable buffering so SSE events are flushed immediately
     flush_interval -1
@@ -146,6 +151,11 @@ auth.promote-species.app {
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
 # https://electric-sql.com/docs/api/http#caching
 sync.promote-species.app {
+  @notOptions not method OPTIONS
+  forward_auth @notOptions ps_auth:3003 {
+    uri /auth/electric/check
+  }
+
   reverse_proxy * ps_electric:3000 {
     # Disable buffering so SSE events are flushed immediately
     flush_interval -1

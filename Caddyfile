@@ -16,6 +16,11 @@ localhost:3001 {
 	@options method OPTIONS
 	respond @options 204
 
+	@notOptions not method OPTIONS
+	forward_auth @notOptions localhost:3003 {
+		uri /auth/electric/check
+	}
+
 	reverse_proxy localhost:3000 {
 		# Disable buffering so SSE events are flushed immediately
 		flush_interval -1

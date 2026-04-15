@@ -218,6 +218,39 @@ const signPostgrestJwt = (userId, secret) => {
   return `${header}.${payload}.${sig}`
 }
 
+// Stateless JWT signature check used by the Caddy forward_auth for Electric.
+// Reads Authorization: Bearer <token>, verifies HMAC-SHA256 signature and exp
+// using the same PGRST_JWT_SECRET as PostgREST.  No DB lookup.
+const verifyJwt = (token, secret) => {
+  const parts = token?.split('.')
+  if (!Array.isArray(parts) || parts.length !== 3) return false
+  const [header, payload, sig] = parts
+  const expected = createHmac('sha256', secret)
+    .update(`${header}.${payload}`)
+    .digest('base64url')
+  if (sig !== expected) return false
+  try {
+    const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString())
+    return typeof exp === 'number' && exp > Date.now() / 1000
+  } catch {
+    return false
+  }
+}
+
+app.get('/auth/electric/check', (req, res) => {
+  const jwtSecret = process.env.PGRST_JWT_SECRET
+  if (!jwtSecret) {
+    console.error('/auth/electric/check: PGRST_JWT_SECRET not configured')
+    return res.status(500).end()
+  }
+  const authHeader = req.headers.authorization ?? ''
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+  if (!token || !verifyJwt(token, jwtSecret)) {
+    return res.status(401).json({ error: 'UNAUTHORIZED' })
+  }
+  return res.status(200).end()
+})
+
 app.get('/auth/postgrest-token', async (req, res) => {
   const jwtSecret = process.env.PGRST_JWT_SECRET
   if (!jwtSecret) {
