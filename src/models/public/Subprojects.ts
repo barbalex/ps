@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 
 /** Identifier type for public.subprojects */
@@ -10,9 +9,6 @@ export type SubprojectsSubprojectId = string & { __brand: 'public.subprojects' }
  */
 export default interface Subprojects {
   subproject_id: SubprojectsSubprojectId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -48,9 +44,6 @@ export interface SubprojectsInitializer {
   /** Default value: uuid_generate_v7() */
   subproject_id?: SubprojectsSubprojectId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   project_id?: ProjectsProjectId | null;
 
   /** Example: a species name like "Pulsatilla vulgaris" */
@@ -83,9 +76,6 @@ export interface SubprojectsInitializer {
  */
 export interface SubprojectsMutator {
   subproject_id?: SubprojectsSubprojectId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

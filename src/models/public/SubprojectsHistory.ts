@@ -5,8 +5,6 @@
 export default interface SubprojectsHistory {
   subproject_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   name: string | null;
@@ -36,8 +34,6 @@ export default interface SubprojectsHistory {
 export interface SubprojectsHistoryInitializer {
   subproject_id: string;
 
-  account_id?: string | null;
-
   project_id?: string | null;
 
   name?: string | null;
@@ -66,8 +62,6 @@ export interface SubprojectsHistoryInitializer {
  */
 export interface SubprojectsHistoryMutator {
   subproject_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

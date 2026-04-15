@@ -1,5 +1,4 @@
 import type { ProjectsProjectId } from './Projects.js';
-import type { AccountsAccountId } from './Accounts.js';
 import type { FieldTypesFieldTypeId } from './FieldTypes.js';
 import type { WidgetTypesWidgetTypeId } from './WidgetTypes.js';
 import type { ListsListId } from './Lists.js';
@@ -15,9 +14,6 @@ export default interface Fields {
   field_id: FieldsFieldId;
 
   project_id: ProjectsProjectId | null;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   /** table, on which this field is used inside the jsob field "data" */
   table_name: string | null;
@@ -60,9 +56,6 @@ export interface FieldsInitializer {
   field_id?: FieldsFieldId;
 
   project_id?: ProjectsProjectId | null;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   /** table, on which this field is used inside the jsob field "data" */
   table_name?: string | null;
@@ -108,9 +101,6 @@ export interface FieldsMutator {
   field_id?: FieldsFieldId;
 
   project_id?: ProjectsProjectId | null;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   /** table, on which this field is used inside the jsob field "data" */
   table_name?: string | null;

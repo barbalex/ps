@@ -5,8 +5,6 @@
 export default interface ActionQuantitiesHistory {
   action_quantity_id: string;
 
-  account_id: string | null;
-
   action_id: string | null;
 
   unit_id: string | null;
@@ -36,8 +34,6 @@ export default interface ActionQuantitiesHistory {
 export interface ActionQuantitiesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   action_quantity_id?: string;
-
-  account_id?: string | null;
 
   action_id?: string | null;
 
@@ -69,8 +65,6 @@ export interface ActionQuantitiesHistoryInitializer {
  */
 export interface ActionQuantitiesHistoryMutator {
   action_quantity_id?: string;
-
-  account_id?: string | null;
 
   action_id?: string | null;
 

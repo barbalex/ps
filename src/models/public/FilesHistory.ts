@@ -5,8 +5,6 @@
 export default interface FilesHistory {
   file_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   subproject_id: string | null;
@@ -58,8 +56,6 @@ export default interface FilesHistory {
 export interface FilesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   file_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -113,8 +109,6 @@ export interface FilesHistoryInitializer {
  */
 export interface FilesHistoryMutator {
   file_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

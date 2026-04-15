@@ -8,8 +8,6 @@ import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTables
 export default interface VectorLayersHistory {
   vector_layer_id: string;
 
-  account_id: string | null;
-
   label: string | null;
 
   project_id: string;
@@ -55,8 +53,6 @@ export default interface VectorLayersHistory {
 export interface VectorLayersHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   vector_layer_id?: string;
-
-  account_id?: string | null;
 
   label?: string | null;
 
@@ -106,8 +102,6 @@ export interface VectorLayersHistoryInitializer {
  */
 export interface VectorLayersHistoryMutator {
   vector_layer_id?: string;
-
-  account_id?: string | null;
 
   label?: string | null;
 

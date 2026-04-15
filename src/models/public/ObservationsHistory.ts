@@ -5,8 +5,6 @@
 export default interface ObservationsHistory {
   observation_id: string;
 
-  account_id: string | null;
-
   observation_import_id: string | null;
 
   place_id: string | null;
@@ -40,8 +38,6 @@ export default interface ObservationsHistory {
 export interface ObservationsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   observation_id?: string;
-
-  account_id?: string | null;
 
   observation_import_id?: string | null;
 
@@ -79,8 +75,6 @@ export interface ObservationsHistoryInitializer {
  */
 export interface ObservationsHistoryMutator {
   observation_id?: string;
-
-  account_id?: string | null;
 
   observation_import_id?: string | null;
 

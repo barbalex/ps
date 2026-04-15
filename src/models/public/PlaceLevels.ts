@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 
 /** Identifier type for public.place_levels */
@@ -10,9 +9,6 @@ export type PlaceLevelsPlaceLevelId = string & { __brand: 'public.place_levels' 
  */
 export default interface PlaceLevels {
   place_level_id: PlaceLevelsPlaceLevelId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -130,9 +126,6 @@ export default interface PlaceLevels {
 export interface PlaceLevelsInitializer {
   /** Default value: uuid_generate_v7() */
   place_level_id?: PlaceLevelsPlaceLevelId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 
@@ -316,9 +309,6 @@ export interface PlaceLevelsInitializer {
  */
 export interface PlaceLevelsMutator {
   place_level_id?: PlaceLevelsPlaceLevelId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

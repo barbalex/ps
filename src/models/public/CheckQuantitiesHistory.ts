@@ -5,8 +5,6 @@
 export default interface CheckQuantitiesHistory {
   check_quantity_id: string;
 
-  account_id: string | null;
-
   check_id: string | null;
 
   unit_id: string | null;
@@ -36,8 +34,6 @@ export default interface CheckQuantitiesHistory {
 export interface CheckQuantitiesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   check_quantity_id?: string;
-
-  account_id?: string | null;
 
   check_id?: string | null;
 
@@ -69,8 +65,6 @@ export interface CheckQuantitiesHistoryInitializer {
  */
 export interface CheckQuantitiesHistoryMutator {
   check_quantity_id?: string;
-
-  account_id?: string | null;
 
   check_id?: string | null;
 

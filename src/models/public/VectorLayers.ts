@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { default as VectorLayerTypesEnum } from './VectorLayerTypesEnum.js';
 import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTablesEnum.js';
@@ -13,8 +12,6 @@ export type VectorLayersVectorLayerId = string & { __brand: 'public.vector_layer
  */
 export default interface VectorLayers {
   vector_layer_id: VectorLayersVectorLayerId;
-
-  account_id: AccountsAccountId | null;
 
   label: string | null;
 
@@ -67,8 +64,6 @@ export default interface VectorLayers {
 export interface VectorLayersInitializer {
   /** Default value: uuid_generate_v7() */
   vector_layer_id?: VectorLayersVectorLayerId;
-
-  account_id?: AccountsAccountId | null;
 
   label?: string | null;
 
@@ -124,8 +119,6 @@ export interface VectorLayersInitializer {
  */
 export interface VectorLayersMutator {
   vector_layer_id?: VectorLayersVectorLayerId;
-
-  account_id?: AccountsAccountId | null;
 
   label?: string | null;
 

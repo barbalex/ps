@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 import type { UsersUserId } from './Users.js';
 import type { default as UserRolesEnum } from './UserRolesEnum.js';
@@ -13,14 +12,11 @@ export type SubprojectUsersSubprojectUserId = string & { __brand: 'public.subpro
 export default interface SubprojectUsers {
   subproject_user_id: SubprojectUsersSubprojectUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
-
   subproject_id: SubprojectsSubprojectId | null;
 
   user_id: UsersUserId | null;
 
-  /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role: UserRolesEnum | null;
 
   label: string | null;
@@ -43,14 +39,11 @@ export interface SubprojectUsersInitializer {
   /** Default value: uuid_generate_v7() */
   subproject_user_id?: SubprojectUsersSubprojectUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   subproject_id?: SubprojectsSubprojectId | null;
 
   user_id?: UsersUserId | null;
 
-  /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role?: UserRolesEnum | null;
 
   label?: string | null;
@@ -74,14 +67,11 @@ export interface SubprojectUsersInitializer {
 export interface SubprojectUsersMutator {
   subproject_user_id?: SubprojectUsersSubprojectUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   subproject_id?: SubprojectsSubprojectId | null;
 
   user_id?: UsersUserId | null;
 
-  /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role?: UserRolesEnum | null;
 
   label?: string | null;

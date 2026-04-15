@@ -7,8 +7,6 @@ import type { default as ChartTypesEnum } from './ChartTypesEnum.js';
 export default interface ChartsHistory {
   chart_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   subproject_id: string | null;
@@ -56,8 +54,6 @@ export default interface ChartsHistory {
 export interface ChartsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   chart_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -113,8 +109,6 @@ export interface ChartsHistoryInitializer {
  */
 export interface ChartsHistoryMutator {
   chart_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

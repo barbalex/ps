@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 import type { PlacesPlaceId } from './Places.js';
@@ -13,9 +12,6 @@ export type ChartsChartId = string & { __brand: 'public.charts' };
  */
 export default interface Charts {
   chart_id: ChartsChartId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -70,9 +66,6 @@ export default interface Charts {
 export interface ChartsInitializer {
   /** Default value: uuid_generate_v7() */
   chart_id?: ChartsChartId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 
@@ -136,9 +129,6 @@ export interface ChartsInitializer {
  */
 export interface ChartsMutator {
   chart_id?: ChartsChartId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

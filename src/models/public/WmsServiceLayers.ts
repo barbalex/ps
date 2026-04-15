@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { WmsServicesWmsServiceId } from './WmsServices.js';
 
 /** Identifier type for public.wms_service_layers */
@@ -7,8 +6,6 @@ export type WmsServiceLayersWmsServiceLayerId = string & { __brand: 'public.wms_
 /** Represents the table public.wms_service_layers */
 export default interface WmsServiceLayers {
   wms_service_layer_id: WmsServiceLayersWmsServiceLayerId;
-
-  account_id: AccountsAccountId | null;
 
   wms_service_id: WmsServicesWmsServiceId | null;
 
@@ -37,8 +34,6 @@ export interface WmsServiceLayersInitializer {
   /** Default value: uuid_generate_v7() */
   wms_service_layer_id?: WmsServiceLayersWmsServiceLayerId;
 
-  account_id?: AccountsAccountId | null;
-
   wms_service_id?: WmsServicesWmsServiceId | null;
 
   name?: string | null;
@@ -66,8 +61,6 @@ export interface WmsServiceLayersInitializer {
 /** Represents the mutator for the table public.wms_service_layers */
 export interface WmsServiceLayersMutator {
   wms_service_layer_id?: WmsServiceLayersWmsServiceLayerId;
-
-  account_id?: AccountsAccountId | null;
 
   wms_service_id?: WmsServicesWmsServiceId | null;
 

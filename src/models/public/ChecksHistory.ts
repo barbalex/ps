@@ -5,8 +5,6 @@
 export default interface ChecksHistory {
   check_id: string;
 
-  account_id: string | null;
-
   place_id: string | null;
 
   date: Date | null;
@@ -38,8 +36,6 @@ export default interface ChecksHistory {
 export interface ChecksHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   check_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 
@@ -76,8 +72,6 @@ export interface ChecksHistoryInitializer {
  */
 export interface ChecksHistoryMutator {
   check_id?: string;
-
-  account_id?: string | null;
 
   place_id?: string | null;
 

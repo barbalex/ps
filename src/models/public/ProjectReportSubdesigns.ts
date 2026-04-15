@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 
 /** Identifier type for public.project_report_subdesigns */
@@ -10,9 +9,6 @@ export type ProjectReportSubdesignsProjectReportSubdesignId = string & { __brand
  */
 export default interface ProjectReportSubdesigns {
   project_report_subdesign_id: ProjectReportSubdesignsProjectReportSubdesignId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -41,9 +37,6 @@ export interface ProjectReportSubdesignsInitializer {
   /** Default value: uuid_generate_v7() */
   project_report_subdesign_id?: ProjectReportSubdesignsProjectReportSubdesignId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   project_id?: ProjectsProjectId | null;
 
   name?: string | null;
@@ -69,9 +62,6 @@ export interface ProjectReportSubdesignsInitializer {
  */
 export interface ProjectReportSubdesignsMutator {
   project_report_subdesign_id?: ProjectReportSubdesignsProjectReportSubdesignId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

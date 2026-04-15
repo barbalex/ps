@@ -9,8 +9,6 @@ export default interface ProjectCrsHistory {
 
   project_id: string | null;
 
-  account_id: string | null;
-
   code: string | null;
 
   name: string | null;
@@ -40,8 +38,6 @@ export interface ProjectCrsHistoryInitializer {
   crs_id?: string | null;
 
   project_id?: string | null;
-
-  account_id?: string | null;
 
   code?: string | null;
 
@@ -73,8 +69,6 @@ export interface ProjectCrsHistoryMutator {
   crs_id?: string | null;
 
   project_id?: string | null;
-
-  account_id?: string | null;
 
   code?: string | null;
 

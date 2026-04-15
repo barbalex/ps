@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ActionsActionId } from './Actions.js';
 import type { UnitsUnitId } from './Units.js';
 
@@ -11,9 +10,6 @@ export type ActionQuantitiesActionQuantityId = string & { __brand: 'public.actio
  */
 export default interface ActionQuantities {
   action_quantity_id: ActionQuantitiesActionQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   action_id: ActionsActionId | null;
 
@@ -48,9 +44,6 @@ export interface ActionQuantitiesInitializer {
   /** Default value: uuid_generate_v7() */
   action_quantity_id?: ActionQuantitiesActionQuantityId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   action_id?: ActionsActionId | null;
 
   unit_id?: UnitsUnitId | null;
@@ -84,9 +77,6 @@ export interface ActionQuantitiesInitializer {
  */
 export interface ActionQuantitiesMutator {
   action_quantity_id?: ActionQuantitiesActionQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   action_id?: ActionsActionId | null;
 

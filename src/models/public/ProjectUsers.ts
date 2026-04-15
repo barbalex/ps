@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { UsersUserId } from './Users.js';
 import type { default as UserRolesEnum } from './UserRolesEnum.js';
@@ -13,14 +12,11 @@ export type ProjectUsersProjectUserId = string & { __brand: 'public.project_user
 export default interface ProjectUsers {
   project_user_id: ProjectUsersProjectUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
-
   project_id: ProjectsProjectId | null;
 
   user_id: UsersUserId | null;
 
-  /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role: UserRolesEnum | null;
 
   label: string | null;
@@ -43,14 +39,11 @@ export interface ProjectUsersInitializer {
   /** Default value: uuid_generate_v7() */
   project_user_id?: ProjectUsersProjectUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   project_id?: ProjectsProjectId | null;
 
   user_id?: UsersUserId | null;
 
-  /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role?: UserRolesEnum | null;
 
   label?: string | null;
@@ -74,14 +67,11 @@ export interface ProjectUsersInitializer {
 export interface ProjectUsersMutator {
   project_user_id?: ProjectUsersProjectUserId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   project_id?: ProjectsProjectId | null;
 
   user_id?: UsersUserId | null;
 
-  /** TODO: One of: "manager", "editor", "reader". Preset: "reader" */
+  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
   role?: UserRolesEnum | null;
 
   label?: string | null;

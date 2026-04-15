@@ -7,8 +7,6 @@ import type { default as UserRolesEnum } from './UserRolesEnum.js';
 export default interface ProjectUsersHistory {
   project_user_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   user_id: string | null;
@@ -34,8 +32,6 @@ export default interface ProjectUsersHistory {
 export interface ProjectUsersHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   project_user_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -63,8 +59,6 @@ export interface ProjectUsersHistoryInitializer {
  */
 export interface ProjectUsersHistoryMutator {
   project_user_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

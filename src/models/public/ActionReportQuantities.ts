@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ActionReportsPlaceActionReportId } from './ActionReports.js';
 import type { UnitsUnitId } from './Units.js';
 
@@ -11,9 +10,6 @@ export type ActionReportQuantitiesPlaceActionReportQuantityId = string & { __bra
  */
 export default interface ActionReportQuantities {
   place_action_report_quantity_id: ActionReportQuantitiesPlaceActionReportQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   place_action_report_id: ActionReportsPlaceActionReportId | null;
 
@@ -48,9 +44,6 @@ export interface ActionReportQuantitiesInitializer {
   /** Default value: uuid_generate_v7() */
   place_action_report_quantity_id?: ActionReportQuantitiesPlaceActionReportQuantityId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   place_action_report_id?: ActionReportsPlaceActionReportId | null;
 
   unit_id?: UnitsUnitId | null;
@@ -84,9 +77,6 @@ export interface ActionReportQuantitiesInitializer {
  */
 export interface ActionReportQuantitiesMutator {
   place_action_report_quantity_id?: ActionReportQuantitiesPlaceActionReportQuantityId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   place_action_report_id?: ActionReportsPlaceActionReportId | null;
 

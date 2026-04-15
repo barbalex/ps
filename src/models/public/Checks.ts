@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { PlacesPlaceId } from './Places.js';
 
 /** Identifier type for public.checks */
@@ -10,9 +9,6 @@ export type ChecksCheckId = string & { __brand: 'public.checks' };
  */
 export default interface Checks {
   check_id: ChecksCheckId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   place_id: PlacesPlaceId | null;
 
@@ -47,9 +43,6 @@ export default interface Checks {
 export interface ChecksInitializer {
   /** Default value: uuid_generate_v7() */
   check_id?: ChecksCheckId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   place_id?: PlacesPlaceId | null;
 
@@ -86,9 +79,6 @@ export interface ChecksInitializer {
  */
 export interface ChecksMutator {
   check_id?: ChecksCheckId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   place_id?: PlacesPlaceId | null;
 

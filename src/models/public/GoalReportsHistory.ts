@@ -5,8 +5,6 @@
 export default interface GoalReportsHistory {
   goal_report_id: string;
 
-  account_id: string | null;
-
   goal_id: string | null;
 
   data: unknown | null;
@@ -30,8 +28,6 @@ export default interface GoalReportsHistory {
 export interface GoalReportsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   goal_report_id?: string;
-
-  account_id?: string | null;
 
   goal_id?: string | null;
 
@@ -57,8 +53,6 @@ export interface GoalReportsHistoryInitializer {
  */
 export interface GoalReportsHistoryMutator {
   goal_report_id?: string;
-
-  account_id?: string | null;
 
   goal_id?: string | null;
 

@@ -5,8 +5,6 @@
 export default interface GoalsHistory {
   goal_id: string;
 
-  account_id: string | null;
-
   subproject_id: string | null;
 
   year: number | null;
@@ -34,8 +32,6 @@ export default interface GoalsHistory {
 export interface GoalsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   goal_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 
@@ -66,8 +62,6 @@ export interface GoalsHistoryInitializer {
  */
 export interface GoalsHistoryMutator {
   goal_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 

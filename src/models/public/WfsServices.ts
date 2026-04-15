@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 
 /** Identifier type for public.wfs_services */
@@ -10,8 +9,6 @@ export type WfsServicesWfsServiceId = string & { __brand: 'public.wfs_services' 
  */
 export default interface WfsServices {
   wfs_service_id: WfsServicesWfsServiceId;
-
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId;
 
@@ -46,8 +43,6 @@ export interface WfsServicesInitializer {
   /** Default value: uuid_generate_v7() */
   wfs_service_id?: WfsServicesWfsServiceId;
 
-  account_id?: AccountsAccountId | null;
-
   project_id: ProjectsProjectId;
 
   url?: string | null;
@@ -79,8 +74,6 @@ export interface WfsServicesInitializer {
  */
 export interface WfsServicesMutator {
   wfs_service_id?: WfsServicesWfsServiceId;
-
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId;
 

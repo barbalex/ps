@@ -5,8 +5,6 @@
 export default interface ProjectReportDesignsHistory {
   project_report_design_id: string;
 
-  account_id: string | null;
-
   project_id: string | null;
 
   name: string | null;
@@ -34,8 +32,6 @@ export default interface ProjectReportDesignsHistory {
 export interface ProjectReportDesignsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   project_report_design_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 
@@ -66,8 +62,6 @@ export interface ProjectReportDesignsHistoryInitializer {
  */
 export interface ProjectReportDesignsHistoryMutator {
   project_report_design_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string | null;
 

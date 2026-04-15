@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { VectorLayersVectorLayerId } from './VectorLayers.js';
 import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum.js';
 import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum.js';
@@ -14,8 +13,6 @@ export type VectorLayerDisplaysVectorLayerDisplayId = string & { __brand: 'publi
  */
 export default interface VectorLayerDisplays {
   vector_layer_display_id: VectorLayerDisplaysVectorLayerDisplayId;
-
-  account_id: AccountsAccountId | null;
 
   vector_layer_id: VectorLayersVectorLayerId | null;
 
@@ -84,8 +81,6 @@ export default interface VectorLayerDisplays {
 export interface VectorLayerDisplaysInitializer {
   /** Default value: uuid_generate_v7() */
   vector_layer_display_id?: VectorLayerDisplaysVectorLayerDisplayId;
-
-  account_id?: AccountsAccountId | null;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
 
@@ -182,8 +177,6 @@ export interface VectorLayerDisplaysInitializer {
  */
 export interface VectorLayerDisplaysMutator {
   vector_layer_display_id?: VectorLayerDisplaysVectorLayerDisplayId;
-
-  account_id?: AccountsAccountId | null;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
 

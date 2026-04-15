@@ -1,5 +1,4 @@
 import type { ProjectsProjectId } from './Projects.js';
-import type { AccountsAccountId } from './Accounts.js';
 
 /** Identifier type for public.field_sorts */
 export type FieldSortsFieldSortId = string & { __brand: 'public.field_sorts' };
@@ -12,8 +11,6 @@ export default interface FieldSorts {
   field_sort_id: FieldSortsFieldSortId;
 
   project_id: ProjectsProjectId | null;
-
-  account_id: AccountsAccountId | null;
 
   table_name: string | null;
 
@@ -38,8 +35,6 @@ export interface FieldSortsInitializer {
 
   project_id?: ProjectsProjectId | null;
 
-  account_id?: AccountsAccountId | null;
-
   table_name?: string | null;
 
   sorted_field_ids?: string[] | null;
@@ -63,8 +58,6 @@ export interface FieldSortsMutator {
   field_sort_id?: FieldSortsFieldSortId;
 
   project_id?: ProjectsProjectId | null;
-
-  account_id?: AccountsAccountId | null;
 
   table_name?: string | null;
 

@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ActionsActionId } from './Actions.js';
 import type { TaxaTaxonId } from './Taxa.js';
 import type { UnitsUnitId } from './Units.js';
@@ -9,9 +8,6 @@ export type ActionTaxaActionTaxonId = string & { __brand: 'public.action_taxa' }
 /** Represents the table public.action_taxa */
 export default interface ActionTaxa {
   action_taxon_id: ActionTaxaActionTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   action_id: ActionsActionId | null;
 
@@ -42,9 +38,6 @@ export interface ActionTaxaInitializer {
   /** Default value: uuid_generate_v7() */
   action_taxon_id?: ActionTaxaActionTaxonId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   action_id?: ActionsActionId | null;
 
   taxon_id?: TaxaTaxonId | null;
@@ -74,9 +67,6 @@ export interface ActionTaxaInitializer {
 /** Represents the mutator for the table public.action_taxa */
 export interface ActionTaxaMutator {
   action_taxon_id?: ActionTaxaActionTaxonId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   action_id?: ActionsActionId | null;
 

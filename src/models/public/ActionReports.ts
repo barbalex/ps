@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { PlacesPlaceId } from './Places.js';
 
 /** Identifier type for public.action_reports */
@@ -10,9 +9,6 @@ export type ActionReportsPlaceActionReportId = string & { __brand: 'public.actio
  */
 export default interface ActionReports {
   place_action_report_id: ActionReportsPlaceActionReportId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   place_id: PlacesPlaceId | null;
 
@@ -41,9 +37,6 @@ export default interface ActionReports {
 export interface ActionReportsInitializer {
   /** Default value: uuid_generate_v7() */
   place_action_report_id?: ActionReportsPlaceActionReportId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   place_id?: PlacesPlaceId | null;
 
@@ -74,9 +67,6 @@ export interface ActionReportsInitializer {
  */
 export interface ActionReportsMutator {
   place_action_report_id?: ActionReportsPlaceActionReportId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   place_id?: PlacesPlaceId | null;
 

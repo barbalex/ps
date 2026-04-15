@@ -5,8 +5,6 @@
 export default interface CheckReportQuantitiesHistory {
   place_check_report_quantity_id: string;
 
-  account_id: string | null;
-
   place_check_report_id: string | null;
 
   unit_id: string | null;
@@ -36,8 +34,6 @@ export default interface CheckReportQuantitiesHistory {
 export interface CheckReportQuantitiesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   place_check_report_quantity_id?: string;
-
-  account_id?: string | null;
 
   place_check_report_id?: string | null;
 
@@ -69,8 +65,6 @@ export interface CheckReportQuantitiesHistoryInitializer {
  */
 export interface CheckReportQuantitiesHistoryMutator {
   place_check_report_quantity_id?: string;
-
-  account_id?: string | null;
 
   place_check_report_id?: string | null;
 

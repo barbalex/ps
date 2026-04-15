@@ -258,10 +258,11 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 4.  A users role always includes all the lower roles. They are not separately set, only a single role is set
 5.  (Only) Owners can set designer roles
 6.  (Only) Owners and designers can set writer and reader roles
-7.  When a role is set, it's effect extends down all relations (n-sides) - even if (which should not happen) it has not been set in a `..._users` table in between.
-8.  Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
-9.  Higher rights can be given at lower levels, their effect extending down as well. Example: A reader who shall be writer on a subproject needs the reader role on its project to sync in parent data
-10. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
+7.  Only triggers set owner roles
+8.  When a role is set, it's effect extends down all relations (n-sides) - even if (which should not happen) it has not been set in a `..._users` table in between.
+9.  Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
+10. Higher rights can be given at lower levels, their effect extending down as well. Example: A reader who shall be writer on a subproject needs the reader role on its project to sync in parent data
+11. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
 
 ## Implementation
 
@@ -271,11 +272,13 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 4.  Roles: Change `user_roles_enum` to be `('reader', 'writer', 'designer', 'owner')`. Add them in this order to make this the official, sortable and comparable order (https://www.postgresql.org/docs/current/datatype-enum.html#DATATYPE-ENUM-ORDERING)
 5.  Ensure code using user_roles_enum is updated, i.e. /home/alex/Documents/GitHub/ps/src/modules/constants.ts.userRoleOptions, /home/alex/Documents/GitHub/ps/backend/db/init/10_seedGeneralTestData.sql (manager role no more needed as trigger will set owner), comments in createTables sql files, /home/alex/Documents/GitHub/ps/src/components/Tree/Project/Editing.tsx.userMayDesign, /home/alex/Documents/GitHub/ps/src/formsAndLists/project/DesigningButton.tsx.userMayDesign. Ensure the previous roles are no more used anywhere and replaced in a meaningful way
 6.  Ensure a user can have only a single role in a `..._users` table (combination of parent table id and user_id must be unique)
+
 7.  Build on update, on insert and on delete of `..._users` tables triggers to upsert or remove roles in lower (n-side) `..._users` tables
 8.  On insert triggers in projects set this users role to 'owner'
 9.  On insert triggers in subprojects and places tables fetch and set this users roles from the parent (next up in the hierarchy) `..._users` table
 10. Ensure triggers dont cascade recursively: use `pg_trigger_depth()` (https://www.postgresql.org/docs/9.2/functions-info.html) to only run on `WHEN (pg_trigger_depth() < 1)`. See: https://stackoverflow.com/a/14262289/712005 and https://dba.stackexchange.com/a/163152/51861. Beware: this will not work in casee where the spreading trigger _should_ react to a different trigger. Which _is_ what we want: only run when a user (with the needed rights) changes rights. The trigger thus has to update ALL lower level `..._users` tables
 11. Ensure these triggers do not run on sync (using `current_setting('electric.syncing', true)` as for instance in observation_imports_label_creation_trigger)
+
 12. Add subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) to shape params in /home/alex/Documents/GitHub/ps/src/modules/startSyncing.ts to ensure only allowed rows are synced in (user has reader or higher role in the relevant parent table which is projects, subprojects or places set in the respective xxx_users table). Keep an eye on whether these subqueries are reasonable or if we need to create user-hidden xxx_users tables fed by triggers
 13. Hopefully this is enough for efficient sync subqueries. If not, we will later need to spread roles to more tables (invisible to users)
 14. Alter app side write operations to respect roles and surface when writer or higher role is missing

@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { WfsServicesWfsServiceId } from './WfsServices.js';
 
 /** Identifier type for public.wfs_service_layers */
@@ -7,8 +6,6 @@ export type WfsServiceLayersWfsServiceLayerId = string & { __brand: 'public.wfs_
 /** Represents the table public.wfs_service_layers */
 export default interface WfsServiceLayers {
   wfs_service_layer_id: WfsServiceLayersWfsServiceLayerId;
-
-  account_id: AccountsAccountId | null;
 
   wfs_service_id: WfsServicesWfsServiceId | null;
 
@@ -31,8 +28,6 @@ export interface WfsServiceLayersInitializer {
   /** Default value: uuid_generate_v7() */
   wfs_service_layer_id?: WfsServiceLayersWfsServiceLayerId;
 
-  account_id?: AccountsAccountId | null;
-
   wfs_service_id?: WfsServicesWfsServiceId | null;
 
   name?: string | null;
@@ -54,8 +49,6 @@ export interface WfsServiceLayersInitializer {
 /** Represents the mutator for the table public.wfs_service_layers */
 export interface WfsServiceLayersMutator {
   wfs_service_layer_id?: WfsServiceLayersWfsServiceLayerId;
-
-  account_id?: AccountsAccountId | null;
 
   wfs_service_id?: WfsServicesWfsServiceId | null;
 

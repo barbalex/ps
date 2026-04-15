@@ -1,6 +1,5 @@
 import type { CrsCrsId } from './Crs.js';
 import type { ProjectsProjectId } from './Projects.js';
-import type { AccountsAccountId } from './Accounts.js';
 
 /** Identifier type for public.project_crs */
 export type ProjectCrsProjectCrsId = string & { __brand: 'public.project_crs' };
@@ -15,8 +14,6 @@ export default interface ProjectCrs {
   crs_id: CrsCrsId | null;
 
   project_id: ProjectsProjectId | null;
-
-  account_id: AccountsAccountId | null;
 
   code: string | null;
 
@@ -48,8 +45,6 @@ export interface ProjectCrsInitializer {
 
   project_id?: ProjectsProjectId | null;
 
-  account_id?: AccountsAccountId | null;
-
   code?: string | null;
 
   name?: string | null;
@@ -78,8 +73,6 @@ export interface ProjectCrsMutator {
   crs_id?: CrsCrsId | null;
 
   project_id?: ProjectsProjectId | null;
-
-  account_id?: AccountsAccountId | null;
 
   code?: string | null;
 

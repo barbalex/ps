@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { GoalsGoalId } from './Goals.js';
 
 /** Identifier type for public.goal_reports */
@@ -10,9 +9,6 @@ export type GoalReportsGoalReportId = string & { __brand: 'public.goal_reports' 
  */
 export default interface GoalReports {
   goal_report_id: GoalReportsGoalReportId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   goal_id: GoalsGoalId | null;
 
@@ -39,9 +35,6 @@ export interface GoalReportsInitializer {
   /** Default value: uuid_generate_v7() */
   goal_report_id?: GoalReportsGoalReportId;
 
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
-
   goal_id?: GoalsGoalId | null;
 
   /** Room for goal report specific data, defined in "fields" table */
@@ -67,9 +60,6 @@ export interface GoalReportsInitializer {
  */
 export interface GoalReportsMutator {
   goal_report_id?: GoalReportsGoalReportId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   goal_id?: GoalsGoalId | null;
 

@@ -5,8 +5,6 @@
 export default interface SubprojectReportsHistory {
   subproject_report_id: string;
 
-  account_id: string | null;
-
   subproject_id: string | null;
 
   year: number | null;
@@ -32,8 +30,6 @@ export default interface SubprojectReportsHistory {
 export interface SubprojectReportsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   subproject_report_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 
@@ -62,8 +58,6 @@ export interface SubprojectReportsHistoryInitializer {
  */
 export interface SubprojectReportsHistoryMutator {
   subproject_report_id?: string;
-
-  account_id?: string | null;
 
   subproject_id?: string | null;
 

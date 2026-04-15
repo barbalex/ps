@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.js';
 
@@ -11,8 +10,6 @@ export type ObservationImportsObservationImportId = string & { __brand: 'public.
  */
 export default interface ObservationImports {
   observation_import_id: ObservationImportsObservationImportId;
-
-  account_id: AccountsAccountId | null;
 
   subproject_id: SubprojectsSubprojectId | null;
 
@@ -70,8 +67,6 @@ export interface ObservationImportsInitializer {
   /** Default value: uuid_generate_v7() */
   observation_import_id?: ObservationImportsObservationImportId;
 
-  account_id?: AccountsAccountId | null;
-
   subproject_id?: SubprojectsSubprojectId | null;
 
   /** Default value: now() */
@@ -128,8 +123,6 @@ export interface ObservationImportsInitializer {
  */
 export interface ObservationImportsMutator {
   observation_import_id?: ObservationImportsObservationImportId;
-
-  account_id?: AccountsAccountId | null;
 
   subproject_id?: SubprojectsSubprojectId | null;
 

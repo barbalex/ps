@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 
 /** Identifier type for public.wms_services */
@@ -7,8 +6,6 @@ export type WmsServicesWmsServiceId = string & { __brand: 'public.wms_services' 
 /** Represents the table public.wms_services */
 export default interface WmsServices {
   wms_service_id: WmsServicesWmsServiceId;
-
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId;
 
@@ -43,8 +40,6 @@ export interface WmsServicesInitializer {
   /** Default value: uuid_generate_v7() */
   wms_service_id?: WmsServicesWmsServiceId;
 
-  account_id?: AccountsAccountId | null;
-
   project_id: ProjectsProjectId;
 
   url?: string | null;
@@ -76,8 +71,6 @@ export interface WmsServicesInitializer {
 /** Represents the mutator for the table public.wms_services */
 export interface WmsServicesMutator {
   wms_service_id?: WmsServicesWmsServiceId;
-
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId;
 

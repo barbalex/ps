@@ -5,8 +5,6 @@
 export default interface WmsServicesHistory {
   wms_service_id: string;
 
-  account_id: string | null;
-
   project_id: string;
 
   url: string | null;
@@ -42,8 +40,6 @@ export default interface WmsServicesHistory {
 export interface WmsServicesHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   wms_service_id?: string;
-
-  account_id?: string | null;
 
   project_id: string;
 
@@ -81,8 +77,6 @@ export interface WmsServicesHistoryInitializer {
  */
 export interface WmsServicesHistoryMutator {
   wms_service_id?: string;
-
-  account_id?: string | null;
 
   project_id?: string;
 

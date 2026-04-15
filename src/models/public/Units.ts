@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { ProjectsProjectId } from './Projects.js';
 import type { ListsListId } from './Lists.js';
 import type { default as UnitTypesEnum } from './UnitTypesEnum.js';
@@ -12,9 +11,6 @@ export type UnitsUnitId = string & { __brand: 'public.units' };
  */
 export default interface Units {
   unit_id: UnitsUnitId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   project_id: ProjectsProjectId | null;
 
@@ -51,9 +47,6 @@ export default interface Units {
 export interface UnitsInitializer {
   /** Default value: uuid_generate_v7() */
   unit_id?: UnitsUnitId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 
@@ -92,9 +85,6 @@ export interface UnitsInitializer {
  */
 export interface UnitsMutator {
   unit_id?: UnitsUnitId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   project_id?: ProjectsProjectId | null;
 

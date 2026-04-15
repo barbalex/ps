@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { VectorLayersVectorLayerId } from './VectorLayers.js';
 
 /** Identifier type for public.vector_layer_geoms */
@@ -10,8 +9,6 @@ export type VectorLayerGeomsVectorLayerGeomId = string & { __brand: 'public.vect
  */
 export default interface VectorLayerGeoms {
   vector_layer_geom_id: VectorLayerGeomsVectorLayerGeomId;
-
-  account_id: AccountsAccountId | null;
 
   vector_layer_id: VectorLayersVectorLayerId | null;
 
@@ -49,8 +46,6 @@ export default interface VectorLayerGeoms {
 export interface VectorLayerGeomsInitializer {
   /** Default value: uuid_generate_v7() */
   vector_layer_geom_id?: VectorLayerGeomsVectorLayerGeomId;
-
-  account_id?: AccountsAccountId | null;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
 
@@ -92,8 +87,6 @@ export interface VectorLayerGeomsInitializer {
  */
 export interface VectorLayerGeomsMutator {
   vector_layer_geom_id?: VectorLayerGeomsVectorLayerGeomId;
-
-  account_id?: AccountsAccountId | null;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
 

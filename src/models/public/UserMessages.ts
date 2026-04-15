@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { UsersUserId } from './Users.js';
 import type { MessagesMessageId } from './Messages.js';
 
@@ -8,8 +7,6 @@ export type UserMessagesUserMessageId = string & { __brand: 'public.user_message
 /** Represents the table public.user_messages */
 export default interface UserMessages {
   user_message_id: UserMessagesUserMessageId;
-
-  account_id: AccountsAccountId | null;
 
   user_id: UsersUserId | null;
 
@@ -30,8 +27,6 @@ export default interface UserMessages {
 export interface UserMessagesInitializer {
   /** Default value: uuid_generate_v7() */
   user_message_id?: UserMessagesUserMessageId;
-
-  account_id?: AccountsAccountId | null;
 
   user_id?: UsersUserId | null;
 
@@ -54,8 +49,6 @@ export interface UserMessagesInitializer {
 /** Represents the mutator for the table public.user_messages */
 export interface UserMessagesMutator {
   user_message_id?: UserMessagesUserMessageId;
-
-  account_id?: AccountsAccountId | null;
 
   user_id?: UsersUserId | null;
 

@@ -1,4 +1,3 @@
-import type { AccountsAccountId } from './Accounts.js';
 import type { SubprojectsSubprojectId } from './Subprojects.js';
 
 /** Identifier type for public.places */
@@ -10,9 +9,6 @@ export type PlacesPlaceId = string & { __brand: 'public.places' };
  */
 export default interface Places {
   place_id: PlacesPlaceId;
-
-  /** redundant account_id enhances data safety */
-  account_id: AccountsAccountId | null;
 
   /** always set to optimize queries */
   subproject_id: SubprojectsSubprojectId | null;
@@ -63,9 +59,6 @@ export default interface Places {
 export interface PlacesInitializer {
   /** Default value: uuid_generate_v7() */
   place_id?: PlacesPlaceId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   /** always set to optimize queries */
   subproject_id?: SubprojectsSubprojectId | null;
@@ -126,9 +119,6 @@ export interface PlacesInitializer {
  */
 export interface PlacesMutator {
   place_id?: PlacesPlaceId;
-
-  /** redundant account_id enhances data safety */
-  account_id?: AccountsAccountId | null;
 
   /** always set to optimize queries */
   subproject_id?: SubprojectsSubprojectId | null;
