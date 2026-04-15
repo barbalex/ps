@@ -770,6 +770,8 @@ export const startSyncing = async (userId: string) => {
           url,
           params: {
             table: 'field_sorts',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
           },
         },
         table: 'field_sorts',
@@ -1030,6 +1032,8 @@ export const startSyncing = async (userId: string) => {
           url,
           params: {
             table: 'chart_subjects',
+            where: `chart_id IN (SELECT chart_id FROM charts WHERE project_id IN (SELECT project_id FROM project_users WHERE user_id = $1))`,
+            params: { '1': userId },
           },
         },
         table: 'chart_subjects',
@@ -1090,7 +1094,11 @@ export const startSyncing = async (userId: string) => {
       qcs_assignment: {
         shape: {
           url,
-          params: { table: 'qcs_assignment' },
+          params: {
+            table: 'qcs_assignment',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
+          },
         },
         table: 'qcs_assignment',
         primaryKey: ['qcs_assignment_id'],
