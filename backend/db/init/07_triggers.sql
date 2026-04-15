@@ -1291,3 +1291,64 @@ AFTER INSERT ON places
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE places_insert_inherit_role_trigger();
+
+--------------------------------------------------------------
+-- Better Auth compatibility helpers
+-- Keep id fields in sync with legacy primary key columns.
+-- Better Auth writes/reads id while this schema historically used *_id.
+--
+CREATE OR REPLACE FUNCTION sync_users_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.user_id IS NULL AND NEW.id IS NULL THEN
+    NEW.user_id := public.uuid_generate_v7();
+    NEW.id := NEW.user_id;
+  ELSIF NEW.user_id IS NULL THEN
+    NEW.user_id := NEW.id;
+  ELSIF NEW.id IS NULL THEN
+    NEW.id := NEW.user_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_users_id_columns_trigger ON users;
+CREATE TRIGGER sync_users_id_columns_trigger
+BEFORE INSERT OR UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION sync_users_id_columns();
+
+CREATE OR REPLACE FUNCTION sync_auth_accounts_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.auth_account_id IS NULL AND NEW.id IS NULL THEN
+    NEW.auth_account_id := public.uuid_generate_v7();
+    NEW.id := NEW.auth_account_id;
+  ELSIF NEW.auth_account_id IS NULL THEN
+    NEW.auth_account_id := NEW.id;
+  ELSIF NEW.id IS NULL THEN
+    NEW.id := NEW.auth_account_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_auth_accounts_id_columns_trigger ON auth_accounts;
+CREATE TRIGGER sync_auth_accounts_id_columns_trigger
+BEFORE INSERT OR UPDATE ON auth_accounts
+FOR EACH ROW
+EXECUTE FUNCTION sync_auth_accounts_id_columns();
