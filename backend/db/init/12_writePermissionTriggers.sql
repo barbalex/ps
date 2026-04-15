@@ -315,6 +315,12 @@ BEGIN
 
   v_project_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.project_id ELSE NEW.project_id END;
 
+  IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
+    RAISE EXCEPTION 'Only triggers may set the owner role'
+      USING ERRCODE = '42501',
+            HINT = 'The owner role is assigned automatically when you create a project';
+  END IF;
+
   IF v_project_id IS NOT NULL AND NOT user_can_manage_project_roles(v_project_id, v_user_id) THEN
     RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to manage project members'
       USING ERRCODE = '42501',
@@ -345,6 +351,12 @@ BEGIN
   END IF;
 
   v_subproject_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.subproject_id ELSE NEW.subproject_id END;
+
+  IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
+    RAISE EXCEPTION 'Only triggers may set the owner role'
+      USING ERRCODE = '42501',
+            HINT = 'The owner role is assigned automatically when you create a project';
+  END IF;
 
   IF v_subproject_id IS NOT NULL
      AND NOT user_can_manage_subproject_roles(v_subproject_id, v_user_id)
@@ -378,6 +390,12 @@ BEGIN
   END IF;
 
   v_place_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.place_id ELSE NEW.place_id END;
+
+  IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
+    RAISE EXCEPTION 'Only triggers may set the owner role'
+      USING ERRCODE = '42501',
+            HINT = 'The owner role is assigned automatically when you create a project';
+  END IF;
 
   IF v_place_id IS NOT NULL AND NOT user_can_manage_place_roles(v_place_id, v_user_id) THEN
     RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to manage place members'
