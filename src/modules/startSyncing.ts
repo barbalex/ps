@@ -1,6 +1,7 @@
 import {
   store,
   initialSyncingAtom,
+  onlineAtom,
   pgliteDbAtom,
   syncObjectAtom,
 } from '../store.ts'
@@ -1130,6 +1131,19 @@ export const startSyncing = async (userId: string) => {
           console.log(
             'Electric: Shape already exists (409) - continuing with existing shape',
           )
+          return
+        }
+
+        // Network disconnect — mark offline so Syncer stops sync immediately
+        const isNetworkError =
+          errorStr.includes('ERR_INTERNET_DISCONNECTED') ||
+          errorStr.includes('Failed to fetch') ||
+          errorStr.includes('NetworkError') ||
+          errorStr.includes('network') ||
+          error instanceof TypeError
+        if (isNetworkError) {
+          console.warn('Electric: network error detected, marking offline')
+          store.set(onlineAtom, false)
           return
         }
 
