@@ -258,7 +258,7 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 4.  A users role always includes all the lower roles. They are not separately set, only a single role is set
 5.  (Only) Owners can set designer roles
 6.  (Only) Owners and designers can set writer and reader roles
-7.  Only triggers set owner roles
+7.  Only triggers set owner roles, users can't
 8.  When a role is set, it's effect extends down all relations (n-sides) - even if (which should not happen) it has not been set in a `..._users` table in between.
 9.  Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
 10. Higher rights can be given at lower levels, their effect extending down as well. Example: A reader who shall be writer on a subproject needs the reader role on its project to sync in parent data
@@ -282,7 +282,6 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 13. Alter app side write operations to respect roles and surface when writer or higher role is missing
 14. Alter postgrest API requests to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. Done: JWT Bearer token sent on all PostgREST writes; JWT errors invalidate the token cache and notify the user; permission-denied (42501) errors revert the optimistic change in PGlite, remove the queued operation, and show a notification. See `src/modules/fetchPostgrestToken.ts`, `executeOperation.ts`, `observeOperations.ts`.
 15. Alter postgrest API to ensure user may run this write operation according to the rules above. If not return a meaningful message which is surfaced in the ui and rolls back the operation that caused it Done: `backend/db/init/12_writePermissionTriggers.sql` adds BEFORE triggers (`WHEN pg_trigger_depth() < 1`) on all project/subproject/place-scoped tables. Each trigger reads the JWT `user_id` via `get_jwt_user_id()`, checks the role hierarchy via `user_can_write_project` / `user_can_write_subproject` / `user_can_write_place`, and raises a `42501` exception with a descriptive message + hint if access is denied. `*_users` tables require designer+ via `user_can_manage_*_roles` helpers. ElectricSQL sync is skipped via `is_electric_sync()`. The app-side `42501` handler in `observeOperations.ts` surfaces the hint text and reverts + removes the operation.
-
 16. Alter electric-sql endpoint to accept only authorized requests: https://electric-sql.com/docs/guides/auth#proxy-auth
     - Added `GET /auth/electric/check` to both auth servers: stateless HS256 JWT verify using `PGRST_JWT_SECRET`, no DB lookup
     - Dev `Caddyfile`: `forward_auth @notOptions localhost:3003 { uri /auth/electric/check }` on the `localhost:3001` Electric proxy
