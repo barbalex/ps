@@ -252,28 +252,34 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 
 ## Rules
 
-1. User owns own user row, related accounts, projects and other data
-2. Right levels (from high to low): design (only at project level), write, read
-3. (Only) Owners can set design rights
-4. (Only) Owners and designers can set writer and reader rights
-5. When a right is set, it extends down (to the n-sides) of all relations
-6. Higher rights can be given at lower levels, again extending down
-7. Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
-8. Projects, subprojects and places get right columns: readers, writers, designers (only on projects)
-9. Hopefully this is enough for efficient sync subqueries. If not, we will later need to spread roles to more tables
-10. Owners get all rights
-11. Designer roles are solely reserved for projects. Designers also get writer and reader roles
-12. Writers also get reader roles
-13. On update triggers add lower roles and spread roles down. Ensure previous roles are completely replaced! Ensure trigger-caused updates dont trigger cascading trigger orgies. TODO: how? (only) app sets levels, triggers only spread levels down the hierarchy?
-14. On insert triggers fetch and set this users roles from parent row
-15. Subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) ensure a user syncs only allowed data (only query reader role). Query speed is essential thus array columns for readers and writers
-16. write operations ensure writer roles. Only client side? optimally: client AND express/postgrest api side. But speed? See: https://electric-sql.com/docs/guides/auth
-17. critical for speed: updates on role changes high up in the hierarchy: should happen batched?
-18. critical for speed: sync rules
-19. critical for speed: write checks, especially when data is imported. Batch operations for write on imports!
+1.  User owns own user row, related accounts, projects and other data
+2.  Right levels (from high to low): design (only at project level), write, read
+3.  (Only) Owners can set design rights
+4.  (Only) Owners and designers can set writer and reader rights
+5.  When a right is set, it applies down all relations (n-sides) - even if (which should not happen) it has not been set there. Setting lower rights at a lower level is not expected. Example: When a user has reader role on project, all its data can be synced without checking lower levels
+6.  Higher rights can be given at lower levels, extending down as well
+7.  Projects, subprojects and places get right columns: readers, writers, designers (only on projects). These are the levels where rights can explicitely be set
+8.  Hopefully this is enough for efficient sync subqueries. If not, we will later need to spread roles to more tables (invisible to users)
+9.  Owners get all rights
+10. Designer roles are only set for projects. Designers also get writer and reader roles
+11. Writers also get reader roles
+12. On update triggers add lower roles and spread roles down. Ensure previous roles are completely replaced! Ensure triggers dont trigger cascading, recursive triggers.
+13. On insert triggers fetch and set this users roles from parent row
+14. Subqueries (https://electric-sql.com/docs/guides/shapes#subqueries-experimental) ensure a user syncs only allowed data (only query reader role). Query speed is essential thus array columns for readers and writers
+15. write operations ensure writer roles. Only client side? optimally: client AND express/postgrest api side (because of offline use). But speed?
+16. critical for speed: updates on role changes high up in the hierarchy: should happen batched
+17. critical for speed: sync rules
+18. critical for speed: write checks, especially when data is imported. Batch operations for write on imports!
+19. Most critical for speed: ensure that changing a righ does not lead to re-syncing rows for users not involved. This rules out the array-column per right level approach!
 
 ## Implementation
 
-1. Remove existing xxx_users tables (project_users, subproject_users, place_users), related code, routes, tree navs, breadcrumbs, list views, forms and subforms
-2. Add new rights columns. tables: projects, subprojects, places. columns: designers (only projects), writers, readers
-3. TODO:
+1. account_id is currently part of many tables. In most cases it is redundant and should be removed. Keep the column in: accounts, projects
+2. Roles: Change `user_roles_enum` to be `('reader', 'writer', 'designer', 'owner')`. Add them in this order to make this the official, sortable and comparable order (https://www.postgresql.org/docs/current/datatype-enum.html#DATATYPE-ENUM-ORDERING)
+3. Ensure code using user_roles_enum is updated, i.e. /home/alex/Documents/GitHub/ps/src/modules/constants.ts.userRoleOptions, /home/alex/Documents/GitHub/ps/backend/db/init/10_seedGeneralTestData.sql (manager role no more needed as trigger will set owner), comments in createTables sql files, /home/alex/Documents/GitHub/ps/src/components/Tree/Project/Editing.tsx.userMayDesign, /home/alex/Documents/GitHub/ps/src/formsAndLists/project/DesigningButton.tsx.userMayDesign
+4. Spreading triggers: use `pg_trigger_depth()` (https://www.postgresql.org/docs/9.2/functions-info.html) to only run on `WHEN (pg_trigger_depth() < 1)`. Then spread horizontally and vertically using batch operations, else do nothing. See: https://stackoverflow.com/a/14262289/712005 and https://dba.stackexchange.com/a/163152/51861. Beware: this will not work if there is a case where the spreading trigger _should_ react to something a different trigger did. Which _is_ what we want: only react when a user (with the needed rights) changes rights
+5. Ensure these triggers do not run on sync
+6. Add subqueries to shape params in /home/alex/Documents/GitHub/ps/src/modules/startSyncing.ts to ensure only allowed rows are synced in (user has reader right in the relevant parent table which is projects, subprojects or places set in the respective xxx_users table). Keep an eye on whether these subqueries are reasonable or if we need to create user-hidden xxx_users tables fed by triggers
+7. Alter API calls to send an authorization header that is checked on the server. Return meaningful messages if authorization fails. App-side roll back operation. See: https://electric-sql.com/docs/guides/auth
+8. Alter API to ensure user may run this write operation. If not return a meaningful message which is surfaced in the ui and rolls back the operation that caused it. Open question: do this by querying or by passing the right level of the current user with the request?
+9. Alter the API to run the operation only after these two checks have passed
