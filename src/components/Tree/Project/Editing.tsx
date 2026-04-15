@@ -46,7 +46,8 @@ export const Editing = ({ projectId }) => {
   //   user,
   // })
 
-  const userMayDesign = userIsOwner || userRole === 'manager'
+  const userMayDesign =
+    userIsOwner || userRole === 'designer' || userRole === 'owner'
 
   if (!userMayDesign) return null
 

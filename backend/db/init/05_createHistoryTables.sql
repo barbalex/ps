@@ -2082,7 +2082,6 @@ COMMENT ON COLUMN subprojects.sys_period IS 'System period maintained by tempora
 
 CREATE TABLE IF NOT EXISTS subprojects_history (
 	subproject_id uuid NOT NULL,
-	account_id uuid DEFAULT NULL,
 	project_id uuid DEFAULT NULL,
 	name text DEFAULT NULL,
 	start_year integer DEFAULT NULL,

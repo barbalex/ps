@@ -95,7 +95,6 @@ export const startSyncing = async () => {
             table: 'place_levels',
             columns: [
               'place_level_id',
-              'account_id',
               'project_id',
               'level',
               'name_singular_de',
@@ -143,7 +142,6 @@ export const startSyncing = async () => {
             table: 'subprojects',
             columns: [
               'subproject_id',
-              'account_id',
               'project_id',
               'name',
               'start_year',
@@ -181,7 +179,6 @@ export const startSyncing = async () => {
             table: 'taxonomies',
             columns: [
               'taxonomy_id',
-              'account_id',
               'project_id',
               'type',
               'unit_id',
@@ -221,7 +218,6 @@ export const startSyncing = async () => {
             table: 'lists',
             columns: [
               'list_id',
-              'account_id',
               'project_id',
               'name',
               'value_type',
@@ -243,7 +239,6 @@ export const startSyncing = async () => {
             table: 'list_values',
             columns: [
               'list_value_id',
-              'account_id',
               'list_id',
               'value_integer',
               'value_numeric',
@@ -267,7 +262,6 @@ export const startSyncing = async () => {
             table: 'units',
             columns: [
               'unit_id',
-              'account_id',
               'project_id',
               'name',
               'summable',
@@ -299,7 +293,6 @@ export const startSyncing = async () => {
             table: 'actions',
             columns: [
               'action_id',
-              'account_id',
               'place_id',
               'date',
               'data',
@@ -332,7 +325,6 @@ export const startSyncing = async () => {
             table: 'checks',
             columns: [
               'check_id',
-              'account_id',
               'place_id',
               'date',
               'data',
@@ -385,7 +377,6 @@ export const startSyncing = async () => {
             table: 'check_reports',
             columns: [
               'place_check_report_id',
-              'account_id',
               'place_id',
               'year',
               'data',
@@ -445,7 +436,6 @@ export const startSyncing = async () => {
             table: 'goals',
             columns: [
               'goal_id',
-              'account_id',
               'subproject_id',
               'year',
               'name',
@@ -469,7 +459,6 @@ export const startSyncing = async () => {
         mapColumns: (change: unknown) => {
           return {
             goal_report_id: change.value.goal_report_id,
-            account_id: change.value.account_id,
             goal_id: change.value.goal_id,
             label: change.value.label,
             created_at: change.value.created_at,
@@ -493,7 +482,6 @@ export const startSyncing = async () => {
             table: 'subproject_reports',
             columns: [
               'subproject_report_id',
-              'account_id',
               'subproject_id',
               'year',
               'data',
@@ -514,7 +502,6 @@ export const startSyncing = async () => {
             table: 'subproject_report_designs',
             columns: [
               'subproject_report_design_id',
-              'account_id',
               'project_id',
               'name',
               'active',
@@ -535,7 +522,6 @@ export const startSyncing = async () => {
             table: 'project_reports',
             columns: [
               'project_report_id',
-              'account_id',
               'project_id',
               'year',
               'data',
@@ -556,7 +542,6 @@ export const startSyncing = async () => {
             table: 'project_report_designs',
             columns: [
               'project_report_design_id',
-              'account_id',
               'project_id',
               'name',
               'active',
@@ -577,7 +562,6 @@ export const startSyncing = async () => {
             table: 'project_report_subdesigns',
             columns: [
               'project_report_subdesign_id',
-              'account_id',
               'project_id',
               'name',
               'design',
@@ -597,7 +581,6 @@ export const startSyncing = async () => {
             table: 'files',
             columns: [
               'file_id',
-              'account_id',
               'project_id',
               'subproject_id',
               'place_id',
@@ -680,7 +663,6 @@ export const startSyncing = async () => {
             columns: [
               'field_id',
               'project_id',
-              'account_id',
               'table_name',
               'level',
               'field_type_id',
@@ -716,7 +698,6 @@ export const startSyncing = async () => {
             table: 'observation_imports',
             columns: [
               'observation_import_id',
-              'account_id',
               'subproject_id',
               'created_time',
               'inserted_count',
@@ -760,7 +741,6 @@ export const startSyncing = async () => {
             table: 'wms_services',
             columns: [
               'wms_service_id',
-              'account_id',
               'project_id',
               'url',
               'image_formats',
@@ -805,7 +785,6 @@ export const startSyncing = async () => {
             table: 'wfs_services',
             columns: [
               'wfs_service_id',
-              'account_id',
               'project_id',
               'url',
               'version',
@@ -858,7 +837,6 @@ export const startSyncing = async () => {
             table: 'vector_layer_displays',
             columns: [
               'vector_layer_display_id',
-              'account_id',
               'vector_layer_id',
               'display_property_value',
               'marker_type',
@@ -892,7 +870,6 @@ export const startSyncing = async () => {
             table: 'layer_presentations',
             columns: [
               'layer_presentation_id',
-              'account_id',
               'wms_layer_id',
               'vector_layer_id',
               'active',
@@ -917,7 +894,6 @@ export const startSyncing = async () => {
             table: 'charts',
             columns: [
               'chart_id',
-              'account_id',
               'project_id',
               'subproject_id',
               'place_id',
@@ -958,7 +934,6 @@ export const startSyncing = async () => {
             table: 'crs',
             columns: [
               'crs_id',
-              'account_id',
               'code',
               'name',
               'proj4',
@@ -980,7 +955,6 @@ export const startSyncing = async () => {
               'project_crs_id',
               'crs_id',
               'project_id',
-              'account_id',
               'code',
               'name',
               'proj4',
