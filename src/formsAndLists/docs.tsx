@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useIntl } from 'react-intl'
+import { useAtom } from 'jotai'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
-import { docsMeta } from '../../docs/metadata.ts'
+import { docsMeta, type DocMeta } from '../../docs/metadata.ts'
+import { languageAtom, type Language } from '../store.ts'
 
 import '../form.css'
 
@@ -12,8 +14,14 @@ const { Field, Input, RadioGroup, Radio } = fluentUiReactComponents
 
 type TypeFilter = 'all' | 'contentual' | 'technical'
 
+const getLabel = (doc: DocMeta, lang: Language): string =>
+  (lang !== 'de'
+    ? (doc[`label_${lang}` as keyof DocMeta] as string | undefined)
+    : undefined) ?? doc.label_de
+
 export const DocsList = () => {
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [textFilter, setTextFilter] = useState('')
 
@@ -28,7 +36,7 @@ export const DocsList = () => {
     if (typeFilter === 'contentual' && doc.isTechnical) return false
     if (
       textFilter &&
-      !doc.label.toLowerCase().includes(textFilter.toLowerCase())
+      !getLabel(doc, language).toLowerCase().includes(textFilter.toLowerCase())
     )
       return false
     return true
@@ -84,8 +92,12 @@ export const DocsList = () => {
         />
       </div>
       <div className="list-container">
-        {filtered.map(({ id, label }) => (
-          <Row key={id} label={label} to={`/docs/${id}`} />
+        {filtered.map((doc) => (
+          <Row
+            key={doc.id}
+            label={getLabel(doc, language)}
+            to={`/docs/${doc.id}`}
+          />
         ))}
       </div>
     </div>
