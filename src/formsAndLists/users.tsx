@@ -9,7 +9,7 @@ import { useUsersNavData } from '../modules/useUsersNavData.ts'
 
 import '../form.css'
 
-const from = 'data/users'
+const from = '/data/users'
 
 export const Users = () => {
   const navigate = useNavigate({ from })
