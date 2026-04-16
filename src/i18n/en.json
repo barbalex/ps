@@ -1007,5 +1007,11 @@
   "user.data": "Data",
   "dbDump.download": "Download all data (as sql file)",
   "dbDump.downloading": "Downloading all data...",
-  "ownerRoleNotEditable": "This role is set automatically and cannot be edited."
+  "ownerRoleNotEditable": "This role is set automatically and cannot be edited.",
+  "docsList": "Docs",
+  "docSingular": "Doc",
+  "docsFilterAll": "All",
+  "docsFilterContentual": "Content",
+  "docsFilterTechnical": "Technical",
+  "docsFilterText": "Filter..."
 }

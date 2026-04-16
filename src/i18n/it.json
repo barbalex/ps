@@ -993,5 +993,11 @@
   "user.data": "Dati",
   "dbDump.download": "Scarica tutti i dati (file sql)",
   "dbDump.downloading": "Download in corso...",
-  "ownerRoleNotEditable": "Questo ruolo viene impostato automaticamente e non può essere modificato."
+  "ownerRoleNotEditable": "Questo ruolo viene impostato automaticamente e non può essere modificato.",
+  "docsList": "Docs",
+  "docSingular": "Doc",
+  "docsFilterAll": "Tutti",
+  "docsFilterContentual": "Contenuto",
+  "docsFilterTechnical": "Tecnico",
+  "docsFilterText": "Filtra..."
 }

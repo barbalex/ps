@@ -319,7 +319,7 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 - there exists standard css to style docs similarly and simplify their creation. Things prestyled could be: ol, ul, p, h1, h2, h3. We can add to this later when we use it
 - docs will not be added in the ui but by devs in dev mode. Thus they need not editing functionality
 - TODO: links in docs should always open in a new tab
-- TODO: docs need to exist in de, en, fr and it. They will be written in either de or en. the writer creates the four files, adds the language to the file name. The metadata contains the label in four versions, fallback is label_de (later could be added to the docs:build script?)
+- docs need to exist in de, en, fr and it. They will be written in either de or en. the writer creates the four files, adds the language to the file name. The metadata contains the label in four versions, fallback is label_de (later could be added to the docs:build script?)
 
 ## Implementation
 

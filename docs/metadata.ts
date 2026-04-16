@@ -16,6 +16,6 @@ export const docsMeta: DocMeta[] = [
     label_fr: 'Glisser pour supprimer dans les listes',
     label_it: 'Scorri per eliminare nelle liste',
     order: 1,
-    isTechnical: false,
+    isTechnical: true,
   },
 ]
