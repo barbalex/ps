@@ -25,7 +25,7 @@ export const DocsList = () => {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [textFilter, setTextFilter] = useState('')
 
-  const label = formatMessage({ id: 'docsList', defaultMessage: 'Docs' })
+  const label = formatMessage({ id: 'docsList', defaultMessage: 'Dokumentation' })
   const nameSingular = formatMessage({
     id: 'docSingular',
     defaultMessage: 'Doc',

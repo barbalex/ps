@@ -305,6 +305,7 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 - we will also link to docs from many pages inside the app
 - a docs url should be: /docs/{doc title slugified to lowercase, spaces to -}
 - this route needs no login nor database thus it will always load very fast
+- for navigation we have a symbol-button in the app header (home: left of enter, data: left of online). It links to /docs
 - metadata for docs is stored in an array of objects in a metadata.ts file with these keys: 1. id: {doc title slugified to lowercase, spaces to -} 2. label (= title) 3. order 4. isTechnical
 - the menu list is on the left (similar to the nav tree in /data). It can be filtered by: all, contentual, technical (these three are mutually exclusive - only one can be choosen, default is all), text (label)
 - docs are rendered on the right

@@ -1008,7 +1008,7 @@
   "dbDump.download": "Download all data (as sql file)",
   "dbDump.downloading": "Downloading all data...",
   "ownerRoleNotEditable": "This role is set automatically and cannot be edited.",
-  "docsList": "Docs",
+  "docsList": "Documentation",
   "docSingular": "Doc",
   "docsFilterAll": "All",
   "docsFilterContentual": "Content",
