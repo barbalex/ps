@@ -323,28 +323,6 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 
 ## Implementation
 
-Each step below can be verified independently before moving on.
-
-### Step 1 — Metadata file
-
-Create `docs/metadata.ts` exporting an array of doc descriptors:
-
-```ts
-export type DocMeta = {
-  id: string // slugified title: lowercase, spaces → '-'
-  label: string // display title
-  order: number
-  isTechnical: boolean
-}
-
-export const docsMeta: DocMeta[] = [
-  // example:
-  // { id: 'swipe-to-delete-in-lists', label: 'Swipe to delete in lists', order: 1, isTechnical: false },
-]
-```
-
-Verify: TypeScript compiles without errors.
-
 ---
 
 ### Step 2 — Build script and standard docs CSS
@@ -377,56 +355,8 @@ Use a `.doc` wrapper class so styles are scoped and don't bleed into the app she
 
 Verify: running `npm run docs:build` with empty `docs/docsMd/` and `docs/docsHtml/` directories exits without errors and `docs/docs/` is empty.
 
----
 
-### Step 3 — First doc
 
-Write the first user-facing doc in the appropriate source folder:
-
-- As `docs/docsMd/{id}.md` if writing in Markdown, or
-- As `docs/docsHtml/{id}.html` if writing in HTML directly.
-
-Add its entry to `docsMeta` in `docs/metadata.ts`. Run `npm run docs:build`.
-
-Tip: `docs/docsMd/swipe-to-delete-in-lists.md` (the swipe-to-delete feature doc) is already a good first candidate.
-
-Verify: `docs/docs/{id}.html` is generated and the metadata entry is present.
-
----
-
-### Step 4 — Route structure
-
-Convert the existing flat `src/routes/_layout.docs.tsx` to a folder-based route:
-
-- Rename/replace with `src/routes/_layout/docs/route.tsx` — layout wrapper, renders `<Outlet />`.
-- Create `src/routes/_layout/docs/index.tsx` — renders the `DocsList` component (built in step 5).
-- Create `src/routes/_layout/docs/$docId.tsx` — renders the `Doc` detail component (built in step 6).
-
-Verify: navigating to `/docs` shows an empty list without errors; `/docs/swipe-to-delete-in-lists` navigates without a 404.
-
----
-
-### Step 5 — Docs list component
-
-Create `src/formsAndLists/docs.tsx`:
-
-- Reads `docsMeta`, applies active filter state (step 7), renders a `<ListHeader>` + list of clickable rows (same pattern as `fieldTypes.tsx`).
-- Each row navigates to `/docs/$docId`.
-
-Verify: `/docs` shows a list entry for the first doc.
-
----
-
-### Step 6 — Doc detail component
-
-Create `src/formsAndLists/doc/index.tsx`:
-
-- Looks up the doc by `docId` param in `docsMeta`.
-- Imports the pre-built `.html` file from `docs/docs/` as a raw string via Vite's `?raw` suffix, or uses a dynamic `import()` keyed on the `docId`. Never import from `docsHtml/` or `docsMd/` directly.
-- Renders it via `<div className="doc" dangerouslySetInnerHTML={{ __html: html }} />` with `docs/docs.css` applied.
-- Shows `<NotFound>` if the id is not in metadata.
-
-Verify: `/docs/swipe-to-delete-in-lists` renders the converted HTML with correct styling.
 
 ---
 

@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -7,11 +6,8 @@ import { docsMeta } from '../../docs/metadata.ts'
 
 import '../form.css'
 
-const from = '/_layout/docs'
-
 export const DocsList = () => {
   const { formatMessage } = useIntl()
-  useNavigate({ from })
 
   const label = formatMessage({ id: 'docsList', defaultMessage: 'Docs' })
   const nameSingular = formatMessage({ id: 'docSingular', defaultMessage: 'Doc' })
@@ -27,7 +23,7 @@ export const DocsList = () => {
           <Row
             key={id}
             label={label}
-            to={id}
+            to={`/docs/${id}`}
           />
         ))}
       </div>
