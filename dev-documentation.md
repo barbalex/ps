@@ -308,8 +308,159 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 - metadata for docs is stored in an array of objects in a metadata.json file (or if we can build some stuff (id and label?) automatically, .ts file) with these keys: 1. id: {doc title slugified to lowercase, spaces to -} 2. label (= title) 3. order 4. isTechnical
 - docs will be built very simular to other ressources, for instance field-types: routes, root level docs nav tree node, root list entry, breadcrumbs
 - the menu list gets a filter as many other lists. Difference: docs can be filtered by: all, contentual, technical (these three are mutually exclusive - only one can be choosen, default is all), text (label)
-- docs are built in a docs subfolder
-- docs are built in html to make their rendering flexible
-- there exists standard css to style docs similarly and simplify their creation. Things prestiled could be: ol, ul, p, h1, h2, h3. We can add to this later when we use it
+- Doc sources live in two subfolders of `docs/`:
+  - `docs/docsMd/` — docs written in Markdown (converted to HTML by the build script)
+  - `docs/docsHtml/` — docs written directly in HTML (copied as-is by the build script)
+- A build script (`scripts/build-docs.mjs`, run via `npm run docs:build`) combines both source folders into `docs/docs/` — **do not edit files in `docs/docs/` manually**
+- The app imports the pre-built `.html` fragments — no runtime Markdown parsing, docs render instantly
+- Shared assets (metadata, CSS) live directly in `docs/`
+- there exists standard css to style docs similarly and simplify their creation. Things prestyled could be: ol, ul, p, h1, h2, h3. We can add to this later when we use it
+- docs will not be added in the ui but by devs in dev mode. Thus they need not editing functionality
+- links in docs should always open in a new tab
 
 ## Implementation
+
+Each step below can be verified independently before moving on.
+
+### Step 1 — Metadata file
+
+Create `docs/metadata.ts` exporting an array of doc descriptors:
+
+```ts
+export type DocMeta = {
+  id: string // slugified title: lowercase, spaces → '-'
+  label: string // display title
+  order: number
+  isTechnical: boolean
+}
+
+export const docsMeta: DocMeta[] = [
+  // example:
+  // { id: 'swipe-to-delete-in-lists', label: 'Swipe to delete in lists', order: 1, isTechnical: false },
+]
+```
+
+Verify: TypeScript compiles without errors.
+
+---
+
+### Step 2 — Build script and standard docs CSS
+
+Create `scripts/build-docs.mjs`:
+
+- Clears `docs/docs/`.
+- Reads every `docs/docsMd/*.md` file, converts each to an HTML fragment using `marked` with a custom renderer that adds `target="_blank"` to every `<a>` tag, writes to `docs/docs/{id}.html`.
+- Copies every `docs/docsHtml/*.html` file into `docs/docs/`, post-processing each to add `target="_blank"` to every `<a>` tag that doesn't already have a `target` attribute.
+
+Convention: when writing HTML docs in `docs/docsHtml/`, always add `target="_blank"` to links manually so the source is readable without running the script.
+
+Add to `package.json` scripts:
+
+```json
+"docs:build": "node scripts/build-docs.mjs"
+```
+
+Create `docs/docs.css` with pre-styled base elements:
+
+```css
+.doc h1 { … }
+.doc h2 { … }
+.doc p  { … }
+.doc ol, .doc ul { … }
+/* etc. */
+```
+
+Use a `.doc` wrapper class so styles are scoped and don't bleed into the app shell.
+
+Verify: running `npm run docs:build` with empty `docs/docsMd/` and `docs/docsHtml/` directories exits without errors and `docs/docs/` is empty.
+
+---
+
+### Step 3 — First doc
+
+Write the first user-facing doc in the appropriate source folder:
+
+- As `docs/docsMd/{id}.md` if writing in Markdown, or
+- As `docs/docsHtml/{id}.html` if writing in HTML directly.
+
+Add its entry to `docsMeta` in `docs/metadata.ts`. Run `npm run docs:build`.
+
+Tip: `docs/docsMd/swipe-to-delete-in-lists.md` (the swipe-to-delete feature doc) is already a good first candidate.
+
+Verify: `docs/docs/{id}.html` is generated and the metadata entry is present.
+
+---
+
+### Step 4 — Route structure
+
+Convert the existing flat `src/routes/_layout.docs.tsx` to a folder-based route:
+
+- Rename/replace with `src/routes/_layout/docs/route.tsx` — layout wrapper, renders `<Outlet />`.
+- Create `src/routes/_layout/docs/index.tsx` — renders the `DocsList` component (built in step 5).
+- Create `src/routes/_layout/docs/$docId.tsx` — renders the `Doc` detail component (built in step 6).
+
+Verify: navigating to `/docs` shows an empty list without errors; `/docs/swipe-to-delete-in-lists` navigates without a 404.
+
+---
+
+### Step 5 — Docs list component
+
+Create `src/formsAndLists/docs.tsx`:
+
+- Reads `docsMeta`, applies active filter state (step 7), renders a `<ListHeader>` + list of clickable rows (same pattern as `fieldTypes.tsx`).
+- Each row navigates to `/docs/$docId`.
+
+Verify: `/docs` shows a list entry for the first doc.
+
+---
+
+### Step 6 — Doc detail component
+
+Create `src/formsAndLists/doc/index.tsx`:
+
+- Looks up the doc by `docId` param in `docsMeta`.
+- Imports the pre-built `.html` file from `docs/docs/` as a raw string via Vite's `?raw` suffix, or uses a dynamic `import()` keyed on the `docId`. Never import from `docsHtml/` or `docsMd/` directly.
+- Renders it via `<div className="doc" dangerouslySetInnerHTML={{ __html: html }} />` with `docs/docs.css` applied.
+- Shows `<NotFound>` if the id is not in metadata.
+
+Verify: `/docs/swipe-to-delete-in-lists` renders the converted HTML with correct styling.
+
+---
+
+### Step 7 — Filter
+
+Add filter state (Jotai atom or URL search param) with three mutually exclusive type options: `all` (default) | `contentual` | `technical`, plus a free-text filter on `label`.
+
+- Add filter controls to the docs list header (type radio/toggle + text input).
+- Filter `docsMeta` accordingly before rendering the list.
+
+Verify: toggling "Technical" hides non-technical docs; typing filters by title.
+
+---
+
+### Step 8 — Tree node
+
+Create `src/components/Tree/Docs.tsx` — a root-level tree node (same pattern as other top-level nodes) that links to `/docs`. Add it to the tree root.
+
+Verify: Docs node appears in the navigation tree and navigates correctly.
+
+---
+
+### Step 9 — In-app links
+
+Add contextual links from relevant app pages to their corresponding doc page using `<Link to="/docs/$docId">`. Start with pages that already have a related doc.
+
+Verify: link renders and navigates to the correct doc.
+
+---
+
+### Step 10 — Additional docs
+
+For each new doc:
+
+1. Write the source in `docs/docsMd/{id}.md` (Markdown) or `docs/docsHtml/{id}.html` (HTML).
+2. Add an entry to `docs/metadata.ts`.
+3. Run `npm run docs:build`.
+4. Commit the source file, the generated `docs/docs/{id}.html`, and the updated `docs/metadata.ts`.
+
+## Things to document
