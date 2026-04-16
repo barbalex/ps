@@ -1,7 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Tooltip } = fluentUiReactComponents
 import { useEffect } from 'react'
-import { MdLogin, MdHome } from 'react-icons/md'
+import { MdLogin, MdHome, MdMenuBook } from 'react-icons/md'
 import { useNavigate, useLocation } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -98,6 +98,8 @@ export const Menu = () => {
 
   const onClickHome = () => navigate({ to: '/' })
 
+  const onClickDocs = () => navigate({ to: '/docs' })
+
   return (
     <div className={`${styles.container} no-print`}>
       <Tabs
@@ -149,6 +151,23 @@ export const Menu = () => {
             />
           </Tooltip>
         )}
+        <Tooltip
+          content={intl.formatMessage({
+            id: 'navigationDocs',
+            defaultMessage: 'Dokumentation',
+          })}
+        >
+          <Button
+            size="medium"
+            icon={<MdMenuBook />}
+            onClick={onClickDocs}
+            className={styles.button}
+            aria-label={intl.formatMessage({
+              id: 'navigationDocs',
+              defaultMessage: 'Dokumentation',
+            })}
+          />
+        </Tooltip>
         <Online width={44} />
       </MenuBar>
     </div>

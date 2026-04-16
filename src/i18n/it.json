@@ -999,5 +999,6 @@
   "docsFilterAll": "Tutti",
   "docsFilterContentual": "Contenuto",
   "docsFilterTechnical": "Tecnico",
-  "docsFilterText": "Filtra..."
+  "docsFilterText": "Filtra...",
+  "navigationDocs": "Documentazione"
 }

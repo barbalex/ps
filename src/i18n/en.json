@@ -1013,5 +1013,6 @@
   "docsFilterAll": "All",
   "docsFilterContentual": "Content",
   "docsFilterTechnical": "Technical",
-  "docsFilterText": "Filter..."
+  "docsFilterText": "Filter...",
+  "navigationDocs": "Documentation"
 }
