@@ -140,21 +140,6 @@
   cursor: not-allowed;
 }
 
-.googleMark {
-  width: 20px;
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #fff;
-  color: #1a73e8;
-  border: 1px solid rgba(26, 115, 232, 0.35);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-}
-
 .socialDivider {
   position: relative;
   text-align: center;
