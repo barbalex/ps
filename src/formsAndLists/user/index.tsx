@@ -31,6 +31,7 @@ import {
   enforceDesktopNavigationAtom,
   enforceMobileNavigationAtom,
   alwaysShowTreeAtom,
+  userIdAtom,
 } from '../../store.ts'
 import type Users from '../../models/public/Users.ts'
 
@@ -54,6 +55,7 @@ export const User = () => {
     enforceDesktopNavigationAtom,
   )
   const [alwaysShowTree, setAlwaysShowTree] = useAtom(alwaysShowTreeAtom)
+  const [currentUserId] = useAtom(userIdAtom)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -149,7 +151,7 @@ export const User = () => {
               validationMessage={validations?.email?.message}
             />
 
-            <Section
+            {currentUserId === userId && <Section
               title={intl.formatMessage({
                 id: 'user.appSettings',
                 defaultMessage: 'App-Einstellungen',
@@ -226,9 +228,9 @@ export const User = () => {
                     'Konten direkt im Benutzerformular anzeigen statt in einer separaten Navigation.',
                 })}
               />
-            </Section>
+            </Section>}
 
-            <Section
+            {currentUserId === userId && <Section
               title={intl.formatMessage({
                 id: 'user.data',
                 defaultMessage: 'Daten',
@@ -249,7 +251,7 @@ export const User = () => {
                 onClose={() => setDeleteAccountOpen(false)}
                 userId={userId}
               />
-            </Section>
+            </Section>}
 
             {row.accounts_in_user && (
               <Section
