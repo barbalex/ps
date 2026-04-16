@@ -11,7 +11,9 @@ import { languageAtom, type Language } from '../store.ts'
 
 import '../form.css'
 
-const { Input, ToggleButton } = fluentUiReactComponents
+import { MdClose } from 'react-icons/md'
+
+const { Button, Input, ToggleButton } = fluentUiReactComponents
 
 type TypeFilter = 'all' | 'contentual' | 'technical'
 
@@ -102,6 +104,16 @@ export const DocsList = () => {
           })}
           value={textFilter}
           onChange={(_, data) => setTextFilter(data.value)}
+          contentAfter={
+            textFilter ? (
+              <Button
+                appearance="transparent"
+                size="small"
+                icon={<MdClose />}
+                onClick={() => setTextFilter('')}
+              />
+            ) : undefined
+          }
         />
       </div>
       <div className="list-container">
