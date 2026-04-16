@@ -31,7 +31,9 @@ export const observeOperations = () =>
 
     // loops operations
     // runs operation
-    const firstOperation = operations.at(0)
+    // Process oldest operation first so dependent operations (e.g. insert
+    // before update) are sent to the server in the correct order.
+    const firstOperation = operations.at(-1)
     if (!firstOperation) return
 
     try {
@@ -51,7 +53,9 @@ export const observeOperations = () =>
       if (lcMessage.includes('jwt')) {
         // Token is invalid or expired — clear the cache so the next retry fetches a fresh one
         invalidatePostgrestToken()
-        console.log('observeOperations, JWT error: invalidating token cache for retry')
+        console.log(
+          'observeOperations, JWT error: invalidating token cache for retry',
+        )
         return store.set(addNotificationAtom, {
           intent: 'error',
           title: 'Authentication error',
