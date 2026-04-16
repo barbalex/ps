@@ -15,6 +15,10 @@
   transition: transform 0.3s ease-out;
 }
 
+.rowContentActive {
+  background-color: rgba(38, 82, 37, 0.1);
+}
+
 .rowContentNoTransition {
   transition: none;
 }

@@ -10,6 +10,7 @@ export const Row = ({
   imgSrc,
   lastHasImages = false,
   onDelete,
+  isActive = false,
 }) => {
   const navigate = useNavigate()
   const [swipeOffset, setSwipeOffset] = useState(0)
@@ -105,7 +106,7 @@ export const Row = ({
         </div>
       )}
       <div
-        className={`${styles.rowContent}${showConfirm ? ` ${styles.rowContentNoTransition}` : ''}`}
+        className={`${styles.rowContent}${showConfirm ? ` ${styles.rowContentNoTransition}` : ''}${isActive ? ` ${styles.rowContentActive}` : ''}`}
       >
         {imgSrc ? (
           <img

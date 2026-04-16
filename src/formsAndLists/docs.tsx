@@ -2,6 +2,7 @@ import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useIntl } from 'react-intl'
 import { useAtom } from 'jotai'
+import { useParams } from '@tanstack/react-router'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -22,6 +23,7 @@ const getLabel = (doc: DocMeta, lang: Language): string =>
 export const DocsList = () => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
+  const { docId } = useParams({ strict: false })
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [textFilter, setTextFilter] = useState('')
 
@@ -97,6 +99,7 @@ export const DocsList = () => {
             key={doc.id}
             label={getLabel(doc, language)}
             to={`/docs/${doc.id}`}
+            isActive={doc.id === docId}
           />
         ))}
       </div>
