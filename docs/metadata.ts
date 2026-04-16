@@ -4,7 +4,6 @@ export type DocMeta = {
   label_en?: string
   label_fr?: string
   label_it?: string
-  order: number
   isTechnical: boolean
 }
 
@@ -15,7 +14,6 @@ export const docsMeta: DocMeta[] = [
     label_en: 'Working offline',
     label_fr: 'Travailler hors ligne',
     label_it: 'Lavorare offline',
-    order: 1,
     isTechnical: false,
   },
   {
@@ -24,7 +22,6 @@ export const docsMeta: DocMeta[] = [
     label_en: 'Swipe to delete in lists',
     label_fr: 'Glisser pour supprimer dans les listes',
     label_it: 'Scorri per eliminare nelle liste',
-    order: 2,
     isTechnical: true,
   },
 ]
