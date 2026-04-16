@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { NotFound } from '../../../components/NotFound.tsx'
+import { DocsList } from '../../../formsAndLists/docs.tsx'
 
 export const Route = createFileRoute('/_layout/docs/')({
-  component: () => <div className="form-outer-container">Docs</div>,
+  component: DocsList,
   notFoundComponent: NotFound,
 })
