@@ -296,3 +296,20 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 20. Most critical for speed: Ensure that changing a role does not lead to re-syncing already synced rows other than `..._users` or for users not involved. This rules out the array-column per role approach!
 
 You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 and see all the seeded data
+
+# 7 Documentation
+
+## Goals
+
+- we want the user to find documentation on the /docs route
+- we will also link to docs from many pages inside the app
+- a docs url should be: /docs/{doc title slugified to lowercase, spaces to -}
+- this route needs no login nor database thus it will always load very fast
+- metadata for docs is stored in an array of objects in a metadata.json file (or if we can build some stuff (id and label?) automatically, .ts file) with these keys: 1. id: {doc title slugified to lowercase, spaces to -} 2. label (= title) 3. order 4. isTechnical
+- docs will be built very simular to other ressources, for instance field-types: routes, root level docs nav tree node, root list entry, breadcrumbs
+- the menu list gets a filter as many other lists. Difference: docs can be filtered by: all, contentual, technical (these three are mutually exclusive - only one can be choosen, default is all), text (label)
+- docs are built in a docs subfolder
+- docs are built in html to make their rendering flexible
+- there exists standard css to style docs similarly and simplify their creation. Things prestiled could be: ol, ul, p, h1, h2, h3. We can add to this later when we use it
+
+## Implementation
