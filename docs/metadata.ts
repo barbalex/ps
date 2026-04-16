@@ -10,12 +10,21 @@ export type DocMeta = {
 
 export const docsMeta: DocMeta[] = [
   {
+    id: 'working-offline',
+    label_de: 'Offline arbeiten',
+    label_en: 'Working offline',
+    label_fr: 'Travailler hors ligne',
+    label_it: 'Lavorare offline',
+    order: 1,
+    isTechnical: false,
+  },
+  {
     id: 'swipe-to-delete-in-lists',
     label_de: 'Mit Wischen löschen in Listen',
     label_en: 'Swipe to delete in lists',
     label_fr: 'Glisser pour supprimer dans les listes',
     label_it: 'Scorri per eliminare nelle liste',
-    order: 1,
+    order: 2,
     isTechnical: true,
   },
 ]
