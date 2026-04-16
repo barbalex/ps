@@ -319,6 +319,7 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 - there exists standard css to style docs similarly and simplify their creation. Things prestyled could be: ol, ul, p, h1, h2, h3. We can add to this later when we use it
 - docs will not be added in the ui but by devs in dev mode. Thus they need not editing functionality
 - links in docs should always open in a new tab
+- docs need to exist in de, en, fr and it. They will be written in either de or en. the language version is added to the file name
 
 ## Implementation
 
@@ -429,25 +430,6 @@ Verify: `/docs/swipe-to-delete-in-lists` renders the converted HTML with correct
 
 ---
 
-### Step 7 — Filter
-
-Add filter state (Jotai atom or URL search param) with three mutually exclusive type options: `all` (default) | `contentual` | `technical`, plus a free-text filter on `label`.
-
-- Add filter controls to the docs list header (type radio/toggle + text input).
-- Filter `docsMeta` accordingly before rendering the list.
-
-Verify: toggling "Technical" hides non-technical docs; typing filters by title.
-
----
-
-### Step 8 — Tree node
-
-Create `src/components/Tree/Docs.tsx` — a root-level tree node (same pattern as other top-level nodes) that links to `/docs`. Add it to the tree root.
-
-Verify: Docs node appears in the navigation tree and navigates correctly.
-
----
-
 ### Step 9 — In-app links
 
 Add contextual links from relevant app pages to their corresponding doc page using `<Link to="/docs/$docId">`. Start with pages that already have a related doc.
@@ -460,9 +442,10 @@ Verify: link renders and navigates to the correct doc.
 
 For each new doc:
 
-1. Write the source in `docs/docsMd/{id}.md` (Markdown) or `docs/docsHtml/{id}.html` (HTML).
-2. Add an entry to `docs/metadata.ts`.
-3. Run `npm run docs:build`.
-4. Commit the source file, the generated `docs/docs/{id}.html`, and the updated `docs/metadata.ts`.
+1. Write the source in `docs/docsMd/{id}_de.md` (Markdown) or `docs/docsHtml/{id}_de.html` (HTML)
+2. Add `docs/docsHtml/{id}_en.html`, `docs/docsHtml/{id}_fr.html` and `docs/docsHtml/{id}_it.html`
+3. Add an entry to `docs/metadata.ts`
+4. Run `npm run docs:build`
+5. Commit the source file, the generated `docs/docs/{id}.html`, and the updated `docs/metadata.ts`
 
 ## Things to document
