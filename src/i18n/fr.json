@@ -862,7 +862,7 @@
   "authVerifyEmailBtn": "Confirmer",
   "authVerifyEmailBanner": "Veuillez confirmer votre adresse e-mail. Sans confirmation, vous serez déconnecté dans {timeRemaining}.",
   "authResendVerificationEmailBtn": "Renvoyer le code",
-  "authVerificationOtpPlaceholder": "Saisir le code de vérification",
+  "authVerificationOtpPlaceholder": "Saisir le code",
   "authVerificationCodeSent": "Code de vérification envoyé. Veuillez vérifier votre e-mail.",
   "authVerificationCodeSendFailed": "Impossible d'envoyer le code de vérification.",
   "authEmailVerifiedSuccess": "E-mail vérifié avec succès.",

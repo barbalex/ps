@@ -864,7 +864,7 @@
   "authVerifyEmailBtn": "Conferma",
   "authVerifyEmailBanner": "Conferma il tuo indirizzo e-mail. Senza conferma verrai disconnesso tra {timeRemaining}.",
   "authResendVerificationEmailBtn": "Invia di nuovo il codice",
-  "authVerificationOtpPlaceholder": "Inserisci codice di verifica",
+  "authVerificationOtpPlaceholder": "Inserisci il codice",
   "authVerificationCodeSent": "Codice di verifica inviato. Controlla la tua e-mail.",
   "authVerificationCodeSendFailed": "Invio del codice di verifica non riuscito.",
   "authEmailVerifiedSuccess": "E-mail verificata con successo.",

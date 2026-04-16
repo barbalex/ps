@@ -878,7 +878,7 @@
   "authVerifyEmailBtn": "Confirm",
   "authVerifyEmailBanner": "Please confirm your email address. Without confirmation you will be logged out in {timeRemaining}.",
   "authResendVerificationEmailBtn": "Resend code",
-  "authVerificationOtpPlaceholder": "Enter verification code",
+  "authVerificationOtpPlaceholder": "Enter code",
   "authVerificationCodeSent": "Verification code sent. Please check your email.",
   "authVerificationCodeSendFailed": "Failed to send verification code.",
   "authEmailVerifiedSuccess": "Email verified successfully.",

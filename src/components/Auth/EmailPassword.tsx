@@ -844,7 +844,7 @@ export const EmailPassword = ({
                     onChange={(e) => setVerificationOtp(e.target.value)}
                     placeholder={formatMessage({
                       id: 'authVerificationOtpPlaceholder',
-                      defaultMessage: 'Enter verification code',
+                      defaultMessage: 'Code eingeben',
                     })}
                     disabled={isVerifyingOtp}
                   />

@@ -213,7 +213,7 @@ export const EmailVerificationBanner = () => {
             onChange={(event) => setVerificationOtp(event.target.value)}
             placeholder={formatMessage({
               id: 'authVerificationOtpPlaceholder',
-              defaultMessage: 'Bestätigungscode eingeben',
+              defaultMessage: 'Code eingeben',
             })}
             disabled={isVerifying}
           />
