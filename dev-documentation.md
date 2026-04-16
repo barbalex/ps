@@ -305,7 +305,7 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 - we will also link to docs from many pages inside the app
 - a docs url should be: /docs/{doc title slugified to lowercase, spaces to -}
 - this route needs no login nor database thus it will always load very fast
-- metadata for docs is stored in an array of objects in a metadata.json file (or if we can build some stuff (id and label?) automatically, .ts file) with these keys: 1. id: {doc title slugified to lowercase, spaces to -} 2. label (= title) 3. order 4. isTechnical
+- metadata for docs is stored in an array of objects in a metadata.ts file with these keys: 1. id: {doc title slugified to lowercase, spaces to -} 2. label (= title) 3. order 4. isTechnical
 - the menu list is on the left (similar to the nav tree in /data). It can be filtered by: all, contentual, technical (these three are mutually exclusive - only one can be choosen, default is all), text (label)
 - docs are rendered on the right
 - under 1000px view width ony the menu list is rendered (/docs) or the doc (/docs/doc-id)
@@ -319,7 +319,7 @@ You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 an
 - there exists standard css to style docs similarly and simplify their creation. Things prestyled could be: ol, ul, p, h1, h2, h3. We can add to this later when we use it
 - docs will not be added in the ui but by devs in dev mode. Thus they need not editing functionality
 - links in docs should always open in a new tab
-- docs need to exist in de, en, fr and it. They will be written in either de or en. the language version is added to the file name
+- docs need to exist in de, en, fr and it. They will be written in either de or en. the language version is added to the file name. The metadata contains the label in four versions, fallback is label_de
 
 ## Implementation
 
@@ -354,9 +354,6 @@ Create `docs/docs.css` with pre-styled base elements:
 Use a `.doc` wrapper class so styles are scoped and don't bleed into the app shell.
 
 Verify: running `npm run docs:build` with empty `docs/docsMd/` and `docs/docsHtml/` directories exits without errors and `docs/docs/` is empty.
-
-
-
 
 ---
 

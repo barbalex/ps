@@ -1,5 +1,7 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
+
+import { DocsLayout } from './-layout.tsx'
 
 export const Route = createFileRoute('/_layout/docs')({
-  component: Outlet,
+  component: DocsLayout,
 })
