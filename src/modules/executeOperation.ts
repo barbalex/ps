@@ -61,6 +61,7 @@ export const executeOperation = async (o) => {
     rowIdName,
     rowId,
     filter,
+    filters,
     draft = {},
     column,
     newValue,
@@ -83,6 +84,11 @@ export const executeOperation = async (o) => {
   //   column: 'project_id',
   //   value: projectId,
   // }
+  // filters example (multiple AND conditions):
+  // filters: [
+  //   { function: 'eq', column: 'place_id', value: placeId },
+  //   { function: 'eq', column: 'user_id', value: userId },
+  // ]
 
   if (operation === 'update') {
     // build base query
@@ -96,16 +102,29 @@ export const executeOperation = async (o) => {
       }),
     )
     // add filtering
-    const queryFunction =
-      rowIdName && rowId
-        ? baseQueryFunction.eq(rowIdName, rowId).select(rowIdName).limit(1)
-        : filter?.function === 'eq'
-          ? baseQueryFunction.eq(filter.column, filter.value)
-          : filter?.function === 'neq'
-            ? baseQueryFunction.neq(filter.column, filter.value)
-            : filter?.function === 'in'
-              ? baseQueryFunction.in(filter.column, filter.value)
-              : baseQueryFunction
+    let queryFunction
+    if (rowIdName && rowId) {
+      queryFunction = baseQueryFunction
+        .eq(rowIdName, rowId)
+        .select(rowIdName)
+        .limit(1)
+    } else if (filters?.length) {
+      // compound filter: chain multiple eq/neq/in conditions
+      queryFunction = filters.reduce((q, f) => {
+        if (f.function === 'eq') return q.eq(f.column, f.value)
+        if (f.function === 'neq') return q.neq(f.column, f.value)
+        if (f.function === 'in') return q.in(f.column, f.value)
+        return q
+      }, baseQueryFunction)
+    } else if (filter?.function === 'eq') {
+      queryFunction = baseQueryFunction.eq(filter.column, filter.value)
+    } else if (filter?.function === 'neq') {
+      queryFunction = baseQueryFunction.neq(filter.column, filter.value)
+    } else if (filter?.function === 'in') {
+      queryFunction = baseQueryFunction.in(filter.column, filter.value)
+    } else {
+      queryFunction = baseQueryFunction
+    }
     const { data, error } = await queryFunction
 
     checkError(error)

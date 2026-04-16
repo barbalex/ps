@@ -56,8 +56,10 @@ export const PlaceUser = ({ from }) => {
     })
     addOperation({
       table: 'place_users',
-      rowIdName: 'place_user_id',
-      rowId: placeUserId,
+      filters: [
+        { function: 'eq', column: 'place_id', value: row.place_id },
+        { function: 'eq', column: 'user_id', value: row.user_id },
+      ],
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },

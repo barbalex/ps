@@ -59,8 +59,10 @@ export const SubprojectUser = () => {
     })
     addOperation({
       table: 'subproject_users',
-      rowIdName: 'subproject_user_id',
-      rowId: subprojectUserId,
+      filters: [
+        { function: 'eq', column: 'subproject_id', value: row.subproject_id },
+        { function: 'eq', column: 'user_id', value: row.user_id },
+      ],
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
