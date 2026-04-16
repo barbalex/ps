@@ -998,5 +998,6 @@
   "docsFilterContentual": "Contenu",
   "docsFilterTechnical": "Technique",
   "docsFilterText": "Filtrer...",
-  "navigationDocs": "Documentation"
+  "navigationDocs": "Documentation",
+  "navigationDocsGoBack": "Retour"
 }

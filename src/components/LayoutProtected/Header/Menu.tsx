@@ -7,6 +7,7 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import {
+  docsReturnUrlAtom,
   enforceMobileNavigationAtom,
   isMobileViewAtom,
   mapMaximizedAtom,
@@ -39,6 +40,8 @@ export const Menu = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isHome = pathname === '/'
+  const isInDocs = pathname.startsWith('/docs')
+  const [docsReturnUrl, setDocsReturnUrl] = useAtom(docsReturnUrlAtom)
 
   const { data: session } = useSession()
   const authUser = session?.user
@@ -98,7 +101,19 @@ export const Menu = () => {
 
   const onClickHome = () => navigate({ to: '/' })
 
-  const onClickDocs = () => navigate({ to: '/docs' })
+  const onClickDocs = () => {
+    if (isInDocs) {
+      navigate({ to: docsReturnUrl ?? '/data/projects' })
+      setDocsReturnUrl(null)
+    } else {
+      setDocsReturnUrl(pathname)
+      navigate({ to: '/docs' })
+    }
+  }
+
+  const docsLabel = isInDocs
+    ? intl.formatMessage({ id: 'navigationDocsGoBack', defaultMessage: 'Zurück' })
+    : intl.formatMessage({ id: 'navigationDocs', defaultMessage: 'Dokumentation' })
 
   return (
     <div className={`${styles.container} no-print`}>
@@ -151,21 +166,13 @@ export const Menu = () => {
             />
           </Tooltip>
         )}
-        <Tooltip
-          content={intl.formatMessage({
-            id: 'navigationDocs',
-            defaultMessage: 'Dokumentation',
-          })}
-        >
+        <Tooltip content={docsLabel}>
           <Button
             size="medium"
             icon={<MdMenuBook />}
             onClick={onClickDocs}
             className={styles.button}
-            aria-label={intl.formatMessage({
-              id: 'navigationDocs',
-              defaultMessage: 'Dokumentation',
-            })}
+            aria-label={docsLabel}
           />
         </Tooltip>
         <Online width={44} />

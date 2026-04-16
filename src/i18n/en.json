@@ -1014,5 +1014,6 @@
   "docsFilterContentual": "Content",
   "docsFilterTechnical": "Technical",
   "docsFilterText": "Filter...",
-  "navigationDocs": "Documentation"
+  "navigationDocs": "Documentation",
+  "navigationDocsGoBack": "Go back"
 }

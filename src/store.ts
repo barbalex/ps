@@ -72,6 +72,8 @@ export const setDesktopViewAtom = atom(
 export const isMobileViewAtom = atom(
   (get) => !get(isDesktopViewAtom) || get(enforceMobileNavigationAtom),
 )
+export const docsReturnUrlAtom = atom<string | null>(null)
+
 export const hideBookmarksAtom = atom((get) => {
   const isDesktopView = get(isDesktopViewAtom)
   const enforceMobileNavigation = get(enforceMobileNavigationAtom)
