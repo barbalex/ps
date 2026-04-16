@@ -1,52 +1,52 @@
-<h1>Swipe to Delete in Lists</h1>
-<h2>Overview</h2>
-<p>List rows now support a swipe-to-delete gesture that provides intuitive deletion with visual feedback and confirmation.</p>
-<h2>Features Implemented</h2>
-<h3>1. Swipe Right to Reveal Delete Icon</h3>
+<h1>Glisser pour supprimer dans les listes</h1>
+<h2>Aperçu</h2>
+<p>Les lignes de liste prennent désormais en charge un geste de glissement pour supprimer, offrant une suppression intuitive avec un retour visuel et une confirmation.</p>
+<h2>Fonctionnalités implémentées</h2>
+<h3>1. Glisser à droite pour afficher l&#39;icône de suppression</h3>
 <ul>
-<li>Users can swipe right on any row that has the <code>onDelete</code> prop</li>
-<li>A trash can icon (🗑️) appears behind the row as it&#39;s swiped</li>
-<li>The icon is initially white/grayscale for subtle visual feedback</li>
+<li>Les utilisateurs peuvent faire glisser n&#39;importe quelle ligne vers la droite si elle possède la propriété <code>onDelete</code></li>
+<li>Une icône de corbeille (🗑️) apparaît derrière la ligne lors du glissement</li>
+<li>L&#39;icône est initialement blanche/grise pour un retour visuel discret</li>
 </ul>
-<h3>2. Visual Feedback at 30% Threshold</h3>
+<h3>2. Retour visuel au seuil de 30 %</h3>
 <ul>
-<li>When the swipe exceeds 30% of the row width, the delete icon changes from white to red</li>
-<li>This provides clear visual feedback that the deletion threshold has been reached</li>
-<li>The color change signals to the user that releasing will trigger the next step</li>
+<li>Lorsque le glissement dépasse 30 % de la largeur de la ligne, l&#39;icône de suppression passe du blanc au rouge</li>
+<li>Cela fournit un retour visuel clair indiquant que le seuil de suppression a été atteint</li>
+<li>Le changement de couleur signale à l&#39;utilisateur que relâcher déclenchera l&#39;étape suivante</li>
 </ul>
-<h3>3. Confirm/Cancel Buttons</h3>
+<h3>3. Boutons Confirmer/Annuler</h3>
 <ul>
-<li>When the swipe is released past the 30% threshold, two action buttons appear:<ul>
-<li><strong>Confirm button (✓)</strong>: Red circular button to confirm deletion</li>
-<li><strong>Cancel button (✕)</strong>: Gray circular button to cancel the action</li>
+<li>Lorsque le glissement est relâché au-delà du seuil de 30 %, deux boutons d&#39;action apparaissent :<ul>
+<li><strong>Bouton Confirmer (✓)</strong> : Bouton circulaire rouge pour confirmer la suppression</li>
+<li><strong>Bouton Annuler (✕)</strong> : Bouton circulaire gris pour annuler l&#39;action</li>
 </ul>
 </li>
-<li>The buttons are positioned in the left 30% of the row</li>
-<li>Clicking confirm triggers the <code>onDelete</code> callback</li>
-<li>Clicking cancel resets the row to its normal state</li>
+<li>Les boutons sont positionnés dans les 30 % gauches de la ligne</li>
+<li>Cliquer sur Confirmer déclenche le callback <code>onDelete</code></li>
+<li>Cliquer sur Annuler remet la ligne dans son état normal</li>
 </ul>
-<h3>4. Smooth Animations</h3>
+<h3>4. Animations fluides</h3>
 <ul>
-<li>The row slides smoothly during the swipe gesture</li>
-<li>If released before the 30% threshold, the row animates back to its original position</li>
-<li>All transitions use easing for a polished user experience</li>
+<li>La ligne glisse fluidement pendant le geste</li>
+<li>Si elle est relâchée avant le seuil de 30 %, elle revient en douceur à sa position initiale</li>
+<li>Toutes les transitions utilisent un easing pour une expérience utilisateur soignée</li>
 </ul>
-<h2>Usage</h2>
-<p>To enable swipe-to-delete on a row, pass an <code>onDelete</code> callback function:</p>
+<h2>Utilisation</h2>
+<p>Pour activer le glissement pour supprimer sur une ligne, passez une fonction de callback <code>onDelete</code> :</p>
 <pre><code class="language-tsx">&lt;Row
-  label=&quot;My Item&quot;
-  to=&quot;/path&quot;
+  label=&quot;Mon élément&quot;
+  to=&quot;/chemin&quot;
   onDelete={() =&gt; {
-    // Handle deletion logic here
+    // Logique de suppression ici
     deleteItem(itemId)
   }}
 /&gt;
 </code></pre>
-<p>Rows without the <code>onDelete</code> prop will continue to work normally without the swipe gesture.</p>
-<h2>Technical Implementation</h2>
+<p>Les lignes sans la propriété <code>onDelete</code> continueront à fonctionner normalement, sans le geste de glissement.</p>
+<h2>Implémentation technique</h2>
 <ul>
-<li>Touch events (<code>onTouchStart</code>, <code>onTouchMove</code>, <code>onTouchEnd</code>) track swipe gestures</li>
-<li>State management handles swipe offset and confirmation mode</li>
-<li>CSS transforms provide smooth visual feedback</li>
-<li>The feature is fully self-contained within the Row component</li>
+<li>Les événements tactiles (<code>onTouchStart</code>, <code>onTouchMove</code>, <code>onTouchEnd</code>) suivent les gestes de glissement</li>
+<li>La gestion d&#39;état traite le décalage du glissement et le mode de confirmation</li>
+<li>Les transformations CSS fournissent un retour visuel fluide</li>
+<li>La fonctionnalité est entièrement encapsulée dans le composant Row</li>
 </ul>

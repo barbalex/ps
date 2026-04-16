@@ -1,52 +1,52 @@
-<h1>Swipe to Delete in Lists</h1>
-<h2>Overview</h2>
-<p>List rows now support a swipe-to-delete gesture that provides intuitive deletion with visual feedback and confirmation.</p>
-<h2>Features Implemented</h2>
-<h3>1. Swipe Right to Reveal Delete Icon</h3>
+<h1>Mit Wischen löschen in Listen</h1>
+<h2>Übersicht</h2>
+<p>Listenzeilen unterstützen jetzt eine Wischgeste zum Löschen, die eine intuitive Bedienung mit visuellem Feedback und Bestätigung ermöglicht.</p>
+<h2>Implementierte Funktionen</h2>
+<h3>1. Nach rechts wischen zum Anzeigen des Löschsymbols</h3>
 <ul>
-<li>Users can swipe right on any row that has the <code>onDelete</code> prop</li>
-<li>A trash can icon (🗑️) appears behind the row as it&#39;s swiped</li>
-<li>The icon is initially white/grayscale for subtle visual feedback</li>
+<li>Benutzer können jede Zeile nach rechts wischen, wenn diese die <code>onDelete</code>-Eigenschaft hat</li>
+<li>Hinter der Zeile erscheint ein Papierkorb-Symbol (🗑️), während die Zeile gewischt wird</li>
+<li>Das Symbol ist zunächst weiß/grau für ein dezentes visuelles Feedback</li>
 </ul>
-<h3>2. Visual Feedback at 30% Threshold</h3>
+<h3>2. Visuelles Feedback ab 30 % Schwellenwert</h3>
 <ul>
-<li>When the swipe exceeds 30% of the row width, the delete icon changes from white to red</li>
-<li>This provides clear visual feedback that the deletion threshold has been reached</li>
-<li>The color change signals to the user that releasing will trigger the next step</li>
+<li>Wenn die Wischbewegung 30 % der Zeilenbreite überschreitet, wechselt das Löschsymbol von weiß zu rot</li>
+<li>Dies gibt eine klare visuelle Rückmeldung, dass der Löschschwellenwert erreicht wurde</li>
+<li>Der Farbwechsel signalisiert, dass ein Loslassen den nächsten Schritt auslöst</li>
 </ul>
-<h3>3. Confirm/Cancel Buttons</h3>
+<h3>3. Bestätigen-/Abbrechen-Schaltflächen</h3>
 <ul>
-<li>When the swipe is released past the 30% threshold, two action buttons appear:<ul>
-<li><strong>Confirm button (✓)</strong>: Red circular button to confirm deletion</li>
-<li><strong>Cancel button (✕)</strong>: Gray circular button to cancel the action</li>
+<li>Wenn die Wischbewegung jenseits des 30-%-Schwellenwerts losgelassen wird, erscheinen zwei Aktionsschaltflächen:<ul>
+<li><strong>Bestätigen-Schaltfläche (✓)</strong>: Rote runde Schaltfläche zur Bestätigung der Löschung</li>
+<li><strong>Abbrechen-Schaltfläche (✕)</strong>: Graue runde Schaltfläche zum Abbrechen der Aktion</li>
 </ul>
 </li>
-<li>The buttons are positioned in the left 30% of the row</li>
-<li>Clicking confirm triggers the <code>onDelete</code> callback</li>
-<li>Clicking cancel resets the row to its normal state</li>
+<li>Die Schaltflächen befinden sich in der linken 30 % der Zeile</li>
+<li>Ein Klick auf „Bestätigen&quot; löst den <code>onDelete</code>-Callback aus</li>
+<li>Ein Klick auf „Abbrechen&quot; setzt die Zeile in ihren ursprünglichen Zustand zurück</li>
 </ul>
-<h3>4. Smooth Animations</h3>
+<h3>4. Sanfte Animationen</h3>
 <ul>
-<li>The row slides smoothly during the swipe gesture</li>
-<li>If released before the 30% threshold, the row animates back to its original position</li>
-<li>All transitions use easing for a polished user experience</li>
+<li>Die Zeile gleitet während der Wischgeste flüssig</li>
+<li>Wird sie vor dem 30-%-Schwellenwert losgelassen, animiert sie zurück in ihre Ausgangsposition</li>
+<li>Alle Übergänge verwenden Easing für ein poliertes Benutzererlebnis</li>
 </ul>
-<h2>Usage</h2>
-<p>To enable swipe-to-delete on a row, pass an <code>onDelete</code> callback function:</p>
+<h2>Verwendung</h2>
+<p>Um „Mit Wischen löschen&quot; für eine Zeile zu aktivieren, übergebe eine <code>onDelete</code>-Callback-Funktion:</p>
 <pre><code class="language-tsx">&lt;Row
-  label=&quot;My Item&quot;
-  to=&quot;/path&quot;
+  label=&quot;Mein Eintrag&quot;
+  to=&quot;/pfad&quot;
   onDelete={() =&gt; {
-    // Handle deletion logic here
+    // Löschlogik hier
     deleteItem(itemId)
   }}
 /&gt;
 </code></pre>
-<p>Rows without the <code>onDelete</code> prop will continue to work normally without the swipe gesture.</p>
-<h2>Technical Implementation</h2>
+<p>Zeilen ohne die <code>onDelete</code>-Eigenschaft funktionieren weiterhin normal, ohne die Wischgeste.</p>
+<h2>Technische Umsetzung</h2>
 <ul>
-<li>Touch events (<code>onTouchStart</code>, <code>onTouchMove</code>, <code>onTouchEnd</code>) track swipe gestures</li>
-<li>State management handles swipe offset and confirmation mode</li>
-<li>CSS transforms provide smooth visual feedback</li>
-<li>The feature is fully self-contained within the Row component</li>
+<li>Touch-Events (<code>onTouchStart</code>, <code>onTouchMove</code>, <code>onTouchEnd</code>) verfolgen Wischgesten</li>
+<li>Die Zustandsverwaltung behandelt den Wisch-Offset und den Bestätigungsmodus</li>
+<li>CSS-Transforms sorgen für flüssiges visuelles Feedback</li>
+<li>Die Funktion ist vollständig in der Row-Komponente gekapselt</li>
 </ul>
