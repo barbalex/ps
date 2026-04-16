@@ -16,6 +16,7 @@ export const DropdownField = ({
   value,
   onChange,
   autoFocus,
+  disabled = false,
   validationMessage: validationMessageIn,
   validationState: validationStateIn = 'none',
   button,
@@ -73,6 +74,7 @@ export const DropdownField = ({
           }
           appearance="underline"
           autoFocus={autoFocus}
+          disabled={disabled}
           ref={ref}
           className={styles.dd}
           clearable

@@ -26,6 +26,8 @@ Use css directly, without modules, as mentioned here: https://medium.com/@rapPay
 
 Is this better than using css modules? Migrating would be a chore, so let's not do it now.
 
+One upside is: inside css modules nesting is not possible for classes.
+
 # 2. SQL Source Of Truth And Sync
 
 ## Why This Exists

@@ -1006,5 +1006,6 @@
   "user.alwaysShowTree.help": "If true, the navigation tree will always be shown (on mobile it is not very practical)",
   "user.data": "Data",
   "dbDump.download": "Download all data (as sql file)",
-  "dbDump.downloading": "Downloading all data..."
+  "dbDump.downloading": "Downloading all data...",
+  "ownerRoleNotEditable": "This role is set automatically and cannot be edited."
 }

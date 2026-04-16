@@ -14,6 +14,8 @@ import { addOperationAtom } from '../../store.ts'
 import type ProjectUsers from '../../models/public/ProjectUsers.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
 
+import styles from './index.module.css'
+
 import '../../form.css'
 
 const from = '/data/projects/$projectId_/users/$projectUserId/'
@@ -32,6 +34,12 @@ export const ProjectUser = () => {
     [projectUserId],
   )
   const row: ProjectUsers | undefined = res?.rows?.[0]
+
+  const ownerRes = useLiveQuery(
+    `SELECT a.user_id FROM projects p JOIN accounts a ON p.account_id = a.account_id WHERE p.project_id = $1`,
+    [row?.project_id ?? null],
+  )
+  const isOwner = !!(row?.user_id && ownerRes?.rows?.[0]?.user_id === row.user_id)
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -85,6 +93,15 @@ export const ProjectUser = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
+        {isOwner && (
+          <p className={styles.ownerNotice}>
+            {formatMessage({
+              id: 'ownerRoleNotEditable',
+              defaultMessage:
+                'Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden.',
+            })}
+          </p>
+        )}
         <DropdownField
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
@@ -92,6 +109,7 @@ export const ProjectUser = () => {
           where={`user_id NOT IN (SELECT user_id FROM project_users WHERE project_id = '${row.project_id}' AND project_user_id != '${projectUserId}' AND user_id IS NOT NULL)`}
           value={row.user_id ?? ''}
           onChange={onChange}
+          disabled={isOwner}
           autoFocus
           ref={autoFocusRef}
           validationState={validations?.user_id?.state}
@@ -112,6 +130,7 @@ export const ProjectUser = () => {
           )}
           value={row.role ?? ''}
           onChange={onChange}
+          disabled={isOwner}
           validationState={validations?.role?.state}
           validationMessage={validations?.role?.message}
         />

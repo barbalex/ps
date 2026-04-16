@@ -1197,5 +1197,8 @@
   },
   "bT0CsE": {
     "defaultMessage": "Standard-Einheit für Massnahmen-Taxon-Mengen"
+  },
+  "ownerRoleNotEditable": {
+    "defaultMessage": "Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden."
   }
 }

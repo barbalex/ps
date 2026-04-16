@@ -990,5 +990,6 @@
   "user.alwaysShowTree.help": "Si activé, l'arborescence de navigation sera toujours affichée (peu pratique sur mobile)",
   "user.data": "Données",
   "dbDump.download": "Télécharger toutes les données (fichier sql)",
-  "dbDump.downloading": "Téléchargement en cours..."
+  "dbDump.downloading": "Téléchargement en cours...",
+  "ownerRoleNotEditable": "Ce rôle est défini automatiquement et ne peut pas être modifié."
 }

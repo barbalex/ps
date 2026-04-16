@@ -14,6 +14,8 @@ import { addOperationAtom } from '../../store.ts'
 import type PlaceUsers from '../../models/public/PlaceUsers.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
 
+import styles from './index.module.css'
+
 import '../../form.css'
 
 export const PlaceUser = ({ from }) => {
@@ -31,6 +33,12 @@ export const PlaceUser = ({ from }) => {
     [placeUserId],
   )
   const row: PlaceUsers | undefined = res?.rows?.[0]
+
+  const ownerRes = useLiveQuery(
+    `SELECT a.user_id FROM places pl JOIN subprojects sp ON pl.subproject_id = sp.subproject_id JOIN projects p ON sp.project_id = p.project_id JOIN accounts a ON p.account_id = a.account_id WHERE pl.place_id = $1`,
+    [row?.place_id ?? null],
+  )
+  const isOwner = !!(row?.user_id && ownerRes?.rows?.[0]?.user_id === row.user_id)
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -81,6 +89,15 @@ export const PlaceUser = ({ from }) => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
+        {isOwner && (
+          <p className={styles.ownerNotice}>
+            {formatMessage({
+              id: 'ownerRoleNotEditable',
+              defaultMessage:
+                'Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden.',
+            })}
+          </p>
+        )}
         <DropdownField
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
@@ -88,6 +105,7 @@ export const PlaceUser = ({ from }) => {
           where={`user_id NOT IN (SELECT user_id FROM place_users WHERE place_id = '${row.place_id}' AND place_user_id != '${placeUserId}' AND user_id IS NOT NULL)`}
           value={row.user_id ?? ''}
           onChange={onChange}
+          disabled={isOwner}
           autoFocus
           ref={autoFocusRef}
           validationState={validations?.user_id?.state}
@@ -108,6 +126,7 @@ export const PlaceUser = ({ from }) => {
           )}
           value={row.role ?? ''}
           onChange={onChange}
+          disabled={isOwner}
           validationState={validations?.role?.state}
           validationMessage={validations?.role?.message}
         />

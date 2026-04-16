@@ -14,6 +14,8 @@ import { addOperationAtom } from '../../store.ts'
 import type SubprojectUsers from '../../models/public/SubprojectUsers.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
 
+import styles from './index.module.css'
+
 import '../../form.css'
 
 const from =
@@ -34,6 +36,12 @@ export const SubprojectUser = () => {
     [subprojectUserId],
   )
   const row: SubprojectUsers | undefined = res?.rows?.[0]
+
+  const ownerRes = useLiveQuery(
+    `SELECT a.user_id FROM subprojects sp JOIN projects p ON sp.project_id = p.project_id JOIN accounts a ON p.account_id = a.account_id WHERE sp.subproject_id = $1`,
+    [row?.subproject_id ?? null],
+  )
+  const isOwner = !!(row?.user_id && ownerRes?.rows?.[0]?.user_id === row.user_id)
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -77,6 +85,15 @@ export const SubprojectUser = () => {
           <Loading />
         ) : row ? (
           <>
+            {isOwner && (
+              <p className={styles.ownerNotice}>
+                {formatMessage({
+                  id: 'ownerRoleNotEditable',
+                  defaultMessage:
+                    'Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden.',
+                })}
+              </p>
+            )}
             <DropdownField
               label={formatMessage({
                 id: 'qyI8KV',
@@ -87,6 +104,7 @@ export const SubprojectUser = () => {
               where={`user_id NOT IN (SELECT user_id FROM subproject_users WHERE subproject_id = '${row.subproject_id}' AND subproject_user_id != '${subprojectUserId}' AND user_id IS NOT NULL)`}
               value={row.user_id ?? ''}
               onChange={onChange}
+              disabled={isOwner}
               autoFocus
               ref={autoFocusRef}
               validationState={validations?.user_id?.state}
@@ -107,6 +125,7 @@ export const SubprojectUser = () => {
               )}
               value={row.role ?? ''}
               onChange={onChange}
+              disabled={isOwner}
               validationState={validations?.role?.state}
               validationMessage={validations?.role?.message}
             />

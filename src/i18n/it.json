@@ -992,5 +992,6 @@
   "user.alwaysShowTree.help": "Se attivo, l'albero di navigazione verrà sempre mostrato (poco pratico su mobile)",
   "user.data": "Dati",
   "dbDump.download": "Scarica tutti i dati (file sql)",
-  "dbDump.downloading": "Download in corso..."
+  "dbDump.downloading": "Download in corso...",
+  "ownerRoleNotEditable": "Questo ruolo viene impostato automaticamente e non può essere modificato."
 }
