@@ -68,6 +68,7 @@
   color: #5c4700;
   padding: 6px 10px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .button:disabled {
