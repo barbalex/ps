@@ -47,14 +47,30 @@ export const Route = createFileRoute('/data')({
       try {
         result = await getSession({ query: { disableCookieCache: true } })
       } catch {
-        // Server unreachable (e.g. dev without backend running): fall back to
-        // the persisted userId stored in localStorage from a previous session.
+        // betterFetch threw (e.g. CORS / connection refused)
+      }
+
+      // betterFetch may also return { data: null, error: ... } instead of throwing
+      const hasNetworkError =
+        !result ||
+        (typeof result === 'object' &&
+          'error' in result &&
+          (result as { error?: unknown }).error != null &&
+          !(
+            typeof result === 'object' &&
+            'data' in result &&
+            (result as { data?: unknown }).data != null
+          ))
+
+      if (hasNetworkError) {
+        // Server unreachable: fall back to the persisted userId from a previous session
         const userId = store.get(userIdAtom)
         if (!userId)
           throw redirect({ to: '/auth', search: { redirect: location.href } })
         await ensurePgliteDb()
         return { navDataFetcher: 'useDataBreadcrumbData' }
       }
+
       const session =
         result && typeof result === 'object' && 'data' in result
           ? (result as { data?: { user?: unknown } | null }).data

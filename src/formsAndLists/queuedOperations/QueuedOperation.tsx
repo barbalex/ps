@@ -18,6 +18,8 @@ export const QueuedOperation = ({ qo, index }) => {
     qo
 
   const onClickRevert = async () => {
+    // TODO: click does not happen
+    console.log('Reverting operation', qo)
     await revertOperation(qo)
     removeOperation(id)
   }
@@ -81,10 +83,15 @@ export const QueuedOperation = ({ qo, index }) => {
       </div>
       <div className={`${styles.icon} ${valueClass}`}>
         <Button
-          title={formatMessage({ id: 'qoRevertBtn', defaultMessage: 'widerrufen' })}
-          aria-label={formatMessage({ id: 'qoRevertBtn', defaultMessage: 'widerrufen' })}
+          title={formatMessage({
+            id: 'qoRevertBtn',
+            defaultMessage: 'widerrufen',
+          })}
+          aria-label={formatMessage({
+            id: 'qoRevertBtn',
+            defaultMessage: 'widerrufen',
+          })}
           onClick={onClickRevert}
-          size="small"
           className={styles.revertButton}
           icon={<FaUndoAlt />}
         />

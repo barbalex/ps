@@ -709,6 +709,8 @@ export const createGoalReport = async ({ projectId, goalId }) => {
 export const createSubprojectUser = async ({ subprojectId }) => {
   const db = store.get(pgliteDbAtom)
   const subproject_user_id = uuidv7()
+
+  // TODO: these should both be upserts
   await db.query(
     `insert into subproject_users (subproject_user_id, subproject_id, role) values ($1, $2, $3)`,
     [subproject_user_id, subprojectId, 'reader'],
