@@ -416,6 +416,6 @@ export const constants = {
         : 'https://sync.arten-fördern.app/v1/shape',
   getAppUri: () =>
     isLocalDevHost()
-      ? `http://localhost`
+      ? `http://${window.location.hostname}:${window.location.port}`
       : `https://${window.location.hostname}`,
 }

@@ -22,7 +22,7 @@ export const QueuedOperationsList = () => {
   const { label, nameSingular, navs } = navData
 
   const openDocs = () => {
-    const url = `${constants?.getAppUri()}/Dokumentation/offline`
+    const url = `${constants?.getAppUri()}/docs/offline`
     if (window.matchMedia('(display-mode: standalone)').matches) {
       return window.open(url, '_blank', 'toolbar=no')
     }
@@ -75,11 +75,7 @@ export const QueuedOperationsList = () => {
           </div>
         )}
         {navs.map(({ id, label }) => (
-          <Row
-            key={id}
-            label={label}
-            to={id}
-          />
+          <Row key={id} label={label} to={id} />
         ))}
       </div>
     </div>
