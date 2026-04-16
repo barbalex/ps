@@ -67,20 +67,34 @@ export const revertOperation = async (o) => {
     })
     const draftKeysLength = Object.keys(draft).length
     const isUsersTable = table === 'users'
+    // base param index after SET columns (draft + updated_at + optional updated_by)
+    const baseParamCount = draftKeysLength + 1 + (isUsersTable ? 0 : 1)
+
+    let whereSql: string
+    let whereArgs: unknown[]
+    if (o.filters?.length) {
+      whereSql = o.filters
+        .map((f, i) => `${f.column} = $${baseParamCount + i + 1}`)
+        .join(' AND ')
+      whereArgs = o.filters.map((f) => f.value)
+    } else {
+      whereSql = `${rowIdName} = $${baseParamCount + 1}`
+      whereArgs = [rowId]
+    }
+
     const args = [
       ...Object.keys(draft).map((key) => prev[key]),
       prev.updated_at,
       ...(isUsersTable ? [] : [prev.updated_by]),
-      rowId,
+      ...whereArgs,
     ]
     await pgliteDb.query(
-      `
-      UPDATE ${table} 
+      `UPDATE ${table} 
       SET 
         ${valuesSql} 
         updated_at = $${draftKeysLength + 1}
         ${isUsersTable ? '' : `, updated_by = $${draftKeysLength + 2}`}
-      WHERE ${rowIdName} = $${isUsersTable ? draftKeysLength + 2 : draftKeysLength + 3}`,
+      WHERE ${whereSql}`,
       args,
     )
   } catch (error) {

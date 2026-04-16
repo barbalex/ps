@@ -318,7 +318,7 @@ BEGIN
   IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
     RAISE EXCEPTION 'Only triggers may set the owner role'
       USING ERRCODE = '42501',
-            HINT = 'The owner role is assigned automatically when you create a project';
+            HINT = 'The owner role is assigned automatically to the user who created a project';
   END IF;
 
   IF v_project_id IS NOT NULL AND NOT user_can_manage_project_roles(v_project_id, v_user_id) THEN
@@ -355,7 +355,7 @@ BEGIN
   IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
     RAISE EXCEPTION 'Only triggers may set the owner role'
       USING ERRCODE = '42501',
-            HINT = 'The owner role is assigned automatically when you create a project';
+            HINT = 'The owner role is assigned automatically to the user who created a project';
   END IF;
 
   IF v_subproject_id IS NOT NULL
@@ -394,7 +394,7 @@ BEGIN
   IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
     RAISE EXCEPTION 'Only triggers may set the owner role'
       USING ERRCODE = '42501',
-            HINT = 'The owner role is assigned automatically when you create a project';
+            HINT = 'The owner role is assigned automatically to the user who created a project';
   END IF;
 
   IF v_place_id IS NOT NULL AND NOT user_can_manage_place_roles(v_place_id, v_user_id) THEN
