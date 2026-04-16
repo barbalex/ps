@@ -61,3 +61,10 @@
   background: none;
   padding: 0;
 }
+
+.doc-scroll {
+  flex: 1;
+  overflow: auto;
+  scrollbar-width: thin;
+  min-height: 0;
+}
