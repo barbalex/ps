@@ -25,6 +25,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'quality-controls',
+    label_de: 'Qualitätskontrollen',
+    label_en: 'Quality Controls',
+    label_fr: 'Contrôles de qualité',
+    label_it: 'Controlli di qualità',
+    isTechnical: false,
+  },
+  {
     id: 'swipe-to-delete-in-lists',
     label_de: 'Mit Wischen löschen in Listen',
     label_en: 'Swipe to delete in lists',
