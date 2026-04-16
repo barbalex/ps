@@ -83,6 +83,7 @@ export const PlaceUser = ({ from }) => {
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
           table="users"
+          where={`user_id NOT IN (SELECT user_id FROM place_users WHERE place_id = '${row.place_id}' AND place_user_id != '${placeUserId}' AND user_id IS NOT NULL)`}
           value={row.user_id ?? ''}
           onChange={onChange}
           autoFocus

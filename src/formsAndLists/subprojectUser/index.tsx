@@ -82,6 +82,7 @@ export const SubprojectUser = () => {
               })}
               name="user_id"
               table="users"
+              where={`user_id NOT IN (SELECT user_id FROM subproject_users WHERE subproject_id = '${row.subproject_id}' AND subproject_user_id != '${subprojectUserId}' AND user_id IS NOT NULL)`}
               value={row.user_id ?? ''}
               onChange={onChange}
               autoFocus
@@ -96,7 +97,10 @@ export const SubprojectUser = () => {
               labelMap={Object.fromEntries(
                 userRoleOptions.map((o) => [
                   o.value,
-                  formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
+                  formatMessage({
+                    id: o.labelId,
+                    defaultMessage: o.defaultMessage,
+                  }),
                 ]),
               )}
               value={row.role ?? ''}

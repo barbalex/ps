@@ -87,6 +87,7 @@ export const ProjectUser = () => {
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
           table="users"
+          where={`user_id NOT IN (SELECT user_id FROM project_users WHERE project_id = '${row.project_id}' AND project_user_id != '${projectUserId}' AND user_id IS NOT NULL)`}
           value={row.user_id ?? ''}
           onChange={onChange}
           autoFocus
