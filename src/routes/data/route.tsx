@@ -10,7 +10,12 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
 import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
-import { sessionVerifiedAtom, store, userEmailAtom, userIdAtom } from '../../store.ts'
+import {
+  sessionVerifiedAtom,
+  store,
+  userEmailAtom,
+  userIdAtom,
+} from '../../store.ts'
 
 // TODO:
 // search params are only accessible on the route
@@ -38,7 +43,18 @@ export const Route = createFileRoute('/data')({
         throw redirect({ to: '/auth', search: { redirect: location.href } })
     } else {
       // First navigation this page-load: verify session with the auth server once
-      const result = await getSession({ query: { disableCookieCache: true } })
+      let result: Awaited<ReturnType<typeof getSession>> | undefined
+      try {
+        result = await getSession({ query: { disableCookieCache: true } })
+      } catch {
+        // Server unreachable (e.g. dev without backend running): fall back to
+        // the persisted userId stored in localStorage from a previous session.
+        const userId = store.get(userIdAtom)
+        if (!userId)
+          throw redirect({ to: '/auth', search: { redirect: location.href } })
+        await ensurePgliteDb()
+        return { navDataFetcher: 'useDataBreadcrumbData' }
+      }
       const session =
         result && typeof result === 'object' && 'data' in result
           ? (result as { data?: { user?: unknown } | null }).data

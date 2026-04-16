@@ -98,10 +98,17 @@ export const showTreeMenusAtom = atom((get) => {
   return showTreeMenus
 })
 
-export const userIdAtom = atomWithStorage<string | null>('userIdAtom', null)
+export const userIdAtom = atomWithStorage<string | null>(
+  'userIdAtom',
+  null,
+  undefined,
+  { getOnInit: true },
+)
 export const userEmailAtom = atomWithStorage<string | null>(
   'userEmailAtom',
   null,
+  undefined,
+  { getOnInit: true },
 )
 // Non-persisted flag: reset to false on every page load. Set to true once
 // getSession has been verified successfully so subsequent navigations skip
