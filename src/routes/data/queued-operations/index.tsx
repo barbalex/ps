@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { QueuedOperations } from '../../../formsAndLists/queuedOperations'
+import { QueuedOperationsList } from '../../../formsAndLists/queuedOperations/List.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
 
 export const Route = createFileRoute('/data/queued-operations/')({
-  component: QueuedOperations,
+  component: QueuedOperationsList,
   notFoundComponent: NotFound,
 })

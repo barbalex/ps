@@ -1,5 +1,5 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 import {
@@ -10,6 +10,7 @@ import {
   treeOpenNodesAtom,
   designingAtom,
   isAppAmin,
+  operationsQueueAtom,
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
@@ -44,6 +45,7 @@ export const useDataNavData = () => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
   const [isAppAdmin] = useAtom(isAppAmin)
+  const operationsQueue = useAtomValue(operationsQueueAtom)
 
   const [projectsFilter] = useAtom(projectsFilterAtom)
   const projectsFilterString = filterStringFromFilter(projectsFilter)
@@ -289,6 +291,21 @@ export const useDataNavData = () => {
           }),
         }),
       },
+      ...(operationsQueue.length > 0
+        ? [
+            {
+              id: 'queued-operations',
+              label: buildNavLabel({
+                loading: false,
+                countFiltered: operationsQueue.length,
+                namePlural: formatMessage({
+                  id: 'qo.namePlural',
+                  defaultMessage: 'Ausstehende Operationen',
+                }),
+              }),
+            },
+          ]
+        : []),
     ],
   }
 

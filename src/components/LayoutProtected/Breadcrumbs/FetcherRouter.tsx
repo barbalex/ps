@@ -130,6 +130,8 @@ import { FileFetcher } from './FileFetcher.tsx'
 import { MessagesFetcher } from './MessagesFetcher.tsx'
 import { MessageFetcher } from './MessageFetcher.tsx'
 import { DataFetcher } from './DataFetcher.tsx'
+import { QueuedOperationsFetcher } from './QueuedOperationsFetcher.tsx'
+import { QueuedOperationFetcher } from './QueuedOperationFetcher.tsx'
 
 export const FetcherRouter = ({ fetcherName, params, ...other }) => {
   // params are passed from breadcrumbs per match (match.params),
@@ -664,7 +666,10 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       )
         return null
       return (
-        <VectorLayerDisplayVectorLayerDisplayFetcher params={params} {...other} />
+        <VectorLayerDisplayVectorLayerDisplayFetcher
+          params={params}
+          {...other}
+        />
       )
     }
     case 'useProjectUsersNavData': {
@@ -841,6 +846,13 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useMessageNavData': {
       if (!params.messageId) return null
       return <MessageFetcher params={params} {...other} />
+    }
+    case 'useQueuedOperationsNavData': {
+      return <QueuedOperationsFetcher {...other} />
+    }
+    case 'useQueuedOperationNavData': {
+      if (!params.queuedOperationId) return null
+      return <QueuedOperationFetcher params={params} {...other} />
     }
     // when using AnyFetcherImporter the query only returns once, not the result
     // so not great

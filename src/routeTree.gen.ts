@@ -42,6 +42,7 @@ import { Route as DataWidgetsForFieldsWidgetForFieldIdRouteImport } from './rout
 import { Route as DataWidgetTypesFilterRouteImport } from './routes/data/widget-types/filter'
 import { Route as DataWidgetTypesWidgetTypeIdRouteImport } from './routes/data/widget-types/$widgetTypeId'
 import { Route as DataUsersFilterRouteImport } from './routes/data/users/filter'
+import { Route as DataQueuedOperationsQueuedOperationIdRouteImport } from './routes/data/queued-operations/$queuedOperationId'
 import { Route as DataQcsFilterRouteImport } from './routes/data/qcs/filter'
 import { Route as DataQcsQcsIdRouteImport } from './routes/data/qcs/$qcsId'
 import { Route as DataProjectsFilterRouteImport } from './routes/data/projects/filter'
@@ -604,6 +605,12 @@ const DataUsersFilterRoute = DataUsersFilterRouteImport.update({
   path: '/filter',
   getParentRoute: () => DataUsersRouteRoute,
 } as any)
+const DataQueuedOperationsQueuedOperationIdRoute =
+  DataQueuedOperationsQueuedOperationIdRouteImport.update({
+    id: '/$queuedOperationId',
+    path: '/$queuedOperationId',
+    getParentRoute: () => DataQueuedOperationsRouteRoute,
+  } as any)
 const DataQcsFilterRoute = DataQcsFilterRouteImport.update({
   id: '/filter',
   path: '/filter',
@@ -3740,6 +3747,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/qcs/$qcsId': typeof DataQcsQcsIdRoute
   '/data/qcs/filter': typeof DataQcsFilterRoute
+  '/data/queued-operations/$queuedOperationId': typeof DataQueuedOperationsQueuedOperationIdRoute
   '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
@@ -4151,6 +4159,7 @@ export interface FileRoutesByTo {
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/qcs/$qcsId': typeof DataQcsQcsIdRoute
   '/data/qcs/filter': typeof DataQcsFilterRoute
+  '/data/queued-operations/$queuedOperationId': typeof DataQueuedOperationsQueuedOperationIdRoute
   '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
@@ -4477,6 +4486,7 @@ export interface FileRoutesById {
   '/data/projects/filter': typeof DataProjectsFilterRoute
   '/data/qcs/$qcsId': typeof DataQcsQcsIdRoute
   '/data/qcs/filter': typeof DataQcsFilterRoute
+  '/data/queued-operations/$queuedOperationId': typeof DataQueuedOperationsQueuedOperationIdRoute
   '/data/users/filter': typeof DataUsersFilterRoute
   '/data/widget-types/$widgetTypeId': typeof DataWidgetTypesWidgetTypeIdRoute
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
@@ -4903,6 +4913,7 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/qcs/$qcsId'
     | '/data/qcs/filter'
+    | '/data/queued-operations/$queuedOperationId'
     | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
@@ -5314,6 +5325,7 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/qcs/$qcsId'
     | '/data/qcs/filter'
+    | '/data/queued-operations/$queuedOperationId'
     | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
@@ -5639,6 +5651,7 @@ export interface FileRouteTypes {
     | '/data/projects/filter'
     | '/data/qcs/$qcsId'
     | '/data/qcs/filter'
+    | '/data/queued-operations/$queuedOperationId'
     | '/data/users/filter'
     | '/data/widget-types/$widgetTypeId'
     | '/data/widget-types/filter'
@@ -6274,6 +6287,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/users/filter'
       preLoaderRoute: typeof DataUsersFilterRouteImport
       parentRoute: typeof DataUsersRouteRoute
+    }
+    '/data/queued-operations/$queuedOperationId': {
+      id: '/data/queued-operations/$queuedOperationId'
+      path: '/$queuedOperationId'
+      fullPath: '/data/queued-operations/$queuedOperationId'
+      preLoaderRoute: typeof DataQueuedOperationsQueuedOperationIdRouteImport
+      parentRoute: typeof DataQueuedOperationsRouteRoute
     }
     '/data/qcs/filter': {
       id: '/data/qcs/filter'
@@ -11425,11 +11445,14 @@ const DataQcsRunRouteRouteWithChildren = DataQcsRunRouteRoute._addFileChildren(
 )
 
 interface DataQueuedOperationsRouteRouteChildren {
+  DataQueuedOperationsQueuedOperationIdRoute: typeof DataQueuedOperationsQueuedOperationIdRoute
   DataQueuedOperationsIndexRoute: typeof DataQueuedOperationsIndexRoute
 }
 
 const DataQueuedOperationsRouteRouteChildren: DataQueuedOperationsRouteRouteChildren =
   {
+    DataQueuedOperationsQueuedOperationIdRoute:
+      DataQueuedOperationsQueuedOperationIdRoute,
     DataQueuedOperationsIndexRoute: DataQueuedOperationsIndexRoute,
   }
 

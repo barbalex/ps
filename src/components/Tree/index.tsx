@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 
 import { ProjectsNode } from './Projects.tsx'
 import { UsersNode } from './Users.tsx'
@@ -10,13 +10,15 @@ import { RootQcsNode } from './RootQcs.tsx'
 import { RootQcsRunNode } from './RootQcsRun.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
-import { designingAtom, isAppAmin } from '../../store.ts'
+import { QueuedOperationsNode } from './QueuedOperations.tsx'
+import { designingAtom, isAppAmin, operationsQueueAtom } from '../../store.ts'
 import styles from './index.module.css'
 
 // so query it here once and pass it down
 export const Tree = () => {
   const [designing] = useAtom(designingAtom)
   const [isAppAdmin] = useAtom(isAppAmin)
+  const operationsQueue = useAtomValue(operationsQueueAtom)
 
   return (
     <div className={`${styles.container} no-print`}>
@@ -39,6 +41,7 @@ export const Tree = () => {
         </>
       )}
       <MessagesNode />
+      {operationsQueue.length > 0 && <QueuedOperationsNode />}
     </div>
   )
 }

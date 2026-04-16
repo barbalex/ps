@@ -1,0 +1,25 @@
+.fields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 15px;
+  row-gap: 8px;
+  align-items: start;
+}
+
+.label {
+  color: grey;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-top: 2px;
+}
+
+.value {
+  word-break: break-word;
+}
+
+.pre {
+  margin: 0;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
