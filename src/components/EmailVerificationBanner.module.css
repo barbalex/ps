@@ -69,6 +69,7 @@
   padding: 6px 10px;
   cursor: pointer;
   white-space: nowrap;
+  align-self: stretch;
 }
 
 .button:disabled {
