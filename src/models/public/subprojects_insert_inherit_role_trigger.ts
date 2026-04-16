@@ -1,0 +1,2 @@
+export interface subprojects_insert_inherit_role_trigger_params {
+}
