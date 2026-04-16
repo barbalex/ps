@@ -10,7 +10,7 @@ export type DocMeta = {
 
 export const docsMeta: DocMeta[] = [
   {
-    id: 'working-offline',
+    id: 'offline',
     label_de: 'Offline arbeiten',
     label_en: 'Working offline',
     label_fr: 'Travailler hors ligne',

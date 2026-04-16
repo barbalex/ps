@@ -24,6 +24,6 @@ Sobald Operationen anstehen, werden sie im Navigations-Baum unten links sichtbar
 
 ## Konflikte
 
-Arbeiten zwei Mitarbeiter gleichzeitig offline am selben Datensatz, kann es sein, dass mehrere Versionen erfasst wurden. Unterscheiden sich diese Versionen, nennen wir das einen **Konflikt**. Die zuletzt zum Server synchronisierte Version "gewinnt", wird also - ohne deine Korrektur - künftig angezeigt.
+Arbeiten zwei Mitarbeiter gleichzeitig offline am selben Datensatz, kann es sein, dass mehrere Versionen erfasst wurden. Unterscheiden sich diese Versionen, nennen wir das einen Konflikt. Die zuletzt zum Server synchronisierte Version "gewinnt", wird also - ohne deine Korrektur - künftig angezeigt.
 
-Wenn du Konflikte bemerkst, kannst du sie ganz einfach lösen: Öffne die Geschichte des Datensatzes, wähle das Geschichte-Menü im Formular. Dort siehst du alle Versionen in der Reihenfolge wie sie beim Server eingetroffen sind. Du siehst, wie sie sich von der aktuellen Version unterscheiden. Und kannst die Daten direkt korrigieren.
+Wenn du Konflikte bemerkst, kannst du sie ganz einfach lösen: Öffne die Geschichte des Datensatzes mit dem Geschichte-Menü im Formular. Dann siehst du alle Versionen in der Reihenfolge wie sie beim Server eingetroffen sind. Du siehst, wie sie sich von der aktuellen Version unterscheiden. Und kannst die Daten direkt korrigieren.
