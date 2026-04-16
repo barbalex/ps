@@ -9,6 +9,14 @@ export type DocMeta = {
 
 export const docsMeta: DocMeta[] = [
   {
+    id: 'technical-requirements',
+    label_de: 'Technische Anforderungen',
+    label_en: 'Technical Requirements',
+    label_fr: 'Exigences techniques',
+    label_it: 'Requisiti tecnici',
+    isTechnical: false,
+  },
+  {
     id: 'offline',
     label_de: 'Offline arbeiten',
     label_en: 'Working offline',
