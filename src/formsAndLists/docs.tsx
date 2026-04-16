@@ -11,7 +11,7 @@ import { languageAtom, type Language } from '../store.ts'
 
 import '../form.css'
 
-const { Field, Input, RadioGroup, Radio } = fluentUiReactComponents
+const { Input, ToggleButton } = fluentUiReactComponents
 
 type TypeFilter = 'all' | 'contentual' | 'technical'
 
@@ -27,7 +27,10 @@ export const DocsList = () => {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [textFilter, setTextFilter] = useState('')
 
-  const label = formatMessage({ id: 'docsList', defaultMessage: 'Dokumentation' })
+  const label = formatMessage({
+    id: 'docsList',
+    defaultMessage: 'Dokumentation',
+  })
   const nameSingular = formatMessage({
     id: 'docSingular',
     defaultMessage: 'Doc',
@@ -55,34 +58,42 @@ export const DocsList = () => {
           gap: 4,
         }}
       >
-        <Field>
-          <RadioGroup
-            value={typeFilter}
-            onChange={(_, data) => setTypeFilter(data.value as TypeFilter)}
-          >
-            <Radio
-              value="all"
-              label={formatMessage({
-                id: 'docsFilterAll',
-                defaultMessage: 'Alle',
-              })}
-            />
-            <Radio
-              value="contentual"
-              label={formatMessage({
-                id: 'docsFilterContentual',
-                defaultMessage: 'Inhaltlich',
-              })}
-            />
-            <Radio
-              value="technical"
-              label={formatMessage({
-                id: 'docsFilterTechnical',
-                defaultMessage: 'Technisch',
-              })}
-            />
-          </RadioGroup>
-        </Field>
+        <div style={{ display: 'flex', gap: 2 }}>
+          {(['all', 'contentual', 'technical'] as const).map((value) => {
+            const checked = typeFilter === value
+            return (
+              <ToggleButton
+                key={value}
+                size="small"
+                checked={checked}
+                onClick={() => setTypeFilter(value)}
+                style={{
+                  flex: 1,
+                  ...(checked && {
+                    backgroundColor: 'rgba(38, 82, 37, 0.85)',
+                    color: 'white',
+                    borderColor: 'rgba(38, 82, 37, 0.85)',
+                  }),
+                }}
+              >
+                {formatMessage({
+                  id:
+                    value === 'all'
+                      ? 'docsFilterAll'
+                      : value === 'contentual'
+                        ? 'docsFilterContentual'
+                        : 'docsFilterTechnical',
+                  defaultMessage:
+                    value === 'all'
+                      ? 'Alle'
+                      : value === 'contentual'
+                        ? 'Inhaltlich'
+                        : 'Technisch',
+                })}
+              </ToggleButton>
+            )
+          })}
+        </div>
         <Input
           appearance="underline"
           placeholder={formatMessage({
