@@ -1,0 +1,63 @@
+.doc {
+  max-width: 80ch;
+  padding: 0 1rem 2rem;
+  line-height: 1.6;
+  color: inherit;
+}
+
+.doc h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.doc h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.doc h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.4rem;
+}
+
+.doc p {
+  margin: 0.5rem 0;
+}
+
+.doc ol,
+.doc ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.doc li {
+  margin: 0.25rem 0;
+}
+
+.doc a {
+  color: var(--colorBrandForeground1, #0078d4);
+  text-decoration: underline;
+}
+
+.doc code {
+  font-family: monospace;
+  font-size: 0.9em;
+  background: var(--colorNeutralBackground3, #f3f3f3);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+.doc pre {
+  background: var(--colorNeutralBackground3, #f3f3f3);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.doc pre code {
+  background: none;
+  padding: 0;
+}

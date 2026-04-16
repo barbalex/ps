@@ -13,7 +13,6 @@ import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as DataRouteRouteImport } from './routes/data/route'
 import { Route as DataIndexRouteImport } from './routes/data/index'
 import { Route as LayoutIndexRouteImport } from './routes/_layout.index'
-import { Route as LayoutDocsRouteImport } from './routes/_layout.docs'
 import { Route as LayoutAuthRouteImport } from './routes/_layout.auth'
 import { Route as DataWidgetsForFieldsRouteRouteImport } from './routes/data/widgets-for-fields/route'
 import { Route as DataWidgetTypesRouteRouteImport } from './routes/data/widget-types/route'
@@ -26,6 +25,7 @@ import { Route as DataProjectsRouteRouteImport } from './routes/data/projects/ro
 import { Route as DataMessagesRouteRouteImport } from './routes/data/messages/route'
 import { Route as DataFieldTypesRouteRouteImport } from './routes/data/field-types/route'
 import { Route as DataCrsRouteRouteImport } from './routes/data/crs/route'
+import { Route as LayoutDocsRouteRouteImport } from './routes/_layout/docs/route'
 import { Route as DataWidgetsForFieldsIndexRouteImport } from './routes/data/widgets-for-fields/index'
 import { Route as DataWidgetTypesIndexRouteImport } from './routes/data/widget-types/index'
 import { Route as DataUsersIndexRouteImport } from './routes/data/users/index'
@@ -37,6 +37,7 @@ import { Route as DataProjectsIndexRouteImport } from './routes/data/projects/in
 import { Route as DataMessagesIndexRouteImport } from './routes/data/messages/index'
 import { Route as DataFieldTypesIndexRouteImport } from './routes/data/field-types/index'
 import { Route as DataCrsIndexRouteImport } from './routes/data/crs/index'
+import { Route as LayoutDocsIndexRouteImport } from './routes/_layout/docs/index'
 import { Route as DataWidgetsForFieldsFilterRouteImport } from './routes/data/widgets-for-fields/filter'
 import { Route as DataWidgetsForFieldsWidgetForFieldIdRouteImport } from './routes/data/widgets-for-fields/$widgetForFieldId'
 import { Route as DataWidgetTypesFilterRouteImport } from './routes/data/widget-types/filter'
@@ -51,6 +52,7 @@ import { Route as DataFieldTypesFilterRouteImport } from './routes/data/field-ty
 import { Route as DataFieldTypesFieldTypeIdRouteImport } from './routes/data/field-types/$fieldTypeId'
 import { Route as DataCrsFilterRouteImport } from './routes/data/crs/filter'
 import { Route as DataCrsCrsIdRouteImport } from './routes/data/crs/$crsId'
+import { Route as LayoutDocsDocIdRouteImport } from './routes/_layout/docs/$docId'
 import { Route as DataUsersUserIdRouteRouteImport } from './routes/data/users/$userId_/route'
 import { Route as DataProjectsProjectIdRouteRouteImport } from './routes/data/projects/$projectId_/route'
 import { Route as DataProjectsProjectIdIndexRouteImport } from './routes/data/projects/$projectId_/index'
@@ -453,11 +455,6 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutDocsRoute = LayoutDocsRouteImport.update({
-  id: '/docs',
-  path: '/docs',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutAuthRoute = LayoutAuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -520,6 +517,11 @@ const DataCrsRouteRoute = DataCrsRouteRouteImport.update({
   path: '/crs',
   getParentRoute: () => DataRouteRoute,
 } as any)
+const LayoutDocsRouteRoute = LayoutDocsRouteRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const DataWidgetsForFieldsIndexRoute =
   DataWidgetsForFieldsIndexRouteImport.update({
     id: '/',
@@ -576,6 +578,11 @@ const DataCrsIndexRoute = DataCrsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DataCrsRouteRoute,
+} as any)
+const LayoutDocsIndexRoute = LayoutDocsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LayoutDocsRouteRoute,
 } as any)
 const DataWidgetsForFieldsFilterRoute =
   DataWidgetsForFieldsFilterRouteImport.update({
@@ -651,6 +658,11 @@ const DataCrsCrsIdRoute = DataCrsCrsIdRouteImport.update({
   id: '/$crsId',
   path: '/$crsId',
   getParentRoute: () => DataCrsRouteRoute,
+} as any)
+const LayoutDocsDocIdRoute = LayoutDocsDocIdRouteImport.update({
+  id: '/$docId',
+  path: '/$docId',
+  getParentRoute: () => LayoutDocsRouteRoute,
 } as any)
 const DataUsersUserIdRouteRoute = DataUsersUserIdRouteRouteImport.update({
   id: '/$userId_',
@@ -3723,6 +3735,7 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Act
 export interface FileRoutesByFullPath {
   '/data': typeof DataRouteRouteWithChildren
   '/': typeof LayoutIndexRoute
+  '/docs': typeof LayoutDocsRouteRouteWithChildren
   '/data/crs': typeof DataCrsRouteRouteWithChildren
   '/data/field-types': typeof DataFieldTypesRouteRouteWithChildren
   '/data/messages': typeof DataMessagesRouteRouteWithChildren
@@ -3735,10 +3748,10 @@ export interface FileRoutesByFullPath {
   '/data/widget-types': typeof DataWidgetTypesRouteRouteWithChildren
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
   '/auth': typeof LayoutAuthRoute
-  '/docs': typeof LayoutDocsRoute
   '/data/': typeof DataIndexRoute
   '/data/projects/$projectId': typeof DataProjectsProjectIdRouteRouteWithChildren
   '/data/users/$userId': typeof DataUsersUserIdRouteRouteWithChildren
+  '/docs/$docId': typeof LayoutDocsDocIdRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -3753,6 +3766,7 @@ export interface FileRoutesByFullPath {
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
+  '/docs/': typeof LayoutDocsIndexRoute
   '/data/crs/': typeof DataCrsIndexRoute
   '/data/field-types/': typeof DataFieldTypesIndexRoute
   '/data/messages/': typeof DataMessagesIndexRoute
@@ -4147,10 +4161,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/auth': typeof LayoutAuthRoute
-  '/docs': typeof LayoutDocsRoute
   '/': typeof LayoutIndexRoute
   '/data': typeof DataIndexRoute
   '/data/users/$userId': typeof DataUsersUserIdRouteRouteWithChildren
+  '/docs/$docId': typeof LayoutDocsDocIdRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -4165,6 +4179,7 @@ export interface FileRoutesByTo {
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
+  '/docs': typeof LayoutDocsIndexRoute
   '/data/crs': typeof DataCrsIndexRoute
   '/data/field-types': typeof DataFieldTypesIndexRoute
   '/data/messages': typeof DataMessagesIndexRoute
@@ -4461,6 +4476,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/data': typeof DataRouteRouteWithChildren
   '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/docs': typeof LayoutDocsRouteRouteWithChildren
   '/data/crs': typeof DataCrsRouteRouteWithChildren
   '/data/field-types': typeof DataFieldTypesRouteRouteWithChildren
   '/data/messages': typeof DataMessagesRouteRouteWithChildren
@@ -4473,11 +4489,11 @@ export interface FileRoutesById {
   '/data/widget-types': typeof DataWidgetTypesRouteRouteWithChildren
   '/data/widgets-for-fields': typeof DataWidgetsForFieldsRouteRouteWithChildren
   '/_layout/auth': typeof LayoutAuthRoute
-  '/_layout/docs': typeof LayoutDocsRoute
   '/_layout/': typeof LayoutIndexRoute
   '/data/': typeof DataIndexRoute
   '/data/projects/$projectId_': typeof DataProjectsProjectIdRouteRouteWithChildren
   '/data/users/$userId_': typeof DataUsersUserIdRouteRouteWithChildren
+  '/_layout/docs/$docId': typeof LayoutDocsDocIdRoute
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -4492,6 +4508,7 @@ export interface FileRoutesById {
   '/data/widget-types/filter': typeof DataWidgetTypesFilterRoute
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
+  '/_layout/docs/': typeof LayoutDocsIndexRoute
   '/data/crs/': typeof DataCrsIndexRoute
   '/data/field-types/': typeof DataFieldTypesIndexRoute
   '/data/messages/': typeof DataMessagesIndexRoute
@@ -4889,6 +4906,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/data'
     | '/'
+    | '/docs'
     | '/data/crs'
     | '/data/field-types'
     | '/data/messages'
@@ -4901,10 +4919,10 @@ export interface FileRouteTypes {
     | '/data/widget-types'
     | '/data/widgets-for-fields'
     | '/auth'
-    | '/docs'
     | '/data/'
     | '/data/projects/$projectId'
     | '/data/users/$userId'
+    | '/docs/$docId'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
@@ -4919,6 +4937,7 @@ export interface FileRouteTypes {
     | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
+    | '/docs/'
     | '/data/crs/'
     | '/data/field-types/'
     | '/data/messages/'
@@ -5313,10 +5332,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
-    | '/docs'
     | '/'
     | '/data'
     | '/data/users/$userId'
+    | '/docs/$docId'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
@@ -5331,6 +5350,7 @@ export interface FileRouteTypes {
     | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
+    | '/docs'
     | '/data/crs'
     | '/data/field-types'
     | '/data/messages'
@@ -5626,6 +5646,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/data'
     | '/_layout'
+    | '/_layout/docs'
     | '/data/crs'
     | '/data/field-types'
     | '/data/messages'
@@ -5638,11 +5659,11 @@ export interface FileRouteTypes {
     | '/data/widget-types'
     | '/data/widgets-for-fields'
     | '/_layout/auth'
-    | '/_layout/docs'
     | '/_layout/'
     | '/data/'
     | '/data/projects/$projectId_'
     | '/data/users/$userId_'
+    | '/_layout/docs/$docId'
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/field-types/$fieldTypeId'
@@ -5657,6 +5678,7 @@ export interface FileRouteTypes {
     | '/data/widget-types/filter'
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
+    | '/_layout/docs/'
     | '/data/crs/'
     | '/data/field-types/'
     | '/data/messages/'
@@ -6085,13 +6107,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/docs': {
-      id: '/_layout/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof LayoutDocsRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/auth': {
       id: '/_layout/auth'
       path: '/auth'
@@ -6176,6 +6191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataCrsRouteRouteImport
       parentRoute: typeof DataRouteRoute
     }
+    '/_layout/docs': {
+      id: '/_layout/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof LayoutDocsRouteRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/data/widgets-for-fields/': {
       id: '/data/widgets-for-fields/'
       path: '/'
@@ -6252,6 +6274,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/crs/'
       preLoaderRoute: typeof DataCrsIndexRouteImport
       parentRoute: typeof DataCrsRouteRoute
+    }
+    '/_layout/docs/': {
+      id: '/_layout/docs/'
+      path: '/'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof LayoutDocsIndexRouteImport
+      parentRoute: typeof LayoutDocsRouteRoute
     }
     '/data/widgets-for-fields/filter': {
       id: '/data/widgets-for-fields/filter'
@@ -6350,6 +6379,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/crs/$crsId'
       preLoaderRoute: typeof DataCrsCrsIdRouteImport
       parentRoute: typeof DataCrsRouteRoute
+    }
+    '/_layout/docs/$docId': {
+      id: '/_layout/docs/$docId'
+      path: '/$docId'
+      fullPath: '/docs/$docId'
+      preLoaderRoute: typeof LayoutDocsDocIdRouteImport
+      parentRoute: typeof LayoutDocsRouteRoute
     }
     '/data/users/$userId_': {
       id: '/data/users/$userId_'
@@ -11615,15 +11651,29 @@ const DataRouteRouteWithChildren = DataRouteRoute._addFileChildren(
   DataRouteRouteChildren,
 )
 
+interface LayoutDocsRouteRouteChildren {
+  LayoutDocsDocIdRoute: typeof LayoutDocsDocIdRoute
+  LayoutDocsIndexRoute: typeof LayoutDocsIndexRoute
+}
+
+const LayoutDocsRouteRouteChildren: LayoutDocsRouteRouteChildren = {
+  LayoutDocsDocIdRoute: LayoutDocsDocIdRoute,
+  LayoutDocsIndexRoute: LayoutDocsIndexRoute,
+}
+
+const LayoutDocsRouteRouteWithChildren = LayoutDocsRouteRoute._addFileChildren(
+  LayoutDocsRouteRouteChildren,
+)
+
 interface LayoutRouteChildren {
+  LayoutDocsRouteRoute: typeof LayoutDocsRouteRouteWithChildren
   LayoutAuthRoute: typeof LayoutAuthRoute
-  LayoutDocsRoute: typeof LayoutDocsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutDocsRouteRoute: LayoutDocsRouteRouteWithChildren,
   LayoutAuthRoute: LayoutAuthRoute,
-  LayoutDocsRoute: LayoutDocsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
 
