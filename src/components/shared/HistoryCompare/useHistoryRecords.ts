@@ -8,8 +8,11 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
+import { PostgrestClient } from '@supabase/postgrest-js'
 
-import { onlineAtom, postgrestClientAtom } from '../../../store.ts'
+import { onlineAtom } from '../../../store.ts'
+import { fetchPostgrestToken } from '../../../modules/fetchPostgrestToken.ts'
+import { constants } from '../../../modules/constants.ts'
 
 type HistoryRowLike = Record<string, unknown>
 
@@ -46,7 +49,6 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
   currentRow,
 }: UseHistoryRecordsArgs): UseHistoryRecordsResult<TRow> => {
   const online = useAtomValue(onlineAtom)
-  const postgrestClient = useAtomValue(postgrestClientAtom)
   const navigate = useNavigate()
 
   const {
@@ -56,7 +58,11 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
   } = useQuery({
     queryKey: [historyTable, rowId],
     queryFn: async ({ signal }) => {
-      const { data, error } = await postgrestClient!
+      const token = await fetchPostgrestToken()
+      const client = new PostgrestClient(constants.getPostgrestUri(), {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      const { data, error } = await client
         .from(historyTable)
         .select('*')
         .eq(rowIdField, rowId)
