@@ -358,14 +358,6 @@ Verify: running `npm run docs:build` with empty `docs/docsMd/` and `docs/docsHtm
 
 ---
 
-### Step 9 — In-app links
-
-Add contextual links from relevant app pages to their corresponding doc page using `<Link to="/docs/$docId">`. Start with pages that already have a related doc.
-
-Verify: link renders and navigates to the correct doc.
-
----
-
 ### Step 10 — Additional docs
 
 For each new doc:
