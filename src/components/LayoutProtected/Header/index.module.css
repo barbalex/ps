@@ -1,23 +1,11 @@
 .container {
-  padding: 0 5px;
+  padding: 0 10px;
   height: var(--layout-header-height);
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   background-color: rgba(38, 82, 37, 0.9);
   color: white;
-
-  @media (min-width: 600px) {
-    padding: 0 20px;
-  }
-
-  @media (min-width: 700px) {
-    padding: 0 25px;
-  }
-
-  @media (min-width: 1200px) {
-    padding: 0 30px;
-  }
 }
 
 .title {
