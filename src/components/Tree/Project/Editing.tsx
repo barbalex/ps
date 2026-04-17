@@ -9,45 +9,28 @@ import styles from './Editing.module.css'
 import { useSession } from '../../../modules/authClient.ts'
 
 export const Editing = ({ projectId }) => {
-  const [designing, setDesigning] = useAtom(designingAtom)
+  const [designingMap, setDesigningMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId] ?? false
   const { data: session } = useSession()
   const user = session?.user
 
   const onClick = (e) => {
     e.stopPropagation()
-    setDesigning(!designing)
+    setDesigningMap((prev) => ({ ...prev, [projectId]: !prev[projectId] }))
   }
 
-  // TODO: check if this works as intended (also: project.DesigningButton.tsx)
   const resultProject = useLiveQuery(
     `
-      SELECT
-        p.project_id,
-        pu.role as project_user_role,
-        u.email as account_user_email
-      FROM projects p 
-        inner join accounts a on p.account_id = a.account_id 
-          inner join users u on u.user_id = a.user_id AND u.email = $2
-        inner join project_users pu on pu.project_id = p.project_id
-      WHERE 
-        p.project_id = $1
+      SELECT pu.role
+      FROM project_users pu
+        INNER JOIN users u ON u.user_id = pu.user_id AND u.email = $2
+      WHERE pu.project_id = $1
     `,
     [projectId, user?.email],
   )
-  const project = resultProject?.rows?.[0]
-  const userIsOwner = project?.account_user_email === user?.email
-  const userRole = project?.project_user_role
-  // console.log('Tree.Project.Editing', {
-  //   project,
-  //   userRole,
-  //   userIsOwner,
-  //   resultProject,
-  //   project_id: projectId,
-  //   user,
-  // })
+  const userRole = resultProject?.rows?.[0]?.role
 
-  const userMayDesign =
-    userIsOwner || userRole === 'designer' || userRole === 'owner'
+  const userMayDesign = userRole === 'designer' || userRole === 'owner'
 
   if (!userMayDesign) return null
 

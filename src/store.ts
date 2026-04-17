@@ -117,7 +117,12 @@ export const userEmailAtom = atomWithStorage<string | null>(
 // the network round-trip.
 export const sessionVerifiedAtom = atom(false)
 export const isAppAmin = atom(false)
-export const designingAtom = atomWithStorage('designingAtom', false)
+export const designingAtom = atomWithStorage<Record<string, boolean>>(
+  'designingAtom',
+  {},
+  undefined,
+  { getOnInit: true },
+)
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
 export const qcsRunOnlyWithResultsAtom = atomWithStorage(
   'qcsRunOnlyWithResults',

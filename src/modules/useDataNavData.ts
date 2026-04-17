@@ -44,6 +44,7 @@ export const useDataNavData = () => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
+  const isAnyDesigning = Object.values(designing).some(Boolean)
   const [isAppAdmin] = useAtom(isAppAmin)
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
@@ -73,8 +74,8 @@ export const useDataNavData = () => {
         users_count_unfiltered AS (SELECT count(*) FROM users),
         accounts_count_unfiltered AS (SELECT count(*) FROM accounts),
         ${
-          designing
-            ? ` 
+          isAnyDesigning
+            ? `
             field_types_count_unfiltered AS (SELECT count(*) FROM field_types),
             field_types_count_filtered AS (SELECT count(*) FROM field_types ${fieldTypesIsFiltered ? ` WHERE ${fieldTypesFilterString}` : ''}),
             widget_types_count_unfiltered AS (SELECT count(*) FROM widget_types),
@@ -94,7 +95,7 @@ export const useDataNavData = () => {
         users_count_unfiltered.count AS users_count_unfiltered,
         accounts_count_unfiltered.count AS accounts_count_unfiltered,
         ${
-          designing
+          isAnyDesigning
             ? `
               field_types_count_unfiltered.count AS field_types_count_unfiltered,
               field_types_count_filtered.count AS field_types_count_filtered,
@@ -115,7 +116,7 @@ export const useDataNavData = () => {
         users_count_unfiltered,
         accounts_count_unfiltered,
         ${
-          designing
+          isAnyDesigning
             ? `
               field_types_count_unfiltered,
               field_types_count_filtered,
@@ -187,7 +188,7 @@ export const useDataNavData = () => {
           }),
         }),
       },
-      ...(designing
+      ...(isAnyDesigning
         ? [
             ...(isAppAdmin
               ? [

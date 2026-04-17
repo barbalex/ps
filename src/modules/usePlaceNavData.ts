@@ -58,7 +58,8 @@ export const usePlaceNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [language] = useAtom(languageAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId] ?? false
   const { formatMessage } = useIntl()
 
   const [placesFilter] = useAtom(places1FilterAtom)

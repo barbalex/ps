@@ -126,7 +126,8 @@ export const useProjectNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
-  const [designing] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId] ?? false
   const [language] = useAtom(languageAtom)
 
   const [subprojectsFilter] = useAtom(subprojectsFilterAtom)

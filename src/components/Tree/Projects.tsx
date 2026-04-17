@@ -5,7 +5,6 @@ import { ProjectNode } from './Project/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useProjectsNavData } from '../../modules/useProjectsNavData.ts'
-import { DesigningButton } from './Projects/DesigningButton.tsx'
 
 export const ProjectsNode = () => {
   const navigate = useNavigate()
@@ -56,7 +55,7 @@ export const ProjectsNode = () => {
         to={ownUrl}
         toParams={undefined}
         onClickButton={onClickButton}
-        sibling={<DesigningButton inTree />}
+        sibling={undefined}
       />
       {showNavs &&
         navs.map((nav, i) => (

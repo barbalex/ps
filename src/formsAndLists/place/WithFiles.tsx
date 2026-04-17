@@ -45,7 +45,8 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const { onlyForm } = useSearch({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId] ?? false
   const [placeUsersFilter] = useAtom(
     placeId2 ? placeUsers2FilterAtom : placeUsers1FilterAtom,
   )
