@@ -142,15 +142,12 @@ export const Home = () => {
               defaultMessage="Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
               values={{
                 link: (
-                  <a
-                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.app"
-                    target="_blank"
-                  >
+                  <Link to="/docs/issues">
                     <FormattedMessage
                       id="OogWmh"
                       defaultMessage="Ich bin interessiert!"
                     />
-                  </a>
+                  </Link>
                 ),
               }}
             />
@@ -286,19 +283,19 @@ export const Home = () => {
               defaultMessage="Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und Wünsche {link}."
               values={{
                 link: (
-                  <a
-                    href="mailto:alex@gabriel-software.ch?subject=arten-fördern.app"
-                    target="_blank"
-                  >
+                  <Link to="/docs/issues">
                     <FormattedMessage id="9KB+sP" defaultMessage="mitteilen" />
-                  </a>
+                  </Link>
                 ),
               }}
             />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="homeMoreInfoTitle" defaultMessage="Mehr Infos" />
+              <FormattedMessage
+                id="homeMoreInfoTitle"
+                defaultMessage="Mehr Infos"
+              />
             </h3>
             <FormattedMessage
               id="homeMoreInfoText"
