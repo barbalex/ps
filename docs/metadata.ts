@@ -49,6 +49,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'technologies',
+    label_de: 'Verwendete Technologien',
+    label_en: 'Used Technologies',
+    label_fr: 'Technologies utilisées',
+    label_it: 'Tecnologie utilizzate',
+    isTechnical: true,
+  },
+  {
     id: 'swipe-to-delete-in-lists',
     label_de: 'Mit Wischen löschen in Listen',
     label_en: 'Swipe to delete in lists',
