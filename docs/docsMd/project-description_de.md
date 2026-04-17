@@ -6,17 +6,13 @@ TODO: fertig anpassen auf arten-fördern.app
 
 - Arten und Populationen
 - Wahlweise auch Teilpopulationen beschreiben
-- Ziele und Erfolgskriterien bestimmen
+- Ziele bestimmen
 - Kontrollen der (Teil-)Populationen und Massnahmen zur Förderung dokumentieren
 - Die Entwicklung der (Teil-)Populationen, den Erfolg der Massnahmen und die Erreichung der Ziele beurteilen und darüber berichten
-- Ideale Umweltfaktoren beschreiben
-- Assoziierte Arten auflisten
 
 ## Beobachtungen den (Teil-)Populationen zuordnen
 
-- Alle Beobachtungen der [Info Flora](https://infoflora.ch) innerhalb des Kantons Zürich und im nahen Umfeld
-- Von Info Flora bezogene Beobachtungen können korrigiert und die Änderung per mail an InfoFlora gemeldet werden
-- Alle verfügbaren Beobachtungen, unabhängig von ihrer Datenstruktur
+- Beobachtungen aus beliebiger Quelle importieren
 - Beobachtungen von beliebigen (synonymen) Taxa der selben Art zuordnen
 
 ## Auf Karten darstellen
@@ -29,19 +25,18 @@ TODO: fertig anpassen auf arten-fördern.app
 ## Über den Erfolg berichten
 
 - Für einzelne Arten oder für alle über Massnahmen, Kontrollen und Entwicklung berichten
-- Direkt aus apflora.ch heraus pdf-Berichte erzeugen
+- Berichte als pdf exportieren
 
 ## Daten exportieren
 
-- Alle Daten exportieren
-- Als .xlsx- oder .csv-Datei
-- Auf der Karte beliebige Umrisse zeichnen, um Exporte geografisch zu filtern
+- ~~Alle Daten exportieren~~
+- Vollständige Daten als sql-Datei
+- ~~Auf der Karte beliebige Umrisse zeichnen, um Exporte geografisch zu filtern~~
 
 ## Auf die Plätze, fertig, los!
 
 - Keine Installation, automatische Updates
-- Von ausserhalb (Auftragnehmer) und innerhalb der Fachstelle Naturschutz arbeiten
-- Login's werden von Topos vergeben
+- Benutzerrechte werden vom jeweiligen Projekt-Eigentümer vergeben
 
 ## Sich rasch zurechtfinden
 
@@ -52,51 +47,37 @@ TODO: fertig anpassen auf arten-fördern.app
 ## Sich anleiten lassen
 
 - Informations-Symbole informieren direkt in den Formularen über Anforderungen an die Datenerfassung
-- [Videos](https://www.youtube.com/playlist?list=PLTz8Xt5SOQPS-dbvpJ_DrB4-o3k3yj09J) demonstrieren das Arbeiten mit verschiedenen Teilen der Anwendung
-- Hier sind wichtige Fragen erklärt und werden künftig alle neuen Features beschrieben
+- In der Dokumentation sind wichtige Fragen erklärt
 
 ## Effizient arbeiten
 
-- Im Navigationsbaum in jeder Ebene nach dem Label filtern
-- Formular-basiert filtern
-- Strukturelemente wie z.B. (Teil-)Populationen im Baum zu anderen Strukturelementen desselben Typs verschieben oder kopieren
-- Für übersichtliches Kopieren/Verschieben zweites Navigationsbaum-Formular-Paar einblenden
+- Alle Listen formularbasiert filtern
+- ~~Strukturelemente wie z.B. (Teil-)Populationen im Baum zu anderen Strukturelementen desselben Typs verschieben oder kopieren~~
+- ~~Für übersichtliches Kopieren/Verschieben zweites Navigationsbaum-Formular-Paar einblenden~~
 - Beobachtungen (Teil-)Populationen zuordnen: In einer nach Abstand zu den (Teil-)Populationen geordneten Liste im Formular oder mit drag and drop auf der Karte
-- Aus einer Beobachtung eine neue Population und Teilpopulation gründen und gleich die Beobachtung zuordnen – mit einem einzigen Klick
-- Alle Löschungen während einer Sitzung werden aufgelistet und können rückgängig gemacht werden
+- ~~Aus einer Beobachtung eine neue Population und Teilpopulation gründen und gleich die Beobachtung zuordnen – mit einem einzigen Klick~~
 - Mit über hundert Kontroll-Abfragen die Qualität der Daten kontrollieren
 
 ## Arbeiten, wo es passt
 
-- apflora wurde ursprünglich für die Arbeit am PC entwickelt. Einzelne Teil-Funktionen bleiben auch heute noch grossen Bildschirmen vorbehalten
-- Die Navigation passt sich kleinen Bildschirmen an. Man kann auf Handy und Tablett bequem mit den Fingern arbeiten
+- Die Navigation passt sich jeder Bildschirmgrösse an. Man kann auf Handy und Tablett bequem mit den Fingern arbeiten
+- arten-fördern.ch ist offline-fähig. Kein Internet? Egal. Einfach weiter arbeiten
 
 ## Freiwilligen-Erfolgskontrollen vorbereiten
 
-- Art-Verantwortliche erfassen, wer welche (Teil-)Populationen kontrolliert und drucken gleich die Feld-Formulare aus
+- ~~Art-Verantwortliche erfassen, wer welche (Teil-)Populationen kontrolliert und drucken gleich die Feld-Formulare aus~~
 
 ## Freiwillige erfassen ihre Kontrollen selber
 
-- Melden sich Freiwillige an, sehen sie eine spezifisch für sie gestaltete, auf das notwendige Minimum reduzierte Benutzer-Oberfläche
-- Neben der Liste ihrer Erfolgskontrollen erfassen sie im Formular, das genau dem Feld-Formular entspricht, ihre Beobachtungen
+- ~~Melden sich Freiwillige an, sehen sie eine spezifisch für sie gestaltete, auf das notwendige Minimum reduzierte Benutzer-Oberfläche~~
+- ~~Neben der Liste ihrer Erfolgskontrollen erfassen sie im Formular, das genau dem Feld-Formular entspricht, ihre Beobachtungen~~
 
 ## Freiwilligen-Erfolgskontrollen für Jahres-Berichte nutzen
 
-- Art-Verantwortliche überprüfen die Kontrollen von Freiwilligen und entscheiden, ob sie in den Jahres-Berichten berücksichtigt werden
+- ~~Art-Verantwortliche überprüfen die Kontrollen von Freiwilligen und entscheiden, ob sie in den Jahres-Berichten berücksichtigt werden~~
 
-## Projektdaten verwalten
+## Daten sichern und wenn nötig wiederherstellen
 
-Die nachfolgend aufgelisteten Funktionen werden nur von Topos und Gabriel-Software verwendet:
-
-- Adressen verwalten (in apflora, nur für Benutzer mit der Rolle "manager" sichtbar)
-- Logins verwalten und Schreibrechte vergeben (in apflora, nur für Benutzer mit der Rolle "manager" sichtbar)
-- Mit dem GIS auf die Daten zugreifen
-- Beobachtungen nach [Info Flora](https://infoflora.ch) exportieren
-- Beobachtungen importieren (um sie danach in apflora (Teil-)Populationen zuzuordnen)
-
-## Daten nach Verlust wiederherstellen
-
-- Die Daten werden täglich in der Cloud gesichert
-- In regelmässigen Abständen werden sie aus der Cloud auf mehrere unabhängige Festplatten gesichert
-- Ihre gesamthafte Wiederherstellung wird im Rahmen der Entwicklung bzw. des Unterhalts regelmässig getestet (war aber noch nie nötig)
-- Während einer Sitzung gelöschte Daten können direkt von den Benutzern wiederhergestellt werden
+- Die Daten werden täglich auf einem unserer lokalen Server gesichert
+- Zusätzlich wird werden die Daten verschlüsselt auf einem Cloud-Dienst hinterlegt
+- Ihre gesamthafte Wiederherstellung wird im Rahmen der Entwicklung bzw. des Unterhalts regelmässig getestet
