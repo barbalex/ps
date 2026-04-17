@@ -44,8 +44,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
   const ownArray = [...parentArray, nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
-  console.log('ProjectNode, nav.id:', nav.id)
-
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
     `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project, project_reports_in_project FROM projects WHERE project_id = $1`,

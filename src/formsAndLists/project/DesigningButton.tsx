@@ -38,7 +38,7 @@ export const DesigningButton = ({ from }) => {
     >
       <ToggleButton
         checked={designing}
-        icon={designing ? <MdEdit /> : <MdEditOff />}
+        icon={designing ? <MdEditOff /> : <MdEdit />}
         onClick={onClickDesigning}
       />
     </Tooltip>
