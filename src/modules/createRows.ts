@@ -24,6 +24,7 @@ export const createProject = async () => {
   const db = store.get(pgliteDbAtom)
   const userId = store.get(userIdAtom)
 
+  // TODO: we need to decide what account to choose if there are multiple
   const accountRes = await db.query(
     `SELECT account_id FROM accounts WHERE user_id = $1 LIMIT 1`,
     [userId],
