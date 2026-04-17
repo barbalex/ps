@@ -20,9 +20,9 @@ Les lignes de liste prennent désormais en charge un geste de glissement pour su
 
 ### 3. Boutons Confirmer/Annuler
 
-- Lorsque le glissement est relâché au-delà du seuil de 30 %, deux boutons d'action apparaissent :
-  - **Bouton Confirmer (✓)** : Bouton circulaire rouge pour confirmer la suppression
-  - **Bouton Annuler (✕)** : Bouton circulaire gris pour annuler l'action
+- Lorsque le glissement est relâché au-delà du seuil de 30 %, deux boutons d'action apparaissent:
+  - **Bouton Confirmer (✓)**: Bouton circulaire rouge pour confirmer la suppression
+  - **Bouton Annuler (✕)**: Bouton circulaire gris pour annuler l'action
 - Les boutons sont positionnés dans les 30 % gauches de la ligne
 - Cliquer sur Confirmer déclenche le callback `onDelete`
 - Cliquer sur Annuler remet la ligne dans son état normal
@@ -35,7 +35,7 @@ Les lignes de liste prennent désormais en charge un geste de glissement pour su
 
 ## Utilisation
 
-Pour activer le glissement pour supprimer sur une ligne, passez une fonction de callback `onDelete` :
+Pour activer le glissement pour supprimer sur une ligne, passez une fonction de callback `onDelete`:
 
 ```tsx
 <Row

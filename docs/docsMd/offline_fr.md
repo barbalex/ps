@@ -1,6 +1,6 @@
 # Travailler hors ligne
 
-## Pourquoi ?
+## Pourquoi?
 
 La nature est dehors. Vous n'avez pas toujours de réseau mobile. Tous les appareils mobiles n'ont pas de carte SIM.
 
@@ -26,4 +26,4 @@ Dès qu'il y a des opérations en attente, elles apparaissent dans l'arbre de na
 
 Si deux collaborateurs travaillent hors ligne sur le même enregistrement en même temps, plusieurs versions peuvent avoir été saisies. Lorsque ces versions diffèrent, on parle d'un conflit. La version synchronisée en dernier avec le serveur « gagne » — elle sera donc affichée à l'avenir sans correction de votre part.
 
-Si vous constatez des conflits, vous pouvez les résoudre facilement : ouvrez l'historique de l'enregistrement via le menu historique dans le formulaire. Vous y verrez toutes les versions dans l'ordre où elles sont arrivées au serveur, comment elles diffèrent de la version actuelle, et vous pourrez corriger les données directement.
+Si vous constatez des conflits, vous pouvez les résoudre facilement: ouvrez l'historique de l'enregistrement via le menu historique dans le formulaire. Vous y verrez toutes les versions dans l'ordre où elles sont arrivées au serveur, comment elles diffèrent de la version actuelle, et vous pourrez corriger les données directement.

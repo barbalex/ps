@@ -33,6 +33,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'open-source',
+    label_de: 'Open Source',
+    label_en: 'Open Source',
+    label_fr: 'Open Source',
+    label_it: 'Open Source',
+    isTechnical: false,
+  },
+  {
     id: 'swipe-to-delete-in-lists',
     label_de: 'Mit Wischen löschen in Listen',
     label_en: 'Swipe to delete in lists',
