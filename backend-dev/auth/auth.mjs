@@ -399,6 +399,7 @@ export const auth = betterAuth({
       id: 'user_id',
       name: 'name',
       email: 'email',
+      image: 'image',
       emailVerified: 'email_verified',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
