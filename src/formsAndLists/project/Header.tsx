@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
+import { DesigningButton } from './DesigningButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
@@ -16,7 +17,6 @@ interface Props {
   label?: string
 }
 
-// TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
 export const Header = ({ autoFocusRef, from, label }: Props) => {
   const { formatMessage } = useIntl()
@@ -126,13 +126,16 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       toPreviousDisabled={rowCount <= 1}
       tableName="project"
       siblings={
-        <HistoryToggleButton
-          historiesPath={`${basePath}/histories`}
-          formPath={`${basePath}/project`}
-          historyTable="projects_history"
-          rowIdField="project_id"
-          rowId={projectId}
-        />
+        <>
+          <DesigningButton from={from} />
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/project`}
+            historyTable="projects_history"
+            rowIdField="project_id"
+            rowId={projectId}
+          />
+        </>
       }
     />
   )

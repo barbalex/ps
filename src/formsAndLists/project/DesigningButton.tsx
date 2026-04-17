@@ -1,35 +1,30 @@
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { ToggleButton, Tooltip } = fluentUiReactComponents
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
-import { designingAtom } from '../../store.ts'
-import { useSession } from '../../modules/authClient.ts'
+import { designingAtom, userIdAtom } from '../../store.ts'
 
 export const DesigningButton = ({ from }) => {
   const [designingMap, setDesigningMap] = useAtom(designingAtom)
   const { projectId } = useParams({ from })
   const designing = designingMap[projectId] ?? false
-  const { data: session } = useSession()
-  const user = session?.user
+  const userId = useAtomValue(userIdAtom)
 
   const onClickDesigning = () =>
     setDesigningMap((prev) => ({ ...prev, [projectId]: !prev[projectId] }))
 
-  // TODO: check if this works as intended (also: Tree.Project.Editing.tsx)
   const resultProject = useLiveQuery(
     `
       SELECT pu.role
       FROM project_users pu
-        INNER JOIN users u ON u.user_id = pu.user_id AND u.email = $2
-      WHERE pu.project_id = $1
+      WHERE pu.project_id = $1 AND pu.user_id = $2
     `,
-    [projectId, user?.email],
+    [projectId, userId],
   )
   const userRole = resultProject?.rows?.[0]?.role
-  // console.log('hello project DesignButton', { userRole })
 
   const userMayDesign = userRole === 'designer' || userRole === 'owner'
 
