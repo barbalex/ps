@@ -1,0 +1,30 @@
+<h1>Ruoli utente</h1>
+<h2>Proprietà</h2>
+<p>Un utente è proprietario della propria riga utente, degli account associati, dei progetti e di tutti i dati creati in questi progetti.</p>
+<h2>Ruoli</h2>
+<p>I tipi di ruolo sono (dal più alto al più basso):</p>
+<ol>
+<li>Proprietario: può assegnare ruoli Manager</li>
+<li>Manager: può modificare la configurazione di progetti e sottoprogetti, può assegnare ruoli Redattore e Lettore</li>
+<li>Redattore: può modificare i dati</li>
+<li>Lettore: può sincronizzare e leggere i dati</li>
+</ol>
+<p>Un tipo di ruolo include sempre tutti i tipi di ruolo inferiori. Non vengono impostati separatamente — è sufficiente impostare un solo ruolo per livello.
+Un ruolo è la combinazione di utente e tipo di ruolo.</p>
+<h2>Dove vengono assegnati i ruoli</h2>
+<p>I ruoli vengono assegnati a quattro livelli:</p>
+<ol>
+<li>progetti</li>
+<li>sottoprogetti (specie o biotopi)</li>
+<li>luoghi (livelli 1 e 2, ad esempio: popolazioni e sottopopolazioni)</li>
+</ol>
+<h2>Come funzionano i ruoli</h2>
+<p>Quando viene impostato un ruolo, il suo effetto si estende a tutti i livelli inferiori. L&#39;app imposta automaticamente tutti i ruoli dei livelli inferiori.</p>
+<p>Esempio: quando all&#39;utente <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> viene assegnato il ruolo Redattore sul progetto, l&#39;app assegna automaticamente a questo utente ruoli Redattore in tutti i sottoprogetti e luoghi.</p>
+<p>L&#39;impostazione di diritti inferiori a un livello inferiore non è supportata. Esempio: quando un utente ha il ruolo Lettore su un progetto, tutti i suoi dati possono essere sincronizzati senza controllare i livelli inferiori.</p>
+<p>Diritti superiori possono essere assegnati a livelli inferiori, con effetto che si estende anch&#39;esso verso il basso. Esempio: un Lettore che deve essere Redattore su un sottoprogetto necessita del ruolo Lettore sul progetto padre per sincronizzare i dati padre, senza i quali non potrebbe lavorare.</p>
+<h2>Come impostare i ruoli</h2>
+<p>I ruoli Proprietario vengono impostati automaticamente dall&#39;app e non possono essere modificati.</p>
+<p>È importante sapere che quando si impostano i ruoli, l&#39;app copia automaticamente quel ruolo a tutti i livelli inferiori. Impostare ruoli inferiori a livelli superiori dopo aver impostato ruoli superiori a livelli inferiori comporterà la sovrascrittura dei ruoli ai livelli inferiori. Pertanto, <strong>i ruoli devono essere impostati dall&#39;alto verso il basso (progetti → sottoprogetti → luoghi livello 1 → luoghi livello 2)</strong>.</p>
+<p>D&#39;altra parte, è necessario impostare i ruoli sui livelli inferiori (potenzialmente numerosi) solo se si desidera esplicitamente differenziare. In caso contrario, si possono semplicemente ignorare.</p>
+<p>Quando si creano nuovi sottoprogetti e luoghi, l&#39;app copia automaticamente i ruoli dal livello immediatamente superiore. Pertanto è necessario impostarli solo se devono esplicitamente differire.</p>

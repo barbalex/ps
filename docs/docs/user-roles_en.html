@@ -1,0 +1,30 @@
+<h1>User Roles</h1>
+<h2>Ownership</h2>
+<p>A user owns their own user row, related accounts, projects and all the data created in these projects.</p>
+<h2>Roles</h2>
+<p>Role types are (from high to low):</p>
+<ol>
+<li>Owner: can set Manager roles</li>
+<li>Manager: can edit project- and subproject configuration, can set Editor and Reader roles</li>
+<li>Editor: can edit data</li>
+<li>Reader: can sync and read data</li>
+</ol>
+<p>A role type always includes all lower role types. They are not separately set, only a single role needs to be set per level.
+A role is the combination of user and role.</p>
+<h2>Where roles are given</h2>
+<p>Roles are given at four levels:</p>
+<ol>
+<li>projects</li>
+<li>subprojects (species or biotopes)</li>
+<li>places (levels 1 and 2, for instance: populations and subpopulations)</li>
+</ol>
+<h2>How roles work</h2>
+<p>When a role is set, it&#39;s effect extends down all levels. The app automatically sets all lower level roles.</p>
+<p>Example: When user <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> is given the Editor role on the project, the app automatically gives this user Editor roles in all subprojects and places.</p>
+<p>Setting lower rights at a lower level is not supported. Example: When a user has Reader role on project, all it&#39;s data can be synced without checking lower levels.</p>
+<p>Higher rights can be given at lower levels, their effect extending down as well. Example: A Reader who shall be Editor on a subproject needs the Reader role on its project to sync in parent data without which he couldn&#39;t work.</p>
+<h2>How to set roles</h2>
+<p>Owner roles are set automatically by the app and can&#39;t be changed.</p>
+<p>It is important to know that when you set roles, the app automatically copies this role to all lower levels. Setting lower roles at higher levels after having set higher ones lower down will lead to the roles at lower levels getting nuked. Thus <strong>roles should be set from top (projects) to bottom (subprojects, places level 1, places level 2)</strong>.</p>
+<p>On the other hand you only have to set roles on (potentially numerous) lower levels if you explicitely want to differentiate there. If not, you can simply forget about them.</p>
+<p>When creating new subprojects and places, the app automatically copies down the roles from the next higher level. So you only have to set them if they explicitely should differ.</p>

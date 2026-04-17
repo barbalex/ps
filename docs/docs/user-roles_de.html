@@ -1,2 +1,30 @@
-<h1>Benutzer-Rollen</h1>
-<p>TODO:</p>
+<h1>Benutzerrollen</h1>
+<h2>Eigentümerschaft</h2>
+<p>Ein Benutzer ist Eigentümer seines eigenen Benutzer-Datensatzes, der zugehörigen Konten, Projekte und aller in diesen Projekten erstellten Daten.</p>
+<h2>Rollen</h2>
+<p>Rollentypen sind (von hoch nach tief):</p>
+<ol>
+<li>Eigentümer: kann Designer-Rollen vergeben</li>
+<li>Designer: kann Projekt- und Teilprojekt-Konfigurationen bearbeiten, kann Schreiber- und Leser-Rollen vergeben</li>
+<li>Schreiber: kann Daten bearbeiten</li>
+<li>Leser: kann Daten synchronisieren und lesen</li>
+</ol>
+<p>Ein Rollentyp schliesst immer alle niedrigeren Rollentypen ein. Sie werden nicht separat gesetzt, es muss pro Ebene nur eine einzige Rolle gesetzt werden.
+Eine Rolle ist die Kombination aus Benutzer und Rollentyp.</p>
+<h2>Wo Rollen vergeben werden</h2>
+<p>Rollen werden auf vier Ebenen vergeben:</p>
+<ol>
+<li>Projekte</li>
+<li>Teilprojekte (Arten oder Biotope)</li>
+<li>Orte (Ebene 1 und 2, z.B.: Populationen und Teilpopulationen)</li>
+</ol>
+<h2>Wie Rollen funktionieren</h2>
+<p>Wenn eine Rolle gesetzt wird, erstreckt sich ihre Wirkung auf alle tieferen Ebenen. Die App setzt automatisch alle niedrigeren Rollen.</p>
+<p>Beispiel: Wenn dem Benutzer <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> die Schreiber-Rolle auf dem Projekt vergeben wird, gibt die App diesem Benutzer automatisch Schreiber-Rollen in allen Teilprojekten und Orten.</p>
+<p>Das Setzen niedrigerer Rechte auf tieferer Ebene wird nicht unterstützt. Beispiel: Wenn ein Benutzer die Leser-Rolle auf einem Projekt hat, können alle seine Daten synchronisiert werden, ohne dass tiefere Ebenen geprüft werden.</p>
+<p>Höhere Rechte können auf tieferen Ebenen vergeben werden, ihre Wirkung erstreckt sich ebenfalls nach unten. Beispiel: Ein Leser, der auf einem Teilprojekt Schreiber sein soll, benötigt die Leser-Rolle auf dem übergeordneten Projekt, um übergeordnete Daten zu synchronisieren, ohne die er nicht arbeiten könnte.</p>
+<h2>Wie Rollen gesetzt werden</h2>
+<p>Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geändert werden.</p>
+<p>Es ist wichtig zu wissen, dass die App beim Setzen von Rollen diese Rolle automatisch auf alle tieferen Ebenen kopiert. Das Setzen niedrigerer Rollen auf höheren Ebenen, nachdem auf tieferen Ebenen bereits höhere Rollen gesetzt wurden, führt dazu, dass die Rollen auf den tieferen Ebenen überschrieben werden. Daher <strong>sollten Rollen von oben (Projekte) nach unten (Teilprojekte, Orte Ebene 1, Orte Ebene 2) gesetzt werden</strong>.</p>
+<p>Andererseits muss man Rollen auf (möglicherweise zahlreichen) tieferen Ebenen nur dann setzen, wenn man dort explizit differenzieren möchte. Wenn nicht, kann man sie einfach ignorieren.</p>
+<p>Beim Erstellen neuer Teilprojekte und Orte kopiert die App automatisch die Rollen der nächsthöheren Ebene nach unten. Man muss sie also nur setzen, wenn sie explizit abweichen sollen.</p>
