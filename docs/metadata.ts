@@ -41,6 +41,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'issues',
+    label_de: 'Rückmeldungen und Fehler',
+    label_en: 'Feedback and Issues',
+    label_fr: 'Commentaires et problèmes',
+    label_it: 'Feedback e problemi',
+    isTechnical: false,
+  },
+  {
     id: 'swipe-to-delete-in-lists',
     label_de: 'Mit Wischen löschen in Listen',
     label_en: 'Swipe to delete in lists',
