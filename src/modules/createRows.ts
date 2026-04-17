@@ -1,9 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { addOperationAtom, store, pgliteDbAtom } from '../store.ts'
+import { addOperationAtom, store, pgliteDbAtom, userIdAtom } from '../store.ts'
 import { projectTypeNames } from './projectTypeNames.ts'
-
-const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
 
 // TODO: run insert query?
 const getPresetData = async ({ projectId = null, table }) => {
@@ -22,9 +20,19 @@ const getPresetData = async ({ projectId = null, table }) => {
   return data
 }
 
-// TODO: add account_id
 export const createProject = async () => {
   const db = store.get(pgliteDbAtom)
+  const userId = store.get(userIdAtom)
+
+  const accountRes = await db.query(
+    `SELECT account_id FROM accounts WHERE user_id = $1 LIMIT 1`,
+    [userId],
+  )
+  const account_id = accountRes?.rows?.[0]?.account_id
+  if (!account_id) {
+    throw new Error('NO_ACCOUNT')
+  }
+
   // find fields with preset values on the data column
   const presetData = await getPresetData({ table: 'projects' })
 
