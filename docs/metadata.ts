@@ -33,6 +33,22 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'user-accounts',
+    label_de: 'Benutzerkonten',
+    label_en: 'User Accounts',
+    label_fr: 'Comptes Utilisateurs',
+    label_it: 'Account Utente',
+    isTechnical: false,
+  },
+  {
+    id: 'user-roles',
+    label_de: 'Benutzerrollen',
+    label_en: 'User Roles',
+    label_fr: 'Rôles Utilisateurs',
+    label_it: 'Ruoli Utente',
+    isTechnical: false,
+  },
+  {
     id: 'open-source',
     label_de: 'Open Source',
     label_en: 'Open Source',
@@ -46,6 +62,14 @@ export const docsMeta: DocMeta[] = [
     label_en: 'Feedback and Issues',
     label_fr: 'Commentaires et problèmes',
     label_it: 'Feedback e problemi',
+    isTechnical: false,
+  },
+  {
+    id: 'privacy-policy',
+    label_de: 'Datenschutzerklärung',
+    label_en: 'Privacy Policy',
+    label_fr: 'Politique de confidentialité',
+    label_it: 'Informativa sulla privacy',
     isTechnical: false,
   },
   {
