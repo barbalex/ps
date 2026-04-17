@@ -45,6 +45,16 @@ export const observeOperations = () =>
         return removeOperation(firstOperation)
       }
 
+      if (error?.message?.includes('Update matched 0 rows')) {
+        // The row no longer exists on the server (e.g. deleted by another user).
+        // Drop the update — there is nothing to update.
+        console.warn(
+          'observeOperations, update target gone — discarding operation:',
+          firstOperation,
+        )
+        return removeOperation(firstOperation)
+      }
+
       console.error('observeOperations, error executing operation:', error)
       // TODO: surface
       const lcMessage = error.message?.toLowerCase?.()
