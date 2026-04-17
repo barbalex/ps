@@ -1,5 +1,7 @@
 # Tecnologie utilizzate
 
+Ultimo aggiornamento: 17 aprile 2026
+
 - [Akamai](https://www.linode.com) per i server fisici
 - [Docker](<https://it.wikipedia.org/wiki/Docker_(software)>) per eseguire l'app sul server
 - [PostgreSQL](https://www.postgresql.org) come database sul server

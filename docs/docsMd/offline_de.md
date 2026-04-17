@@ -1,5 +1,7 @@
 # Offline arbeiten
 
+Zuletzt aktualisiert am 17. April 2026
+
 ## Wieso?
 
 Natur ist draussen. Nicht überall hast du Mobil-Empfang. Nicht jedes mobile Gerät hat eine SIM-Karte.

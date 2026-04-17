@@ -1,5 +1,7 @@
 # Mit Wischen löschen in Listen
 
+Zuletzt aktualisiert am 17. April 2026
+
 ## Übersicht
 
 Listenzeilen unterstützen jetzt eine Wischgeste zum Löschen, die eine intuitive Bedienung mit visuellem Feedback und Bestätigung ermöglicht.

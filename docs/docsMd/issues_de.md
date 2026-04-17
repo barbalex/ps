@@ -1,6 +1,8 @@
 # Rückmeldungen und Fehler
 
-Ich freue mich über Rückmeldungen, Anregungen, Ideen und Fehlermeldungen (es gibt leider keine Software ohne).
+Zuletzt aktualisiert am 17. April 2026
+
+Ich freue mich über Rückmeldungen, Anregungen, Ideen und (zugegeben etwas weniger) Fehlermeldungen.
 
 Am besten geht das auf GitHub, wo der Code gehostet wird:
 

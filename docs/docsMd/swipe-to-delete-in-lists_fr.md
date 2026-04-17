@@ -1,5 +1,7 @@
 # Glisser pour supprimer dans les listes
 
+Dernière mise à jour: 17 avril 2026
+
 ## Aperçu
 
 Les lignes de liste prennent désormais en charge un geste de glissement pour supprimer, offrant une suppression intuitive avec un retour visuel et une confirmation.

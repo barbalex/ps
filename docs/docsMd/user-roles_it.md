@@ -1,5 +1,7 @@
 # Ruoli utente
 
+Ultimo aggiornamento: 17 aprile 2026
+
 ## Proprietà
 
 Un utente è proprietario della propria riga utente, degli account associati, dei progetti e di tutti i dati creati in questi progetti.

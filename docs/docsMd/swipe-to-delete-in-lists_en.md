@@ -1,5 +1,7 @@
 # Swipe to Delete in Lists
 
+Last updated: 17 April 2026
+
 ## Overview
 
 List rows now support a swipe-to-delete gesture that provides intuitive deletion with visual feedback and confirmation.

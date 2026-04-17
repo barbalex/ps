@@ -1,5 +1,7 @@
 # Technical Requirements
 
+Last updated: 17 April 2026
+
 arten-fördern.app runs in the browser. Which one generally doesn't matter, but it should always be up to date.
 
 arten-fördern.app works on any operating system.

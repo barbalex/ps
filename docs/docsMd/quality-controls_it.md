@@ -1,5 +1,7 @@
 # Controlli di qualità
 
+Ultimo aggiornamento: 17 aprile 2026
+
 I controlli di qualità possono contribuire a migliorare la qualità dei dati registrati. Il loro scopo è individuare i record sospetti.
 
 Gli utenti con il ruolo "Proprietario" o "Designer" possono scegliere quali dei oltre 100 controlli di qualità predefiniti attivare — e possono crearne di propri.

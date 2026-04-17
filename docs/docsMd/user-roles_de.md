@@ -1,5 +1,7 @@
 # Benutzerrollen
 
+Zuletzt aktualisiert am 17. April 2026
+
 ## Eigentümerschaft
 
 Ein Benutzer ist Eigentümer seines eigenen Benutzer-Datensatzes, der zugehörigen Konten, Projekte und aller in diesen Projekten erstellten Daten.

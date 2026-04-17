@@ -1,5 +1,7 @@
 # Feedback e bug
 
+Ultimo aggiornamento: 17 aprile 2026
+
 Sono sempre felice di ricevere feedback, suggerimenti, idee e segnalazioni di bug (purtroppo nessun software ne è privo).
 
 Il modo migliore è tramite GitHub, dove è ospitato il codice:

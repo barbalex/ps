@@ -1,5 +1,7 @@
 # Lavorare offline
 
+Ultimo aggiornamento: 17 aprile 2026
+
 ## Perché?
 
 La natura è all'aperto. Non ovunque hai copertura mobile. Non ogni dispositivo mobile ha una scheda SIM.

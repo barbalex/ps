@@ -1,5 +1,7 @@
 # Open Source
 
+Dernière mise à jour: 17 avril 2026
+
 arten-fördern.app est développée par [Gabriel-Software](https://gabriel-software.ch).
 
 Le code est [open source](https://github.com/barbalex/ps/blob/main/LICENSE). Chacun est libre de le copier et d'exploiter l'application par ses propres moyens.

@@ -1,5 +1,7 @@
 # Contrôles de qualité
 
+Dernière mise à jour: 17 avril 2026
+
 Les contrôles de qualité peuvent aider à améliorer la qualité des données saisies. Leur but est de détecter les enregistrements suspects.
 
 Les utilisateurs ayant le rôle « Propriétaire » ou « Concepteur » peuvent choisir lesquels des plus de 100 contrôles de qualité prédéfinis sont activés — et peuvent en créer de nouveaux.

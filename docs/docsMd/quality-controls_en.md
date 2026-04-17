@@ -1,5 +1,7 @@
 # Quality Controls
 
+Last updated: 17 April 2026
+
 Quality controls can help improve the quality of recorded data. Their purpose is to detect suspicious records.
 
 Users with the role "Owner" or "Designer" can choose which of the over 100 ready-made quality controls to enable — and can create their own.

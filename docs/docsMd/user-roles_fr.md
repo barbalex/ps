@@ -1,5 +1,7 @@
 # Rôles utilisateurs
 
+Dernière mise à jour: 17 avril 2026
+
 ## Propriété
 
 Un utilisateur est propriétaire de sa propre ligne utilisateur, des comptes associés, des projets et de toutes les données créées dans ces projets.

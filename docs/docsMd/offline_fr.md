@@ -1,5 +1,7 @@
 # Travailler hors ligne
 
+Dernière mise à jour: 17 avril 2026
+
 ## Pourquoi?
 
 La nature est dehors. Vous n'avez pas toujours de réseau mobile. Tous les appareils mobiles n'ont pas de carte SIM.

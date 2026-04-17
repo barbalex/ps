@@ -1,5 +1,7 @@
 # Feedback and Bugs
 
+Last updated: 17 April 2026
+
 I welcome feedback, suggestions, ideas, and bug reports (unfortunately no software is without them).
 
 The best way to do this is on GitHub, where the code is hosted:

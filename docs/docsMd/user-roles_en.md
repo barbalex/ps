@@ -1,5 +1,7 @@
 # User Roles
 
+Last updated: 17 April 2026
+
 ## Ownership
 
 A user owns their own user row, related accounts, projects and all the data created in these projects.

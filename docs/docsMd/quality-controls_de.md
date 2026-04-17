@@ -1,5 +1,7 @@
 # Qualitäts-Kontrollen
 
+Zuletzt aktualisiert am 17. April 2026
+
 Qualitäts-Kontrollen können helfen, die Qualität der erfassten Daten zu verbessern. Sie sollen verdächtige Daten aufspüren.
 
 Benutzer mit der Rolle "Eigentümer" oder "Designer" können wählen, welche der über 100 vorbereiteten Qualitäts-Kontrollen zur Verfügung stehen. Und eigene generieren.

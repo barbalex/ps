@@ -1,5 +1,7 @@
 # Working Offline
 
+Last updated: 17 April 2026
+
 ## Why?
 
 Nature is outdoors. You won't always have mobile reception. Not every mobile device has a SIM card.

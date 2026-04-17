@@ -1,5 +1,7 @@
 # Retours et bugs
 
+Dernière mise à jour: 17 avril 2026
+
 Je suis toujours heureux de recevoir des retours, suggestions, idées et signalements de bugs (malheureusement, aucun logiciel n'en est exempt).
 
 Le meilleur moyen est de passer par GitHub, où le code est hébergé:

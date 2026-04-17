@@ -9,6 +9,14 @@ export type DocMeta = {
 
 export const docsMeta: DocMeta[] = [
   {
+    id: 'project-description',
+    label_de: 'Projektbeschreibung',
+    label_en: 'Project Description',
+    label_fr: 'Description du projet',
+    label_it: 'Descrizione del progetto',
+    isTechnical: false,
+  },
+  {
     id: 'technical-requirements',
     label_de: 'Technische Anforderungen',
     label_en: 'Technical Requirements',

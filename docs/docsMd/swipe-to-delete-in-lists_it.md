@@ -1,5 +1,7 @@
 # Scorri per eliminare nelle liste
 
+Ultimo aggiornamento: 17 aprile 2026
+
 ## Panoramica
 
 Le righe delle liste supportano ora un gesto di scorrimento per eliminare, che offre un'eliminazione intuitiva con feedback visivo e conferma.

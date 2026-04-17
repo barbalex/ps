@@ -1,5 +1,7 @@
 # Technische Anforderungen
 
+Zuletzt aktualisiert am 17. April 2026
+
 arten-fördern.app läuft im Browser. Welcher, sollte in der Regel egal sein, aber aktuell sollte er auf jeden Fall sein.
 
 arten-fördern.app funktioniert auf jedem Betriebssystem.
