@@ -999,5 +999,7 @@
   "docsFilterTechnical": "Technique",
   "docsFilterText": "Filtrer...",
   "navigationDocs": "Documentation",
-  "navigationDocsGoBack": "Retour"
+  "navigationDocsGoBack": "Retour",
+  "homeMoreInfoTitle": "Plus d'infos",
+  "homeMoreInfoText": "...dans la {link}."
 }

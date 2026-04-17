@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import styles from './home.module.css'
@@ -291,6 +292,25 @@ export const Home = () => {
                   >
                     <FormattedMessage id="9KB+sP" defaultMessage="mitteilen" />
                   </a>
+                ),
+              }}
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage id="homeMoreInfoTitle" defaultMessage="Mehr Infos" />
+            </h3>
+            <FormattedMessage
+              id="homeMoreInfoText"
+              defaultMessage="...finden Sie in der {link}."
+              values={{
+                link: (
+                  <Link to="/docs">
+                    <FormattedMessage
+                      id="navigationDocs"
+                      defaultMessage="Dokumentation"
+                    />
+                  </Link>
                 ),
               }}
             />

@@ -1015,5 +1015,7 @@
   "docsFilterTechnical": "Technical",
   "docsFilterText": "Filter...",
   "navigationDocs": "Documentation",
-  "navigationDocsGoBack": "Go back"
+  "navigationDocsGoBack": "Go back",
+  "homeMoreInfoTitle": "More Info",
+  "homeMoreInfoText": "...in the {link}."
 }
