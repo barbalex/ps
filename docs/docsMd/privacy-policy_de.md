@@ -2,15 +2,17 @@
 
 Zuletzt aktualisiert am 17. April 2026
 
-Ein transparenter Umgang mit Personendaten ist uns ein sehr wichtiges Anliegen. Die vorliegende Datenschutzerklärung informiert darüber, welche Personendaten wir zu welchem Zweck erheben und an wen wir diese weitergeben. Wir überprüfen und erneuern diese Datenschutzerklärung regelmässig, um höchste Transparenz gewährleisten zu können.
+Ein transparenter Umgang mit Ihren Daten ist uns sehr wichtig. Die vorliegende Datenschutzerklärung informiert darüber, welche Personendaten wir zu welchem Zweck erheben und an wen wir diese weitergeben. Wir überprüfen und erneuern diese Datenschutzerklärung wenn sich relevante Fakten ändern sollten, um höchste Transparenz gewährleisten zu können.
+
+Ich bin Naturwissenschafter und Software Entwickler, nicht Jurist. Diese Datenschutzerklärung habe ich von [Privacy Bee](https://www.privacybee.io) übernommen und nach bestem Wissen und Gewissen präzisiert. Anregungen / Reklamationen bitte direkt [an mich](mailto:alex@gabriel-software.ch).
 
 ## Welche Daten wir erfassen
 
 ### Allgemeine Personendaten
 
-Wir bearbeiten Ihre allgemeinen Personendaten. Personendaten sind jede Art von Information, die sich auf eine identifizierbare natürliche Person beziehen. Identifizierbar ist die natürliche Person, wenn sich aus den vorhandenen Informationen Rückschlüsse auf die Identität der Person ziehen lassen.
+Wir bearbeiten Ihre allgemeinen Personendaten. Wir versuchen dabei, nur das absolute Minimum zu benötigen. Personendaten sind jede Art von Information, die sich auf eine identifizierbare natürliche Person beziehen. Identifizierbar ist die natürliche Person, wenn sich aus den vorhandenen Informationen Rückschlüsse auf die Identität der Person ziehen lassen.
 
-Beispiel: Name, IP-Adresse, E-mail.
+Beispiel: Name, E-mail.
 
 ### Überlassene Daten
 
@@ -22,7 +24,7 @@ Beispiel: Sie geben Ihre E-mail an, um ein Konto zu eröffnen.
 
 Wenn Sie unsere Dienste benutzen, erheben wir teilweise Ihre Daten, ohne dass Ihre aktive Mitwirkung erforderlich ist. Bei diesen Daten handelt es sich in der Regel um Daten über Ihr Gerät und um Daten über das Nutzerverhalten.
 
-Beispiel: Wir erheben (noch nicht aber potentiell), wiviele Besuche unsere Seiten erhalten.
+Wir erheben (noch nicht aber potentiell) die Anzahl Besuche auf arten-fördern.app. Aktuell ist das alles - abgesehen von Daten, die aufgrund der technischen Prozesse benötigt werden (z.B. Austausch von IP-Adresse um Daten zu übertragen).
 
 ### Datenweitergabe
 
@@ -30,21 +32,29 @@ Wir geben Ihre Personendaten an Unternehmen weiter, die selbst entscheiden könn
 
 Beispiel: Eine gesetzliche Vorschrift verpflichtet uns, Ihre Daten an eine Behörde weiterzugeben.
 
+Hoffentlich wird das nie nötig.
+
 ## Welche Dienste wir nutzen
 
 ### Netlify
 
 https://www.netlify.com
 
-Netlify hostet unsere Webseiten. Es bietet eine Reihe von Funktionen, einschliesslich Continuous Deployment, automatisierte Git-Integration, SSL-Zertifikate, benutzerdefiniertes Domain-Management und Content Delivery Network (CDN). Netlify ermöglicht es Website-Betreibern, ihre Web-Applikation schnell und einfach zu veröffentlichen und zu aktualisieren, ohne sich um die Infrastruktur kümmern zu müssen.
+Netlify hostet arten-fördern.app. Es bietet eine Reihe von Funktionen, einschliesslich Continuous Deployment, automatisierte Git-Integration, SSL-Zertifikate, Domain-Management und Content Delivery Network (CDN). Datenschutzfreundlicher wäre es, arten-fördern.app auf einem eigenen Server zu hosten. Damit könnten wir aber nicht ganz dieselbe Verfügbarkeit gewährleisten. Sollten Sie besondere Ansprüche haben (Hosting in der Schweiz oder bei Ihnen), wenden Sie sich an [Alex](mailto:alex@gabriel-software.ch).
+
+### Backblaze
+
+https://www.backblaze.com
+
+Backblaze dient als zusätzliche Rückversicherung, als drittes Backup Ihrer Daten (erste: kurzfristige Droplet-Sicherung auf Netlify, zweite: Daten-Sicherung auf unserem eigenen Server im Büro). Die Daten sind Ende zu Ende verschlüsselt - Backblaze kann sie daher nicht lesen.
 
 ## Datenschutzerklärung
 
 ### 1 Was tun wir?
 
-Gabriel Software (Wiesenstrasse 22, 8800 Thalwil) betreibt die Website arten-fördern.app (nachfolgend als «wir» bzw. «uns» bezeichnet). Auf dieser Web-Applikation können Naturschutzfachleute Projekte verwalten, um bedrohte Arten und Lebensräume zu fördern.
+Gabriel Software (Wiesenstrasse 22, 8800 Thalwil) betreibt die Web-Applikation arten-fördern.app (nachfolgend als «wir» bzw. «uns» bezeichnet). Auf dieser Web-Applikation können Naturschutzfachleute Projekte verwalten, um bedrohte Arten und Lebensräume zu fördern.
 
-Der Schutz Ihrer persönlichen Daten ist uns wichtig. Wir informieren Sie in dieser Datenschutzerklärung transparent und verständlich darüber, welche Daten wir über unsere Website sammeln und wie wir damit umgehen.
+Der Schutz Ihrer persönlichen Daten ist uns wichtig. Wir informieren Sie in dieser Datenschutzerklärung transparent und verständlich darüber, welche Daten wir mit unserer Web-Applikation sammeln und wie wir damit umgehen.
 
 ### 2 Über was informieren wir?
 
