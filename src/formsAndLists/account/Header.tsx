@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createAccount } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, confirmDeleteAccountAtom } from '../../store.ts'
 import type Accounts from '../../models/public/Accounts.ts'
 
 const from = '/data/users/$userId_/accounts/$accountId_'
@@ -16,6 +16,7 @@ export const Header = ({ autoFocusRef }) => {
   const { userId, accountId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const setConfirmDeleteAccount = useSetAtom(confirmDeleteAccountAtom)
 
   const db = usePGlite()
 
@@ -40,28 +41,34 @@ export const Header = ({ autoFocusRef }) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
-        [accountId, userId],
-      )
-      const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM accounts WHERE account_id = $1 AND user_id = $2`, [
-        accountId,
-        userId,
-      ])
-      addOperation({
-        table: 'accounts',
-        rowIdName: 'account_id',
-        rowId: accountId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error('Error deleting account:', error)
-    }
+  const deleteRow = () => {
+    setConfirmDeleteAccount({
+      accountId,
+      userId,
+      onConfirm: async () => {
+        try {
+          const prevRes = await db.query(
+            `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
+            [accountId, userId],
+          )
+          const prev = prevRes?.rows?.[0] ?? {}
+          await db.query(`DELETE FROM accounts WHERE account_id = $1 AND user_id = $2`, [
+            accountId,
+            userId,
+          ])
+          addOperation({
+            table: 'accounts',
+            rowIdName: 'account_id',
+            rowId: accountId,
+            operation: 'delete',
+            prev,
+          })
+          navigate({ to: `..` })
+        } catch (error) {
+          console.error('Error deleting account:', error)
+        }
+      },
+    })
   }
 
   const toNext = async () => {

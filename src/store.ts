@@ -283,6 +283,13 @@ export const chooseAccountForProjectAtom = atom<{
   accounts: { account_id: string; label: string | null }[]
   onAccountSelected: (account_id: string) => void
 } | null>(null)
+// Holds the data needed to show the "delete account" confirmation dialog.
+// Uses a plain atom (not atomWithStorage) because it holds a callback.
+export const confirmDeleteAccountAtom = atom<{
+  accountId: string
+  userId: string
+  onConfirm: () => void
+} | null>(null)
 // The order of fields in the observation form. User can change it by drag and drop
 export const observationFieldsSortedAtom = atomWithStorage(
   'observationFieldsSortedAtom',
