@@ -1017,5 +1017,13 @@
   "navigationDocs": "Documentation",
   "navigationDocsGoBack": "Go back",
   "homeMoreInfoTitle": "More Info",
-  "homeMoreInfoText": "...in the {link}."
+  "homeMoreInfoText": "...in the {link}.",
+  "cancel": "Cancel",
+  "chooseAccountForProject": "Choose account for new project",
+  "noAccountTitle": "No account found",
+  "noAccountBody": "To create projects, please create an account first.",
+  "confirmDeleteAccountTitle": "Really delete account?",
+  "confirmDeleteAccountWithProjects": "{count, plural, one {This will permanently delete the following project} other {This will permanently delete the following {count} projects}} and all their data:",
+  "confirmDeleteAccountNoProjects": "This account has no projects. It will be permanently deleted.",
+  "confirmDeleteAccountConfirm": "Delete account"
 }

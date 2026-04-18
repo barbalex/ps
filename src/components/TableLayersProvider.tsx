@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAtomValue, useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -10,24 +10,22 @@ import {
   initialSyncingAtom,
   sqlInitializingAtom,
   languageAtom,
+  operationsQueueAtom,
+  store,
 } from '../store.ts'
+
 import type Projects from '../models/public/Projects.ts'
 
-// TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
-// How to know if data was synced with the server?
-// it would be better to add vector_layers and their displays inside triggers on project creation
-// but as SQLite does not have functions to create uuid's, we need to do it here
+// Places (level 1/2), actions (level 1/2), and checks (level 1/2) vector layers
+// are created by server-side PostgreSQL triggers on project INSERT and
+// place_levels INSERT/UPDATE. Only observation-dependent layers are created here.
 export const TableLayersProvider = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const [language] = useAtom(languageAtom)
   const {
     placesLabel,
-    actionsLabel,
-    checksLabel,
     observationsAssignedLinesLabel,
-    actionsByPlaceLabel,
-    checksByPlaceLabel,
     observationsAssignedByPlaceLabel,
     observationsAssignedLabel,
     observationsToAssessLabel,
@@ -47,7 +45,22 @@ export const TableLayersProvider = () => {
   )
   const observationCount: number = observationCountResult?.rows?.[0]?.count ?? 0
 
+  // If there are already queued insert ops for vector_layers for a project,
+  // those ops will reach the server and Electric will sync the rows back.
+  // Creating new ones here would cause (project_id, label) unique-constraint 409s.
+  const operationsQueue = useAtomValue(operationsQueueAtom)
+  const pendingVLProjectIds = new Set(
+    operationsQueue
+      .filter((op) => op.table === 'vector_layers' && op.operation === 'insert')
+      .map((op) => op.draft?.project_id)
+      .filter(Boolean),
+  )
+
   const firstRender = useFirstRender()
+  // Prevent concurrent effect runs: a second fire while run() is awaiting a db
+  // query would see count=0 and create duplicate vector layers / 409 conflicts.
+  const isRunningRef = useRef(false)
+  const needsRunRef = useRef(false)
 
   useEffect(() => {
     // if this runs on first render it can race with triggers and lead to multiple vector_layers
@@ -56,19 +69,50 @@ export const TableLayersProvider = () => {
     if (sqlInitializing) return
     if (initialSyncing) return
 
+    if (isRunningRef.current) {
+      // Another invocation is already in flight — schedule a re-run once it finishes.
+      needsRunRef.current = true
+      return
+    }
+
+    const runOnce = async () => {
+      isRunningRef.current = true
+      needsRunRef.current = false
+      try {
+        await run()
+      } finally {
+        isRunningRef.current = false
+        // If the deps changed while we were running, fire once more.
+        if (needsRunRef.current) {
+          needsRunRef.current = false
+          runOnce()
+        }
+      }
+    }
+
     const run = async () => {
       for (const projectId of projectIds) {
         if (!projectId) continue
+        // Skip projects whose vector_layers are already in the ops queue —
+        // they will be synced to the server and Electric will bring them back.
+        if (
+          store
+            .get(operationsQueueAtom)
+            .some(
+              (op) =>
+                op.table === 'vector_layers' &&
+                op.operation === 'insert' &&
+                op.draft?.project_id === projectId,
+            )
+        )
+          continue
 
         const resPL = await db.query(
           `
           SELECT 
             level, 
-            name_plural_${language}, 
             name_singular_${language}, 
-            observations,
-            actions,
-            checks
+            observations
           FROM place_levels 
           WHERE project_id = $1`,
           [projectId],
@@ -78,84 +122,7 @@ export const TableLayersProvider = () => {
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
         const pl1Singular = placeLevel1?.[`name_singular_${language}`]
-        const pl1Plural = placeLevel1?.[`name_plural_${language}`]
         const pl2Singular = placeLevel2?.[`name_singular_${language}`]
-        const pl2Plural = placeLevel2?.[`name_plural_${language}`]
-        // tables: places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
-        // 1.1 places1: is always needed
-        const places1VectorLayersCount = await db.query(
-          `
-          SELECT COUNT(*) 
-          FROM vector_layers 
-          WHERE 
-            project_id = $1
-            AND type = 'own'
-            AND own_table = 'places'
-            AND own_table_level = 1
-        `,
-          [projectId],
-        )
-        if (places1VectorLayersCount?.rows?.[0]?.count === 0) {
-          await createVectorLayer({
-            projectId,
-            type: 'own',
-            ownTable: 'places',
-            ownTableLevel: 1,
-            label: pl1Plural ?? placesLabel,
-          })
-        }
-
-        // 2.1 actions1: always needed
-        const actions1VectorLayersCount = await db.query(
-          `
-          SELECT COUNT(*) 
-          FROM vector_layers 
-          WHERE 
-            project_id = $1
-            AND type = 'own'
-            AND own_table = 'actions'
-            AND own_table_level = 1
-        `,
-          [projectId],
-        )
-        if (actions1VectorLayersCount?.rows?.[0]?.count === 0) {
-          await createVectorLayer({
-            projectId,
-            type: 'own',
-            ownTable: 'actions',
-            ownTableLevel: 1,
-            label: pl1Singular
-              ? actionsByPlaceLabel(pl1Singular)
-              : actionsLabel,
-          })
-        }
-
-        // 3.1 checks1: always needed
-        const checks1VectorLayersCount = await db.query(
-          `
-          SELECT COUNT(*) 
-          FROM vector_layers 
-          WHERE 
-            project_id = $1
-            AND type = 'own'
-            AND own_table = 'checks'
-            AND own_table_level = 1
-        `,
-          [projectId],
-        )
-        if (checks1VectorLayersCount?.rows?.[0]?.count === 0) {
-          await createVectorLayer({
-            projectId,
-            type: 'own',
-            ownTable: 'checks',
-            ownTableLevel: 1,
-            label: pl1Singular
-              ? checksByPlaceLabel(pl1Singular)
-              : checksLabel,
-          })
-        }
-
-        // 4.1 observations_assigned1 and observations_assigned_lines1: needed if observations exist and placeLevels1 has observations
         if (placeLevel1?.observations && observationCount) {
           const observationsVectorLayersCount = await db.query(
             `
@@ -256,86 +223,7 @@ export const TableLayersProvider = () => {
           }
         }
 
-        // 7.1 places2 needed if placeLevels2 exists
-        if (placeLevel2) {
-          const places2VectorLayersCount = await db.query(
-            `
-          SELECT COUNT(*) 
-          FROM vector_layers 
-          WHERE 
-            project_id = $1
-            AND type = 'own'
-            AND own_table = 'places'
-            AND own_table_level = 2
-        `,
-            [projectId],
-          )
-          if (places2VectorLayersCount?.rows?.[0]?.count === 0) {
-            await createVectorLayer({
-              projectId,
-              type: 'own',
-              ownTable: 'places',
-              ownTableLevel: 2,
-              label: pl2Plural ?? placesLabel,
-            })
-          }
-        }
-
-        // 8.1 actions2 needed if placeLevels2.actions exists
-        if (placeLevel2?.actions) {
-          const actions2VectorLayersCount = await db.query(
-            `
-          SELECT COUNT(*) 
-          FROM vector_layers 
-          WHERE 
-            project_id = $1
-            AND type = 'own'
-            AND own_table = 'actions'
-            AND own_table_level = 2
-        `,
-            [projectId],
-          )
-          if (actions2VectorLayersCount?.rows?.[0]?.count === 0) {
-            await createVectorLayer({
-              projectId,
-              type: 'own',
-              ownTable: 'actions',
-              ownTableLevel: 2,
-              label: pl2Singular
-                ? actionsByPlaceLabel(pl2Singular)
-                : actionsLabel,
-            })
-          }
-        }
-
-        // 9.1 checks2 needed if placeLevels2.checks exists
-        if (placeLevel2?.checks) {
-          const checks2VectorLayersCount = await db.query(
-            `
-          SELECT COUNT(*) 
-          FROM vector_layers 
-          WHERE 
-            project_id = $1
-            AND type = 'own'
-            AND own_table = 'checks'
-            AND own_table_level = 2
-        `,
-            [projectId],
-          )
-          if (checks2VectorLayersCount?.rows?.[0]?.count === 0) {
-            await createVectorLayer({
-              projectId,
-              type: 'own',
-              ownTable: 'checks',
-              ownTableLevel: 2,
-              label: pl2Singular
-                ? checksByPlaceLabel(pl2Singular)
-                : checksLabel,
-            })
-          }
-        }
-
-        // 10.1 observations_assigned2 and observations_assigned_lines2 needed if observations exist and placeLevels2 has observations
+        // 7.1 observations_assigned2 and observations_assigned_lines2 needed if observations exist and placeLevels2 has observations
         if (placeLevel2?.observations && observationCount) {
           const observationsAssigned2VectorLayersCount = await db.query(
             `
@@ -391,7 +279,7 @@ export const TableLayersProvider = () => {
         await updateTableVectorLayerLabels({ project_id: projectId })
       }
     }
-    run()
+    runOnce()
     // use projects.length as dependency to run this effect only when projects change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -401,6 +289,7 @@ export const TableLayersProvider = () => {
     initialSyncing,
     sqlInitializing,
     firstRender,
+    pendingVLProjectIds.size,
   ])
 
   return null

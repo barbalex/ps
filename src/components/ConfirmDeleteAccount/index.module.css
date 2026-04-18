@@ -1,0 +1,18 @@
+.surface {
+  max-width: 480px !important;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.warning {
+  margin: 0;
+}
+
+.projectList {
+  margin: 0;
+  padding-inline-start: 1.5rem;
+}

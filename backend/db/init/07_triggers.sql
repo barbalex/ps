@@ -1352,3 +1352,74 @@ CREATE TRIGGER sync_auth_accounts_id_columns_trigger
 BEFORE INSERT OR UPDATE ON auth_accounts
 FOR EACH ROW
 EXECUTE FUNCTION sync_auth_accounts_id_columns();
+
+-- On project INSERT, create the three always-needed own vector layers
+-- (places level 1, actions level 1, checks level 1).
+-- The vector_layers_insert_trigger will then automatically create
+-- vector_layer_displays and layer_presentations for each.
+CREATE OR REPLACE FUNCTION projects_create_vector_layers_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NEW;
+  END IF;
+
+  INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
+  VALUES
+    (NEW.project_id, 'own', 'places',  1, 'places (1)'),
+    (NEW.project_id, 'own', 'actions', 1, 'actions (1)'),
+    (NEW.project_id, 'own', 'checks',  1, 'checks (1)')
+  ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER projects_create_vector_layers_trigger
+AFTER INSERT ON projects
+FOR EACH ROW
+EXECUTE PROCEDURE projects_create_vector_layers_trigger();
+
+-- On place_levels INSERT or UPDATE of level/actions/checks, create own vector
+-- layers for level 2 (places always; actions if actions=true; checks if checks=true).
+CREATE OR REPLACE FUNCTION place_levels_create_vector_layers_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.level != 2 THEN
+    RETURN NEW;
+  END IF;
+
+  INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
+  VALUES (NEW.project_id, 'own', 'places', 2, 'places (2)')
+  ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+
+  IF NEW.actions THEN
+    INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
+    VALUES (NEW.project_id, 'own', 'actions', 2, 'actions (2)')
+    ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+  END IF;
+
+  IF NEW.checks THEN
+    INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
+    VALUES (NEW.project_id, 'own', 'checks', 2, 'checks (2)')
+    ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER place_levels_create_vector_layers_trigger
+AFTER INSERT OR UPDATE OF level, actions, checks ON place_levels
+FOR EACH ROW
+EXECUTE PROCEDURE place_levels_create_vector_layers_trigger();

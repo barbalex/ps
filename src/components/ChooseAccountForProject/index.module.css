@@ -1,0 +1,14 @@
+.surface {
+  max-width: fit-content !important;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+}
+
+.accountButton {
+  justify-content: flex-start;
+}

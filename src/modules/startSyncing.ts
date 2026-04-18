@@ -45,6 +45,7 @@ export const startSyncing = async (userId: string) => {
               'user_id',
               'name',
               'email',
+              'image',
               'email_verified',
               'sys_period',
               'created_at',

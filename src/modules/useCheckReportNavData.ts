@@ -28,7 +28,8 @@ export const useCheckReportNavData = ({
   checkReportId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId] ?? false
   const { formatMessage } = useIntl()
 
   const sql = `

@@ -45,7 +45,8 @@ const { Button } = fluentUiReactComponents
 export const ProjectWithFiles = ({ from }: { from: string }) => {
   const { projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId] ?? false
   const [projectUsersFilter] = useAtom(projectUsersFilterAtom)
   const [projectReportsFilter] = useAtom(projectReportsFilterAtom)
   const [unitsFilter] = useAtom(unitsFilterAtom)

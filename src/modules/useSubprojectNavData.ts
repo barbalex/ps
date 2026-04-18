@@ -56,7 +56,8 @@ type NavData = {
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
-  const [designing] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId] ?? false
   const [placesFilter] = useAtom(places1FilterAtom)
   const [language] = useAtom(languageAtom)
 

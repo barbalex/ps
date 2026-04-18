@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users(
   id uuid DEFAULT NULL,
   name text DEFAULT NULL,
   email text UNIQUE DEFAULT NULL,
+  image text DEFAULT NULL,
   email_verified boolean DEFAULT FALSE,
   two_factor_enabled boolean DEFAULT FALSE,
   label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), user_id::text)) STORED,

@@ -27,6 +27,7 @@ import { ProjectQcsRunNode } from '../ProjectQcsRun.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
+import { Editing } from './Editing.tsx'
 
 const parentArray = ['data', 'projects']
 
@@ -37,7 +38,6 @@ export const ProjectNode = ({ nav, level = 2 }) => {
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
-
 
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
@@ -99,6 +99,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
         childrenCount={10}
         to={ownUrl}
         onClickButton={onClickButton}
+        sibling={<Editing projectId={nav.id} />}
       />
       {isOpen && (
         <>
@@ -123,7 +124,9 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {showDesigningNodes && (
             <ProjectReportDesignsNode projectId={nav.id} level={3} />
           )}
-          {showProjectReports && showReportsNav && <ProjectReportsNode projectId={nav.id} />}
+          {showProjectReports && showReportsNav && (
+            <ProjectReportsNode projectId={nav.id} />
+          )}
           {showWmsNodes && <WmsServicesNode projectId={nav.id} />}
           {showWmsNodes && <WmsLayersNode projectId={nav.id} />}
           {showVectorNodes && <WfsServicesNode projectId={nav.id} />}

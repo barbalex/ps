@@ -10,6 +10,8 @@ import { EmailVerificationBanner } from '../EmailVerificationBanner.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { ObservationAssignChooser } from '../ObservationAssignChooser/index.tsx'
+import { ChooseAccountForProject } from '../ChooseAccountForProject/index.tsx'
+import { ConfirmDeleteAccount } from '../ConfirmDeleteAccount/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
 import { ApiDetector } from '../ApiDetector.tsx'
 import { AppAdminDetector } from '../AppAdminDetector.tsx'
@@ -44,6 +46,8 @@ export const LayoutProtected = () => {
       <TableLayersProvider />
       <OwnVectorLayerPropertiesProvider />
       <ObservationAssignChooser />
+      <ChooseAccountForProject />
+      <ConfirmDeleteAccount />
       <IsDesktopViewSetter />
       <ApiDetector />
       <AppAdminDetector />

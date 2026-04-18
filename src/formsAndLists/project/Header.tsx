@@ -4,10 +4,11 @@ import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
-import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
+import { DesigningButton } from './DesigningButton.tsx'
 import { addOperationAtom } from '../../store.ts'
+import { useAddProject } from '../../modules/useAddProject.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -16,7 +17,6 @@ interface Props {
   label?: string
 }
 
-// TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
 export const Header = ({ autoFocusRef, from, label }: Props) => {
   const { formatMessage } = useIntl()
@@ -40,17 +40,13 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
     projectIdRef.current = projectId
   }, [projectId])
 
-  const addRow = async () => {
-    const project_id = await createProject()
-
-    // TODO: add place_levels?
-    // now navigate to the new project
+  const addRow = useAddProject((project_id) => {
     navigate({
       to: isForm ? `../../${project_id}/project` : `../${project_id}/project`,
       params: { projectId: project_id },
     })
     autoFocusRef?.current?.focus()
-  }
+  })
 
   const deleteRow = async () => {
     try {
@@ -126,13 +122,16 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       toPreviousDisabled={rowCount <= 1}
       tableName="project"
       siblings={
-        <HistoryToggleButton
-          historiesPath={`${basePath}/histories`}
-          formPath={`${basePath}/project`}
-          historyTable="projects_history"
-          rowIdField="project_id"
-          rowId={projectId}
-        />
+        <>
+          <DesigningButton from={from} />
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/project`}
+            historyTable="projects_history"
+            rowIdField="project_id"
+            rowId={projectId}
+          />
+        </>
       }
     />
   )
