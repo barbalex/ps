@@ -43,8 +43,6 @@ export const Account = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { formatMessage } = useIntl()
 
-  console.log('Account render', { userId, accountId })
-
   const db = usePGlite()
   const res = useLiveQuery(
     `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
