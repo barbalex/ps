@@ -20,19 +20,22 @@ const getPresetData = async ({ projectId = null, table }) => {
   return data
 }
 
-export const createProject = async () => {
+export const createProject = async (account_id?: string) => {
   const db = store.get(pgliteDbAtom)
   const userId = store.get(userIdAtom)
 
-  // TODO: we need to decide what account to choose if there are multiple
-  const accountRes = await db.query(
-    `SELECT account_id FROM accounts WHERE user_id = $1 LIMIT 1`,
-    [userId],
-  )
-  const account_id = accountRes?.rows?.[0]?.account_id
-  if (!account_id) {
+  let resolvedAccountId = account_id
+  if (!resolvedAccountId) {
+    const accountRes = await db.query(
+      `SELECT account_id FROM accounts WHERE user_id = $1 LIMIT 1`,
+      [userId],
+    )
+    resolvedAccountId = accountRes?.rows?.[0]?.account_id
+  }
+  if (!resolvedAccountId) {
     throw new Error('NO_ACCOUNT')
   }
+  const account_id_final = resolvedAccountId
 
   // find fields with preset values on the data column
   const presetData = await getPresetData({ table: 'projects' })
@@ -42,7 +45,7 @@ export const createProject = async () => {
   // depending on type, names should be Art/Arten (species) or Lebensraum/Lebensräume (biotope) (in each language)
   const data = {
     project_id,
-    account_id,
+    account_id: account_id_final,
     type: 'species',
     ...projectTypeNames['species'],
     values_on_multiple_levels: 'first',

@@ -1,14 +1,14 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
-import { createProject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { DesigningButton } from './DesigningButton.tsx'
-import { addOperationAtom, userIdAtom, addNotificationAtom } from '../../store.ts'
+import { addOperationAtom } from '../../store.ts'
+import { useAddProject } from '../../modules/useAddProject.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -27,8 +27,6 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const basePath = `/data/projects/${projectId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
-  const userId = useAtomValue(userIdAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
 
   const countRes = useLiveQuery(`SELECT COUNT(*) as count FROM projects`)
   const rowCount = countRes?.rows?.[0]?.count ?? 2
@@ -42,37 +40,13 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
     projectIdRef.current = projectId
   }, [projectId])
 
-  const addRow = async () => {
-    const accountRes = await db.query(
-      `SELECT account_id FROM accounts WHERE user_id = $1 LIMIT 1`,
-      [userId],
-    )
-    if (!accountRes?.rows?.[0]?.account_id) {
-      addNotification({
-        title: formatMessage({
-          id: 'noAccountTitle',
-          defaultMessage: 'Kein Konto vorhanden',
-        }),
-        body: formatMessage({
-          id: 'noAccountBody',
-          defaultMessage:
-            'Um Projekte zu erstellen, bitte zuerst ein Konto anlegen.',
-        }),
-        intent: 'warning',
-      })
-      navigate({ to: `/data/users/${userId}/accounts/` })
-      return
-    }
-    const project_id = await createProject()
-
-    // TODO: add place_levels?
-    // now navigate to the new project
+  const addRow = useAddProject((project_id) => {
     navigate({
       to: isForm ? `../../${project_id}/project` : `../${project_id}/project`,
       params: { projectId: project_id },
     })
     autoFocusRef?.current?.focus()
-  }
+  })
 
   const deleteRow = async () => {
     try {

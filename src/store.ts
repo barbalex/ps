@@ -276,6 +276,13 @@ export const placesToAssignObservationToAtom = atomWithStorage(
   'placesToAssignObservationToAtom',
   null,
 )
+// When user has multiple accounts and creates a project, this atom holds the accounts to choose from
+// and the callback to invoke once an account is selected. Uses plain atom (not atomWithStorage)
+// because functions cannot be serialized.
+export const chooseAccountForProjectAtom = atom<{
+  accounts: { account_id: string; label: string | null }[]
+  onAccountSelected: (account_id: string) => void
+} | null>(null)
 // The order of fields in the observation form. User can change it by drag and drop
 export const observationFieldsSortedAtom = atomWithStorage(
   'observationFieldsSortedAtom',
