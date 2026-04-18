@@ -82,6 +82,29 @@ export const createProject = async (account_id?: string) => {
     draft: data,
   })
 
+  // Mirror what the backend trigger projects_insert_owner_trigger does:
+  // insert the account's owner as 'owner' in project_users so the user
+  // immediately has write access locally. We do NOT queue a sync operation
+  // because the backend trigger handles the project_users insert automatically
+  // on INSERT into projects; and the backend rejects direct inserts with
+  // role='owner' (enforced by enforce_project_users_write).
+  const projectUserData = {
+    project_user_id: uuidv7(),
+    project_id,
+    user_id: userId,
+    role: 'owner',
+  }
+  await db.query(
+    `insert into project_users (project_user_id, project_id, user_id, role) values ($1, $2, $3, $4)
+     on conflict (project_id, user_id) do update set role = 'owner'`,
+    [projectUserData.project_user_id, project_id, userId, 'owner'],
+  )
+  // Note: We intentionally do NOT queue an addOperationAtom for project_users here.
+  // The backend fires projects_insert_owner_trigger AFTER INSERT which creates the
+  // project_users row automatically. Queuing it would cause a 42501 error because
+  // the backend rejects direct inserts with role='owner', which would then revert
+  // our local project_users row and break subsequent write-permission checks.
+
   return project_id
 }
 

@@ -755,6 +755,7 @@ export const startSyncing = async (userId: string) => {
             columns: [
               'field_id',
               'project_id',
+              'account_id',
               'table_name',
               'level',
               'field_type_id',
@@ -768,7 +769,7 @@ export const startSyncing = async (userId: string) => {
               'updated_at',
               'updated_by',
             ],
-            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1) OR account_id IN (SELECT account_id FROM accounts WHERE user_id = $1)`,
             params: { '1': userId },
           },
         },

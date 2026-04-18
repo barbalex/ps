@@ -81,6 +81,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'pricing',
+    label_de: 'Preise',
+    label_en: 'Pricing',
+    label_fr: 'Tarification',
+    label_it: 'Prezzi',
+    isTechnical: false,
+  },
+  {
     id: 'technologies',
     label_de: 'Verwendete Technologien',
     label_en: 'Used Technologies',

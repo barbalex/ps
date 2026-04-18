@@ -1326,6 +1326,7 @@ COMMENT ON TABLE widgets_for_fields IS 'Mapping of field types to widget types. 
 CREATE TABLE IF NOT EXISTS fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   level integer DEFAULT 1,
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1350,6 +1351,7 @@ CREATE TABLE IF NOT EXISTS fields(
 );
 
 CREATE INDEX IF NOT EXISTS fields_project_id_idx ON fields USING btree(project_id);
+CREATE INDEX IF NOT EXISTS fields_account_id_idx ON fields USING btree(account_id);
 CREATE INDEX IF NOT EXISTS fields_table_name_idx ON fields USING btree(table_name);
 CREATE INDEX IF NOT EXISTS fields_level_idx ON fields USING btree(level);
 CREATE INDEX IF NOT EXISTS fields_field_type_id_idx ON fields USING btree(field_type_id);
