@@ -5,7 +5,7 @@ ARG JOBMON_SHA256="1dcd190107dded06a53703c2034f8e79d5f9d20e6338edfb4593a8e9a01c2
 ARG PARTMAN_VERSION="v5.4.3"
 ARG PARTMAN_SHA256="c52e3b8cf80d306468f48fbdb1905e4c2574bf8362240af57aebbbf9e18c6fe2"
 
-FROM postgis/postgis:18-3.6 AS builder
+FROM --platform=linux/amd64 postgis/postgis:18-3.6 AS builder
 
 ARG TEMPORAL_TABLES_VERSION
 ARG JOBMON_VERSION
@@ -42,7 +42,7 @@ RUN wget -q -O pg_partman.tar.gz "https://github.com/pgpartman/pg_partman/archiv
   && cd / \
   && rm -rf pg_partman.tar.gz "pg_partman-${PARTMAN_VERSION#v}"
 
-FROM postgis/postgis:18-3.6
+FROM --platform=linux/amd64 postgis/postgis:18-3.6
 
 # ensure pgxnclient is available in the final build
 RUN apt-get -qq update \
