@@ -1003,5 +1003,13 @@
   "navigationDocs": "Documentazione",
   "navigationDocsGoBack": "Indietro",
   "homeMoreInfoTitle": "Ulteriori informazioni",
-  "homeMoreInfoText": "...nella {link}."
+  "homeMoreInfoText": "...nella {link}.",
+  "cancel": "Annulla",
+  "chooseAccountForProject": "Scegli account per il nuovo progetto",
+  "noAccountTitle": "Nessun account trovato",
+  "noAccountBody": "Per creare progetti, è necessario prima creare un account.",
+  "confirmDeleteAccountTitle": "Eliminare davvero l'account?",
+  "confirmDeleteAccountWithProjects": "{count, plural, one {L'eliminazione di questo account eliminerà definitivamente il seguente progetto} other {L'eliminazione di questo account eliminerà definitivamente i seguenti {count} progetti}} e tutti i dati correlati:",
+  "confirmDeleteAccountNoProjects": "Questo account non ha progetti. Verrà eliminato definitivamente.",
+  "confirmDeleteAccountConfirm": "Elimina account"
 }
