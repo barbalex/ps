@@ -585,7 +585,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER projects_label_trigger
-AFTER INSERT OR UPDATE OF name, data ON projects
+AFTER UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
 
