@@ -156,7 +156,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       body: formatMessage({
         id: 'fOO5pP',
         defaultMessage:
-          'Um auf eine Kontrolle zu zoomen, erstellen Sie zuerst die Geometrie',
+          'Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie',
       }),
       intent: 'error',
     })

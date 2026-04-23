@@ -167,7 +167,7 @@ export const TwoFactorDialog = ({
             intl.formatMessage({
               id: 'twoFactorEnabledTotpSuccess',
               defaultMessage:
-                '2FA mit Authenticator-App ist aktiviert. Scannen Sie den QR-Code und verwenden Sie danach App-Codes beim Login.',
+                '2FA mit Authenticator-App ist aktiviert. Scanne den QR-Code und verwende danach App-Codes beim Login.',
             }),
           )
           return
@@ -231,12 +231,12 @@ export const TwoFactorDialog = ({
                 {twoFactorEnabled ? (
                   <FormattedMessage
                     id="twoFactorDisableHelp"
-                    defaultMessage="2FA ist derzeit aktiv. Sie können es hier deaktivieren."
+                    defaultMessage="2FA ist derzeit aktiv. Du kannst es hier deaktivieren."
                   />
                 ) : (
                   <FormattedMessage
                     id="twoFactorEnableHelp"
-                    defaultMessage="2FA ist derzeit deaktiviert. Aktivieren Sie es für zusätzliche Sicherheit."
+                    defaultMessage="2FA ist derzeit deaktiviert. Du kannst es hier aktivieren."
                   />
                 )}
               </p>
@@ -287,7 +287,7 @@ export const TwoFactorDialog = ({
                     {intl.formatMessage({
                       id: 'twoFactorTotpSetupHelp',
                       defaultMessage:
-                        'Scannen Sie den QR-Code mit Ihrer Authenticator-App (z. B. Aegis, Google Authenticator, 1Password).',
+                        'Scanne den QR-Code mit deiner Authenticator-App (z. B. Aegis, Google Authenticator, 1Password).',
                     })}
                   </p>
                   <img
@@ -315,7 +315,7 @@ export const TwoFactorDialog = ({
                     {intl.formatMessage({
                       id: 'twoFactorBackupCodesHelp',
                       defaultMessage:
-                        'Speichern Sie diese Backup-Codes sicher. Jeder Code kann nur einmal verwendet werden.',
+                        'Speichere diese Backup-Codes sicher. Jeder Code kann nur einmal verwendet werden.',
                     })}
                   </p>
                   <div className={styles.backupCodesList}>
@@ -335,7 +335,8 @@ export const TwoFactorDialog = ({
                     <p className={styles.help}>
                       {intl.formatMessage({
                         id: 'twoFactorBackupCodesCopied',
-                        defaultMessage: 'Backup-Codes wurden in die Zwischenablage kopiert.',
+                        defaultMessage:
+                          'Backup-Codes wurden in die Zwischenablage kopiert.',
                       })}
                     </p>
                   )}
@@ -349,12 +350,22 @@ export const TwoFactorDialog = ({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              <FormattedMessage id="logoutCancelBtn" defaultMessage="Abbrechen" />
+              <FormattedMessage
+                id="logoutCancelBtn"
+                defaultMessage="Abbrechen"
+              />
             </Button>
             {!message && (
-              <Button appearance="primary" onClick={onSubmit} disabled={isSubmitting}>
+              <Button
+                appearance="primary"
+                onClick={onSubmit}
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? (
-                  <FormattedMessage id="authPleaseWait" defaultMessage="Bitte warten..." />
+                  <FormattedMessage
+                    id="authPleaseWait"
+                    defaultMessage="Bitte warten..."
+                  />
                 ) : twoFactorEnabled ? (
                   <FormattedMessage
                     id="twoFactorDisableBtn"

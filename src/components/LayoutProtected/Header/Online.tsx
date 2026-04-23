@@ -27,17 +27,18 @@ export const Online = (_props: Props) => {
   const online = useAtomValue(onlineAtom)
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
-  const title =
-    online ? 'Sie sind online'
-    : operationsQueue.length ?
-      `Sie sind offline. ${operationsQueue.length} Operationen warten auf Synchronisation`
-    : `Sie sind offline`
+  const title = online
+    ? 'Du bist online'
+    : operationsQueue.length
+      ? `Du bist offline. ${operationsQueue.length} Operationen warten auf Synchronisation`
+      : `Du bist offline`
 
   const onClick = () => {
-    pathname === '/data/queued-operations' ?
-      canGoBack ? history.go(-1)
-      : navigate({ to: '/data/' })
-    : navigate({ to: '/data/queued-operations' })
+    pathname === '/data/queued-operations'
+      ? canGoBack
+        ? history.go(-1)
+        : navigate({ to: '/data/' })
+      : navigate({ to: '/data/queued-operations' })
   }
 
   return (
@@ -47,9 +48,11 @@ export const Online = (_props: Props) => {
           size="medium"
           icon={
             <div className={styles.iconContainer}>
-              {online ?
+              {online ? (
                 <NetworkOn className={styles.icon} />
-              : <NetworkOff className={styles.icon} />}
+              ) : (
+                <NetworkOff className={styles.icon} />
+              )}
               <CounterBadge
                 appearance="outline"
                 size="extra-small"

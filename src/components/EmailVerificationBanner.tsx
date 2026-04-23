@@ -183,7 +183,7 @@ export const EmailVerificationBanner = () => {
           {
             id: 'authVerifyEmailBanner',
             defaultMessage:
-              'Bitte E-Mail-Adresse bestätigen. Ohne Bestätigung werden Sie in {timeRemaining} abgemeldet.',
+              'Bitte E-Mail-Adresse bestätigen. Ohne Bestätigung wirst du in {timeRemaining} abgemeldet.',
           },
           { timeRemaining: formatRemaining(remainingMs) },
         )}

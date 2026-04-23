@@ -12,7 +12,7 @@ export const Info = () => {
           {
             id: 'Ac1BdE',
             defaultMessage:
-              'Sie können mehrere <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ysteme hinzufügen.',
+              'Du kannst mehrere <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ysteme hinzufügen.',
           },
           { b: (chunks) => <strong>{chunks}</strong> },
         )}

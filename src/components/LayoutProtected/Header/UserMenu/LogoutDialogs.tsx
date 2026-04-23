@@ -45,7 +45,7 @@ export const LogoutDialogs = ({
                 {
                   id: 'logoutPendingOpsBody',
                   defaultMessage:
-                    'Es sind noch {count} ausstehende lokale Operationen vorhanden. Wenn Sie sich jetzt abmelden, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden. Empfehlung: Warten Sie, bis alle Operationen mit dem Server synchronisiert wurden.',
+                    'Es sind noch {count} ausstehende lokale Operationen vorhanden. Wenn du dich jetzt abmeldest, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden. Empfehlung: Warte, bis alle Operationen mit dem Server synchronisiert wurden.',
                 },
                 { count: pendingOperationsCount },
               )}
@@ -57,7 +57,10 @@ export const LogoutDialogs = ({
                   defaultMessage="Abbrechen"
                 />
               </Button>
-              <Button appearance="primary" onClick={onProceedAfterPendingWarning}>
+              <Button
+                appearance="primary"
+                onClick={onProceedAfterPendingWarning}
+              >
                 <FormattedMessage
                   id="logoutProceedAnywayBtn"
                   defaultMessage="Trotzdem fortfahren"
@@ -81,7 +84,7 @@ export const LogoutDialogs = ({
               {intl.formatMessage({
                 id: 'logoutLocalDataWipeConfirm',
                 defaultMessage:
-                  'Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= Ihre) Daten sieht. Ihre Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei Ihrer nächsten Anmeldung wieder verfügbar.\n\nJetzt abmelden?',
+                  'Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= deine) Daten sieht. Deine Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei deiner nächsten Anmeldung wieder verfügbar.\n\nJetzt abmelden?',
               })}
             </DialogContent>
             <DialogActions>

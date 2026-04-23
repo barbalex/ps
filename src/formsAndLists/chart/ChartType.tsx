@@ -28,7 +28,7 @@ export const ChartType = ({ onChange, validations, row, ref }) => {
         validations.chart_type?.message ??
         formatMessage({
           id: 'bCIlMn',
-          defaultMessage: 'Wählen Sie den anzuzeigenden Diagramm-Typ',
+          defaultMessage: 'Wähle den anzuzeigenden Diagramm-Typ',
         })
       }
       ref={ref}

@@ -283,7 +283,7 @@ export const Configuration = ({ from }) => {
             {formatMessage({
               id: 'rX7ZaC',
               defaultMessage:
-                'Sie können hier Standard-Einheiten wählen. Die Standard-Einheit wird bei neuen Datensätzen voreingestellt, kann aber verändert werden. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren. Sie müssen natürlich auch dafür sorgen, dass die Daten tatsächlich mit diesen Einheiten erfasst werden (Qualitätskontrollen können helfen).',
+                'Du kannst hier Standard-Einheiten wählen. Die Standard-Einheit wird bei neuen Datensätzen voreingestellt, kann aber verändert werden. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren. Du musst natürlich auch dafür sorgen, dass die Daten tatsächlich mit diesen Einheiten erfasst werden (Qualitätskontrollen können helfen).',
             })}
           </SectionDescription>
           <RadioGroupField
@@ -443,7 +443,7 @@ export const Configuration = ({ from }) => {
             {formatMessage({
               id: 'qS1VxO',
               defaultMessage:
-                'Sie können die folgenden Fähigkeiten nach Ihren Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert.',
+                'Du kannst die folgenden Fähigkeiten nach deinen Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert.',
             })}
           </SectionDescription>
           <SwitchField

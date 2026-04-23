@@ -156,7 +156,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       body: formatMessage({
         id: 'bCXBYC',
         defaultMessage:
-          'Um auf eine Massnahme zu zoomen, erstellen Sie zuerst die Geometrie',
+          'Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie',
       }),
       intent: 'error',
     })

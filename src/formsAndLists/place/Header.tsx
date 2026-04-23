@@ -193,7 +193,7 @@ export const Header = ({
         {
           id: 'bDCGHI',
           defaultMessage:
-            'Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie',
+            'Um auf {place} zu zoomen, erstelle zuerst die Geometrie',
         },
         { place: nameSingular },
       ),

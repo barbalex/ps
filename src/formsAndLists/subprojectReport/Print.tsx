@@ -59,7 +59,9 @@ export const SubprojectReportPrint = ({ from }) => {
     [subprojectReportId],
   )
   const row: SubprojectReports = res?.rows?.[0] ?? {}
-  const subprojectNameSingular = row?.subproject_name_singular as string | undefined
+  const subprojectNameSingular = row?.subproject_name_singular as
+    | string
+    | undefined
   const jsonbData = jsonbDataFromRow(row)
   const design = row?.design
   const fields = row?.fields ?? []
@@ -132,9 +134,7 @@ export const SubprojectReportPrint = ({ from }) => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
         return (
           <div className={styles.fieldWrapper}>
-            <div className={styles.chartTitle}>
-              {chart.name}
-            </div>
+            <div className={styles.chartTitle}>{chart.name}</div>
             {chart.subjects_single === true ? (
               chart.subjects?.map((subject) => (
                 <SingleChart
@@ -220,7 +220,11 @@ export const SubprojectReportPrint = ({ from }) => {
         {(!design || fields.length === 0) && (
           <div>
             {formatMessage(
-              { id: 'bCIjKl', defaultMessage: 'Kein Berichts-Design gefunden. Sie müssen zuerst ein {subproject}-Bericht-Design erstellen.' },
+              {
+                id: 'bCIjKl',
+                defaultMessage:
+                  'Kein Berichts-Design gefunden. Du musst zuerst ein {subproject}-Bericht-Design erstellen.',
+              },
               { subproject: subprojectNameSingular ?? 'Subprojekt' },
             )}
           </div>

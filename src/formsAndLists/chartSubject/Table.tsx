@@ -170,7 +170,7 @@ export const Table = ({ onChange, row, ref, validations }) => {
         formatMessage({
           id: 'bDdGjH',
           defaultMessage:
-            'W\u00e4hlen Sie die Tabelle, aus der Daten geladen werden',
+            'W\u00e4hle die Tabelle, aus der Daten geladen werden',
         })
       }
     />

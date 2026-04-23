@@ -453,7 +453,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             formatMessage({
               id: 'bDaDgE',
               defaultMessage:
-                'Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben',
+                'Du siehst den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben',
             })
           }
         />

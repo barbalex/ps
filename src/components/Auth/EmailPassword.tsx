@@ -338,7 +338,7 @@ export const EmailPassword = ({
         formatMessage({
           id: 'authPasswordResetSuccess',
           defaultMessage:
-            'Passwort erfolgreich zurückgesetzt. Sie werden in Kürze angemeldet.',
+            'Passwort erfolgreich zurückgesetzt. Du wirst in Kürze angemeldet.',
         }),
       )
       setPasswordResetNewPassword('')
@@ -753,7 +753,7 @@ export const EmailPassword = ({
             {formatMessage({
               id: 'authRegisterSuggestionText',
               defaultMessage:
-                'Für diese E-Mail gibt es noch kein Konto. Möchten Sie sich registrieren?',
+                'Für diese E-Mail gibt es noch kein Konto. Möchtest du dich registrieren?',
             })}
           </p>
           <button
@@ -819,9 +819,7 @@ export const EmailPassword = ({
                   type="button"
                   className={styles.inlineTextLink}
                   onClick={handleResendVerification}
-                  disabled={
-                    isSendingVerification || isLoading || !email.trim()
-                  }
+                  disabled={isSendingVerification || isLoading || !email.trim()}
                 >
                   {isSendingVerification
                     ? formatMessage({
@@ -917,10 +915,14 @@ export const EmailPassword = ({
               className={styles.passwordToggle}
               onClick={() => togglePasswordVisibility('password')}
               aria-label={
-                passwordVisibility.password ? hidePasswordLabel : showPasswordLabel
+                passwordVisibility.password
+                  ? hidePasswordLabel
+                  : showPasswordLabel
               }
               title={
-                passwordVisibility.password ? hidePasswordLabel : showPasswordLabel
+                passwordVisibility.password
+                  ? hidePasswordLabel
+                  : showPasswordLabel
               }
               disabled={isLoading}
             >
@@ -957,9 +959,7 @@ export const EmailPassword = ({
                   className={styles.inlineTextLink}
                   onClick={() => onSwitchTwoFactorMethod('otp')}
                   disabled={
-                    isTwoFactorLoading ||
-                    isLoading ||
-                    twoFactorMethod === 'otp'
+                    isTwoFactorLoading || isLoading || twoFactorMethod === 'otp'
                   }
                 >
                   {formatMessage({
@@ -1023,9 +1023,7 @@ export const EmailPassword = ({
             <div className={styles.passwordFieldWrapper}>
               <input
                 id="confirmPassword"
-                type={
-                  passwordVisibility.confirmPassword ? 'text' : 'password'
-                }
+                type={passwordVisibility.confirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`${styles.formInput} ${styles.passwordInput} ${fieldErrors.confirmPassword ? styles.error : ''}`}

@@ -98,7 +98,7 @@ export const Auth = () => {
             {formatMessage({
               id: 'authPreviewCredentialsHint',
               defaultMessage:
-                'Während die App gebaut wird, können Sie mit einem Test-Benutzer anmelden: E-Mail test@test.ch, Passwort test-test',
+                'Während die App gebaut wird, kannst du mit einem Test-Benutzer anmelden: E-Mail test@test.ch, Passwort test-test',
             })}
           </p>
         </div>
