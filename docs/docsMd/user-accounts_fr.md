@@ -6,18 +6,18 @@ Il existe quatre types de compte:
 
 ## Test
 
-Objectif: Vous pouvez tout essayer.
+Objectif: Tu peux tout essayer.
 
 ## Gratuit
 
-Objectif: Vous pouvez collaborer dans un projet.
+Objectif: Tu peux collaborer dans un projet.
 
 ## Basique
 
-Objectif: Vous pouvez créer et configurer vos propres projets.
+Objectif: Tu peux créer et configurer tes propres projets.
 
 ## Premium
 
 Comme Basique, mais je gagne plus ☺️.
 
-Et vous avez plus de possibilités 💪.
+Et tu as plus de possibilités 💪.

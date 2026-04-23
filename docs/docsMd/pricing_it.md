@@ -21,7 +21,7 @@ Questo mi ripugna.
 
 Un modello equo parte da quanti clienti sottoscriveranno un abbonamento e può quindi stimare con quali prezzi il modello funziona in modo sostenibile.
 
-Solo che è piuttosto difficile da stimare. Perciò definirò degli importi e li rivedrò ogni anno in base alla domanda. La mia intenzione è informare nel modo più trasparente possibile, così che possiate anche voi valutare come stanno andando le cose.
+Solo che è piuttosto difficile da stimare. Perciò definirò degli importi e li rivedrò ogni anno in base alla domanda. La mia intenzione è informare nel modo più trasparente possibile, così che anche tu possa valutare come stanno andando le cose.
 
 Potrei ad esempio immaginare che gli utenti con account vedano una statistica approssimativa: numero di account per tipo.
 
@@ -61,4 +61,4 @@ Probabilmente puoi ridurre molto il tempo necessario per capire e pianificare da
 
 Anche per me questo processo è molto interessante. Invece di applicare tariffe particolarmente alte per una consulenza impegnativa, all'inizio sono quindi disposto a collaborare con tariffe modeste (all'inizio addirittura gratis per gli studi ecologici) e a considerare il resto come formazione, networking e marketing.
 
-Trovo equo offrire questa tariffa gratuitamente all'inizio e aumentarla più tardi: all'inizio, per me, prevalgono marketing e formazione. E soprattutto: conoscete la tariffa in anticipo. Non è un modello in cui vi rendo dipendenti da me e poi aumento i prezzi.
+Trovo equo offrire questa tariffa gratuitamente all'inizio e aumentarla più tardi: all'inizio, per me, prevalgono marketing e formazione. E soprattutto: conosci la tariffa in anticipo. Non è un modello in cui ti rendo dipendente da me e poi aumento i prezzi.

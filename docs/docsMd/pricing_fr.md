@@ -9,9 +9,9 @@ Il existe deux modèles pour payer arten-fördern.app:
 
 ## Choisir un compte et payer à l'avance
 
-Cette méthode est rapide et pratique pour toutes les parties. Et au-delà de votre adresse e-mail, vous avez à peine besoin de transmettre des données personnelles.
+Cette méthode est rapide et pratique pour toutes les parties. Et au-delà de ton adresse e-mail, tu as à peine besoin de transmettre des données personnelles.
 
-Je n'ai pas encore une vue d'ensemble de toutes les données d'un paiement en ligne qui pourraient m'être accessibles. Mais elles ne m'intéressent pas, au sens où: je n'en veux pas. Car je n'ai pas besoin de savoir qui vous êtes: tant que vous payez à l'avance, vous pouvez utiliser arten-fördern.app. Si vous ne payez plus, c'est dommage et je serais très intéressé de savoir ce que je devrais améliorer. Mais je n'ai pas à courir après des factures impayées.
+Je n'ai pas encore une vue d'ensemble de toutes les données d'un paiement en ligne qui pourraient m'être accessibles. Mais elles ne m'intéressent pas, au sens où: je n'en veux pas. Car je n'ai pas besoin de savoir qui tu es: tant que tu paies à l'avance, tu peux utiliser arten-fördern.app. Si tu ne paies plus, c'est dommage et je serais très intéressé de savoir ce que je devrais améliorer. Mais je n'ai pas à courir après des factures impayées.
 
 Le montant de ces frais d'abonnement n'est pas encore fixé.
 
@@ -21,7 +21,7 @@ Cela me rebute.
 
 Un modèle équitable part de l'estimation du nombre de clients qui prendront un abonnement et peut ainsi évaluer avec quels prix le modèle fonctionne de manière durable.
 
-Seulement voilà, c'est assez difficile à estimer. Je vais donc fixer des montants et les réexaminer chaque année en fonction de la demande. Mon intention est d'informer de la manière la plus transparente possible, afin que vous puissiez vous aussi estimer comment les choses évoluent.
+Seulement voilà, c'est assez difficile à estimer. Je vais donc fixer des montants et les réexaminer chaque année en fonction de la demande. Mon intention est d'informer de la manière la plus transparente possible, afin que tu puisses toi aussi estimer comment les choses évoluent.
 
 Je peux par exemple imaginer que les utilisateurs avec compte voient une statistique approximative: nombre de comptes par type.
 
@@ -39,26 +39,26 @@ C'est pourquoi il est aussi possible de conclure un contrat sur mesure avec gabr
 
 Si cela fonctionne, cela devrait devenir la principale source de revenus. Et permettre de garder les prix des abonnements relativement bas. Car la charge de base (infrastructure, maintenance technique, correction des bugs) serait alors couverte par les institutions publiques.
 
-### Configurer selon vos besoins
+### Configurer selon tes besoins
 
 arten-fördern.app est née parce que, d'une part, il n'existe pas de 'one size fits all' pour les projets de protection de la nature. Et d'autre part parce que seules très peu d'institutions publiques ou de bureaux d'écologie peuvent se permettre le développement d'un produit sur mesure comme par exemple https://apflora.ch, https://vermehrung.ch ou https://arteigenschaften.ch.
 
-C'est pourquoi arten-fördern.app est très fortement configurable. C'est la partie techniquement la plus exigeante de l'application. C'est aussi la plus difficile à comprendre et à mettre en oeuvre. Car dès le début, avant même d'avoir travaillé avec l'outil, vous devez savoir comment organiser votre projet de façon optimale et comment utiliser arten-fördern.app pour cela.
+C'est pourquoi arten-fördern.app est très fortement configurable. C'est la partie techniquement la plus exigeante de l'application. C'est aussi la plus difficile à comprendre et à mettre en oeuvre. Car dès le début, avant même d'avoir travaillé avec l'outil, tu dois savoir comment organiser ton projet de façon optimale et comment utiliser arten-fördern.app pour cela.
 
-Vous avez trois variantes pour franchir cet obstacle:
+Tu as trois variantes pour franchir cet obstacle:
 
 #### 1 Je commence simplement et je m'occupe de la configuration quand ce sera nécessaire
 
-Je suis bien sûr heureux si vous prenez un abonnement pour cela. Mais cela me fait mal de penser à quel point cela aurait très probablement pu mieux se passer pour vous. Des changements de configuration a posteriori peuvent être extrêmement lourds et pénibles pour tous les collaborateurs.
+Je suis bien sûr heureux si tu prends un abonnement pour cela. Mais cela me fait mal de penser à quel point cela aurait très probablement pu mieux se passer pour toi. Des changements de configuration a posteriori peuvent être extrêmement lourds et pénibles pour tous les collaborateurs.
 
 #### 2 Je prends beaucoup de temps au début et je configure moi-même
 
-Bonne idée. Si vous planifiez bien votre projet et apprenez à configurer arten-fördern.app de manière optimale, cela se passera bien! Dites-moi s'il vous plaît où je dois mieux documenter pour simplifier le processus, ou ce qui devrait fonctionner autrement dans votre cas.
+Bonne idée. Si tu planifies bien ton projet et apprends à configurer arten-fördern.app de manière optimale, cela se passera bien! Dis-moi s'il te plaît où je dois mieux documenter pour simplifier le processus, ou ce qui devrait fonctionner autrement dans ton cas.
 
 #### 3 Je prends du temps au début et je me fais accompagner
 
-Vous pouvez probablement réduire fortement le temps nécessaire pour vraiment comprendre et planifier arten-fördern.app et votre projet si je peux réfléchir avec vous et vous conseiller. Cela réduit probablement aussi le risque de devoir adapter la configuration plus tard. De tels processus peuvent être très douloureux.
+Tu peux probablement réduire fortement le temps nécessaire pour vraiment comprendre et planifier arten-fördern.app et ton projet si je peux réfléchir avec toi et te conseiller. Cela réduit probablement aussi le risque de devoir adapter la configuration plus tard. De tels processus peuvent être très douloureux.
 
 Ce processus est aussi très intéressant pour moi. Au lieu de facturer des tarifs particulièrement élevés pour ce conseil exigeant, je suis donc prêt au début à collaborer à des tarifs modestes (tout au début, même gratuitement pour les bureaux d'écologie) et à comptabiliser le reste comme formation continue, mise en réseau et marketing.
 
-Je trouve juste de proposer ce tarif gratuitement au début puis de l'augmenter plus tard: au départ, pour moi, le marketing et la formation continue priment. Et surtout: vous connaissez le tarif à l'avance. Ce n'est pas un modèle où je vous rends dépendants de moi puis j'augmente les prix.
+Je trouve juste de proposer ce tarif gratuitement au début puis de l'augmenter plus tard: au départ, pour moi, le marketing et la formation continue priment. Et surtout: tu connais le tarif à l'avance. Ce n'est pas un modèle où je te rends dépendant de moi puis j'augmente les prix.

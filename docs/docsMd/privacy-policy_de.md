@@ -12,13 +12,13 @@ Ich bin Naturwissenschaftler und Software Entwickler, nicht Jurist. Diese Datens
 
 Wir bearbeiten Ihre allgemeinen Personendaten. Wir versuchen dabei, nur das absolute Minimum zu benötigen. Personendaten sind jede Art von Information, die sich auf eine identifizierbare natürliche Person beziehen. Identifizierbar ist sie, wenn sich aus den vorhandenen Informationen Rückschlüsse auf die Identität der Person ziehen lassen.
 
-Beispiel: Name, E-mail, IP-Adresse.
+Beispiel: Name, E-Mail, IP-Adresse.
 
 ### Überlassene Daten
 
 Wenn Sie Ihre Personendaten eingeben und an uns übermitteln, so gelten diese als an uns überlassen. Die Übermittlung der Daten an uns erfolgt grundsätzlich freiwillig, ist aber teilweise zwingend erforderlich, um arten-fördern.ch nutzen zu können.
 
-Beispiel: Sie geben Ihre E-mail an, um ein Konto zu eröffnen.
+Beispiel: Sie geben Ihre E-Mail an, um ein Konto zu eröffnen.
 
 ### Erhobene Daten
 
@@ -111,7 +111,7 @@ Im Falle von offensichtlich unbegründeten oder exzessiven Auskunftsanträgen be
 
 Die Bearbeitung Ihres Gesuchs unterliegt der gesetzlichen Frist von 30 Tagen. Diese Frist dürfen wir aufgrund der Komplexität oder hohen Anzahl von Anfragen um zwei weitere Monate verlängern, soweit dies erforderlich ist. Sie werden über die Fristverlängerung innerhalb eines Monats nach dem Stellen des Auskunftsgesuch informiert. Zugleich werden Ihnen die Gründe für die Verlängerung genannt.
 
-Übrigens: Stand heute kennen wir von Ihnen in aller Regel nur die E-mail Adresse.
+Übrigens: Stand heute kennen wir von Ihnen in aller Regel nur die E-Mail Adresse.
 
 ### Löschung und Berichtigung
 

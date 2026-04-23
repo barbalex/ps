@@ -45,8 +45,8 @@ Des droits supérieurs peuvent être accordés à des niveaux inférieurs, leur 
 
 Les rôles Propriétaire sont définis automatiquement par l'app et ne peuvent pas être modifiés.
 
-Il est important de savoir que lorsque vous définissez des rôles, l'app copie automatiquement ce rôle à tous les niveaux inférieurs. Définir des rôles inférieurs à des niveaux supérieurs après avoir défini des rôles supérieurs à des niveaux inférieurs entraînera l'écrasement des rôles aux niveaux inférieurs. Ainsi, **les rôles doivent être définis de haut en bas (projets → sous-projets → lieux niveau 1 → lieux niveau 2)**.
+Il est important de savoir que lorsque tu définis des rôles, l'app copie automatiquement ce rôle à tous les niveaux inférieurs. Définir des rôles inférieurs à des niveaux supérieurs après avoir défini des rôles supérieurs à des niveaux inférieurs entraînera l'écrasement des rôles aux niveaux inférieurs. Ainsi, **les rôles doivent être définis de haut en bas (projets → sous-projets → lieux niveau 1 → lieux niveau 2)**.
 
-D'autre part, vous ne devez définir des rôles sur les niveaux inférieurs (potentiellement nombreux) que si vous souhaitez explicitement différencier. Sinon, vous pouvez simplement les ignorer.
+D'autre part, tu ne dois définir des rôles sur les niveaux inférieurs (potentiellement nombreux) que si tu souhaites explicitement différencier. Sinon, tu peux simplement les ignorer.
 
-Lors de la création de nouveaux sous-projets et lieux, l'app copie automatiquement les rôles du niveau immédiatement supérieur. Vous n'avez donc à les définir vous-même que s'ils doivent explicitement différer.
+Lors de la création de nouveaux sous-projets et lieux, l'app copie automatiquement les rôles du niveau immédiatement supérieur. Tu n'as donc à les définir toi-même que s'ils doivent explicitement différer.

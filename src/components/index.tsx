@@ -118,7 +118,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="CHlBuE"
-              defaultMessage="arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeiten Sie effizient auf Handy, Tablet oder Computer."
+              defaultMessage="arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeite effizient auf Handy, Tablet oder Computer."
             />
           </div>
           <div className={styles.card}>
@@ -127,7 +127,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="OW3d3V"
-              defaultMessage="Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
+              defaultMessage="Du bist offline? Einfach weiter arbeiten. Wieder online, werden deine Daten synchronisiert."
             />
           </div>
           <div className={styles.card}>
@@ -139,7 +139,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="2hj7nH"
-              defaultMessage="Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
+              defaultMessage="Du kannst arten-fördern.app deinen eigenen Bedürfnissen anpassen. Vermisst du eine Funktion? {link}"
               values={{
                 link: (
                   <Link to="/docs/issues">
@@ -170,7 +170,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="HsHmZy"
-              defaultMessage="Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet. Profitieren Sie von {link}."
+              defaultMessage="Ich helfe dir gerne bei der Erst-Konfiguration, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
               values={{
                 link: (
                   <a
@@ -195,7 +195,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="pTRYGx"
-              defaultMessage="Erfassen Sie neue Mitarbeitende mit ihrer Email. Ergänzen Sie diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
+              defaultMessage="Erfasse neue Mitarbeitende mit ihrer E-Mail. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
             />
           </div>
           <div className={styles.card}>
@@ -225,19 +225,19 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="rEN8QI"
-              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
+              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. Du siehst, wer was wann geändert hat."
             />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
               <FormattedMessage
                 id="6ddsDI"
-                defaultMessage="Ihre Daten gehören Ihnen"
+                defaultMessage="Deine Daten gehören dir"
               />
             </h3>
             <FormattedMessage
               id="9LbkBJ"
-              defaultMessage="Alle Ihre Daten werden auf Ihr Gerät synchronisiert. Sie können jederzeit exportiert werden."
+              defaultMessage="Alle deine Daten werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
             />
           </div>
           <div className={styles.card}>
@@ -259,7 +259,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="yoo7JY"
-              defaultMessage="Der Code ist offen. Sie können das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
+              defaultMessage="Der Code ist offen. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
             />
           </div>
           <div className={styles.card}>
@@ -280,7 +280,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="WrtHNX"
-              defaultMessage="Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und Wünsche {link}."
+              defaultMessage="Du darfst gerne reinschauen, testen und mir deine Eindrücke und Wünsche {link}."
               values={{
                 link: (
                   <Link to="/docs/issues">
@@ -299,7 +299,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="homeMoreInfoText"
-              defaultMessage="...finden Sie in der {link}."
+              defaultMessage="...findest du in der {link}."
               values={{
                 link: (
                   <Link to="/docs">

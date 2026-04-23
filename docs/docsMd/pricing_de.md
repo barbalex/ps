@@ -9,7 +9,7 @@ Es gibt zwei Modelle, arten-fördern.app zu bezahlen:
 
 ## Konto wählen und voraus zahlen
 
-Diese Methode ist für alle Beteiligten schnell und bequem. Und über die E-mail-Adresse hinaus brauchst du kaum Personendaten zu übermitteln.
+Diese Methode ist für alle Beteiligten schnell und bequem. Und über die E-Mail-Adresse hinaus brauchst du kaum Personendaten zu übermitteln.
 
 Ich habe noch nicht die Übersicht darüber, welche Daten bei einer Internet-Zahlung für mich zugänglich werden. Aber sie interessieren mich nicht, im Sinne von: ich will sie nicht. Denn: Ich brauche nicht zu wissen, wer du bist - solange du voraus zahlst, kannst du arten-fördern.app nutzen. Wenn du nicht mehr zahlst ist das schade und ich wäre sehr interessiert zu wissen, was ich besser machen müsste. Aber ich muss keinen ausstehenden Rechnungen nachjagen.
 
