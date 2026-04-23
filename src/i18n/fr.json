@@ -929,7 +929,7 @@
   "twoFactorBackupCodesCopyFailed": "Impossible de copier les codes de secours.",
   "authTwoFactorMethodEmail": "Code e-mail",
   "authTwoFactorMethodApp": "Application d'authentification",
-  "authTwoFactorAppPrompt": "Veuillez saisir le code de votre application d'authentification.",
+  "authTwoFactorAppPrompt": "Saisis le code de ton application d'authentification.",
   "authTwoFactorAppCodePlaceholder": "Saisir le code de l'application d'authentification",
   "authTwoFactorAppVerifyFailed": "Code d'authentification invalide ou expiré.",
   "changePasswordSuccess": "Mot de passe modifié avec succès.",
