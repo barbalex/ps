@@ -630,7 +630,7 @@
   "bCFgHi": "Rapport",
   "bCGhIj": "Aperçu d'impression du rapport",
   "bCHiJk": "Aperçu d'impression du rapport de sous-projet",
-  "bCIjKl": "Aucun modèle de rapport trouvé. Vous devez d'abord créer une Conception du rapport {subproject}.",
+  "bCIjKl": "Aucun modèle de rapport trouvé. Tu dois d'abord créer un modèle de rapport pour {subproject}.",
   "bCJkLm": "Conceptions du rapport",
   "bCKlMn": "Afficher la couche {places} sur la carte",
   "bCLmNo": "Supprimer la couche {places} de la carte",
