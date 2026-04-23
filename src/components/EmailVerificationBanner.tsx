@@ -26,7 +26,7 @@ export const EmailVerificationBanner = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { data: session } = useSession()
-  const [now, setNow] = useState(Date.now())
+  const [now, setNow] = useState<number | null>(null)
   const [isSending, setIsSending] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationOtp, setVerificationOtp] = useState('')
@@ -52,11 +52,16 @@ export const EmailVerificationBanner = () => {
       return
     }
 
+    const initialTimeoutId = window.setTimeout(() => {
+      setNow(Date.now())
+    }, 0)
+
     const id = window.setInterval(() => {
       setNow(Date.now())
     }, 1000)
 
     return () => {
+      window.clearTimeout(initialTimeoutId)
       window.clearInterval(id)
     }
   }, [isUnverified])
@@ -175,6 +180,7 @@ export const EmailVerificationBanner = () => {
   }
 
   if (!isUnverified) return null
+  if (now === null) return null
 
   return (
     <div className={styles.container}>
