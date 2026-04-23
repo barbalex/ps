@@ -2,37 +2,37 @@
 
 Ultimo aggiornamento: 17 aprile 2026
 
-Il trattamento trasparente dei tuoi dati è per noi di grande importanza. La presente informativa sulla privacy spiega quali dati personali raccogliamo, per quali finalità e a chi li trasmettiamo. Rivedreme e aggiorneremo questa informativa qualora fatti rilevanti dovessero cambiare.
+Un trattamento trasparente dei tuoi dati è molto importante per noi. La presente informativa sulla privacy spiega quali dati personali raccogliamo, per quale finalità e a chi li trasmettiamo. Verificheremo e aggiorneremo questa informativa se dovessero cambiare fatti rilevanti.
 
-Sono uno scienziato naturale e sviluppatore di software, non un giurista. Questa informativa è stata adattata da [Privacy Bee](https://www.privacybee.io) e precisata in buona coscienza. Suggerimenti / reclami benvenuti direttamente [a me](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
+Sono uno scienziato naturale e sviluppatore software, non un giurista. Questa informativa sulla privacy è stata ripresa da [Privacy Bee](https://www.privacybee.io) e precisata al meglio delle mie conoscenze e della mia coscienza. Suggerimenti / reclami benvenuti direttamente [a me](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ## 1. Quali tipi di dati raccogliamo
 
 ### Dati personali generali
 
-Trattiamo i tuoi dati personali generali. Cerchiamo di richiedere solo il minimo indispensabile. I dati personali sono qualsiasi informazione riferita a una persona fisica identificabile — identificabile nel senso che la sua identità può essere dedotta dalle informazioni disponibili.
+Trattiamo i tuoi dati personali generali. Cerchiamo di aver bisogno solo del minimo assoluto. I dati personali sono qualsiasi tipo di informazione che si riferisce a una persona fisica identificabile. È identificabile quando dalle informazioni disponibili si possono dedurre conclusioni sulla sua identità.
 
-Esempio: nome, indirizzo e-mail, indirizzo IP.
+Esempio: nome, e-mail, indirizzo IP.
 
-### Dati che ci fornite
+### Dati comunicati
 
-Quando inserite i tuoi dati personali e ce li trasmettete, si considera che ci siano stati ceduti. La trasmissione dei dati è generalmente volontaria, ma in alcuni casi è necessaria per poter utilizzare arten-fördern.app.
+Quando inserisci i tuoi dati personali e ce li trasmetti, questi sono considerati dati comunicati a noi. La trasmissione dei dati è in linea di principio volontaria, ma in parte è indispensabile per poter usare arten-fördern.app.
 
-Esempio: fornite il tuo indirizzo e-mail per creare un account.
+Esempio: indichi la tua e-mail per aprire un account.
 
-### Dati che raccogliamo
+### Dati raccolti
 
-Quando utilizzate i nostri servizi, raccogliamo talvolta dati senza che sia necessaria la tua partecipazione attiva. Si tratta generalmente di dati relativi al tuo dispositivo e al tuo comportamento d'uso. In questo contesto, «raccogliere» significa per lo più: avviene in conseguenza di processi tecnici (ad es. trasmissione dell'indirizzo IP per stabilire la connessione), ma non ci interessa in quanto tale.
+Quando utilizzi i nostri servizi, raccogliamo in parte dati senza che sia necessaria la tua collaborazione attiva. Di norma si tratta di dati sul tuo dispositivo e sul comportamento di utilizzo. In questo contesto raccogliere significa per lo più: succede semplicemente per via dei processi tecnici (ad es. trasmissione dell'IP per stabilire la connessione), ma non ci interessa in quanto tale.
 
-Potremmo in futuro contare le visite su arten-fördern.app per pura curiosità. Al momento è tutto.
+Forse un giorno conteremo il numero di visite su arten-fördern.app per pura curiosità. Per ora è tutto.
 
 ### Trasmissione dei dati
 
-Potremmo trasmettere i tuoi dati personali a società che possono decidere autonomamente come utilizzarli. Ciò avverrebbe di norma per adempiere a obblighi di legge, quando un credito insoluto viene ceduto a una società di recupero crediti, o per individuare attività fraudolente.
+Potremmo trasmettere i tuoi dati personali ad aziende che possono decidere autonomamente come utilizzare i dati. Di solito questo avverrebbe per rispettare obblighi di legge, quando un credito insoluto viene ceduto a una società di recupero crediti o per individuare attività fraudolente.
 
-Esempio: un obbligo di legge ci impone di trasmettere i tuoi dati a un'autorità.
+Esempio: una norma di legge ci obbliga a trasmettere i tuoi dati a un'autorità.
 
-Si spera che ciò non sia mai necessario.
+Speriamo che non sia mai necessario.
 
 ## 2. Quali servizi utilizziamo
 
@@ -40,46 +40,46 @@ Si spera che ciò non sia mai necessario.
 
 https://www.netlify.com
 
-Netlify ospita arten-fördern.app. Offre una serie di funzionalità, tra cui il deployment continuo, l'integrazione Git automatizzata, i certificati SSL, la gestione dei domini e una rete di distribuzione dei contenuti (CDN). Ospitare arten-fördern.app su un proprio server sarebbe più rispettoso della privacy, ma non potremmo garantire la stessa disponibilità. Se hai esigenze particolari (hosting in un determinato paese o presso di tu), contatta [Alex](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
+Netlify ospita arten-fördern.app. Offre una serie di funzioni, tra cui continuous deployment, integrazione Git automatizzata, certificati SSL, gestione dei domini e content delivery network (CDN). Dal punto di vista della protezione dei dati sarebbe più favorevole ospitare arten-fördern.app su un server proprio. Ma così non potremmo garantire esattamente la stessa disponibilità. Se hai esigenze particolari (hosting in un determinato paese o da te), rivolgiti ad [Alex](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ### Backblaze
 
 https://www.backblaze.com
 
-Backblaze funge da assicurazione aggiuntiva — un terzo backup dei tuoi dati (primo: backup Droplet a breve termine su Netlify; secondo: backup notturno dei dati sul nostro server in ufficio). I dati sono cifrati end-to-end — Backblaze non può quindi leggerli.
+Backblaze funge da ulteriore assicurazione, come terzo backup dei tuoi dati (primo: backup droplet a breve termine su Netlify, secondo: backup notturno dei dati sul nostro server in ufficio). I dati sono cifrati end-to-end - Backblaze quindi non può leggerli.
 
 ## 3. Cosa facciamo?
 
-Gabriel Software (Wiesenstrasse 22, 8800 Thalwil) gestisce l'applicazione web arten-fördern.app (di seguito «noi»). Questa applicazione web consente ai professionisti della protezione della natura di gestire progetti volti a promuovere le specie e gli habitat minacciati.
+Gabriel Software (Wiesenstrasse 22, 8800 Thalwil) gestisce la web app arten-fördern.app (di seguito indicata come noi / ci). Su questa web app i professionisti della conservazione della natura possono gestire progetti per promuovere specie e habitat minacciati.
 
 ## 4. Definizioni
 
 ### Cosa sono i dati personali?
 
-I dati personali sono qualsiasi informazione relativa a una persona fisica identificata o identificabile. Comprendono ad esempio il nome, l'indirizzo, la data di nascita, l'indirizzo e-mail o il numero di telefono, nonché l'indirizzo IP. Anche i dati relativi a preferenze personali come hobby o appartenenze associative rientrano nei dati personali.
+I dati personali (termine equivalente a dati personali) sono tutte le informazioni che si riferiscono a una persona fisica determinata o determinabile. Ne fanno parte ad esempio nome, indirizzo, data di nascita, indirizzo e-mail o numero di telefono, nonché l'indirizzo IP. Anche i dati sulle preferenze personali, come hobby o appartenenze, rientrano nei dati personali.
 
 ### Cosa sono le categorie particolari di dati personali?
 
-Le categorie particolari di dati personali (dette anche «dati sensibili») sono:
+Le categorie particolari di dati personali (equivalente del termine dati particolarmente sensibili) sono:
 
-- Dati su opinioni o attività religiose, filosofiche, politiche o sindacali;
-- Dati sulla salute, la sfera privata, l'appartenenza a una razza o un'etnia, la vita sessuale e l'orientamento sessuale;
-- Dati relativi a procedimenti e sanzioni amministrative o penali, nonché dati su misure di assistenza sociale;
-- Dati genetici e biometrici che identificano univocamente una persona.
+- dati su opinioni o attività religiose, filosofiche, politiche o sindacali;
+- dati su salute, sfera intima, appartenenza a una razza o etnia, nonché vita sessuale e orientamento sessuale;
+- dati relativi a procedimenti e sanzioni amministrative o penali, nonché dati su misure di assistenza sociale;
+- dati genetici e biometrici che identificano in modo univoco una persona.
 
-Nella misura in cui ciò sia necessario e tu stessi ci divulghiate tali dati, possiamo trattare dati appartenenti a una categoria particolare. In tal caso, il loro trattamento è soggetto a una riservatezza più rigorosa. Su arten-fördern.app sarebbero al massimo ipotizzabili misure amministrative (in caso di mancato pagamento). Le altre categorie non sono rilevanti.
+Se necessario e se tu stesso ci comunichi questi dati, possiamo trattare dati appartenenti a una categoria particolare di dati personali. In questo caso il loro trattamento è soggetto a una riservatezza più rigorosa. Su arten-fördern.app sarebbero al massimo ipotizzabili misure amministrative (in caso di mancato pagamento). Le altre categorie non sono rilevanti.
 
-### Cosa si intende per trattamento dei dati personali?
+### Cosa significa trattare dati personali?
 
-Il trattamento è qualsiasi operazione avente ad oggetto dati personali, indipendentemente dai mezzi e dalle procedure impiegati — in particolare la raccolta, la registrazione, la conservazione, l'utilizzo, la modifica, la comunicazione, l'archiviazione, la cancellazione o la distruzione di dati personali.
+Trattare (equivalente del termine elaborare) significa qualsiasi operazione su dati personali, indipendentemente dai mezzi e dai procedimenti utilizzati, in particolare acquisizione, memorizzazione, conservazione, utilizzo, modifica, comunicazione, archiviazione, cancellazione o distruzione di dati personali.
 
-### Cosa si intende per comunicazione di dati personali?
+### Cosa significa comunicare dati personali?
 
-Si tratta della trasmissione o della messa a disposizione di dati personali — ad esempio la pubblicazione o la divulgazione a un terzo.
+Significa trasmettere o rendere accessibili dati personali, ad esempio mediante pubblicazione o divulgazione a un terzo.
 
 ## 5. Contatto
 
-Per domande o preoccupazioni riguardanti la protezione dei tuoi dati da parte nostra, puoi contattare il nostro responsabile della protezione dei dati:
+Per domande o richieste riguardo alla protezione dei tuoi dati da parte nostra, puoi rivolgerti al nostro responsabile della protezione dei dati:
 
 Gabriel Software
 Alexander Gabriel
@@ -89,185 +89,187 @@ alex@gabriel-software.ch
 
 ## 6. Sicurezza dei dati
 
-Conserveremo i tuoi dati in modo sicuro e adotteremo tutte le misure appropriate per proteggerli da perdita, accesso, utilizzo improprio o modifiche.
+Conserveremo i tuoi dati in modo sicuro e adotteremo tutte le misure adeguate per proteggere i tuoi dati da perdita, accesso, abuso o modifiche.
 
-I nostri partner contrattuali e collaboratori che hanno accesso ai tuoi dati sono tenuti a rispettare le disposizioni in materia di protezione dei dati. È in linea di principio ipotizzabile (ma al momento non previsto) che, nell'ambito di un trattamento in appalto, le tue richieste vengano inoltrate a società affiliate. Anche in questi casi i tuoi dati saranno trattati in modo riservato.
+I nostri partner contrattuali e collaboratori che hanno accesso ai tuoi dati sono tenuti al rispetto delle disposizioni in materia di protezione dei dati. È in linea di principio pensabile (ma al momento non previsto) che, nell'ambito del trattamento su incarico, le tue richieste vengano inoltrate ad aziende collegate a noi. Anche in questi casi i tuoi dati saranno trattati in modo confidenziale.
 
-All'interno della nostra applicazione web utilizziamo il protocollo SSL (Secure Socket Layer) in combinazione con il livello di crittografia più elevato supportato dal tuo browser.
+All'interno della nostra web app utilizziamo la procedura SSL (Secure Socket Layer) in combinazione con il livello di cifratura più alto supportato dal tuo browser.
 
 ## 7. Diritti degli interessati
 
 ### Diritto di accesso
 
-Potete in qualsiasi momento richiedere informazioni sui dati che abbiamo archiviato su di tu. Vi preghiamo di inviare la tua richiesta di accesso unitamente a una prova d'identità credibile a alex@gabriel-software.ch.
+Puoi richiedere in qualsiasi momento informazioni sui dati che abbiamo memorizzato su di te. Ti chiediamo di inviare la tua richiesta di accesso insieme a una prova d'identità credibile a alex@gabriel-software.ch.
 
-Le informazioni vengono fornite in forma scritta o in altra forma, eventualmente anche per via elettronica. Su tua richiesta possiamo fornirle anche verbalmente, a condizione che proviate la tua identità in altro modo. Se la richiesta di accesso viene presentata per via elettronica, forniremo le informazioni in un formato elettronico comune, salvo diversa indicazione.
+L'accesso viene fornito in forma scritta o in altra forma, eventualmente anche elettronica. Se lo richiedi, possiamo fornirti le informazioni anche oralmente, a condizione che tu dimostri la tua identità in altro modo. Se presenti la richiesta di accesso in forma elettronica, forniamo le informazioni in un formato elettronico comune, salvo tua diversa indicazione.
 
-L'accesso è di regola gratuito. Qualora vengano richieste ulteriori copie, potrà essere addebitato un compenso adeguato.
+Di regola l'accesso è gratuito. Se vengono richieste ulteriori copie, può essere richiesto un compenso adeguato.
 
-Il diritto di ottenere una copia dei dati trattati non deve pregiudicare i diritti e le libertà di altri.
+Il diritto di ottenere una copia dei dati trattati non deve pregiudicare i diritti e le libertà di altre persone.
 
-In caso di richieste di accesso manifestamente infondate o eccessive, ci riserviamo il diritto di rifiutare l'accesso nei limiti di legge o di addebitare un compenso adeguato.
+In caso di richieste di accesso manifestamente infondate o eccessive, ci riserviamo il diritto di rifiutare l'accesso nei limiti di legge o di richiedere un compenso adeguato.
 
-Il trattamento della tua richiesta è soggetto al termine legale di 30 giorni. Questo termine può essere prorogato di ulteriori due mesi per ragioni di complessità o in presenza di un elevato numero di richieste, nella misura in cui ciò sia necessario. Sarete informati della proroga entro un mese dalla presentazione della richiesta, unitamente alle motivazioni della stessa.
+Il trattamento della tua richiesta è soggetto al termine legale di 30 giorni. Possiamo prorogare questo termine di ulteriori due mesi in ragione della complessità o dell'elevato numero di richieste, se necessario. Sarai informato della proroga entro un mese dalla presentazione della richiesta di accesso. Ti verranno anche comunicati i motivi della proroga.
 
-Tra l'altro: allo stato attuale, di tu conosciamo in genere solo l'indirizzo e-mail.
+A proposito: ad oggi, di norma, conosciamo di te solo l'indirizzo e-mail.
 
 ### Cancellazione e rettifica
 
-Avete in qualsiasi momento la possibilità di richiedere la cancellazione, la rettifica o il completamento dei tuoi dati, salvo che obblighi legali di conservazione o una base giuridica per il trattamento vi si oppongano.
+Hai in qualsiasi momento la possibilità di richiedere la cancellazione o rettifica, oppure il completamento, dei tuoi dati, salvo che obblighi legali di conservazione o una base legale di trattamento si oppongano.
 
-Si prega di tenere presente che l'esercizio dei tuoi diritti può entrare in conflitto con accordi contrattuali e avere ripercussioni sull'esecuzione del contratto (ad es. risoluzione anticipata o conseguenze sui costi).
+Tieni presente che l'esercizio dei tuoi diritti può, in determinate circostanze, entrare in conflitto con accordi contrattuali e avere effetti sull'esecuzione del contratto (ad es. risoluzione anticipata o conseguenze economiche).
 
 ### Limitazione del trattamento
 
-Avete inoltre il diritto di richiedere la limitazione del trattamento se contestate l'esattezza di tali dati, il trattamento è illecito, i dati non sono più necessari o hai presentato opposizione al trattamento.
+Hai inoltre il diritto di richiedere una limitazione del trattamento se contesti l'esattezza di questi dati, il trattamento è illecito, i dati non sono più necessari o hai presentato opposizione al trattamento.
 
-Se il trattamento dei dati è limitato, questi possono essere soltanto conservati. Un trattamento ulteriore può avvenire solo con il tuo consenso, per l'accertamento, l'esercizio o la difesa di diritti in giudizio, per tutelare i diritti di un'altra persona o per ragioni di interesse pubblico rilevante. Sarete notificati in caso di revoca della limitazione.
+Se il trattamento dei dati è limitato, questi possono essere solo conservati. Un trattamento ulteriore può avvenire solo con il tuo consenso, per la rivendicazione, l'esercizio o la difesa di diritti legali, per tutelare i diritti di un'altra persona o per motivi di rilevante interesse pubblico. In caso di revoca della limitazione, sarai informato.
 
-### Diritto alla portabilità dei dati
+### Diritto alla consegna e trasmissione dei dati
 
-Avete il diritto di ricevere i tuoi dati in un formato di file comune, o di farli trasmettere a un terzo (se tecnicamente fattibile), qualora trattiamo i tuoi dati in modo automatizzato e qualora:
+Hai il diritto di ricevere i tuoi dati in un formato di file comune o (se tecnicamente fattibile) di farli trasmettere a un terzo, se trattiamo i tuoi dati in modo automatizzato e se:
 
-- abbiate dato il tuo consenso al trattamento di tali dati; oppure
-- abbiate comunicato dati nell'ambito della conclusione o dell'esecuzione di un contratto.
+- hai dato il tuo consenso al trattamento di questi dati; oppure
+- hai comunicato dati in relazione alla conclusione o all'esecuzione di un contratto.
 
 ### Diritto di opposizione
 
-Avete il diritto, per motivi connessi alla tua situazione particolare, di opporvi in qualsiasi momento al trattamento — compresa la profilazione — effettuato sulla base dei nostri legittimi interessi. Tale diritto si applica anche al trattamento a fini di marketing diretto.
+Hai il diritto, per motivi derivanti dalla tua situazione particolare, di opporti in qualsiasi momento al trattamento, incluso il profiling, effettuato sulla base dei nostri interessi legittimi. Questo diritto vale anche per trattamenti a fini di marketing diretto.
 
-### Vie di ricorso
+### Ricorso legale
 
-Se sei interessati dal trattamento di dati personali, hai il diritto di far valere i tuoi diritti in sede giudiziaria o di presentare un reclamo all'autorità di controllo competente. L'autorità di controllo competente in Svizzera è l'Incaricato federale della protezione dei dati e della trasparenza.
+Se sei interessato dal trattamento di dati personali, hai il diritto di far valere i tuoi diritti in sede giudiziaria o di presentare un reclamo all'autorità di controllo competente. L'autorità di controllo competente in Svizzera è l'Incaricato federale della protezione dei dati e della trasparenza.
 
 ## 8. Trattamenti di dati in generale
 
-### 8.1 Quali dati trattiamo su di tu e da chi li riceviamo?
+### 8.1 Quali dati trattiamo da te e da chi riceviamo questi dati?
 
-Trattiamo principalmente i dati personali che ci trasmettete o che raccogliamo nell'ambito dell'esercizio della nostra applicazione web. Altri dati non sono attualmente previsti.
+In primo luogo trattiamo dati personali che tu ci trasmetti o che raccogliamo durante il funzionamento della nostra web app. Altri dati al momento non sono previsti.
 
-In linea di principio potremmo ricevere dati personali su di tu anche da terzi. Potrebbero rientrare nelle seguenti categorie:
+In linea di principio potremmo anche ricevere dati personali su di te da terzi. Potrebbero essere le seguenti categorie:
 
-- Dati anagrafici (nome, indirizzo, data di nascita, ecc.);
-- Dati di contatto (numero di cellulare, indirizzo e-mail, ecc.);
-- Dati finanziari (ad es. coordinate bancarie);
-- Identificatori online (ad es. identificatore di cookie);
+- dati anagrafici personali (nome, indirizzo, data di nascita ecc.);
+- dati di contatto (numero di cellulare, indirizzo e-mail ecc.);
+- dati finanziari (ad es. coordinate del conto);
+- identificatori online (ad es. identificatore cookie);
 
 Questi dati potrebbero provenire dalle seguenti fonti:
 
-- Informazioni da fonti accessibili al pubblico (ad es. media, internet);
-- Informazioni da registri pubblici (ad es. registro di commercio, registro delle esecuzioni, registro fondiario);
-- Informazioni in relazione a procedimenti amministrativi o giudiziari;
-- Informazioni sulle tue funzioni e attività professionali (ad es. reti professionali);
-- Informazioni che vi riguardano nella corrispondenza e nelle riunioni con terzi;
-- Informazioni sulla solvibilità (nella misura in cui intratteniamo rapporti commerciali personali con tu);
-- Informazioni su di tu fornite da persone del tuo entourage affinché possiamo concludere o eseguire contratti con tu;
-- Dati relativi all'utilizzo dell'applicazione web.
+- indicazioni da fonti pubblicamente accessibili (ad es. media, internet);
+- indicazioni da registri pubblici (ad es. registro di commercio, registro esecuzioni, registro fondiario);
+- indicazioni in relazione a procedimenti amministrativi o giudiziari;
+- indicazioni relative alle tue funzioni e attività professionali (ad es. reti professionali);
+- indicazioni su di te nella corrispondenza e nelle riunioni con terzi;
+- informazioni sulla solvibilità (nella misura in cui svolgiamo affari personali con te);
+- indicazioni su di te che persone del tuo ambiente ci forniscono affinché possiamo concludere o eseguire contratti con te;
+- dati in relazione all'utilizzo della web app.
 
 ### 8.2 A quali condizioni trattiamo i tuoi dati?
 
-Trattiamo i tuoi dati in buona fede e per le finalità definite nella presente informativa. Garantiamo un trattamento trasparente e proporzionato.
+Trattiamo i tuoi dati secondo buona fede e per le finalità definite nella presente informativa sulla privacy. Prestiamo attenzione a un trattamento trasparente e proporzionato.
 
-Qualora eccezionalmente non fossimo in grado di rispettare tali principi, il trattamento può comunque essere lecito in presenza di un motivo giustificativo. I motivi giustificativi comprendono in particolare:
+Se eccezionalmente non possiamo rispettare questi principi, il trattamento dei dati può comunque essere lecito perché esiste un motivo giustificativo. Come motivo giustificativo rientrano in particolare:
 
 - il tuo consenso;
 - l'esecuzione di un contratto o misure precontrattuali;
-- l'adempimento di obblighi di legge;
-- i nostri legittimi interessi, nella misura in cui i tuoi non prevalgano.
+- l'adempimento di obblighi legali;
+- i nostri interessi legittimi, purché i tuoi interessi non prevalgano.
 
-In alcuni casi sei tenuti a comunicarci determinati dati personali affinché possiamo instaurare un rapporto commerciale con tu. Senza tali dati non siamo normalmente in grado di eseguire un contratto. L'applicazione web non può generalmente essere utilizzata nemmeno se alcune informazioni necessarie per garantire il traffico dati — come il tuo indirizzo IP — non vengono divulgate.
+In determinate circostanze sei obbligato a comunicarci alcuni dati personali affinché possiamo avviare relazioni commerciali tra noi. Senza tali dati normalmente non siamo in grado di eseguire un contratto. Anche la web app in genere non può essere utilizzata se alcune indicazioni necessarie per garantire il traffico dati, come il tuo indirizzo IP, non vengono comunicate.
 
 ### 8.3 Come puoi revocare un consenso prestato?
 
-Se ci hai prestato il consenso al trattamento dei tuoi dati personali per determinati scopi, trattiamo i tuoi dati nell'ambito di tale consenso, nella misura in cui non disponiamo di un'altra base giuridica. Potete revocare per il futuro un consenso prestato in qualsiasi momento inviando un'e-mail a alex@gabriel-software.ch. I trattamenti di dati già effettuati non sono interessati dalla revoca e conservano la loro validità.
+Se ci hai dato il consenso al trattamento dei tuoi dati personali per finalità specifiche, trattiamo i tuoi dati nell'ambito di questo consenso, nella misura in cui non abbiamo un altro motivo giustificativo o non sia soddisfatta un'altra base legale.
+
+Puoi revocare in qualsiasi momento per il futuro il consenso prestato inviando una e-mail a alex@gabriel-software.ch. I trattamenti dei dati già effettuati non sono interessati dalla revoca e mantengono la loro validità.
 
 ### 8.4 In quali casi trasmettiamo i tuoi dati a terzi?
 
-#### Principio generale
+#### Principio
 
-Potremmo dover ricorrere ai servizi di terzi o di società affiliate e incaricarle del trattamento dei tuoi dati (cosiddetti responsabili del trattamento). Le categorie di destinatari comprendono in particolare:
+In determinate circostanze potremmo dover ricorrere ai servizi di terzi o di aziende collegate e incaricarli del trattamento dei tuoi dati (cosiddetti responsabili del trattamento). Le categorie di destinatari sono in particolare:
 
-- Società di contabilità, fiduciarie e di revisione;
-- Società di consulenza (legale, fiscale, ecc.);
-- Fornitori di servizi informatici (web hosting, servizi cloud, ecc.);
-- Fornitori di servizi di pagamento (solo con il tuo previo consenso);
-- ~~Fornitori di servizi di tracciamento, conversione e pubblicità~~ — sul serio? Non ne abbiamo esplicitamente.
+- società di contabilità, fiduciarie e di revisione;
+- società di consulenza (consulenza legale, fiscale ecc.);
+- fornitori di servizi IT (web hosting, servizi cloud ecc.);
+- fornitori di servizi di pagamento (esclusivamente previo tuo consenso);
+- ~~fornitori di servizi di tracking, conversione e pubblicità~~ Ma stiamo scherzando? Da noi questo esplicitamente non esiste.
 
-Ci assicuriamo che la trasmissione dei dati avvenga solo con il tuo esplicito consenso, nella misura in cui non si tratti di un trattamento in appalto. Ci assicuriamo inoltre che tali terzi e le nostre società affiliate rispettino i requisiti della protezione dei dati e trattino i tuoi dati personali in modo riservato. In alcuni casi potremmo essere tenuti a comunicare i tuoi dati personali ad autorità.
+Ci assicuriamo che una trasmissione dei dati avvenga solo con il tuo consenso esplicito, nella misura in cui non si tratti di un trattamento di dati su incarico. Inoltre ci assicuriamo che questi terzi e le nostre aziende collegate rispettino i requisiti di protezione dei dati e trattino i tuoi dati personali in modo confidenziale. In determinate circostanze siamo anche obbligati a comunicare i tuoi dati personali ad autorità.
 
-#### Trasmissione a partner e società cooperanti
+#### Trasmissione a partner e aziende di cooperazione
 
-Non c'è pubblicità su arten-fördern.app. Questa sezione non è quindi rilevante.
+Su arten-fördern.app non c'è pubblicità. Questa sezione quindi non è rilevante.
 
 #### Trasmissione all'estero
 
-Nell'ambito di un trattamento in appalto, i tuoi dati personali potrebbero essere trasferiti a società all'estero. Tali società sono soggette agli stessi obblighi di protezione dei dati cui siamo soggetti noi. Il trasferimento può avvenire a livello mondiale.
+In determinate circostanze, nell'ambito del trattamento su incarico, può verificarsi una trasmissione dei tuoi dati personali ad aziende all'estero. Queste aziende sono obbligate alla protezione dei dati nella stessa misura in cui lo siamo noi. La trasmissione può avvenire in tutto il mondo.
 
-Se il livello di protezione dei dati non è equivalente a quello della Svizzera, effettuiamo una valutazione preventiva del rischio e garantiamo contrattualmente lo stesso livello di protezione della Svizzera (ad es. tramite le nuove clausole contrattuali tipo della Commissione europea o altre misure previste dalla legge). Qualora la nostra valutazione del rischio risulti negativa, adotteremo ulteriori misure tecniche per proteggere i tuoi dati. Potete consultare le clausole contrattuali tipo della Commissione europea al seguente link.
+Se il livello di protezione dei dati non corrisponde a quello della Svizzera, effettuiamo una valutazione preventiva del rischio e garantiamo contrattualmente che sia assicurata la stessa protezione della Svizzera (ad es. mediante le nuove clausole contrattuali standard della Commissione UE o altre misure previste dalla legge). Se la nostra valutazione del rischio dovesse essere negativa, adottiamo ulteriori misure tecniche per proteggere i tuoi dati. Puoi consultare le clausole contrattuali standard della Commissione UE al seguente link.
 
 ### 8.5 Per quanto tempo conserviamo i tuoi dati?
 
-Conserviamo i dati personali solo per il tempo necessario al raggiungimento delle singole finalità per cui i dati sono stati raccolti.
+Conserviamo i dati personali solo per il tempo necessario a soddisfare le singole finalità per cui i dati sono stati raccolti.
 
-I dati contrattuali vengono conservati più a lungo, in quanto siamo tenuti a farlo per legge. In particolare, dobbiamo conservare le comunicazioni commerciali, i contratti conclusi e i giustificativi di prenotazione per un massimo di 10 anni. Nella misura in cui non abbiamo più bisogno di tali dati per l'erogazione dei servizi, i dati saranno limitati a un ulteriore trattamento e li utilizzeremo solo a fini contabili e fiscali.
+Conserviamo più a lungo i dati contrattuali perché siamo obbligati da norme di legge. In particolare dobbiamo conservare comunicazioni commerciali, contratti conclusi e giustificativi contabili fino a 10 anni. Nella misura in cui tali dati da te non ci servano più per l'esecuzione dei servizi, i dati saranno limitati per l'ulteriore trattamento e li utilizzeremo solo per fini di rendicontazione e fiscali.
 
-## 9. Trattamenti di dati specifici
+## 9. Trattamenti di dati nel dettaglio
 
-### 9.1 Messa a disposizione dell'applicazione web e creazione di file di log
+### 9.1 Messa a disposizione della web app e creazione di log file
 
-Se vi limitate a visitare arten-fördern.app — senza registrarvi né divulgare altre informazioni — vengono raccolti solo i dati che il tuo browser trasmette automaticamente al nostro server.
+Se visiti semplicemente arten-fördern.app, quindi senza registrarti o comunicare altre informazioni, vengono raccolti solo i dati che il tuo browser trasmette automaticamente al nostro server.
 
 #### Quali dati trattiamo?
 
-Per la messa a disposizione dell'applicazione web e la creazione di file di log vengono trattati in particolare i seguenti dati:
+Per la messa a disposizione della web app e per la creazione dei log file vengono trattati in particolare i seguenti dati:
 
-- Nome del provider di accesso a internet
-- Indirizzo IP
-- Informazioni tecniche come browser, sistema operativo o risoluzione dello schermo
-- La data e l'ora di accesso
-- URL di riferimento
+- nome del fornitore di servizi internet
+- indirizzo IP
+- informazioni tecniche come browser, sistema operativo o risoluzione dello schermo
+- data e ora dell'accesso
+- referrer URL
 
-Questi dati non possono essere attribuiti a una persona specifica e non vengono combinati con altre fonti di dati.
+Questi dati non possono essere attribuiti a una persona determinata e non viene effettuata alcuna unione con altre fonti di dati.
 
-#### Per quali finalità trattiamo i dati?
+#### Per quale scopo trattiamo i dati?
 
-I file di log vengono trattati per garantire la funzionalità dell'applicazione web e per assicurare la sicurezza dei nostri sistemi informatici. Inoltre vogliamo semplicemente sapere quanto interesse suscita la nostra applicazione web.
-
-#### A chi trasmettiamo i dati?
-
-La trasmissione dei dati da parte nostra è disciplinata dalle nostre spiegazioni sulla trasmissione dei dati sopra riportate.
-
-#### Come puoi impedire il trattamento dei dati?
-
-I dati vengono conservati solo per il tempo necessario al raggiungimento della finalità per cui sono stati raccolti. Di conseguenza, i dati vengono cancellati al termine di ogni sessione. La conservazione dei file di log è strettamente necessaria per il funzionamento dell'applicazione web; non hai quindi alcun mezzo per opporvisi, a meno che non visitiate arten-fördern.app.
-
-### 9.2 Cookie
-
-I cookie sono dati memorizzati sul sistema operativo del tuo dispositivo tramite il browser quando accedete a arten-fördern.app. Quando effettuate il login, tutti i tuoi dati di progetto vengono sincronizzati in un database locale nel tuo browser — questo rientra probabilmente anche nella definizione di cookie. I cookie non causano alcun danno al tuo computer (eccetto l'utilizzo di spazio di archiviazione) e non contengono virus. I cookie utilizzati sono tecnicamente necessari affinché arten-fördern.app possa svolgere la propria funzione. Oltre a ciò, non memorizziamo nulla. I nostri cookie rimangono memorizzati sul tuo dispositivo finché non li cancellate o scade la loro durata.
-
-#### Per quali finalità trattiamo i dati?
-
-I dati memorizzati localmente sul tuo dispositivo servono alla funzione per cui utilizzate arten-fördern.app. Oltre a ciò, non memorizziamo nulla — in particolare nessun cookie di terze parti.
+Il trattamento dei log file avviene per garantire la funzionalità della web app e la sicurezza dei nostri sistemi informatici. Inoltre vogliamo semplicemente sapere quanto è grande l'interesse per la nostra web app.
 
 #### A chi trasmettiamo i dati?
 
-La trasmissione dei dati da parte nostra è disciplinata dalle nostre spiegazioni sulla trasmissione dei dati sopra riportate. Sono inoltre da considerare le spiegazioni che seguono sui singoli trattamenti nella presente informativa.
+La trasmissione dei dati da parte nostra è regolata dalle nostre spiegazioni sulla trasmissione dei dati.
 
 #### Come puoi impedire il trattamento dei dati?
 
-I cookie vengono memorizzati sul tuo computer. Potete eliminarli completamente oppure disabilitarne o limitarne la trasmissione modificando le impostazioni del tuo browser. Se i cookie sono disabilitati, arten-fördern.app non funzionerà più (solo la homepage e la documentazione restano accessibili).
+I dati vengono conservati solo per il tempo necessario al raggiungimento dello scopo della raccolta. Di conseguenza i dati vengono cancellati al termine di ogni sessione. La conservazione dei log file è indispensabile per il funzionamento della web app, quindi non hai possibilità di opporti, a meno che tu non visiti arten-fördern.app.
 
-Le istruzioni per i browser più comuni si trovano qui:
+### 9.2 Cookies
 
-- Per [Chrome](https://support.google.com/accounts/answer/61416) di Google
-- Per [Safari](https://support.apple.com/it-it/guide/safari/sfri11471/mac) di Apple
-- Per [Edge](https://support.microsoft.com/it-it/windows/gestire-i-cookie-in-microsoft-edge-visualizzare-consentire-bloccare-eliminare-e-usare-168dab11-0753-043d-7c16-ede5947fc64d) di Microsoft
-- Per [Firefox](https://support.mozilla.org/it/kb/impedire-siti-web-salvare-dati-sito-firefox) di Mozilla
+I cookies sono dati che vengono memorizzati sul sistema operativo del tuo dispositivo tramite il browser quando accedi a arten-fördern.app. Quando effettui il login, tutti i tuoi dati di progetto vengono sincronizzati su un database locale nel tuo browser - probabilmente rientra anche questo nel concetto di cookies. I cookies non causano danni al tuo dispositivo (a parte l'occupazione di memoria) e non contengono virus. I cookies utilizzati sono tecnicamente necessari affinché arten-fördern.app possa svolgere la sua funzione. Oltre a questo non memorizziamo nulla. I nostri cookies rimangono memorizzati sul tuo dispositivo finché non li cancelli o finché la loro durata non scade.
 
-### 9.3 Pixel di tracciamento
+#### Per quale scopo trattiamo i dati?
 
-Bleah. Non utilizziamo pixel di tracciamento.
+I dati memorizzati localmente presso di te servono alla funzione per cui utilizzi arten-fördern.app. Oltre a questo non memorizziamo nulla, in particolare nessun third party cookie.
 
-## 10. La nostra informativa sulla privacy rimane sempre uguale?
+#### A chi trasmettiamo i dati?
 
-Possiamo modificare la presente informativa in qualsiasi momento. Le modifiche saranno pubblicate su arten-fördern.app. Non sarete notificati separatamente.
+La trasmissione dei dati da parte nostra è regolata dalle nostre spiegazioni sulla trasmissione dei dati. Inoltre vanno considerate le spiegazioni successive sui singoli trattamenti dei dati in questa informativa sulla privacy.
+
+#### Come puoi impedire il trattamento dei dati?
+
+I cookies vengono memorizzati sul tuo dispositivo. Puoi eliminarli completamente o disattivarne / limitarne la trasmissione modificando le impostazioni del tuo browser. Se i cookies sono disattivati, arten-fördern.app non funziona più (solo homepage e documentazione).
+
+Qui trovi istruzioni per i browser più diffusi:
+
+- per [Chrome](https://support.google.com/accounts/answer/61416) di Google
+- per [Safari](https://support.apple.com/it-it/guide/safari/sfri11471/mac) di Apple
+- per [Edge](https://support.microsoft.com/it-it/windows/gestire-i-cookie-in-microsoft-edge-visualizzare-consentire-bloccare-eliminare-e-usare-168dab11-0753-043d-7c16-ede5947fc64d) di Microsoft
+- per [Firefox](https://support.mozilla.org/it/kb/impedire-siti-web-salvare-dati-sito-firefox) di Mozilla
+
+### 9.3 Pixel di conteggio
+
+Bleah. Non usiamo pixel di conteggio.
+
+## 10. La nostra informativa sulla privacy resta sempre uguale?
+
+Possiamo modificare questa informativa sulla privacy in qualsiasi momento. Le modifiche vengono pubblicate su arten-fördern.app. Non sarai informato separatamente.
