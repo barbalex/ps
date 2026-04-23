@@ -5,17 +5,16 @@
 .button {
   background-color: rgba(38, 82, 37, 0);
   border: none;
-  color: white;
   &:hover {
     filter: brightness(85%);
     background-color: rgba(38, 82, 37, 0);
-    color: white;
   }
 }
 
 .icon {
   position: relative;
   top: 2px;
+  color: white;
 }
 
 .badge {

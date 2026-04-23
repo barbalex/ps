@@ -57,6 +57,7 @@ export const Online = () => {
       <Tooltip content={title}>
         <Button
           size="medium"
+          appearance="transparent"
           icon={
             <div className={styles.iconContainer}>
               {online ? (
