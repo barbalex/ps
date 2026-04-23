@@ -18,7 +18,10 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
   return (
     <>
       <DropdownField
-        label={formatMessage({ id: 'Ed3FgH', defaultMessage: 'Web Map Service (WMS)' })}
+        label={formatMessage({
+          id: 'Ed3FgH',
+          defaultMessage: 'Web Map Service (WMS)',
+        })}
         name="wms_service_id"
         labelField="url"
         table="wms_services"
@@ -29,25 +32,42 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
         validationState={validations?.wms_service_id?.state}
         validationMessage={
           validations.wms_service_id?.message ??
-          (row.wms_service_id ? '' : (
-            formatMessage({ id: 'Lk0MnO', defaultMessage: 'Aus einem konfigurierten WMS wählen. Oder einen neuen hinzufügen.' })
-          ))
+          (row.wms_service_id
+            ? ''
+            : formatMessage({
+                id: 'Lk0MnO',
+                defaultMessage:
+                  'Aus einem konfigurierten WMS wählen. Oder einen neuen hinzufügen.',
+              }))
         }
-        noDataMessage={formatMessage({ id: 'Kj9LmN', defaultMessage: 'Kein WMS gefunden. Sie können einen hinzufügen.' })}
+        noDataMessage={formatMessage({
+          id: 'Kj9LmN',
+          defaultMessage: 'Kein WMS gefunden. Du kannst einen hinzufügen.',
+        })}
         hideWhenNoData={true}
       />
       <CreateWmsService wmsLayer={row} />
       {(row?.wms_service_id || isFilter) && (
         <LayersDropdown
           wmsLayer={row}
-          validationMessage={row.wms_service_layer_name ? '' : 'Select a layer'}
+          validationMessage={
+            row.wms_service_layer_name
+              ? ''
+              : formatMessage({
+                  id: 'SelectALayer',
+                  defaultMessage: 'Wähle eine Ebene',
+                })
+          }
         />
       )}
       {((!!row.wms_service_id && !!row?.wms_service_layer_name) ||
         isFilter) && (
         <>
           <TextField
-            label={formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
+            label={formatMessage({
+              id: 'Fl3jPw',
+              defaultMessage: 'Bezeichnung',
+            })}
             name="label"
             value={row.label ?? ''}
             onChange={onChange}

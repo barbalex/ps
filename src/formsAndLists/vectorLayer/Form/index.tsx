@@ -74,7 +74,7 @@ export const VectorLayerForm = ({
             }
             noDataMessage={formatMessage({
               id: 'Nq7OrT',
-              defaultMessage: 'Kein WFS gefunden. Sie können einen hinzufügen.',
+              defaultMessage: 'Kein WFS gefunden. Du kannst einen hinzufügen.',
             })}
             hideWhenNoData={true}
           />
