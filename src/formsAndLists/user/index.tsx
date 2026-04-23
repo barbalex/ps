@@ -139,19 +139,20 @@ export const User = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <>
-            <TextField
-              label="Email"
-              name="email"
-              type="email"
-              value={row.email ?? ''}
-              onChange={onChange}
-              autoFocus
-              ref={autoFocusRef}
-              validationState={validations?.email?.state}
-              validationMessage={validations?.email?.message}
-            />
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            value={row.email ?? ''}
+            onChange={onChange}
+            autoFocus
+            ref={autoFocusRef}
+            validationState={validations?.email?.state}
+            validationMessage={validations?.email?.message}
+          />
 
-            {currentUserId === userId && <Section
+          {currentUserId === userId && (
+            <Section
               title={intl.formatMessage({
                 id: 'user.appSettings',
                 defaultMessage: 'App-Einstellungen',
@@ -228,15 +229,17 @@ export const User = () => {
                     'Konten direkt im Benutzerformular anzeigen statt in einer separaten Navigation.',
                 })}
               />
-            </Section>}
+            </Section>
+          )}
 
-            {currentUserId === userId && <Section
+          {currentUserId === userId && (
+            <Section
               title={intl.formatMessage({
                 id: 'user.data',
                 defaultMessage: 'Daten',
               })}
             >
-              <DbDump />
+              <DbDump activeUserId={currentUserId} viewedUserId={userId} />
               <Button
                 appearance="outline"
                 onClick={() => setDeleteAccountOpen(true)}
@@ -251,23 +254,24 @@ export const User = () => {
                 onClose={() => setDeleteAccountOpen(false)}
                 userId={userId}
               />
-            </Section>}
+            </Section>
+          )}
 
-            {row.accounts_in_user && (
-              <Section
-                title={`${intl.formatMessage({ id: '/40i9A', defaultMessage: 'Konten' })} (${accountsCount})`}
-                parentUrl={`/data/users/${userId}`}
-                listUrl={accountsUrl}
-                isOpen={isAccountsOpen}
-                titleClassName={styles.sectionTitle}
-                childrenClassName={styles.sectionChildren}
-                headerActions={accountsHeaderActions}
-              >
-                {isAccountsOpen &&
-                  (isAccountsList ? <Accounts hideHeader /> : <Outlet />)}
-              </Section>
-            )}
-          </>
+          {row.accounts_in_user && (
+            <Section
+              title={`${intl.formatMessage({ id: '/40i9A', defaultMessage: 'Konten' })} (${accountsCount})`}
+              parentUrl={`/data/users/${userId}`}
+              listUrl={accountsUrl}
+              isOpen={isAccountsOpen}
+              titleClassName={styles.sectionTitle}
+              childrenClassName={styles.sectionChildren}
+              headerActions={accountsHeaderActions}
+            >
+              {isAccountsOpen &&
+                (isAccountsList ? <Accounts hideHeader /> : <Outlet />)}
+            </Section>
+          )}
+        </>
       </div>
     </div>
   )
