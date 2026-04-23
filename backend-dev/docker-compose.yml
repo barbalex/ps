@@ -42,10 +42,14 @@ services:
     networks:
       - network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d ${POSTGRES_DB}']
+      test:
+        [
+          'CMD-SHELL',
+          'psql -U postgres -d ${POSTGRES_DB} -c "SELECT 1" > /dev/null 2>&1',
+        ]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 20
   electric:
     container_name: ps_electric
     image: electricsql/electric:latest
