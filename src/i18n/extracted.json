@@ -21,7 +21,7 @@
     "defaultMessage": "Grösse"
   },
   "2hj7nH": {
-    "defaultMessage": "Sie können arten-fördern.app Ihren eigenen Bedürfnissen anpassen. Vermissen Sie eine Funktion? {link}"
+    "defaultMessage": "Du kannst arten-fördern.app deinen eigenen Bedürfnissen anpassen. Vermisst du eine Funktion? {link}"
   },
   "2iLc/W": {
     "defaultMessage": "Zweistufige Räume"
@@ -51,7 +51,7 @@
     "defaultMessage": "Feld"
   },
   "6ddsDI": {
-    "defaultMessage": "Ihre Daten gehören Ihnen"
+    "defaultMessage": "Deine Daten gehören dir"
   },
   "72yYP5": {
     "defaultMessage": "Feld bearbeiten"
@@ -78,7 +78,7 @@
     "defaultMessage": "mitteilen"
   },
   "9LbkBJ": {
-    "defaultMessage": "100% Ihrer Daten werden auf Ihr Gerät synchronisiert. Sie können jederzeit exportiert werden."
+    "defaultMessage": "100% deiner Daten werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
   },
   "9NCbxo": {
     "defaultMessage": "Formular anzeigen"
@@ -108,7 +108,7 @@
     "defaultMessage": "Ja"
   },
   "CHlBuE": {
-    "defaultMessage": "arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeiten Sie effizient auf Handy, Tablet oder Computer."
+    "defaultMessage": "arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeite effizient auf Handy, Tablet oder Computer."
   },
   "CT67xT": {
     "defaultMessage": "Baum ausblenden"
@@ -162,7 +162,7 @@
     "defaultMessage": "Datum wählen oder tippen..."
   },
   "HsHmZy": {
-    "defaultMessage": "Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Ihr Team möglichst effizient arbeitet. Profitieren Sie von {link}."
+    "defaultMessage": "Ich helfe dir gerne bei der Erst-Konfiguration, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
   },
   "IBnz5i": {
     "defaultMessage": "Karte maximieren"
@@ -198,7 +198,7 @@
     "defaultMessage": "Datei anzeigen"
   },
   "OW3d3V": {
-    "defaultMessage": "Sie sind offline? Einfach weiter arbeiten. Wieder online, werden Ihre Daten synchronisiert."
+    "defaultMessage": "Du bist offline? Einfach weiter arbeiten. Wieder online, werden deine Daten synchronisiert."
   },
   "OaXR/X": {
     "defaultMessage": "Beobachtungen zugeordnet"
@@ -225,7 +225,7 @@
     "defaultMessage": "Sortier-Reihenfolge"
   },
   "Pq8RsT": {
-    "defaultMessage": "Standardmässig wird nach Name sortiert. Das können Sie mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt."
+    "defaultMessage": "Standardmässig wird nach Name sortiert. Das kannst du mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt."
   },
   "Ps5mVn": {
     "defaultMessage": "Standardwert"
@@ -261,7 +261,7 @@
     "defaultMessage": "Daten ausblenden"
   },
   "T4gSjD": {
-    "defaultMessage": "Menge l\u00f6schen"
+    "defaultMessage": "Menge löschen"
   },
   "TVoh4o": {
     "defaultMessage": "Filter verlassen"
@@ -276,10 +276,10 @@
     "defaultMessage": "Url"
   },
   "U5hTkE": {
-    "defaultMessage": "Menge l\u00f6schen?"
+    "defaultMessage": "Menge löschen?"
   },
   "V6iUlF": {
-    "defaultMessage": "Menge hinzuf\u00fcgen"
+    "defaultMessage": "Menge hinzufügen"
   },
   "VP9dXS": {
     "defaultMessage": "Einfaches Onboarding"
@@ -297,7 +297,7 @@
     "defaultMessage": "vorherig"
   },
   "WrtHNX": {
-    "defaultMessage": "Sie dürfen gerne reinschauen, testen und mir Ihre Eindrücke und Wünsche {link}."
+    "defaultMessage": "Du darfst gerne reinschauen, testen und mir deine Eindrücke und Wünsche {link}."
   },
   "Xd0J7Y": {
     "defaultMessage": "Open Source"
@@ -426,7 +426,7 @@
     "defaultMessage": "Diagramm-Typ"
   },
   "bCIlMn": {
-    "defaultMessage": "Wählen Sie den anzuzeigenden Diagramm-Typ"
+    "defaultMessage": "Wähle den anzuzeigenden Diagramm-Typ"
   },
   "bCJmNo": {
     "defaultMessage": "Aktuelles Jahr"
@@ -480,7 +480,7 @@
     "defaultMessage": "Bei mehreren Subjekten: Anteil als Prozent anzeigen?"
   },
   "bDaDgE": {
-    "defaultMessage": "Sie sehen den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben"
+    "defaultMessage": "Du siehst den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben"
   },
   "bDbEhF": {
     "defaultMessage": "Daten"
@@ -489,7 +489,7 @@
     "defaultMessage": "Tabelle"
   },
   "bDdGjH": {
-    "defaultMessage": "Wählen Sie die Tabelle, aus der Daten geladen werden"
+    "defaultMessage": "Wähle die Tabelle, aus der Daten geladen werden"
   },
   "bDeHkI": {
     "defaultMessage": "Stufe"
@@ -681,7 +681,7 @@
     "defaultMessage": "...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
   },
   "pTRYGx": {
-    "defaultMessage": "Erfassen Sie neue Mitarbeitende mit ihrer Email. Ergänzen Sie diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
+    "defaultMessage": "Erfasse neue Mitarbeitende mit ihrer Email. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
   },
   "pfBGqS": {
     "defaultMessage": "Feldtauglich"
@@ -690,7 +690,7 @@
     "defaultMessage": "Benutzer"
   },
   "rEN8QI": {
-    "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert hat."
+    "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Du siehst, wer was wann geändert hat."
   },
   "rxRJ6H": {
     "defaultMessage": "Spinnen-Ragwurz"
@@ -768,7 +768,7 @@
     "defaultMessage": "Typ"
   },
   "yoo7JY": {
-    "defaultMessage": "Der Code ist offen. Sie können das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
+    "defaultMessage": "Der Code ist offen. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
   },
   "yubcwe": {
     "defaultMessage": "Wer zahlt, befiehlt. Wer befiehlt, zahlt..."
@@ -801,7 +801,7 @@
     "defaultMessage": "Doppelte Daten erkannt"
   },
   "dupPrc": {
-    "defaultMessage": "Möchten Sie mit dem Import trotzdem fortfahren?"
+    "defaultMessage": "Möchtest du mit dem Import trotzdem fortfahren?"
   },
   "dupWrg": {
     "defaultMessage": "Warnung:"
@@ -1083,7 +1083,7 @@
     "defaultMessage": "Teilprojekt-Bericht Druckvorschau"
   },
   "bCIjKl": {
-    "defaultMessage": "Kein Berichts-Design gefunden. Sie müssen zuerst ein {subproject}-Bericht-Design erstellen."
+    "defaultMessage": "Kein Berichts-Design gefunden. Du musst zuerst ein {subproject}-Bericht-Design erstellen."
   },
   "bCJkLm": {
     "defaultMessage": "Bericht-Designs"
@@ -1101,7 +1101,7 @@
     "defaultMessage": "Keine Daten gefunden"
   },
   "bCOpQr": {
-    "defaultMessage": "Keine {table}-Einträge vorhanden. Bitte zuerst einen hinzufügen."
+    "defaultMessage": "Keine {table}-Einträge vorhanden. Bitte füge zuerst einen hinzu."
   },
   "bCPrSt": {
     "defaultMessage": "{label} kann nicht geändert werden"
@@ -1131,7 +1131,7 @@
     "defaultMessage": "Keine Geometrie"
   },
   "bCXBYC": {
-    "defaultMessage": "Um auf eine Massnahme zu zoomen, erstellen Sie zuerst die Geometrie"
+    "defaultMessage": "Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie"
   },
   "bCYCZD": {
     "defaultMessage": "Bearbeiten"
@@ -1146,13 +1146,13 @@
     "defaultMessage": "Auf {place} in Karte zoomen"
   },
   "bDCGHI": {
-    "defaultMessage": "Um auf {place} zu zoomen, erstellen Sie zuerst die Geometrie"
+    "defaultMessage": "Um auf {place} zu zoomen, erstelle zuerst die Geometrie"
   },
   "fNN4oO": {
     "defaultMessage": "Zur Kontrolle in Karte zoomen"
   },
   "fOO5pP": {
-    "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstellen Sie zuerst die Geometrie"
+    "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie"
   },
   "TmPR2+": {
     "defaultMessage": "Menge"
@@ -1169,17 +1169,39 @@
   "hQ0RsU": {
     "defaultMessage": "Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig."
   },
-  "nX4TyZ": "Taxonomien klassifizieren Objekte (z. B. Arten, Biotope), meist hierarchisch. Es gibt keine allgemein gültige Art, Arten und Biotope zu klassifizieren. Die genetische Zusammensetzung und die Verbreitung von Arten können im Laufe der Zeit ändern. Biotope verändern ihre Artzusammensetzung. Daher ist eine Taxonomie auch nie abschliessend. Es ist daher normal, dass je nach Kontext verschiedene und in einem einzelnen Projekt auch gleichzeitig mehrere Taxonomien verwendet werden.",
-  "iR9StU": "Ganzzahl",
-  "jV0WxY": "Dezimalzahl",
-  "kZ1AbC": "Text",
-  "uT5VwX": "Typ",
-  "vU6WxY": "Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt.",
-  "gE4ItL": "Kontrollen: Taxa in Kontrolle",
-  "hF5JuM": "Taxon löschen",
-  "iG6KvN": "Taxon löschen?",
-  "jH7LwO": "Taxon hinzufügen",
-  "yK5Pq6": "Beobachtungen (inkl. Importe)",
+  "nX4TyZ": {
+    "defaultMessage": "Taxonomien klassifizieren Objekte (z. B. Arten, Biotope), meist hierarchisch. Es gibt keine allgemein gültige Art, Arten und Biotope zu klassifizieren. Die genetische Zusammensetzung und die Verbreitung von Arten können im Laufe der Zeit ändern. Biotope verändern ihre Artzusammensetzung. Daher ist eine Taxonomie auch nie abschliessend. Es ist daher normal, dass je nach Kontext verschiedene und in einem einzelnen Projekt auch gleichzeitig mehrere Taxonomien verwendet werden."
+  },
+  "iR9StU": {
+    "defaultMessage": "Ganzzahl"
+  },
+  "jV0WxY": {
+    "defaultMessage": "Dezimalzahl"
+  },
+  "kZ1AbC": {
+    "defaultMessage": "Text"
+  },
+  "uT5VwX": {
+    "defaultMessage": "Typ"
+  },
+  "vU6WxY": {
+    "defaultMessage": "Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt."
+  },
+  "gE4ItL": {
+    "defaultMessage": "Kontrollen: Taxa in Kontrolle"
+  },
+  "hF5JuM": {
+    "defaultMessage": "Taxon löschen"
+  },
+  "iG6KvN": {
+    "defaultMessage": "Taxon löschen?"
+  },
+  "jH7LwO": {
+    "defaultMessage": "Taxon hinzufügen"
+  },
+  "yK5Pq6": {
+    "defaultMessage": "Beobachtungen (inkl. Importe)"
+  },
   "aBcDeF": {
     "defaultMessage": "Maschinen-lesbarer Name, der in Exporten als Tabellen-Name verwendet werden kann. Beispiel: \"projekt_name\""
   },
