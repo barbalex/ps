@@ -20,4 +20,4 @@ Zweck: Du kannst eigene Projekte erstellen und konfigurieren.
 
 Wie Basis aber ich verdiene mehr ☺️.
 
-Und du kannst mehr Fähigkeiten nutzen 💪.
+Und du hast mehr Möglichkeiten 💪.
