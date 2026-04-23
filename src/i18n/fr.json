@@ -555,7 +555,7 @@
   "dupCnl": "Annuler l'importation",
   "dupCnt": "Continuer l'importation",
   "dupDtct": "Données en double détectées",
-  "dupPrc": "Voulez-vous continuer l'importation quand même?",
+  "dupPrc": "Veux-tu quand même poursuivre l'importation ?",
   "dupWrg": "Attention:",
   "dupWrn": "{duplicateCount} sur {totalCount} lignes semblent déjà exister dans la base de données (correspondance exacte sur tous les champs de données).",
   "fIuPSu": "Fichier téléchargé avec succès",
