@@ -57,7 +57,7 @@ export const DuplicateWarningDialog = ({
                 {formatMessage({
                   id: 'dupPrc',
                   defaultMessage:
-                    'Möchten Sie mit dem Import trotzdem fortfahren?',
+                    'Möchtest du trotzdem mit dem Import fortfahren?',
                 })}
               </p>
             </div>
